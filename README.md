@@ -1,14 +1,14 @@
-# Kommunicate-Android-Chat-SDK-Customer-Support
+### Kommunicate-Android-Chat-SDK-Customer-Support
 Kommunicate.io Android Chat SDK for Customer Support
 
-# Installation
+### Installation
 Clone this repo and then from Android Studio select File ->New -> Import Module  -> <Select kommunicate from cloned path>
 Check in your app level gradle file, if the dpedency for kommunicate does'nt exists then add it as below:
    ```
    compile project(':kommunicate')
    ```
    
-# Authorization
+### Authorization
 You can authorize a user as below:
         ```
         KMUser user = new KMUser();
@@ -33,13 +33,13 @@ You can authorize a user as below:
       }
       ```
       
-# Launch chat screen:
+### Launch chat screen:
  You can launch the chat screen(Where all the conversations are listed in descending order of communication time) as below:
     ```
     Kommunicate.openConversation(context);
     ```
     
-# Create a new Conversation:
+### Create a new Conversation:
  You can create a new conversation as below :
             ```
             Kommunicate.startNewConversation(context, <pass agent id here>, <pass bot id here, null accepted>, new KMCreateChatCallback() {
@@ -54,7 +54,7 @@ You can authorize a user as below:
                 });
                 ```
 
-#Open a particular conversation:
+### Open a particular conversation:
   You can open a particular conversation if you have the group id of the conversation.
   ```
          Kommunicate.openParticularConversation(context, <Group Id (Integer)>);

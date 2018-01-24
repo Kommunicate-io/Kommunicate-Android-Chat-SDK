@@ -3,13 +3,13 @@
 
 Kommunicate.io Android Chat SDK for Customer Support
 
-### Installation
+### Installation 
 
-Clone this repo and then from Android Studio select File ->New -> Import Module  -> <Select kommunicate from cloned path>
-Check in your app level gradle file, if the dpedency for kommunicate does'nt exists then add it as below
-   
- `compile project(':kommunicate') `
-   
+Clone this repo and then from Android Studio select File ->New -> Import Module  -> Select 'kommunicate' from cloned path.
+Check in your app level gradle file, if the dependency for kommunicate does'nt exists then add it as below 
+
+```compile project(':kommunicate')```
+
 ### Authorization
 
 You can authorize a user as below:
@@ -36,8 +36,20 @@ You can authorize a user as below:
         });
       }
  ```
-      
-### Launch chat screen:
+ 
+ If at some point you need to check if the user is logged in, you can use the below code:
+ ```
+ KMUser.isLoggedIn(context){
+      //user is logged in  
+   }
+ ```
+ 
+ You can get the logged in user details as below:
+ ```
+ KMUser user = KMUser.getLoggedInUser(context);
+ ```
+ 
+ ### Launch chat screen:
  
  You can launch the chat screen(Where all the conversations are listed in descending order of communication time) as below:
     
@@ -67,4 +79,3 @@ You can authorize a user as below:
   You can open a particular conversation if you have the group id of the conversation.
   
   `Kommunicate.openParticularConversation(context, <Group Id (Integer)>);`
-    

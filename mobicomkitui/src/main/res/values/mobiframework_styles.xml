@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="searchTextHiglight">
+        <item name="android:textColor">@color/holo_blue</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="quickContactBadgeStyle">
+        <item name="android:background">@drawable/quickcontact_badge_small</item>
+    </style>
+
+    <style name="ContactActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/people_activity_action_bar_color</item>
+        <item name="background">@color/people_activity_action_bar_color</item>
+    </style>
+
+</resources>

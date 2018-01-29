@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="message_type_inbox">#FFFFFFFF</color>
+    <color name="message_type_outbox">#FFFFFFFF</color>
+    <color name="message_type_outbox_sent_from_device">#FFFFFFFF</color>
+    <color name="message_type_mt_inbox">#FFFFFFFF</color>
+    <color name="message_type_mt_outbox">#FFFFFFFF</color>
+    <color name="message_type_incoming_call">#FFFFFFFF</color>
+    <color name="message_type_outgoing_call">#FFFFFFFF</color>
+
+
+    <!--
+    <color name="message_type_inbox">#FFF0F4F5</color>
+    <color name="message_type_outbox">#FF3B94D9</color>
+    <color name="message_type_outbox_sent_from_device">#FF3B94D9</color>
+    <color name="message_type_mt_inbox">#FFF0F4F5</color>
+    <color name="message_type_mt_outbox">#FF3B94D9</color>
+    <color name="message_type_incoming_call">#FF33B5E5</color>
+    <color name="message_type_outgoing_call">#FF33B5E5</color>
+    -->
+</resources>

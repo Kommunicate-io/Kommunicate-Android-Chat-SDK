@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "151348394719",
+    "firebase_url": "https://kommunicate-sample-app.firebaseio.com",
+    "project_id": "kommunicate-sample-app",
+    "storage_bucket": "kommunicate-sample-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151348394719:android:d7c652f89d37a350",
+        "android_client_info": {
+          "package_name": "io.kommunicate.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "151348394719-9miven2mqs1bdl9q8uqfaq9h73ghuenc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeXqOwAcTsB-6IrF_rK4SKpN_BYE2Qc4w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

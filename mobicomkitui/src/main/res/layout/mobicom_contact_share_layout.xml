@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contact_share_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/apploizc_transparent_color"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/apploizc_transparent_color"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:weightSum="3">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contact_share_image"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="2.16"
+            android:src="@drawable/applozic_ic_contact_picture_180_holo_light"
+            android:visibility="visible" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout"
+            android:layout_width="243dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="end"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="28dp"
+            android:layout_toEndOf="@+id/contact_share_image"
+            android:layout_toRightOf="@+id/contact_share_image">
+            <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+            <!--android:text="Contacts"-->
+            <!--android:id="@+id/share_contact_heading"-->
+            <!--android:layout_weight="2.16" />-->
+            <TextView
+                android:id="@+id/contact_share_tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_weight="2.16"
+                android:text=""
+                android:textAlignment="gravity"
+                android:textColor="@color/black"
+                android:textDirection="locale"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/contact_share_tv_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/contact_share_tv_name"
+                android:layout_marginTop="5dp"
+                android:text=""
+                android:textAlignment="gravity"
+                android:textDirection="locale"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/contact_share_emailId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/contact_share_tv_no"
+                android:text=""
+                android:textAlignment="gravity"
+                android:textDirection="locale"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="2dp"
+        android:background="@color/applozic_share_contact_divider" />
+
+    <Button
+        android:id="@+id/contact_share_add_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/relativeLayout"
+        android:layout_alignRight="@+id/relativeLayout"
+        android:layout_marginTop="3dp"
+        android:background="@color/apploizc_transparent_color"
+        android:text="@string/Add_Contacts" />
+
+
+</LinearLayout>

@@ -25,6 +25,7 @@ import io.kommunicate.callbacks.KMLoginHandler;
 public class Kommunicate {
 
     private static final String KM_BOT = "bot";
+    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";
 
     public static void init(Context context, String applicationKey) {
         Applozic.init(context, applicationKey);

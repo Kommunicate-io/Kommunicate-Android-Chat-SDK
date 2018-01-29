@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="app_name">Applozic</string>
+    <string name="conversations">Conversations</string>
+    <string name="channel_create_title">New group</string>
+    <string name="channel_members_title">Add members</string>
+    <string name="select_at_least">At least 1 contact must be selected</string>
+    <string name="group_name_hint">Name of the group</string>
+    <string name="empty_conversations">No conversations!</string>
+    <string name="enter_message_hint">Write a message…</string>
+    <string name="send_text">SEND</string>
+    <string name="cancel_text">CANCEL</string>
+    <string name="ok_text">OK</string>
+    <string name="start_text">START</string>
+    <string name="no_conversation">You have no conversations</string>
+    <string name="search_not_found_for_messages">No conversation found</string>
+    <string name="info_broadcast_message">Messages will be broadcast to each recipient individually</string>
+    <string name="shareOptions">Share</string>
+
+    <string name="mobitexter_contact_sync_key">KEYMOBITEXTER_CONTACT_SYNC_</string>
+    <string name="call_history_display_within_messages_pref_key">CALL_HISTORY_DISPLAY_WITHIN_MESSAGES</string>
+    <string name="last_inbox_sync_time">LAST_INBOX_SYNC_TIME</string>
+    <string name="last_outbox_sync_time">LAST_OUTBOX_SYNC_TIME</string>
+    <string name="phone_number_key">phone_number_key</string>
+    <string name="group_sms_freq_key">GROUP_SMS_FREQ_KEY</string>
+    <string name="delivery_report_pref_key">DELIVERY_REPORT_ENABLE</string>
+    <string name="sent_sms_sync_pref_key">SENT_SMS_SYNC_FLAG</string>
+    <string name="received_sms_sync_pref_key">RECEIVED_SMS_SYNC_FLAG</string>
+    <string name="verify_contact_number">VERIFY_CONTACT_NUMBER</string>
+    <string name="device_key_string">DEVICE_KEY_STRING</string>
+    <string name="device_registration_id">DEVICE_REGISTRATION_ID</string>
+    <string name="last_sms_sync_time">LAST_SMS_SYNC_TIME</string>
+    <string name="last_message_stat_sync_time">LAST_MESSAGE_STAT_SYNC_TIME</string>
+    <string name="webhook_enable_key">WEBHOOK_ENABLE_KEY</string>
+    <string name="email">EMAIL_ID_VALUE</string>
+    <string name="email_verified">EMAIL_VERIFIED</string>
+    <string name="user_key_string">SU_USER_KEY_STRING</string>
+    <string name="stop_service">STOPSERVICE</string>
+    <string name="patch_available">NEWPATCHAVAILABLE</string>
+    <string name="update_push_registration">UPDATE_PUSH_REGISTRATION</string>
+    <string name="info_sample_contact_list">Populate your app contacts here, showing device contacts as sample</string>
+    <string name="info_message_sync">Syncing messages with the server, it might take few minutes!</string>
+    <string name="instruction_open_conversation_thread">Tap on any conversation to see full thread</string>
+    <string name="instruction_go_back_to_recent_conversation_list">To go back to previous screen, slide from left to right</string>
+    <string name="instruction_long_press_message">For delete and other options, long press the message</string>
+    <string name="title_activity_mobi_com">MobiComActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="user_block">Block</string>
+    <string name="user_un_block">Unblock</string>
+    <string name="applozic_my_profile_option_info">Profile</string>
+
+    <string name="location_services_disabled_message">Sending location requires access to your location. Turn on location access.</string>
+    <string name="location_services_disabled_title">Location services disabled</string>
+    <string name="location_service_settings">Settings</string>
+    <string name="location_sending_cancelled">Location sending canceled</string>
+    <string name="unable_to_fetch_location">Unable to fetch location</string>
+    <string name="waiting_for_current_location">Waiting for current location</string>
+
+    <string name="select_file">Select a file</string>
+
+    <string name="applozic_select_photo">Select a photo</string>
+    <string name="attachment_retry">Retry</string>
+
+
+    <string name="verification_success">Your phone number got verified successfully</string>
+    <string name="launch_mobitexter_app">LAUNCH_MOBITEXTER</string>
+    <string name="delete_conversation">Delete</string>
+    <string name="sync_messages_from_server">Syncing with the server…</string>
+
+    <string name="incoming_call">Received call</string>
+    <string name="outgoing_call">Dialed call</string>
+
+    <string name="welcome_message">Welcome,
+        \nMobiTexter is a Messenger &amp; SMS Texting app
+        \nText from your laptop, mobile and any Android device using your own phone number.
+        \nSend and receive text on the laptop/pc/computer browser from http://www.mobitexter.net/
+        \nFor any queries, get in touch with us at support@mobitexter.net</string>
+
+    <string name="info_app_not_found_to_open_file">No application found to open this file</string>
+    <string name="unable_to_play_requested_audio_file">No application found to open this file</string>
+    <string name="file_not_selected">Did you miss selecting the file?</string>
+    <string name="info_attachment_max_allowed_file_size">Can\'t send maximum uploading file size limit exceeded!</string>
+    <string name="info_file_attachment_error">Can\'t send! Some unexpected error occurred while reading file</string>
+    <string name="select_file_count_limit">Can\'t select more than 1 file</string>
+
+    <string name="ScheduleText">Schedule</string>
+
+    <string name="enter_mt_message_hint">Write a message…</string>
+    <string name="messageOptions">Message options</string>
+    <string name="conversation">Conversation</string>
+    <string name="conversation_options">Options</string>
+    <string name="enter_support_query_hint">enter your queries, bug reporting or feedback here</string>
+    <string name="info_message_scheduled">Message is successfully scheduled</string>
+
+    <string name="sync_older_messages">Do you want to sync older messages?</string>
+
+    <string name="dialog_delete_conversation_title">Delete conversation</string>
+    <string name="dialog_delete_conversation_confir">Delete all messages of [name]?</string>
+
+    <string name="negetiveButtonText">Clear</string>
+    <string name="scheduleDialogHeader">Schedule Message</string>
+    <string name="scheduledDateText">Scheduled date:</string>
+    <string name="scheduledTimeText">Scheduled time:</string>
+    <string name="defaultDate">dd-mm-yyyy</string>
+    <string name="defaultTime">HH:MM:SS</string>
+    <string name="selectionRequestText">Select date and time to schedule your message.</string>
+
+    <string name="wearable_action_title">Reply</string>
+    <string name="wearable_action_label">Reply to</string>
+
+    <string name="verify_phone_number_notify_message">sending a text message to verify your number, we will automatically detect it when it arrives</string>
+    <string name="verification_send_sms_itself">We need to confirm that [phone_number] is your phone number. Your phone will be used to send itself a message.</string>
+    <string name="confirm_your_number">Confirm your number</string>
+    <string name="edit">Edit</string>
+    <string name="confirm">Confirm</string>
+    <string name="skip">Skip</string>
+    <string name="you_string">You</string>
+
+    <string name="view_option_string">View</string>
+    <string name="message_option_string">Message</string>
+
+    <string name="applozic_account_closed">Please contact Applozic to activate chat in your app</string>
+    <string name="applozic_free_version_not_allowed_on_release_build">Please contact Applozic to activate chat in your app</string>
+    <string name="quick_conversation_loading">loading conversation…</string>
+    <string name="alert_for_empty_message">Do you want to send a message without text?</string>
+    <string name="yes_alert">Yes</string>
+    <string name="subtitle_last_seen_at_time">Last seen</string>
+    <string name="is_typing">is typing…</string>
+    <string name="user_online">Online</string>
+    <string name="removing_channel_user">Removing…</string>
+    <string name="adding_channel_user">Adding…</string>
+    <string name="deleting_channel_user">Deleting…</string>
+    <string name="channel_member_exit">Exiting…</string>
+    <string name="channel_update">Updating group info…</string>
+    <string name="dialog_remove_group_user">Remove [name] from [group]?</string>
+    <string name="dialog_add_group_user">Add [name] to [group]?</string>
+    <string name="group_name_info">[group]</string>
+    <string name="groupType_info">[groupType]</string>
+    <string name="group_string">group</string>
+    <string name="broadcast_string">broadcast</string>
+    <string name="new_broadcast_name_info">New broadcast</string>
+    <string name="mute_Group">Mute</string>
+    <string name="unmute_Group">Unmute</string>
+    <string name="user_name_info">[name]</string>
+    <string name="channel_member_title">Select contact</string>
+    <string name="channel_exit_button">EXIT GROUP</string>
+    <string name="channel_delete_group_button">DELETE GROUP</string>
+    <string name="broadcast_exit_button">EXIT BROADCAST</string>
+    <string name="broadcast_delete_button">DELETE BROADCAST</string>
+    <string name="channel_created_by">Created by</string>
+    <string name="remove_member">Remove</string>
+    <string name="add">Add</string>
+    <string name="group_creating_info">Creating group, please wait…</string>
+    <string name="broadcast_creating_info">Creating broadcast, please wait…</string>
+    <string name="channel_exit">Exit</string>
+    <string name="channel_deleting">Delete</string>
+    <string name="leave_channel">Are you sure you want to exit from this [groupType]?</string>
+    <string name="exit_channel_message_info">Are you sure you want to exit [group] [groupType]?</string>
+    <string name="delete_channel_messages_and_channel_info">Are you sure you want to delete [group] [groupType]?</string>
+    <string name="channel_name_empty">Group name can not be empty</string>
+    <string name="channel_add_alert">Unable to add participant in group because you are not a participant</string>
+    <string name="channel_edit_alert">Unable to change the group name because you are not a participant</string>
+    <string name="admin_text">Group admin</string>
+    <string name="user_not_in_this_group_text">You are no longer a participant of this group</string>
+    <string name="group_has_been_deleted_text">This group has been deleted</string>
+    <string name="update_channel_title_name">Enter group name</string>
+    <string name="new_channel_name_hint">Group name…</string>
+    <string name="user_block_info">Block [name]? A blocked user will no longer be able to send you messages</string>
+    <string name="user_un_block_info">Unblock [name] to send a message</string>
+    <string name="please_wait_info">Please wait a moment…</string>
+    <string name="applozic_userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
+    <string name="applozic_channel_error_info_in_logs">Please check group name is null or empty or it has at least one member to be added in group</string>
+    <string name="applozic_add_user_to_multiple_channel_error_info_in_logs">UserId can not be null or empty and channel key list should not be null</string>
+    <string name="user_logout_info">Logout successful</string>
+    <string name="unable_share_message">Unable to share you are not a participant of this group</string>
+    <string name="user_is_blocked">Unable to send user is blocked</string>
+    <string name="when_on_wifi">When on Wi-Fi</string>
+    <string name="when_on_cellular_network">When on cellular network</string>
+    <string name="media_auto_download">Media-auto download</string>
+    <string name="applozic_network_usage">Network usage</string>
+    <string name="enable_vibration_notification">Enable vibration on notification</string>
+    <string name="user_has_been_deleted_text">User has been deleted</string>
+    <string name="make_admin_text_info">Make group admin</string>
+    <string name="attachment_string">Attachment</string>
+    <string name="photo_string">Photo</string>
+    <string name="contact_string">Contact</string>
+    <string name="video_string">Video</string>
+    <string name="audio_string">Audio</string>
+    <string name="al_location_string">Location</string>
+    <string name="restricted_words_are_not_allowed">Restricted words are not allowed</string>
+    <string name="ok_alert">OK</string>
+    <string name="km_read">Read</string>
+    <string name="km_not_read">Not read yet</string>
+    <string name="km_not_sent">Not sent</string>
+</resources>

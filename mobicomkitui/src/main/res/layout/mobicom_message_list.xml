@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:applozic="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <FrameLayout
+        android:id="@+id/contextFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="80dp"
+        android:visibility="gone">
+
+        <Spinner
+            android:id="@+id/spinner_show"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="true" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:orientation="horizontal">
+
+        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/swipe_container"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <com.applozic.mobicomkit.uiwidgets.conversation.activity.ContextMenuRecyclerView
+                android:id="@+id/messageList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_weight="1"
+                android:cacheColorHint="#00000000"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <TextView
+            android:id="@+id/noConversations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/no_conversation"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/fab_start_new"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/circle"
+            android:src="@drawable/applozic_ic_action_add"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/start_new_conversation"
+            android:layout_width="256dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.03"
+            android:text="Start new conversation"
+            android:textColor="#5c5aa7"
+            android:textSize="14sp"
+            android:visibility="gone"
+            android:background="@drawable/start_new_conv_shape"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/emptyConversation"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/empty_conversations"
+        android:textColor="@color/empty_conversation_text_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/attachment_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="bottom"
+        android:layout_weight="4"
+        android:background="@color/white"
+        android:clickable="false"
+        android:longClickable="false"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/media_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:adjustViewBounds="true" />
+
+        <TextView
+            android:id="@+id/attached_file"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:adjustViewBounds="true" />
+
+        <ProgressBar
+            android:id="@+id/media_upload_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/close_attachment_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/applozic_ic_action_cancel" />
+
+    </RelativeLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/extended_sending_option_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:baselineAligned="false"
+        android:clickable="false"
+        android:longClickable="false"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:weightSum="8">
+
+        <FrameLayout
+            android:id="@+id/sendTypeFrame"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_weight="2"
+            android:background="@color/message_action_button">
+
+            <Spinner
+                android:id="@+id/sendTypeSpinner"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:entries="@array/send_type_options"
+                android:paddingBottom="0dp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/scheduleOptionFrame"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_weight="3"
+            android:background="@color/message_action_button">
+
+            <Button
+                android:id="@+id/scheduleOption"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/message_action_button"
+                android:text="@string/schedule"
+                android:textColor="@color/black" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/secretMessageSpinnerFrame"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="3"
+            android:background="@color/message_action_button">
+
+            <Spinner
+                android:id="@+id/secret_message_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="0dp"
+                android:clickable="true"
+                android:paddingBottom="0dp" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/status_message_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/isTyping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:gravity="center"
+            android:padding="20dp"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/mobicomMessageTemplateView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginRight="10dp"
+            android:gravity="center_horizontal" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#5c5aa7" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/individual_message_send_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:background="#f2f0f0"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/main_edit_text_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:orientation="vertical">
+
+                <include layout="@layout/reply_message_layout" />
+
+                <RelativeLayout
+                    android:id="@+id/edit_text_linear_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="51dp"
+                    android:layout_gravity="top">
+
+                    <ImageButton
+                        android:id="@+id/emoticons_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|start"
+                        android:background="@color/apploizc_transparent_color"
+                        android:gravity="center"
+                        android:minHeight="48dp"
+                        android:paddingEnd="20dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="20dp"
+                        android:paddingStart="10dp"
+                        android:scaleType="center"
+                        android:src="@drawable/applozic_ic_action_attachment"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/attach_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|start"
+                        android:background="@color/apploizc_transparent_color"
+                        android:gravity="center"
+                        android:minHeight="48dp"
+                        android:paddingEnd="20dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="20dp"
+                        android:paddingStart="10dp"
+                        android:scaleType="center"
+                        android:src="@drawable/applozic_ic_action_attachment"
+                        android:visibility="gone" />
+
+                    <!--
+                            <EditText
+                                android:id="@+id/conversation_message"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="8"
+                                android:hint="@string/enter_message_hint"
+                                android:maxLines="6"
+                                android:minLines="2"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+                    -->
+                    <ImageButton
+                        android:id="@+id/conversation_send"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="end"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_marginTop="16dp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/button_circle"
+                        android:clickable="true"
+                        android:gravity="right"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/send"
+                        android:visibility="visible" />
+
+                    <EditText
+                        android:id="@+id/conversation_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_toLeftOf="@id/conversation_send"
+                        android:background="@color/apploizc_transparent_color"
+                        android:cursorVisible="true"
+                        android:fontFamily="sans-serif"
+                        android:gravity="center_horizontal"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:letterSpacing="0.04"
+                        android:maxLines="6"
+                        android:minLines="2"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/black"
+                        android:textColorHint="#8f8b8b"
+                        android:textSize="14sp" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/attachment_icon_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/emoji_btn"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:background="@color/apploizc_transparent_color"
+                        android:src="@drawable/smiley" />
+
+                    <ImageButton
+                        android:id="@+id/camera_btn"
+                        android:layout_width="18dp"
+                        android:layout_height="16dp"
+                        android:layout_marginLeft="18dp"
+                        android:background="@color/apploizc_transparent_color"
+                        android:src="@drawable/camera" />
+
+                    <ImageButton
+                        android:id="@+id/file_as_attachment_btn"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginLeft="18dp"
+                        android:background="@color/apploizc_transparent_color"
+                        android:src="@drawable/attachment" />
+
+                    <ImageButton
+                        android:id="@+id/location_btn"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginLeft="18dp"
+                        android:background="@color/apploizc_transparent_color"
+                        android:src="@drawable/locaiton" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/audio_record_frame_layout"
+                android:layout_width="0dp"
+                android:layout_height="53dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <include layout="@layout/reply_message_layout" />
+
+                <LinearLayout
+                    android:id="@+id/slide_LinearLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginStart="40dp"
+                    android:orientation="horizontal"
+                    android:paddingLeft="50dp"
+                    android:paddingRight="50dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/slide_image_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="1dp"
+                        android:src="@drawable/slide_arrow_left" />
+
+                    <TextView
+                        android:id="@+id/slide_to_cancel_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginStart="6dp"
+                        android:text="@string/slide_to_cancel"
+                        android:textColor="#999999"
+                        android:textSize="12dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:orientation="horizontal"
+                    android:paddingEnd="13dp"
+                    android:paddingLeft="13dp"
+                    android:paddingStart="13dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/audio_record_icon_image_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center"
+                        android:layout_marginTop="1dp"
+                        android:src="@drawable/applozic_audio_record" />
+
+                    <TextView
+                        android:id="@+id/recording_time_text_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start|center"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginStart="6dp"
+                        android:text="00:00"
+                        android:textColor="#4d4c4b"
+                        android:textSize="16dp" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/record_button"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/button_circle"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:scaleType="center"
+                        android:src="@drawable/applozic_mic_pressed"
+                        android:visibility="gone" />
+
+                    <EditText
+                        android:id="@+id/error_edit_text_view"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:enabled="false"
+                        android:hint=""
+                        android:inputType="none" />
+                </FrameLayout>
+            </FrameLayout>
+            <!--<com.rockerhieu.emojicon.EmojiconEditText-->
+            <!--android:id="@+id/conversation_message"-->
+            <!--android:text="I \ue32d emojicon"-->
+            <!--emojicon:emojiconSize="28sp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"/>-->
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/user_not_able_to_chat_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:minHeight="50dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/user_not_able_to_chat_textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/user_not_in_this_group_text"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/emojicons_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="bottom"
+        android:visibility="gone" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F0F0F0"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <GridView
+            android:id="@+id/mobicom_multimedia_options1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:horizontalSpacing="1dp"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="1dp" />
+
+    </LinearLayout>
+</LinearLayout>

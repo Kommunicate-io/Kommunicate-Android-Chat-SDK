@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="secret_message_timer_array">
+        <item>Self Destruct</item>
+        <item>Off</item>
+        <item>1 min</item>
+        <item>2 mins</item>
+        <item>5 mins</item>
+        <item>10 mins</item>
+    </string-array>
+
+    <string-array name="send_type_options">
+        <item>SMS</item>
+        <item>MT</item>
+    </string-array>
+
+    <!-- Scheduled Message strings -->
+
+    <string-array name="schedule_menu">
+        <item>Copy</item>
+        <item>Cancel</item>
+    </string-array>
+
+
+    <string-array name="menu">
+        <item>Copy</item>
+        <item>Forward</item>
+        <item>Resend</item>
+        <item>Delete</item>
+        <item>Info</item>
+        <item>Share</item>
+        <item>Reply</item>
+    </string-array>
+
+    <string-array name="conversation_options_menu">
+        <item>Delete conversation</item>
+        <item>Delete group</item>
+        <item>Exit group</item>
+    </string-array>
+
+    <!--Group member list menu -->
+    <string-array name="channel_users_menu_option">
+        <item>Message</item>
+        <item>Remove</item>
+        <item>Make group admin</item>
+    </string-array>
+
+    <!--Multimedia options -->
+    <string-array name="multimediaOptions_sms">
+        <item>Current location</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_mt">
+        <item>Current location</item>
+        <item>Take photo</item>
+        <item>Attach file</item>
+        <item>Audio Message</item>
+        <item>Video Message</item>
+        <item>Share Contact</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_with_price">
+        <item>Current location</item>
+        <item>Take photo</item>
+        <item>Attach file</item>
+        <item>Audio Message</item>
+        <item>Video Message</item>
+        <item>Share Contact</item>
+        <item>Attach price</item>
+
+    </string-array>
+
+    <string-array name="multimediaOptions_with_price_text">
+        <item>Location</item>
+        <item>Camera</item>
+        <item>File</item>
+        <item>Audio</item>
+        <item>Video</item>
+        <item>Contact</item>
+        <item>Price</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_text">
+        <item>Location</item>
+        <item>Camera</item>
+        <item>File</item>
+        <item>Audio</item>
+        <item>Video</item>
+        <item>Contact</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_key">
+        <item>:location</item>
+        <item>:camera</item>
+        <item>:file</item>
+        <item>:audio</item>
+        <item>:video</item>
+        <item>:contact</item>
+    </string-array>
+
+    <string-array name="multimediaOptionIcons_without_price">
+        <item>&#xf041;</item>
+        <item>&#xf030;</item>
+        <item>&#xf0c6;</item>
+        <item>&#xf130;</item>
+        <item>&#xf03d;</item>
+        <item>&#xf007;</item>
+    </string-array>
+
+</resources>

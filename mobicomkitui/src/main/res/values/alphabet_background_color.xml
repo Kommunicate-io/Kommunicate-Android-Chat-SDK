@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="mg_alphabet_first">#FF617D8A</color>
+    <color name="mg_alphabet_second">#FF628B70</color>
+    <color name="mg_alphabet_third">#FF6F628B</color>
+    <color name="mg_alphabet_fourth">#FF8C8863</color>
+    <color name="mg_alphabet_fifth">#FF8B627D</color>
+    <color name="mg_alphabet_sixth">#FF8B6F62</color>
+
+
+    <color name="non_alpha">#FFDDA185</color>
+    <color name="alphabet_a">#FF4FC3F7</color>
+    <color name="alphabet_b">#FFF06292</color>
+    <color name="alphabet_c">#FFBA68C8</color>
+    <color name="alphabet_d">#FF9575CD</color>
+    <color name="alphabet_e">#FF7986CB</color>
+    <color name="alphabet_f">#FF4FC3F7</color>
+    <color name="alphabet_g">#FFE06055</color>
+    <color name="alphabet_h">#FF4DD0E1</color>
+    <color name="alphabet_i">#FF4DB6AC</color>
+    <color name="alphabet_j">#FF57BB8A</color>
+    <color name="alphabet_k">#FF9CCC65</color>
+    <color name="alphabet_l">#FFD4E157</color>
+    <color name="alphabet_m">#FFFDD835</color>
+    <color name="alphabet_n">#FFF6BF26</color>
+    <color name="alphabet_o">#FFFFA726</color>
+    <color name="alphabet_p">#FFFF8A65</color>
+    <color name="alphabet_q">#FFC2C2C2</color>
+    <color name="alphabet_r">#FF90A4AE</color>
+    <color name="alphabet_s">#FFA1887F</color>
+    <color name="alphabet_t">#FFA3A3A3</color>
+    <color name="alphabet_u">#FFAFB6E0</color>
+    <color name="alphabet_v">#FFB39DDB</color>
+    <color name="alphabet_w">#FFC2C2C2</color>
+    <color name="alphabet_x">#FF80DEEA</color>
+    <color name="alphabet_y">#FFBCAAA4</color>
+    <color name="alphabet_z">#FFAED581</color>
+
+</resources>

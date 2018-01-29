@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mobicomkit="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity">
+
+    <item
+        android:id="@+id/menu_search"
+        android:actionViewClass="android.support.v7.widget.SearchView"
+        android:icon="@drawable/applozic_ic_action_search"
+        android:iconifiedByDefault="true"
+        android:showAsAction="always"
+        android:title="@string/menu_search"
+        mobicomkit:actionViewClass="android.support.v7.widget.SearchView"
+        mobicomkit:iconifiedByDefault="true"
+        mobicomkit:showAsAction="always" />
+
+</menu>

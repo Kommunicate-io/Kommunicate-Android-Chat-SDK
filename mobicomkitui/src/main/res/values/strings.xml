@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources  xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <string name="internet_connection_not_available">No internet connection</string>
+    <string name="you_need_network_access_for_delete">You need to have network access for deleting Conversation </string>
+    <string name="applozic_server_error">Oops! You caught an error, try again later</string>
+    <string name="you_need_network_access_for_block_or_unblock">You need to have network access for block/unblock a user</string>
+    <string name="internet_connection_for_group_name_info">Your phone needs an Internet connection to change the group name</string>
+    <string name="you_dont_have_any_network_access_info">You don\'t have any network access now</string>
+    <string name="failed_to_leave_group">Failed to leave group</string>
+    <string name="user_is_already_exists">User already exists in group</string>
+    <string name="delete_conversation_failed">Delete failed</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_add_contact">Create a new contact</string>
+    <string name="menu_edit_contact">Edit Contact</string>
+    <string name="no_contacts">No Contacts Found</string>
+    <string name="no_contact_selected">No Contact Selected</string>
+    <string name="search_hint">Search...</string>
+    <string name="activity_contacts_list">MobiTexter</string>
+    <string name="activity_contacts_title">Select contact</string>
+    <string name="activity_contact_detail">Contact Detail</string>
+    <string name="contacts_list_search_results_title">Contact search for \"%s\"</string>
+    <string name="contactsListActivity">Contact List</string>
+    <string name="phone_number_not_present">Phone number is not present</string>
+    <string name="mobiframework_title_device">Device</string>
+    <string name="mobiframework_title_group">Group</string>
+    <string name="zero_friends_on_phone">No matching contact found on phone contacts but you can still send message by entering the email, userId or phone number</string>
+    <string name="contact_sync_in_progress">Contact sync is in progress, might take few mins</string>
+    <string name="zero_friends_on_app">Contacts not found</string>
+    <string name="zero_groups_on_app">Groups not found</string>
+    <string name="delete_thread_text">Deleting....</string>
+    <string name="search_title">Search</string>
+    <string name="applozic_user_already_in_a_group">Already added to the [groupType]</string>
+    <string name="applozic_contacts_loading_info">Loading please wait...</string>
+    <string name="applozic_contacts_loading_error">You need to have network access for loading contacts</string>
+    <string name="applozic_enter_group_name">Please enter a group name to proceed..</string>
+
+
+    <!--
+         Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
+         alphabet using ListView fast scroll.
+    -->
+    <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+
+    <!--
+         When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
+         when using a number of different fields, such as name, e-mail address, address, phone
+         number, etc. When a match occurs that is not the name, there is currently no way to tell
+         which other field was matched. This string is displayed in the secondary display text in
+         ContactsListFragment when a search query match occurs that is not the display name.
+    -->
+    <string name="search_match_other">Matches Other Field</string>
+    <string name="invite">Invite your friends</string>
+    <array name="alphabet_color">
+        <item>#f16364</item>
+        <item>#f58559</item>
+        <item>#f9a43e</item>
+        <item>#e4c62e</item>
+        <item>#67bf74</item>
+        <item>#59a2be</item>
+        <item>#2093cd</item>
+        <item>#ad62a7</item>
+    </array>
+    <dimen name="tile_letter_font_size">250dp</dimen>
+    <!-- The deafult tile size -->
+    <dimen name="letter_tile_size">64dp</dimen>
+
+    <string name="contact_permission">Contact permission are needed to access</string>
+    <string name="storage_permission">Storage permission are needed to access</string>
+    <string name="read_sms_permission">Read sms permission are needed to access</string>
+    <string name="location_permission">Location permission are needed to access</string>
+    <string name="phone_state_permisssion">Phone state permission are needed to access</string>
+    <string name="phone_call_permission">Phone call permission are needed to access</string>
+    <string name="phone_camera_permission">Camera permission are needed to access</string>
+    <string name="record_audio">Audio recording permission needed</string>
+    <string name="camera_audio_permission">Camera and record audio permission are needed to access</string>
+
+    <string name="contact_permission_not_granted">Permission were not granted for Contact</string>
+    <string name="storage_permission_not_granted">Permissions were not granted for Storage</string>
+    <string name="read_sms_permission_not_granted">Permissions were not granted for Read</string>
+    <string name="location_permission_not_granted">Permissions were not granted for Location</string>
+    <string name="phone_state_permission_not_granted">Permissions were not granted for Phone state</string>
+    <string name="phone_call_permission_not_granted">Permission were not granted for Phone call</string>
+    <string name="phone_camera_permission_not_granted">Permission were not granted for Camera</string>
+    <string name="record_audio_permission_not_granted">Permissions were not granted for Audio recording</string>
+    <string name="audio_or_camera_permission_not_granted">Permission were not granted for Camera or Audio recording</string>
+
+    <string name="contact_permission_granted">Contacts Permission have been granted</string>
+    <string name="storage_permission_granted">Storage Permissions have been granted</string>
+    <string name="read_sms_permission_granted">Read sms Permissions have been granted</string>
+    <string name="location_permission_granted">Location Permissions has been granted</string>
+    <string name="phone_state_permission_granted">Phone state Permissions has been granted</string>
+    <string name="phone_call_permission_granted">Phone call Permission has been granted</string>
+    <string name="phone_camera_permission_granted">Camera permission has been granted</string>
+    <string name="record_audio_permission_granted">Audio Record permissions has been granted</string>
+    <string name="phone_camera_and_audio_permission_granted">Camera and audio permissions has been granted</string>
+    <string name="mobicom_max_attachment_warning">Max attachment limit reached</string>
+    <string name="mobicom_select_attachment_text">Select at least one attachment</string>
+    <string name="audio_recording_send_text">Tap on Start to record audio</string>
+    <string name="applozic_audio_permission_missing">Unable to launch audio recorder.</string>
+    <string name="applozic_message_info">Message Info</string>
+    <string name="applozic_message_info_no_network">Not able to fetch message info.</string>
+    <string name="applozic_user_profile_heading">Profile</string>
+    <string name="send_message_to">Send to..</string>
+    <string name="info_attachment_max_allowed_file_size_exceeded">Can\'t send maximum uploading file size limit exceeded </string>
+    <string name="group_members_limit_exceeds">Limit reached, remove someone from the Group first</string>
+    <string name="please_wait_creating_group_of_two">Please wait...</string>
+    <string name="sort_contacts_by_lastSeenAt">Sort by lastSeen</string>
+    <string name="sort_contacts_by_recent_chats">Sort by recent chats</string>
+    <string name="chats">Chats</string>
+    <string name="refresh">Refresh</string>
+    <string name="start_New">Start New</string>
+    <string name="dial">Dial</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera_option">Camera</string>
+    <string name="logout">Logout</string>
+    <string name="copy">Copy</string>
+    <string name="forward">Forward</string>
+    <string name="resend">Resend</string>
+    <string name="delete">Delete</string>
+    <string name="info">Info</string>
+    <string name="share">Share</string>
+    <string name="reply">Reply</string>
+    <string name="self_destruct">Self Destruct</string>
+    <string name="off">Off</string>
+    <string name="one_min">1 min</string>
+    <string name="two_min">2 min</string>
+    <string name="five_min">5 min</string>
+    <string name="ten_min">10 min</string>
+    <string name="sms">SMS</string>
+    <string name="mt">MT</string>
+    <string name="Delete_conversation">Delete conversation</string>
+    <string name="delete_group">Delete group</string>
+    <string name="exit_group">Exit group</string>
+    <string name="message">Message</string>
+    <string name="remove">Remove</string>
+    <string name="make_group_admin">Make group admin</string>
+    <string name="take_photo">Take photo</string>
+    <string name="attach_file">Attach file</string>
+    <string name="audio_message">Audio Message</string>
+    <string name="video_message">Video Message</string>
+    <string name="share_contact">Share Contact</string>
+    <string name="attach_price">Attach price</string>
+    <string name="al_location">:location</string>
+    <string name="al_file">:file</string>
+    <string name="al_audio">:audio</string>
+    <string name="al_camera">:camera</string>
+    <string name="al_video">:video</string>
+    <string name="al_contact">:contact</string>
+    <string name="al_price">:price</string>
+    <string name="current_location">Current Location</string>
+    <string name="price">Price</string>
+    <string name="status">status</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="Group">GROUP</string>
+    <string name="Contact">CONTACT</string>
+    <string name="participants">Participants</string>
+    <string name="cancel">Cancel</string>
+    <string name="Add_caption">Add caption...</string>
+    <string name="New_Attachment">New Attachment</string>
+    <string name="send_location">Send Location</string>
+    <string name="send_your_current_location">Send your current Location</string>
+    <string name="Add_Contacts">Add Contacts</string>
+    <string name="stop">STOP</string>
+    <string name="profile_status">Profile Status</string>
+    <string name="no_status">No Status</string>
+    <string name="online">online</string>
+    <string name="notifications">Notifications</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="sales_manager">Sales Manager</string>
+    <string name="display_name">Display Name</string>
+    <string name="today">Today</string>
+    <string name="kb45">45kb</string>
+    <string name="message_text">Message Text</string>
+    <string name="read">Read</string>
+    <string name="delivered">Delivered</string>
+    <string name="file_name_will_come_here_for_attachment">file name will come here for attachment</string>
+    <string name="mb_10">10 MB</string>
+    <string name="mobile_number">mobile number</string>
+    <string name="schedule">Schedule</string>
+    <string name="delivery_status">delivery status</string>
+    <string name="testTime">testTime</string>
+    <string name="created_at_time">created at time</string>
+    <string name="edit_group_name">Edit group name</string>
+    <string name="add_member">Add member</string>
+    <string name="group_not_exist">Group Not Exist</string>
+    <string name="no_groups">No Groups</string>
+    <string name="contacts_not_found">No Contacts Found</string>
+    <string name="remove_image">Remove image</string>
+    <string name="applozic_failed_to_load_contact">Failed to load Contact</string>
+    <string name="applozic_Cropping_failed">Cropping failed</string>
+    <string name="applozic_resending_attachment">Resending attachment....</string>
+    <string name="Location">Location</string>
+    <string name="processing_please_wait">Processing... Please wait</string>
+    <string name="success">success</string>
+    <string name="error">error</string>
+    <string name="mute_group_for">Mute Group For..</string>
+    <string name="mute_user_for">Mute user for..</string>
+    <string name="eight_Hours">8 Hours</string>
+    <string name="one_week">1 Week </string>
+    <string name="one_year"> 1 Year </string>
+    <string name="file_does_not_exist">file does not Exist</string>
+    <string name="copied_message">Copied message</string>
+    <string name="data_usage">Data Usage</string>
+    <string name="missed">Missed</string>
+    <string name="hold_to_record_release_to_send">Hold to record , release to send</string>
+    <string name="slide_to_cancel">Slide to cancel</string>
+    <string name="tap_on_mic_button_to_record_audio">Tap on mic button to start audio recording</string>
+    <string name="profile_contact">No Contact number</string>
+    <string name="profile_contact_number">Contact Number</string>
+    <string name="user_name">User Name</string>
+</resources>

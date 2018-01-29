@@ -1,0 +1,134 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/messageLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:gravity="end"
+    android:longClickable="true"
+    android:orientation="horizontal">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/messageTextLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="95dp"
+        android:background="@drawable/applozic_sent_message"
+        android:elevation="1dp"
+        android:gravity="end|center_vertical"
+        android:minWidth="68dp"
+        android:orientation="vertical">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/messageTextInsideLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <include layout="@layout/reply_message_layout" />
+
+            <TextView
+                android:id="@+id/attached_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/applozic_ic_action_attachment"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/applozic_ic_action_attachment"
+                android:textAlignment="gravity"
+                android:textColor="@color/white"
+                android:textDirection="locale"
+                android:visibility="gone"
+                android:textSize="16sp" />
+
+            <include layout="@layout/mobicom_attachment_preview_layout" />
+
+            <include layout="@layout/mobicom_contact_share_layout" />
+
+            <include layout="@layout/mobicom_chat_location_view" />
+
+            <include layout="@layout/applozic_document_attachment" />
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="all"
+                android:text="Hi"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:textColor="@color/sent_message_text_color"
+                android:textDirection="locale"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/selfDestruct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:paddingEnd="8dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="8dp"
+            android:paddingStart="2dp"
+            android:text="@string/self_destruct"
+            android:textColor="@color/message_details_text_color"
+            android:textSize="12sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/statusMainLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="21dp"
+        android:layout_below="@+id/messageTextLayout"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/createdAtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:letterSpacing="0.01"
+            android:textColor="#a6a2a2"
+            android:text="@string/created_at_time"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="14dp"
+            android:gravity="center"
+            android:fontFamily="sans-serif"
+            android:text="Read"
+            android:layout_marginLeft="5dp"
+            android:letterSpacing="0.01"
+            android:textColor="#a6a2a2"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <!--
+    <ImageView
+        android:id="@+id/contactImage"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="4dp"
+        android:visibility="gone"
+        android:src="@drawable/applozic_ic_contact_picture_180_holo_light" />
+    -->
+
+</RelativeLayout>

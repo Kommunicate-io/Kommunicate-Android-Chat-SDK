@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Kommunicate</string>
+    <string name="login_or_sign_up_info">Login</string>
+    <string name="privacy_policy">By signing up, you agree to the <a href='https://www.applozic.com/privacy.html'>privacy policy</a></string>
 </resources>

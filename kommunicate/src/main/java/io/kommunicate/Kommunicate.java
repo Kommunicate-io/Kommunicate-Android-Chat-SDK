@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.activities.KMConversationActivity;
+import io.kommunicate.async.GetUserListAsyncTask;
 import io.kommunicate.callbacks.KMCreateChatCallback;
+import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
 
@@ -80,7 +82,11 @@ public class Kommunicate {
         new AlChannelCreateAsyncTask(context, channelInfo, handler).execute();
     }
 
-    public static List<String> getAgents() {
-        return null;
+    public static void getAgents(Context context, int startIndex, int pageSize, KMGetContactsHandler handler) {
+        List<String> roleName = new ArrayList<>();
+        roleName.add(KMUser.RoleName.APPLICATION_ADMIN.getValue());
+        roleName.add(KMUser.RoleName.APPLICATION_WEB_ADMIN.getValue());
+
+        new GetUserListAsyncTask(context, roleName, startIndex, pageSize, handler).execute();
     }
 }

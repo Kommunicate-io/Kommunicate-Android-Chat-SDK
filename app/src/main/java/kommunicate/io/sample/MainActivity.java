@@ -67,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if (TextUtils.isEmpty(mPasswordText) || mPassword.getText().toString().trim().length() == 0) {
+                    /*if (TextUtils.isEmpty(mPasswordText) || mPassword.getText().toString().trim().length() == 0) {
                         Toast.makeText(getBaseContext(), "Enter password  ", Toast.LENGTH_SHORT).show();
                         return;
-                    }
+                    }*/
 
                     final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
                     progressDialog.setTitle("Logging in..");
@@ -176,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
         Kommunicate.login(MainActivity.this, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
-                Utils.printLog(context, "LoginTest", "Login success : " + registrationResponse);
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
@@ -187,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                Utils.printLog(MainActivity.this, "LoginTest", "Login failed : " + registrationResponse);
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
@@ -199,13 +197,11 @@ public class MainActivity extends AppCompatActivity {
         Kommunicate.startNewConversation(MainActivity.this, "reytum_agent", null, new KMCreateChatCallback() {
             @Override
             public void onSuccess(Channel channel, Context context) {
-                Utils.printLog(context, "LoginTest", "Chanel success : " + channel);
                 Kommunicate.openParticularConversation(context, channel.getKey());
             }
 
             @Override
             public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-                Utils.printLog(context, "LoginTest", "Channel failed: " + channelFeedApiResponse);
             }
         });
     }

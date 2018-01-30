@@ -79,9 +79,10 @@
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.03"
             android:text="Start new conversation"
-            android:textColor="#5c5aa7"
+            android:textColor="#ffffff"
             android:textSize="14sp"
             android:visibility="gone"
+            android:textAllCaps="false"
             android:background="@drawable/start_new_conv_shape"/>
     </RelativeLayout>
 

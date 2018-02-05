@@ -1,4 +1,4 @@
-package io.kommunicate;
+package io.kommunicate.users;
 
 import android.content.Context;
 

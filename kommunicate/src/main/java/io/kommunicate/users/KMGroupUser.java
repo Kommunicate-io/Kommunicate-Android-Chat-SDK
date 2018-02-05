@@ -1,4 +1,4 @@
-package io.kommunicate;
+package io.kommunicate.users;
 
 /**
  * Created by ashish on 23/01/18.

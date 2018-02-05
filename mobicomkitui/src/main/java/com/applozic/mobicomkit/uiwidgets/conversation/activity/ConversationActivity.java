@@ -83,6 +83,7 @@ import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -250,7 +251,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         Intent intent = new Intent(this, ApplozicMqttIntentService.class);
         intent.putExtra(ApplozicMqttIntentService.USER_KEY_STRING, userKeyString);
         intent.putExtra(ApplozicMqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
-        ApplozicMqttIntentService.enqueueWork(this,intent);
+        ApplozicMqttIntentService.enqueueWork(this, intent);
     }
 
     @Override
@@ -259,7 +260,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         LocalBroadcastManager.getInstance(this).registerReceiver(mobiComKitBroadcastReceiver, BroadcastService.getIntentFilter());
         Intent subscribeIntent = new Intent(this, ApplozicMqttIntentService.class);
         subscribeIntent.putExtra(ApplozicMqttIntentService.SUBSCRIBE, true);
-        ApplozicMqttIntentService.enqueueWork(this,subscribeIntent);
+        ApplozicMqttIntentService.enqueueWork(this, subscribeIntent);
 
         if (!Utils.isInternetAvailable(getApplicationContext())) {
             String errorMessage = getResources().getString(R.string.internet_connection_not_available);
@@ -404,7 +405,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (!takeOrder) {
             Intent lastSeenStatusIntent = new Intent(this, UserIntentService.class);
             lastSeenStatusIntent.putExtra(UserIntentService.USER_LAST_SEEN_AT_STATUS, true);
-            UserIntentService.enqueueWork(this,lastSeenStatusIntent);
+            UserIntentService.enqueueWork(this, lastSeenStatusIntent);
         }
 
         if (ApplozicClient.getInstance(this).isAccountClosed() || ApplozicClient.getInstance(this).isNotAllowed()) {
@@ -729,12 +730,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 if (!TextUtils.isEmpty(alCustomizationSettings.getLogoutPackage())) {
                     Class loginActivity = Class.forName(alCustomizationSettings.getLogoutPackage().trim());
                     if (loginActivity != null) {
-                        new UserClientService(this).logout();
+                        if (((KmActionCallback) getApplication()) != null) {
+                            ((KmActionCallback) getApplication()).onReceive(this, alCustomizationSettings.getLogoutPackage().trim(), "logoutCall");
+                        }
+                       /* new UserClientService(this).logout();
                         Toast.makeText(getBaseContext(), getString(R.string.user_logout_info), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(this, loginActivity);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(intent);
-                        finish();
+                        finish();*/
                     }
                 }
             } catch (ClassNotFoundException e) {

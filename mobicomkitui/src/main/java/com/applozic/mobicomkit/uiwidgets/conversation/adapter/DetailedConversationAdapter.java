@@ -102,6 +102,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private Drawable sentIcon;
     private Drawable deliveredIcon;
     private Drawable pendingIcon;
+    private Drawable readIcon;
     private Drawable scheduledIcon;
     private ImageLoader imageThumbnailLoader;
     private TextView downloadSizeTextView;
@@ -174,9 +175,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         imageThumbnailLoader.setImageFadeIn(false);
         imageThumbnailLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
 
-        sentIcon = context.getResources().getDrawable(R.drawable.applozic_ic_action_message_sent);
-        deliveredIcon = context.getResources().getDrawable(R.drawable.applozic_ic_action_message_delivered);
-        pendingIcon = context.getResources().getDrawable(R.drawable.applozic_ic_action_message_pending);
+        sentIcon = context.getResources().getDrawable(R.drawable.km_sent_tick);
+        deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_h);
+        readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_h);
+        //readIcon.setColorFilter(context.getResources().getColor(R.color.applozic_theme_color_primary), PorterDuff.Mode.MULTIPLY);
+        pendingIcon = context.getResources().getDrawable(R.drawable.ic_schedule);
         scheduledIcon = context.getResources().getDrawable(R.drawable.applozic_ic_action_message_schedule);
         final String alphabet = context.getString(R.string.alphabet);
         mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);
@@ -289,6 +292,19 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 if (message != null) {
                     Contact receiverContact = null;
                     Contact contactDisplayName = null;
+
+                    int index = messageList.indexOf(message);
+                    boolean hideRecursiveImages = false;
+
+                    if (!message.isTypeOutbox() && index != 0 && !messageList.get(index - 1).isTypeOutbox()
+                            && messageList.get(index - 1).getContentType() != 10
+                            && messageList.get(index - 1).getTo() != null
+                            && message.getTo() != null
+                            && messageList.get(index - 1).getTo().equals(message.getTo())) {
+
+                        hideRecursiveImages = true;
+                    }
+
                     if (message.getGroupId() == null) {
                         List<String> items = Arrays.asList(message.getContactIds().split("\\s*,\\s*"));
                         List<String> userIds = null;
@@ -463,7 +479,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (channel != null && myHolder.nameTextView != null && contactDisplayName != null) {
-                        myHolder.nameTextView.setVisibility(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) ? View.GONE : View.VISIBLE);
+                        myHolder.nameTextView.setVisibility(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || hideRecursiveImages ? View.GONE : View.VISIBLE);
                         if (alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
                             myHolder.nameTextView.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -487,7 +503,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
                         myHolder.nameTextView.setTextColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
                     }
-                    myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getMessageTimeTextColor()));
+
+                    if (message.isTypeOutbox()) {
+                        myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getSentMessageCreatedAtTimeColor()));
+                    } else {
+                        myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedContactMessageTextColor()));
+                    }
 
                     myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
                     //myHolder.preview.setVisibility(message.hasAttachment() ? View.VISIBLE : View.GONE);
@@ -529,26 +550,30 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     }
 
-                    if (myHolder.nameTextLayout != null && contact != null) {
+                    if (myHolder.nameTextLayout != null && contact != null && hideRecursiveImages) {
                         myHolder.nameTextLayout.setVisibility(View.GONE);
                     }
 
                     if (message.isCall() || message.isDummyEmptyMessage()) {
-                        myHolder.createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                        //myHolder.createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                     } else if (!message.isSentToServer() && message.isTypeOutbox()) {
-                        myHolder.createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, message.getScheduledAt() != null ? scheduledIcon : pendingIcon, null);
+                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(message.getScheduledAt() != null ? scheduledIcon : pendingIcon, null, null, null);
+                        //myHolder.statusImageView.setImageDrawable(message.getScheduledAt() != null ? scheduledIcon : pendingIcon);
+                        //myHolder.createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, message.getScheduledAt() != null ? scheduledIcon : pendingIcon, null);
                         //myHolder.deliveryStatus.setText(context.getString(R.string.km_not_sent));
                     } else if (message.getKeyString() != null && message.isTypeOutbox() && message.isSentToServer()) {
                         Drawable statusIcon;
                         if (message.isDeliveredAndRead()) {
-                            statusIcon = context.getResources().getDrawable(R.drawable.applozic_ic_action_message_read);
-                           // myHolder.deliveryStatus.setText(context.getString(R.string.km_read));
+                            statusIcon = readIcon;
+                            // myHolder.deliveryStatus.setText(context.getString(R.string.km_read));
                         } else {
                             statusIcon = (message.getDelivered() || (contact != null && new Support(context).isSupportNumber(contact.getFormattedContactNumber())) ?
                                     deliveredIcon : (message.getScheduledAt() != null ? scheduledIcon : sentIcon));
                             //myHolder.deliveryStatus.setText(context.getString(R.string.km_not_read));
                         }
-                        myHolder.createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
+                        //myHolder.createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
                     }
 
                     if (message.isCall()) {
@@ -581,11 +606,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         });
                     }
 
-                    if (message.isTypeOutbox()) {
-                        loadContactImage(senderContact, contactDisplayName, message, myHolder.contactImage, myHolder.alphabeticTextView, myHolder.onlineTextView);
-                    } else {
-                        loadContactImage(receiverContact, contactDisplayName, message, myHolder.contactImage, myHolder.alphabeticTextView, myHolder.onlineTextView);
-                    }
+                    loadContactImage(message.isTypeOutbox() ? senderContact : receiverContact, contactDisplayName, message, myHolder.contactImage, myHolder.alphabeticTextView, myHolder.onlineTextView, hideRecursiveImages);
 
                     ApplozicDocumentView audioView = new ApplozicDocumentView(this.context);
                     audioView.inflateViewWithMessage(myHolder.view, message);
@@ -887,11 +908,19 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
 
                         if (myHolder.messageTextLayout != null) {
-                            GradientDrawable bgShape = (GradientDrawable) myHolder.messageTextLayout.getBackground();
-                            bgShape.setColor(message.isTypeOutbox() ?
-                                    Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
-                            bgShape.setStroke(3, message.isTypeOutbox() ?
-                                    Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                            GradientDrawable bgShape;
+                            if (message.isTypeOutbox()) {
+                                bgShape = (GradientDrawable) myHolder.messageTextInsideLayout.getBackground();
+                            } else {
+                                bgShape = (GradientDrawable) myHolder.messageTextLayout.getBackground();
+                            }
+
+                            if (bgShape != null) {
+                                bgShape.setColor(message.isTypeOutbox() ?
+                                        Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                                bgShape.setStroke(3, message.isTypeOutbox() ?
+                                        Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                            }
                         }
                     }
 
@@ -992,7 +1021,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     }
 
-    private void loadContactImage(Contact contact, Contact contactDisplayName, Message messageObj, ImageView contactImage, TextView alphabeticTextView, TextView onlineTextView) {
+    private void loadContactImage(Contact contact, Contact contactDisplayName, Message message, ImageView contactImage, TextView alphabeticTextView, TextView onlineTextView, boolean hide) {
 
         if (alphabeticTextView != null) {
             String contactNumber = "";
@@ -1012,8 +1041,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             }
 
             Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-            /*alphabeticTextView.setTextColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetTextColorMap.get(colorKey)));
-            alphabeticTextView.setBackgroundResource(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey));*/
             GradientDrawable bgShape = (GradientDrawable) alphabeticTextView.getBackground();
             bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
         }
@@ -1021,21 +1048,26 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         if (contact != null && contact.isDrawableResources() && contactImage != null) {
             int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
             contactImage.setImageResource(drawableResourceId);
-            contactImage.setVisibility(View.VISIBLE);
+            contactImage.setVisibility(hide ? GONE : View.VISIBLE);
             alphabeticTextView.setVisibility(View.GONE);
         } else if (contact != null && contactImage != null) {
             if (TextUtils.isEmpty(contact.getImageURL())) {
                 contactImage.setVisibility(View.GONE);
-                alphabeticTextView.setVisibility(View.VISIBLE);
+                alphabeticTextView.setVisibility(hide ? GONE : View.VISIBLE);
             } else {
-                contactImageLoader.loadImage(contact, contactImage, alphabeticTextView);
+                if (hide) {
+                    contactImage.setVisibility(GONE);
+                } else {
+                    contactImage.setVisibility(View.VISIBLE);
+                    contactImageLoader.loadImage(contact, contactImage, alphabeticTextView);
+                }
             }
         }
 
         if (contactDisplayName != null && contactDisplayName.isDrawableResources() && contactImage != null) {
             int drawableResourceId = context.getResources().getIdentifier(contactDisplayName.getrDrawableName(), "drawable", context.getPackageName());
             contactImage.setImageResource(drawableResourceId);
-            contactImage.setVisibility(View.VISIBLE);
+            contactImage.setVisibility(hide ? GONE : View.VISIBLE);
             alphabeticTextView.setVisibility(View.GONE);
         } else if (contactDisplayName != null && contactImage != null) {
             if (alCustomizationSettings.isGroupUsersOnlineStatus() && onlineTextView != null) {
@@ -1047,9 +1079,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             }
             if (TextUtils.isEmpty(contactDisplayName.getImageURL())) {
                 contactImage.setVisibility(View.GONE);
-                alphabeticTextView.setVisibility(View.VISIBLE);
+                alphabeticTextView.setVisibility(hide ? GONE : View.VISIBLE);
             } else {
-                contactImageLoader.loadImage(contactDisplayName, contactImage, alphabeticTextView);
+                if (hide) {
+                    contactImage.setVisibility(View.GONE);
+                } else {
+                    contactImage.setVisibility(View.VISIBLE);
+                    contactImageLoader.loadImage(contactDisplayName, contactImage, alphabeticTextView);
+                }
             }
         }
 
@@ -1296,6 +1333,8 @@ class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickLi
     Button addContactButton;
     LinearLayout statusMainLayout;
     int position;
+    TextView statusTextView;
+    LinearLayout messageTextInsideLayout;
 
     public MyViewHolder(final View customView) {
         super(customView);
@@ -1333,7 +1372,8 @@ class MyViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickLi
         imageViewPhoto = (ImageView) customView.findViewById(R.id.imageViewForPhoto);
         replyNameTextView = (TextView) customView.findViewById(R.id.replyNameTextView);
         imageViewForAttachmentType = (ImageView) customView.findViewById(R.id.imageViewForAttachmentType);
-
+        statusTextView = (TextView) customView.findViewById(R.id.statusImage);
+        messageTextInsideLayout = customView.findViewById(R.id.messageTextInsideLayout);
 
         shareContactImage = (ImageView) mainContactShareLayout.findViewById(R.id.contact_share_image);
         shareContactName = (TextView) mainContactShareLayout.findViewById(R.id.contact_share_tv_name);

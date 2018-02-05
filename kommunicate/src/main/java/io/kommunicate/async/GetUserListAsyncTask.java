@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import io.kommunicate.KmUserResponse;
+import io.kommunicate.users.KmUserResponse;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.services.KmUserService;
 

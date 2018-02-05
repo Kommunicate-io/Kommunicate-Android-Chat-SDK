@@ -100,6 +100,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean groupInfoScreenVisible = true;
     private boolean forwardOption = true;
     private boolean recordButton = true;
+    private String sentMessageCreatedAtTimeColor = "";
+    private String receivedMessageCreatedAtTimeColor = "";
 
     private boolean launchChatFromProfilePicOrName;
 
@@ -518,6 +520,22 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public MobicomMessageTemplate getMessageTemplate() {
         return messageTemplate;
+    }
+
+    public String getSentMessageCreatedAtTimeColor() {
+        return sentMessageCreatedAtTimeColor;
+    }
+
+    public void setSentMessageCreatedAtTimeColor(String sentMessageCreatedAtTimeColor) {
+        this.sentMessageCreatedAtTimeColor = sentMessageCreatedAtTimeColor;
+    }
+
+    public String getReceivedMessageCreatedAtTimeColor() {
+        return receivedMessageCreatedAtTimeColor;
+    }
+
+    public void setReceivedMessageCreatedAtTimeColor(String receivedMessageCreatedAtTimeColor) {
+        this.receivedMessageCreatedAtTimeColor = receivedMessageCreatedAtTimeColor;
     }
 
     @Override

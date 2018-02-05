@@ -4,6 +4,8 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 
 import java.util.List;
 
+import io.kommunicate.users.KMGroupUser;
+
 /**
  * Created by ashish on 23/01/18.
  */

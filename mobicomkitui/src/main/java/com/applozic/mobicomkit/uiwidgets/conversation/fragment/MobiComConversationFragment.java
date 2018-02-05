@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
@@ -210,6 +211,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     protected DetailedConversationAdapter conversationAdapter = null;
     protected Drawable sentIcon;
     protected Drawable deliveredIcon;
+    protected Drawable readIcon;
+    protected Drawable pendingIcon;
     protected ImageButton emoticonsBtn;
     protected Support support;
     protected MultimediaOptionFragment multimediaOptionFragment = new MultimediaOptionFragment();
@@ -425,8 +428,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
         emoticonsBtn.setOnClickListener(this);
         //listView.addHeaderView(spinnerLayout);
-        sentIcon = getResources().getDrawable(R.drawable.applozic_ic_action_message_sent);
-        deliveredIcon = getResources().getDrawable(R.drawable.applozic_ic_action_message_delivered);
+        sentIcon = getResources().getDrawable(R.drawable.km_sent_tick);
+        deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_h);
+        readIcon = getResources().getDrawable(R.drawable.km_read_icon_h);
+        //readIcon.setColorFilter(getResources().getColor(R.color.applozic_theme_color_primary), PorterDuff.Mode.MULTIPLY);
+        pendingIcon = getResources().getDrawable(R.drawable.ic_schedule);
 
         //listView.setLongClickable(true);
 
@@ -455,6 +461,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (channel != null && channel.isDeleted()) {
             userNotAbleToChatTextView.setText(R.string.group_has_been_deleted_text);
         }
+
 
         bottomlayoutTextView = (TextView) list.findViewById(R.id.user_not_able_to_chat_textView);
         if (!TextUtils.isEmpty(defaultText)) {
@@ -1772,9 +1779,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void run() {
                 try {
-                    Drawable statusIcon = getResources().getDrawable(R.drawable.applozic_ic_action_message_delivered);
+                    Drawable statusIcon = deliveredIcon;
                     if (markRead) {
-                        statusIcon = getResources().getDrawable(R.drawable.applozic_ic_action_message_read);
+                        statusIcon = readIcon;
                     }
                     for (int index = 0; index < messageList.size(); index++) {
                         Message message = messageList.get(index);
@@ -1797,7 +1804,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             TextView createdAtTime = (TextView) view.findViewById(R.id.createdAtTime);
                             //TextView status = (TextView) view.findViewById(R.id.status);
                             //status.setText("Delivered");
-                            createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            //createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            TextView statusImage = view.findViewById(R.id.statusImage);
+                            statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
                         }
                     }
                 } catch (Exception ex) {
@@ -1828,12 +1837,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             TextView createdAtTime = (TextView) view.findViewById(R.id.createdAtTime);
                             /*TextView status = (TextView) view.findViewById(R.id.status);
                             status.setText("Delivered");*/
-                            Drawable statusIcon = getResources().getDrawable(R.drawable.applozic_ic_action_message_delivered);
+                            Drawable statusIcon = deliveredIcon;
                             if (message.getStatus() == Message.Status.DELIVERED_AND_READ.getValue()) {
-                                statusIcon = getResources().getDrawable(R.drawable.applozic_ic_action_message_read);
+                                statusIcon = readIcon;
                                 messageList.get(index).setStatus(Message.Status.DELIVERED_AND_READ.getValue());
                             }
-                            createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            //createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            TextView statusImage = view.findViewById(R.id.statusImage);
+                            statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
                         }
                     } else if (!message.isVideoNotificationMessage() && !message.isHidden()) {
                         messageList.add(message);
@@ -2306,10 +2317,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             }
                         }
                         TextView createdAtTime = (TextView) view.findViewById(R.id.createdAtTime);
+                        TextView statusTextView = view.findViewById(R.id.statusImage);
+
                         //TextView statusTv = (TextView) view.findViewById(R.id.status);
-                        if (createdAtTime != null && messageListItem.getKeyString() != null && messageListItem.isTypeOutbox() && !messageListItem.isCall() && !messageListItem.getDelivered() && !messageListItem.isCustom() && !messageListItem.isChannelCustomMessage() && messageListItem.getScheduledAt() == null) {
-                            createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, support.isSupportNumber(getCurrentUserId()) ? deliveredIcon : sentIcon, null);
+                        if (statusTextView != null && messageListItem.getKeyString() != null && messageListItem.isTypeOutbox() && !messageListItem.isCall() && !messageListItem.getDelivered() && !messageListItem.isCustom() && !messageListItem.isChannelCustomMessage() && messageListItem.getScheduledAt() == null) {
+                            //createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, support.isSupportNumber(getCurrentUserId()) ? deliveredIcon : sentIcon, null);
                             //statusTv.setText(getContext().getString(R.string.km_not_read));
+                            statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, support.isSupportNumber(getCurrentUserId()) ? deliveredIcon : sentIcon, null);
                         }
                     }
                 }
@@ -3180,7 +3194,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             params = new RelativeLayout.LayoutParams(metrics.widthPixels + (int) wt_px * 2, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins((int) wt_px, 0, (int) wt_px, 0);
         } else {
-            params = new LinearLayout.LayoutParams(metrics.widthPixels - (int) wt_px * 2, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params = new RelativeLayout.LayoutParams(metrics.widthPixels - (int) wt_px * 2, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 0, 0, 0);
         }
         return params;

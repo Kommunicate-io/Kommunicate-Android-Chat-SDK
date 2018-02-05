@@ -1,24 +1,17 @@
 package kommunicate.io.sample;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.widget.Toast;
-
-import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-import com.applozic.mobicomkit.uiwidgets.uilistener.KmStartConvCallback;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.people.channel.Channel;
-
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import io.kommunicate.Kommunicate;
-import io.kommunicate.callbacks.KMCreateChatCallback;
+
 
 /**
  * Created by ashish on 23/01/18.
  */
 
-public class KommunicateApplication extends MultiDexApplication implements KmStartConvCallback {
+public class KommunicateApplication extends MultiDexApplication implements KmActionCallback {
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -27,24 +20,21 @@ public class KommunicateApplication extends MultiDexApplication implements KmSta
     }
 
     @Override
-    public void onStartNew(Context context) {
-        final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Creating conversation, please wait...");
-        dialog.setCancelable(false);
-        dialog.show();
+    public void onCreate() {
+        super.onCreate();
+    }
 
-        Kommunicate.startNewConversation(this, "reytum_agent", "bot", new KMCreateChatCallback() {
-            @Override
-            public void onSuccess(Channel channel, Context context) {
-                dialog.dismiss();
-                Kommunicate.openParticularConversation(context, channel.getKey());
-            }
+    @Override
+    public void onReceive(Context context, final Object object, String action) {
 
-            @Override
-            public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-                dialog.dismiss();
-                Toast.makeText(context, "Unable to create : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
-            }
-        });
+        switch (action) {
+            case Kommunicate.START_NEW_CHAT:
+                MainActivity.setStartNewChat(context, "reytum@live.com", null); //pass null if you want to use default bot
+                break;
+
+            case Kommunicate.LOGOUT_CALL:
+                MainActivity.performLogout(context, object); //object will receive the exit Activity, the one that will be launched when logout is successfull
+                break;
+        }
     }
 }

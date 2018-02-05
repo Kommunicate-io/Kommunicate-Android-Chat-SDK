@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -23,11 +24,12 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 
+import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.utils.KMPermissionUtils;
-import io.kommunicate.KMUser;
+import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
-import io.kommunicate.callbacks.KMCreateChatCallback;
+import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
 
 public class MainActivity extends AppCompatActivity {
@@ -193,15 +195,51 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void initNewChat() {
-        Kommunicate.startNewConversation(MainActivity.this, "reytum_agent", null, new KMCreateChatCallback() {
+    public static void performLogout(Context context, final Object object) {
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setMessage("Logging out, please wait...");
+        dialog.setCancelable(false);
+        dialog.show();
+        Kommunicate.logout(context, new KMLogoutHandler() {
+            @Override
+            public void onSuccess(Context context) {
+                dialog.dismiss();
+                Toast.makeText(context, context.getString(com.applozic.mobicomkit.uiwidgets.R.string.user_logout_info), Toast.LENGTH_SHORT).show();
+                Intent intent = null;
+                try {
+                    intent = new Intent(context, Class.forName((String) object));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    context.startActivity(intent);
+                    ((FragmentActivity) context).finish();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public static void setStartNewChat(Context context, String agentId, String botId) {
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setMessage("Creating conversation, please wait...");
+        dialog.setCancelable(false);
+        dialog.show();
+
+        Kommunicate.startNewConversation(context, agentId, botId, new KMStartChatHandler() {
             @Override
             public void onSuccess(Channel channel, Context context) {
+                dialog.dismiss();
                 Kommunicate.openParticularConversation(context, channel.getKey());
             }
 
             @Override
             public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+                dialog.dismiss();
+                Toast.makeText(context, "Unable to create chat : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
             }
         });
     }

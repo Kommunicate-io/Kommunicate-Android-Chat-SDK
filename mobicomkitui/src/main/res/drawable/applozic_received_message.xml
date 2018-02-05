@@ -7,16 +7,9 @@
 
     <!-- view border color and width -->
     <stroke
-        android:width="3dp"
         android:color="@color/applozic_message_border_color" />
 
     <!-- If you want to add some padding -->
-    <padding
-        android:bottom="6dp"
-        android:left="6dp"
-        android:right="6dp"
-        android:top="6dp" />
-
     <!-- Here is the corner radius -->
     <corners
        android:radius="5dp" />

@@ -15,10 +15,12 @@ import java.util.Map;
 
 import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.async.GetUserListAsyncTask;
-import io.kommunicate.callbacks.KMCreateChatCallback;
+import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
+import io.kommunicate.users.KMGroupUser;
+import io.kommunicate.users.KMUser;
 
 /**
  * Created by ashish on 23/01/18.
@@ -28,6 +30,8 @@ public class Kommunicate {
 
     private static final String KM_BOT = "bot";
     public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";
+    public static final String START_NEW_CHAT = "startNewChat";
+    public static final String LOGOUT_CALL = "logoutCall";
 
     public static void init(Context context, String applicationKey) {
         Applozic.init(context, applicationKey);
@@ -53,7 +57,7 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
-    public static void startNewConversation(Context context, String agentId, String botId, KMCreateChatCallback handler) {
+    public static void startNewConversation(Context context, String agentId, String botId, KMStartChatHandler handler) {
         List<KMGroupUser> users = new ArrayList<>();
         users.add(new KMGroupUser().setUserId(agentId).setGroupRole(1));
         users.add(new KMGroupUser().setUserId(botId != null ? botId : KM_BOT).setGroupRole(2));

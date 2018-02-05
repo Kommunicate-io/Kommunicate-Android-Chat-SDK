@@ -7,4 +7,5 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
  */
 
 public class KMConversationActivity extends ConversationActivity {
+
 }

@@ -6,6 +6,6 @@ import android.content.Context;
  * Created by ashish on 29/01/18.
  */
 
-public interface KmStartConvCallback {
-    void onStartNew(Context context);
+public interface KmActionCallback {
+    void onReceive(Context context, Object object, String action);
 }

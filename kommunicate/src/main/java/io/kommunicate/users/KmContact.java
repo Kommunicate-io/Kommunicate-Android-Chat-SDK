@@ -1,4 +1,4 @@
-package io.kommunicate;
+package io.kommunicate.users;
 
 import com.applozic.mobicommons.people.contact.Contact;
 

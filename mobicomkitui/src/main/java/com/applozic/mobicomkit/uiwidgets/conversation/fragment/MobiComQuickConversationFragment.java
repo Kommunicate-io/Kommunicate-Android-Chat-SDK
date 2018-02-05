@@ -34,7 +34,6 @@ import com.applozic.mobicomkit.channel.database.ChannelDatabaseService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.uiwidgets.ApplozicApplication;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 
@@ -44,12 +43,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ContextMenuRecyclerView;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.DividerItemDecoration;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.FooterItemDecoration;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPositionHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
-import com.applozic.mobicomkit.uiwidgets.uilistener.KmStartConvCallback;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -170,7 +167,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         startNewConv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((KmStartConvCallback) getActivity().getApplication()).onStartNew(getContext());
+                if (((KmActionCallback) getActivity().getApplication()) != null) {
+                    ((KmActionCallback) getActivity().getApplication()).onReceive(getContext(), null, "startNewChat");
+                }
             }
         });
 

@@ -2,7 +2,7 @@
     android:id="@+id/messageLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="3dp"
     android:gravity="end"
     android:longClickable="true"
     android:orientation="horizontal">
@@ -13,21 +13,25 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="95dp"
-        android:background="@drawable/applozic_sent_message"
         android:elevation="1dp"
         android:gravity="end|center_vertical"
-        android:minWidth="68dp"
-        android:orientation="vertical">
+        android:minHeight="40dp"
+        android:minWidth="94dp"
+        android:orientation="horizontal">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/messageTextInsideLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:orientation="vertical">
+            android:layout_marginLeft="95dp"
+            android:background="@drawable/applozic_sent_message"
+            android:minHeight="40dp"
+            android:minWidth="94dp"
+            android:orientation="vertical"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            android:paddingTop="6dp">
 
             <include layout="@layout/reply_message_layout" />
 
@@ -41,8 +45,8 @@
                 android:textAlignment="gravity"
                 android:textColor="@color/white"
                 android:textDirection="locale"
-                android:visibility="gone"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:visibility="gone" />
 
             <include layout="@layout/mobicom_attachment_preview_layout" />
 
@@ -56,17 +60,28 @@
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="2dp"
                 android:autoLink="all"
                 android:text="Hi"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
                 android:textColor="@color/sent_message_text_color"
                 android:textDirection="locale"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/createdAtTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|end"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="sans-serif"
+                android:letterSpacing="0.01"
+                android:text="12:34 PM"
+                android:textColor="#ede6e6"
+                android:textSize="10sp" />
         </LinearLayout>
 
         <TextView
@@ -82,6 +97,16 @@
             android:textColor="@color/message_details_text_color"
             android:textSize="12sp"
             android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/statusImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginEnd="13dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="6dp" />
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -90,34 +115,35 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="21dp"
         android:layout_below="@+id/messageTextLayout"
-        android:orientation="horizontal">
+        android:layout_marginRight="21dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/createdAtTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:letterSpacing="0.01"
-            android:textColor="#a6a2a2"
-            android:text="@string/created_at_time"
-            android:textSize="12sp" />
+        <!-- <TextView
+             android:id="@+id/createdAtTime"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:fontFamily="sans-serif"
+             android:gravity="center"
+             android:letterSpacing="0.01"
+             android:text="@string/created_at_time"
+             android:textColor="#a6a2a2"
+             android:textSize="12sp" />-->
 
         <TextView
             android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="14dp"
-            android:gravity="center"
-            android:fontFamily="sans-serif"
-            android:text="Read"
             android:layout_marginLeft="5dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
             android:letterSpacing="0.01"
+            android:text="Read"
             android:textColor="#a6a2a2"
             android:textSize="12sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 
     <!--
@@ -130,5 +156,4 @@
         android:visibility="gone"
         android:src="@drawable/applozic_ic_contact_picture_180_holo_light" />
     -->
-
 </RelativeLayout>

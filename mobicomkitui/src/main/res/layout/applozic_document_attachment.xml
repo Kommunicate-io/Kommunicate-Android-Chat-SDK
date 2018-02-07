@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/attachment_doc_relative_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="220dp"
+    android:layout_height="60dp"
     android:background="@android:color/transparent"
     android:visibility="gone">
 
@@ -32,6 +32,7 @@
             android:id="@+id/download_doc_relative_layout"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:gravity="center_vertical"
             android:background="@color/applozic_theme_color_primary">
 
             <ImageView
@@ -45,9 +46,9 @@
                 android:id="@+id/applozic_doc_file_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/applozic_download_image"
+                android:layout_below="@+id/applozic_download_image"
                 android:layout_alignParentBottom="true"
-                android:layout_alignRight="@+id/applozic_download_image"
+                android:layout_centerHorizontal="true"
                 android:text="@string/kb45"
                 android:textColor="@color/white" />
 
@@ -58,6 +59,7 @@
             android:id="@+id/retry_doc_relative_layout"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:gravity="center_vertical"
             android:background="@color/applozic_theme_color_primary">
 
             <ImageView
@@ -70,9 +72,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/applozic_retry__image"
+                android:layout_below="@+id/applozic_retry__image"
                 android:layout_alignParentBottom="true"
-                android:layout_alignRight="@+id/applozic_retry__image"
+                android:layout_centerHorizontal="true"
                 android:text="@string/attachment_retry"
                 android:textColor="@color/white"
                 android:textSize="10sp" />

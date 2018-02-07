@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 
+import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ContextMenuRecyclerView;
@@ -138,6 +140,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
         recyclerView = (ContextMenuRecyclerView) list.findViewById(R.id.messageList);
         recyclerView.setBackgroundColor(getResources().getColor(R.color.conversation_list_all_background));
+        recyclerView.setPadding(0, 0, 0, (int) DimensionsUtils.convertDpToPixel(95));
+
 
         if (messageList != null && !messageList.contains(null)) {
             messageList.add(null);

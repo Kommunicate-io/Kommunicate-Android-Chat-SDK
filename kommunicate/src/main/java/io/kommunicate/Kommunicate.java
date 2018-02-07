@@ -29,7 +29,8 @@ import io.kommunicate.users.KMUser;
 public class Kommunicate {
 
     private static final String KM_BOT = "bot";
-    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";
+    //public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";
+    public static final String APP_KEY = "applozic-sample-app";
     public static final String START_NEW_CHAT = "startNewChat";
     public static final String LOGOUT_CALL = "logoutCall";
 

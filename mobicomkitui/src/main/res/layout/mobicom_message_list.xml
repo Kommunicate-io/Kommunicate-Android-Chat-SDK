@@ -41,6 +41,7 @@
                 android:layout_weight="1"
                 android:cacheColorHint="#00000000"
                 android:focusable="true"
+                android:clipToPadding="false"
                 android:focusableInTouchMode="true" />
 
         </android.support.v4.widget.SwipeRefreshLayout>

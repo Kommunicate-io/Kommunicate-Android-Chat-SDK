@@ -13,10 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginLeft="70dp"
         android:elevation="1dp"
         android:gravity="end|center_vertical"
-        android:minHeight="40dp"
-        android:minWidth="94dp"
         android:orientation="horizontal">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -24,7 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="95dp"
             android:background="@drawable/applozic_sent_message"
             android:minHeight="40dp"
             android:minWidth="94dp"
@@ -64,8 +62,9 @@
                 android:layout_marginRight="3dp"
                 android:layout_marginStart="3dp"
                 android:layout_marginTop="2dp"
+                android:maxEms="14"
                 android:autoLink="all"
-                android:text="Hi"
+                android:text="Hi fsajvkfa fhjkvfd dfaahjnvfa fdahvn dfvihndfv ihjnfv dfvkhknfd vihfv dfovjofv isfvo sihinvf ihsaidv ihfiasv ihsdugugugsd ugsdj ihsid iushd ihiasdnc hisdjic hsdhc 9hsidhc ihsidh hdsich pihdsc hihsdihcihisdhcih sdihihdsi"
                 android:textColor="@color/sent_message_text_color"
                 android:textDirection="locale"
                 android:textSize="14sp"
@@ -75,7 +74,7 @@
                 android:id="@+id/createdAtTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right|end"
+                android:layout_gravity="right|end|bottom"
                 android:layout_marginBottom="3dp"
                 android:fontFamily="sans-serif"
                 android:letterSpacing="0.01"
@@ -105,7 +104,8 @@
             android:layout_gravity="bottom"
             android:layout_marginEnd="13dp"
             android:layout_marginLeft="6dp"
-            android:layout_marginRight="16dp"
+            android:drawableLeft="@drawable/km_read_icon_h"
+            android:layout_marginRight="13dp"
             android:layout_marginStart="6dp" />
     </LinearLayout>
 

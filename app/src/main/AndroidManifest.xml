@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.kommunicate.app">
 
+    <uses-permission android:name="io.kommunicate.app.permission.MAPS_RECEIVE"/>
+    <permission
+        android:name="io.kommunicate.app.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
     <application
         android:name="kommunicate.io.sample.KommunicateApplication"
         android:allowBackup="true"
@@ -31,6 +36,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAv1wf5eMyErPaU3l8EnMUmOsoYJ2joC70" />
 
 
         <service android:name="kommunicate.io.sample.pushnotification.FcmListenerService">

@@ -7,6 +7,8 @@ import com.applozic.mobicomkit.api.account.user.UserClientService;
 
 import java.util.List;
 
+import io.kommunicate.users.KMUser;
+
 /**
  * Created by ashish on 30/01/18.
  */
@@ -14,6 +16,10 @@ import java.util.List;
 public class KmUserClientService extends UserClientService {
 
     private static final String USER_LIST_FILTER_URL = "/rest/ws/user/v3/filter?startIndex=";
+    private static final String USER_LOGIN_API = "/login";
+    private static final String USER_SIGNUP_API = "/customers?preSignUp=";
+    private static final String KM_PROD_BASE_URL = "https://api.kommunicate.io";
+    private static final String KM_TEST_BASE_URL = "http://api-test.kommunicate.io";
     private HttpRequestUtils httpRequestUtils;
 
     public KmUserClientService(Context context) {
@@ -23,6 +29,17 @@ public class KmUserClientService extends UserClientService {
 
     private String getUserListFilterUrl() {
         return getBaseUrl() + USER_LIST_FILTER_URL;
+    }
+
+    private String getKmBaseUrl() {
+        if (getBaseUrl().contains("apps.applozic")) {
+            return KM_PROD_BASE_URL;
+        }
+        return KM_TEST_BASE_URL;
+    }
+
+    private String getLoginUserUrl() {
+        return getKmBaseUrl() + USER_LOGIN_API;
     }
 
     public String getUserListFilter(List<String> roleList, int startIndex, int pageSize) {
@@ -43,5 +60,9 @@ public class KmUserClientService extends UserClientService {
         String response = httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
 
         return response;
+    }
+
+    public String loginKmUser(KMUser user) {
+        return null;
     }
 }

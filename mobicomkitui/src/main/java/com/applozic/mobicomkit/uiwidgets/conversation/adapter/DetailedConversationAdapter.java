@@ -298,6 +298,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     if (!message.isTypeOutbox() && index != 0 && !messageList.get(index - 1).isTypeOutbox()
                             && messageList.get(index - 1).getContentType() != 10
+                            && messageList.get(index - 1).getContentType() != 103
                             && messageList.get(index - 1).getTo() != null
                             && message.getTo() != null
                             && messageList.get(index - 1).getTo().equals(message.getTo())) {

@@ -597,7 +597,7 @@ public class ConversationUIService {
 
     public void updateChannelSync() {
         if (BroadcastService.isChannelInfo()) {
-            ((ChannelInfoActivity) fragmentActivity).updateChannelList();
+            BroadcastService.sendUpdateGroupInfoBroadcast(fragmentActivity, BroadcastService.INTENT_ACTIONS.UPDATE_GROUP_INFO.toString());
         }
         if (BroadcastService.isIndividual()) {
             getConversationFragment().updateChannelTitleAndSubTitle();

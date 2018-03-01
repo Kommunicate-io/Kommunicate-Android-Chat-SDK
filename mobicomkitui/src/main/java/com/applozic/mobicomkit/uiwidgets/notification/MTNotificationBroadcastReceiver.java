@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.api.notification.NotificationIntentService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -29,7 +30,7 @@ public class MTNotificationBroadcastReceiver extends BroadcastReceiver {
             Intent notificationIntentService = new Intent(context, NotificationIntentService.class);
             notificationIntentService.setAction(NotificationIntentService.ACTION_AL_NOTIFICATION);
             notificationIntentService.putExtra(MobiComKitConstants.AL_MESSAGE, message);
-            NotificationIntentService.enqueueWork(context, notificationIntentService);
+            NotificationIntentService.enqueueWork(context, notificationIntentService, R.drawable.mobicom_ic_launcher, R.string.wearable_action_label, R.string.wearable_action_title, R.drawable.mobicom_ic_action_send);
 
         }
     }

@@ -118,6 +118,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
             @Override
             public void onClick(View v) {
                 multimediaPopupGrid.setVisibility(View.GONE);
+                emoticonsFrameLayout.setVisibility(View.GONE);
             }
         });
 
@@ -125,7 +126,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                emoticonsFrameLayout.setVisibility(View.GONE);
                 if (contact != null && !contact.isBlocked() || channel != null) {
                     if (attachmentLayout.getVisibility() == View.VISIBLE) {
                         Toast.makeText(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();
@@ -162,6 +163,18 @@ public class ConversationFragment extends MobiComConversationFragment implements
     @Override
     protected void processMobiTexterUserCheck() {
 
+    }
+
+    public void handleAttachmentToggle() {
+        if ((multimediaPopupGrid.getVisibility() == View.VISIBLE)) {
+            multimediaPopupGrid.setVisibility(View.GONE);
+        } else if (emoticonsFrameLayout.getVisibility() == View.VISIBLE) {
+            emoticonsFrameLayout.setVisibility(View.GONE);
+        }
+    }
+
+    public boolean isAttachmentOptionsOpen() {
+        return (multimediaPopupGrid.getVisibility() == View.VISIBLE || emoticonsFrameLayout.getVisibility() == View.VISIBLE);
     }
 
     public void updateTitle() {

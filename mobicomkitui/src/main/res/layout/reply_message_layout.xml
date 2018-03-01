@@ -23,9 +23,10 @@
 
             <TextView
                 android:id="@+id/replyNameTextView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:maxEms="14"
                 android:textDirection="locale"
                 android:textAlignment="gravity"
                 android:layout_marginRight="5dp"
@@ -48,9 +49,10 @@
 
                 <TextView
                     android:id="@+id/messageTextView"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textDirection="locale"
+                    android:maxEms="14"
                     android:textAlignment="gravity"
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
@@ -62,7 +64,7 @@
 
         <RelativeLayout
             android:id="@+id/imageViewRLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="0.8"

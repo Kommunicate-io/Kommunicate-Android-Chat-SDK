@@ -99,6 +99,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.rockerhieu.emojicon.EmojiconEditText;
+import com.rockerhieu.emojicon.EmojiconGridFragment;
+import com.rockerhieu.emojicon.EmojiconsFragment;
+import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -115,7 +119,7 @@ import java.util.Set;
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface {
+public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, EmojiconsFragment.OnEmojiconBackspaceClickedListener, EmojiconGridFragment.OnEmojiconClickedListener {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
@@ -169,6 +173,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private SearchView searchView;
     private String searchTerm;
     private SearchListFragment searchListFragment;
+    public EmojiconEditText mEditEmojicon;
 
     public ConversationActivity() {
 
@@ -257,7 +262,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mobiComKitBroadcastReceiver, BroadcastService.getIntentFilter());
         Intent subscribeIntent = new Intent(this, ApplozicMqttIntentService.class);
         subscribeIntent.putExtra(ApplozicMqttIntentService.SUBSCRIBE, true);
         ApplozicMqttIntentService.enqueueWork(this, subscribeIntent);
@@ -270,7 +274,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mobiComKitBroadcastReceiver);
         //ApplozicMqttService.getInstance(this).unSubscribe();
         super.onPause();
     }
@@ -428,6 +431,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 MobiComUserPreference.getInstance(this).setContactGroupIdList(userIdLists);
             }
         }
+        LocalBroadcastManager.getInstance(this).registerReceiver(mobiComKitBroadcastReceiver, BroadcastService.getIntentFilter());
     }
 
     @Override
@@ -784,8 +788,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
         ConversationFragment conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentByTag(ConversationUIService.CONVERSATION_FRAGMENT);
-        if (conversationFragment != null && conversationFragment.isVisible() && (conversationFragment.multimediaPopupGrid.getVisibility() == View.VISIBLE)) {
-            conversationFragment.hideMultimediaOptionGrid();
+        if (conversationFragment != null && conversationFragment.isVisible() && conversationFragment.isAttachmentOptionsOpen()) {
+            conversationFragment.handleAttachmentToggle();
             return;
         }
         if (takeOrder) {
@@ -1227,6 +1231,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onDestroy() {
         super.onDestroy();
         try {
+            if (mobiComKitBroadcastReceiver != null) {
+                LocalBroadcastManager.getInstance(this).unregisterReceiver(mobiComKitBroadcastReceiver);
+            }
             if (connectivityReceiver != null) {
                 unregisterReceiver(connectivityReceiver);
             }
@@ -1243,6 +1250,16 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (message != null && conversation != null) {
             conversation.onClickOnMessageReply(message);
         }
+    }
+
+    @Override
+    public void onEmojiconClicked(Emojicon emojicon) {
+        EmojiconsFragment.input(mEditEmojicon, emojicon);
+    }
+
+    @Override
+    public void onEmojiconBackspaceClicked(View v) {
+        EmojiconsFragment.backspace(mEditEmojicon);
     }
 
     private class SyncMessagesAsyncTask extends AsyncTask<Boolean, Void, Void> {

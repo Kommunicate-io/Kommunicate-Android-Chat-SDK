@@ -127,7 +127,7 @@
             android:src="@drawable/applozic_ic_action_attachment"
             android:visibility="gone" />
 
-        <TextView
+        <com.rockerhieu.emojicon.EmojiconTextView
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -138,7 +138,7 @@ public class MobicomMessageTemplate extends JsonMarker {
         this.sendMessageOnClick = sendMessageOnClick;
     }
 
-    public class MessageContentItem {
+    public class MessageContentItem extends JsonMarker {
         private boolean showOnSenderSide;
         private boolean showOnReceiverSide;
         private boolean sendMessageOnClick;

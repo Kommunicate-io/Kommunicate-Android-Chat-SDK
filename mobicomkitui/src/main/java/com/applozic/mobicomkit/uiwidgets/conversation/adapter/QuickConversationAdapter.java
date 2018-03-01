@@ -10,11 +10,13 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AlphabetIndexer;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -32,15 +34,12 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ContextMenuRecyclerView;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.emoticon.EmojiconHandler;
@@ -92,14 +91,10 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private TextAppearanceSpan highlightTextSpan;
     private AlCustomizationSettings alCustomizationSettings;
     private View view;
-    private ContextMenuRecyclerView recyclerView;
+    private ConversationUIService conversationUIService;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
-    }
-
-    public void setRecyclerView(ContextMenuRecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
     }
 
     public QuickConversationAdapter(final Context context, List<Message> messageList, EmojiconHandler emojiconHandler) {
@@ -108,6 +103,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         this.contactService = new AppContactService(context);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.messageList = messageList;
+        conversationUIService = new ConversationUIService((FragmentActivity) context);
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
             protected Bitmap processBitmap(Object data) {
@@ -172,7 +168,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                 if (contactReceiver != null) {
                     String contactInfo = contactReceiver.getDisplayName();
-                    if (items.size() > 1) {
+                    if (items != null && items.size() > 1) {
                         Contact contact2 = contactService.getContactById(items.get(1));
                         contactInfo = TextUtils.isEmpty(contactReceiver.getFirstName()) ? contactReceiver.getContactNumber() : contactReceiver.getFirstName() + ", "
                                 + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
@@ -181,7 +177,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
                     processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                 } else if (message.getGroupId() != null) {
-                    if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                    if (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                         contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
                         Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
                         if (withUserContact != null) {
@@ -195,9 +191,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
                         myholder.contactImage.setVisibility(View.VISIBLE);
 
-                        if (!TextUtils.isEmpty(channel.getImageUrl())) {
+                        if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
                             channelImageLoader.loadImage(channel, myholder.contactImage);
-                        } else if (channel.isBroadcastMessage()) {
+                        } else if (channel != null && channel.isBroadcastMessage()) {
                             myholder.contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
                         } else {
                             channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
@@ -205,6 +201,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     }
                 }
 
+                myholder.onlineTextView.setVisibility(View.GONE);
                 if (alCustomizationSettings.isOnlineStatusMasterList()) {
                     myholder.onlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.VISIBLE : View.GONE);
                     myholder.offlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.GONE : View.VISIBLE);
@@ -236,7 +233,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
                     myholder.messageTextView.setText(Html.fromHtml(message.getMessage()));
                 } else {
-                    myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler));
+                    String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
+                    myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler));
                 }
 
                 if (myholder.sentOrReceived != null) {
@@ -389,17 +387,12 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
             }
             alphabeticTextView.setVisibility(View.GONE);
-            contactImage.setVisibility(View.GONE);
-            if (contact.isDrawableResources()) {
-                int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
-                contactImage.setImageResource(drawableResourceId);
-            } else {
-                if (TextUtils.isEmpty(contact.getImageURL())) {
-                    alphabeticTextView.setVisibility(View.VISIBLE);
-                    contactImage.setVisibility(View.GONE);
+            contactImage.setVisibility(View.VISIBLE);
+            if (contact != null) {
+                if (contact.isDrawableResources()) {
+                    int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
+                    contactImage.setImageResource(drawableResourceId);
                 } else {
-                    alphabeticTextView.setVisibility(View.GONE);
-                    contactImage.setVisibility(View.VISIBLE);
                     contactImageLoader.loadImage(contact, contactImage, alphabeticTextView);
                 }
             }
@@ -410,7 +403,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         }
     }
 
-    public class Myholder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
+    public class Myholder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         TextView smReceivers;
         TextView createdAtTime;
@@ -444,38 +437,15 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             rootView = itemView.findViewById(R.id.rootView);
             offlineTextView = itemView.findViewById(R.id.offlineTextView);
 
-           /* RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.setMargins(DimensionsUtils.dp(16), DimensionsUtils.dp(8.5f), DimensionsUtils.dp(16), DimensionsUtils.dp(8.5f));
-            profileImageRelativeLayout.setLayoutParams(params);
-
-            RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, DimensionsUtils.dp(56));
-            rootView.setLayoutParams(params1);
-
-            RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(DimensionsUtils.dp(40), DimensionsUtils.dp(40));
-            *//*params2 = alphabeticTextView.getLayoutParams();
-            params2.height = DimensionsUtils.convertDpToPx(40);
-            params2.width = DimensionsUtils.convertDpToPx(40);*//*
-
-            params2.setMargins(DimensionsUtils.dp(4), DimensionsUtils.dp(4), DimensionsUtils.dp(4), DimensionsUtils.dp(4));
-            alphabeticTextView.setLayoutParams(params2);
-            alphabeticTextView.setTextSize(20);
-
-            contactImage.setLayoutParams(params2);*/
-
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
-            view.showContextMenu();
-            return true;
+            itemView.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (recyclerView != null) {
-                int itemPosition = recyclerView.getChildLayoutPosition(v);
+
+            int itemPosition = this.getLayoutPosition();
+            if (itemPosition != -1 && !messageList.isEmpty()) {
                 Message message = getItem(itemPosition);
                 if (message != null) {
                     Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
@@ -485,6 +455,86 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 }
             }
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            int position = this.getLayoutPosition();
+
+            if (messageList.size() <= position) {
+                return;
+            }
+            Message message = messageList.get(position);
+            menu.setHeaderTitle(R.string.conversation_options);
+
+            String[] menuItems = context.getResources().getStringArray(R.array.conversation_options_menu);
+
+            boolean isUserPresentInGroup = false;
+            boolean isChannelDeleted = false;
+            Channel channel = null;
+            if (message.getGroupId() != null) {
+                channel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
+                if (channel != null) {
+                    isChannelDeleted = channel.isDeleted();
+                }
+                isUserPresentInGroup = ChannelService.getInstance(context).processIsUserPresentInChannel(message.getGroupId());
+            }
+
+            for (int i = 0; i < menuItems.length; i++) {
+
+                if ((message.getGroupId() == null || (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()))) && (menuItems[i].equals(context.getResources().getString(R.string.delete_group)) ||
+                        menuItems[i].equals(context.getResources().getString(R.string.exit_group)))) {
+                    continue;
+                }
+
+                if (menuItems[i].equals(context.getResources().getString(R.string.exit_group)) && (isChannelDeleted || !isUserPresentInGroup)) {
+                    continue;
+                }
+
+                if (menuItems[i].equals(context.getResources().getString(R.string.delete_group)) && (isUserPresentInGroup || !isChannelDeleted)) {
+                    continue;
+                }
+                if (menuItems[i].equals(context.getResources().getString(R.string.delete_conversation)) && !alCustomizationSettings.isDeleteOption()) {
+                    continue;
+                }
+
+                MenuItem item = menu.add(Menu.NONE, i, i, menuItems[i]);
+                item.setOnMenuItemClickListener(onEditMenu);
+            }
+        }
+
+        private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Message message = messageList.get(getLayoutPosition());
+
+                Channel channel = null;
+                Contact contact = null;
+                if (message.getGroupId() != null) {
+                    channel = ChannelDatabaseService.getInstance(context).getChannelByChannelKey(message.getGroupId());
+                } else {
+                    contact = contactService.getContactById(message.getContactIds());
+                }
+
+                switch (item.getItemId()) {
+                    case 0:
+                        if (channel != null && channel.isDeleted()) {
+                            conversationUIService.deleteGroupConversation(channel);
+                        } else {
+                            conversationUIService.deleteConversationThread(contact, channel);
+                        }
+                        break;
+                    case 1:
+                        conversationUIService.deleteGroupConversation(channel);
+                        break;
+                    case 2:
+                        conversationUIService.channelLeaveProcess(channel);
+                        break;
+                    default:
+                        //return onMenuItemClick(item);
+                }
+                return true;
+            }
+        };
     }
 
     public class FooterViewHolder extends RecyclerView.ViewHolder {

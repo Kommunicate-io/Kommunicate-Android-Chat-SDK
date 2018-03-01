@@ -3,7 +3,9 @@ package kommunicate.io.sample;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
+
 import io.kommunicate.Kommunicate;
 
 
@@ -29,11 +31,11 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
 
         switch (action) {
             case Kommunicate.START_NEW_CHAT:
-                MainActivity.setStartNewChat(context, "reytum@live.com", null); //pass null if you want to use default bot
+                Kommunicate.setStartNewChat(context, "reytum@live.com", null); //pass null if you want to use default bot
                 break;
 
             case Kommunicate.LOGOUT_CALL:
-                MainActivity.performLogout(context, object); //object will receive the exit Activity, the one that will be launched when logout is successfull
+                Kommunicate.performLogout(context, object); //object will receive the exit Activity, the one that will be launched when logout is successfull
                 break;
         }
     }

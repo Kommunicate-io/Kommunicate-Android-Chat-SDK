@@ -31,6 +31,7 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
 
         switch (action) {
             case Kommunicate.START_NEW_CHAT:
+                //Kommunicate.startOrGetConversation(context, "testClientGroupId", "reytum@live.com", null, "My Group");
                 Kommunicate.setStartNewChat(context, "reytum@live.com", null); //pass null if you want to use default bot
                 break;
 

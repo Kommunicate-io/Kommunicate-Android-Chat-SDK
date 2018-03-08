@@ -2,22 +2,17 @@ package io.kommunicate.services;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.applozic.mobicomkit.api.account.user.UserDetail;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicommons.json.GsonUtils;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import io.kommunicate.users.KmContact;
 import io.kommunicate.users.KmUserDetailResponse;
@@ -79,6 +74,10 @@ public class KmUserService {
         }
 
         return userResponse;
+    }
+
+    public synchronized String createConversation(Integer groupId, String userId, String agentId, String applicationId) {
+        return userClientService.createConversation(groupId, userId, agentId, applicationId);
     }
 
     public synchronized KmContact processUser(UserDetail userDetail) {

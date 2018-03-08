@@ -26,9 +26,73 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':mobicomkitui')
+    api project(':kommunicateui')
     implementation 'com.android.support:appcompat-v7:27.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+/*ext {
+    // Where you will see your artifact in Bintray's web interface
+    // The "bintrayName" should match the name of the Bintray repro.
+    bintrayRepo = 'maven'
+    bintrayName = 'kommunicate-customer-support-chat-sdk'
+    // Maven metadata
+    publishedGroupId = 'io.kommunicate.'
+    libraryName = 'kommunicate'
+    // Save yourself a head ache, and set this equal to the name of the Android Studio library
+    // module. The artifact name needs to match the name of the library.
+    artifact = 'kommunicate'
+    libraryDescription = 'Kommunicate android chat SDK for cutomer support'
+    libraryVersion = '1.0'
+    developerId = 'devashish'
+    developerName = 'Applozic'
+    developerEmail = 'devashish.mamgain@gmail.com'
+}
+//apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
+//apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
+apply plugin: 'com.jfrog.bintray'
+version = libraryVersion
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    failOnError false // add this line
+    source = android.sourceSets.main.java.srcDirs
+    //source = android.sourceSets.main.allJava
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+// Bintray
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        desc = libraryDescription
+        publish = true
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+            // Optional. The passphrase for GPG signing'
+            // gpg {
+            //    sign = true //Determines whether to GPG sign the files. The default is false
+            //    passphrase = properties.getProperty("bintray.gpg.password")
+            //}
+        }
+    }
+}*/

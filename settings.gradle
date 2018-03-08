@@ -1,1 +1,1 @@
-include ':app', ':kommunicate', ':mobicomkitui'
+include ':app', ':kommunicate', ':kommunicateui'

@@ -115,6 +115,12 @@ import com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversati
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
 //import com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter.TemplateCallbackListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMessageTemplateAdapter;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALBookingDetailsModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALGuestCountModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlHotelBookingModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
@@ -165,7 +171,7 @@ import static java.util.Collections.disjoint;
  * reg
  * Created by devashish on 10/2/15.
  */
-abstract public class MobiComConversationFragment extends Fragment implements View.OnClickListener, GestureDetector.OnGestureListener, ContextMenuClickListener {
+abstract public class MobiComConversationFragment extends Fragment implements View.OnClickListener, GestureDetector.OnGestureListener, ContextMenuClickListener, ALRichMessageListener {
 
     //Todo: Increase the file size limit
     public static final int MAX_ALLOWED_FILE_SIZE = 10 * 1024 * 1024;
@@ -1447,11 +1453,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     R.layout.mobicom_message_row_view, messageList, contact, messageIntentClass, emojiIconHandler);
             recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
             recyclerDetailConversationAdapter.setContextMenuClickListener(this);
+            recyclerDetailConversationAdapter.setRichMessageCallbackListener(this);
         } else if (channel != null) {
             recyclerDetailConversationAdapter = new DetailedConversationAdapter(getActivity(),
                     R.layout.mobicom_message_row_view, messageList, channel, messageIntentClass, emojiIconHandler);
             recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
             recyclerDetailConversationAdapter.setContextMenuClickListener(this);
+            recyclerDetailConversationAdapter.setRichMessageCallbackListener(this);
         }
         //  listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         linearLayoutManager.setSmoothScrollbarEnabled(true);
@@ -2082,7 +2090,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 e.printStackTrace();
             }
         } else {
-            messageToSend.setMetadata(this.messageMetaData);
+            messageToSend.setMetadata(messageMetaData);
         }
 
         conversationService.sendMessage(messageToSend, messageIntentClass);
@@ -3554,5 +3562,100 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 }
             }
         });
+    }
+
+    @Override
+    public void onAction(Context context, String action, Object object) {
+        switch (action) {
+            case "sendGuestList":
+                List<ALGuestCountModel> guestCountModels = (List<ALGuestCountModel>) object;
+                sendGuestListMessage(guestCountModels);
+                break;
+
+            case "sendHotelRating":
+                sendMessage((String) object);
+                break;
+
+            case "sendHotelDetails":
+                sendHotelDetailMessage((AlHotelBookingModel) object);
+                break;
+
+            case "sendRoomDetailsMessage":
+                sendRoomDetailsMessage((AlHotelBookingModel) object);
+                break;
+
+            case "sendBookingDetails":
+                sendBookingDetailsMessage((ALBookingDetailsModel) object);
+                break;
+
+            case "makePayment":
+                makePaymentForBooking((ALRichMessageModel) object);
+                break;
+        }
+    }
+
+    public void sendGuestListMessage(List<ALGuestCountModel> guestList) {
+
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("guestTypeId", "ADULTS");
+        metadata.put("isRoomGuestJSON", "true");
+        metadata.put("roomGuestJson", GsonUtils.getJsonFromObject(guestList, List.class));
+
+        StringBuilder message = new StringBuilder("");
+        int count = 0;
+
+        for (ALGuestCountModel guestModel : guestList) {
+            message.append("Room ");
+            message.append(count + 1);
+            message.append(" Guest ");
+            message.append(guestModel.getNoOfAdults());
+            message.append(" Children ");
+            message.append(guestModel.getNoOfChild());
+            message.append(", ");
+        }
+
+        sendMessage(message.toString(), metadata, Message.ContentType.DEFAULT.getValue());
+    }
+
+    public void sendHotelDetailMessage(AlHotelBookingModel hotel) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("hotelSelected", "true");
+        metadata.put("resultIndex", String.valueOf(hotel.getResultIndex()));
+        metadata.put("sessionId", hotel.getSessionId());
+        metadata.put("skipBot", "true");
+
+        String message = "Get room detail of " + hotel.getHotelName();
+
+        sendMessage(message, metadata, Message.ContentType.DEFAULT.getValue());
+    }
+
+    public void sendRoomDetailsMessage(AlHotelBookingModel hotel) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("HotelResultIndex", String.valueOf(hotel.getHotelResultIndex()));
+        metadata.put("NoOfRooms", String.valueOf(hotel.getNoOfRooms()));
+        metadata.put("RoomIndex", String.valueOf(hotel.getRoomIndex()));
+        metadata.put("blockHotelRoom", "true");
+        metadata.put("sessionId", hotel.getSessionId());
+        metadata.put("skipBot", "true");
+
+        String message = "Book Hotel " + hotel.getHotelName() + ", Room " + hotel.getRoomTypeName();
+
+        sendMessage(message, metadata, Message.ContentType.DEFAULT.getValue());
+    }
+
+    public void sendBookingDetailsMessage(ALBookingDetailsModel model) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("guestDetail", "true");
+        metadata.put("personInfo", GsonUtils.getJsonFromObject(model.getPersonInfo(), ALBookingDetailsModel.ALBookingDetails.class));
+        metadata.put("sessionId", model.getSessionId());
+        metadata.put("skipBot", "true");
+
+        sendMessage("Your details have been submitted", metadata, Message.ContentType.DEFAULT.getValue());
+    }
+
+    public void makePaymentForBooking(ALRichMessageModel model) {
+        Intent intent = new Intent(getActivity(), PaymentActivity.class);
+        intent.putExtra("formData", model.getFormData());
+        getContext().startActivity(intent);
     }
 }

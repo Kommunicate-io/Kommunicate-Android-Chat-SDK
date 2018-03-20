@@ -60,6 +60,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
@@ -126,6 +128,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private TextAppearanceSpan highlightTextSpan;
     private View view;
     private ContextMenuClickListener contextMenuClickListener;
+    private ALRichMessageListener listener;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -133,6 +136,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     public void setContextMenuClickListener(ContextMenuClickListener contextMenuClickListener) {
         this.contextMenuClickListener = contextMenuClickListener;
+    }
+
+    public void setRichMessageCallbackListener(ALRichMessageListener listener) {
+        this.listener = listener;
     }
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler) {
@@ -924,6 +931,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myHolder.attachedFile.setVisibility(View.GONE);
                         myHolder.mainContactShareLayout.setVisibility(View.GONE);
                     }
+
+                    if (message.getMetadata() != null && "300".equals(message.getMetadata().get("contentType"))) {
+                        myHolder.richMessageLayout.setVisibility(View.VISIBLE);
+                        new AlRichMessage(context, myHolder.richMessageContainer, message, listener);
+                    } else {
+                        myHolder.richMessageLayout.setVisibility(View.GONE);
+                    }
+
                     //Handling contact share
                     if (message.isContactMessage()) {
                         myHolder.attachedFile.setVisibility(View.GONE);
@@ -1322,6 +1337,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         int position;
         TextView statusTextView;
         LinearLayout messageTextInsideLayout;
+        LinearLayout richMessageLayout;
+        RecyclerView richMessageContainer;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1361,6 +1378,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             imageViewForAttachmentType = (ImageView) customView.findViewById(R.id.imageViewForAttachmentType);
             statusTextView = (TextView) customView.findViewById(R.id.statusImage);
             messageTextInsideLayout = customView.findViewById(R.id.messageTextInsideLayout);
+            richMessageLayout = (LinearLayout) customView.findViewById(R.id.alRichMessageView);
+            richMessageContainer = (RecyclerView) customView.findViewById(R.id.alRichMessageContainer);
 
             shareContactImage = (ImageView) mainContactShareLayout.findViewById(R.id.contact_share_image);
             shareContactName = (TextView) mainContactShareLayout.findViewById(R.id.contact_share_tv_name);

@@ -33,7 +33,7 @@ public class KmUserClientService extends UserClientService {
     private static final String USER_LOGIN_API = "/login";
     private static final String USER_SIGNUP_API = "/customers?preSignUp=";
     private static final String KM_PROD_BASE_URL = "https://api.kommunicate.io";
-    private static final String KM_TEST_BASE_URL = "http://api-test.kommunicate.io";
+    private static final String KM_TEST_BASE_URL = "https://api-test.kommunicate.io";
     private static final String CREATE_CONVERSATION_URL = "/conversations";
     private HttpRequestUtils httpRequestUtils;
     private static String TAG = "KmUserClientService";

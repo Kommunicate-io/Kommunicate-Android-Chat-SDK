@@ -170,6 +170,14 @@
         </activity>
 
         <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Image"
+            android:parentActivityName="io.kommunicate.activities.KMConversationActivity"
+            android:theme="@style/ApplozicTheme"
+            tools:node="merge" />
+
+        <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"
             tools:node="merge" />

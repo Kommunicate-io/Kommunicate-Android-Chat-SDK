@@ -108,6 +108,8 @@
             android:layout_marginStart="4dp" />
     </LinearLayout>
 
+    <include layout="@layout/al_rich_message_layout" />
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/statusMainLayout"
         android:layout_width="wrap_content"

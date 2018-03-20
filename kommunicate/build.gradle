@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -28,9 +28,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicateui')
     implementation 'com.android.support:appcompat-v7:27.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
 
 /*ext {
@@ -45,7 +42,7 @@ dependencies {
     // module. The artifact name needs to match the name of the library.
     artifact = 'kommunicate'
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '1.0'
+    libraryVersion = '1.1'
     developerId = 'devashish'
     developerName = 'Applozic'
     developerEmail = 'devashish.mamgain@gmail.com'

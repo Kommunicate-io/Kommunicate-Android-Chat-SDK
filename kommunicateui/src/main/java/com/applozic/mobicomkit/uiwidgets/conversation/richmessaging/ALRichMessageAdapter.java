@@ -1,0 +1,499 @@
+package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.json.GsonUtils;
+import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static android.view.View.GONE;
+
+/**
+ * Created by ashish on 28/02/18.
+ */
+
+public class ALRichMessageAdapter extends RecyclerView.Adapter {
+
+    private Context context;
+    private ALRichMessageModel model;
+    private List<AlHotelBookingModel> hotelList;
+    private List<AlHotelBookingModel> roomList;
+    private List<ALGuestCountModel> guestList;
+    private ALRichMessageListener listener;
+    private List<ALRichMessageModel.ALPayloadModel> payload;
+    List<String> titleList;
+
+    public ALRichMessageAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener) {
+        this.model = model;
+        this.context = context;
+        this.model = model;
+        this.listener = listener;
+
+        if (model.getHotelList() != null) {
+            this.hotelList = Arrays.asList((AlHotelBookingModel[])
+                    GsonUtils.getObjectFromJson(model.getHotelList(), AlHotelBookingModel[].class));
+        }
+
+        if (model.getPayload() != null) {
+            this.payload = Arrays.asList((ALRichMessageModel.ALPayloadModel[])
+                    GsonUtils.getObjectFromJson(model.getPayload(), ALRichMessageModel.ALPayloadModel[].class));
+        }
+
+        if (model.getTemplateId() == 1) {
+            ALGuestCountModel guestCount = new ALGuestCountModel();
+            guestList = new ArrayList<>();
+            guestList.add(guestCount);
+        }
+
+        if (model.getHotelRoomDetail() != null) {
+            AlHotelBookingModel.RoomDetailModel roomDetailModel = (AlHotelBookingModel.RoomDetailModel) GsonUtils.getObjectFromJson(model.getHotelRoomDetail(), AlHotelBookingModel.RoomDetailModel.class);
+            this.roomList = roomDetailModel.getHotelRoomsDetails();
+        }
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        if (model != null && model.getHotelRoomDetail() != null) {
+            View itemView = LayoutInflater.from(context).inflate(R.layout.al_hotel_details_layout, parent, false);
+            return new HotelDetailHolder(itemView);
+        } else if (model != null && model.getTemplateId() == 5) {
+            View itemView = LayoutInflater.from(context).inflate(R.layout.al_booking_details_layout, parent, false);
+            return new BookingDetailsHolder(itemView);
+        } else if (model != null && model.getTemplateId() == 1) {
+            View itemView = LayoutInflater.from(context).inflate(R.layout.al_guest_details_layout, parent, false);
+            return new GuestCountHolder(itemView);
+        } else if (hotelList != null) {
+            View itemView = LayoutInflater.from(context).inflate(R.layout.al_rich_message_item, parent, false);
+            return new MyViewHolder(itemView);
+        }
+
+        View itemView = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, parent, false);
+        return new SingleTextViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (model.getHotelRoomDetail() != null) {
+            HotelDetailHolder detailHolder = (HotelDetailHolder) holder;
+            bindRoomDetailView(detailHolder, position);
+        } else if (model.getTemplateId() == 5) {
+            BookingDetailsHolder bookingDetailsHolder = (BookingDetailsHolder) holder;
+            bindBookingDetailHolder(bookingDetailsHolder, position);
+        } else if (hotelList != null) {
+            MyViewHolder viewHolder = (MyViewHolder) holder;
+            bindHotelView(viewHolder, position);
+        } else if (model != null && model.getTemplateId() == 1) {
+            GuestCountHolder guestCountHolder = (GuestCountHolder) holder;
+            bindGuestInfoView(guestCountHolder, position);
+        } else if (model != null && (model.getTemplateId() == 6 || model.getTemplateId() == 3)) {
+            SingleTextViewHolder singleTextViewHolder = (SingleTextViewHolder) holder;
+            bindSingleTextItem(singleTextViewHolder, position);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        if (hotelList != null) {
+            return hotelList.size();
+        } else if (model.getTemplateId() == 1) {
+            return guestList.size();
+        } else if (model.getTemplateId() == 6) {
+            return 5;
+        } else if (roomList != null) {
+            return roomList.size();
+        } else if (model.getTemplateId() == 5 || model.getTemplateId() == 3) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private class MyViewHolder extends RecyclerView.ViewHolder {
+
+        LinearLayout roomRootLayout;
+        TextView productName;
+        TextView productPrice;
+        ImageView productImage;
+        TextView productRating;
+        TextView productLocation;
+        TextView productDescription;
+        TextView bookAction1, bookAction2, bookAction3;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+
+            roomRootLayout = (LinearLayout) itemView.findViewById(R.id.roomRootLayout);
+            productName = (TextView) itemView.findViewById(R.id.productName);
+            productImage = (ImageView) itemView.findViewById(R.id.productImage);
+            productRating = (TextView) itemView.findViewById(R.id.productRating);
+            productLocation = (TextView) itemView.findViewById(R.id.productLocation);
+            productPrice = (TextView) itemView.findViewById(R.id.productPrice);
+            productDescription = (TextView) itemView.findViewById(R.id.productDescription);
+            bookAction1 = itemView.findViewById(R.id.bookingAction1);
+            bookAction2 = itemView.findViewById(R.id.bookingAction2);
+            bookAction3 = itemView.findViewById(R.id.bookingAction3);
+        }
+    }
+
+    private class HotelDetailHolder extends RecyclerView.ViewHolder {
+
+        ImageView productImage;
+        TextView roomTypeTv;
+        TextView noOfGuestTv;
+        TextView priceTv;
+        TextView totalPriceHeaderTv;
+        TextView totalPriceTv;
+        TextView bookAction;
+
+        public HotelDetailHolder(View itemView) {
+            super(itemView);
+
+            productImage = itemView.findViewById(R.id.productImage);
+            roomTypeTv = itemView.findViewById(R.id.roomTypeTv);
+            noOfGuestTv = itemView.findViewById(R.id.noOfGuestsTv);
+            priceTv = itemView.findViewById(R.id.hotelPriceTv);
+            totalPriceHeaderTv = itemView.findViewById(R.id.totalPriceDistTv);
+            totalPriceTv = itemView.findViewById(R.id.totalPriceTv);
+            bookAction = itemView.findViewById(R.id.bookingAction);
+        }
+    }
+
+    private class BookingDetailsHolder extends RecyclerView.ViewHolder {
+
+        Spinner titleSpinner;
+        EditText firstNameEt;
+        EditText lastNameEt;
+        EditText emailIdEt;
+        EditText contactNumberEt;
+        TextView submitAction;
+
+        public BookingDetailsHolder(View itemView) {
+            super(itemView);
+
+            titleSpinner = itemView.findViewById(R.id.titleSpinner);
+            firstNameEt = itemView.findViewById(R.id.firstNameEt);
+            lastNameEt = itemView.findViewById(R.id.lastNameEt);
+            emailIdEt = itemView.findViewById(R.id.emailIdEt);
+            contactNumberEt = itemView.findViewById(R.id.contactNumberEt);
+            submitAction = itemView.findViewById(R.id.submitDetails);
+
+            titleList = new ArrayList<>();
+            titleList.add("Title *");
+            titleList.add("Mr.");
+            titleList.add("Ms.");
+            titleList.add("Mrs");
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, titleList);
+            titleSpinner.setAdapter(adapter);
+        }
+    }
+
+    private class GuestCountHolder extends RecyclerView.ViewHolder {
+
+        TextView adultCountTv, childCountTv;
+        Button adultCountDecBt, childCountDecBt, adultCountIncrementBt, childCountIncrementBt;
+        TextView roomDetailTv;
+        TextView addRoomTv, removeRoomTv, doneTv;
+        LinearLayout selectionActionLayout;
+        LinearLayout selectionRootLayout;
+
+        public GuestCountHolder(View itemView) {
+            super(itemView);
+
+            adultCountTv = itemView.findViewById(R.id.adultCountTv);
+            childCountTv = itemView.findViewById(R.id.childCountTv);
+            adultCountIncrementBt = itemView.findViewById(R.id.adultCountIncrementBt);
+            childCountIncrementBt = itemView.findViewById(R.id.childCountIncrementBt);
+            adultCountDecBt = itemView.findViewById(R.id.adultCountDecBt);
+            childCountDecBt = itemView.findViewById(R.id.childCountDecBt);
+            roomDetailTv = itemView.findViewById(R.id.alRoomDetailsTv);
+            addRoomTv = itemView.findViewById(R.id.addRoomTv);
+            removeRoomTv = itemView.findViewById(R.id.removeRoomTv);
+            doneTv = itemView.findViewById(R.id.doneButtonTv);
+            selectionActionLayout = itemView.findViewById(R.id.actionLayout);
+            selectionRootLayout = itemView.findViewById(R.id.rootSelectionLayout);
+        }
+    }
+
+    private class SingleTextViewHolder extends RecyclerView.ViewHolder {
+
+        TextView singleTextItem;
+        LinearLayout rootLayout;
+
+        public SingleTextViewHolder(View itemView) {
+            super(itemView);
+
+            singleTextItem = itemView.findViewById(R.id.singleTextItem);
+            rootLayout = itemView.findViewById(R.id.rootLayout);
+
+            singleTextItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (model != null && model.getTemplateId() == 6) {
+                        listener.onAction(context, "sendHotelRating", payload.get(getLayoutPosition()).getMessage().trim());
+                    } else {
+                        listener.onAction(context, "makePayment", model);
+                    }
+                }
+            });
+        }
+    }
+
+    private void setGuestInfoClickListeners(final GuestCountHolder holder, final int position) {
+        holder.adultCountDecBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count = Integer.parseInt(holder.adultCountTv.getText().toString());
+                ALGuestCountModel guestModel = guestList.get(position);
+                if (count > 1) {
+                    holder.adultCountTv.setText(String.valueOf(count - 1));
+                    guestModel.setNoOfAdults(String.valueOf(count - 1));
+                }
+            }
+        });
+
+        holder.adultCountIncrementBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count = Integer.parseInt(holder.adultCountTv.getText().toString());
+                ALGuestCountModel guestModel = guestList.get(position);
+                if (count < 5) {
+                    holder.adultCountTv.setText(String.valueOf(count + 1));
+                    guestModel.setNoOfAdults(String.valueOf(count + 1));
+                }
+            }
+        });
+
+        holder.childCountDecBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count = Integer.parseInt(holder.childCountTv.getText().toString());
+                ALGuestCountModel guestModel = guestList.get(position);
+                if (count > 0) {
+                    holder.childCountTv.setText(String.valueOf(count - 1));
+                    guestModel.getChildAge().remove(Integer.parseInt("10"));
+                    guestModel.setNoOfChild(String.valueOf(count - 1));
+                }
+            }
+        });
+
+        holder.childCountIncrementBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count = Integer.parseInt(holder.childCountTv.getText().toString());
+                ALGuestCountModel guestModel = guestList.get(position);
+                if (count < 2) {
+                    holder.childCountTv.setText(String.valueOf(count + 1));
+                    guestModel.getChildAge().add(10);
+                    guestModel.setNoOfChild(String.valueOf(count + 1));
+                }
+            }
+        });
+
+        holder.addRoomTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ALGuestCountModel model = new ALGuestCountModel();
+                guestList.add(model);
+                notifyDataSetChanged();
+            }
+        });
+
+        holder.removeRoomTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guestList.remove(position);
+                notifyDataSetChanged();
+            }
+        });
+
+        holder.doneTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onAction(context, "sendGuestList", guestList);
+            }
+        });
+    }
+
+    private void bindGuestInfoView(final GuestCountHolder holder, final int position) {
+
+        final ALGuestCountModel guestModel = guestList.get(position);
+
+        if (guestModel != null) {
+            holder.roomDetailTv.setText("ROOM " + String.valueOf(position + 1));
+            holder.adultCountTv.setText(guestModel.getNoOfAdults());
+            holder.childCountTv.setText(guestModel.getNoOfChild());
+
+            if (position == guestList.size() - 1) {
+                holder.addRoomTv.setVisibility(View.VISIBLE);
+                holder.doneTv.setVisibility(View.VISIBLE);
+            } else {
+                holder.addRoomTv.setVisibility(GONE);
+                holder.doneTv.setVisibility(GONE);
+            }
+
+            if (guestList.size() > 1 && position == 0) {
+                holder.selectionActionLayout.setVisibility(GONE);
+            } else {
+                holder.selectionActionLayout.setVisibility(View.VISIBLE);
+            }
+
+            if (position == 0) {
+                holder.removeRoomTv.setVisibility(GONE);
+            } else {
+                holder.removeRoomTv.setVisibility(View.VISIBLE);
+            }
+            setGuestInfoClickListeners(holder, position);
+        }
+    }
+
+    private void bindHotelView(MyViewHolder viewHolder, int position) {
+        final AlHotelBookingModel hotel = hotelList.get(position);
+
+        if (!TextUtils.isEmpty(hotel.getHotelName())) {
+            viewHolder.productName.setText(hotel.getHotelName() + " (" + hotel.getStarRating() + "/5)");
+        } else {
+            viewHolder.productName.setText("Name Unavailable (" + hotel.getStarRating() + "/5)");
+        }
+
+        viewHolder.productPrice.setText("$" + hotel.getPrice().getRoomPrice());
+
+        if (!TextUtils.isEmpty(hotel.getHotelPicture())) {
+            Glide.with(context).load(hotel.getHotelPicture()).into(viewHolder.productImage);
+        } else {
+            viewHolder.productImage.setImageDrawable(null);
+        }
+
+        if (!TextUtils.isEmpty(hotel.getHotelAddress())) {
+            viewHolder.productLocation.setText(hotel.getHotelAddress());
+        } else {
+            viewHolder.productLocation.setText("Address unavailable");
+        }
+
+        if (!TextUtils.isEmpty(hotel.getHotelDescription())) {
+            viewHolder.productDescription.setText(hotel.getHotelDescription());
+        } else {
+            viewHolder.productDescription.setText("Description unavailable");
+        }
+
+        viewHolder.bookAction2.setVisibility(View.GONE);
+        viewHolder.bookAction3.setVisibility(View.GONE);
+
+        viewHolder.bookAction1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hotel.setSessionId(model.getSessionId());
+                listener.onAction(context, "sendHotelDetails", hotel);
+            }
+        });
+    }
+
+    private void bindSingleTextItem(SingleTextViewHolder holder, final int position) {
+        if (model.getTemplateId() == 3) {
+            holder.singleTextItem.setText(payload.get(position).getName().trim());
+           /* ViewGroup.LayoutParams params = holder.rootLayout.getLayoutParams();
+            params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            holder.rootLayout.setLayoutParams(params);*/
+        } else {
+            holder.singleTextItem.setText(payload.get(position).getTitle().trim());
+        }
+    }
+
+    private void bindRoomDetailView(HotelDetailHolder holder, final int position) {
+
+        final AlHotelBookingModel hotel = roomList.get(position);
+
+        if (hotel != null) {
+            if (!TextUtils.isEmpty(hotel.getRoomTypeName())) {
+                holder.roomTypeTv.setText(hotel.getRoomTypeName());
+            } else {
+                holder.roomTypeTv.setText("Room name unavailable");
+            }
+
+            if (!TextUtils.isEmpty(hotel.getHotelPicture())) {
+                Glide.with(context).load(hotel.getHotelPicture()).into(holder.productImage);
+            } else {
+                holder.productImage.setImageDrawable(null);
+            }
+
+            holder.noOfGuestTv.setText(String.valueOf(hotel.getNoOfGuest()));
+
+            String text = "(1 Room for " + String.valueOf(hotel.getNoOfNights()) + " Nights)";
+            holder.totalPriceHeaderTv.setText(text);
+
+            holder.priceTv.setText("Rs. " + String.valueOf(hotel.getPrice().getRoomPrice()));
+
+            holder.totalPriceTv.setText("Rs. " + String.valueOf(hotel.getPrice().getRoomPrice() * hotel.getNoOfNights()));
+
+            holder.bookAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    hotel.setSessionId(model.getSessionId());
+                    listener.onAction(context, "sendRoomDetailsMessage", hotel);
+                }
+            });
+        }
+    }
+
+    private void bindBookingDetailHolder(final BookingDetailsHolder holder, final int position) {
+        final ALBookingDetailsModel detailsModel = new ALBookingDetailsModel();
+        detailsModel.setSessionId(model.getSessionId());
+
+        final ALBookingDetailsModel.ALBookingDetails bookingDetails = detailsModel.getPersonInfo();
+
+        holder.titleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                bookingDetails.setTitle(titleList.get(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                bookingDetails.setTitle("Title *");
+            }
+        });
+
+        holder.submitAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (TextUtils.isEmpty(holder.firstNameEt.getText().toString().trim())
+                        || TextUtils.isEmpty(holder.lastNameEt.getText().toString().trim())
+                        || TextUtils.isEmpty(holder.emailIdEt.getText().toString().trim())
+                        || TextUtils.isEmpty(holder.firstNameEt.getText().toString().trim())
+                        || "Title *".equals(titleList.get(holder.titleSpinner.getSelectedItemPosition()))) {
+                    Toast.makeText(context, "Mandatory fields required...", Toast.LENGTH_SHORT).show();
+                } else {
+                    bookingDetails.setTitle(titleList.get(holder.titleSpinner.getSelectedItemPosition()));
+                    bookingDetails.setFirstName(holder.firstNameEt.getText().toString().trim());
+                    bookingDetails.setLastName(holder.lastNameEt.getText().toString().trim());
+                    bookingDetails.setEmailId(holder.emailIdEt.getText().toString().trim());
+                    bookingDetails.setPhoneNo(holder.contactNumberEt.getText().toString().trim());
+
+                    listener.onAction(context, "sendBookingDetails", detailsModel);
+                }
+            }
+        });
+    }
+}

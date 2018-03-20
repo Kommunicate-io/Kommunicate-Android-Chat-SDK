@@ -321,8 +321,8 @@
                     -->
                     <ImageButton
                         android:id="@+id/conversation_send"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="end"
@@ -333,7 +333,7 @@
                         android:background="@drawable/button_circle"
                         android:clickable="true"
                         android:gravity="right"
-                        android:padding="5dp"
+                        android:padding="8dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/send"
                         android:visibility="visible" />

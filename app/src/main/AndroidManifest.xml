@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.kommunicate.app">
 
-    <uses-permission android:name="io.kommunicate.app.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="io.kommunicate.app.permission.MAPS_RECEIVE" />
     <permission
         android:name="io.kommunicate.app.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
@@ -42,7 +42,9 @@
             android:value="AIzaSyAv1wf5eMyErPaU3l8EnMUmOsoYJ2joC70" />
 
 
-        <service android:name="kommunicate.io.sample.pushnotification.FcmListenerService">
+        <service
+            android:name="kommunicate.io.sample.pushnotification.FcmListenerService"
+            android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -54,6 +56,11 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <!--<meta-data
+            android:name="com.applozic.server.url"
+            android:value="https://apps-test.applozic.com" />-->
+
     </application>
 
 </manifest>

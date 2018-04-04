@@ -238,18 +238,40 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical">
 
+        <com.applozic.mobicomkit.uiwidgets.DashedLineView
+            android:id="@+id/awayMessageDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/awayMessageTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.05"
+            android:paddingBottom="11.5dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="11.5dp"
+            android:text=""
+            android:textSize="14sp"
+            android:visibility="gone" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mobicomMessageTemplateView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
             android:layout_marginRight="10dp"
-            android:gravity="center_horizontal" />
+            android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#5c5aa7" />
+            android:background="@color/applozic_theme_color_primary" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/individual_message_send_layout"
@@ -543,6 +565,7 @@
         android:layout_height="220dp"
         android:layout_gravity="bottom"
         android:visibility="gone">
+
         <fragment
             android:id="@+id/emojicons"
             class="com.rockerhieu.emojicon.EmojiconsFragment"
@@ -556,7 +579,8 @@
         android:layout_height="wrap_content"
         android:background="#F0F0F0"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <GridView
             android:id="@+id/mobicom_multimedia_options1"
@@ -565,7 +589,8 @@
             android:horizontalSpacing="1dp"
             android:numColumns="3"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="1dp" />
+            android:verticalSpacing="1dp"
+            android:visibility="gone" />
 
     </LinearLayout>
 </LinearLayout>

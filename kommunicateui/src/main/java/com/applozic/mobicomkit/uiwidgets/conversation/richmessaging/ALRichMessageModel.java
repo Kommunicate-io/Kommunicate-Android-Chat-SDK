@@ -19,6 +19,7 @@ public class ALRichMessageModel extends JsonMarker {
     private String price;
     private String formAction;
     private String formData;
+    private String headerText;
 
     public Short getContentType() {
         return contentType;
@@ -74,6 +75,14 @@ public class ALRichMessageModel extends JsonMarker {
 
     public void setHotelRoomDetail(String hotelRoomDetail) {
         this.hotelRoomDetail = hotelRoomDetail;
+    }
+
+    public String getHeaderText() {
+        return headerText;
+    }
+
+    public void setHeaderText(String headerText) {
+        this.headerText = headerText;
     }
 
     public String getPrice() {

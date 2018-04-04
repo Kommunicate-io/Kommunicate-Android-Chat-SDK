@@ -204,12 +204,6 @@
             tools:node="merge" />
 
         <service
-            android:name="com.applozic.mobicomkit.api.notification.NotificationIntentService"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            tools:node="merge" />
-
-        <service
             android:name="com.applozic.mobicomkit.api.conversation.ConversationIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
@@ -218,15 +212,6 @@
         <service
             android:name="org.eclipse.paho.android.service.MqttService"
             tools:node="merge" />
-
-        <service
-            android:name="com.applozic.mobicomkit.uiwidgets.notification.PushNotificationJobService"
-            android:exported="false"
-            tools:node="merge">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-        </service>
 
         <receiver
             android:name="com.applozic.mobicomkit.broadcast.TimeChangeBroadcastReceiver"

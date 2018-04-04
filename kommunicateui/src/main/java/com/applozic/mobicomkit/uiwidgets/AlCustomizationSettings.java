@@ -102,6 +102,9 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean recordButton = true;
     private String sentMessageCreatedAtTimeColor = "";
     private String receivedMessageCreatedAtTimeColor = "";
+    private boolean showStartNewConversation = false;
+    private boolean enableAwayMessage = false;
+    private String awayMessageTextColor = "#A9A4A4";
 
     private boolean launchChatFromProfilePicOrName;
 
@@ -536,6 +539,30 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setReceivedMessageCreatedAtTimeColor(String receivedMessageCreatedAtTimeColor) {
         this.receivedMessageCreatedAtTimeColor = receivedMessageCreatedAtTimeColor;
+    }
+
+    public boolean isShowStartNewConversation() {
+        return showStartNewConversation;
+    }
+
+    public void setShowStartNewConversation(boolean showStartNewConversation) {
+        this.showStartNewConversation = showStartNewConversation;
+    }
+
+    public boolean isEnableAwayMessage() {
+        return enableAwayMessage;
+    }
+
+    public void setEnableAwayMessage(boolean enableAwayMessage) {
+        this.enableAwayMessage = enableAwayMessage;
+    }
+
+    public String getAwayMessageTextColor() {
+        return awayMessageTextColor;
+    }
+
+    public void setAwayMessageTextColor(String awayMessageTextColor) {
+        this.awayMessageTextColor = awayMessageTextColor;
     }
 
     @Override

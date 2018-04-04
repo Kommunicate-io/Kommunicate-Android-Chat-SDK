@@ -16,9 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -132,7 +130,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
     private class MyViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout roomRootLayout;
-        TextView productName;
+        TextView productNameSingleLine;
         TextView productPrice;
         ImageView productImage;
         TextView productRating;
@@ -144,7 +142,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             roomRootLayout = (LinearLayout) itemView.findViewById(R.id.roomRootLayout);
-            productName = (TextView) itemView.findViewById(R.id.productName);
+            productNameSingleLine = (TextView) itemView.findViewById(R.id.productNameSingleLine);
             productImage = (ImageView) itemView.findViewById(R.id.productImage);
             productRating = (TextView) itemView.findViewById(R.id.productRating);
             productLocation = (TextView) itemView.findViewById(R.id.productLocation);
@@ -292,7 +290,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                 ALGuestCountModel guestModel = guestList.get(position);
                 if (count > 0) {
                     holder.childCountTv.setText(String.valueOf(count - 1));
-                    guestModel.getChildAge().remove(Integer.parseInt("10"));
+                    guestModel.getChildAge().remove(guestModel.getChildAge().size()-1);
                     guestModel.setNoOfChild(String.valueOf(count - 1));
                 }
             }
@@ -372,12 +370,12 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         final AlHotelBookingModel hotel = hotelList.get(position);
 
         if (!TextUtils.isEmpty(hotel.getHotelName())) {
-            viewHolder.productName.setText(hotel.getHotelName() + " (" + hotel.getStarRating() + "/5)");
+            viewHolder.productNameSingleLine.setText(hotel.getHotelName() + " (" + hotel.getStarRating() + "/5)");
         } else {
-            viewHolder.productName.setText("Name Unavailable (" + hotel.getStarRating() + "/5)");
+            viewHolder.productNameSingleLine.setText("Name Unavailable (" + hotel.getStarRating() + "/5)");
         }
 
-        viewHolder.productPrice.setText("$" + hotel.getPrice().getRoomPrice());
+        viewHolder.productPrice.setText(context.getString(R.string.rupee_symbol) + " " + hotel.getPrice().getRoomPrice());
 
         if (!TextUtils.isEmpty(hotel.getHotelPicture())) {
             Glide.with(context).load(hotel.getHotelPicture()).into(viewHolder.productImage);
@@ -442,9 +440,9 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             String text = "(1 Room for " + String.valueOf(hotel.getNoOfNights()) + " Nights)";
             holder.totalPriceHeaderTv.setText(text);
 
-            holder.priceTv.setText("Rs. " + String.valueOf(hotel.getPrice().getRoomPrice()));
+            holder.priceTv.setText(context.getString(R.string.rupee_symbol) + " " + String.valueOf(hotel.getPrice().getRoomPrice()));
 
-            holder.totalPriceTv.setText("Rs. " + String.valueOf(hotel.getPrice().getRoomPrice() * hotel.getNoOfNights()));
+            holder.totalPriceTv.setText(context.getString(R.string.rupee_symbol) + " " + String.valueOf(hotel.getPrice().getRoomPrice() * hotel.getNoOfNights()));
 
             holder.bookAction.setOnClickListener(new View.OnClickListener() {
                 @Override

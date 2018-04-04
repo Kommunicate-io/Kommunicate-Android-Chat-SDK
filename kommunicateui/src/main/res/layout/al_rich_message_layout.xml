@@ -3,11 +3,7 @@
     android:id="@+id/alRichMessageView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@id/messageTextLayout"
-    android:layout_marginBottom="15dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="17dp"
+    android:layout_below="@+id/messageTextLayout"
     android:orientation="vertical"
     android:visibility="gone">
 
@@ -15,6 +11,12 @@
         android:id="@+id/alRichMessageContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="17dp" />
+
+    <include layout="@layout/al_rich_message_list_item" />
 
 </LinearLayout>

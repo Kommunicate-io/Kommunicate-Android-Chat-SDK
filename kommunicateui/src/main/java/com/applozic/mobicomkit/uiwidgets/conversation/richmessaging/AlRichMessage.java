@@ -58,7 +58,7 @@ public class AlRichMessage {
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
             recyclerView.setLayoutManager(layoutManager);
-            ALRichMessageAdapter adapter = new ALRichMessageAdapter(context, model, listener);
+            ALRichMessageAdapter adapter = new ALRichMessageAdapter(context, model, listener, message);
             recyclerView.setAdapter(adapter);
         }
     }
@@ -106,7 +106,7 @@ public class AlRichMessage {
                     textView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            listener.onAction(context, "listItemClick", payload.getMessage());
+                            listener.onAction(context, "listItemClick",null, payload.getMessage());
                         }
                     });
 

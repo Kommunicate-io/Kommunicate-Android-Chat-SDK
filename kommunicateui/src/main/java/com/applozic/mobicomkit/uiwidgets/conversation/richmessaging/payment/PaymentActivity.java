@@ -11,14 +11,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,29 +35,32 @@ public class PaymentActivity extends AppCompatActivity {
 
         webView = findViewById(R.id.paymentWebView);
 
-        setWebViewClient();
-
         String formDataJson = getIntent().getStringExtra("formData");
         String baseUrl = getIntent().getStringExtra("formAction");
 
-        txnData = new HashMap<>();
+        if (formDataJson != null) {
+            setWebViewClient();
 
-        try {
-            JSONObject jsonObject = new JSONObject(formDataJson);
+            txnData = new HashMap<>();
 
-            Iterator<String> iter = jsonObject.keys();
+            try {
+                JSONObject jsonObject = new JSONObject(formDataJson);
 
-            while (iter.hasNext()) {
-                String key = iter.next();
-                if (jsonObject.getString(key) != null) {
-                    txnData.put(key, jsonObject.getString(key));
+                Iterator<String> iter = jsonObject.keys();
+
+                while (iter.hasNext()) {
+                    String key = iter.next();
+                    if (jsonObject.getString(key) != null) {
+                        txnData.put(key, jsonObject.getString(key));
+                    }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+            webViewClientPost(webView, baseUrl, txnData.entrySet());
+        } else {
+            webView.loadUrl(baseUrl);
         }
-
-        webViewClientPost(webView, baseUrl, txnData.entrySet());
     }
 
     public void webViewClientPost(WebView webView, String url,
@@ -77,8 +75,6 @@ public class PaymentActivity extends AppCompatActivity {
             sb.append(String.format("<input name='%s' type='hidden' value='%s' />", item.getKey(), item.getValue()));
         }
         sb.append("</form></body></html>");
-
-        Utils.printLog(this, "TestPay", sb.toString());
 
         webView.loadData(sb.toString(), "text/html", "utf-8");
     }

@@ -525,7 +525,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         recordButton.setOnTouchListener(new View.OnTouchListener() {
 
-
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 mDetector.onTouchEvent(motionEvent);
@@ -3627,7 +3626,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     @Override
-    public void onAction(Context context, String action, Object object) {
+    public void onAction(Context context, String action, Message message, Object object) {
         switch (action) {
             case "sendGuestList":
                 List<ALGuestCountModel> guestCountModels = (List<ALGuestCountModel>) object;

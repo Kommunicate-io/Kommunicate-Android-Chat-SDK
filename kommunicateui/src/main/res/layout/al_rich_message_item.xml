@@ -22,10 +22,10 @@
             android:visibility="visible" />
 
         <View
+            android:id="@+id/productImageOverlay"
             android:layout_width="match_parent"
             android:layout_height="93dp"
             android:alpha="0.25"
-            android:background="@color/black"
             android:visibility="visible" />
 
         <TextView
@@ -114,6 +114,7 @@
                 android:letterSpacing="-0.01"
                 android:maxLines="1"
                 android:text="2078"
+                android:layout_centerVertical="true"
                 android:textColor="#6a6868"
                 android:textSize="12sp"
                 android:textStyle="normal"
@@ -159,6 +160,7 @@
         android:textStyle="normal" />
 
     <View
+        android:id="@+id/viewAction1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#e7e4e4" />
@@ -178,6 +180,7 @@
         android:textStyle="normal" />
 
     <View
+        android:id="@+id/viewAction2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#e7e4e4" />
@@ -198,6 +201,7 @@
         android:visibility="gone" />
 
     <View
+        android:id="@+id/viewAction3"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#e7e4e4" />

@@ -19,6 +19,7 @@ public class ALRichMessageModel extends JsonMarker {
     private String price;
     private String formAction;
     private String formData;
+    private String headerText;
 
     public Short getContentType() {
         return contentType;
@@ -76,6 +77,14 @@ public class ALRichMessageModel extends JsonMarker {
         this.hotelRoomDetail = hotelRoomDetail;
     }
 
+    public String getHeaderText() {
+        return headerText;
+    }
+
+    public void setHeaderText(String headerText) {
+        this.headerText = headerText;
+    }
+
     public String getPrice() {
         return price;
     }
@@ -108,6 +117,12 @@ public class ALRichMessageModel extends JsonMarker {
         private String handlerId;
         private String formAction;
         private String message;
+        private String headerImageUrl;
+        private String subtitle;
+        private String description;
+        private List<AlActionModel> actions;
+        private String rating;
+        private String overlayText;
         private AlFormDataModel formData;
 
         public String getTitle() {
@@ -172,6 +187,54 @@ public class ALRichMessageModel extends JsonMarker {
 
         public void setMessage(String message) {
             this.message = message;
+        }
+
+        public String getHeaderImageUrl() {
+            return headerImageUrl;
+        }
+
+        public void setHeaderImageUrl(String headerImageUrl) {
+            this.headerImageUrl = headerImageUrl;
+        }
+
+        public String getSubtitle() {
+            return subtitle;
+        }
+
+        public void setSubtitle(String subtitle) {
+            this.subtitle = subtitle;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public List<AlActionModel> getActions() {
+            return actions;
+        }
+
+        public void setActions(List<AlActionModel> actions) {
+            this.actions = actions;
+        }
+
+        public String getRating() {
+            return rating;
+        }
+
+        public void setRating(String rating) {
+            this.rating = rating;
+        }
+
+        public String getOverlayText() {
+            return overlayText;
+        }
+
+        public void setOverlayText(String overlayText) {
+            this.overlayText = overlayText;
         }
     }
 
@@ -265,6 +328,36 @@ public class ALRichMessageModel extends JsonMarker {
 
         public void setHASH(String HASH) {
             this.HASH = HASH;
+        }
+    }
+
+    public class AlActionModel extends JsonMarker{
+        private String action;
+        private String name;
+        private String data;
+
+        public String getAction() {
+            return action;
+        }
+
+        public void setAction(String action) {
+            this.action = action;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
         }
     }
 

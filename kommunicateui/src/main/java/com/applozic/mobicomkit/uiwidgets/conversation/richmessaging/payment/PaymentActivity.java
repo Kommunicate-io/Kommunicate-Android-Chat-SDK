@@ -11,26 +11,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageModel;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class PaymentActivity extends AppCompatActivity {
 
     WebView webView;
     Toolbar toolbar;
-    private static boolean isProdEnv = false;
-    private String basePayUrl = "https://secure.payu.in/_payment";
-    private String saltKey = "8KddPRlg";
     private Map<String, String> txnData;
-    private ALRichMessageModel.AlFormDataModel formData;
-    private String hashKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,66 +32,35 @@ public class PaymentActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setTitle("Payment");
 
         webView = findViewById(R.id.paymentWebView);
 
-        if (!isProdEnv) {
-            basePayUrl = "https://test.payu.in/_payment";
-            saltKey = "8KddPRlg";
-        }
-
-        setWebViewClient();
-
         String formDataJson = getIntent().getStringExtra("formData");
-        formData = (ALRichMessageModel.AlFormDataModel) GsonUtils.getObjectFromJson(formDataJson, ALRichMessageModel.AlFormDataModel.class);
+        String baseUrl = getIntent().getStringExtra("formAction");
 
-        hashKey = calculateHash("SHA-512", formData.getKey() + "|" +
-                formData.getTxnid() + "|" +
-                formData.getAmount() + "|" +
-                formData.getProductinfo() + "|" +
-                formData.getFirstname() + "|" +
-                formData.getEmail() + "|||||||||||" +
-                saltKey);
+        if (formDataJson != null) {
+            setWebViewClient();
 
-        Utils.printLog(this, "PayTest", "Generated Hash Key : " + hashKey);
-        Utils.printLog(this, "PayTest", "Server Hash Key    : " + formData.getHASH());
+            txnData = new HashMap<>();
 
-        txnData = new HashMap<>();
+            try {
+                JSONObject jsonObject = new JSONObject(formDataJson);
 
-        txnData.put("key", formData.getKey());
-        txnData.put("txnid", formData.getTxnid());
-        txnData.put("amount", formData.getAmount());
-        txnData.put("productinfo", formData.getProductinfo());
-        txnData.put("firstname", formData.getFirstname());
-        txnData.put("email", formData.getEmail());
-        txnData.put("phone", formData.getPhone());
-        txnData.put("surl", formData.getSurl());
-        txnData.put("furl", formData.getFurl());
-        txnData.put("hash", hashKey);
+                Iterator<String> iter = jsonObject.keys();
 
-        webViewClientPost(webView, basePayUrl, txnData.entrySet());
-    }
-
-    public String calculateHash(String type, String str) {
-        byte[] hashSequence = str.getBytes();
-        StringBuffer hexString = new StringBuffer();
-        try {
-            MessageDigest algorithm = MessageDigest.getInstance(type);
-            algorithm.reset();
-            algorithm.update(hashSequence);
-            byte messageDigest[] = algorithm.digest();
-
-            for (int i = 0; i < messageDigest.length; i++) {
-                String hex = Integer.toHexString(0xFF & messageDigest[i]);
-                if (hex.length() == 1)
-                    hexString.append("0");
-                hexString.append(hex);
+                while (iter.hasNext()) {
+                    String key = iter.next();
+                    if (jsonObject.getString(key) != null) {
+                        txnData.put(key, jsonObject.getString(key));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (NoSuchAlgorithmException NSAE) {
+            webViewClientPost(webView, baseUrl, txnData.entrySet());
+        } else {
+            webView.loadUrl(baseUrl);
         }
-        return hexString.toString();
     }
 
     public void webViewClientPost(WebView webView, String url,
@@ -147,16 +109,10 @@ public class PaymentActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 //finish();
-                if (url.equals(formData.getSurl())) {
-                    //webView.loadUrl(url);
-                    //webViewClientPost(webView, url, null);
-                    //Utils.printLog(PaymentActivity.this, "PayTest", "Success response url : " + url);
+                if (!txnData.isEmpty() && txnData.containsKey("surl") && url.equals(txnData.get("surl"))) {
                     finish();
-                } else if (url.equals(formData.getSurl())) {
+                } else if (!txnData.isEmpty() && txnData.containsKey("furl") && url.equals(txnData.get("furl"))) {
                     finish();
-                    //webView.loadUrl(url);
-                    //webViewClientPost(webView, url, null);
-                    //Utils.printLog(PaymentActivity.this, "PayTest", "Failure response url : " + url);
                 }
                 super.onPageFinished(view, url);
             }

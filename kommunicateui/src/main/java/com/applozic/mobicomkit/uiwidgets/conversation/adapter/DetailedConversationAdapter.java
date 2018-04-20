@@ -934,7 +934,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     if (message.getMetadata() != null && "300".equals(message.getMetadata().get("contentType"))) {
                         myHolder.richMessageLayout.setVisibility(View.VISIBLE);
-                        new AlRichMessage(context, myHolder.richMessageContainer, message, listener);
+                        new AlRichMessage(context, myHolder.richMessageContainer, myHolder.richMessageLayout, message, listener);
                     } else {
                         myHolder.richMessageLayout.setVisibility(View.GONE);
                     }
@@ -1343,7 +1343,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         public MyViewHolder(final View customView) {
             super(customView);
 
-            position = getLayoutPosition();                //   getAdapterPosition();
+            position = getLayoutPosition();               //   getAdapterPosition();
             this.view = customView;
             mapImageView = (ImageView) customView.findViewById(R.id.static_mapview);
             chatLocation = (RelativeLayout) customView.findViewById(R.id.chat_location);

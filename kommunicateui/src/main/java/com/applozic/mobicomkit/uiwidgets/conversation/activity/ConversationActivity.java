@@ -79,6 +79,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragm
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
@@ -730,11 +731,12 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             profilefragment.setApplozicPermissions(applozicPermission);
             addFragment(this, profilefragment, ProfileFragment.ProfileFragmentTag);
         } else if (id == R.id.logout) {
+            LocalBroadcastManager.getInstance(this).sendBroadcastSync(new Intent("KmLogoutOption"));
             try {
                 if (!TextUtils.isEmpty(alCustomizationSettings.getLogoutPackage())) {
                     Class loginActivity = Class.forName(alCustomizationSettings.getLogoutPackage().trim());
                     if (loginActivity != null) {
-                        if (((KmActionCallback) getApplication()) != null) {
+                        if (getApplication() instanceof KmActionCallback) {
                             ((KmActionCallback) getApplication()).onReceive(this, alCustomizationSettings.getLogoutPackage().trim(), "logoutCall");
                         }
                        /* new UserClientService(this).logout();
@@ -747,6 +749,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+            }catch(ClassCastException e){
+
             }
         }
         return false;

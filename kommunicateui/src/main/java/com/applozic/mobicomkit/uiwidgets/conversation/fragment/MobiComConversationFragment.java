@@ -96,6 +96,7 @@ import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
@@ -122,6 +123,9 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessag
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlHotelBookingModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageResponse;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
@@ -145,9 +149,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rockerhieu.emojicon.EmojiconEditText;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -284,6 +285,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     DetailedConversationAdapter recyclerDetailConversationAdapter;
     MobicomMessageTemplate messageTemplate;
     MobicomMessageTemplateAdapter templateAdapter;
+    DashedLineView awayMessageDivider;
+    TextView awayMessageTv;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -432,6 +435,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         //readIcon.setColorFilter(getResources().getColor(R.color.applozic_theme_color_primary), PorterDuff.Mode.MULTIPLY);
         pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_h);
 
+        awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
+        awayMessageTv = list.findViewById(R.id.awayMessageTV);
+
         //listView.setLongClickable(true);
 
         recordButton.setVisibility(alCustomizationSettings.isRecordButton() ? View.VISIBLE : View.GONE);
@@ -518,7 +524,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         };
 
         recordButton.setOnTouchListener(new View.OnTouchListener() {
-
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -819,6 +824,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         messageTemplate = alCustomizationSettings.getMessageTemplate();
 
         if (messageTemplate != null && messageTemplate.isEnabled()) {
+            messageTemplateView.setVisibility(View.VISIBLE);
             templateAdapter = new MobicomMessageTemplateAdapter(messageTemplate);
             MobicomMessageTemplateAdapter.MessageTemplateDataListener listener = new MobicomMessageTemplateAdapter.MessageTemplateDataListener() {
                 @Override
@@ -873,6 +879,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
 
         createTemplateMessages();
+
+        if (channel != null && alCustomizationSettings.isEnableAwayMessage()) {
+            KommunicateUI.getAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
+                @Override
+                public void onSuccess(Context context, KmAwayMessageResponse.KmDataResponse response) {
+                    showAwayMessage(true, response.getMessage());
+                }
+
+                @Override
+                public void onFailure(Context context, Exception e, String response) {
+                    Utils.printLog(context, TAG, "Response : " + response + " ----- Exception : " + e);
+                }
+            });
+        }
 
         return list;
     }
@@ -1182,6 +1202,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void addMessage(final Message message) {
+        hideAwayMessage(message);
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -2611,7 +2632,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 ChannelService.isUpdateTitle = false;
             }
         }
-
     }
 
     private void hideSendMessageLayout(boolean hide) {
@@ -3564,8 +3584,49 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
+    public void showAwayMessage(boolean show, String message) {
+        if (message != null) {
+            awayMessageTv.setText(message);
+            if (alCustomizationSettings.getAwayMessageTextColor() != null) {
+                awayMessageTv.setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
+            }
+        }
+        awayMessageTv.setVisibility(show ? View.VISIBLE : View.GONE);
+        awayMessageDivider.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public boolean isAwayMessageVisible() {
+        return (awayMessageTv.getVisibility() == View.VISIBLE && awayMessageDivider.getVisibility() == View.VISIBLE);
+    }
+
+    public void hideAwayMessage(Message message) {
+        if (message.isTypeOutbox()) {
+            return;
+        }
+
+        if (isAwayMessageVisible() && message.getMetadata() != null) {
+            if (message.getMetadata().isEmpty()) {
+                showAwayMessage(false, null);
+                return;
+            }
+            boolean isValidMetadata = message.getMetadata().containsKey("category") && !"HIDDEN".equals(message.getMetadata().get("category"))
+                    && message.getMetadata().containsKey("hide") && !"true".equals(message.getMetadata().get("hide"));
+
+            boolean isSentByBot = isValidMetadata && message.getMetadata().containsKey("skipBot") && "true".equals(message.getMetadata().get("skipBot"));
+
+            if (isValidMetadata && !isSentByBot) {
+                showAwayMessage(false, null);
+                return;
+            }
+        }
+
+        if (isAwayMessageVisible() && message.getMetadata() == null) {
+            showAwayMessage(false, null);
+        }
+    }
+
     @Override
-    public void onAction(Context context, String action, Object object) {
+    public void onAction(Context context, String action, Message message, Object object) {
         switch (action) {
             case "sendGuestList":
                 List<ALGuestCountModel> guestCountModels = (List<ALGuestCountModel>) object;
@@ -3590,6 +3651,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             case "makePayment":
                 makePaymentForBooking((ALRichMessageModel) object);
+                break;
+
+            case "listItemClick":
+                sendMessage((String) object);
                 break;
         }
     }
@@ -3656,6 +3721,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void makePaymentForBooking(ALRichMessageModel model) {
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
         intent.putExtra("formData", model.getFormData());
+        intent.putExtra("formAction", model.getFormAction());
         getContext().startActivity(intent);
     }
 }

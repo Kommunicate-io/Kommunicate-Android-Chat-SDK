@@ -14,7 +14,6 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ public class Kommunicate {
     //public static final String APP_KEY = "kommunicate-support";
     public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";
     //public static final String APP_KEY = "3c951e76437b755ce5ee8ad8a06703505";
+    //public static final String APP_KEY = "kommunicate-support";
     public static final String START_NEW_CHAT = "startNewChat";
     public static final String LOGOUT_CALL = "logoutCall";
 

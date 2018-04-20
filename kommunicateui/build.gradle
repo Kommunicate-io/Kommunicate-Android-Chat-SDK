@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "1.1"
+        versionName "1.2.5"
     }
     buildTypes {
         release {
@@ -16,15 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-
-        abortOnError false
-
-    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:support-v4:27.1.0'
     implementation 'com.android.support:appcompat-v7:27.1.0'
@@ -40,14 +34,14 @@ dependencies {
     implementation 'com.android.support:cardview-v7:27.1.0'
     api 'com.rockerhieu.emojicon:library:1.3.3'
     //compile project(':mobicomkit')//Note: use this for customization
-    api 'com.applozic.communication.message:mobicomkit:5.6.7' //Note: use this in case customization is not required
+    api 'com.applozic.communication.message:mobicomkit:5.8' //Note: use this in case customization is not required
 }
-
-/*ext {
+/*
+ext {
     // Where you will see your artifact in Bintray's web interface
     // The "bintrayName" should match the name of the Bintray repro.
     bintrayRepo = 'maven'
-    bintrayName = 'kommunicate-customer-support-chat-sdk'
+    bintrayName = 'kommunicate-chat-ui'
 
     // Maven metadata
     publishedGroupId = 'io.kommunicate'
@@ -57,7 +51,7 @@ dependencies {
     artifact = 'kommunicateui'
 
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '1.1'
+    libraryVersion = '1.2.5'
     developerId = 'devashish'
     developerName = 'Applozic'
     developerEmail = 'devashish.mamgain@gmail.com'

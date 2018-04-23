@@ -2,12 +2,10 @@ package kommunicate.io.sample;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -20,16 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.people.channel.Channel;
 
-import io.kommunicate.callbacks.KMLogoutHandler;
+import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.utils.KMPermissionUtils;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
-import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,11 +63,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getBaseContext(), "Enter UserId ", Toast.LENGTH_SHORT).show();
                         return;
                     }
-
-                    /*if (TextUtils.isEmpty(mPasswordText) || mPassword.getText().toString().trim().length() == 0) {
-                        Toast.makeText(getBaseContext(), "Enter password  ", Toast.LENGTH_SHORT).show();
-                        return;
-                    }*/
 
                     final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
                     progressDialog.setTitle("Logging in..");
@@ -181,6 +171,18 @@ public class MainActivity extends AppCompatActivity {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
+
+                Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
+                    @Override
+                    public void onSuccess(RegistrationResponse registrationResponse) {
+
+                    }
+
+                    @Override
+                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+
+                    }
+                });
 
                 Kommunicate.openConversation(context);
                 finish();

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
@@ -23,12 +24,16 @@ import java.util.Map;
 
 import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.async.GetUserListAsyncTask;
+import io.kommunicate.async.KMFaqTask;
+import io.kommunicate.async.KMHelpDocsKeyTask;
 import io.kommunicate.async.KmCreateConversationTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KmCreateConversationHandler;
+import io.kommunicate.callbacks.KmFaqTaskListener;
+import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMGroupUser;
 import io.kommunicate.users.KMUser;
 
@@ -40,9 +45,9 @@ public class Kommunicate {
 
     private static final String KM_BOT = "bot";
     //public static final String APP_KEY = "kommunicate-support";
-    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";
+    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";   //test encv key
     //public static final String APP_KEY = "3c951e76437b755ce5ee8ad8a06703505";
-    //public static final String APP_KEY = "kommunicate-support";
+    //public static final String APP_KEY = "applozic-sample-app";
     public static final String START_NEW_CHAT = "startNewChat";
     public static final String LOGOUT_CALL = "logoutCall";
 
@@ -146,6 +151,28 @@ public class Kommunicate {
         });
     }
 
+    public static void getFaqs(Context context, String type, String helpDocsKey, String data, KmFaqTaskListener listener) {
+        KMFaqTask task = new KMFaqTask(context, helpDocsKey, data, listener);
+        if ("getArticles".equals(type)) {
+            task.forArticleRequest();
+        } else if ("getSelectedArticles".equals(type)) {
+            task.forSelectedArticles();
+        } else if ("getAnswers".equals(type)) {
+            task.forAnswerRequest();
+        } else if ("getDashboardFaq".equals(type)) {
+            task.forDashboardFaq();
+        }
+        task.execute();
+    }
+
+    public static void getHelpDocsKey(Context context, String type, KmFaqTaskListener listener) {
+        new KMHelpDocsKeyTask(context, type, listener).execute();
+    }
+
+    public static boolean isLoggedIn(Context context) {
+        return MobiComUserPreference.getInstance(context).isLoggedIn();
+    }
+
     public static void setStartNewChat(Context context, final String agentId, String botId) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage("Creating conversation, please wait...");
@@ -178,6 +205,14 @@ public class Kommunicate {
                 Toast.makeText(context, "Unable to create conversation : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public static void registerForPushNotification(Context context, String token, KmPushNotificationHandler listener) {
+        new PushNotificationTask(context, token, listener).execute();
+    }
+
+    public static void registerForPushNotification(Context context, KmPushNotificationHandler listener) {
+        registerForPushNotification(context, Applozic.getInstance(context).getDeviceRegistrationId(), listener);
     }
 
     public static void startOrGetConversation(Context context, final String clientGroupId, final String agentId, final String botId, final String groupName) {

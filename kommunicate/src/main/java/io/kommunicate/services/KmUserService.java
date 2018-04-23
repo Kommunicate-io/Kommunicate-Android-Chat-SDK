@@ -80,6 +80,26 @@ public class KmUserService {
         return userClientService.createConversation(groupId, userId, agentId, applicationId);
     }
 
+    public synchronized String getHelpDocsKey(String appKey, String type) throws Exception {
+        return userClientService.getHelpDocsKey(appKey, type);
+    }
+
+    public synchronized String getArticleList(String helpDocsKey) throws Exception {
+        return userClientService.getArticleList(helpDocsKey);
+    }
+
+    public String getSelectedArticles(String helpDocsKey, String queryString) throws Exception {
+        return userClientService.getSelectedArticles(helpDocsKey, queryString);
+    }
+
+    public String getArticleAnswer(String helpDocsKey, String articleId) throws Exception {
+        return userClientService.getArticleAnswer(articleId, helpDocsKey);
+    }
+
+    public String getDashboardFaq(String appKey, String articleId) throws Exception {
+        return userClientService.getDashboardFaq(appKey, articleId);
+    }
+
     public synchronized KmContact processUser(UserDetail userDetail) {
         KmContact contact = new KmContact();
         contact.setUserId(userDetail.getUserId());

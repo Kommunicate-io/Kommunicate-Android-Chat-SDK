@@ -17,6 +17,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -35,6 +36,9 @@ public class KmUserClientService extends UserClientService {
     private static final String KM_PROD_BASE_URL = "https://api.kommunicate.io";
     private static final String KM_TEST_BASE_URL = "https://api-test.kommunicate.io";
     private static final String CREATE_CONVERSATION_URL = "/conversations";
+    private static final String KM_GET_HELPDOCS_KEY_URL = "/integration/settings/";
+    private static final String KM_HELPDOCS_URL = "https://api.helpdocs.io/v1/article";
+    private static final String KM_HELPDOCS_SERACH_URL = "https://api.helpdocs.io/v1/search?key=";
     private HttpRequestUtils httpRequestUtils;
     private static String TAG = "KmUserClientService";
 
@@ -52,6 +56,14 @@ public class KmUserClientService extends UserClientService {
             return KM_PROD_BASE_URL;
         }
         return KM_TEST_BASE_URL;
+    }
+
+    private String getArticleListUrl() {
+        return KM_HELPDOCS_URL + "?key=";
+    }
+
+    private String getKmGetHelpdocsKeyUrl() {
+        return getKmBaseUrl() + KM_GET_HELPDOCS_KEY_URL;
     }
 
     private String getCreateConversationUrl() {
@@ -103,6 +115,92 @@ public class KmUserClientService extends UserClientService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public String getHelpDocsKey(String appKey, String type) throws Exception {
+        StringBuilder urlBuilder = new StringBuilder(getKmGetHelpdocsKeyUrl());
+
+        if (!TextUtils.isEmpty(appKey)) {
+            urlBuilder.append(appKey);
+        }
+        if (!TextUtils.isEmpty(type)) {
+            urlBuilder.append("?type=");
+            urlBuilder.append(type);
+        }
+
+        try {
+            return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String getArticleList(String helpDocsKey) throws Exception {
+        StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_URL);
+
+        if (!TextUtils.isEmpty(helpDocsKey)) {
+            urlBuilder.append("?key=");
+            urlBuilder.append(helpDocsKey);
+        }
+
+        try {
+            return getResponse(urlBuilder.toString(), "application/json", "application/json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String getSelectedArticles(String helpDocsKey, String queryString) throws Exception {
+        StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_SERACH_URL);
+        urlBuilder.append(helpDocsKey);
+        urlBuilder.append("&query=");
+        urlBuilder.append(queryString);
+
+        try {
+            return getResponse(urlBuilder.toString(), "application/json", "application/json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String getArticleAnswer(String articleId, String helpDocsKey) throws Exception {
+        StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_URL);
+        urlBuilder.append("/");
+        urlBuilder.append(articleId);
+        urlBuilder.append("?key=");
+        urlBuilder.append(helpDocsKey);
+
+        try {
+            return getResponse(urlBuilder.toString(), "application/json", "application/json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public String getDashboardFaq(String appKey, String articleId) throws Exception {
+        StringBuilder urlBuilder = new StringBuilder(getKmBaseUrl());
+        urlBuilder.append("/kb/search?appId=");
+        urlBuilder.append(appKey);
+        if (!TextUtils.isEmpty(articleId)) {
+            urlBuilder.append("&articleId=");
+            urlBuilder.append(articleId);
+        }
+
+        try {
+            return getResponse(urlBuilder.toString(), "application/json", "application/json");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
@@ -176,6 +274,78 @@ public class KmUserClientService extends UserClientService {
         }
 
         Utils.printLog(context, TAG, "Http call failed");
+        return null;
+    }
+
+    public String getResponse(String urlString, String contentType, String accept) {
+        Utils.printLog(context, TAG, "Calling url: " + urlString);
+        boolean isFileUpload = false;
+
+        HttpURLConnection connection = null;
+        URL url;
+
+        try {
+            url = new URL(urlString);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setInstanceFollowRedirects(true);
+            connection.setRequestMethod("GET");
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+
+            if (!TextUtils.isEmpty(contentType)) {
+                connection.setRequestProperty("Content-Type", contentType);
+            }
+            if (!TextUtils.isEmpty(accept)) {
+                connection.setRequestProperty("Accept", accept);
+            }
+            connection.connect();
+
+            if (connection == null) {
+                return null;
+            }
+            BufferedReader br = null;
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                InputStream inputStream = connection.getInputStream();
+                br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            } else {
+                Utils.printLog(context, TAG, "Response code for getResponse is  :" + connection.getResponseCode());
+            }
+
+            StringBuilder sb = new StringBuilder();
+            try {
+                String line;
+                if (br != null) {
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            Utils.printLog(context, TAG, "Response :" + sb.toString());
+
+            if (!TextUtils.isEmpty(sb.toString())) {
+                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
+                    return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
+                }
+            }
+            return sb.toString();
+        } catch (ConnectException e) {
+            Utils.printLog(context, TAG, "failed to connect Internet is not working");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (Throwable e) {
+
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return null;
     }
 

@@ -185,7 +185,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                         }
                     } else {
-                        channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+                        if (channel != null && Short.valueOf("10").equals(channel.getType())) {
+                            channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                            myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
+                        } else {
+                            channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+                            myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
+                        }
+
                         myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
                         myholder.alphabeticTextView.setVisibility(View.GONE);
                         myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
@@ -195,6 +202,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             channelImageLoader.loadImage(channel, myholder.contactImage);
                         } else if (channel != null && channel.isBroadcastMessage()) {
                             myholder.contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+                        } else if (channel != null && Short.valueOf("10").equals(channel.getType())) {
+                            channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
                         } else {
                             channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
                         }
@@ -202,7 +211,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 }
 
                 myholder.onlineTextView.setVisibility(View.GONE);
-                if (alCustomizationSettings.isOnlineStatusMasterList()) {
+                if (alCustomizationSettings.isOnlineStatusMasterList() && message.getGroupId() == null) {
                     myholder.onlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.VISIBLE : View.GONE);
                     myholder.offlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.GONE : View.VISIBLE);
                 }

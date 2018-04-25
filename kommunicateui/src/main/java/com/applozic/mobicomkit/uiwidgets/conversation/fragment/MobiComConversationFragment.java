@@ -2098,6 +2098,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         } else {
             messageToSend.setContentType(messageContentType);
         }
+        if (messageMetaData == null) {
+            messageMetaData = new HashMap<>();
+        }
         messageToSend.setFileMetaKeyStrings(fileMetaKeyStrings);
         messageToSend.setFileMetas(fileMetas);
         if (!TextUtils.isEmpty(ApplozicClient.getInstance(getActivity()).getMessageMetaData())) {
@@ -2106,13 +2109,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             Map<String, String> messageMetaDataMap = null;
             try {
                 messageMetaDataMap = new Gson().fromJson(ApplozicClient.getInstance(getActivity()).getMessageMetaData(), mapType);
-                messageToSend.setMetadata(messageMetaDataMap);
+                if (messageMetaDataMap != null && !messageMetaDataMap.isEmpty()) {
+                    messageMetaData.putAll(messageMetaDataMap);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
-            messageToSend.setMetadata(messageMetaData);
         }
+
+        if (this.messageMetaData != null && !this.messageMetaData.isEmpty()) {
+            messageMetaData.putAll(this.messageMetaData);
+        }
+
+        messageToSend.setMetadata(messageMetaData);
+
 
         conversationService.sendMessage(messageToSend, messageIntentClass);
         if (replayRelativeLayout != null) {
@@ -2453,6 +2463,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onPause() {
         super.onPause();
+        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
+            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
+        }
+
         if (longPress) {
             count = 0;
             t.cancel();
@@ -2540,6 +2555,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onResume() {
         super.onResume();
+        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
+            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+        }
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
             MobiComUserPreference.getInstance(getActivity()).setDeleteChannel(false);
             if (getActivity().getSupportFragmentManager() != null) {

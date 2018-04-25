@@ -12,18 +12,8 @@ import io.kommunicate.users.KMGroupUser;
 
 public class KMGroupInfo extends ChannelInfo {
 
-    List<KMGroupUser> users;
-
     public KMGroupInfo(String groupName, List<String> groupMemberList) {
         super(groupName, groupMemberList);
-    }
-
-    public List<KMGroupUser> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<KMGroupUser> users) {
-        this.users = users;
     }
 
     @Override
@@ -37,7 +27,7 @@ public class KMGroupInfo extends ChannelInfo {
                 ", metadata=" + getMetadata() +
                 ", admin='" + getAdmin() + '\'' +
                 ", channelMetadata=" + getChannelMetadata() +
-                ", users=" + users +
+                ", users=" + getUsers() +
                 '}';
     }
 }

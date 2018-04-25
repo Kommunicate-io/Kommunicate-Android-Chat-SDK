@@ -99,7 +99,7 @@ public class KMFaqTask extends AsyncTask<Void, Void, String> {
                     try {
                         KmArticleModel model = (KmArticleModel) GsonUtils.getObjectFromJson(s, KmArticleModel.class);
                         if (model != null && (model.getArticles() != null || model.getArticle() != null || "SUCCESS".equals(model.getCode()))) {
-                            listener.onSucess(context.get(), s);
+                            listener.onSuccess(context.get(), s);
                         }
                     } catch (Exception e) {
                         listener.onFailure(context.get(), e, s);

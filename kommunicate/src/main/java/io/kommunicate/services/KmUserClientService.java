@@ -1,27 +1,47 @@
 package io.kommunicate.services;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.HttpRequestUtils;
+import com.applozic.mobicomkit.api.MobiComKitConstants;
+import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
+import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
+import com.applozic.mobicomkit.api.conversation.ConversationIntentService;
+import com.applozic.mobicomkit.contact.AppContactService;
+import com.applozic.mobicomkit.exception.InvalidApplicationException;
+import com.applozic.mobicomkit.exception.UnAuthoriseException;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.encryption.EncryptionUtils;
+import com.applozic.mobicommons.people.contact.Contact;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.TimeZone;
 
+import io.kommunicate.feeds.KmRegistrationResponse;
 import io.kommunicate.users.KMUser;
 
 /**
@@ -32,14 +52,14 @@ public class KmUserClientService extends UserClientService {
 
     private static final String USER_LIST_FILTER_URL = "/rest/ws/user/v3/filter?startIndex=";
     private static final String USER_LOGIN_API = "/login";
-    private static final String USER_SIGNUP_API = "/customers?preSignUp=";
-    private static final String KM_PROD_BASE_URL = "https://api.kommunicate.io";
-    private static final String KM_TEST_BASE_URL = "https://api-test.kommunicate.io";
+    private static final String GET_APPLICATION_LIST = "/rest/ws/user/getlist";
     private static final String CREATE_CONVERSATION_URL = "/conversations";
     private static final String KM_GET_HELPDOCS_KEY_URL = "/integration/settings/";
     private static final String KM_HELPDOCS_URL = "https://api.helpdocs.io/v1/article";
     private static final String KM_HELPDOCS_SERACH_URL = "https://api.helpdocs.io/v1/search?key=";
-    private HttpRequestUtils httpRequestUtils;
+    private static final String USER_PASSWORD_RESET = "/users/password-reset";
+    private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
+    public HttpRequestUtils httpRequestUtils;
     private static String TAG = "KmUserClientService";
 
     public KmUserClientService(Context context) {
@@ -49,13 +69,6 @@ public class KmUserClientService extends UserClientService {
 
     private String getUserListFilterUrl() {
         return getBaseUrl() + USER_LIST_FILTER_URL;
-    }
-
-    private String getKmBaseUrl() {
-        if (getBaseUrl().contains("apps.applozic")) {
-            return KM_PROD_BASE_URL;
-        }
-        return KM_TEST_BASE_URL;
     }
 
     private String getArticleListUrl() {
@@ -68,6 +81,10 @@ public class KmUserClientService extends UserClientService {
 
     private String getCreateConversationUrl() {
         return getKmBaseUrl() + CREATE_CONVERSATION_URL;
+    }
+
+    private String getApplicationListUrl() {
+        return getBaseUrl() + GET_APPLICATION_LIST;
     }
 
     private String getLoginUserUrl() {
@@ -109,7 +126,7 @@ public class KmUserClientService extends UserClientService {
         }
 
         try {
-            String response = postData(getCreateConversationUrl(), "application/json", "application/json", jsonObject.toString());
+            String response = httpRequestUtils.postData(getCreateConversationUrl(), "application/json", "application/json", jsonObject.toString());
             Utils.printLog(context, TAG, "Response : " + response);
             return response;
         } catch (Exception e) {
@@ -204,77 +221,186 @@ public class KmUserClientService extends UserClientService {
         return null;
     }
 
-    public String postData(String urlString, String contentType, String accept, String data) throws Exception {
-        Utils.printLog(context, TAG, "Calling url: " + urlString);
-        HttpURLConnection connection;
-        URL url;
+    public String getApplicationList(String userId, boolean isEmailId) {
+        if (TextUtils.isEmpty(userId)) {
+            return null;
+        }
         try {
-            if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                data = EncryptionUtils.encrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), data);
-            }
-            url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-
-            if (!TextUtils.isEmpty(contentType)) {
-                connection.setRequestProperty("Content-Type", contentType);
-            }
-            if (!TextUtils.isEmpty(accept)) {
-                connection.setRequestProperty("Accept", accept);
-            }
-            connection.connect();
-
-            if (connection == null) {
-                return null;
-            }
-            if (data != null) {
-                byte[] dataBytes = data.getBytes("UTF-8");
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-                os.write(dataBytes);
-                os.flush();
-                os.close();
-            }
-            BufferedReader br = null;
-            if (connection.getResponseCode() == 200 || connection.getResponseCode() == 201) {
-                InputStream inputStream = connection.getInputStream();
-                br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-            }
-            StringBuilder sb = new StringBuilder();
-            try {
-                String line;
-                if (br != null) {
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Utils.printLog(context, TAG, "Response : " + sb.toString());
-            if (!TextUtils.isEmpty(sb.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                    return EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
-                }
-            }
-            if (connection != null) {
-                connection.disconnect();
-            }
-            return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
+            String url = getApplicationListUrl() + "?roleNameList=APPLICATION_WEB_ADMIN&" + (isEmailId ? "emailId=" : "userId=") + URLEncoder.encode(userId, "UTF-8");
+            return httpRequestUtils.getResponse(url, "application/json", "application/json");
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Utils.printLog(context, TAG, "Http call failed");
         return null;
+    }
+
+    public String resetUserPassword(String userId, String appKey) {
+        if (userId == null || appKey == null) {
+            return null;
+        }
+
+        String url = getKmBaseUrl() + USER_PASSWORD_RESET;
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("userName", userId);
+            jsonObject.put("applicationId", appKey);
+
+            return httpRequestUtils.postJsonToServer(url, jsonObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public RegistrationResponse loginKmUser(KMUser user) throws Exception {
+        if (user == null) {
+            return null;
+        }
+
+        user.setDeviceType(Short.valueOf("1"));
+        user.setPrefContactAPI(Short.valueOf("2"));
+        user.setTimezone(TimeZone.getDefault().getID());
+        user.setEnableEncryption(user.isEnableEncryption());
+        user.setRoleType(User.RoleType.AGENT.getValue());
+        user.setRoleName(User.RoleName.APPLICATION_WEB_ADMIN.getValue());
+
+
+        MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
+
+        Gson gson = new Gson();
+        user.setAppVersionCode(MOBICOMKIT_VERSION_CODE);
+        user.setApplicationId(getApplicationKey(context));
+        user.setRegistrationId(mobiComUserPreference.getDeviceRegistrationId());
+
+        if (getAppModuleName(context) != null) {
+            user.setAppModuleName(getAppModuleName(context));
+        }
+
+        Utils.printLog(context, TAG, "Net status" + Utils.isInternetAvailable(context.getApplicationContext()));
+
+        if (!Utils.isInternetAvailable(context.getApplicationContext())) {
+            throw new ConnectException("No Internet Connection");
+        }
+
+//        Log.i(TAG, "App Id is: " + getApplicationKey(context));
+        Utils.printLog(context, TAG, "Registration json " + gson.toJson(user));
+        Utils.printLog(context, TAG, "Login url : " + getKmBaseUrl() + USER_LOGIN_API);
+        String response = httpRequestUtils.postJsonToServer(getKmBaseUrl() + USER_LOGIN_API, gson.toJson(user));
+
+        Utils.printLog(context, TAG, "Registration response is: " + response);
+
+        if (TextUtils.isEmpty(response) || response.contains("<html")) {
+            throw new Exception("503 Service Unavailable");
+//            return null;
+        }
+        if (response.contains(INVALID_APP_ID)) {
+            throw new InvalidApplicationException("Invalid Application Id");
+        }
+        //final RegistrationResponse registrationResponse = gson.fromJson(response, RegistrationResponse.class);
+
+        if ((new JSONObject(response)).optString("code").equals("INVALID_CREDENTIALS")) {
+            throw new UnAuthoriseException(((new JSONObject(response)).optString("message")) + "");
+        }
+
+        final KmRegistrationResponse kmRegistrationResponse = gson.fromJson(response, KmRegistrationResponse.class);
+        final RegistrationResponse registrationResponse = kmRegistrationResponse.getResult().getApplozicUser();
+
+        if (registrationResponse.isPasswordInvalid()) {
+            throw new UnAuthoriseException("Invalid uername/password");
+
+        }
+        Utils.printLog(context, "Registration response ", "is " + registrationResponse);
+        if (registrationResponse.getNotificationResponse() != null) {
+            Utils.printLog(context, "Registration response ", "" + registrationResponse.getNotificationResponse());
+        }
+        mobiComUserPreference.setEncryptionKey(registrationResponse.getEncryptionKey());
+        mobiComUserPreference.enableEncryption(user.isEnableEncryption());
+        mobiComUserPreference.setCountryCode(user.getCountryCode());
+        mobiComUserPreference.setUserId(user.getUserId());
+        mobiComUserPreference.setContactNumber(user.getContactNumber());
+        mobiComUserPreference.setEmailVerified(user.isEmailVerified());
+        mobiComUserPreference.setDisplayName(user.getDisplayName());
+        mobiComUserPreference.setMqttBrokerUrl(registrationResponse.getBrokerUrl());
+        mobiComUserPreference.setDeviceKeyString(registrationResponse.getDeviceKey());
+        mobiComUserPreference.setEmailIdValue(user.getEmail());
+        mobiComUserPreference.setImageLink(user.getImageLink());
+        mobiComUserPreference.setSuUserKeyString(registrationResponse.getUserKey());
+        mobiComUserPreference.setLastSyncTimeForMetadataUpdate(String.valueOf(registrationResponse.getCurrentTimeStamp()));
+        mobiComUserPreference.setLastSyncTime(String.valueOf(registrationResponse.getCurrentTimeStamp()));
+        mobiComUserPreference.setLastSeenAtSyncTime(String.valueOf(registrationResponse.getCurrentTimeStamp()));
+        mobiComUserPreference.setChannelSyncTime(String.valueOf(registrationResponse.getCurrentTimeStamp()));
+        mobiComUserPreference.setUserBlockSyncTime("10000");
+        mobiComUserPreference.setPassword(user.getPassword());
+        mobiComUserPreference.setPricingPackage(registrationResponse.getPricingPackage());
+        mobiComUserPreference.setAuthenticationType(String.valueOf(user.getAuthenticationTypeId()));
+        mobiComUserPreference.setUserRoleType(user.getRoleType());
+        if (user.getUserTypeId() != null) {
+            mobiComUserPreference.setUserTypeId(String.valueOf(user.getUserTypeId()));
+        }
+        if (!TextUtils.isEmpty(user.getNotificationSoundFilePath())) {
+            mobiComUserPreference.setNotificationSoundFilePath(user.getNotificationSoundFilePath());
+        }
+        Contact contact = new Contact();
+        contact.setUserId(user.getUserId());
+        contact.setFullName(registrationResponse.getDisplayName());
+        contact.setImageURL(registrationResponse.getImageLink());
+        contact.setContactNumber(registrationResponse.getContactNumber());
+        if (user.getUserTypeId() != null) {
+            contact.setUserTypeId(user.getUserTypeId());
+        }
+        contact.setRoleType(user.getRoleType());
+        contact.setMetadata(user.getMetadata());
+        contact.setStatus(registrationResponse.getStatusMessage());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel(context);
+        }
+        contact.processContactNumbers(context);
+        new AppContactService(context).upsert(contact);
+
+
+        Intent conversationIntentService = new Intent(context, ConversationIntentService.class);
+        conversationIntentService.putExtra(ConversationIntentService.SYNC, false);
+        ConversationIntentService.enqueueWork(context, conversationIntentService);
+
+
+        Intent mutedUserListService = new Intent(context, ConversationIntentService.class);
+        mutedUserListService.putExtra(ConversationIntentService.MUTED_USER_LIST_SYNC, true);
+        ConversationIntentService.enqueueWork(context, mutedUserListService);
+
+        Intent intent = new Intent(context, ApplozicMqttIntentService.class);
+        intent.putExtra(ApplozicMqttIntentService.CONNECTED_PUBLISH, true);
+        ApplozicMqttIntentService.enqueueWork(context, intent);
+
+        return registrationResponse;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    void createNotificationChannel(Context context) {
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        CharSequence name = MobiComKitConstants.PUSH_NOTIFICATION_NAME;
+        ;
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        if (mNotificationManager.getNotificationChannel(MobiComKitConstants.AL_PUSH_NOTIFICATION) == null) {
+            NotificationChannel mChannel = new NotificationChannel(MobiComKitConstants.AL_PUSH_NOTIFICATION, name, importance);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.GREEN);
+            if (ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled()) {
+                mChannel.setShowBadge(true);
+            } else {
+                mChannel.setShowBadge(false);
+            }
+            if (ApplozicClient.getInstance(context).getVibrationOnNotification()) {
+                mChannel.enableVibration(true);
+                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+            }
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
+            mChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), audioAttributes);
+            mNotificationManager.createNotificationChannel(mChannel);
+
+        }
     }
 
     public String getResponse(String urlString, String contentType, String accept) {
@@ -346,10 +472,6 @@ public class KmUserClientService extends UserClientService {
                 }
             }
         }
-        return null;
-    }
-
-    public String loginKmUser(KMUser user) {
         return null;
     }
 }

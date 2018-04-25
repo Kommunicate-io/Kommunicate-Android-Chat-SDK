@@ -12,20 +12,11 @@ import com.applozic.mobicomkit.api.MobiComKitClientService;
 
 public class KmClientService extends MobiComKitClientService {
 
-    private static final String KM_PROD_BASE_URL = "https://api.kommunicate.io";
-    private static final String KM_TEST_BASE_URL = "https://api-test.kommunicate.io";
     private HttpRequestUtils httpRequestUtils;
 
     public KmClientService(Context context) {
         super(context);
         httpRequestUtils = new HttpRequestUtils(context);
-    }
-
-    private String getKmBaseUrl() {
-        if (getBaseUrl().contains("apps.applozic")) {
-            return KM_PROD_BASE_URL;
-        }
-        return KM_TEST_BASE_URL;
     }
 
     private String getAwayMessageUrl() {

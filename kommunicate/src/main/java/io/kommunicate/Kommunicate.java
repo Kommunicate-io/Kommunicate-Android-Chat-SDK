@@ -11,6 +11,7 @@ import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
+import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
@@ -80,15 +81,15 @@ public class Kommunicate {
     }
 
     public static void startNewConversation(Context context, String clientGroupId, String groupName, String agentId, String botId, KMStartChatHandler handler) {
-        List<KMGroupUser> users = new ArrayList<>();
-        users.add(new KMGroupUser().setUserId(agentId).setGroupRole(1));
-        users.add(new KMGroupUser().setUserId(KM_BOT).setGroupRole(2));
-        if (botId != null && !KM_BOT.equals(botId)) {
-            users.add(new KMGroupUser().setUserId(botId).setGroupRole(2));
-        }
-        users.add(new KMGroupUser().setUserId(MobiComUserPreference.getInstance(context).getUserId()).setGroupRole(3));
+        List<KMGroupInfo.GroupUser> users = new ArrayList<>();
 
         KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(groupName) ? "Kommunicate Support" : groupName, new ArrayList<String>());
+        users.add(channelInfo.new GroupUser().setUserId(agentId).setGroupRole(1));
+        users.add(channelInfo.new GroupUser().setUserId(KM_BOT).setGroupRole(2));
+        if (botId != null && !KM_BOT.equals(botId)) {
+            users.add(channelInfo.new GroupUser().setUserId(botId).setGroupRole(2));
+        }
+        users.add(channelInfo.new GroupUser().setUserId(MobiComUserPreference.getInstance(context).getUserId()).setGroupRole(3));
         channelInfo.setType(10);
         channelInfo.setUsers(users);
         channelInfo.setAdmin(agentId);

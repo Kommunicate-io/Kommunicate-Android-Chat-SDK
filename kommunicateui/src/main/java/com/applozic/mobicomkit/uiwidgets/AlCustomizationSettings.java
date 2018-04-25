@@ -105,6 +105,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean showStartNewConversation = false;
     private boolean enableAwayMessage = false;
     private String awayMessageTextColor = "#A9A4A4";
+    private boolean isAgentApp = false;
 
     private boolean launchChatFromProfilePicOrName;
 
@@ -563,6 +564,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setAwayMessageTextColor(String awayMessageTextColor) {
         this.awayMessageTextColor = awayMessageTextColor;
+    }
+
+    public boolean isAgentApp() {
+        return isAgentApp;
+    }
+
+    public void setAgentApp(boolean agentApp) {
+        isAgentApp = agentApp;
     }
 
     @Override

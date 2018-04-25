@@ -17,11 +17,15 @@ import android.widget.TextView;
 
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.AppContactService;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
+import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -38,10 +42,17 @@ public class UserProfileFragment extends Fragment {
     TextView alphabeticTextView;
     CircleImageView contactImage;
     AppContactService baseContactService;
+    AlCustomizationSettings alCustomizationSettings;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String jsonString = FileUtils.loadSettingsJsonFile(getActivity().getApplicationContext());
+        if (!TextUtils.isEmpty(jsonString)) {
+            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+        } else {
+            alCustomizationSettings = new AlCustomizationSettings();
+        }
         baseContactService = new AppContactService(getActivity());
         final Context context = getActivity().getApplicationContext();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) getContext())) {
@@ -120,6 +131,10 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
+            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+        }
         if (contact != null) {
             BroadcastService.currentUserProfileUserId = contact.getUserId();
             refreshContactData();
@@ -129,6 +144,10 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
+            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
+        }
         BroadcastService.currentUserProfileUserId = null;
     }
 

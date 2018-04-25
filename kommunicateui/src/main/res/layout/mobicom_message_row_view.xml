@@ -41,7 +41,7 @@
 
     </RelativeLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/name_time"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -53,9 +53,10 @@
 
         <TextView
             android:id="@+id/smReceivers"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
+            android:layout_weight="10"
             android:singleLine="true"
             android:text="James Drake"
             android:textAlignment="gravity"
@@ -68,18 +69,18 @@
 
         <TextView
             android:id="@+id/createdAtTime"
-            android:layout_width="74dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginLeft="16dp"
-            android:layout_weight="0"
+            android:layout_weight="3"
             android:ellipsize="end"
             android:singleLine="true"
             android:letterSpacing="0.06"
             android:text="3 hours ago"
             android:textColor="#0e0e0f"
             android:textSize="12sp" />
-    </FrameLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/status"
@@ -131,9 +132,9 @@
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="48dp"
-            android:layout_marginRight="48dp"
             android:layout_weight="1"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:fontFamily="sans-serif"
             android:ellipsize="end"
             android:maxLines="1"
@@ -149,8 +150,8 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_gravity="end"
-            android:layout_marginEnd="2dp"
-            android:layout_marginRight="2dp"
+            android:layout_marginEnd="35dp"
+            android:layout_marginRight="35dp"
             android:background="@drawable/unread_message_background"
             android:gravity="center_horizontal|center_vertical"
             android:text=""

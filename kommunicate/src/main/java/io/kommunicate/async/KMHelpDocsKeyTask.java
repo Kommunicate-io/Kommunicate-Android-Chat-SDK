@@ -48,7 +48,7 @@ public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
         super.onPostExecute(s);
 
         if (s != null) {
-            listener.onSucess(context.get(), s);
+            listener.onSuccess(context.get(), s);
         } else {
             listener.onFailure(context.get(), exception, "Unable to get Access key");
         }

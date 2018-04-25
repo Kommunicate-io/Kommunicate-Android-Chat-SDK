@@ -11,6 +11,9 @@ import com.applozic.mobicomkit.api.account.user.User;
 
 public class KMUser extends User {
 
+    private String userName;
+    private String applicationName;
+
     public static boolean isLoggedIn(Context context) {
         return MobiComUserPreference.getInstance(context).isLoggedIn();
     }
@@ -25,6 +28,23 @@ public class KMUser extends User {
         user.setContactNumber(MobiComUserPreference.getInstance(context).getContactNumber());
 
         return user;
+    }
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+        setUserId(userName);
     }
 
     @Override

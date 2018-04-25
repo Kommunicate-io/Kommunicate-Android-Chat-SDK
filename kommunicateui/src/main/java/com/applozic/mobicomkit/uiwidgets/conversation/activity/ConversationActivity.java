@@ -395,8 +395,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         InstructionUtil.showInfo(this, R.string.info_message_sync, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());
 
         mActionBar.setTitle(R.string.conversations);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setHomeButtonEnabled(true);
+
+        if (alCustomizationSettings != null && !alCustomizationSettings.isAgentApp()) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
+            mActionBar.setHomeButtonEnabled(true);
+        }
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
@@ -749,7 +752,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-            }catch(ClassCastException e){
+            } catch (ClassCastException e) {
 
             }
         }

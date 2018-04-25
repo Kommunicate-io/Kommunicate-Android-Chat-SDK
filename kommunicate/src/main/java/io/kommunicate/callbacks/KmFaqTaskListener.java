@@ -7,7 +7,7 @@ import android.content.Context;
  */
 
 public interface KmFaqTaskListener {
-    void onSucess(Context context, Object object);
+    void onSuccess(Context context, Object object);
 
     void onFailure(Context context, Exception exception, Object object);
 }

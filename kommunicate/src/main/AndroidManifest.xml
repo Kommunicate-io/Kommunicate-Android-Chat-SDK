@@ -51,7 +51,7 @@
         android:supportsRtl="true">
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="com.applozic.mobicomkit.uiwidgets.ALFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true"

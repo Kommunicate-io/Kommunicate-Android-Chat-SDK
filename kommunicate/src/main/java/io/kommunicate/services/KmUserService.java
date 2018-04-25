@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.kommunicate.users.KmContact;
 import io.kommunicate.users.KmUserDetailResponse;
@@ -41,23 +42,15 @@ public class KmUserService {
 
         if (response != null && response.isSuccess()) {
             if (response.getResponse() != null) {
-                // Map<String, List<String>> userFeedMap = (LinkedTreeMap<String, List<String>>) response.getResponse();
 
                 Type typeToken = new TypeToken<KmUserDetailResponse>() {
                 }.getType();
 
                 KmUserDetailResponse responseString = (KmUserDetailResponse) GsonUtils.getObjectFromJson(response.getResponse().toString(), typeToken);
-                //Log.d("TestAgent", "Reponse : " + responseString);
                 List<UserDetail> userDetailList = responseString.getUsers();
-
-              /*  if (userFeedMap != null && !TextUtils.isEmpty(userFeedMap.get("users"))) {
-                    //userDetailList = (UserDetail[]) GsonUtils.getObjectFromJson(userFeedMap.get("users"), UserDetail[].class);
-                    userDetailList = (List<UserDetail>) userFeedMap.get("users");
-                }*/
 
                 if (userDetailList != null) {
                     for (UserDetail userDetail : userDetailList) {
-                        //contactList.add(processUser((UserDetail) GsonUtils.getObjectFromJson(userDetail, UserDetail.class)));
                         contactList.add(processUser(userDetail));
                     }
                     userResponse.setContactList(contactList);
@@ -78,6 +71,15 @@ public class KmUserService {
 
     public synchronized String createConversation(Integer groupId, String userId, String agentId, String applicationId) {
         return userClientService.createConversation(groupId, userId, agentId, applicationId);
+    }
+
+    public synchronized Map<String, String> getApplicationList(String userId, boolean isEmailId) {
+        try {
+            return (Map<String, String>) GsonUtils.getObjectFromJson(userClientService.getApplicationList(userId, isEmailId), Map.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public synchronized String getHelpDocsKey(String appKey, String type) throws Exception {
@@ -113,6 +115,7 @@ public class KmUserService {
         contact.setLastMessageAtTime(userDetail.getLastMessageAtTime());
         contact.setMetadata(userDetail.getMetadata());
         contact.setRoleType(userDetail.getRoleType());
+        contact.setDeletedAtTime(userDetail.getDeletedAtTime());
         if (!TextUtils.isEmpty(userDetail.getImageLink())) {
             contact.setImageURL(userDetail.getImageLink());
         }

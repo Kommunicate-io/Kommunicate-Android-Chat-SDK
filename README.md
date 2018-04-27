@@ -5,8 +5,7 @@ Kommunicate.io Android Chat SDK for Customer Support
 
 ### Installation 
 
-Clone this repo and then from Android Studio select File ->New -> Import Module  -> Select 'kommunicate' from cloned path.
-Check in your app level gradle file, if the dependency for kommunicate does'nt exists then add it as below 
+Add the following in your app build.gradle dependency:
 
 ```compile 'io.kommunicate:kommunicate:1.3'```
 

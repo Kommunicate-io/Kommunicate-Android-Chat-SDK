@@ -11,6 +11,10 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessag
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.kommunicate.KmException;
 import io.kommunicate.Kommunicate;
 
 
@@ -38,7 +42,16 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
             case Kommunicate.START_NEW_CHAT:
                 //Kommunicate.startOrGetConversation(context, "testClientGroupId", "reytum@live.com", null, "My Group");
                 //Kommunicate.setStartNewChat(context, "vipin+testkm01012018@applozic.com", "Hotel-Booking-Assistant"); //pass null if you want to use default bot
-                Kommunicate.setStartNewChat(context, "reytum@live.com", "Hotel-Booking-Assistant");
+                List<String> agents = new ArrayList<>();
+                agents.add("reytum@live.com");
+                List<String> bots = new ArrayList<>();
+                //Kommunicate.setStartNewChat(context, "reytum@live.com", "Hotel-Booking-Assistant");
+                try {
+                    Kommunicate.startNewConversation(context, null, agents, bots,false, null);
+                } catch (KmException e) {
+                    e.printStackTrace();
+                }
+                //Kommunicate.setStartNewUniqueChat(context, agents, bots);
                 break;
 
             case Kommunicate.LOGOUT_CALL:

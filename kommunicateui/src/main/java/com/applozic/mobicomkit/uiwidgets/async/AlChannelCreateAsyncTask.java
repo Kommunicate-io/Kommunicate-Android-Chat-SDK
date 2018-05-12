@@ -43,7 +43,7 @@ public class AlChannelCreateAsyncTask extends AsyncTask<Void, Void, ChannelFeedA
                 taskListenerInterface.onFailure(channelFeedApiResponse, context);
             }
         } else {
-            taskListenerInterface.onFailure(channelFeedApiResponse, context);
+            taskListenerInterface.onFailure(null, context);
         }
     }
 

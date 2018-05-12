@@ -3,11 +3,14 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.lang.ref.WeakReference;
 
+import io.kommunicate.KMGroupInfo;
 import io.kommunicate.KmConversationResponse;
+import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmCreateConversationHandler;
 import io.kommunicate.services.KmUserService;
 
@@ -23,6 +26,8 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
     private String applicationId;
     private String agentId;
     private KmCreateConversationHandler handler;
+    private KMStartChatHandler startChatHandler;
+    KMGroupInfo groupInfo;
     Exception e;
 
     public KmCreateConversationTask(Context context, Integer groupId, String userId, String applicationId, String agentId, KmCreateConversationHandler handler) {
@@ -34,9 +39,18 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
         this.applicationId = applicationId;
     }
 
+    public KmCreateConversationTask(Context context, KMGroupInfo groupInfo, KMStartChatHandler handler) {
+        this.context = new WeakReference<Context>(context);
+        this.groupInfo = groupInfo;
+        this.startChatHandler = handler;
+    }
+
     @Override
     protected KmConversationResponse doInBackground(Void... voids) {
         try {
+            if (groupInfo != null) {
+                return (KmConversationResponse) GsonUtils.getObjectFromJson(new KmUserService(context.get()).createNewConversation(groupInfo), KmConversationResponse.class);
+            }
             return (KmConversationResponse) GsonUtils.getObjectFromJson(new KmUserService(context.get()).createConversation(groupId, userId, agentId, applicationId), KmConversationResponse.class);
         } catch (Exception e) {
             this.e = e;
@@ -57,6 +71,18 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
                 }
             } else {
                 handler.onFailure(context.get(), e, "Some error occurred");
+            }
+        }
+
+        if (startChatHandler != null) {
+               if (response != null) {
+                if ("SUCCESS".equalsIgnoreCase(response.getStatus())) {
+                    startChatHandler.onSuccess(ChannelService.getInstance(context.get()).getChannel(response.getResponse()), context.get());
+                } else {
+                    startChatHandler.onFailure(response, context.get());
+                }
+            } else {
+                startChatHandler.onFailure(null, context.get());
             }
         }
     }

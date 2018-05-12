@@ -25,6 +25,7 @@ import com.applozic.mobicomkit.exception.InvalidApplicationException;
 import com.applozic.mobicomkit.exception.UnAuthoriseException;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.encryption.EncryptionUtils;
+import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
 
@@ -41,6 +42,8 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.TimeZone;
 
+import io.kommunicate.KMGroupInfo;
+import io.kommunicate.KmException;
 import io.kommunicate.feeds.KmRegistrationResponse;
 import io.kommunicate.users.KMUser;
 
@@ -53,12 +56,13 @@ public class KmUserClientService extends UserClientService {
     private static final String USER_LIST_FILTER_URL = "/rest/ws/user/v3/filter?startIndex=";
     private static final String USER_LOGIN_API = "/login";
     private static final String GET_APPLICATION_LIST = "/rest/ws/user/getlist";
-    private static final String CREATE_CONVERSATION_URL = "/conversations";
+    private static final String CONVERSATION_URL = "/conversations";
     private static final String KM_GET_HELPDOCS_KEY_URL = "/integration/settings/";
     private static final String KM_HELPDOCS_URL = "https://api.helpdocs.io/v1/article";
     private static final String KM_HELPDOCS_SERACH_URL = "https://api.helpdocs.io/v1/search?key=";
     private static final String USER_PASSWORD_RESET = "/users/password-reset";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
+    private static final String CREATE_CONVERSATION_URL = "/create";
     public HttpRequestUtils httpRequestUtils;
     private static String TAG = "KmUserClientService";
 
@@ -79,8 +83,12 @@ public class KmUserClientService extends UserClientService {
         return getKmBaseUrl() + KM_GET_HELPDOCS_KEY_URL;
     }
 
+    private String getConversationUrl() {
+        return getKmBaseUrl() + CONVERSATION_URL;
+    }
+
     private String getCreateConversationUrl() {
-        return getKmBaseUrl() + CREATE_CONVERSATION_URL;
+        return getConversationUrl() + CREATE_CONVERSATION_URL;
     }
 
     private String getApplicationListUrl() {
@@ -117,7 +125,7 @@ public class KmUserClientService extends UserClientService {
 
         try {
             jsonObject.put("groupId", groupId);
-            jsonObject.put("participentUserId", userId);
+            jsonObject.put("participantUserId", userId);
             jsonObject.put("createdBy", userId);
             jsonObject.put("defaultAgentId", agentId);
             jsonObject.put("applicationId", applicationId);
@@ -126,13 +134,22 @@ public class KmUserClientService extends UserClientService {
         }
 
         try {
-            String response = httpRequestUtils.postData(getCreateConversationUrl(), "application/json", "application/json", jsonObject.toString());
+            String response = httpRequestUtils.postData(getConversationUrl(), "application/json", "application/json", jsonObject.toString());
             Utils.printLog(context, TAG, "Response : " + response);
             return response;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String createConversation(KMGroupInfo channelInfo) throws Exception {
+        if (channelInfo == null) {
+            throw new KmException("ChannelInfo cannot be null");
+        }
+
+        String channelJson = GsonUtils.getJsonFromObject(channelInfo, KMGroupInfo.class);
+        return httpRequestUtils.postData(getCreateConversationUrl(), "application/json", "application/json", channelJson);
     }
 
     public String getHelpDocsKey(String appKey, String type) throws Exception {

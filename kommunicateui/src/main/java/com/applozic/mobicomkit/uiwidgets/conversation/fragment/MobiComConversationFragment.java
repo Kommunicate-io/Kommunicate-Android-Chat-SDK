@@ -71,6 +71,7 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserBlockTask;
 import com.applozic.mobicomkit.api.attachment.AttachmentView;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
@@ -782,6 +783,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     if (channel.isDeleted()) {
                         return;
                     }
+                    if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())
+                            && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
+                        return;
+                    }
                     if (alCustomizationSettings.isGroupInfoScreenVisible() && !Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                         Intent channelInfo = new Intent(getActivity(), ChannelInfoActivity.class);
                         channelInfo.putExtra(ChannelInfoActivity.CHANNEL_KEY, channel.getKey());
@@ -1285,7 +1290,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 menu.findItem(R.id.userBlock).setVisible(false);
                 menu.findItem(R.id.userUnBlock).setVisible(false);
-                if (alCustomizationSettings.isMuteOption() && !channel.getType().equals(Channel.GroupType.BROADCAST.getValue())) {
+                if (alCustomizationSettings.isMuteOption() && !Channel.GroupType.BROADCAST.getValue().equals(channel.getType())) {
                     menu.findItem(R.id.unmuteGroup).setVisible(!channel.isDeleted() && channel.isNotificationMuted());
                     menu.findItem(R.id.muteGroup).setVisible(!channel.isDeleted() && !channel.isNotificationMuted());
                 }

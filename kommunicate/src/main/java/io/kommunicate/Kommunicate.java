@@ -8,20 +8,20 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
-import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.async.GetUserListAsyncTask;
@@ -32,10 +32,8 @@ import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
-import io.kommunicate.callbacks.KmCreateConversationHandler;
 import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
-import io.kommunicate.users.KMGroupUser;
 import io.kommunicate.users.KMUser;
 
 /**
@@ -46,8 +44,8 @@ public class Kommunicate {
 
     private static final String KM_BOT = "bot";
     //public static final String APP_KEY = "kommunicate-support";
-    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";   //test encv key
-    //public static final String APP_KEY = "3c951e76437b755ce5ee8ad8a06703505";
+    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";
+    //public static final String APP_KEY = "3c951e76437b755ce5ee8ad8a06703505"; //test encv key
     //public static final String APP_KEY = "applozic-sample-app";
     public static final String START_NEW_CHAT = "startNewChat";
     public static final String LOGOUT_CALL = "logoutCall";
@@ -76,26 +74,52 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
-    public static void startNewConversation(Context context, String agentId, String botId, KMStartChatHandler handler) {
-        startNewConversation(context, null, null, agentId, botId, handler);
+    public static void startNewConversation(Context context, String groupName, String agentId, String botId, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
+        ArrayList<String> agentIds = null;
+        ArrayList<String> botIds = null;
+        if (agentId != null) {
+            agentIds = new ArrayList<>();
+            agentIds.add(agentId);
+        }
+        if (botId != null) {
+            botIds = new ArrayList<>();
+            botIds.add(botId);
+        }
+        startNewConversation(context, groupName, agentIds, botIds, isUniqueChat, handler);
     }
 
-    public static void startNewConversation(Context context, String clientGroupId, String groupName, String agentId, String botId, KMStartChatHandler handler) {
+    public static void startNewConversation(Context context, String groupName, List<String> agentIds, List<String> botIds, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
         List<KMGroupInfo.GroupUser> users = new ArrayList<>();
 
         KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(groupName) ? "Kommunicate Support" : groupName, new ArrayList<String>());
-        users.add(channelInfo.new GroupUser().setUserId(agentId).setGroupRole(1));
-        users.add(channelInfo.new GroupUser().setUserId(KM_BOT).setGroupRole(2));
-        if (botId != null && !KM_BOT.equals(botId)) {
-            users.add(channelInfo.new GroupUser().setUserId(botId).setGroupRole(2));
+
+        if (agentIds == null || agentIds.isEmpty()) {
+            throw new KmException("Agent Id list cannot be null or empty");
         }
+        for (String agentId : agentIds) {
+            users.add(channelInfo.new GroupUser().setUserId(agentId).setGroupRole(1));
+        }
+
+        users.add(channelInfo.new GroupUser().setUserId(KM_BOT).setGroupRole(2));
         users.add(channelInfo.new GroupUser().setUserId(MobiComUserPreference.getInstance(context).getUserId()).setGroupRole(3));
+
+        if (botIds != null) {
+            for (String botId : botIds) {
+                if (botId != null && !KM_BOT.equals(botId)) {
+                    users.add(channelInfo.new GroupUser().setUserId(botId).setGroupRole(2));
+                }
+            }
+        }
+
         channelInfo.setType(10);
         channelInfo.setUsers(users);
-        channelInfo.setAdmin(agentId);
 
-        if (!TextUtils.isEmpty(clientGroupId)) {
-            channelInfo.setClientGroupId(clientGroupId);
+        if (!agentIds.isEmpty()) {
+            channelInfo.setAdmin(agentIds.get(0));
+        }
+
+        if (isUniqueChat) {
+            channelInfo.setClientGroupId(getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agentIds, botIds));
         }
 
         Map<String, String> metadata = new HashMap<>();
@@ -113,7 +137,7 @@ public class Kommunicate {
 
         channelInfo.setMetadata(metadata);
 
-        new AlChannelCreateAsyncTask(context, channelInfo, handler).execute();
+        new KmCreateConversationTask(context, channelInfo, handler).execute();
     }
 
     public static void getAgents(Context context, int startIndex, int pageSize, KMGetContactsHandler handler) {
@@ -174,38 +198,59 @@ public class Kommunicate {
         return MobiComUserPreference.getInstance(context).isLoggedIn();
     }
 
-    public static void setStartNewChat(Context context, final String agentId, String botId) {
+    public static void setStartNewChat(Context context, final List<String> agentIds, List<String> botIds) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage("Creating conversation, please wait...");
         dialog.setCancelable(false);
         dialog.show();
 
-        startNewConversation(context, agentId, botId, new KMStartChatHandler() {
-            @Override
-            public void onSuccess(final Channel channel, Context context) {
-
-                KmCreateConversationHandler handler = new KmCreateConversationHandler() {
-                    @Override
-                    public void onSuccess(Context context, KmConversationResponse response) {
-                        dialog.dismiss();
+        try {
+            startNewConversation(context, null, agentIds, botIds, false, new KMStartChatHandler() {
+                @Override
+                public void onSuccess(Channel channel, Context context) {
+                    dialog.dismiss();
+                    if (channel != null) {
                         Kommunicate.openParticularConversation(context, channel.getKey());
                     }
+                }
 
-                    @Override
-                    public void onFailure(Context context, Exception e, String error) {
-                        dialog.dismiss();
-                        Toast.makeText(context, "Unable to create Conversation : " + (e == null ? error : e.getMessage()), Toast.LENGTH_SHORT).show();
-                    }
-                };
-                new KmCreateConversationTask(context, channel.getKey(), MobiComUserPreference.getInstance(context).getUserId(), MobiComKitClientService.getApplicationKey(context), agentId, handler).execute();
-            }
+                @Override
+                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+                    dialog.dismiss();
+                    Toast.makeText(context, "Unable to create conversation : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (KmException e) {
+            dialog.dismiss();
+            e.printStackTrace();
+        }
+    }
 
-            @Override
-            public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-                dialog.dismiss();
-                Toast.makeText(context, "Unable to create conversation : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
-            }
-        });
+    public static void setStartNewUniqueChat(Context context, final List<String> agentIds, List<String> botIds) {
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setMessage("Creating conversation, please wait...");
+        dialog.setCancelable(false);
+        dialog.show();
+
+        try {
+            startOrGetConversation(context, null, agentIds, botIds, new KMStartChatHandler() {
+                @Override
+                public void onSuccess(Channel channel, Context context) {
+                    dialog.dismiss();
+                    Kommunicate.openParticularConversation(context, channel.getKey());
+                }
+
+                @Override
+                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+                    dialog.dismiss();
+                    Toast.makeText(context, "Unable to create conversation : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (KmException e) {
+            dialog.dismiss();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     public static void registerForPushNotification(Context context, String token, KmPushNotificationHandler listener) {
@@ -216,61 +261,67 @@ public class Kommunicate {
         registerForPushNotification(context, Applozic.getInstance(context).getDeviceRegistrationId(), listener);
     }
 
-    public static void startOrGetConversation(Context context, final String clientGroupId, final String agentId, final String botId, final String groupName) {
-        if (TextUtils.isEmpty(clientGroupId)) {
-            return;
-        }
+    public static void startOrGetConversation(Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final KMStartChatHandler handler) throws KmException {
 
-        final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setCancelable(false);
-        dialog.setMessage("Looking for conversation , please wait...");
-        dialog.show();
+        final String clientGroupId = getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agentIds, botIds);
 
         AlGroupInformationAsyncTask.GroupMemberListener groupMemberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
             @Override
             public void onSuccess(Channel channel, Context context) {
-                dialog.dismiss();
-                openParticularConversation(context, channel.getKey());
+                if (handler != null) {
+                    handler.onSuccess(channel, context);
+                }
             }
 
             @Override
             public void onFailure(Channel channel, Exception e, Context context) {
-
-                dialog.setMessage("Creating Conversation , please wait...");
-
-                startNewConversation(context, clientGroupId, groupName, agentId, botId, new KMStartChatHandler() {
-
-                    @Override
-                    public void onSuccess(final Channel channel, Context context) {
-
-                        KmCreateConversationHandler handler = new KmCreateConversationHandler() {
-                            @Override
-                            public void onSuccess(Context context, KmConversationResponse response) {
-
-                                dialog.dismiss();
-                                Kommunicate.openParticularConversation(context, channel.getKey());
-                            }
-
-                            @Override
-                            public void onFailure(Context context, Exception e, String error) {
-
-                                dialog.dismiss();
-                                Toast.makeText(context, "Unable to create Conversation : " + (e == null ? error : e.getMessage()), Toast.LENGTH_SHORT).show();
-                            }
-                        };
-                        new KmCreateConversationTask(context, channel.getKey(), MobiComUserPreference.getInstance(context).getUserId(), MobiComKitClientService.getApplicationKey(context), agentId, handler).execute();
-                    }
-
-                    @Override
-                    public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-
-                        dialog.dismiss();
-                        Toast.makeText(context, "Unable to create conversation : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                try {
+                    startNewConversation(context, groupName, agentIds, botIds, true, handler);
+                } catch (KmException e1) {
+                    handler.onFailure(null, context);
+                }
             }
         };
 
         new AlGroupInformationAsyncTask(context, clientGroupId, groupMemberListener).execute();
+    }
+
+    private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
+
+        if (botIds != null && !botIds.contains(KM_BOT)) {
+            botIds.add(KM_BOT);
+        }
+
+        if (botIds == null) {
+            botIds = new ArrayList<>();
+            botIds.add(KM_BOT);
+        }
+
+        List<String> tempList = new ArrayList<>();
+
+        tempList.add(userId);
+        tempList.addAll(botIds);
+        tempList.addAll(agentIds);
+
+        SortedSet<String> userIds = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        userIds.addAll(tempList);
+
+        StringBuilder sb = new StringBuilder("");
+
+        Iterator<String> iterator = userIds.iterator();
+        while (iterator.hasNext()) {
+            String temp = iterator.next();
+            sb.append(temp);
+
+            if (!temp.equals(userIds.last())) {
+                sb.append("_");
+            }
+        }
+
+        if (sb.toString().length() > 255) {
+            throw new KmException("Please reduce the number of agents or bots");
+        }
+
+        return sb.toString();
     }
 }

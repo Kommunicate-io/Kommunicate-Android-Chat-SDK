@@ -4,7 +4,6 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 
 import java.util.List;
 
-import io.kommunicate.users.KMGroupUser;
 
 /**
  * Created by ashish on 23/01/18.
@@ -14,6 +13,8 @@ public class KMGroupInfo extends ChannelInfo {
 
     public KMGroupInfo(String groupName, List<String> groupMemberList) {
         super(groupName, groupMemberList);
+
+
     }
 
     @Override

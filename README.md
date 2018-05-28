@@ -1,7 +1,13 @@
 
-### Kommunicate-Android-Chat-SDK-Customer-Support
+### Kommunicate-Android-Chat-SDK
 
-Kommunicate.io Android Chat SDK for Customer Support
+Android Live Chat SDK for Customer Support
+
+# Overview
+Kommunicate provides open source live chat sdk in android. Kommunicate lets you add real time live chat and in-app messaging in your mobile (android, iOS) applications and website for customer support.
+
+Signup at [https://dashboard.kommunicate.io/signup](https://dashboard.kommunicate.io/signup?utm_source=github&utm_medium=readme&utm_campaign=cordova) to get the App ID.
+
 
 ### Installation 
 

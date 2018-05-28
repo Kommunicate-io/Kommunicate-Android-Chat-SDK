@@ -1,5 +1,5 @@
 
-### Kommunicate Android Chat SDK for Customer Support
+### Kommunicate Android Chat SDK for Customer Support https://www.kommunicate.io/
 
 Open Source Android Live Chat SDK for Customer Support
 

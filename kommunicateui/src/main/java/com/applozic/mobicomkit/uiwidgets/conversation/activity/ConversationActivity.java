@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
@@ -175,6 +176,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private String searchTerm;
     private SearchListFragment searchListFragment;
     public EmojiconEditText mEditEmojicon;
+    private LinearLayout serviceDisconnectionLayout;
 
     public ConversationActivity() {
 
@@ -357,6 +359,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         profilefragment = new ProfileFragment();
         profilefragment.setAlCustomizationSettings(alCustomizationSettings);
         contactsGroupId = MobiComUserPreference.getInstance(this).getContactsGroupId();
+        serviceDisconnectionLayout = findViewById(R.id.serviceDisconnectionLayout);
         if (Utils.hasMarshmallow()) {
             applozicPermission.checkRuntimePermissionForStorage();
         }
@@ -369,28 +372,34 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         inviteMessage = Utils.getMetaDataValue(getApplicationContext(), SHARE_TEXT);
         retry = 0;
-        if (savedInstanceState != null) {
-            capturedImageUri = savedInstanceState.getString(CAPTURED_IMAGE_URI) != null ?
-                    Uri.parse(savedInstanceState.getString(CAPTURED_IMAGE_URI)) : null;
-            videoFileUri = savedInstanceState.getString(CAPTURED_VIDEO_URI) != null ?
-                    Uri.parse(savedInstanceState.getString(CAPTURED_VIDEO_URI)) : null;
-            mediaFile = savedInstanceState.getSerializable(LOAD_FILE) != null ? (File) savedInstanceState.getSerializable(LOAD_FILE) : null;
 
-            contact = (Contact) savedInstanceState.getSerializable(CONTACT);
-            channel = (Channel) savedInstanceState.getSerializable(CHANNEL);
-            currentConversationId = savedInstanceState.getInt(CONVERSATION_ID);
-            if (contact != null || channel != null) {
-                if (channel != null) {
-                    conversation = ConversationFragment.newInstance(null, channel, currentConversationId, null);
-                } else {
-                    conversation = ConversationFragment.newInstance(contact, null, currentConversationId, null);
-                }
-                addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
-            }
+        if (isServiceDisconnected()) {
+            serviceDisconnectionLayout.setVisibility(View.VISIBLE);
         } else {
-            setSearchListFragment(quickConversationFragment);
-            addFragment(this, quickConversationFragment, ConversationUIService.QUICK_CONVERSATION_FRAGMENT);
+            if (savedInstanceState != null) {
+                capturedImageUri = savedInstanceState.getString(CAPTURED_IMAGE_URI) != null ?
+                        Uri.parse(savedInstanceState.getString(CAPTURED_IMAGE_URI)) : null;
+                videoFileUri = savedInstanceState.getString(CAPTURED_VIDEO_URI) != null ?
+                        Uri.parse(savedInstanceState.getString(CAPTURED_VIDEO_URI)) : null;
+                mediaFile = savedInstanceState.getSerializable(LOAD_FILE) != null ? (File) savedInstanceState.getSerializable(LOAD_FILE) : null;
+
+                contact = (Contact) savedInstanceState.getSerializable(CONTACT);
+                channel = (Channel) savedInstanceState.getSerializable(CHANNEL);
+                currentConversationId = savedInstanceState.getInt(CONVERSATION_ID);
+                if (contact != null || channel != null) {
+                    if (channel != null) {
+                        conversation = ConversationFragment.newInstance(null, channel, currentConversationId, null);
+                    } else {
+                        conversation = ConversationFragment.newInstance(contact, null, currentConversationId, null);
+                    }
+                    addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
+                }
+            } else {
+                setSearchListFragment(quickConversationFragment);
+                addFragment(this, quickConversationFragment, ConversationUIService.QUICK_CONVERSATION_FRAGMENT);
+            }
         }
+
         mobiComKitBroadcastReceiver = new MobiComKitBroadcastReceiver(this);
         InstructionUtil.showInfo(this, R.string.info_message_sync, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());
 
@@ -449,13 +458,17 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         try {
-            if (intent.getExtras() != null) {
-                BroadcastService.setContextBasedChat(intent.getExtras().getBoolean(ConversationUIService.CONTEXT_BASED_CHAT));
-                if (BroadcastService.isIndividual() && intent.getExtras().getBoolean(MobiComKitConstants.QUICK_LIST)) {
-                    setSearchListFragment(quickConversationFragment);
-                    addFragment(this, quickConversationFragment, ConversationUIService.QUICK_CONVERSATION_FRAGMENT);
-                } else {
-                    conversationUIService.checkForStartNewConversation(intent);
+            if (isServiceDisconnected()) {
+                serviceDisconnectionLayout.setVisibility(View.VISIBLE);
+            } else {
+                if (intent.getExtras() != null) {
+                    BroadcastService.setContextBasedChat(intent.getExtras().getBoolean(ConversationUIService.CONTEXT_BASED_CHAT));
+                    if (BroadcastService.isIndividual() && intent.getExtras().getBoolean(MobiComKitConstants.QUICK_LIST)) {
+                        setSearchListFragment(quickConversationFragment);
+                        addFragment(this, quickConversationFragment, ConversationUIService.QUICK_CONVERSATION_FRAGMENT);
+                    } else {
+                        conversationUIService.checkForStartNewConversation(intent);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -1188,6 +1201,12 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             e.printStackTrace();
         }
 
+    }
+
+    public boolean isServiceDisconnected() {
+        int pricingPackage = MobiComUserPreference.getInstance(this).getPricingPackage();
+        boolean isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+        return (pricingPackage == -1 || pricingPackage == 6 || (pricingPackage == 0 && !isDebuggable));
     }
 
     @Override

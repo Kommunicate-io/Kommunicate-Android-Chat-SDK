@@ -288,6 +288,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     MobicomMessageTemplateAdapter templateAdapter;
     DashedLineView awayMessageDivider;
     TextView awayMessageTv;
+    TextView applozicLabel;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -362,6 +363,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         audioRecordFrameLayout = (FrameLayout) list.findViewById(R.id.audio_record_frame_layout);
         messageTemplateView = (RecyclerView) list.findViewById(R.id.mobicomMessageTemplateView);
+        applozicLabel = list.findViewById(R.id.applozicLabel);
         cameraButton = list.findViewById(R.id.camera_btn);
         locationButton = list.findViewById(R.id.location_btn);
         fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
@@ -377,6 +379,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             }
         }
+
+        if (MobiComUserPreference.getInstance(getContext()).getPricingPackage() == 1) {
+            applozicLabel.setVisibility(VISIBLE);
+        }
+
         extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
 
         statusMessageLayout = (LinearLayout) list.findViewById(R.id.status_message_layout);
@@ -3636,9 +3643,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             boolean isValidMetadata = message.getMetadata().containsKey("category") && !"HIDDEN".equals(message.getMetadata().get("category"))
                     && message.getMetadata().containsKey("hide") && !"true".equals(message.getMetadata().get("hide"));
 
-            boolean isSentByBot = isValidMetadata && message.getMetadata().containsKey("skipBot") && "true".equals(message.getMetadata().get("skipBot"));
+            boolean isSentByBot = message.getMetadata().containsKey("skipBot") && "true".equals(message.getMetadata().get("skipBot"));
 
-            if (isValidMetadata && !isSentByBot) {
+            if (isValidMetadata || isSentByBot) {
                 showAwayMessage(false, null);
                 return;
             }

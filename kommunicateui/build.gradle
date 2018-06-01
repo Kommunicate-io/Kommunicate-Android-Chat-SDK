@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "1.3"
+        versionName "1.4"
     }
     buildTypes {
         release {
@@ -52,7 +52,7 @@ dependencies {
     artifact = 'kommunicateui'
 
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '1.3'
+    libraryVersion = '1.4'
     developerId = 'devashish'
     developerName = 'Applozic'
     developerEmail = 'devashish.mamgain@gmail.com'

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.kommunicate.KmException;
+import io.kommunicate.KmHelper;
 import io.kommunicate.Kommunicate;
 
 
@@ -47,15 +48,16 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
                 List<String> bots = new ArrayList<>();
                 //Kommunicate.setStartNewChat(context, "reytum@live.com", "Hotel-Booking-Assistant");
                 try {
-                    Kommunicate.startNewConversation(context, null, agents, bots,false, null);
-                } catch (KmException e) {
+                    KmHelper.setStartNewChat(context, agents, bots);
+                    //Kommunicate.startNewConversation(context, null, agents, bots,false, null);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //Kommunicate.setStartNewUniqueChat(context, agents, bots);
+                //KmHelper.setStartNewUniqueChat(context, agents, bots);
                 break;
 
             case Kommunicate.LOGOUT_CALL:
-                Kommunicate.performLogout(context, object); //object will receive the exit Activity, the one that will be launched when logout is successfull
+                KmHelper.performLogout(context, object); //object will receive the exit Activity, the one that will be launched when logout is successfull
                 break;
         }
     }

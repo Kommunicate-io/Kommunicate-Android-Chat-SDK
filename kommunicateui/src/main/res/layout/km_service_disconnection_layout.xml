@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/serviceDisconnectionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="99dp"
+        android:src="@drawable/group_2" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="28dp"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.06"
+        android:text="@string/snap_text"
+        android:textColor="#3f3f40"
+        android:textSize="20sp" />
+
+    <View
+        android:layout_width="50dp"
+        android:layout_height="4dp"
+        android:background="#ccc8c8"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="7dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="39dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0.06"
+        android:lineSpacingExtra="7sp"
+        android:minLines="3"
+        android:text="@string/account_disconnection_message"
+        android:gravity="center"
+        android:textColor="#737376"
+        android:textSize="14sp"
+        android:textStyle="normal" />
+</LinearLayout>

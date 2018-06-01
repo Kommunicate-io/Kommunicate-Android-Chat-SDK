@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
+import io.kommunicate.KmHelper;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.utils.KMPermissionUtils;
 import io.kommunicate.users.KMUser;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Kommunicate.init(this, Kommunicate.APP_KEY);
+        Kommunicate.init(this, KmHelper.APP_KEY);
 
         layout = (LinearLayout) findViewById(R.id.footerSnack);
         mUserId = (EditText) findViewById(R.id.userId_editText);
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         final KMUser user = new KMUser();
         user.setUserId(userId);
-        user.setApplicationId(Kommunicate.APP_KEY);
+        user.setApplicationId(KmHelper.APP_KEY);
 
         if (!TextUtils.isEmpty(password)) {
             user.setPassword(password);

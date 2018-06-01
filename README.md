@@ -15,9 +15,9 @@ Signup at [https://dashboard.kommunicate.io/signup](https://dashboard.kommunicat
 
 Add the following in your app build.gradle dependency:
 
-```compile 'io.kommunicate:kommunicate:1.3'```
+```compile 'io.kommunicate:kommunicate:1.4'```
 
-Add the following Activity in your `AndroidManifest.xml` file :
+Add the following Activities in your `AndroidManifest.xml` file :
 
 ```
          <activity
@@ -26,6 +26,31 @@ Add the following Activity in your `AndroidManifest.xml` file :
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/ApplozicTheme" />
+            
+          <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelNameActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTop"
+            android:parentActivityName="io.kommunicate.activities.KMConversationActivity"
+            android:theme="@style/ApplozicTheme" />
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTop"
+            android:parentActivityName="io.kommunicate.activities.KMConversationActivity"
+            android:theme="@style/ApplozicTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="io.kommunicate.activities.KMConversationActivity" />
+        </activity>
+
+        <activity
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:parentActivityName="io.kommunicate.activities.KMConversationActivity"
+            android:theme="@style/ApplozicTheme"
+            android:windowSoftInputMode="adjustResize" />
 ```
 
 Add the following permissions in your `AndroidManifest.xml` file:
@@ -121,10 +146,17 @@ You can authorize a user as below:
  You can create a new conversation as below :
             
  ```
-            Kommunicate.startNewConversation(context, <pass agent id here>, <pass bot id here, null accepted>, new KMCreateChatCallback() {
+            List<String> agentIds; //add agentIds to this list
+            List<String> botIds; //add botids to this list
+            Kommunicate.startNewConversation(context,
+                                             groupName, 
+                                             agentIds, 
+                                             botIds<null accepted>,
+                                             false,  //Pass this as false if you would like to start new Conversation
+                                             new KMStartChatHandler() {
                     @Override
                     public void onSuccess(Channel channel, Context context) {
-                        
+                        channel.getKey(); //get your group Id 
                     }
 
                     @Override

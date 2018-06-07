@@ -71,11 +71,11 @@ Add your geo-API_KEY in `AndroidManifest.xml` file:
 
 After the app has successfully build, open your Application Class(If you do not have an application class, create one) and add imlement the ```KmActionCallback``` interface:
 
-```
+```java
       public class KommunicateApplication extends MultiDexApplication implements KmActionCallback {
 ```
 Then override the ```KmActionCallback```'s ```onReceive``` method :            
-```
+```java
  @Override
     public void onReceive(Context context, final Object object, String action) {
 
@@ -96,9 +96,15 @@ The above method will receive the callbacks with an object. You can do your cust
 
 ### Authorization
 
+You need to initialise the Kommunicate SDK with your application key obtained from dashboard before accessing any method:
+
+```java
+Kommunicate.init(context, <your-app-id>);
+```
+
 You can authorize a user as below:
         
-```
+```java
         KMUser user = new KMUser();
         user.setUserId("reytum_01");  //unique userId
         user.setApplicationId("22823b4a764f9944ad7913ddb3e43cae1");   //your application key
@@ -106,7 +112,7 @@ You can authorize a user as below:
         
  Then call the below method:
     
-```
+```java
          Kommunicate.login(this, user, new KMLoginHandler() {
              @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
@@ -122,14 +128,14 @@ You can authorize a user as below:
  ```
  
  If at some point you need to check if the user is logged in, you can use the below code:
- ```
+ ```java
  KMUser.isLoggedIn(context){
       //user is logged in  
    }
  ```
  
  You can get the logged in user details as below:
- ```
+ ```java
  KMUser user = KMUser.getLoggedInUser(context);
  ```
  
@@ -137,7 +143,7 @@ You can authorize a user as below:
  
  You can launch the chat screen(Where all the conversations are listed in descending order of communication time) as below:
     
- ```
+ ```java
     Kommunicate.openConversation(context);
  ```
     
@@ -145,7 +151,7 @@ You can authorize a user as below:
  
  You can create a new conversation as below :
             
- ```
+ ```java
             List<String> agentIds; //add agentIds to this list
             List<String> botIds; //add botids to this list
             Kommunicate.startNewConversation(context,
@@ -169,4 +175,6 @@ You can authorize a user as below:
   
   You can open a particular conversation if you have the group id of the conversation.
   
-  `Kommunicate.openParticularConversation(context, <Group Id (Integer)>);`
+  ```java
+  Kommunicate.openParticularConversation(context, <Group Id (Integer)>);
+  ```

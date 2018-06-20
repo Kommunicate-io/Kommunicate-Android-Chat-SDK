@@ -16,6 +16,7 @@ import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicommons.people.channel.Channel;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -250,5 +251,22 @@ public class Kommunicate {
         }
 
         return sb.toString();
+    }
+
+    public static KMUser getVisitor() {
+        KMUser user = new KMUser();
+        user.setUserId(generateUserId());
+        return user;
+    }
+
+    private static String generateUserId() {
+        StringBuilder text = new StringBuilder("");
+        SecureRandom random = new SecureRandom();
+        String possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        for (int i = 0; i < 32; i++) {
+            text.append(possible.charAt(random.nextInt(possible.length())));
+        }
+        return text.toString();
     }
 }

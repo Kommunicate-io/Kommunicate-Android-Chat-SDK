@@ -26,7 +26,7 @@ import java.util.List;
 
 public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
 
-    private Context context;
+    private WeakReference<Context> context;
     private Integer groupId;
     private String clientGroupId;
     private ChannelInfoListener listener;
@@ -41,12 +41,12 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
 
 
     public AlChannelInfoTask(Context context, Integer groupId, String clientGroupId, boolean isUserListRequest, ChannelInfoListener listener) {
-        this.context = new WeakReference<Context>(context).get();
+        this.context = new WeakReference<Context>(context);
         this.groupId = groupId;
         this.clientGroupId = clientGroupId;
         this.listener = listener;
         this.isUserListRequest = isUserListRequest;
-        channelDatabaseService = ChannelDatabaseService.getInstance(this.context);
+        channelDatabaseService = ChannelDatabaseService.getInstance(this.context.get());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
                 ChannelInfoModel infoModel = new ChannelInfoModel();
 
                 if (isUserListRequest) {
-                    List<ChannelUserMapper> mapperList = ChannelService.getInstance(context).getListOfUsersFromChannelUserMapper(model.getChannel().getKey());
+                    List<ChannelUserMapper> mapperList = ChannelService.getInstance(context.get()).getListOfUsersFromChannelUserMapper(model.getChannel().getKey());
                     ArrayList<String> users = new ArrayList<>();
                     for (ChannelUserMapper channelUserMapper : mapperList) {
                         users.add(channelUserMapper.getUserKey());
@@ -103,13 +103,13 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
                     infoModel.setUserList(users);
                 }
                 infoModel.setChannel(model.getChannel());
-                listener.onSuccess(infoModel, "Success, found in local DB", context);
+                listener.onSuccess(infoModel, "Success, found in local DB", context.get());
             } else {
                 if (model.getChannelFeedApiResponse() != null) {
                     if (model.getChannelFeedApiResponse().isSuccess()) {
                         ChannelFeed channelFeed = model.getChannelFeedApiResponse().getResponse();
                         if (channelFeed != null) {
-                            channelService = ChannelService.getInstance(context);
+                            channelService = ChannelService.getInstance(context.get());
                             channelFeed.setUnreadCount(0);
                             ChannelFeed[] channelFeeds = new ChannelFeed[1];
                             channelFeeds[0] = channelFeed;
@@ -124,18 +124,18 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
                                     infoModel.setUserList(users);
                                 }
                                 infoModel.setChannel(channel);
-                                listener.onSuccess(infoModel, "Success, fetched from server", context);
+                                listener.onSuccess(infoModel, "Success, fetched from server", context.get());
                             }
                         }
                     } else {
                         if (model.getChannelFeedApiResponse().getErrorResponse() != null) {
-                            listener.onFailure(GsonUtils.getJsonFromObject(model.getChannelFeedApiResponse().getErrorResponse().toArray(new ErrorResponseFeed[model.getChannelFeedApiResponse().getErrorResponse().size()]), ErrorResponseFeed[].class), model.getException(), context);
+                            listener.onFailure(GsonUtils.getJsonFromObject(model.getChannelFeedApiResponse().getErrorResponse().toArray(new ErrorResponseFeed[model.getChannelFeedApiResponse().getErrorResponse().size()]), ErrorResponseFeed[].class), model.getException(), context.get());
                         } else {
-                            listener.onFailure(null, model.getException(), context);
+                            listener.onFailure(null, model.getException(), context.get());
                         }
                     }
                 } else {
-                    listener.onFailure(null, model.getException(), context);
+                    listener.onFailure(null, model.getException(), context.get());
                 }
             }
         }
@@ -149,12 +149,12 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
 
     public ChannelModel getChannelInfoByParameters(String parameters) {
         String response = "";
-        HttpRequestUtils httpRequestUtils = new HttpRequestUtils(context);
+        HttpRequestUtils httpRequestUtils = new HttpRequestUtils(context.get());
         ChannelModel model = new ChannelModel();
         try {
             response = httpRequestUtils.getResponse(getChannelInfoUrl() + "?" + parameters, "application/json", "application/json");
             ChannelFeedApiResponse channelFeedApiResponse = (ChannelFeedApiResponse) GsonUtils.getObjectFromJson(response, ChannelFeedApiResponse.class);
-            Utils.printLog(context, "ChannelInfoTask", "Channel info response  is :" + response);
+            Utils.printLog(context.get(), "ChannelInfoTask", "Channel info response  is :" + response);
             if (channelFeedApiResponse != null) {
                 model.setChannelFeedApiResponse(channelFeedApiResponse);
             }
@@ -166,12 +166,12 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
     }
 
     protected String getBaseUrl() {
-        String SELECTED_BASE_URL = MobiComUserPreference.getInstance(context).getUrl();
+        String SELECTED_BASE_URL = MobiComUserPreference.getInstance(context.get()).getUrl();
 
         if (!TextUtils.isEmpty(SELECTED_BASE_URL)) {
             return SELECTED_BASE_URL;
         }
-        String BASE_URL = Utils.getMetaDataValue(context.getApplicationContext(), BASE_URL_METADATA);
+        String BASE_URL = Utils.getMetaDataValue(context.get().getApplicationContext(), BASE_URL_METADATA);
         if (!TextUtils.isEmpty(BASE_URL)) {
             return BASE_URL;
         }

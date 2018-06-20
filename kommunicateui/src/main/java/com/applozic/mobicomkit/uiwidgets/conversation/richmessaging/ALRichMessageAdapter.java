@@ -124,11 +124,11 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             return hotelList.size();
         } else if (model.getTemplateId() == 1) {
             return guestList.size();
-        } else if (model.getTemplateId() == 6) {
-            return 5;
+        } else if (model.getTemplateId() == 6 || model.getTemplateId() == 3) {
+            return payloadList.size();
         } else if (roomList != null) {
             return roomList.size();
-        } else if (model.getTemplateId() == 5 || model.getTemplateId() == 3) {
+        } else if (model.getTemplateId() == 5) {
             return 1;
         } else if (model.getTemplateId() == 2) {
             return payloadList.size();
@@ -270,8 +270,14 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     if (model != null && model.getTemplateId() == 6) {
+                        if (context.getApplicationContext() instanceof ALRichMessageListener) {
+                            ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, payloadList.get(getLayoutPosition()).getMessage().trim());
+                        }
                         listener.onAction(context, "sendHotelRating", null, payloadList.get(getLayoutPosition()).getMessage().trim());
                     } else {
+                        if (context.getApplicationContext() instanceof ALRichMessageListener) {
+                            ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, model);
+                        }
                         listener.onAction(context, "makePayment", null, model);
                     }
                 }

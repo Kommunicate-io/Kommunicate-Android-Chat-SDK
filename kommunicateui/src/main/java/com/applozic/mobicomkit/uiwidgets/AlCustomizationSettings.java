@@ -11,20 +11,20 @@ import java.util.Map;
 public class AlCustomizationSettings extends JsonMarker {
 
 
-    public String customMessageBackgroundColor = "#FF03A9F4";
-    private String sentMessageBackgroundColor = "#FF03A9F4";
-    private String receivedMessageBackgroundColor = "#FFFFFFFF";
-    private String sendButtonBackgroundColor = "#FF03A9F4";
+    public String customMessageBackgroundColor = "#e6e5ec";
+    private String sentMessageBackgroundColor = "#5c5aa7";
+    private String receivedMessageBackgroundColor = "#e6e5ec";
+    private String sendButtonBackgroundColor = "#5c5aa7";
     private String attachmentIconsBackgroundColor = "#FF03A9F4";
     private String chatBackgroundColorOrDrawable;
     private String editTextBackgroundColorOrDrawable;
     private String editTextLayoutBackgroundColorOrDrawable;
     private String channelCustomMessageBgColor = "#cccccc";
 
-    private String sentContactMessageTextColor = "#FFFFFFFF";
-    private String receivedContactMessageTextColor = "#000000";
+    private String sentContactMessageTextColor = "#5fba7d";
+    private String receivedContactMessageTextColor = "#646262";
     private String sentMessageTextColor = "#FFFFFFFF";
-    private String receivedMessageTextColor = "#000000";
+    private String receivedMessageTextColor = "#646262";
     private String messageEditTextTextColor = "#000000";
     private String sentMessageLinkTextColor = "#FFFFFFFF";
     private String receivedMessageLinkTextColor = "#5fba7d";
@@ -33,20 +33,20 @@ public class AlCustomizationSettings extends JsonMarker {
     private String noConversationLabelTextColor = "#000000";
     private String conversationDateTextColor = "#333333";
     private String conversationDayTextColor = "#333333";
-    private String messageTimeTextColor = "#838b83";
+    private String messageTimeTextColor = "#ede6e6";
     private String channelCustomMessageTextColor = "#666666";
 
-    private String sentMessageBorderColor = "#FF03A9F4";
-    private String receivedMessageBorderColor = "#FFFFFFFF";
+    private String sentMessageBorderColor = "#5c5aa7";
+    private String receivedMessageBorderColor = "#e6e5ec";
     private String channelCustomMessageBorderColor = "#cccccc";
-    private String collapsingToolbarLayoutColor = "#FF03A9F4";
-    private String groupParticipantsTextColor = "#FF03A9F4";
-    private String groupDeleteButtonBackgroundColor = "#FF03A9F4";
-    private String groupExitButtonBackgroundColor = "#FF03A9F4";
-    private String adminTextColor = "#FF03A9F4";
+    private String collapsingToolbarLayoutColor = "#5c5aa7";
+    private String groupParticipantsTextColor = "#5c5aa7";
+    private String groupDeleteButtonBackgroundColor = "#5c5aa7";
+    private String groupExitButtonBackgroundColor = "#5c5aa7";
+    private String adminTextColor = "#5c5aa7";
     private String adminBackgroundColor = "#FFFFFFFF";
     private String attachCameraIconName = "applozic_ic_action_camera_new";
-    private String adminBorderColor = "#FF03A9F4";
+    private String adminBorderColor = "#5c5aa7";
     private String userNotAbleToChatTextColor = "#000000";
     private String chatBackgroundImageName;
 
@@ -55,35 +55,35 @@ public class AlCustomizationSettings extends JsonMarker {
     private String noSearchFoundForChatMessages = "No conversation found";
     private String restrictedWordMessage = "Restricted words are not allowed";
     private boolean locationShareViaMap = true;
-    private boolean startNewFloatingButton;
-    private boolean startNewButton = true;
-    private boolean onlineStatusMasterList;
+    private boolean startNewFloatingButton = false;
+    private boolean startNewButton = false;
+    private boolean onlineStatusMasterList = true;
     private boolean priceWidget;
-    private boolean startNewGroup = true;
-    private boolean imageCompression;
-    private boolean inviteFriendsInContactActivity;
-    private boolean registeredUserContactListCall;
-    private boolean createAnyContact;
-    private boolean showActionDialWithOutCalling;
-    private boolean profileLogoutButton;
-    private boolean userProfileFragment = true;
-    private boolean messageSearchOption;
+    private boolean startNewGroup = false;
+    private boolean imageCompression = false;
+    private boolean inviteFriendsInContactActivity = false;
+    private boolean registeredUserContactListCall = false;
+    private boolean createAnyContact = false;
+    private boolean showActionDialWithOutCalling = false;
+    private boolean profileLogoutButton = false;
+    private boolean userProfileFragment = false;
+    private boolean messageSearchOption = false;
     private boolean conversationContactImageVisibility = true;
-    private boolean hideGroupAddMembersButton;
-    private boolean hideGroupNameUpdateButton;
-    private boolean hideGroupExitButton;
-    private boolean hideGroupRemoveMemberOption;
-    private boolean profileOption;
-    private boolean broadcastOption;
-    private boolean hideAttachmentButton;
-    private boolean groupUsersOnlineStatus;
-    private boolean refreshOption = true;
+    private boolean hideGroupAddMembersButton = false;
+    private boolean hideGroupNameUpdateButton = false;
+    private boolean hideGroupExitButton = false;
+    private boolean hideGroupRemoveMemberOption = false;
+    private boolean profileOption = false;
+    private boolean broadcastOption = false;
+    private boolean hideAttachmentButton = false;
+    private boolean groupUsersOnlineStatus = false;
+    private boolean refreshOption = false;
     private boolean deleteOption = true;
     private boolean blockOption = true;
     private boolean muteOption = true;
     private MobicomMessageTemplate messageTemplate;
-    private String logoutPackageName;
-    private boolean logoutOption = false;
+    private String logoutPackageName = "kommunicate.io.sample.MainActivity";
+    private boolean logoutOption = true;
     private int defaultGroupType = 2;
     private boolean muteUserChatOption = false;
 
@@ -94,20 +94,21 @@ public class AlCustomizationSettings extends JsonMarker {
     private String themeColorPrimary;
     private String themeColorPrimaryDark;
     private String editTextHintText = "Write a Message..";
-    private boolean replyOption = true;
+    private boolean replyOption = false;
     private String replyMessageLayoutSentMessageBackground = "#C0C0C0";
     private String replyMessageLayoutReceivedMessageBackground = "#F5F5F5";
     private boolean groupInfoScreenVisible = true;
-    private boolean forwardOption = true;
-    private boolean recordButton = true;
-    private String sentMessageCreatedAtTimeColor = "";
-    private String receivedMessageCreatedAtTimeColor = "";
-    private boolean showStartNewConversation = false;
-    private boolean enableAwayMessage = false;
+    private boolean forwardOption = false;
+    private boolean recordButton = false;
+    private String sentMessageCreatedAtTimeColor = "#ede6e6";
+    private String receivedMessageCreatedAtTimeColor = "#8a8686";
+    private boolean showStartNewConversation = true;
+    private boolean enableAwayMessage = true;
     private String awayMessageTextColor = "#A9A4A4";
     private boolean isAgentApp = false;
+    private boolean hideGroupSubtitle = false;
 
-    private boolean launchChatFromProfilePicOrName;
+    private boolean launchChatFromProfilePicOrName = false;
 
     private Map<String, Boolean> attachmentOptions;
 
@@ -572,6 +573,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setAgentApp(boolean agentApp) {
         isAgentApp = agentApp;
+    }
+
+    public boolean isGroupSubtitleHidden() {
+        return hideGroupSubtitle;
     }
 
     @Override

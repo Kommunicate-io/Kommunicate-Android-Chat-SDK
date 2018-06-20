@@ -1028,66 +1028,63 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     private void loadContactImage(Contact contact, Contact contactDisplayName, Message message, ImageView contactImage, TextView alphabeticTextView, TextView onlineTextView, boolean hide) {
 
-        if (alphabeticTextView != null) {
-            String contactNumber = "";
-            char firstLetter = 0;
-            if (contact != null) {
-                contactNumber = contact.getDisplayName().toUpperCase();
-                firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
-            } else if (channel != null && contactDisplayName != null) {
-                firstLetter = contactDisplayName.getDisplayName().toUpperCase().charAt(0);
-                contactNumber = contactDisplayName.getDisplayName().toUpperCase();
+        if (hide) {
+            contactImage.setVisibility(GONE);
+            alphabeticTextView.setVisibility(GONE);
+        } else {
+            if (alphabeticTextView != null) {
+                String contactNumber = "";
+                char firstLetter = 0;
+                if (contact != null) {
+                    contactNumber = contact.getDisplayName().toUpperCase();
+                    firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
+                } else if (channel != null && contactDisplayName != null) {
+                    firstLetter = contactDisplayName.getDisplayName().toUpperCase().charAt(0);
+                    contactNumber = contactDisplayName.getDisplayName().toUpperCase();
+                }
+
+                if (firstLetter != '+') {
+                    alphabeticTextView.setText(String.valueOf(firstLetter));
+                } else if (!TextUtils.isEmpty(contactNumber) && contactNumber.length() >= 2) {
+                    alphabeticTextView.setText(String.valueOf(contactNumber.charAt(1)));
+                }
+
+                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+                GradientDrawable bgShape = (GradientDrawable) alphabeticTextView.getBackground();
+                bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
             }
 
-            if (firstLetter != '+') {
-                alphabeticTextView.setText(String.valueOf(firstLetter));
-            } else if (!TextUtils.isEmpty(contactNumber) && contactNumber.length() >= 2) {
-                alphabeticTextView.setText(String.valueOf(contactNumber.charAt(1)));
-            }
-
-            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-            GradientDrawable bgShape = (GradientDrawable) alphabeticTextView.getBackground();
-            bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
-        }
-
-        if (contact != null && contact.isDrawableResources() && contactImage != null) {
-            int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
-            contactImage.setImageResource(drawableResourceId);
-            contactImage.setVisibility(hide ? GONE : View.VISIBLE);
-            alphabeticTextView.setVisibility(View.GONE);
-        } else if (contact != null && contactImage != null) {
-            if (TextUtils.isEmpty(contact.getImageURL())) {
-                contactImage.setVisibility(View.GONE);
-                alphabeticTextView.setVisibility(hide ? GONE : View.VISIBLE);
-            } else {
-                if (hide) {
-                    contactImage.setVisibility(GONE);
+            if (contact != null && contact.isDrawableResources() && contactImage != null) {
+                int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
+                contactImage.setImageResource(drawableResourceId);
+                contactImage.setVisibility(View.VISIBLE);
+                alphabeticTextView.setVisibility(View.GONE);
+            } else if (contact != null && contactImage != null) {
+                if (TextUtils.isEmpty(contact.getImageURL())) {
+                    contactImage.setVisibility(View.GONE);
+                    alphabeticTextView.setVisibility(View.VISIBLE);
                 } else {
                     contactImage.setVisibility(View.VISIBLE);
                     contactImageLoader.loadImage(contact, contactImage, alphabeticTextView);
                 }
             }
-        }
 
-        if (contactDisplayName != null && contactDisplayName.isDrawableResources() && contactImage != null) {
-            int drawableResourceId = context.getResources().getIdentifier(contactDisplayName.getrDrawableName(), "drawable", context.getPackageName());
-            contactImage.setImageResource(drawableResourceId);
-            contactImage.setVisibility(hide ? GONE : View.VISIBLE);
-            alphabeticTextView.setVisibility(View.GONE);
-        } else if (contactDisplayName != null && contactImage != null) {
-            if (alCustomizationSettings.isGroupUsersOnlineStatus() && onlineTextView != null) {
-                if (contactDisplayName.isConnected()) {
-                    onlineTextView.setVisibility(View.VISIBLE);
-                } else {
-                    onlineTextView.setVisibility(View.GONE);
+            if (contactDisplayName != null && contactDisplayName.isDrawableResources() && contactImage != null) {
+                int drawableResourceId = context.getResources().getIdentifier(contactDisplayName.getrDrawableName(), "drawable", context.getPackageName());
+                contactImage.setImageResource(drawableResourceId);
+                contactImage.setVisibility(View.VISIBLE);
+                alphabeticTextView.setVisibility(View.GONE);
+            } else if (contactDisplayName != null && contactImage != null) {
+                if (alCustomizationSettings.isGroupUsersOnlineStatus() && onlineTextView != null) {
+                    if (contactDisplayName.isConnected()) {
+                        onlineTextView.setVisibility(View.VISIBLE);
+                    } else {
+                        onlineTextView.setVisibility(View.GONE);
+                    }
                 }
-            }
-            if (TextUtils.isEmpty(contactDisplayName.getImageURL())) {
-                contactImage.setVisibility(View.GONE);
-                alphabeticTextView.setVisibility(hide ? GONE : View.VISIBLE);
-            } else {
-                if (hide) {
+                if (TextUtils.isEmpty(contactDisplayName.getImageURL())) {
                     contactImage.setVisibility(View.GONE);
+                    alphabeticTextView.setVisibility(View.VISIBLE);
                 } else {
                     contactImage.setVisibility(View.VISIBLE);
                     contactImageLoader.loadImage(contactDisplayName, contactImage, alphabeticTextView);

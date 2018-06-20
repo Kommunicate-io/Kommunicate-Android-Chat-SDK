@@ -10,7 +10,8 @@ import java.util.List;
 
 public class KmAwayMessageResponse extends JsonMarker {
     private String code;
-    private List<KmDataResponse> data;
+    private KmDataResposne data;
+
 
     public String getCode() {
         return code;
@@ -20,15 +21,36 @@ public class KmAwayMessageResponse extends JsonMarker {
         this.code = code;
     }
 
-    public List<KmDataResponse> getData() {
+    public KmDataResposne getData() {
         return data;
     }
 
-    public void setData(List<KmDataResponse> data) {
+    public void setData(KmDataResposne data) {
         this.data = data;
     }
 
-    public class KmDataResponse extends JsonMarker {
+    public class KmDataResposne extends JsonMarker {
+        private boolean collectEmail;
+        private List<KmMessageResponse> messageList;
+
+        public boolean isCollectEmail() {
+            return collectEmail;
+        }
+
+        public void setCollectEmail(boolean collectEmail) {
+            this.collectEmail = collectEmail;
+        }
+
+        public List<KmMessageResponse> getMessageList() {
+            return messageList;
+        }
+
+        public void setMessageList(List<KmMessageResponse> messageList) {
+            this.messageList = messageList;
+        }
+    }
+
+    public class KmMessageResponse extends JsonMarker {
         private long id;
         private long customerId;
         private short eventId;
@@ -41,6 +63,7 @@ public class KmAwayMessageResponse extends JsonMarker {
         private String created_at;
         private String updated_at;
         private String deleted_at;
+        private String applicationId;
 
         public long getId() {
             return id;
@@ -136,6 +159,14 @@ public class KmAwayMessageResponse extends JsonMarker {
 
         public void setDeleted_at(String deleted_at) {
             this.deleted_at = deleted_at;
+        }
+
+        public String getApplicationId() {
+            return applicationId;
+        }
+
+        public void setApplicationId(String applicationId) {
+            this.applicationId = applicationId;
         }
     }
 }

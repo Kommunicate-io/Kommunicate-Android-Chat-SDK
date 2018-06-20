@@ -895,7 +895,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (channel != null && alCustomizationSettings.isEnableAwayMessage()) {
             KommunicateUI.getAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
-                public void onSuccess(Context context, KmAwayMessageResponse.KmDataResponse response) {
+                public void onSuccess(Context context, KmAwayMessageResponse.KmMessageResponse response) {
                     showAwayMessage(true, response.getMessage());
                 }
 
@@ -1633,36 +1633,40 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 }
 
             } else {
-                StringBuffer stringBuffer = new StringBuffer();
-                Contact contactDisplayName;
-                String youString = null;
-                int i = 0;
-                for (ChannelUserMapper channelUserMapper : channelUserMapperList) {
-                    i++;
-                    if (i > 20)
-                        break;
-                    contactDisplayName = appContactService.getContactById(channelUserMapper.getUserKey());
-                    if (!TextUtils.isEmpty(channelUserMapper.getUserKey())) {
-                        if (MobiComUserPreference.getInstance(getActivity()).getUserId().equals(channelUserMapper.getUserKey())) {
-                            youString = getString(R.string.you_string);
+                if (!alCustomizationSettings.isGroupSubtitleHidden()) {
+                    StringBuffer stringBuffer = new StringBuffer();
+                    Contact contactDisplayName;
+                    String youString = null;
+                    int i = 0;
+                    for (ChannelUserMapper channelUserMapper : channelUserMapperList) {
+                        i++;
+                        if (i > 20)
+                            break;
+                        contactDisplayName = appContactService.getContactById(channelUserMapper.getUserKey());
+                        if (!TextUtils.isEmpty(channelUserMapper.getUserKey())) {
+                            if (MobiComUserPreference.getInstance(getActivity()).getUserId().equals(channelUserMapper.getUserKey())) {
+                                youString = getString(R.string.you_string);
+                            } else {
+                                stringBuffer.append(contactDisplayName.getDisplayName()).append(", ");
+                            }
+                        }
+                    }
+                    if (!TextUtils.isEmpty(stringBuffer)) {
+                        if (channelUserMapperList.size() <= 20) {
+                            if (!TextUtils.isEmpty(youString)) {
+                                stringBuffer.append(youString).append(", ");
+                            }
+                            int lastIndex = stringBuffer.lastIndexOf(", ");
+                            String userIds = stringBuffer.replace(lastIndex, lastIndex + 1, "").toString();
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(userIds);
                         } else {
-                            stringBuffer.append(contactDisplayName.getDisplayName()).append(",");
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(stringBuffer.toString());
                         }
-                    }
-                }
-                if (!TextUtils.isEmpty(stringBuffer)) {
-                    if (channelUserMapperList.size() <= 20) {
-                        if (!TextUtils.isEmpty(youString)) {
-                            stringBuffer.append(youString).append(",");
-                        }
-                        int lastIndex = stringBuffer.lastIndexOf(",");
-                        String userIds = stringBuffer.replace(lastIndex, lastIndex + 1, "").toString();
-                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(userIds);
                     } else {
-                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(stringBuffer.toString());
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(youString);
                     }
-                } else {
-                    ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(youString);
+                }else{
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
                 }
             }
 

@@ -10,7 +10,6 @@ import java.util.Map;
  */
 public class AlCustomizationSettings extends JsonMarker {
 
-
     public String customMessageBackgroundColor = "#e6e5ec";
     private String sentMessageBackgroundColor = "#5c5aa7";
     private String receivedMessageBackgroundColor = "#e6e5ec";
@@ -35,7 +34,6 @@ public class AlCustomizationSettings extends JsonMarker {
     private String conversationDayTextColor = "#333333";
     private String messageTimeTextColor = "#ede6e6";
     private String channelCustomMessageTextColor = "#666666";
-
     private String sentMessageBorderColor = "#5c5aa7";
     private String receivedMessageBorderColor = "#e6e5ec";
     private String channelCustomMessageBorderColor = "#cccccc";
@@ -78,7 +76,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean hideAttachmentButton = false;
     private boolean groupUsersOnlineStatus = false;
     private boolean refreshOption = false;
-    private boolean deleteOption = true;
+    private boolean deleteOption = false;
     private boolean blockOption = true;
     private boolean muteOption = true;
     private MobicomMessageTemplate messageTemplate;

@@ -80,9 +80,9 @@
             android:background="@drawable/start_new_conv_shape"
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.03"
-            android:text="Start new conversation"
+            android:text="@string/default_start_new_conversation"
             android:textAllCaps="false"
-            android:textColor="#ffffff"
+            android:textColor="@color/default_start_new_button_text_color"
             android:textSize="14sp"
             android:visibility="gone" />
     </RelativeLayout>

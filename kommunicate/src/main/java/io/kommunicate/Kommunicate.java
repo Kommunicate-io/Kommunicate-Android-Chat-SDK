@@ -1,9 +1,7 @@
 package io.kommunicate;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 
 
@@ -53,6 +51,10 @@ public class Kommunicate {
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler) {
         Applozic.loginUser(context, kmUser, handler);
+    }
+
+    public static void loginAsVisitor(Context context, KMLoginHandler handler) {
+        login(context, getVisitor(), handler);
     }
 
     public static void logout(Context context, KMLogoutHandler logoutHandler) {

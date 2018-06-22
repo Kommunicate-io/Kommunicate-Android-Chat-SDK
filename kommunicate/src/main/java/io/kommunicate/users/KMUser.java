@@ -13,6 +13,7 @@ public class KMUser extends User {
 
     private String userName;
     private String applicationName;
+    private boolean chatNotificationMailSent = true;
 
     public static boolean isLoggedIn(Context context) {
         return MobiComUserPreference.getInstance(context).isLoggedIn();
@@ -45,6 +46,14 @@ public class KMUser extends User {
     public void setUserName(String userName) {
         this.userName = userName;
         setUserId(userName);
+    }
+
+    public boolean isChatNotificationMailSent() {
+        return chatNotificationMailSent;
+    }
+
+    public void setChatNotificationMailSent(boolean chatNotificationMailSent) {
+        this.chatNotificationMailSent = chatNotificationMailSent;
     }
 
     @Override

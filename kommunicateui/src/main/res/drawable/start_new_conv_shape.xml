@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- view background color -->
-    <solid android:color="#5C5AA7" />
+    <solid android:color="@color/default_start_new_button_color" />
 
     <!-- view border color and width -->
 

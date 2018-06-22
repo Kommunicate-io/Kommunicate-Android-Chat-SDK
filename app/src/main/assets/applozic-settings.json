@@ -66,7 +66,7 @@
   "groupUsersOnlineStatus": false,
   "launchChatFromProfilePicOrName": false,
   "refreshOption": false,
-  "deleteOption": true,
+  "deleteOption": false,
   "blockOption": true,
   "muteOption": true,
   "muteUserChatOption": true,
@@ -76,19 +76,18 @@
   "logoutPackageName": "kommunicate.io.sample.MainActivity",
   "enableAwayMessage": true,
   "awayMessageTextColor": "#A9A4A4",
+  "hideGroupSubtitle" : false,
   "attachmentOptions": {
     ":location": true,
     ":camera": true,
     ":file": true,
-    ":audio": true,
-    ":video": true,
-    ":contact": true
+    ":emoticons":true
   },
   "editTextHintText:": "Type your message...",
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",
   "replyMessageLayoutReceivedMessageBackground": "#F5F5F5",
   "groupInfoScreenVisible": true,
-  "forwardOption": true,
+  "forwardOption": false,
   "recordButton": false,
   "messageTemplate": {
     "isEnabled": false,
@@ -105,48 +104,6 @@
       "Company": "May I know your company name?",
       "Platform?": "Is this related to Android, iOS, or web?",
       "Doc?": "Did you follow our doc?"
-    },
-    "textMessageList": {
-      "showOnSenderSide": false,
-      "showOnReceiverSide": false,
-      "sendMessageOnClick": false,
-      "messageList": {
-      }
-    },
-    "imageMessageList": {
-      "showOnSenderSide": false,
-      "sendMessageOnClick": false,
-      "showOnReceiverSide": false,
-      "messageList": {
-      }
-    },
-    "videoMessageList": {
-      "showOnSenderSide": false,
-      "sendMessageOnClick": false,
-      "showOnReceiverSide": false,
-      "messageList": {
-      }
-    },
-    "audioMessageList": {
-      "showOnSenderSide": false,
-      "sendMessageOnClick": false,
-      "showOnReceiverSide": false,
-      "messageList": {
-      }
-    },
-    "locationMessageList": {
-      "showOnSenderSide": false,
-      "sendMessageOnClick": false,
-      "showOnReceiverSide": false,
-      "messageList": {
-      }
-    },
-    "contactMessageList": {
-      "showOnSenderSide": false,
-      "sendMessageOnClick": false,
-      "showOnReceiverSide": false,
-      "messageList": {
-      }
     }
   }
 }

@@ -40,15 +40,20 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
+import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.contact.Contact;
+import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -57,11 +62,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MessageInfoFragment extends Fragment {
 
     public static final String MESSAGE_ARGUMENT_KEY = "MESSAGE";
+    private static final String TAG = "MessageInfoFragment";
     Message message = null;
     AttachmentView attachmentView;
     MessageInfoResponse messageInfoResponse;
     MessageInfoAsyncTask messageInfoAsyncTask;
-    private ImageLoader contactImageLoader, locationImageLoader;
+    private ImageLoader locationImageLoader;
     private RecyclerView readListView;
     private RecyclerView deliveredListView;
 
@@ -153,7 +159,7 @@ public class MessageInfoFragment extends Fragment {
 
 
     private void init() {
-        if (contactImageLoader == null) {
+        /*if (contactImageLoader == null) {
             contactImageLoader = new ImageLoader(getContext(), getListPreferredItemHeight()) {
                 @Override
                 protected Bitmap processBitmap(Object data) {
@@ -163,7 +169,7 @@ public class MessageInfoFragment extends Fragment {
             };
             contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
             contactImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
-        }
+        }*/
 
         if (locationImageLoader == null) {
             locationImageLoader = new ImageLoader(getContext(), ImageUtils.getLargestScreenDimension((Activity) getContext())) {
@@ -219,7 +225,6 @@ public class MessageInfoFragment extends Fragment {
             messageText.setText(message.getMessage());
         }
         if (fileMeta.getContentType().contains("image")) {
-
             attachmentView.setVisibility(View.VISIBLE);
             attachmentInconView.setVisibility(View.GONE);
             attachmentFilename.setVisibility(View.GONE);
@@ -270,7 +275,7 @@ public class MessageInfoFragment extends Fragment {
                 shareEmailContact.setVisibility(View.GONE);
             }
         } catch (Exception e) {
-            Log.e("DetailedConvAdapter", "Exception in parsing", e);
+            Utils.printLog(getContext(), TAG, "Exception in parsing : " + e.getLocalizedMessage());
         }
     }
 
@@ -365,9 +370,8 @@ public class MessageInfoFragment extends Fragment {
             long timeStamp = messageInfo.isRead() ? messageInfo.getReadAtTime() :
                     (messageInfo.getDeliveredAtTime() == null ? 0 : messageInfo.getDeliveredAtTime());
             if (timeStamp != 0) {
-
                 holder.lastSeenAtTextView.setVisibility(View.VISIBLE);
-                holder.lastSeenAtTextView.setText(String.valueOf(DateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
+                holder.lastSeenAtTextView.setText(String.valueOf(KmDateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
 
             } else {
                 holder.lastSeenAtTextView.setVisibility(View.GONE);
@@ -375,6 +379,8 @@ public class MessageInfoFragment extends Fragment {
             }
 
             if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {
+                holder.alphabeticImage.setVisibility(View.VISIBLE);
+                holder.circleImageView.setVisibility(View.GONE);
                 contactNumber = contact.getDisplayName().toUpperCase();
                 firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
                 if (firstLetter != '+') {
@@ -390,8 +396,12 @@ public class MessageInfoFragment extends Fragment {
             if (contact.isDrawableResources()) {
                 int drawableResourceId = getContext().getResources().getIdentifier(contact.getrDrawableName(), "drawable", getContext().getPackageName());
                 holder.circleImageView.setImageResource(drawableResourceId);
-            } else {
-                contactImageLoader.loadImage(contact, holder.circleImageView, holder.alphabeticImage);
+                holder.alphabeticImage.setVisibility(View.GONE);
+                holder.circleImageView.setVisibility(View.VISIBLE);
+            } else if(!TextUtils.isEmpty(contact.getImageURL())){
+                holder.alphabeticImage.setVisibility(View.GONE);
+                holder.circleImageView.setVisibility(View.VISIBLE);
+                Glide.with(getContext()).load(contact.getImageURL()).into(holder.circleImageView);
             }
         }
 

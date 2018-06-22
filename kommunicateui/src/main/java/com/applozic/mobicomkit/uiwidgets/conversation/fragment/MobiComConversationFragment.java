@@ -98,6 +98,7 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
+import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
@@ -131,7 +132,6 @@ import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
-import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Support;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -437,11 +437,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
         emoticonsBtn.setOnClickListener(this);
         //listView.addHeaderView(spinnerLayout);
-        sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_h);
-        deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_h);
-        readIcon = getResources().getDrawable(R.drawable.km_read_icon_h);
+        sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
+        deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
+        readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
         //readIcon.setColorFilter(getResources().getColor(R.color.applozic_theme_color_primary), PorterDuff.Mode.MULTIPLY);
-        pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_h);
+        pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
 
         awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
         awayMessageTv = list.findViewById(R.id.awayMessageTV);
@@ -904,6 +904,26 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     Utils.printLog(context, TAG, "Response : " + response + " ----- Exception : " + e);
                 }
             });
+        }
+
+        if (alCustomizationSettings.getAttachmentOptions() != null && !alCustomizationSettings.getAttachmentOptions().isEmpty()) {
+            Map<String, Boolean> attachmentOptions = alCustomizationSettings.getAttachmentOptions();
+
+            if (attachmentOptions.containsKey(":location")) {
+                locationButton.setVisibility(attachmentOptions.get(":location") ? VISIBLE : View.GONE);
+            }
+
+            if (attachmentOptions.containsKey(":camera")) {
+                cameraButton.setVisibility(attachmentOptions.get(":camera") ? VISIBLE : View.GONE);
+            }
+
+            if (attachmentOptions.containsKey(":file")) {
+                fileAttachmentButton.setVisibility(attachmentOptions.get(":file") ? VISIBLE : View.GONE);
+            }
+
+            if (attachmentOptions.containsKey(":emoticons")) {
+                emoticonsBtn.setVisibility(attachmentOptions.get(":emoticons") ? VISIBLE : View.GONE);
+            }
         }
 
         return list;
@@ -1600,7 +1620,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         typingStarted = false;
                         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.user_online));
                     } else if (withUserContact.getLastSeenAt() != 0) {
-                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + DateUtils.getDateAndTimeForLastSeen(withUserContact.getLastSeenAt()));
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + KmDateUtils.getDateAndTimeForLastSeen(withUserContact.getLastSeenAt(), getContext()));
                     } else {
                         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
                     }
@@ -1624,7 +1644,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             if (withUserContact.isConnected()) {
                                 ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.user_online));
                             } else if (withUserContact.getLastSeenAt() != 0) {
-                                ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + DateUtils.getDateAndTimeForLastSeen(withUserContact.getLastSeenAt()));
+                                ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + KmDateUtils.getDateAndTimeForLastSeen(withUserContact.getLastSeenAt(), getContext()));
                             } else {
                                 ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
                             }
@@ -1665,7 +1685,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     } else {
                         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(youString);
                     }
-                }else{
+                } else {
                     ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
                 }
             }
@@ -3248,7 +3268,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     }
 
                     for (int i = 1; i <= nextMessageList.size() - 1; i++) {
-                        long dayDifference = DateUtils.daysBetween(new Date(nextMessageList.get(i - 1).getCreatedAtTime()), new Date(nextMessageList.get(i).getCreatedAtTime()));
+                        long dayDifference = KmDateUtils.daysBetween(new Date(nextMessageList.get(i - 1).getCreatedAtTime()), new Date(nextMessageList.get(i).getCreatedAtTime()));
 
                         if (dayDifference >= 1) {
                             Message message = new Message();

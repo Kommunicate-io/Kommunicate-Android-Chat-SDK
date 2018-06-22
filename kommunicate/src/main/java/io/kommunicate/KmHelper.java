@@ -21,8 +21,9 @@ import io.kommunicate.callbacks.KMStartChatHandler;
 public class KmHelper {
 
     //public static final String APP_KEY = "kommunicate-support";
-    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1";
-    //public static final String APP_KEY = "3c951e76437b755ce5ee8ad8a06703505"; //test encv key
+     public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1"; //prod
+    //public static final String APP_KEY = "3c951e76437b755ce5ee8ad8a06703505"; //test encv key vipin
+    //public static final String APP_KEY = "2187926e69fe6dabd86b89c6269838bab"; //test key devraj
     //public static final String APP_KEY = "applozic-sample-app";
 
     public static void performLogout(Context context, final Object object) {

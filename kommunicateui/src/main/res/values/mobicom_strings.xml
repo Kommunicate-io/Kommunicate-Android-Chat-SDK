@@ -67,6 +67,7 @@
     <string name="verification_success">Your phone number got verified successfully</string>
     <string name="launch_mobitexter_app">LAUNCH_MOBITEXTER</string>
     <string name="delete_conversation">Delete</string>
+    <string name="delete_conversation_context">Delete conversation</string>
     <string name="sync_messages_from_server">Syncing with the server…</string>
 
     <string name="incoming_call">Received call</string>
@@ -194,4 +195,13 @@
     <string name="km_read">Read</string>
     <string name="km_not_read">Not read yet</string>
     <string name="km_not_sent">Not sent</string>
+    <string name="default_start_new_conversation">Start new conversation</string>
+
+    <string name="JUST_NOW">Just now</string>
+    <string name="MINUTES"> mins</string>
+    <string name="HOURS"> hrs</string>
+    <string name="H">h</string>
+    <string name="MINUTES_AGO"> mins ago</string>
+    <string name="HOURS_AGO"> hrs ago</string>
+    <string name="YESTERDAY">Yesterday</string>
 </resources>

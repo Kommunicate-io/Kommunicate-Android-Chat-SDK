@@ -45,6 +45,10 @@
     <color name="applozic_theme_color_primary">#5c5aa7</color>
     <color name="applozic_theme_color_primary_dark">#27256d</color>
     <color name="applozic_theme_color_accent">#FF607D8B</color>
+    <color name="message_status_icon_colors">#5c5aa7</color>
+    <color name="default_start_new_button_color">#5c5aa7</color>
+    <color name="default_start_new_button_text_color">#ffffff</color>
+
     <color name="applozic_theme_color_app">#ff0099cc</color>
     <color name="applozic_theme_color_control_activated">#ff0099cc</color>
     <color name="applozic_theme_color_control_highlight">#ff0099ee</color>

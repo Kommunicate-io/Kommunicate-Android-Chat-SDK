@@ -34,12 +34,12 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
-import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.emoticon.EmojiconHandler;
@@ -257,7 +257,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     }
                 }
                 if (myholder.createdAtTime != null) {
-                    myholder.createdAtTime.setText(DateUtils.getFormattedDateAndTime(message.getCreatedAtTime()));
+                    myholder.createdAtTime.setText(KmDateUtils.getFormattedDateAndTime(message.getCreatedAtTime(), context));
                 }
                 int messageUnReadCount = 0;
                 if (message.getGroupId() == null && contactReceiver != null && !TextUtils.isEmpty(contactReceiver.getContactIds())) {
@@ -479,11 +479,13 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
             boolean isUserPresentInGroup = false;
             boolean isChannelDeleted = false;
+            boolean isSupportGroup = false;
             Channel channel = null;
             if (message.getGroupId() != null) {
                 channel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
                 if (channel != null) {
                     isChannelDeleted = channel.isDeleted();
+                    isSupportGroup = Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType());
                 }
                 isUserPresentInGroup = ChannelService.getInstance(context).processIsUserPresentInChannel(message.getGroupId());
             }
@@ -495,14 +497,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     continue;
                 }
 
-                if (menuItems[i].equals(context.getResources().getString(R.string.exit_group)) && (isChannelDeleted || !isUserPresentInGroup)) {
+                if (menuItems[i].equals(context.getResources().getString(R.string.exit_group)) && (isChannelDeleted || !isUserPresentInGroup || isSupportGroup)) {
                     continue;
                 }
 
-                if (menuItems[i].equals(context.getResources().getString(R.string.delete_group)) && (isUserPresentInGroup || !isChannelDeleted)) {
+                if (menuItems[i].equals(context.getResources().getString(R.string.delete_group)) && (isUserPresentInGroup || !isChannelDeleted || isSupportGroup)) {
                     continue;
                 }
-                if (menuItems[i].equals(context.getResources().getString(R.string.delete_conversation)) && !alCustomizationSettings.isDeleteOption()) {
+                if (menuItems[i].equals(context.getResources().getString(R.string.delete_conversation_context)) && !alCustomizationSettings.isDeleteOption()) {
                     continue;
                 }
 

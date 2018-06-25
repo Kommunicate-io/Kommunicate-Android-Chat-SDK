@@ -58,7 +58,6 @@ public class KmAwayMessageResponse extends JsonMarker {
         private short status;
         private short sequence;
         private long createdBy;
-        private String metadata;
         private short category;
         private String created_at;
         private String updated_at;
@@ -119,14 +118,6 @@ public class KmAwayMessageResponse extends JsonMarker {
 
         public void setCreatedBy(long createdBy) {
             this.createdBy = createdBy;
-        }
-
-        public String getMetadata() {
-            return metadata;
-        }
-
-        public void setMetadata(String metadata) {
-            this.metadata = metadata;
         }
 
         public short getCategory() {

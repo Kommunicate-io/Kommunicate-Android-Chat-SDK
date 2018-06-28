@@ -1,18 +1,25 @@
 package io.kommunicate;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.List;
 
+import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
+import io.kommunicate.callbacks.KmPushNotificationHandler;
+import io.kommunicate.users.KMUser;
 
 /**
  * Created by ashish on 01/06/18.
@@ -21,7 +28,7 @@ import io.kommunicate.callbacks.KMStartChatHandler;
 public class KmHelper {
 
     //public static final String APP_KEY = "kommunicate-support";
-     public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1"; //prod
+    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1"; //prod
     //public static final String APP_KEY = "3c951e76437b755ce5ee8ad8a06703505"; //test encv key vipin
     //public static final String APP_KEY = "2187926e69fe6dabd86b89c6269838bab"; //test key devraj
     //public static final String APP_KEY = "applozic-sample-app";
@@ -104,6 +111,57 @@ public class KmHelper {
                 }
             });
         } catch (KmException e) {
+            dialog.dismiss();
+            e.printStackTrace();
+        }
+    }
+
+    public static void performLogin(final Context context, User user) {
+        final ProgressDialog dialog = new ProgressDialog(context);
+        dialog.setMessage("Please wait...");
+        dialog.setCancelable(false);
+        dialog.show();
+
+        KMUser kmUser = new KMUser();
+        kmUser.setUserId(user.getUserId());
+        kmUser.setEmail(user.getEmail());
+        kmUser.setContactNumber(user.getContactNumber());
+        kmUser.setDisplayName(user.getDisplayName());
+        kmUser.setApplicationId(Applozic.getInstance(context).getApplicationKey());
+
+        try {
+            Kommunicate.login(context, kmUser, new KMLoginHandler() {
+                @Override
+                public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                    Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
+                        @Override
+                        public void onSuccess(RegistrationResponse registrationResponse) {
+
+                        }
+
+                        @Override
+                        public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+
+                        }
+                    });
+                    if (dialog != null && dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    Kommunicate.openConversation(context);
+                    if(context instanceof Activity){
+                        ((Activity) context).finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                    if (dialog != null && dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    Toast.makeText(context, "Unable to start chat : " + registrationResponse, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
             dialog.dismiss();
             e.printStackTrace();
         }

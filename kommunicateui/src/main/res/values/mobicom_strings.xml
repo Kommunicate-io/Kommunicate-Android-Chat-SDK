@@ -196,6 +196,7 @@
     <string name="km_not_read">Not read yet</string>
     <string name="km_not_sent">Not sent</string>
     <string name="default_start_new_conversation">Start new conversation</string>
+    <string name="start_conversation">Start conversation</string>
 
     <string name="JUST_NOW">Just now</string>
     <string name="MINUTES"> mins</string>
@@ -204,4 +205,12 @@
     <string name="MINUTES_AGO"> mins ago</string>
     <string name="HOURS_AGO"> hrs ago</string>
     <string name="YESTERDAY">Yesterday</string>
+
+    <string name="emailEt">Email</string>
+    <string name="nameEt">Name</string>
+    <string name="phoneNumberEt">Phone number</string>
+    <string name="prechat_screen_text">We just need a few details to help you get started</string>
+    <string name="prechat_screen_toast_error_message">Either contact number or emailId is required.</string>
+    <string name="invalid_contact_number">Please enter a valid contact number</string>
+    <string name="invalid_email_id">Please enter a valid emailId</string>
 </resources>

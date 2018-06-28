@@ -48,6 +48,8 @@
     <color name="message_status_icon_colors">#5c5aa7</color>
     <color name="default_start_new_button_color">#5c5aa7</color>
     <color name="default_start_new_button_text_color">#ffffff</color>
+    <color name="prechat_lead_collection_image_background">#e9e9e9</color>
+    <color name="prechat_edittext_text_color">#444446</color>
 
     <color name="applozic_theme_color_app">#ff0099cc</color>
     <color name="applozic_theme_color_control_activated">#ff0099cc</color>

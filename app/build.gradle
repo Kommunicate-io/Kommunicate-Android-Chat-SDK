@@ -8,7 +8,10 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "KOMMUNICATE_AGENT", '"cati.risquez@frogtek.org"'
     }
     buildTypes {
         release {

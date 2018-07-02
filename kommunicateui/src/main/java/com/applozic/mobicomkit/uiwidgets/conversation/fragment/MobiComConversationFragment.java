@@ -1,6 +1,5 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,7 +39,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -116,7 +114,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPosit
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.ApplozicContextSpinnerAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
-//import com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter.TemplateCallbackListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMessageTemplateAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALBookingDetailsModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALGuestCountModel;
@@ -148,8 +145,6 @@ import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.rockerhieu.emojicon.EmojiconEditText;
-
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -179,7 +174,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public static final int MAX_ALLOWED_FILE_SIZE = 10 * 1024 * 1024;
     private static final String TAG = "MobiComConversation";
     private static int count;
-    public FrameLayout emoticonsFrameLayout, contextFrameLayout;
+    public FrameLayout contextFrameLayout;
     public GridView multimediaPopupGrid;
     protected List<Conversation> conversations;
     protected String title = "Conversations";
@@ -217,7 +212,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     protected Drawable deliveredIcon;
     protected Drawable readIcon;
     protected Drawable pendingIcon;
-    protected ImageButton emoticonsBtn;
     protected Support support;
     protected MultimediaOptionFragment multimediaOptionFragment = new MultimediaOptionFragment();
     protected boolean hideExtendedSendingOptionLayout;
@@ -292,10 +286,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
-    }
-
-    public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
-        this.emojiIconHandler = emojiIconHandler;
     }
 
     @Override
@@ -421,8 +411,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         };
 
         mediaUploadProgressBar = (ProgressBar) attachmentLayout.findViewById(R.id.media_upload_progress_bar);
-        emoticonsFrameLayout = (FrameLayout) list.findViewById(R.id.emojicons_frame_layout);
-        emoticonsBtn = (ImageButton) list.findViewById(R.id.emoji_btn);
         replayRelativeLayout = (RelativeLayout) list.findViewById(R.id.reply_message_layout);
         messageTextView = (TextView) list.findViewById(R.id.messageTextView);
         galleryImageView = (ImageView) list.findViewById(R.id.imageViewForPhoto);
@@ -435,7 +423,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         spinnerLayout.setVisibility(View.GONE);
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
-        emoticonsBtn.setOnClickListener(this);
         //listView.addHeaderView(spinnerLayout);
         sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
         deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
@@ -466,7 +453,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         messageEditText.setHintTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextHintTextColor()));
 
-        ((ConversationActivity) getActivity()).mEditEmojicon = (EmojiconEditText) messageEditText;
+        ((ConversationActivity) getActivity()).editText = messageEditText;
 
         userNotAbleToChatLayout = (LinearLayout) list.findViewById(R.id.user_not_able_to_chat_layout);
         userNotAbleToChatTextView = (TextView) userNotAbleToChatLayout.findViewById(R.id.user_not_able_to_chat_textView);
@@ -656,11 +643,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         });
 
         messageEditText.setOnClickListener(new View.OnClickListener() {
-
             @Override
-            public void onClick(View view) {
-                emoticonsFrameLayout.setVisibility(View.GONE);
-            }
+            public void onClick(View view) { }
         });
 
         attachReplyCancelLayout.setOnClickListener(new View.OnClickListener() {
@@ -684,8 +668,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
 
                     }
-                    emoticonsFrameLayout.setVisibility(View.GONE);
-
                     multimediaPopupGrid.setVisibility(View.GONE);
                 }
             }
@@ -730,7 +712,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                                     errorEditTextView.setError(null);
                                                     isToastVisible = false;
                                                 }
-                                                emoticonsFrameLayout.setVisibility(View.GONE);
                                                 sendMessage();
                                                 handleSendAndRecordButtonView(false);
                                                 errorEditTextView.setVisibility(View.VISIBLE);
@@ -741,7 +722,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendButton.setOnClickListener(new View.OnClickListener() {
                                           @Override
                                           public void onClick(View view) {
-                                              emoticonsFrameLayout.setVisibility(View.GONE);
                                               sendMessage();
                                               if (contact != null && !contact.isBlocked() || channel != null) {
                                                   handleSendAndRecordButtonView(false);
@@ -919,10 +899,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             if (attachmentOptions.containsKey(":file")) {
                 fileAttachmentButton.setVisibility(attachmentOptions.get(":file") ? VISIBLE : View.GONE);
-            }
-
-            if (attachmentOptions.containsKey(":emoticons")) {
-                emoticonsBtn.setVisibility(attachmentOptions.get(":emoticons") ? VISIBLE : View.GONE);
             }
         }
 
@@ -1179,10 +1155,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void setFirstTimeMTexterFriend(boolean firstTimeMTexterFriend) {
         this.firstTimeMTexterFriend = firstTimeMTexterFriend;
     }
-
-//    public EmojiconEditText getMessageEditText() {
-//        return messageEditText;
-//    }
 
     public void clearList() {
         this.getActivity().runOnUiThread(new Runnable() {
@@ -1542,7 +1514,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (hideExtendedSendingOptionLayout) {
             extendedSendingOptionLayout.setVisibility(View.GONE);
         }
-        emoticonsFrameLayout.setVisibility(View.GONE);
 
         if (contact != null) {
             Intent intent = new Intent(getActivity(), UserIntentService.class);
@@ -2467,14 +2438,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-//    public void onEmojiconClicked(Emojicon emojicon) {
-//        //TODO: Move OntextChangeListiner to EmojiEditableTExt
-//        int currentPos = messageEditText.getSelectionStart();
-//        messageEditText.setTextKeepState(messageEditText.getText().
-//                insert(currentPos, emojicon.getEmoji()));
-//    }
-
-
     @Override
     public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
         return super.getLayoutInflater(savedInstanceState);    //To change body of overridden methods use File | Settings | File Templates.
@@ -2483,18 +2446,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     //TODO: Please add onclick events here...  anonymous class are
     // TODO :hard to read and suggested if we have very few event view
     @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.emoji_btn) {
-            if (emoticonsFrameLayout.getVisibility() == VISIBLE) {
-                emoticonsFrameLayout.setVisibility(View.GONE);
-                Utils.toggleSoftKeyBoard(getActivity(), false);
-            } else {
-                Utils.toggleSoftKeyBoard(getActivity(), true);
-                emoticonsFrameLayout.setVisibility(VISIBLE);
-                multimediaPopupGrid.setVisibility(View.GONE);
-            }
-        }
-    }
+    public void onClick(View v) { }
 
     @Override
     public void onPause() {
@@ -3609,7 +3561,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).isTakePhoto(true);
                     ((ConversationActivity) getActivity()).processCameraAction();
@@ -3620,7 +3571,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         fileAttachmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).isAttachment(true);
                     ((ConversationActivity) getActivity()).processAttachment();
@@ -3631,7 +3581,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         locationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).processLocation();
                 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:applozic="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -18,7 +17,8 @@
             android:id="@+id/spinner_show"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:drawSelectorOnTop="true" />
+            android:drawSelectorOnTop="true"/>
+
     </FrameLayout>
 
     <RelativeLayout
@@ -42,7 +42,7 @@
                 android:cacheColorHint="#00000000"
                 android:clipToPadding="false"
                 android:focusable="true"
-                android:focusableInTouchMode="true" />
+                android:focusableInTouchMode="true"/>
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -54,7 +54,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/no_conversation"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/fab_start_new"
@@ -68,7 +68,7 @@
             android:layout_marginRight="15dp"
             android:background="@drawable/circle"
             android:src="@drawable/applozic_ic_action_add"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/start_new_conversation"
@@ -84,7 +84,8 @@
             android:textAllCaps="false"
             android:textColor="@color/default_start_new_button_text_color"
             android:textSize="14sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
+
     </RelativeLayout>
 
     <TextView
@@ -97,7 +98,7 @@
         android:textColor="@color/empty_conversation_text_color"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/attachment_layout"
@@ -114,20 +115,20 @@
             android:id="@+id/media_container"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"/>
 
         <TextView
             android:id="@+id/attached_file"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:adjustViewBounds="true" />
+            android:adjustViewBounds="true"/>
 
         <ProgressBar
             android:id="@+id/media_upload_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/close_attachment_layout"
@@ -136,7 +137,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/applozic_ic_action_cancel" />
+            android:src="@drawable/applozic_ic_action_cancel"/>
 
     </RelativeLayout>
 
@@ -167,7 +168,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:entries="@array/send_type_options"
-                android:paddingBottom="0dp" />
+                android:paddingBottom="0dp"/>
+
         </FrameLayout>
 
         <FrameLayout
@@ -186,7 +188,7 @@
                 android:layout_height="fill_parent"
                 android:background="@color/message_action_button"
                 android:text="@string/schedule"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"/>
 
         </FrameLayout>
 
@@ -206,7 +208,7 @@
                 android:layout_height="fill_parent"
                 android:layout_margin="0dp"
                 android:clickable="true"
-                android:paddingBottom="0dp" />
+                android:paddingBottom="0dp"/>
 
         </FrameLayout>
 
@@ -228,7 +230,7 @@
             android:gravity="center"
             android:padding="20dp"
             android:textSize="16sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -242,7 +244,7 @@
             android:id="@+id/awayMessageDivider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/awayMessageTV"
@@ -255,7 +257,7 @@
             android:paddingTop="11.5dp"
             android:text=""
             android:textSize="14sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/mobicomMessageTemplateView"
@@ -266,7 +268,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
             android:gravity="center_horizontal"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/applozicLabel"
@@ -278,12 +280,12 @@
             android:text="@string/powered_by_applozic_message"
             android:textColor="@color/white"
             android:textSize="10sp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/applozic_theme_color_primary" />
+            android:background="@color/applozic_theme_color_primary"/>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/individual_message_send_layout"
@@ -301,7 +303,7 @@
                 android:layout_gravity="top"
                 android:orientation="vertical">
 
-                <include layout="@layout/reply_message_layout" />
+                <include layout="@layout/reply_message_layout"/>
 
                 <RelativeLayout
                     android:id="@+id/edit_text_linear_layout"
@@ -323,7 +325,7 @@
                         android:paddingStart="10dp"
                         android:scaleType="center"
                         android:src="@drawable/applozic_ic_action_attachment"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <ImageButton
                         android:id="@+id/attach_button"
@@ -339,20 +341,8 @@
                         android:paddingStart="10dp"
                         android:scaleType="center"
                         android:src="@drawable/applozic_ic_action_attachment"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
-                    <!--
-                            <EditText
-                                android:id="@+id/conversation_message"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="8"
-                                android:hint="@string/enter_message_hint"
-                                android:maxLines="6"
-                                android:minLines="2"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
-                    -->
                     <ImageButton
                         android:id="@+id/conversation_send"
                         android:layout_width="35dp"
@@ -370,9 +360,9 @@
                         android:padding="8dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/send"
-                        android:visibility="visible" />
+                        android:visibility="visible"/>
 
-                    <com.rockerhieu.emojicon.EmojiconEditText
+                    <EditText
                         android:id="@+id/conversation_message"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -383,16 +373,12 @@
                         android:layout_toLeftOf="@id/conversation_send"
                         android:background="@color/apploizc_transparent_color"
                         android:cursorVisible="true"
-                        android:fontFamily="sans-serif"
-                        android:gravity="center_horizontal"
+                        android:imeOptions="actionSend|flagNoExtractUi"
                         android:inputType="textCapSentences|textMultiLine"
-                        android:letterSpacing="0.04"
                         android:maxLines="6"
-                        android:minLines="2"
-                        android:textAlignment="viewStart"
                         android:textColor="@color/black"
                         android:textColorHint="#8f8b8b"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/material_typography_textsize_subheading"/>
 
                 </RelativeLayout>
 
@@ -404,20 +390,12 @@
                     android:orientation="horizontal">
 
                     <ImageButton
-                        android:id="@+id/emoji_btn"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_marginLeft="16dp"
-                        android:background="@color/apploizc_transparent_color"
-                        android:src="@drawable/smiley" />
-
-                    <ImageButton
                         android:id="@+id/camera_btn"
                         android:layout_width="20dp"
                         android:layout_height="16.3dp"
                         android:layout_marginLeft="29dp"
                         android:background="@color/apploizc_transparent_color"
-                        android:src="@drawable/camera" />
+                        android:src="@drawable/camera"/>
 
                     <ImageButton
                         android:id="@+id/file_as_attachment_btn"
@@ -425,7 +403,7 @@
                         android:layout_height="18.3dp"
                         android:layout_marginLeft="30dp"
                         android:background="@color/apploizc_transparent_color"
-                        android:src="@drawable/attachment" />
+                        android:src="@drawable/attachment"/>
 
                     <ImageButton
                         android:id="@+id/location_btn"
@@ -433,8 +411,10 @@
                         android:layout_height="19.2dp"
                         android:layout_marginLeft="29dp"
                         android:background="@color/apploizc_transparent_color"
-                        android:src="@drawable/locaiton" />
+                        android:src="@drawable/locaiton"/>
+
                 </LinearLayout>
+
             </LinearLayout>
 
             <FrameLayout
@@ -450,7 +430,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <include layout="@layout/reply_message_layout" />
+                <include layout="@layout/reply_message_layout"/>
 
                 <LinearLayout
                     android:id="@+id/slide_LinearLayout"
@@ -470,7 +450,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="1dp"
-                        android:src="@drawable/slide_arrow_left" />
+                        android:src="@drawable/slide_arrow_left"/>
 
                     <TextView
                         android:id="@+id/slide_to_cancel_text_view"
@@ -481,7 +461,8 @@
                         android:layout_marginStart="6dp"
                         android:text="@string/slide_to_cancel"
                         android:textColor="#999999"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"/>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -500,7 +481,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:layout_marginTop="1dp"
-                        android:src="@drawable/applozic_audio_record" />
+                        android:src="@drawable/applozic_audio_record"/>
 
                     <TextView
                         android:id="@+id/recording_time_text_view"
@@ -511,7 +492,8 @@
                         android:layout_marginStart="6dp"
                         android:text="00:00"
                         android:textColor="#4d4c4b"
-                        android:textSize="16dp" />
+                        android:textSize="16dp"/>
+
                 </LinearLayout>
 
                 <FrameLayout
@@ -531,7 +513,7 @@
                         android:gravity="center"
                         android:scaleType="center"
                         android:src="@drawable/applozic_mic_pressed"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <EditText
                         android:id="@+id/error_edit_text_view"
@@ -540,16 +522,14 @@
                         android:layout_gravity="center"
                         android:enabled="false"
                         android:hint=""
-                        android:inputType="none" />
+                        android:inputType="none"/>
+
                 </FrameLayout>
+
             </FrameLayout>
-            <!--<com.rockerhieu.emojicon.EmojiconEditText-->
-            <!--android:id="@+id/conversation_message"-->
-            <!--android:text="I \ue32d emojicon"-->
-            <!--emojicon:emojiconSize="28sp"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"/>-->
+
         </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -568,23 +548,9 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/user_not_in_this_group_text"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
+
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/emojicons_frame_layout"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:layout_gravity="bottom"
-        android:visibility="gone">
-
-        <fragment
-            android:id="@+id/emojicons"
-            class="com.rockerhieu.emojicon.EmojiconsFragment"
-            android:layout_width="match_parent"
-            android:layout_height="220dp" />
-
-    </FrameLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -602,7 +568,8 @@
             android:numColumns="3"
             android:stretchMode="columnWidth"
             android:verticalSpacing="1dp"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </LinearLayout>
+
 </LinearLayout>

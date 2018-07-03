@@ -55,7 +55,6 @@ import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -68,11 +67,9 @@ import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.channel.database.ChannelDatabaseService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.async.AlGetMembersFromContactGroupListTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobiComKitBroadcastReceiver;
@@ -80,7 +77,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragm
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
@@ -101,27 +97,24 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.rockerhieu.emojicon.EmojiconEditText;
-import com.rockerhieu.emojicon.EmojiconGridFragment;
-import com.rockerhieu.emojicon.EmojiconsFragment;
-import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.vanniktech.emoji.EmojiEditText;
+import com.vanniktech.emoji.EmojiManager;
+import com.vanniktech.emoji.ios.IosEmojiProvider;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, EmojiconsFragment.OnEmojiconBackspaceClickedListener, EmojiconGridFragment.OnEmojiconClickedListener {
+public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface  {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
@@ -175,11 +168,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private SearchView searchView;
     private String searchTerm;
     private SearchListFragment searchListFragment;
-    public EmojiconEditText mEditEmojicon;
+    public EmojiEditText mEditEmojicon;
     private LinearLayout serviceDisconnectionLayout;
 
     public ConversationActivity() {
-
+        EmojiManager.install(new IosEmojiProvider());
     }
 
     public static void addFragment(FragmentActivity fragmentActivity, Fragment fragmentToAdd, String fragmentTag) {
@@ -229,10 +222,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             TextView txtView = (TextView) group.findViewById(R.id.snackbar_text);
             txtView.setMaxLines(5);
             snackbar.show();
-        } catch (Exception e) {
-
-        }
-
+        } catch (Exception e) { }
     }
 
     @Override
@@ -834,11 +824,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public void removeConversation(Message message, String formattedContactNumber) {
         conversationUIService.removeConversation(message, formattedContactNumber);
     }
-
+    @SuppressLint("MissingPermission")
     @Override
     public void onConnected(Bundle bundle) {
         try {
-            Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+           Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (mCurrentLocation == null) {
                 Toast.makeText(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
                 locationRequest = new LocationRequest();
@@ -992,6 +982,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
 
+    @SuppressLint("MissingPermission")
     public void processCall(Contact contactObj, Integer conversationId) {
         this.contact = baseContactService.getContactById(contactObj.getContactIds());
         this.currentConversationId = conversationId;
@@ -1276,16 +1267,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (message != null && conversation != null) {
             conversation.onClickOnMessageReply(message);
         }
-    }
-
-    @Override
-    public void onEmojiconClicked(Emojicon emojicon) {
-        EmojiconsFragment.input(mEditEmojicon, emojicon);
-    }
-
-    @Override
-    public void onEmojiconBackspaceClicked(View v) {
-        EmojiconsFragment.backspace(mEditEmojicon);
     }
 
     private class SyncMessagesAsyncTask extends AsyncTask<Boolean, Void, Void> {

@@ -259,7 +259,7 @@ public class ProfileFragment extends Fragment {
         });
 
         mImageLoader.setImageFadeIn(false);
-        mImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_180_holo_light);
+        mImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
         mImageLoader.loadImage(userContact, img_profile);
         return view;
     }
@@ -342,7 +342,7 @@ public class ProfileFragment extends Fragment {
             File file = FileClientService.getFilePath(DEFAULT_CONATCT_IMAGE, getContext(), "image", true);
             if (file == null || !file.exists()) {
                 Utils.printLog(getActivity(),TAG, "file not found,exporting it from drawable");
-                Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.applozic_ic_contact_picture_180_holo_light);
+                Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_person_grey_600_24dp);
                 String filePath = ImageUtils.saveImageToInternalStorage(FileClientService.getFilePath(DEFAULT_CONATCT_IMAGE, getActivity().getApplicationContext(), "image", true), bm);
                 file = new File(filePath);
             }

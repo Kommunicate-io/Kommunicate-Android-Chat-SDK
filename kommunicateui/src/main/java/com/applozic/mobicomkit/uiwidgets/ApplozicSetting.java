@@ -159,7 +159,7 @@ public class ApplozicSetting {
     }
 
     public int getEditTextBackgroundColorOrDrawableResource() {
-        return sharedPreferences.getInt(EDIT_TEXT_BACKGROUND_COLOR_OR_DRAWABLE, R.drawable.input);
+        return sharedPreferences.getInt(EDIT_TEXT_BACKGROUND_COLOR_OR_DRAWABLE, R.drawable.bubble_chat_input);
     }
 
     public ApplozicSetting setEditTextBackgroundColorOrDrawableResource(int colorOrDrawable) {

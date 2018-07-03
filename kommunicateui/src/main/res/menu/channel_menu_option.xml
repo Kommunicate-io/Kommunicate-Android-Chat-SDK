@@ -6,14 +6,14 @@
         android:id="@+id/edit_channel_name"
         android:icon="@drawable/ic_edit_white_24dp"
         android:orderInCategory="1"
-        android:showAsAction="ifRoom"
         android:title="@string/edit_group_name"
-        mobitexter:showAsAction="ifRoom" />
+        mobitexter:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/add_member_to_channel"
         android:icon="@drawable/ic_person_add_white_24dp"
         android:orderInCategory="2"
-        android:showAsAction="ifRoom"
         android:title="@string/add_member"
-        mobitexter:showAsAction="ifRoom" />
+        mobitexter:showAsAction="ifRoom"/>
+
 </menu>

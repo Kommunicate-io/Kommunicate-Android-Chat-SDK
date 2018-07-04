@@ -1357,8 +1357,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             mediaDownloadProgressBar = (ProgressBar) customView.findViewById(R.id.media_download_progress_bar);
             mediaUploadProgressBar = (ProgressBar) customView.findViewById(R.id.media_upload_progress_bar);
             messageTextLayout = customView.findViewById(R.id.messageTextLayout);
-            createdAtTime = (TextView) customView.findViewById(R.id.createdAtTime);
-            messageTextView = (TextView) customView.findViewById(R.id.message);
+            createdAtTime = customView.findViewById(R.id.createdAtTime);
+            messageTextView = customView.findViewById(R.id.message);
             contactImage = (CircleImageView) customView.findViewById(R.id.contactImage);
             alphabeticTextView = (TextView) customView.findViewById(R.id.alphabeticImage);
             deliveryStatus = (TextView) customView.findViewById(R.id.status);

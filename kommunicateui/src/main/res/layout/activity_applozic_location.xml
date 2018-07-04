@@ -1,79 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/location_activity_background"
     android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_map_screen"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
+        android:elevation="@dimen/material_default_elevation"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:subtitleTextAppearance="@style/ToolbarSubtitle"
-        app:titleTextAppearance="@style/ToolbarTitle" />
+        app:titleTextAppearance="@style/ToolbarTitle"/>
 
     <fragment
         android:id="@+id/map"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
-
-    <RelativeLayout
-        android:id="@+id/sendLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:elevation="4dp"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp">
-
-        <ImageView
-            android:id="@+id/locationIcon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="35dp"
-            android:layout_marginStart="35dp"
-            android:background="@drawable/button_circle"
-            android:scaleType="center"
-            android:src="@drawable/ic_my_location_white_24dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:layout_toRightOf="@+id/locationIcon"
-            android:text="@string/send_your_current_location"
-            android:textColor="@color/black"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/locationIcon"
-            android:textSize="14sp" />
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/applozic_location_view_divider_color" />
+        android:layout_height="0dip"
+        android:layout_weight="1.5"/>
 
     <LinearLayout
-        android:id="@+id/footerAd"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_gravity="top">
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/applozic_location_view_divider_color"/>
+
+        <RelativeLayout
+            android:id="@+id/sendLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/material_default_padding">
+
+
+                <ImageView
+                    android:id="@+id/locationIcon"
+                    android:layout_width="@dimen/material_lists_size_avatar"
+                    android:layout_height="@dimen/material_lists_size_avatar"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_circle"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_my_location_white_24dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/material_default_padding"
+                    android:text="@string/send_your_current_location"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/material_typography_textsize_subheading"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/applozic_location_view_divider_color"/>
+
+        <LinearLayout
+            android:id="@+id/footerAd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>
-

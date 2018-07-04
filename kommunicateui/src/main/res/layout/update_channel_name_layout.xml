@@ -1,92 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/material_grey_200"
+    android:orientation="vertical"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelNameActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
+        android:elevation="@dimen/material_default_elevation"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:subtitleTextAppearance="@style/ToolbarSubtitle"
-        app:titleTextAppearance="@style/ToolbarTitle" />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/applozic_group_profile"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="42dp"
-            android:src="@drawable/ic_person_grey_600_24dp" />
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/applozic_group_profile_camera"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignBottom="@+id/applozic_group_profile"
-            android:layout_alignEnd="@+id/applozic_group_profile"
-            android:layout_alignRight="@+id/applozic_group_profile"
-            android:background="@color/apploizc_transparent_color"
-            android:clickable="true" />
-    </RelativeLayout>
-
-    <EditText
-        android:id="@+id/newChannelName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/linearLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="156dp"
-        android:layout_weight="8"
-        android:hint="@string/new_channel_name_hint"
-        android:textAlignment="viewStart"
-        android:layout_gravity="start"
-        android:inputType="textAutoCorrect"
-        android:lines="1"
-        android:maxLength="255" />
+        app:titleTextAppearance="@style/ToolbarTitle"/>
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/channelNameCancel"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:text="@string/cancel" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="@dimen/material_default_padding">
 
-        <Button
-            android:id="@+id/channelNameOk"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:text="@string/ok_alert" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:paddingLeft="@dimen/material_default_padding"
+                android:paddingRight="@dimen/material_default_padding">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/applozic_group_profile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_people_grey_600_24dp"/>
+
+                <RelativeLayout
+                    android:layout_width="@dimen/material_touchable_minheight"
+                    android:layout_height="@dimen/material_touchable_minheight"
+                    android:layout_above="@+id/newChannelName"
+                    android:layout_alignEnd="@+id/applozic_group_profile"
+                    android:layout_alignRight="@+id/applozic_group_profile"
+                    android:background="@drawable/button_circle">
+
+                    <ImageView
+                        android:id="@+id/applozic_group_profile_camera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@color/apploizc_transparent_color"
+                        android:clickable="true"
+                        android:src="@drawable/ic_camera_alt_grey_600_24dp"
+                        android:tint="@color/material_white_1000"/>
+
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/newChannelName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/applozic_group_profile"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/material_default_padding"
+                    android:hint="@string/new_channel_name_hint"
+                    android:inputType="textAutoCorrect"
+                    android:lines="1"
+                    android:maxLength="255"
+                    android:textAlignment="viewStart"/>
+
+                <LinearLayout
+                    android:id="@+id/footerAd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:orientation="vertical"
+                    android:visibility="visible"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/channelNameCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
+                    android:text="@string/cancel"
+                    android:textColor="@color/material_grey_800"
+                    android:textSize="@dimen/material_typography_textsize_button"/>
+
+                <Button
+                    android:id="@+id/channelNameOk"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackground"
+                    android:text="@string/ok_alert"
+                    android:textColor="@color/material_grey_800"
+                    android:textSize="@dimen/material_typography_textsize_button"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/footerAd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:orientation="vertical"
-        android:visibility="gone"></LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

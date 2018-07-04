@@ -15,6 +15,7 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -45,9 +46,9 @@ public class ApplozicDocumentView {
     private static final String TAG = "ApplozicDocumentView";
     RelativeLayout mainLayout;
     RelativeLayout downloadInProgressLayout;
-    RelativeLayout downloadedLayout;
-    RelativeLayout previewLayout;
-    RelativeLayout retryLayout;
+    LinearLayout downloadedLayout;
+    LinearLayout previewLayout;
+    LinearLayout retryLayout;
     TextView sizeTextView;
     TextView fileText;
     Message message;
@@ -65,40 +66,25 @@ public class ApplozicDocumentView {
     private boolean mCacheFlag = false;
     private Handler mHandler = new Handler();
 
-
     public ApplozicDocumentView(Context context) {
         this.context = context;
     }
 
     public void inflateViewWithMessage(View rootview, Message message) {
         this.message = message;
-        mainLayout = (RelativeLayout) rootview.findViewById(R.id.attachment_doc_relative_layout);
-        downloadInProgressLayout = (RelativeLayout) rootview.findViewById(R.id.applozic_doc_download_progress_rl);
-        downloadedLayout = (RelativeLayout) rootview.findViewById(R.id.applozic_doc_downloaded);
-        previewLayout = (RelativeLayout) rootview.findViewById(R.id.download_doc_relative_layout);
-        retryLayout = (RelativeLayout) rootview.findViewById(R.id.retry_doc_relative_layout);
-        progressBar = (ProgressBar) rootview.findViewById(R.id.applozic_doc_download_progress);
-        sizeTextView = (TextView) rootview.findViewById(R.id.applozic_doc_file_size);
-        fileText = (TextView) rootview.findViewById(R.id.applozic_doc_file_name);
-        uploadDownloadImage = (ImageView) rootview.findViewById(R.id.applozic_download_image);
-        docIcon = (ImageView) rootview.findViewById(R.id.doc_icon);
-        ImageView cancelIcon = (ImageView) rootview.findViewById(R.id.download_calcle_icon);
-        audioseekbar = (SeekBar) rootview.findViewById(R.id.applozic_audio_seekbar);
-        audio_duration_textView = (TextView) rootview.findViewById(R.id.audio_duration_textView);
-
-        //progressBar.setVisibility(GONE);
-        //previewLayout.setVisibility(GONE);
-        //sizeTextView.setVisibility(GONE);
-        //downloadInProgressLayout.setVisibility(GONE);
-        //retryLayout.setVisibility(GONE);
-        //downloadedLayout.setVisibility(GONE);
-        //previewLayout.setVisibility(GONE);
-        //fileText.setVisibility(GONE);
-        //uploadDownloadImage.setVisibility(GONE);
-        //docIcon.setVisibility(GONE);
-        //cancelIcon.setVisibility(GONE);
-        //audioseekbar.setVisibility(GONE);
-        //audio_duration_textView.setVisibility(GONE);
+        mainLayout = rootview.findViewById(R.id.attachment_doc_relative_layout);
+        downloadInProgressLayout = rootview.findViewById(R.id.applozic_doc_download_progress_rl);
+        downloadedLayout = rootview.findViewById(R.id.applozic_doc_downloaded);
+        previewLayout = rootview.findViewById(R.id.download_doc_size_linear_layout);
+        retryLayout = rootview.findViewById(R.id.retry_doc_relative_layout);
+        progressBar = rootview.findViewById(R.id.applozic_doc_download_progress);
+        sizeTextView = rootview.findViewById(R.id.applozic_doc_file_size);
+        fileText = rootview.findViewById(R.id.applozic_doc_file_name);
+        uploadDownloadImage = rootview.findViewById(R.id.applozic_download_image);
+        docIcon = rootview.findViewById(R.id.doc_icon);
+        ImageView cancelIcon = rootview.findViewById(R.id.download_calcle_icon);
+        audioseekbar = rootview.findViewById(R.id.applozic_audio_seekbar);
+        audio_duration_textView = rootview.findViewById(R.id.audio_duration_textView);
 
         if (!message.hasAttachment()) {
             return;

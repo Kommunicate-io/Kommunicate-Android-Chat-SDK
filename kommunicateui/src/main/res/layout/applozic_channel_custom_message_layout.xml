@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
     android:layout_gravity="center"
@@ -8,8 +9,8 @@
     android:gravity="center"
     android:longClickable="false"
     android:orientation="horizontal"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp">
+    android:padding="@dimen/material_default_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
     <TextView
         android:id="@+id/channel_message"
@@ -18,7 +19,10 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/applozic_channel_custom_message"
         android:gravity="center_horizontal"
-        android:padding="8dp"
-        android:textSize="14sp" />
+        android:paddingBottom="@dimen/material_half_padding"
+        android:paddingLeft="@dimen/material_default_padding"
+        android:paddingRight="@dimen/material_default_padding"
+        android:paddingTop="@dimen/material_half_padding"
+        android:textSize="@dimen/material_typography_textsize_body"/>
 
 </LinearLayout>

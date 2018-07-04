@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/apploizc_dark_black_color"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_black_1000"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/apploizc_dark_black_color"
-        android:elevation="4dp"
-        android:paddingTop="10dp"
-        android:theme="@style/Applozic_FullScreen_Theme"
+        android:background="?attr/colorPrimary"
+        android:elevation="@dimen/material_default_elevation"
+        android:minHeight="?attr/actionBarSize"
         app:popupTheme="@style/Applozic_PopUpTheme"
-        app:subtitleTextAppearance="@style/ToolbarSubtitle"
-        app:titleTextAppearance="@style/ToolbarTitle" />
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <com.applozic.mobicomkit.uiwidgets.conversation.TouchImageView
         android:id="@+id/full_screen_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"/>
 
     <ProgressBar
         android:id="@+id/full_screen_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="visible" />
+        android:visibility="visible"/>
+
 </RelativeLayout>

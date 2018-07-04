@@ -1,23 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/attachment_doc_relative_layout"
-    android:layout_width="220dp"
-    android:layout_height="60dp"
-    android:background="@android:color/transparent"
-    android:visibility="gone">
-
-    <SeekBar
-        android:id="@+id/applozic_audio_seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="25dp"
-        android:thumbTint="@color/apploizc_lite_gray_color"
-        android:visibility="gone" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="right"
+    android:background="@color/sent_message_bg_color"
+    android:padding="@dimen/material_default_padding"
+    android:visibility="gone"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
     <LinearLayout
         android:id="@+id/download_doc_linear_layout"
@@ -28,89 +19,103 @@
         android:layout_alignParentTop="true"
         android:orientation="horizontal">
 
-        <RelativeLayout
-            android:id="@+id/download_doc_relative_layout"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:gravity="center_vertical"
-            android:background="@color/applozic_theme_color_primary">
+        <LinearLayout
+            android:id="@+id/download_doc_size_linear_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/applozic_download_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_archive_white_24dp" />
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_archive_white_24dp"/>
 
             <TextView
                 android:id="@+id/applozic_doc_file_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/applozic_download_image"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="@dimen/material_half_padding"
                 android:text="@string/kb45"
-                android:textColor="@color/white" />
+                android:textColor="@color/material_white_1000"
+                android:textSize="@dimen/material_typography_textsize_body"/>
 
+            <View
+                android:layout_width="0.2dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/material_default_padding"
+                android:background="@color/material_white_1000"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/retry_doc_relative_layout"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:gravity="center_vertical"
-            android:background="@color/applozic_theme_color_primary">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/applozic_retry__image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_unarchive_white_24dp" />
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_unarchive_white_24dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/applozic_retry__image"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="@dimen/material_half_padding"
                 android:text="@string/attachment_retry"
-                android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textColor="@color/material_white_1000"
+                android:textSize="@dimen/material_typography_textsize_body"/>
 
+            <View
+                android:layout_width="0.2dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/material_default_padding"
+                android:background="@color/material_white_1000"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/applozic_doc_download_progress_rl"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/applozic_doc_download_progress"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@drawable/applozic_upload_dot"
                 android:indeterminate="true"
-                android:visibility="visible" />
+                android:visibility="visible"/>
 
             <ImageView
                 android:id="@+id/download_calcle_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_close_grey_600_24dp" />
+                android:src="@drawable/ic_close_grey_600_24dp"/>
 
         </RelativeLayout>
 
-
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/applozic_doc_downloaded"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
             android:visibility="visible">
 
             <ImageView
@@ -118,28 +123,51 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_description_white_24dp" />
-        </RelativeLayout>
+                android:src="@drawable/ic_description_white_24dp"/>
 
+            <View
+                android:layout_width="0.2dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/material_default_padding"
+                android:background="@color/material_white_1000"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/applozic_doc_file_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxLines="2"
+            android:paddingLeft="@dimen/material_default_padding"
+            android:text=""
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_body"
+            android:visibility="visible"/>
+
+        <SeekBar
+            android:id="@+id/applozic_audio_seekbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dip"
+            android:minWidth="100dp"
+            android:thumbTint="@color/material_white_1000"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/audio_duration_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:maxLines="1"
+            android:paddingLeft="4dip"
             android:text=""
-            android:visibility="gone" />
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_caption"
+            android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/applozic_doc_file_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:maxLines="3"
-            android:text=" "
-            android:textColor="@color/white"
-            android:textSize="15sp" />
     </LinearLayout>
+
 </RelativeLayout>

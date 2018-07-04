@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/reply_message_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="visible"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/material_default_padding"
+        android:layout_marginLeft="@dimen/material_half_padding"
+        android:layout_marginRight="@dimen/material_half_padding"
+        android:layout_marginTop="2dip"
+        app:cardBackgroundColor="@color/material_grey_50"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="0.5dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="false"
+        app:contentPadding="@dimen/material_default_padding">
+
+        <LinearLayout
+            android:id="@+id/containerText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/containerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/replyNameTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:minWidth="@dimen/material_lists_height_row"
+                    android:text="Cati Rísquez"
+                    android:textColor="@color/material_grey_700"
+                    android:textSize="@dimen/material_typography_textsize_subheading"/>
+
+                <ImageView
+                    android:id="@+id/imageCancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/ic_close_grey_600_18dp"
+                    android:visibility="visible"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/messageTextLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/imageViewForAttachmentType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:src="@drawable/ic_camera_alt_grey_600_24dp"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/messageTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toRightOf="@+id/imageViewForAttachmentType"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textColor="@color/material_grey_600"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/imageViewRLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_below="@+id/containerText"
+            android:layout_gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imageViewForPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

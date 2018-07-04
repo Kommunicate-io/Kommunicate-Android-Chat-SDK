@@ -12,14 +12,19 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/material_default_padding">
 
-        <include layout="@layout/user_image_widget"/>
+        <include
+            android:id="@+id/profile_image_layout"
+            layout="@layout/widget_user_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"/>
 
         <LinearLayout
             android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/material_default_padding"
-            android:layout_toRightOf="@+id/profile_image_relative_layout"
+            android:layout_toRightOf="@+id/profile_image_layout"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -114,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/linear"
             android:layout_marginLeft="@dimen/material_default_padding"
-            android:layout_toRightOf="@+id/profile_image_relative_layout">
+            android:layout_toRightOf="@+id/profile_image_layout">
 
             <TextView
                 android:id="@+id/status"
@@ -146,10 +151,10 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_alignBottom="@+id/profile_image_relative_layout"
-            android:layout_alignRight="@+id/profile_image_relative_layout">
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_alignBottom="@+id/profile_image_layout"
+            android:layout_alignRight="@+id/profile_image_layout">
 
             <TextView
                 android:id="@+id/onlineTextView"

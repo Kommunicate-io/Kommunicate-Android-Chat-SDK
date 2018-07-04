@@ -1,102 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/reply_message_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="right"
+    android:background="@color/material_grey_200"
     android:orientation="vertical"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:visibility="gone">
+    android:visibility="gone"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment">
 
     <LinearLayout
+        android:id="@+id/containerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/material_half_padding"
+        android:paddingLeft="@dimen/material_default_padding"
+        android:paddingRight="@dimen/material_default_padding"
+        android:paddingTop="@dimen/material_half_padding">
+
+        <LinearLayout
+            android:id="@+id/containerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/replyNameTextView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:minWidth="@dimen/material_lists_height_row"
+                android:textColor="@color/material_grey_700"
+                android:textSize="@dimen/material_typography_textsize_subheading"/>
+
+            <ImageView
+                android:id="@+id/imageCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:scaleType="fitEnd"
+                android:src="@drawable/ic_close_grey_600_18dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/messageTextLayout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2">
-
-            <TextView
-                android:id="@+id/replyNameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:maxEms="14"
-                android:textDirection="locale"
-                android:textAlignment="gravity"
-                android:layout_marginRight="5dp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/replyNameTextView"
-                android:baselineAligned="false">
-
-                <ImageView
-                    android:id="@+id/imageViewForAttachmentType"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:gravity="end"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_people_grey_600_24dp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/messageTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textDirection="locale"
-                    android:maxEms="14"
-                    android:textAlignment="gravity"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:maxLines="3" />
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/imageViewRLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="0.8"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/imageViewForPhoto"
+                android:id="@+id/imageViewForAttachmentType"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/ic_camera_alt_grey_600_24dp"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/messageTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:gravity="end"
-                android:scaleType="centerCrop"
-                android:visibility="gone" />
+                android:layout_toRightOf="@+id/imageViewForAttachmentType"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textColor="@color/material_grey_600"/>
+
         </RelativeLayout>
 
     </LinearLayout>
 
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/imageViewRLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true">
+        android:layout_height="100dp"
+        android:layout_below="@+id/containerText"
+        android:layout_gravity="center"
+        android:visibility="gone">
 
-        <ImageButton
-            android:id="@+id/imageCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_close_grey_600_24dp"
-            android:visibility="gone" />
-    </FrameLayout>
+        <ImageView
+            android:id="@+id/imageViewForPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>
-
-

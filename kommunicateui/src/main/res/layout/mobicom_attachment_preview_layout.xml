@@ -1,40 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/attachment_preview_layout"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
     android:visibility="gone">
 
     <com.applozic.mobicomkit.api.attachment.AttachmentView
         android:id="@+id/main_attachment_view"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
         android:layout_centerInParent="true"
         android:scaleType="centerCrop"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/preview"
-        android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
         android:layout_centerInParent="true"
-        android:gravity="center"
-        android:minHeight="100dp"
-        android:minWidth="100dp"
         android:scaleType="centerCrop"
-        android:visibility="visible" />
+        android:visibility="gone"/>
 
     <ImageView
         android:id="@+id/video_icon"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="#50000000"
-        android:gravity="center"
-        android:padding="40dp"
         android:src="@drawable/ic_play_circle_filled_grey_200_48dp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/attachment_download_layout"
@@ -43,36 +36,38 @@
         android:layout_centerInParent="true"
         android:background="@drawable/mobicom_attachment_download"
         android:orientation="horizontal"
+        android:paddingLeft="@dimen/material_default_padding"
+        android:paddingRight="@dimen/material_default_padding"
+        android:paddingTop="@dimen/material_half_padding"
+        android:paddingBottom="@dimen/material_half_padding"
         android:visibility="visible">
 
         <ImageView
             android:id="@+id/download_image"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_file_download_white_24dp" />
+            android:src="@drawable/ic_file_download_white_24dp"/>
 
         <TextView
             android:id="@+id/attachment_size_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginLeft="@dimen/material_half_padding"
             android:text="@string/mb_10"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_body"/>
 
     </LinearLayout>
 
-
     <ProgressBar
         android:id="@+id/media_upload_progress_bar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:indeterminate="false"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/attachment_download_progress_layout"
@@ -80,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/mobicom_attachment_download"
-        android:orientation="horizontal"
+        android:padding="@dimen/material_half_padding"
         android:visibility="gone">
 
         <ImageView
@@ -89,15 +84,15 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_close_grey_600_24dp" />
+            android:src="@drawable/ic_close_grey_600_24dp"/>
 
         <ProgressBar
             android:id="@+id/media_download_progress_bar"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:visibility="visible" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible"/>
+
     </RelativeLayout>
 
     <LinearLayout
@@ -106,7 +101,10 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@drawable/mobicom_attachment_download"
-        android:orientation="horizontal"
+        android:paddingLeft="@dimen/material_default_padding"
+        android:paddingRight="@dimen/material_default_padding"
+        android:paddingTop="@dimen/material_half_padding"
+        android:paddingBottom="@dimen/material_half_padding"
         android:visibility="gone">
 
         <TextView
@@ -114,17 +112,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
             android:text="@string/attachment_retry"
             android:textAlignment="gravity"
-            android:textColor="@color/white"
-            android:textDirection="locale"
-            android:textSize="20sp" />
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_subheading"/>
 
     </LinearLayout>
+
 </RelativeLayout>

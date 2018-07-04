@@ -1,36 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
     android:layout_gravity="center"
     android:clickable="false"
     android:gravity="center"
     android:longClickable="false"
     android:orientation="horizontal"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp">
+    android:padding="@dimen/material_default_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
     <TextView
         android:id="@+id/chat_screen_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:text="10"
-        android:textSize="14sp"
+        android:textColor="@color/material_grey_600"
+        android:textSize="@dimen/material_typography_textsize_subheading"
         android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/chat_screen_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:paddingLeft="10dp"
-        android:paddingStart="10dp"
-        android:text=""
-        android:textSize="14sp"
-        android:visibility="gone" />
+        android:paddingLeft="@dimen/material_half_padding"
+        android:textColor="@color/material_grey_500"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:visibility="gone"/>
+
 </LinearLayout>

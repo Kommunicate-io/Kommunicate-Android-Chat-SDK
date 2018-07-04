@@ -36,8 +36,7 @@ public class MobicomMessageTemplateAdapter extends RecyclerView.Adapter<MobicomM
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.mobicom_message_template_item, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.mobicom_message_template_item, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -46,7 +45,6 @@ public class MobicomMessageTemplateAdapter extends RecyclerView.Adapter<MobicomM
         holder.messageText.setText(messageList.get(position));
         holder.messageText.setTextColor(Color.parseColor(messageTemplate.getTextColor()));
         holder.messageText.setBackgroundDrawable(getShape(holder.messageText.getContext()));
-
         holder.messageText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,11 +64,12 @@ public class MobicomMessageTemplateAdapter extends RecyclerView.Adapter<MobicomM
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         public TextView messageText;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            messageText = (TextView) itemView.findViewById(R.id.messageTemplateTv);
+            messageText = itemView.findViewById(R.id.messageTemplateTv);
         }
     }
 
@@ -79,8 +78,7 @@ public class MobicomMessageTemplateAdapter extends RecyclerView.Adapter<MobicomM
         bgShape.setShape(GradientDrawable.RECTANGLE);
         bgShape.setColor(Color.parseColor(messageTemplate.getBackGroundColor()));
         bgShape.setCornerRadius(dpToPixels(context, messageTemplate.getCornerRadius()));
-        bgShape.setStroke(dpToPixels(context, 2), Color.parseColor(messageTemplate.getBorderColor()));
-
+        bgShape.setStroke(dpToPixels(context, 1), Color.parseColor(messageTemplate.getBorderColor()));
         return bgShape;
     }
 

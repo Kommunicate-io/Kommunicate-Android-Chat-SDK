@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/applozic_theme_color_primary"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="@dimen/material_default_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.fragment.PictureUploadPopUpFragment">
 
     <LinearLayout
         android:id="@+id/upload_gallery_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/applozic_theme_color_primary"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_photo_white_24dp" />
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_photo_white_24dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/material_default_padding"
             android:text="@string/gallery"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_title"/>
 
     </LinearLayout>
 
@@ -33,25 +36,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@color/applozic_theme_color_primary"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_marginTop="@dimen/material_default_padding"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_camera_alt_grey_600_24dp"
             android:tint="@color/white"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/material_default_padding"
             android:text="@string/camera_option"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_title"/>
 
     </LinearLayout>
 
@@ -60,24 +62,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:background="@color/applozic_theme_color_primary"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_marginTop="@dimen/material_default_padding"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical"
             android:src="@drawable/ic_close_grey_600_24dp"
             android:tint="@color/white"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/material_default_padding"
             android:text="@string/remove_image"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_title"/>
 
     </LinearLayout>
+
 </LinearLayout>

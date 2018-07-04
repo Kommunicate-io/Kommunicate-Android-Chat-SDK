@@ -4,25 +4,20 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
+    android:padding="@dimen/material_half_padding"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/singleTextItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginStart="3dp"
         android:background="@drawable/al_count_button_shape"
-        android:paddingBottom="8dp"
-        android:paddingEnd="12dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingStart="12dp"
-        android:paddingTop="8dp"
+        android:paddingBottom="@dimen/material_half_padding"
+        android:paddingLeft="@dimen/material_default_padding"
+        android:paddingRight="@dimen/material_default_padding"
+        android:paddingTop="@dimen/material_half_padding"
         android:text="5 Star"
         android:textColor="@color/applozic_theme_color_primary"
-        android:textSize="15sp" />
+        android:textSize="@dimen/material_typography_textsize_body"/>
 
 </LinearLayout>

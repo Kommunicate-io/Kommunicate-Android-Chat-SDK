@@ -114,7 +114,7 @@ import java.util.Set;
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface  {
+public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
@@ -169,7 +169,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private String searchTerm;
     private SearchListFragment searchListFragment;
     public EmojiEditText mEditEmojicon;
-    private LinearLayout serviceDisconnectionLayout;
+    private RelativeLayout serviceDisconnectionLayout;
 
     public ConversationActivity() {
         EmojiManager.install(new IosEmojiProvider());
@@ -222,7 +222,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             TextView txtView = (TextView) group.findViewById(R.id.snackbar_text);
             txtView.setMaxLines(5);
             snackbar.show();
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -824,11 +825,12 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public void removeConversation(Message message, String formattedContactNumber) {
         conversationUIService.removeConversation(message, formattedContactNumber);
     }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onConnected(Bundle bundle) {
         try {
-           Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (mCurrentLocation == null) {
                 Toast.makeText(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
                 locationRequest = new LocationRequest();

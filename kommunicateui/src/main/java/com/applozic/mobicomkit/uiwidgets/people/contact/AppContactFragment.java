@@ -69,9 +69,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by adarsh on 1/8/15.
  */
 
-/**
- * Created by adarsh on 30/5/15.
- */
 @SuppressLint("ValidFragment")
 public class AppContactFragment extends ListFragment implements SearchListFragment,
         AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -114,13 +111,11 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
      * Fragments require an empty constructor.
      */
     public AppContactFragment() {
-
     }
 
     public AppContactFragment(String[] userIdArray) {
         this.userIdArray = userIdArray;
     }
-
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -169,7 +164,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
 
                     @Override
                     public void onFailure(String response, Context context) {
-
                     }
                 };
                 ApplozicGetMemberFromContactGroupTask applozicGetMemberFromContactGroupTask = new ApplozicGetMemberFromContactGroupTask(getActivity(), MobiComUserPreference.getInstance(context).getContactsGroupId(), String.valueOf(Channel.GroupType.CONTACT_GROUP.getValue()), eventMemberListener);
@@ -206,17 +200,14 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                 new AlGetMembersFromContactGroupListTask(getContext(), listener, groupList, null, "9").execute();
             }
         }
-
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the list fragment layout
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.contact_list_fragment, container, false);
-        shareButton = (Button) view.findViewById(R.id.actionButton);
+        shareButton = view.findViewById(R.id.actionButton);
         shareButton.setVisibility(alCustomizationSettings.isInviteFriendsInContactActivity() ? View.VISIBLE : View.GONE);
-        resultTextView = (TextView) view.findViewById(R.id.result);
+        resultTextView = view.findViewById(R.id.result);
         return view;
     }
 
@@ -227,11 +218,8 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_SEND)
-                        .setType("text/plain").putExtra(Intent.EXTRA_TEXT, inviteMessage);
-
+                intent.setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, inviteMessage);
                 List<Intent> targetedShareIntents = new ArrayList<Intent>();
-
                 List<ResolveInfo> resInfo = getActivity().getPackageManager().queryIntentActivities(intent, 0);
                 if (!resInfo.isEmpty()) {
                     for (ResolveInfo resolveInfo : resInfo) {
@@ -274,7 +262,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                             loading = true;
                         } else {
                             loading = false;
-
                         }
                     }
 
@@ -311,7 +298,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         }
     }
 
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -339,9 +325,7 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
         final Cursor cursor = mAdapter.getCursor();
-
         // Moves to the Cursor row corresponding to the ListView item that was clicked
         cursor.moveToPosition(position);
         Contact contact = contactDatabase.getContact(cursor, "_id");
@@ -379,16 +363,11 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         // the search filter, and restarts the loader to do a new query
         // using the new search string.
         String newFilter = !TextUtils.isEmpty(newText) ? newText : null;
-
         // Don't do anything if the filter is empty
-
         // Updates current filter to new filter
         mSearchTerm = newFilter;
         mAdapter.indexOfSearchQuery(newFilter);
-
-        getLoaderManager().restartLoader(
-                AppContactFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
-
+        getLoaderManager().restartLoader(AppContactFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
         return true;
     }
 
@@ -573,11 +552,11 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                     mInflater.inflate(R.layout.contact_list_item, parent, false);
 
             final ViewHolder holder = new ViewHolder();
-            holder.text1 = (TextView) itemLayout.findViewById(R.id.text1);
-            holder.text2 = (TextView) itemLayout.findViewById(R.id.text2);
-            holder.contactNumberTextView = (TextView) itemLayout.findViewById(R.id.contactNumberTextView);
-            holder.icon = (CircleImageView) itemLayout.findViewById(R.id.contactImage);
-            holder.contactIcon = (TextView) itemLayout.findViewById(R.id.contactIcon);
+            holder.text1 = itemLayout.findViewById(R.id.text1);
+            holder.text2 = itemLayout.findViewById(R.id.text2);
+            holder.contactNumberTextView = itemLayout.findViewById(R.id.contactNumberTextView);
+            holder.icon = itemLayout.findViewById(R.id.contactImage);
+            holder.contactIcon = itemLayout.findViewById(R.id.alphabeticImage);
             itemLayout.setTag(holder);
             return itemLayout;
         }
@@ -591,9 +570,7 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
             // Gets handles to individual view resources
             final ViewHolder holder = (ViewHolder) view.getTag();
 
-            //////////////////////////
             Contact contact = contactDatabase.getContact(cursor, "_id");
-            ///////////////////
 
             holder.text1.setText(contact.getDisplayName() == null ? contact.getUserId() : contact.getDisplayName());
             holder.text2.setText(contact.getUserId());
@@ -634,9 +611,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                 holder.text1.setLayoutParams(layoutParams);
             }
             // Returns the item layout view
-
-
-            ///////////////////////
             final int startIndex = indexOfSearchQuery(contact.getDisplayName());
 
             if (startIndex == -1) {
@@ -661,8 +635,7 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
 
                 // Sets the span to start at the starting point of the match and end at "length"
                 // characters beyond the starting point
-                highlightedName.setSpan(highlightTextSpan, startIndex,
-                        startIndex + mSearchTerm.length(), 0);
+                highlightedName.setSpan(highlightTextSpan, startIndex, startIndex + mSearchTerm.length(), 0);
 
                 // Binds the SpannableString to the display name View object
                 holder.text1.setText(highlightedName);
@@ -670,7 +643,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                 // Since the search string matched the name, this hides the secondary message
                 holder.text2.setVisibility(View.GONE);
             }
-
         }
 
         /**
@@ -741,20 +713,16 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     }
 
     private final class RefreshContactsScreenBroadcast extends BroadcastReceiver {
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null && BroadcastService.INTENT_ACTIONS.UPDATE_USER_DETAIL.toString().equals(intent.getAction())) {
                 try {
                     if (getLoaderManager() != null && userIdArray == null) {
-                        getLoaderManager().restartLoader(
-                                AppContactFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
+                        getLoaderManager().restartLoader(AppContactFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
                     }
-                } catch (Exception e) {
-
-                }
+                } catch (Exception e) { }
             }
         }
     }
-
 }
-

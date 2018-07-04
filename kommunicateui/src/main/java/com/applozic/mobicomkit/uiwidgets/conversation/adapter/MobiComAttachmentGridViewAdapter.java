@@ -22,7 +22,6 @@ import com.applozic.mobicommons.file.FileUtils;
 
 import java.util.ArrayList;
 
-
 public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
 
     public static final int REQUEST_CODE = 100;
@@ -36,7 +35,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Uri> uris;
 
-
     public MobiComAttachmentGridViewAdapter(Context context, ArrayList<Uri> uris, AlCustomizationSettings alCustomizationSettings, boolean disableNewAttachment) {
         this.context = context;
         this.alCustomizationSettings = alCustomizationSettings;
@@ -46,10 +44,8 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        //Extra one item is added
         return uris.size() + (disableNewAttachment ? 0 : 1);
     }
-
 
     @Override
     public Object getItem(int i) {
@@ -65,27 +61,24 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     public View getView(final int position, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (view == null) {
-            view = inflater.inflate(R.layout.mobicom_attachment_gridview_item, viewGroup, false);//Inflate layout
+            view = inflater.inflate(R.layout.mobicom_attachment_gridview_item, viewGroup, false);
         }
-        deleteButton = (ImageButton) view.findViewById(R.id.mobicom_attachment_delete_btn);
-        galleryImageView = (ImageView) view.findViewById(R.id.galleryImageView);
-        fileSize = (TextView) view.findViewById(R.id.mobicom_attachment_file_size);
-        attachmentImageView = (ImageView) view.findViewById(R.id.mobicom_attachment_image);
-        fileName = (TextView) view.findViewById(R.id.mobicom_attachment_file_name);
+        deleteButton = view.findViewById(R.id.mobicom_attachment_delete_btn);
+        galleryImageView = view.findViewById(R.id.galleryImageView);
+        fileSize = view.findViewById(R.id.mobicom_attachment_file_size);
+        attachmentImageView = view.findViewById(R.id.mobicom_attachment_image);
+        fileName = view.findViewById(R.id.mobicom_attachment_file_name);
 
         galleryImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (position < getCount() - 1) {
                     return;
                 }
-
                 if (getCount() > alCustomizationSettings.getMaxAttachmentAllowed()) {
                     Toast.makeText(context, R.string.mobicom_max_attachment_warning, Toast.LENGTH_LONG).show();
                     return;
                 }
-
                 Intent getContentIntent = FileUtils.createGetContentIntent();
                 getContentIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                 Intent intentPick = Intent.createChooser(getContentIntent, context.getString(R.string.select_file));
@@ -132,7 +125,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
         return view;
     }
 
-
     private void setAttachmentView(Uri uri) {
         attachmentImageView.setVisibility(View.VISIBLE);
         fileName.setVisibility(View.VISIBLE);
@@ -148,10 +140,9 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
 
     private void setNewAttachmentView() {
         deleteButton.setVisibility(View.GONE);
-        galleryImageView.setImageResource(R.drawable.ic_add_white_24dp);
+        galleryImageView.setImageResource(R.drawable.mobicom_new_attachment);
         fileName.setVisibility(View.GONE);
         attachmentImageView.setVisibility(View.GONE);
         fileSize.setText(R.string.New_Attachment);
     }
-
 }

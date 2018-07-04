@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/individual_message_send_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:orientation="horizontal"
+    android:layout_marginBottom="@dimen/material_half_padding"
+    android:paddingTop="@dimen/material_half_padding"
+    android:visibility="visible"
+    tools:showIn="@layout/mobicom_message_list">
+
+    <LinearLayout
+        android:id="@+id/main_edit_text_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/edit_text_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/material_touchable_minheight"
+            android:paddingLeft="@dimen/material_half_padding"
+            android:paddingRight="@dimen/material_half_padding">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="false"
+                android:layout_marginRight="@dimen/material_half_padding"
+                android:layout_toLeftOf="@+id/conversation_send"
+                android:minHeight="@dimen/material_touchable_minheight"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0.5dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="false"
+                app:contentPaddingBottom="6dip"
+                app:contentPaddingTop="6dip">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/widget_reply_message_edit_layout"/>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/emoji_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/conversation_message"
+                            android:paddingLeft="@dimen/material_half_padding"
+                            android:paddingRight="@dimen/material_half_padding"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_sentiment_satisfied_grey_600_24dp"/>
+
+                        <ImageView
+                            android:id="@+id/camera_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/conversation_message"
+                            android:layout_alignParentRight="true"
+                            android:paddingLeft="@dimen/material_half_padding"
+                            android:paddingRight="@dimen/material_half_padding"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_camera_alt_grey_600_24dp"/>
+
+                        <ImageView
+                            android:id="@+id/options_attachment_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/conversation_message"
+                            android:layout_toLeftOf="@+id/camera_btn"
+                            android:paddingLeft="@dimen/material_half_padding"
+                            android:paddingRight="@dimen/material_half_padding"
+                            android:scaleType="center"
+                            android:src="@drawable/ic_attach_file_grey_600_24dp"/>
+
+                        <com.vanniktech.emoji.EmojiEditText
+                            android:id="@+id/conversation_message"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_toLeftOf="@+id/options_attachment_btn"
+                            android:layout_toRightOf="@+id/emoji_btn"
+                            android:background="@color/apploizc_transparent_color"
+                            android:cursorVisible="true"
+                            android:hint="Escribe tu mensaje..."
+                            android:imeOptions="actionSend|flagNoExtractUi"
+                            android:inputType="textCapSentences|textMultiLine"
+                            android:maxLines="6"
+                            android:textColor="@color/material_grey_800"
+                            android:textColorHint="@color/material_grey_500"
+                            android:textSize="@dimen/material_typography_textsize_subheading"
+                            app:emojiSize="@dimen/material_typography_textsize_title"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <ImageView
+                android:id="@+id/conversation_send"
+                android:layout_width="@dimen/material_touchable_minheight"
+                android:layout_height="@dimen/material_touchable_minheight"
+                android:layout_alignBottom="@+id/cardView"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="3dip"
+                android:background="@drawable/button_circle"
+                android:scaleType="center"
+                android:src="@drawable/ic_send_white_24dp"
+                android:visibility="visible"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/audio_record_frame_layout"
+        android:layout_width="0dp"
+        android:layout_height="53dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <include layout="@layout/reply_message_layout"/>
+
+        <LinearLayout
+            android:id="@+id/slide_LinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:orientation="horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/slide_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/slide_arrow_left"/>
+
+            <TextView
+                android:id="@+id/slide_to_cancel_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:text="@string/slide_to_cancel"
+                android:textColor="#999999"
+                android:textSize="12dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center"
+            android:orientation="horizontal"
+            android:paddingEnd="13dp"
+            android:paddingLeft="13dp"
+            android:paddingStart="13dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/audio_record_icon_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:layout_marginTop="1dp"
+                android:src="@drawable/ic_mic_white_24dp"
+                android:tint="@color/material_red_800"/>
+
+            <TextView
+                android:id="@+id/recording_time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:text="00:00"
+                android:textColor="#4d4c4b"
+                android:textSize="16dp"/>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/record_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_circle"
+                android:clickable="true"
+                android:gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/ic_mic_white_24dp"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/error_edit_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:enabled="false"
+                android:hint=""
+                android:inputType="none"/>
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
+    

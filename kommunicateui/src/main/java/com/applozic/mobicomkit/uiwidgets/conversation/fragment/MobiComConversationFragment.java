@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -31,6 +32,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +53,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -165,6 +168,8 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
 
+import io.codetail.animation.ViewAnimationUtils;
+
 import static android.view.View.VISIBLE;
 import static java.util.Collections.disjoint;
 
@@ -193,8 +198,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     protected Channel channel;
     protected Integer currentConversationId;
     protected EditText messageEditText;
-    protected ImageButton sendButton, recordButton;
-    protected ImageButton attachButton;
+    protected ImageView sendButton;
+    protected ImageButton recordButton;
+    //protected ImageView attachButton;
     protected Spinner sendType;
     protected LinearLayout individualMessageSendLayout, mainEditTextLinearLayout;
     protected LinearLayout extendedSendingOptionLayout;
@@ -217,7 +223,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     protected Drawable deliveredIcon;
     protected Drawable readIcon;
     protected Drawable pendingIcon;
-    protected ImageButton emoticonsBtn;
+    protected ImageView emoticonsBtn;
     protected Support support;
     protected MultimediaOptionFragment multimediaOptionFragment = new MultimediaOptionFragment();
     protected boolean hideExtendedSendingOptionLayout;
@@ -238,7 +244,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     MuteNotificationRequest muteNotificationRequest;
     List<String> restrictedWords;
     RelativeLayout replayRelativeLayout;
-    ImageButton attachReplyCancelLayout;
+    ImageView attachReplyCancelLayout;
     TextView nameTextView, messageTextView;
     ImageView galleryImageView;
     FileClientService fileClientService;
@@ -276,7 +282,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private EditText errorEditTextView;
     private RecyclerView messageTemplateView;
     private ImageView audioRecordIconImageView;
-    private ImageButton cameraButton, locationButton, fileAttachmentButton;
+    private ImageView cameraButton, cameraOptionsButton, locationButton, fileAttachmentButton;
+    private ImageView optionsAttachmentButton;
     WeakReference<ImageButton> recordButtonWeakReference;
     RecyclerView recyclerView;
     RecyclerViewPositionHelper recyclerViewPositionHelper;
@@ -289,6 +296,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     DashedLineView awayMessageDivider;
     TextView awayMessageTv;
     TextView applozicLabel;
+    private LinearLayout mainLayout, contentLayout;
+    private CardView optionsLayout;
+    private boolean isOpen = false;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -358,15 +368,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
         slideImageView = (ImageView) list.findViewById(R.id.slide_image_view);
-        sendButton = (ImageButton) individualMessageSendLayout.findViewById(R.id.conversation_send);
+        sendButton = individualMessageSendLayout.findViewById(R.id.conversation_send);
         recordButton = (ImageButton) individualMessageSendLayout.findViewById(R.id.record_button);
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         audioRecordFrameLayout = (FrameLayout) list.findViewById(R.id.audio_record_frame_layout);
         messageTemplateView = (RecyclerView) list.findViewById(R.id.mobicomMessageTemplateView);
         applozicLabel = list.findViewById(R.id.applozicLabel);
         cameraButton = list.findViewById(R.id.camera_btn);
+        cameraOptionsButton = list.findViewById(R.id.camera_options_btn);
         locationButton = list.findViewById(R.id.location_btn);
         fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
+        optionsAttachmentButton = list.findViewById(R.id.options_attachment_btn);
+        mainLayout = list.findViewById(R.id.main_layout);
+        contentLayout = list.findViewById(R.id.content_layout);
+        optionsLayout = list.findViewById(R.id.options_attachment_layout);
         processAttachmentIconsClick();
         Configuration config = getResources().getConfiguration();
         recordButtonWeakReference = new WeakReference<ImageButton>(recordButton);
@@ -421,12 +436,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         };
 
         mediaUploadProgressBar = (ProgressBar) attachmentLayout.findViewById(R.id.media_upload_progress_bar);
-        emoticonsBtn = (ImageButton) list.findViewById(R.id.emoji_btn);
+        emoticonsBtn = list.findViewById(R.id.emoji_btn);
         replayRelativeLayout = (RelativeLayout) list.findViewById(R.id.reply_message_layout);
         messageTextView = (TextView) list.findViewById(R.id.messageTextView);
         galleryImageView = (ImageView) list.findViewById(R.id.imageViewForPhoto);
         nameTextView = (TextView) list.findViewById(R.id.replyNameTextView);
-        attachReplyCancelLayout = (ImageButton) list.findViewById(R.id.imageCancel);
+        attachReplyCancelLayout = list.findViewById(R.id.imageCancel);
         imageViewRLayout = (RelativeLayout) list.findViewById(R.id.imageViewRLayout);
         imageViewForAttachmentType = (ImageView) list.findViewById(R.id.imageViewForAttachmentType);
         spinnerLayout = inflater.inflate(R.layout.mobicom_message_list_header_footer, null);
@@ -456,7 +471,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         GradientDrawable bgShapeRecordButton = (GradientDrawable) recordButton.getBackground();
         bgShapeRecordButton.setColor(Color.parseColor(alCustomizationSettings.getSendButtonBackgroundColor().trim()));
 
-        attachButton = (ImageButton) individualMessageSendLayout.findViewById(R.id.attach_button);
+        //attachButton = individualMessageSendLayout.findViewById(R.id.attach_button);
 
         sendType = (Spinner) extendedSendingOptionLayout.findViewById(R.id.sendTypeSpinner);
         messageEditText = (EditText) individualMessageSendLayout.findViewById(R.id.conversation_message);
@@ -684,6 +699,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                     }
                     dismissEmojiKeyboard();
+                    dismissOptionsAttachmentView();
                     multimediaPopupGrid.setVisibility(View.GONE);
                 }
             }
@@ -729,6 +745,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                                     isToastVisible = false;
                                                 }
                                                 dismissEmojiKeyboard();
+                                                dismissOptionsAttachmentView();
                                                 sendMessage();
                                                 handleSendAndRecordButtonView(false);
                                                 errorEditTextView.setVisibility(View.VISIBLE);
@@ -740,6 +757,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                           @Override
                                           public void onClick(View view) {
                                               dismissEmojiKeyboard();
+                                              dismissOptionsAttachmentView();
                                               sendMessage();
                                               if (contact != null && !contact.isBlocked() || channel != null) {
                                                   handleSendAndRecordButtonView(false);
@@ -1547,6 +1565,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             extendedSendingOptionLayout.setVisibility(View.GONE);
         }
         dismissEmojiKeyboard();
+        dismissOptionsAttachmentView();
 
         if (contact != null) {
             Intent intent = new Intent(getActivity(), UserIntentService.class);
@@ -2311,7 +2330,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             downloadInProgressLayout.setVisibility(View.GONE);
                         }
                         if (message.getFileMetas() != null && !"image".contains(message.getFileMetas().getContentType()) && !"video".contains(message.getFileMetas().getContentType())) {
-                            RelativeLayout applozicDocRelativeLayout = (RelativeLayout) view.findViewById(R.id.applozic_doc_downloaded);
+                            LinearLayout applozicDocRelativeLayout = view.findViewById(R.id.applozic_doc_downloaded);
                             ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.doc_icon);
                             if (message.getFileMetas() != null) {
                                 if (message.getFileMetas().getContentType().contains("audio")) {
@@ -2381,7 +2400,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                 preview.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(message.getFilePaths().get(0)));
                             } else if (message.getFileMetas() != null) {
                                 //Hide Attachment View...
-                                RelativeLayout applozicDocRelativeLayout = (RelativeLayout) view.findViewById(R.id.applozic_doc_downloaded);
+                                LinearLayout applozicDocRelativeLayout = view.findViewById(R.id.applozic_doc_downloaded);
                                 ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.doc_icon);
                                 if (message.getFileMetas() != null && message.getFilePaths() == null) {
                                     if (message.getFileMetas().getContentType().contains("audio")) {
@@ -2489,6 +2508,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.emoji_btn) {
+            dismissOptionsAttachmentView();
             if (emojiPopup.isShowing()) {
                 emojiPopup.dismiss();
             } else {
@@ -3607,15 +3627,25 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void processAttachmentIconsClick() {
+        optionsAttachmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismissEmojiKeyboard();
+                clickOptionsAttachment();
+            }
+        });
 
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismissEmojiKeyboard();
-                if (getActivity() != null) {
-                    ((ConversationActivity) getActivity()).isTakePhoto(true);
-                    ((ConversationActivity) getActivity()).processCameraAction();
-                }
+                openCamera();
+            }
+        });
+
+        cameraOptionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCamera();
             }
         });
 
@@ -3623,6 +3653,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onClick(View v) {
                 dismissEmojiKeyboard();
+                dismissOptionsAttachmentView();
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).isAttachment(true);
                     ((ConversationActivity) getActivity()).processAttachment();
@@ -3634,11 +3665,71 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onClick(View v) {
                 dismissEmojiKeyboard();
+                dismissOptionsAttachmentView();
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).processLocation();
                 }
             }
         });
+    }
+
+    private void openCamera() {
+        dismissEmojiKeyboard();
+        dismissOptionsAttachmentView();
+        if (getActivity() != null) {
+            ((ConversationActivity) getActivity()).isTakePhoto(true);
+            ((ConversationActivity) getActivity()).processCameraAction();
+        }
+    }
+
+    private void clickOptionsAttachment() {
+        if (!isOpen) {
+            revealAnimationView();
+        } else {
+            unrevealAnimationView();
+        }
+    }
+
+    private void revealAnimationView() {
+        int endCenterX = optionsLayout.getWidth() / 2;
+        int endCenterY = optionsLayout.getHeight() / 2;
+        float startRadius = 0;
+        float finalRadius = Math.max(optionsLayout.getWidth(), optionsLayout.getHeight()) * 1.1f;
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(optionsLayout, endCenterX, endCenterY, startRadius, finalRadius);
+        circularReveal.setDuration(500);
+        circularReveal.setInterpolator(new AccelerateInterpolator());
+        optionsLayout.setVisibility(View.VISIBLE);
+        circularReveal.start();
+        isOpen = true;
+    }
+
+    private void unrevealAnimationView() {
+        int startCenterX = optionsLayout.getWidth() / 2;
+        int startCenterY = optionsLayout.getHeight() / 2;
+        float startRadius = Math.max(optionsLayout.getWidth(), optionsLayout.getHeight()) * 1.1f;
+        float finalRadius = 0;
+        Animator circularReveal = ViewAnimationUtils.createCircularReveal(optionsLayout, startCenterX, startCenterY, startRadius, finalRadius);
+        circularReveal.setDuration(500);
+        circularReveal.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) { }
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                optionsLayout.setVisibility(View.GONE);
+            }
+            @Override
+            public void onAnimationCancel(Animator animator) { }
+            @Override
+            public void onAnimationRepeat(Animator animator) { }
+        });
+        circularReveal.start();
+        isOpen = false;
+    }
+
+    private void dismissOptionsAttachmentView() {
+        if (isOpen) {
+            unrevealAnimationView();
+        }
     }
 
     public void showAwayMessage(boolean show, String message) {

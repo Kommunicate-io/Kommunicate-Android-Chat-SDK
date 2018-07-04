@@ -96,7 +96,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.channel_create_activty_layout);
+        setContentView(R.layout.channel_create_activity_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
@@ -123,7 +123,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
         applozicPermissions = new ApplozicPermissions(this, layout);
         channelName = (EditText) findViewById(R.id.channelName);
         circleImageView = (CircleImageView) findViewById(R.id.channelIcon);
-        uploadImageButton = (CircleImageView) findViewById(R.id.applozic_channel_profile_camera);
+        uploadImageButton = findViewById(R.id.applozic_channel_profile_camera);
         uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

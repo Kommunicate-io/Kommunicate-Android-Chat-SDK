@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,25 +9,39 @@
     <ListView
         android:id="@id/android:list"
         style="@style/ContactListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:divider="@drawable/list_divider_contact"
+        android:dividerHeight="0.5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@id/android:empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/material_default_padding">
+        android:padding="@dimen/material_default_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:gravity="center"
             android:text="@string/no_contacts"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/material_grey_700"/>
+            android:textColor="@color/material_grey_700"
+            android:textSize="@dimen/material_typography_textsize_title"
+            app:layout_constraintBottom_toTopOf="@+id/actionButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <Button
             android:id="@+id/actionButton"
@@ -35,10 +50,13 @@
             android:gravity="center"
             android:padding="@dimen/material_default_padding"
             android:text="@string/invite"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/material_grey_800"
-            android:visibility="gone"/>
+            android:textSize="@dimen/material_typography_textsize_button"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

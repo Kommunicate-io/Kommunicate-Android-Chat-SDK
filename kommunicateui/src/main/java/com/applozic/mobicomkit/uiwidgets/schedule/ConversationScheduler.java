@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,7 @@ import com.applozic.mobicommons.commons.core.utils.DateUtils;
  */
 public class ConversationScheduler extends DialogFragment {
     private ScheduledTimeHolder scheduledTimeHolder;
-    private LinearLayout conversationScheduler;
+    private ConstraintLayout conversationScheduler;
     private Button scheduleOption;
     private String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
@@ -47,7 +48,7 @@ public class ConversationScheduler extends DialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View conversationSchedulerLayout = inflater.inflate(R.layout.conversation_scheduler, null, false);
-        conversationScheduler = (LinearLayout) conversationSchedulerLayout.findViewById(R.id.conversation_scheduler);
+        conversationScheduler = conversationSchedulerLayout.findViewById(R.id.conversation_scheduler);
 
         final TextView scheduledDate = (TextView) conversationScheduler.findViewById(R.id.scheduledDate);
         final TextView scheduledTime = (TextView) conversationScheduler.findViewById(R.id.scheduledTime);

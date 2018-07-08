@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -44,11 +45,7 @@ import static android.view.View.GONE;
 public class ApplozicDocumentView {
 
     private static final String TAG = "ApplozicDocumentView";
-    RelativeLayout mainLayout;
-    RelativeLayout downloadInProgressLayout;
-    LinearLayout downloadedLayout;
-    LinearLayout previewLayout;
-    LinearLayout retryLayout;
+    ConstraintLayout mainLayout, previewLayout, retryLayout, downloadInProgressLayout, downloadedLayout;
     TextView sizeTextView;
     TextView fileText;
     Message message;
@@ -72,15 +69,15 @@ public class ApplozicDocumentView {
 
     public void inflateViewWithMessage(View rootview, Message message) {
         this.message = message;
-        mainLayout = rootview.findViewById(R.id.attachment_doc_relative_layout);
+        mainLayout = rootview.findViewById(R.id.attachment_doc_layout);
         downloadInProgressLayout = rootview.findViewById(R.id.applozic_doc_download_progress_rl);
         downloadedLayout = rootview.findViewById(R.id.applozic_doc_downloaded);
-        previewLayout = rootview.findViewById(R.id.download_doc_size_linear_layout);
-        retryLayout = rootview.findViewById(R.id.retry_doc_relative_layout);
+        previewLayout = rootview.findViewById(R.id.download_doc_size_layout);
+        retryLayout = rootview.findViewById(R.id.retry_doc_layout);
         progressBar = rootview.findViewById(R.id.applozic_doc_download_progress);
         sizeTextView = rootview.findViewById(R.id.applozic_doc_file_size);
         fileText = rootview.findViewById(R.id.applozic_doc_file_name);
-        uploadDownloadImage = rootview.findViewById(R.id.applozic_download_image);
+        uploadDownloadImage = rootview.findViewById(R.id.applozic_retry_image);
         docIcon = rootview.findViewById(R.id.doc_icon);
         ImageView cancelIcon = rootview.findViewById(R.id.download_calcle_icon);
         audioseekbar = rootview.findViewById(R.id.applozic_audio_seekbar);

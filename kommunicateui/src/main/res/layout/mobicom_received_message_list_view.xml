@@ -1,3 +1,134 @@
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/messageLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/material_default_padding"
+    android:layout_marginRight="@dimen/material_default_padding"
+    android:layout_marginTop="5dp"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dip"
+        android:layout_marginRight="3dip"
+        android:layout_marginTop="4dp"
+        android:minHeight="@dimen/material_chips_height"
+        android:minWidth="@dimen/material_chips_height"
+        android:orientation="vertical"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/statusImage"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/guidelineStart"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/messageTextInsideLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/applozic_sent_message"
+            android:minHeight="@dimen/material_chips_height"
+            android:minWidth="@dimen/material_chips_height"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/attached_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_attachment_grey_600_24dp"
+                android:drawablePadding="@dimen/material_default_padding"
+                android:drawableStart="@drawable/ic_attachment_grey_600_24dp"
+                android:drawableTint="@color/material_white_1000"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/material_half_padding"
+                android:paddingLeft="@dimen/material_default_padding"
+                android:paddingRight="@dimen/material_default_padding"
+                android:paddingTop="@dimen/material_half_padding"
+                android:textColor="@color/sent_message_text_color"
+                android:textSize="@dimen/material_typography_textsize_body"
+                android:visibility="gone"/>
+
+            <include layout="@layout/reply_message_layout"/>
+
+            <include layout="@layout/mobicom_attachment_preview_layout"/>
+
+            <include layout="@layout/mobicom_contact_share_layout"/>
+
+            <include layout="@layout/mobicom_chat_location_view"/>
+
+            <include layout="@layout/applozic_document_attachment"/>
+
+            <include layout="@layout/al_rich_message_layout"/>
+
+            <com.vanniktech.emoji.EmojiTextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:autoLink="all"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/material_half_padding"
+                android:paddingLeft="@dimen/material_default_padding"
+                android:paddingRight="@dimen/material_default_padding"
+                android:paddingTop="@dimen/material_half_padding"
+                android:textColor="@color/sent_message_text_color"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/material_typography_textsize_body"
+                android:visibility="visible"
+                tools:text="Material design guidelines mention that cards can be constructed using blocks of content"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/statusImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="v--"/>
+
+    <TextView
+        android:id="@+id/selfDestruct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/self_destruct"
+        android:textColor="@color/material_grey_600"
+        android:textSize="@dimen/material_typography_textsize_caption"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"/>
+
+    <TextView
+        android:id="@+id/createdAtTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/material_grey_500"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/selfDestruct"
+        tools:text="12:34 PM"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/material_lists_height_row"/>
+
+</android.support.constraint.ConstraintLayout>
+<!--
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -200,3 +331,4 @@
     </LinearLayout>
 
 </RelativeLayout>
+-->

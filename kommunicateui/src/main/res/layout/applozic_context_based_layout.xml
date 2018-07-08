@@ -1,119 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/material_lists_height_row"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/material_default_padding"
-    android:paddingRight="@dimen/material_default_padding"
-    android:paddingTop="@dimen/material_half_padding"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.ApplozicContextSpinnerAdapter">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
 
     <ImageView
         android:id="@+id/productImage"
         android:layout_width="@dimen/material_drawer_bottom_navigation_height"
-        android:layout_height="@dimen/material_drawer_bottom_navigation_height"
+        android:layout_height="0dp"
         android:layout_centerInParent="false"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="@dimen/material_half_padding"
+        android:contentDescription="@string/image_description_default"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_account_circle_grey_600_24dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/emoji_ios_1f61b"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/material_lists_height_row"
-        android:layout_toRightOf="@+id/productImage"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/material_default_padding">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginRight="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="@dimen/material_typography_textsize_body"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/subTitle"
+        app:layout_constraintEnd_toStartOf="@+id/qtyTitleTextView"
+        app:layout_constraintStart_toEndOf="@+id/productImage"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"
+        tools:text="title"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/linearValues"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/subTitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginRight="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="@dimen/material_typography_textsize_caption"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintEnd_toStartOf="@+id/priceTitleTextView"
+        app:layout_constraintStart_toEndOf="@+id/productImage"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:text="subtitle"/>
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="@dimen/material_typography_textsize_body"
-                android:textStyle="bold"/>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:background="@color/material_grey_300"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/productImage"/>
 
-            <TextView
-                android:id="@+id/subTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textSize="@dimen/material_typography_textsize_caption"/>
+    <TextView
+        android:id="@+id/qtyTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:textSize="@dimen/material_typography_textsize_caption"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/priceTitleTextView"
+        app:layout_constraintEnd_toStartOf="@+id/qtyValueTextView"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"
+        tools:text="Type"/>
 
-        </LinearLayout>
+    <TextView
+        android:id="@+id/priceTitleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:textSize="@dimen/material_typography_textsize_caption"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintStart_toStartOf="@+id/qtyTitleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:text="Price"/>
 
-        <LinearLayout
-            android:id="@+id/linearValues"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/qtyValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/material_half_padding"
+        android:layout_marginStart="@dimen/material_half_padding"
+        android:maxLines="1"
+        android:textSize="@dimen/material_typography_textsize_caption"
+        app:layout_constraintBottom_toTopOf="@+id/priceValueTextview"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/qtyTitleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"
+        tools:text="double "/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
-                android:orientation="vertical">
+    <TextView
+        android:id="@+id/priceValueTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:maxLines="1"
+        android:textSize="@dimen/material_typography_textsize_caption"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintStart_toStartOf="@+id/qtyValueTextView"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:text="$1500"/>
 
-                <TextView
-                    android:id="@+id/qtyTitleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/material_typography_textsize_caption"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/priceTitleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/material_typography_textsize_caption"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"
-                android:layout_marginLeft="4dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/qtyValueTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:textSize="@dimen/material_typography_textsize_caption"/>
-
-                <TextView
-                    android:id="@+id/priceValueTextview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:textSize="@dimen/material_typography_textsize_caption"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/material_grey_300"/>
-
-    </RelativeLayout>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

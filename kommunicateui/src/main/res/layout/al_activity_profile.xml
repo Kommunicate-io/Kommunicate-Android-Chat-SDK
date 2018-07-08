@@ -1,209 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/material_white_1000"
     tools:context="com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+    <View
+        android:id="@+id/header_background_top"
         android:layout_width="match_parent"
-        android:layout_height="256dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">​
+        android:layout_height="0dp"
+        android:background="@color/material_grey_200"
+        app:layout_constraintBottom_toTopOf="@+id/header_background_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <LinearLayout
-                android:id="@+id/backdrop"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:background="@color/material_grey_200"
-                android:orientation="horizontal"
-                android:weightSum="3"
-                app:layout_collapseMode="pin">
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.8"/>
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/applozic_user_profile"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1.4"
-                    android:padding="@dimen/material_half_padding"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_account_circle_grey_600_24dp"/>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.8"/>
-
-            </LinearLayout>
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-        ​​
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/materialup.viewpager"
+    <View
+        android:id="@+id/header_background_bottom"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="0dp"
+        android:background="@color/material_grey_300"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header_background_top"/>
 
-        <LinearLayout
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/applozic_user_profile"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_account_circle_grey_600_24dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/header_background_bottom"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.5"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/applozic_user_profile_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="center"
+        android:src="@drawable/ic_camera_alt_grey_600_24dp"
+        android:tint="@color/material_white_1000"
+        app:elevation="0dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/applozic_user_profile"
+        app:layout_constraintEnd_toEndOf="@+id/applozic_user_profile"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
+
+    <ImageView
+        android:id="@+id/displayName_edit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/material_default_padding"
+        android:contentDescription="@string/image_description_default"
+        android:src="@drawable/ic_edit_white_24dp"
+        android:tint="@color/material_grey_400"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"/>
+
+    <TextView
+        android:id="@+id/applozic_profile_displayname"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/user_name"
+        android:textColor="@color/applozic_theme_color_primary"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintBottom_toBottomOf="@+id/displayName_edit_btn"
+        app:layout_constraintEnd_toStartOf="@+id/displayName_edit_btn"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toTopOf="@+id/displayName_edit_btn"/>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/applozic_profile_logout"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/applozic_profile_displayname">
+
+        <RelativeLayout
+            android:id="@+id/applozic_profile_section_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/material_touchable_minheight"
-            android:orientation="vertical"
-            android:padding="@dimen/material_default_padding">
+            android:paddingTop="@dimen/material_default_padding"
+            android:visibility="gone">
 
-            <TextView
-                android:id="@+id/applozic_profile_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/material_default_padding"
-                android:text="@string/sales_manager"
-                android:textColor="@color/material_grey_600"
-                android:textSize="@dimen/material_typography_textsize_subheading"
-                android:visibility="gone"/>
+            <View
+                android:id="@+id/view_status"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/material_grey_200"/>
 
             <RelativeLayout
-                android:id="@+id/applozic_profile_displayname_section_rl"
+                android:id="@+id/linear_status"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/displayName_edit_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/ic_edit_white_24dp"
-                    android:tint="@color/material_grey_400"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view_status"
+                android:layout_marginBottom="@dimen/material_half_padding"
+                android:layout_marginTop="@dimen/material_default_padding">
 
                 <TextView
-                    android:id="@+id/applozic_profile_displayname"
+                    android:id="@+id/applozic_profile_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/user_name"
+                    android:layout_centerInParent="false"
+                    android:layout_centerVertical="true"
+                    android:text="@string/no_status"
                     android:textColor="@color/applozic_theme_color_primary"
                     android:textSize="@dimen/material_typography_textsize_subheading"/>
 
-                <View
+                <ImageView
+                    android:id="@+id/status_edit_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="0.5dp"
-                    android:layout_below="@+id/applozic_profile_displayname"
-                    android:layout_marginTop="@dimen/material_default_padding"
-                    android:background="@color/material_grey_200"/>
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_edit_white_24dp"
+                    android:tint="@color/material_grey_400"/>
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/applozic_profile_section_rl"
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/applozic_profile_contact_section_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/material_default_padding"
+            android:visibility="gone">
+
+            <View
+                android:id="@+id/view_contact"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/material_default_padding"
-                android:visibility="gone">
-
-                <View
-                    android:id="@+id/view_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/material_grey_200"/>
-
-                <RelativeLayout
-                    android:id="@+id/linear_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/view_status"
-                    android:layout_marginBottom="@dimen/material_half_padding"
-                    android:layout_marginTop="@dimen/material_default_padding">
-
-                    <TextView
-                        android:id="@+id/applozic_profile_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="@string/no_status"
-                        android:textColor="@color/applozic_theme_color_primary"
-                        android:textSize="@dimen/material_typography_textsize_subheading"/>
-
-                    <ImageView
-                        android:id="@+id/status_edit_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:src="@drawable/ic_edit_white_24dp"
-                        android:tint="@color/material_grey_400"/>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/linear_status_online"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/linear_status"
-                    android:layout_marginTop="@dimen/material_half_padding">
-
-                    <TextView
-                        android:id="@+id/applozic_profile_status_online"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="@string/online"
-                        android:textSize="@dimen/material_typography_textsize_caption"
-                        android:visibility="visible"/>
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:id="@+id/switchButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:gravity="center"
-                        android:text=""
-                        android:visibility="visible"/>
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_below="@+id/linear_status_online"
-                    android:layout_marginTop="@dimen/material_default_padding"
-                    android:background="@color/material_grey_200"/>
-
-            </RelativeLayout>
+                android:layout_height="0.5dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/material_grey_200"/>
 
             <RelativeLayout
-                android:id="@+id/applozic_profile_contact_section_rl"
+                android:id="@+id/linear_contact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/material_default_padding"
-                android:visibility="gone">
+                android:layout_below="@+id/view_contact"
+                android:layout_marginBottom="@dimen/material_half_padding"
+                android:layout_marginTop="@dimen/material_default_padding">
 
                 <ImageView
                     android:id="@+id/contact_edit_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
                     android:src="@drawable/ic_edit_white_24dp"
                     android:tint="@color/material_grey_400"/>
 
@@ -211,115 +200,27 @@
                     android:id="@+id/applozic_profile_contact"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:text="@string/profile_contact"
                     android:textColor="@color/applozic_theme_color_primary"
                     android:textSize="@dimen/material_typography_textsize_subheading"/>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_below="@+id/applozic_profile_contact"
-                    android:layout_marginTop="@dimen/material_default_padding"
-                    android:background="@color/material_grey_200"/>
-
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/applozic_notification_section_rl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/material_default_padding"
-                android:visibility="gone">
+        </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/applozic_notification_verticalline_rl"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:background="@color/material_grey_200"/>
+    </LinearLayout>
 
-                <TextView
-                    android:id="@+id/applozic_notification_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/push_notifications"
-                    android:textColor="@color/applozic_theme_color_primary"
-                    android:textSize="@dimen/material_typography_textsize_subheading"/>
-
-                <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/applozic_switch_notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/applozic_notification_status"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center"
-                    android:textOff="OFF"
-                    android:textOn="ON"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_below="@+id/applozic_notification_status"
-                    android:layout_marginTop="@dimen/material_default_padding"
-                    android:background="@color/material_grey_200"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/applozic_datausage_section_rl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/material_default_padding"
-                android:visibility="gone">
-
-                <RelativeLayout
-                    android:id="@+id/applozic_datausage_verticalline_rl"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:background="@color/material_grey_200"/>
-
-                <TextView
-                    android:id="@+id/applozic_profile_data_usage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/data_usage"
-                    android:textColor="@color/applozic_theme_color_primary"
-                    android:textSize="@dimen/material_typography_textsize_subheading"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_below="@+id/applozic_profile_data_usage"
-                    android:layout_marginTop="@dimen/material_default_padding"
-                    android:background="@color/material_grey_200"/>
-
-            </RelativeLayout>
-
-            <Button
-                android:id="@+id/applozic_profile_logout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="@color/applozic_theme_color_primary"
-                android:text="@string/logout"
-                android:textColor="@color/white"
-                android:textSize="@dimen/material_typography_textsize_subheading"
-                android:visibility="gone"/>
-
-        </LinearLayout>
-
-    </android.support.v4.widget.NestedScrollView>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/applozic_user_profile_camera"
+    <Button
+        android:id="@+id/applozic_profile_logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/material_default_padding"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_camera_alt_grey_600_24dp"
-        android:tint="@color/material_white_1000"
-        app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|right|end"/>
+        android:background="@color/applozic_theme_color_primary"
+        android:text="@string/logout"
+        android:textColor="@color/material_white_1000"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"/>
 
-</android.support.design.widget.CoordinatorLayout>
+</android.support.constraint.ConstraintLayout>

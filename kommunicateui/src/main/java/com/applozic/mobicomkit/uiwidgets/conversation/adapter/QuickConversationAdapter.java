@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -425,24 +427,25 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         final ImageView attachmentIcon;
         TextView unReadCountTextView;
         TextView smTime;
-        RelativeLayout rootView, profileImageRelativeLayout;
+        ConstraintLayout rootView;
+        ConstraintLayout profileImageLayout;
 
         public Myholder(View itemView) {
             super(itemView);
 
-            smReceivers = (TextView) itemView.findViewById(R.id.smReceivers);
-            createdAtTime = (TextView) itemView.findViewById(R.id.createdAtTime);
-            messageTextView = (TextView) itemView.findViewById(R.id.message);
-            //ImageView contactImage = (ImageView) customView.findViewById(R.id.contactImage);
-            contactImage = (CircleImageView) itemView.findViewById(R.id.contactImage);
-            alphabeticTextView = (TextView) itemView.findViewById(R.id.alphabeticImage);
-            onlineTextView = (TextView) itemView.findViewById(R.id.onlineTextView);
-            //sentOrReceived = (ImageView) itemView.findViewById(R.id.sentOrReceivedIcon);
-            attachedFile = (TextView) itemView.findViewById(R.id.attached_file);
-            attachmentIcon = (ImageView) itemView.findViewById(R.id.attachmentIcon);
-            unReadCountTextView = (TextView) itemView.findViewById(R.id.unreadSmsCount);
-            smTime = (TextView) itemView.findViewById(R.id.smTime);
-            profileImageRelativeLayout = itemView.findViewById(R.id.profile_image_relative_layout);
+            smReceivers = itemView.findViewById(R.id.smReceivers);
+            createdAtTime = itemView.findViewById(R.id.createdAtTime);
+            messageTextView = itemView.findViewById(R.id.message);
+
+            contactImage = itemView.findViewById(R.id.contactImage);
+            alphabeticTextView = itemView.findViewById(R.id.alphabeticImage);
+            onlineTextView = itemView.findViewById(R.id.onlineTextView);
+
+            attachedFile = itemView.findViewById(R.id.attached_file);
+            attachmentIcon = itemView.findViewById(R.id.attachmentIcon);
+            unReadCountTextView = itemView.findViewById(R.id.unreadSmsCount);
+            smTime = itemView.findViewById(R.id.smTime);
+            profileImageLayout = itemView.findViewById(R.id.profile_image_layout);
             rootView = itemView.findViewById(R.id.rootView);
             offlineTextView = itemView.findViewById(R.id.offlineTextView);
 
@@ -452,7 +455,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
         @Override
         public void onClick(View v) {
-
+            Log.w("********* ", " CLICK VIEW " + v);
             int itemPosition = this.getLayoutPosition();
             if (itemPosition != -1 && !messageList.isEmpty()) {
                 Message message = getItem(itemPosition);

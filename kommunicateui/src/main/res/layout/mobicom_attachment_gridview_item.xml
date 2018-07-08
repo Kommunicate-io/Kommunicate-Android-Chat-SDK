@@ -1,84 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/cardview_default_radius"
     app:cardElevation="@dimen/cardview_default_elevation"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobiComAttachmentGridViewAdapter">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/material_white_1000">
 
-        <com.applozic.mobicomkit.uiwidgets.widget.DynamicSquareLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/galleryImageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/image_description_default"
+            android:scaleType="centerCrop"
+            android:background="@color/whitesmoke"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_add_white_24dp_v"/>
+
+        <ImageView
+            android:id="@+id/mobicom_attachment_image"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/whitesmoke">
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/image_description_default"
+            android:padding="@dimen/material_default_padding"
+            android:src="@drawable/ic_attachment_grey_600_24dp"
+            android:tint="@color/material_grey_700"
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageView
-                android:id="@+id/galleryImageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"/>
+        <ImageView
+            android:id="@+id/mobicom_attachment_delete_btn"
+            android:layout_width="@dimen/material_touchable_minheight"
+            android:layout_height="@dimen/material_touchable_minheight"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/image_description_default"
+            android:scaleType="center"
+            android:src="@drawable/ic_delete_white_24dp"
+            android:tint="@color/material_grey_700"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/galleryImageView"/>
 
-            <ImageView
-                android:id="@+id/mobicom_attachment_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:padding="@dimen/material_default_padding"
-                android:src="@drawable/ic_attachment_grey_600_24dp"
-                android:tint="@color/material_grey_700"
-                android:visibility="gone"/>
-
-        </com.applozic.mobicomkit.uiwidgets.widget.DynamicSquareLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraint_text"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/material_white_1000"
-            android:minHeight="@dimen/material_touchable_minheight">
+            android:layout_marginEnd="@dimen/material_default_padding"
+            android:layout_marginRight="@dimen/material_default_padding"
+            app:layout_constraintBottom_toBottomOf="@id/profile_image_layout"
+            app:layout_constraintEnd_toStartOf="@+id/mobicom_attachment_delete_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/galleryImageView">
 
             <TextView
                 android:id="@+id/mobicom_attachment_file_size"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/material_default_padding"
+                android:layout_marginStart="@dimen/material_default_padding"
                 android:gravity="center_vertical"
                 android:minHeight="@dimen/material_touchable_minheight"
                 android:textColor="@color/material_grey_700"
-                android:textSize="@dimen/material_typography_textsize_caption"/>
+                android:textSize="@dimen/material_typography_textsize_caption"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="40MB"/>
 
             <TextView
                 android:id="@+id/mobicom_attachment_file_name"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/material_default_padding"
-                android:layout_toLeftOf="@+id/mobicom_attachment_delete_btn"
+                android:layout_marginStart="@dimen/material_default_padding"
                 android:gravity="center_vertical"
                 android:maxLines="2"
                 android:minHeight="@dimen/material_touchable_minheight"
                 android:text="@string/file_name_will_come_here_for_attachment"
                 android:textColor="@color/material_grey_700"
                 android:textSize="@dimen/material_typography_textsize_caption"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/mobicom_attachment_file_size"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            <ImageButton
-                android:id="@+id/mobicom_attachment_delete_btn"
-                android:layout_width="@dimen/material_touchable_minheight"
-                android:layout_height="@dimen/material_touchable_minheight"
-                android:layout_alignParentRight="true"
-                android:background="@color/apploizc_transparent_color"
-                android:src="@drawable/ic_delete_white_24dp"
-                android:tint="@color/material_grey_700"/>
+        </android.support.constraint.ConstraintLayout>
 
-        </RelativeLayout>
-
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

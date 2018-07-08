@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationManagerCompat;
@@ -40,6 +42,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -198,13 +201,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     protected Channel channel;
     protected Integer currentConversationId;
     protected EditText messageEditText;
-    protected ImageView sendButton;
-    protected ImageButton recordButton;
+    protected FloatingActionButton sendButton;
+    protected FloatingActionButton recordButton;
     //protected ImageView attachButton;
     protected Spinner sendType;
-    protected LinearLayout individualMessageSendLayout, mainEditTextLinearLayout;
-    protected LinearLayout extendedSendingOptionLayout;
-    protected RelativeLayout attachmentLayout;
+    protected ConstraintLayout mainEditTextLinearLayout;
+    protected ConstraintLayout extendedSendingOptionLayout;
+    protected ConstraintLayout attachmentLayout;
+    protected ConstraintLayout individualMessageSendLayout;
     protected ProgressBar mediaUploadProgressBar;
     protected View spinnerLayout;
     protected SwipeRefreshLayout swipeLayout;
@@ -243,18 +247,18 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     long millisecond;
     MuteNotificationRequest muteNotificationRequest;
     List<String> restrictedWords;
-    RelativeLayout replayRelativeLayout;
+    CardView replyLayout;
     ImageView attachReplyCancelLayout;
     TextView nameTextView, messageTextView;
     ImageView galleryImageView;
     FileClientService fileClientService;
     ImageLoader imageThumbnailLoader, messageImageLoader;
-    ImageView imageViewForAttachmentType;
-    RelativeLayout imageViewRLayout;
+    //ImageView imageViewForAttachmentType;
+   // RelativeLayout imageViewRLayout;
     Map<String, String> messageMetaData = new HashMap<>();
-    LinearLayout slideTextLinearlayout;
+    ConstraintLayout slideTextLinearlayout;
     TextView recordTimeTextView;
-    FrameLayout audioRecordFrameLayout;
+    ConstraintLayout audioRecordFrameLayout;
     ApplozicAudioRecordManager applozicAudioRecordManager;
     String timeStamp, audioFileName;
     String outputFile;
@@ -365,13 +369,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(true);
-        mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
-        individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
+        mainEditTextLinearLayout = list.findViewById(R.id.main_edit_text_constraint_layout);
+        individualMessageSendLayout = list.findViewById(R.id.individual_message_send_layout);
         slideImageView = (ImageView) list.findViewById(R.id.slide_image_view);
         sendButton = individualMessageSendLayout.findViewById(R.id.conversation_send);
-        recordButton = (ImageButton) individualMessageSendLayout.findViewById(R.id.record_button);
-        mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
-        audioRecordFrameLayout = (FrameLayout) list.findViewById(R.id.audio_record_frame_layout);
+        recordButton = individualMessageSendLayout.findViewById(R.id.record_button);
+        mainEditTextLinearLayout = list.findViewById(R.id.main_edit_text_constraint_layout);
+        audioRecordFrameLayout = list.findViewById(R.id.audio_record_constraint_layout);
         messageTemplateView = (RecyclerView) list.findViewById(R.id.mobicomMessageTemplateView);
         applozicLabel = list.findViewById(R.id.applozicLabel);
         cameraButton = list.findViewById(R.id.camera_btn);
@@ -399,16 +403,16 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             applozicLabel.setVisibility(VISIBLE);
         }
 
-        extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
+        extendedSendingOptionLayout = list.findViewById(R.id.extended_sending_option_layout);
 
         statusMessageLayout = (LinearLayout) list.findViewById(R.id.status_message_layout);
-        attachmentLayout = (RelativeLayout) list.findViewById(R.id.attachment_layout);
+        attachmentLayout = list.findViewById(R.id.attachment_layout);
         isTyping = (TextView) list.findViewById(R.id.isTyping);
 
         contextFrameLayout = (FrameLayout) list.findViewById(R.id.contextFrameLayout);
 
         contextSpinner = (Spinner) list.findViewById(R.id.spinner_show);
-        slideTextLinearlayout = (LinearLayout) list.findViewById(R.id.slide_LinearLayout);
+        slideTextLinearlayout = list.findViewById(R.id.slide_LinearLayout);
         errorEditTextView = (EditText) list.findViewById(R.id.error_edit_text_view);
         audioRecordIconImageView = (ImageView) list.findViewById(R.id.audio_record_icon_image_view);
         recordTimeTextView = (TextView) list.findViewById(R.id.recording_time_text_view);
@@ -437,13 +441,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         mediaUploadProgressBar = (ProgressBar) attachmentLayout.findViewById(R.id.media_upload_progress_bar);
         emoticonsBtn = list.findViewById(R.id.emoji_btn);
-        replayRelativeLayout = (RelativeLayout) list.findViewById(R.id.reply_message_layout);
-        messageTextView = (TextView) list.findViewById(R.id.messageTextView);
-        galleryImageView = (ImageView) list.findViewById(R.id.imageViewForPhoto);
-        nameTextView = (TextView) list.findViewById(R.id.replyNameTextView);
-        attachReplyCancelLayout = list.findViewById(R.id.imageCancel);
-        imageViewRLayout = (RelativeLayout) list.findViewById(R.id.imageViewRLayout);
-        imageViewForAttachmentType = (ImageView) list.findViewById(R.id.imageViewForAttachmentType);
+        replyLayout = list.findViewById(R.id.replyMessageLayoutWidget);
+        messageTextView = (TextView) list.findViewById(R.id.messageTextViewWidget);
+        galleryImageView = (ImageView) list.findViewById(R.id.imageViewForPhotoWidget);
+        nameTextView = (TextView) list.findViewById(R.id.replyNameTextViewWidget);
+        attachReplyCancelLayout = list.findViewById(R.id.imageCancelWidget);
+        //imageViewRLayout = (RelativeLayout) list.findViewById(R.id.imageViewRLayout);
+       // imageViewForAttachmentType = (ImageView) list.findViewById(R.id.imageViewForAttachmentType);
         spinnerLayout = inflater.inflate(R.layout.mobicom_message_list_header_footer, null);
         infoBroadcast = (TextView) spinnerLayout.findViewById(R.id.info_broadcast);
         spinnerLayout.setVisibility(View.GONE);
@@ -465,11 +469,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         recordButton.setVisibility(alCustomizationSettings.isRecordButton() ? View.VISIBLE : View.GONE);
         sendButton.setVisibility(alCustomizationSettings.isRecordButton() ? View.GONE : View.VISIBLE);
 
-        GradientDrawable bgShape = (GradientDrawable) sendButton.getBackground();
-        bgShape.setColor(Color.parseColor(alCustomizationSettings.getSendButtonBackgroundColor().trim()));
+        //GradientDrawable bgShape = (GradientDrawable) sendButton.getBackground();
+        //bgShape.setColor(Color.parseColor(alCustomizationSettings.getSendButtonBackgroundColor().trim()));
 
-        GradientDrawable bgShapeRecordButton = (GradientDrawable) recordButton.getBackground();
-        bgShapeRecordButton.setColor(Color.parseColor(alCustomizationSettings.getSendButtonBackgroundColor().trim()));
+        //GradientDrawable bgShapeRecordButton = (GradientDrawable) recordButton.getBackground();
+        //bgShapeRecordButton.setColor(Color.parseColor(alCustomizationSettings.getSendButtonBackgroundColor().trim()));
 
         //attachButton = individualMessageSendLayout.findViewById(R.id.attach_button);
 
@@ -500,10 +504,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         scheduleOption = (Button) extendedSendingOptionLayout.findViewById(R.id.scheduleOption);
         mediaContainer = (ImageView) attachmentLayout.findViewById(R.id.media_container);
         attachedFile = (TextView) attachmentLayout.findViewById(R.id.attached_file);
-        ImageView closeAttachmentLayout = (ImageView) attachmentLayout.findViewById(R.id.close_attachment_layout);
+        ImageView closeAttachmentLayout = attachmentLayout.findViewById(R.id.close_attachment_layout);
 
         swipeLayout = (SwipeRefreshLayout) list.findViewById(R.id.swipe_container);
-        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+        swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
@@ -681,7 +685,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onClick(View v) {
                 messageMetaData = null;
-                replayRelativeLayout.setVisibility(View.GONE);
+                replyLayout.setVisibility(View.GONE);
             }
         });
 
@@ -1476,8 +1480,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 menu.findItem(R.id.muteGroup).setVisible(false);
             }
         }
-        if (replayRelativeLayout != null) {
-            replayRelativeLayout.setVisibility(View.GONE);
+        if (replyLayout != null) {
+            replyLayout.setVisibility(View.GONE);
         }
         /*
         filePath = null;*/
@@ -1785,7 +1789,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             linearLayoutManager.findFirstVisibleItemPosition());
 
                     if (view != null) {
-                        final LinearLayout attachmentDownloadLayout = (LinearLayout) view.findViewById(R.id.attachment_download_layout);
+                        final ConstraintLayout attachmentDownloadLayout = view.findViewById(R.id.attachment_download_layout);
                         attachmentDownloadLayout.setVisibility(VISIBLE);
                     }
 
@@ -2184,8 +2188,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
 
         conversationService.sendMessage(messageToSend, messageIntentClass);
-        if (replayRelativeLayout != null) {
-            replayRelativeLayout.setVisibility(View.GONE);
+        if (replyLayout != null) {
+            replyLayout.setVisibility(View.GONE);
         }
         if (selfDestructMessageSpinner != null) {
             selfDestructMessageSpinner.setSelection(0);
@@ -2322,7 +2326,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     View view = recyclerView.getChildAt(index - linearLayoutManager.findFirstVisibleItemPosition());
                     if (view != null) {
                         ProgressBar mediaUploadProgressBarIndividualMessage = (ProgressBar) view.findViewById(R.id.media_upload_progress_bar);
-                        RelativeLayout downloadInProgressLayout = (RelativeLayout) view.findViewById(R.id.applozic_doc_download_progress_rl);
+                        ConstraintLayout downloadInProgressLayout = view.findViewById(R.id.applozic_doc_download_progress_rl);
                         if (mediaUploadProgressBarIndividualMessage != null) {
                             mediaUploadProgressBarIndividualMessage.setVisibility(View.GONE);
                         }
@@ -3507,6 +3511,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             case 6:
                 try {
+                    replyLayout.setVisibility(VISIBLE);
                     Configuration config = getActivity().getResources().getConfiguration();
                     messageMetaData = new HashMap<>();
                     String displayName;
@@ -3526,22 +3531,22 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     nameTextView.setText(displayName);
                     if (message.hasAttachment()) {
                         FileMeta fileMeta = message.getFileMetas();
-                        imageViewForAttachmentType.setVisibility(VISIBLE);
+                        //  imageViewForAttachmentType.setVisibility(VISIBLE);
                         if (fileMeta.getContentType().contains("image")) {
-                            imageViewForAttachmentType.setImageResource(R.drawable.ic_camera_alt_grey_600_24dp);
+                            //    imageViewForAttachmentType.setImageResource(R.drawable.ic_camera_alt_grey_600_24dp);
                             if (TextUtils.isEmpty(message.getMessage())) {
                                 messageTextView.setText(getString(R.string.photo_string));
                             } else {
                                 messageTextView.setText(message.getMessage());
                             }
                             galleryImageView.setVisibility(VISIBLE);
-                            imageViewRLayout.setVisibility(VISIBLE);
+                           // imageViewRLayout.setVisibility(VISIBLE);
                             imageThumbnailLoader.loadImage(message, galleryImageView);
                         } else if (fileMeta.getContentType().contains("video")) {
-                            imageViewForAttachmentType.setImageResource(R.drawable.ic_videocam_white_24dp);
+                            //    imageViewForAttachmentType.setImageResource(R.drawable.ic_videocam_white_24dp);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                                 if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-                                    imageViewForAttachmentType.setScaleX(-1);
+                                    //       imageViewForAttachmentType.setScaleX(-1);
                                 }
                             }
                             if (TextUtils.isEmpty(message.getMessage())) {
@@ -3558,19 +3563,19 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                 }
                             }
                             galleryImageView.setVisibility(VISIBLE);
-                            imageViewRLayout.setVisibility(VISIBLE);
+                            //imageViewRLayout.setVisibility(VISIBLE);
                         } else if (fileMeta.getContentType().contains("audio")) {
-                            imageViewForAttachmentType.setImageResource(R.drawable.ic_music_note_white_24dp);
+                            //   imageViewForAttachmentType.setImageResource(R.drawable.ic_music_note_white_24dp);
                             if (TextUtils.isEmpty(message.getMessage())) {
                                 messageTextView.setText(getString(R.string.audio_string));
                             } else {
                                 messageTextView.setText(message.getMessage());
                             }
                             galleryImageView.setVisibility(View.GONE);
-                            imageViewRLayout.setVisibility(View.GONE);
+                           // imageViewRLayout.setVisibility(View.GONE);
                         } else if (message.isContactMessage()) {
                             MobiComVCFParser parser = new MobiComVCFParser();
-                            imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
+                            //     imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
                             try {
                                 VCFContactData data = parser.parseCVFContactData(message.getFilePaths().get(0));
                                 if (data != null) {
@@ -3578,34 +3583,34 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                     messageTextView.append(" " + data.getName());
                                 }
                             } catch (Exception e) {
-                                imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
+                                //       imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
                                 messageTextView.setText(getString(R.string.contact_string));
                             }
                             galleryImageView.setVisibility(View.GONE);
-                            imageViewRLayout.setVisibility(View.GONE);
+                           // imageViewRLayout.setVisibility(View.GONE);
                         } else {
-                            imageViewForAttachmentType.setImageResource(R.drawable.ic_attachment_grey_600_24dp);
+                            //    imageViewForAttachmentType.setImageResource(R.drawable.ic_attachment_grey_600_24dp);
                             if (TextUtils.isEmpty(message.getMessage())) {
                                 messageTextView.setText(getString(R.string.attachment_string));
                             } else {
                                 messageTextView.setText(message.getMessage());
                             }
                             galleryImageView.setVisibility(View.GONE);
-                            imageViewRLayout.setVisibility(View.GONE);
+                           // imageViewRLayout.setVisibility(View.GONE);
                         }
-                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(getActivity(), R.color.apploizc_lite_gray_color));
+                      //  imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(getActivity(), R.color.apploizc_lite_gray_color));
                     } else if (message.getContentType() == Message.ContentType.LOCATION.getValue()) {
-                        imageViewForAttachmentType.setVisibility(VISIBLE);
+                      //  imageViewForAttachmentType.setVisibility(VISIBLE);
                         galleryImageView.setVisibility(VISIBLE);
-                        imageViewRLayout.setVisibility(VISIBLE);
+                       // imageViewRLayout.setVisibility(VISIBLE);
                         messageTextView.setText(getString(R.string.al_location_string));
-                        imageViewForAttachmentType.setImageResource(R.drawable.ic_location_on_grey_600_24dp);
-                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(getActivity(), R.color.apploizc_lite_gray_color));
+                      //  imageViewForAttachmentType.setImageResource(R.drawable.ic_location_on_grey_600_24dp);
+                      //  imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(getActivity(), R.color.apploizc_lite_gray_color));
                         messageImageLoader.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
                         messageImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage()), galleryImageView);
                     } else {
-                        imageViewForAttachmentType.setVisibility(View.GONE);
-                        imageViewRLayout.setVisibility(View.GONE);
+                       // imageViewForAttachmentType.setVisibility(View.GONE);
+                      //  imageViewRLayout.setVisibility(View.GONE);
                         galleryImageView.setVisibility(View.GONE);
                         messageTextView.setText(message.getMessage());
                     }
@@ -3617,9 +3622,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         }
                     }
                     attachReplyCancelLayout.setVisibility(VISIBLE);
-                    replayRelativeLayout.setVisibility(VISIBLE);
+                    replyLayout.setVisibility(VISIBLE);
                 } catch (Exception e) {
-
+                    Log.e("Exception*** ", e.getMessage());
                 }
                 break;
         }

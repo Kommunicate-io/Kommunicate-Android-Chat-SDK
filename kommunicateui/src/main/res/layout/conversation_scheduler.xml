@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/conversation_scheduler"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/material_default_padding"
     tools:context="com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler">
 
     <TextView
         android:id="@+id/schedule_header"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/mobitexter_main_color"
         android:gravity="center_horizontal"
@@ -18,76 +19,71 @@
         android:text="@string/scheduleDialogHeader"
         android:textColor="@color/material_white_1000"
         android:textSize="@dimen/material_typography_textsize_title"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/selectionRequest"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/material_default_padding"
+        android:layout_marginTop="@dimen/material_drawer_list_item_size"
         android:text="@string/selectionRequestText"
-        android:textSize="@dimen/material_typography_textsize_subheading"/>
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/schedule_header"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/scheduledDateText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/material_default_padding"
+        android:layout_gravity="start|top"
         android:layout_marginTop="@dimen/material_default_padding"
-        android:orientation="vertical">
+        android:focusableInTouchMode="false"
+        android:text="@string/scheduledDateText"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectionRequest"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/scheduledDate"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:text="@string/defaultDate"
+        android:textColor="@color/holo_blue"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/scheduledDateText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/scheduledDateText"
+        app:layout_constraintTop_toTopOf="@+id/scheduledDateText"/>
 
-            <TextView
-                android:id="@+id/scheduledDateText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|top"
-                android:focusableInTouchMode="false"
-                android:text="@string/scheduledDateText"
-                android:textSize="@dimen/material_typography_textsize_subheading"/>
+    <TextView
+        android:id="@+id/scheduledTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/material_default_padding"
+        android:text="@string/scheduledTimeText"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scheduledDateText"/>
 
-            <TextView
-                android:id="@+id/scheduledDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/material_default_padding"
-                android:text="@string/defaultDate"
-                android:textColor="@color/holo_blue"
-                android:textSize="@dimen/material_typography_textsize_subheading"
-                android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/scheduledTime"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:text="@string/defaultTime"
+        android:textColor="@color/holo_blue"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/scheduledTimeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/scheduledTimeText"
+        app:layout_constraintTop_toTopOf="@+id/scheduledTimeText"/>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginTop="@dimen/material_default_padding"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/scheduledTimeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/scheduledTimeText"
-                android:textSize="@dimen/material_typography_textsize_subheading"/>
-
-            <TextView
-                android:id="@+id/scheduledTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/material_default_padding"
-                android:text="@string/defaultTime"
-                android:textColor="@color/holo_blue"
-                android:textSize="@dimen/material_typography_textsize_subheading"
-                android:textStyle="bold"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -22,53 +22,49 @@
         app:cardUseCompatPadding="false"
         app:contentPadding="@dimen/material_default_padding">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/material_drawer_bottom_navigation_height"
-            android:orientation="horizontal">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.6"/>
+            android:layout_marginLeft="@dimen/material_default_padding"
+            android:layout_marginRight="@dimen/material_default_padding">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/camera_options_btn"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_camera_color"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"/>
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_camera_color"
+                app:layout_constraintEnd_toStartOf="@+id/file_as_attachment_btn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/file_as_attachment_btn"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_attach_color"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"/>
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_attach_color"
+                app:layout_constraintEnd_toStartOf="@+id/location_btn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/camera_options_btn"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/location_btn"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/ic_location_color"/>
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_location_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/file_as_attachment_btn"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.6"/>
-
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v7.widget.CardView>
 

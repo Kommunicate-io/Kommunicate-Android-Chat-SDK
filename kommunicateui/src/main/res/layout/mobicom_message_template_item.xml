@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/messageTemplateTv"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMessageTemplateAdapter">
-
-    <TextView
-        android:id="@+id/messageTemplateTv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/material_half_padding"
-        android:layout_marginLeft="@dimen/material_half_padding"
-        android:layout_marginTop="@dimen/material_half_padding"
-        android:paddingBottom="@dimen/material_half_padding"
-        android:paddingLeft="@dimen/material_default_padding"
-        android:paddingRight="@dimen/material_default_padding"
-        android:paddingTop="@dimen/material_half_padding"
-        android:textColor="@color/material_grey_600"
-        android:textSize="@dimen/material_typography_textsize_caption"/>
-
-</LinearLayout>
+    android:layout_marginBottom="@dimen/material_half_padding"
+    android:layout_marginLeft="@dimen/material_half_padding"
+    android:layout_marginStart="@dimen/material_half_padding"
+    android:layout_marginTop="@dimen/material_half_padding"
+    android:paddingBottom="@dimen/material_half_padding"
+    android:paddingLeft="@dimen/material_default_padding"
+    android:paddingRight="@dimen/material_default_padding"
+    android:paddingTop="@dimen/material_half_padding"
+    android:textColor="@color/material_grey_600"
+    android:textSize="@dimen/material_typography_textsize_caption"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMessageTemplateAdapter"/>

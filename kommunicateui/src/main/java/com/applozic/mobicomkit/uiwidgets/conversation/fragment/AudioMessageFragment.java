@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +30,7 @@ public class AudioMessageFragment extends DialogFragment {
 
     Button cancel, send;
     TextView txtcount, audioRecordingText;
-    ImageButton record;
+    ImageView record;
     CountDownTimer t;
     private MediaRecorder audioRecorder;
     private String outputFile = null;
@@ -38,15 +38,12 @@ public class AudioMessageFragment extends DialogFragment {
     private boolean isRecordring;
 
     public static AudioMessageFragment newInstance() {
-
         AudioMessageFragment f = new AudioMessageFragment();
         return f;
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.mobicom_audio_message_layout, container, false);
 
@@ -54,11 +51,11 @@ public class AudioMessageFragment extends DialogFragment {
         this.getDialog().setCancelable(Boolean.TRUE);
         this.getDialog().setCanceledOnTouchOutside(Boolean.FALSE);
 
-        record = (ImageButton) v.findViewById(R.id.audio_mic_imageview);
-        send = (Button) v.findViewById(R.id.audio_send);
-        cancel = (Button) v.findViewById(R.id.audio_cancel);
-        txtcount = (TextView) v.findViewById(R.id.txtcount);
-        audioRecordingText = (TextView) v.findViewById(R.id.audio_recording_text);
+        record = v.findViewById(R.id.audio_mic_imageview);
+        send = v.findViewById(R.id.audio_send);
+        cancel = v.findViewById(R.id.audio_cancel);
+        txtcount =  v.findViewById(R.id.txtcount);
+        audioRecordingText = v.findViewById(R.id.audio_recording_text);
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String audioFileName = "AUD_" + timeStamp + "_" + ".m4a";
@@ -70,7 +67,6 @@ public class AudioMessageFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 try {
-
                     if (isRecordring) {
                         AudioMessageFragment.this.stopRecording();
                         cancel.setVisibility(View.VISIBLE);
@@ -96,32 +92,27 @@ public class AudioMessageFragment extends DialogFragment {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (isRecordring) {
                     AudioMessageFragment.this.stopRecording();
                 }
-
                 File file = new File(outputFile);
                 if (file != null) {
                     Utils.printLog(getContext(),"AudioFRG:", "File deleted...");
                     file.delete();
                 }
                 AudioMessageFragment.this.dismiss();
-
             }
         });
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) throws IllegalArgumentException, SecurityException, IllegalStateException {
-
                 //IF recording is running stoped it ...
                 if (isRecordring) {
                     stopRecording();
@@ -134,7 +125,6 @@ public class AudioMessageFragment extends DialogFragment {
                 ConversationUIService conversationUIService = new ConversationUIService(getActivity());
                 conversationUIService.sendAudioMessage(outputFile);
                 AudioMessageFragment.this.dismiss();
-
             }
         });
         // Set Timer
@@ -142,26 +132,20 @@ public class AudioMessageFragment extends DialogFragment {
 
             @Override
             public void onTick(long millisUntilFinished) {
-
                 cnt++;
                 long millis = cnt;
                 int seconds = (int) (millis / 60);
                 int minutes = seconds / 60;
                 seconds = seconds % 60;
                 txtcount.setText(String.format("%d:%02d:%02d", minutes, seconds, millis));
-
             }
-
             @Override
-            public void onFinish() {
-
-            }
+            public void onFinish() { }
         };
         return v;
     }
 
     public void stopRecording() {
-
         if (audioRecorder != null) {
             try {
                 audioRecorder.stop();
@@ -175,13 +159,10 @@ public class AudioMessageFragment extends DialogFragment {
                 audioRecordingText.setText(getResources().getText(R.string.start_text));
                 t.cancel();
             }
-
         }
-
     }
 
     public MediaRecorder prepareMediaRecorder() {
-
         audioRecorder = new MediaRecorder();
         audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -190,7 +171,6 @@ public class AudioMessageFragment extends DialogFragment {
         audioRecorder.setAudioChannels(1);
         audioRecorder.setAudioSamplingRate(44100);
         audioRecorder.setOutputFile(outputFile);
-
         return audioRecorder;
     }
 }

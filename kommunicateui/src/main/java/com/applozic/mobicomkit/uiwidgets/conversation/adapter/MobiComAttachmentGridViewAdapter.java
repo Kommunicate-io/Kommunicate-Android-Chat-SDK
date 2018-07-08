@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
 
     public static final int REQUEST_CODE = 100;
-    ImageButton deleteButton;
+    ImageView deleteButton;
     ImageView galleryImageView;
     TextView fileSize;
     ImageView attachmentImageView;
@@ -140,7 +140,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
 
     private void setNewAttachmentView() {
         deleteButton.setVisibility(View.GONE);
-        galleryImageView.setImageResource(R.drawable.mobicom_new_attachment);
+        galleryImageView.setImageResource(R.drawable.ic_add_white_24dp_v);
         fileName.setVisibility(View.GONE);
         attachmentImageView.setVisibility(View.GONE);
         fileSize.setText(R.string.New_Attachment);

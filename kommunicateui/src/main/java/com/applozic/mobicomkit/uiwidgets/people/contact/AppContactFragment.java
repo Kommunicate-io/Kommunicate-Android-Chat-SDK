@@ -32,7 +32,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AlphabetIndexer;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -563,7 +562,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            RelativeLayout.LayoutParams layoutParams;
             String contactNumber;
             char firstLetter = 0;
 
@@ -597,18 +595,11 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                 }
             }
             if (!TextUtils.isEmpty(contact.getContactNumber())) {
-                layoutParams = (RelativeLayout.LayoutParams) holder.text1.getLayoutParams();
-                layoutParams.setMargins(0, 20, 0, 0);
-                holder.text1.setLayoutParams(layoutParams);
                 holder.contactNumberTextView.setVisibility(View.VISIBLE);
                 holder.contactNumberTextView.setText(contact.getContactNumber());
-
             } else {
                 holder.text2.setVisibility(View.GONE);
                 holder.contactNumberTextView.setVisibility(View.GONE);
-                layoutParams = (RelativeLayout.LayoutParams) holder.text1.getLayoutParams();
-                layoutParams.setMargins(0, 50, 0, 0);
-                holder.text1.setLayoutParams(layoutParams);
             }
             // Returns the item layout view
             final int startIndex = indexOfSearchQuery(contact.getDisplayName());

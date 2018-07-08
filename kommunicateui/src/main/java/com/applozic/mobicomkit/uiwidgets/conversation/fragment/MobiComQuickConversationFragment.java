@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -157,8 +158,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         toolbar.setClickable(false);
         fabButton = list.findViewById(R.id.fab_start_new);
         loading = true;
-        LinearLayout individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
-        LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
+        ConstraintLayout individualMessageSendLayout = list.findViewById(R.id.individual_message_send_layout);
+        ConstraintLayout extendedSendingOptionLayout = list.findViewById(R.id.extended_sending_option_layout);
 
         startNewConv = list.findViewById(R.id.start_new_conversation);
         if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation()) {

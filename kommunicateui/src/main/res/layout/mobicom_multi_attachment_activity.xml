@@ -1,101 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/material_grey_200"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelNameActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_map_screen"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
+        android:id="@+id/my_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
+        android:elevation="@dimen/material_default_elevation"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:subtitleTextAppearance="@style/ToolbarSubtitle"
         app:titleTextAppearance="@style/ToolbarTitle"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/apploizc_transparent_color"
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/material_default_padding"
-        android:paddingRight="@dimen/material_default_padding"
-        android:paddingTop="@dimen/material_default_padding">
+        app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
 
-        <include
-            android:id="@+id/mobicom_attachment_grid_View"
-            layout="@layout/mobicom_attachment_gridview_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/material_default_padding">
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
 
-            <RelativeLayout
-                android:id="@+id/multi_attachment_heading_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+    <include
+        android:id="@+id/mobicom_attachment_grid_View"
+        layout="@layout/mobicom_attachment_gridview_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/material_default_padding"
+        android:layout_marginTop="@dimen/material_default_padding"
+        app:layout_constraintBottom_toTopOf="@+id/mobicom_attachment_edit_text"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"/>
 
-                <EditText
-                    android:id="@+id/mobicom_attachment_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:background="@drawable/bubble_chat_input"
-                    android:ems="10"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:hint="@string/Add_caption"
-                    android:inputType="textMultiLine"
-                    android:padding="@dimen/material_default_padding"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/material_grey_700"
-                    android:textSize="@dimen/material_typography_textsize_subheading"/>
+    <EditText
+        android:id="@+id/mobicom_attachment_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginBottom="@dimen/material_half_padding"
+        android:background="@drawable/bubble_chat_input"
+        android:ems="10"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:hint="@string/Add_caption"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/material_default_padding"
+        android:textAlignment="viewStart"
+        android:textColor="@color/material_grey_700"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintBottom_toTopOf="@+id/mobicom_attachment_cancel_btn"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"/>
 
-            </RelativeLayout>
+    <Button
+        android:id="@+id/mobicom_attachment_cancel_btn"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dip"
+        android:layout_marginRight="4dip"
+        android:text="@string/cancel_text"
+        android:textColor="@color/material_grey_700"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintEnd_toStartOf="@+id/mobicom_attachment_send_btn"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/material_half_padding">
+    <Button
+        android:id="@+id/mobicom_attachment_send_btn"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dip"
+        android:layout_marginStart="4dip"
+        android:gravity="center"
+        android:text="@string/send_text"
+        android:textColor="@color/material_grey_700"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/mobicom_attachment_cancel_btn"/>
 
-                <Button
-                    android:id="@+id/mobicom_attachment_cancel_btn"
-                    style="@style/Widget.AppCompat.Button"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/material_default_padding"
-                    android:layout_marginRight="4dip"
-                    android:layout_weight="1"
-                    android:text="@string/cancel_text"
-                    android:textColor="@color/material_grey_700"
-                    android:visibility="visible"/>
-
-                <Button
-                    android:id="@+id/mobicom_attachment_send_btn"
-                    style="@style/Widget.AppCompat.Button"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/material_default_padding"
-                    android:layout_marginLeft="4dip"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/send_text"
-                    android:textColor="@color/material_grey_700"
-                    android:visibility="visible"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

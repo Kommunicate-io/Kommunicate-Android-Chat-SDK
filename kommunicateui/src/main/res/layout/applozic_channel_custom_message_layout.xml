@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
     android:layout_gravity="center"
     android:clickable="false"
     android:gravity="center"
     android:longClickable="false"
-    android:orientation="horizontal"
     android:padding="@dimen/material_default_padding"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
@@ -16,13 +15,16 @@
         android:id="@+id/channel_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:background="@drawable/applozic_channel_custom_message"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:paddingBottom="@dimen/material_half_padding"
         android:paddingLeft="@dimen/material_default_padding"
         android:paddingRight="@dimen/material_default_padding"
         android:paddingTop="@dimen/material_half_padding"
-        android:textSize="@dimen/material_typography_textsize_body"/>
+        android:textSize="@dimen/material_typography_textsize_body"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

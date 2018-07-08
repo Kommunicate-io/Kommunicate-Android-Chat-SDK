@@ -215,4 +215,5 @@
     <string name="profile_contact_number">Contact Number</string>
     <string name="user_name">User Name</string>
     <string name="rupee_symbol">\u20B9</string>
+    <string name="image_description_default">image</string>
 </resources>

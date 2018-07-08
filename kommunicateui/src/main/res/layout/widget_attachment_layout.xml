@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/attachment_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="bottom"
-    android:background="@color/white"
+    android:background="@color/material_white_1000"
     android:clickable="false"
     android:longClickable="false"
     android:visibility="gone"
@@ -15,31 +15,42 @@
         android:id="@+id/media_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/attached_file"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/material_default_padding"
+        app:layout_constraintEnd_toStartOf="@+id/close_attachment_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ProgressBar
         android:id="@+id/media_upload_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/close_attachment_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="@dimen/material_default_padding"
-        android:layout_marginTop="@dimen/material_default_padding"
-        android:background="@color/apploizc_transparent_color"
-        android:src="@drawable/ic_close_grey_600_24dp"/>
+        android:layout_margin="@dimen/material_half_padding"
+        android:background="@drawable/circle_transparent_background"
+        android:padding="@dimen/material_half_padding"
+        android:src="@drawable/ic_close_grey_600_24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/listViewActivatedStyle"
     android:layout_width="match_parent"
@@ -12,55 +13,71 @@
         layout="@layout/widget_user_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <RelativeLayout
-        android:id="@+id/displayNameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginLeft="@dimen/material_default_padding"
-        android:layout_toRightOf="@+id/profile_image_layout">
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textColor="@color/material_grey_900"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/constraint_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_image_layout"
+        app:layout_constraintTop_toTopOf="@+id/profile_image_layout"
+        tools:text="Cati Rísquez"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraint_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/profile_image_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_image_layout"
+        app:layout_constraintTop_toBottomOf="@+id/text1">
 
         <TextView
-            android:id="@+id/text1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="@color/material_grey_900"
-            android:textSize="@dimen/material_typography_textsize_subheading"/>
-
-        <RelativeLayout
+            android:id="@+id/contactNumberTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/text1"
-            android:orientation="vertical">
+            android:layout_marginLeft="@dimen/material_default_padding"
+            android:layout_marginStart="@dimen/material_default_padding"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textColor="@color/material_grey_500"
+            android:textSize="@dimen/material_typography_textsize_caption"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="00 34 608"/>
 
-            <TextView
-                android:id="@+id/contactNumberTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textColor="@color/material_grey_500"
-                android:textSize="@dimen/material_typography_textsize_caption"
-                android:visibility="gone"/>
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/material_default_padding"
+            android:layout_marginStart="@dimen/material_default_padding"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/search_match_other"
+            android:textColor="@color/material_grey_500"
+            android:textSize="@dimen/material_typography_textsize_caption"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/contactNumberTextView"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-            <TextView
-                android:id="@+id/text2"
-                android:layout_width="match_parent"
-                android:layout_height="26dp"
-                android:ellipsize="marquee"
-                android:singleLine="true"
-                android:text="@string/search_match_other"
-                android:textColor="@color/material_grey_500"
-                android:textSize="@dimen/material_typography_textsize_caption"
-                android:visibility="gone"/>
+    </android.support.constraint.ConstraintLayout>
 
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

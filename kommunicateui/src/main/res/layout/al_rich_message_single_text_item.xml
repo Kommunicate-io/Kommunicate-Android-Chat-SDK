@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:padding="@dimen/material_half_padding"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/material_half_padding">
 
     <TextView
         android:id="@+id/singleTextItem"
@@ -16,8 +17,10 @@
         android:paddingLeft="@dimen/material_default_padding"
         android:paddingRight="@dimen/material_default_padding"
         android:paddingTop="@dimen/material_half_padding"
-        android:text="5 Star"
         android:textColor="@color/applozic_theme_color_primary"
-        android:textSize="@dimen/material_typography_textsize_body"/>
+        android:textSize="@dimen/material_typography_textsize_body"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="5 Star"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

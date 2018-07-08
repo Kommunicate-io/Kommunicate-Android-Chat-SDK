@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -76,7 +77,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
     FileClientService fileClientService;
     private EditText channelName;
     private Button ok, cancel;
-    private ImageView selectImageProfileIcon;
+    private FloatingActionButton selectImageProfileIcon;
     private ImageView applozicGroupProfileIcon;
     private LinearLayout layout;
     private Uri imageChangeUri;
@@ -95,7 +96,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
         layout = (LinearLayout) findViewById(R.id.footerAd);
         applozicPermissions = new ApplozicPermissions(this, layout);
         mActionBar.setTitle(getString(R.string.update_channel_title_name));
-        selectImageProfileIcon = (CircleImageView) findViewById(R.id.applozic_group_profile_camera);
+        selectImageProfileIcon = findViewById(R.id.applozic_group_profile_camera);
         applozicGroupProfileIcon = (ImageView) findViewById(R.id.applozic_group_profile);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         fileClientService = new FileClientService(this);

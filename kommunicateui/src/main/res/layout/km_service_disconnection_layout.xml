@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/serviceDisconnectionLayout"
     android:layout_width="match_parent"
@@ -8,40 +9,64 @@
     android:visibility="gone"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity">
 
-    <LinearLayout
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center_vertical|center_horizontal|center"
-        android:gravity="center_vertical|center"
         android:orientation="vertical"
-        android:padding="@dimen/material_default_padding">
+        app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/emoji_ios_1f613"/>
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/material_half_padding"
-            android:text="@string/snap_text"
-            android:textColor="@color/material_grey_800"
-            android:textSize="@dimen/material_typography_textsize_display1"/>
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/material_half_padding"
-            android:gravity="center"
-            android:text="@string/account_disconnection_message"
-            android:textColor="@color/material_grey_600"
-            android:textSize="@dimen/material_typography_textsize_subheading"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/material_half_padding"
+        android:contentDescription="@string/image_description_default"
+        android:scaleType="center"
+        android:src="@drawable/emoji_ios_1f613"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineTop"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"/>
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/snap_text"
+        android:textColor="@color/material_grey_800"
+        android:textSize="@dimen/material_typography_textsize_display1"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"/>
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/material_half_padding"
+        android:gravity="center"
+        android:text="@string/account_disconnection_message"
+        android:textColor="@color/material_grey_600"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/title"/>
+
+</android.support.constraint.ConstraintLayout>

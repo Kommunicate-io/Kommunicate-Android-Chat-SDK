@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chat_location"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
-    android:visibility="gone">
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
     <ImageView
         android:id="@+id/static_mapview"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/image_description_default"
         android:scaleType="centerCrop"
         android:src="@drawable/applozic_map_offline_thumbnail"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,69 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/listViewActivatedStyle"
     android:layout_width="match_parent"
     android:layout_height="@dimen/material_lists_height_row"
+    android:layout_marginLeft="@dimen/material_default_padding"
+    android:layout_marginRight="@dimen/material_default_padding"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.fragment.MessageInfoFragment">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="16dp"/>
 
     <include
         android:id="@+id/profile_image_layout"
         layout="@layout/widget_user_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/material_default_padding"/>
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/displayName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:textColor="@color/material_grey_900"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/constraint_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_image_layout"
+        app:layout_constraintTop_toTopOf="@+id/profile_image_layout"
+        tools:text="Cati Rísquez"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraint_text"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical"
-        android:layout_toRightOf="@+id/profile_image_layout"
-        android:orientation="vertical"
-        android:padding="@dimen/material_default_padding">
-
-        <TextView
-            android:id="@+id/displayName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:singleLine="true"
-            android:textColor="@color/material_grey_900"
-            android:textSize="@dimen/material_typography_textsize_subheading"/>
+        app:layout_constraintBottom_toBottomOf="@id/profile_image_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profile_image_layout"
+        app:layout_constraintTop_toBottomOf="@+id/displayName">
 
         <TextView
             android:id="@+id/lastSeenAtTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/displayName"
-            android:layout_centerInParent="false"
-            android:layout_centerVertical="false"
+            android:layout_marginLeft="@dimen/material_default_padding"
+            android:layout_marginStart="@dimen/material_default_padding"
             android:ellipsize="marquee"
+            android:gravity="center_vertical"
             android:singleLine="true"
             android:textColor="@color/material_grey_500"
-            android:textSize="@dimen/material_typography_textsize_caption"/>
+            android:textSize="@dimen/material_typography_textsize_caption"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2 mins ago"/>
 
         <TextView
             android:id="@+id/adminTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/displayName"
             android:background="@drawable/admin_text"
+            android:ellipsize="marquee"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/material_half_padding"
+            android:paddingRight="@dimen/material_half_padding"
             android:singleLine="true"
             android:text="@string/admin_text"
             android:textColor="@color/material_grey_500"
             android:textSize="@dimen/material_typography_textsize_caption"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <View
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0.5dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="@dimen/material_lists_height_row"
-        android:layout_marginRight="@dimen/material_default_padding"
-        android:background="@color/material_grey_200"/>
+        android:layout_marginLeft="@dimen/material_drawer_bottom_navigation_height"
+        android:layout_marginStart="@dimen/material_drawer_bottom_navigation_height"
+        android:background="@color/material_grey_200"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

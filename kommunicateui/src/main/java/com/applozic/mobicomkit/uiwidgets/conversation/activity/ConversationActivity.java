@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -169,7 +170,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private String searchTerm;
     private SearchListFragment searchListFragment;
     public EmojiEditText mEditEmojicon;
-    private RelativeLayout serviceDisconnectionLayout;
+    private ConstraintLayout serviceDisconnectionLayout;
 
     public ConversationActivity() {
         EmojiManager.install(new IosEmojiProvider());
@@ -334,7 +335,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (resourceId != 0) {
             getWindow().setBackgroundDrawableResource(resourceId);
         }
-        setContentView(R.layout.quickconversion_activity);
+        setContentView(R.layout.quick_conversation_activity);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         baseContactService = new AppContactService(this);

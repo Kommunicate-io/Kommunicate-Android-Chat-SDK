@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -112,9 +113,9 @@ public class MessageInfoFragment extends Fragment {
 
 
         ImageView locationImageView = (ImageView) view.findViewById(R.id.static_mapview);
-        final LinearLayout mainContactShareLayout = (LinearLayout) view.findViewById(R.id.contact_share_layout);
+        final ConstraintLayout mainContactShareLayout = view.findViewById(R.id.contact_share_layout);
 
-        RelativeLayout chatLocation = (RelativeLayout) view.findViewById(R.id.chat_location);
+        ConstraintLayout chatLocation = view.findViewById(R.id.chat_location);
 
         if (message.hasAttachment() && !message.isContactMessage() && !message.isLocationMessage()) {
             textView.setVisibility(View.GONE);
@@ -246,7 +247,7 @@ public class MessageInfoFragment extends Fragment {
      * @param message
      * @param mainContactShareLayout
      */
-    private void setupContactShareView(final Message message, LinearLayout mainContactShareLayout) {
+    private void setupContactShareView(final Message message, ConstraintLayout mainContactShareLayout) {
         mainContactShareLayout.setVisibility(View.VISIBLE);
         MobiComVCFParser parser = new MobiComVCFParser();
         try {

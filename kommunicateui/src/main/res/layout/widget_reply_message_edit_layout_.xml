@@ -2,15 +2,15 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/replyMessageLayoutWidget"
+    android:id="@+id/reply_message_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:visibility="gone"
+    android:visibility="visible"
     app:cardBackgroundColor="@color/material_grey_50"
-    app:cardCornerRadius="6dp"
+    app:cardCornerRadius="20dp"
     app:cardElevation="0.5dp"
-    app:cardPreventCornerOverlap="false"
+    app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment">
 
@@ -19,7 +19,14 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/replyNameTextViewWidget"
+            android:id="@+id/messageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="hola"
+            android:textColor="@color/material_orange_800"/>
+
+        <TextView
+            android:id="@+id/replyNameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/material_default_padding"
@@ -27,13 +34,13 @@
             android:paddingTop="@dimen/material_default_padding"
             android:textColor="@color/material_grey_700"
             android:textSize="@dimen/material_typography_textsize_subheading"
-            app:layout_constraintEnd_toStartOf="@+id/imageViewForPhotoWidget"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewForPhoto"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Cati Rísquez"/>
+            android:text="Cati Rísquez"/>
 
         <TextView
-            android:id="@+id/messageTextViewWidget"
+            android:id="@+id/messageTextViews"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -43,29 +50,29 @@
             android:paddingRight="@dimen/material_default_padding"
             android:textColor="@color/material_grey_600"
             android:textSize="@dimen/material_typography_textsize_caption"
-            app:layout_constraintEnd_toStartOf="@+id/imageViewForPhotoWidget"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewForPhoto"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/replyNameTextViewWidget"
-            tools:text="ConstraintLayout allows you to create large and complex layouts with a flat view hierarchy (no nested view groups). It's similar to RelativeLayout in that.. "/>
+            app:layout_constraintTop_toBottomOf="@+id/replyNameTextView"
+            android:text="ConstraintLayout allows you to create large and complex layouts with a flat view hierarchy (no nested view groups). It's similar to RelativeLayout in that.. "/>
 
         <ImageView
-            android:id="@+id/imageViewForPhotoWidget"
+            android:id="@+id/imageViewForPhoto"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:contentDescription="@string/image_description_default"
             android:scaleType="centerCrop"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/messageTextViewWidget"
+            app:layout_constraintBottom_toBottomOf="@+id/messageTextViews"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/replyNameTextViewWidget"
+            app:layout_constraintTop_toTopOf="@+id/replyNameTextView"
             app:layout_constraintVertical_bias="0.0"
             tools:layout_constraintBottom_creator="1"
             tools:layout_constraintTop_creator="1"
-            tools:src="@drawable/beach"/>
+            android:src="@drawable/beach"/>
 
         <ImageView
-            android:id="@+id/imageCancelWidget"
+            android:id="@+id/imageCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/material_half_padding"

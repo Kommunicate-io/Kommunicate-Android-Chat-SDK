@@ -8,11 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.broadcast.BroadcastService;
@@ -36,7 +36,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserProfileFragment extends Fragment {
 
     Contact contact;
-    CardView name_cardView, email_cardView, status_cardView, phone_cardView;
     TextView name, email, phone, status;
     ImageLoader contactImageLoader;
     TextView alphabeticTextView;
@@ -70,10 +69,6 @@ public class UserProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.user_profile_fragment_layout, container, false);
-        name_cardView = (CardView) view.findViewById(R.id.applzoic_name_cardView);
-        email_cardView = (CardView) view.findViewById(R.id.applzoic_email_cardview);
-        status_cardView = (CardView) view.findViewById(R.id.applzoic_last_sean_status_cardView);
-        phone_cardView = (CardView) view.findViewById(R.id.applozic_user_phone_cardview);
         name = (TextView) view.findViewById(R.id.userName);
         status = (TextView) view.findViewById(R.id.applozic_user_status);
         email = (TextView) view.findViewById(R.id.email);
@@ -109,18 +104,18 @@ public class UserProfileFragment extends Fragment {
             name.setText(contact.getDisplayName());
 
             if (!TextUtils.isEmpty(contact.getEmailId())) {
-                email_cardView.setVisibility(View.VISIBLE);
+                email.setVisibility(View.VISIBLE);
                 email.setText(contact.getEmailId());
             }
             if (!TextUtils.isEmpty(contact.getStatus())) {
-                status_cardView.setVisibility(View.VISIBLE);
+                status.setVisibility(View.VISIBLE);
                 status.setText(contact.getStatus());
             }
             if (!TextUtils.isEmpty(contact.getContactNumber())) {
-                phone_cardView.setVisibility(View.VISIBLE);
+                phone.setVisibility(View.VISIBLE);
                 phone.setText(contact.getContactNumber());
             } else {
-                phone_cardView.setVisibility(View.GONE);
+                phone.setVisibility(View.GONE);
             }
 
         }
@@ -158,16 +153,16 @@ public class UserProfileFragment extends Fragment {
                 contactImageLoader.loadImage(updateContact, contactImage);
             }
             if (!TextUtils.isEmpty(updateContact.getStatus())) {
-                status_cardView.setVisibility(View.VISIBLE);
+                status.setVisibility(View.VISIBLE);
                 status.setText(updateContact.getStatus());
             }
 
             if (!TextUtils.isEmpty(updateContact.getContactNumber())) {
-                phone_cardView.setVisibility(View.VISIBLE);
+                phone.setVisibility(View.VISIBLE);
                 phone.setText(updateContact.getContactNumber());
             }
             if (updateContact != null && (!TextUtils.isEmpty(contact.getDisplayName())) && (!contact.getDisplayName().equals(updateContact.getDisplayName()))) {
-                name_cardView.setVisibility(View.VISIBLE);
+                name.setVisibility(View.VISIBLE);
                 name.setText(updateContact.getDisplayName());
                 reload();
             }

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/material_lists_height_row"
     android:layout_marginRight="@dimen/material_lists_height_row"
     android:background="@drawable/al_rich_message_border"
     android:orientation="vertical"
@@ -11,14 +13,17 @@
 
     <Spinner
         android:id="@+id/titleSpinner"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@drawable/al_rich_message_edit_text_border"
-        android:padding="@dimen/material_half_padding"/>
+        android:padding="@dimen/material_half_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
         android:id="@+id/firstNameEt"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/material_default_padding"
         android:background="@drawable/al_rich_message_edit_text_border"
@@ -26,7 +31,10 @@
         android:inputType="textPersonName"
         android:maxLines="1"
         android:padding="@dimen/material_half_padding"
-        android:textColor="@color/applozic_theme_color_primary"/>
+        android:textColor="@color/applozic_theme_color_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleSpinner"/>
 
     <EditText
         android:id="@+id/lastNameEt"
@@ -38,7 +46,10 @@
         android:inputType="textPersonName"
         android:maxLines="1"
         android:padding="@dimen/material_half_padding"
-        android:textColor="@color/applozic_theme_color_primary"/>
+        android:textColor="@color/applozic_theme_color_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstNameEt"/>
 
     <EditText
         android:id="@+id/emailIdEt"
@@ -50,7 +61,10 @@
         android:inputType="textEmailAddress"
         android:maxLines="1"
         android:padding="@dimen/material_half_padding"
-        android:textColor="@color/applozic_theme_color_primary"/>
+        android:textColor="@color/applozic_theme_color_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastNameEt"/>
 
     <EditText
         android:id="@+id/contactNumberEt"
@@ -62,26 +76,36 @@
         android:inputType="phone"
         android:maxLines="1"
         android:padding="@dimen/material_half_padding"
-        android:textColor="@color/applozic_theme_color_primary"/>
+        android:textColor="@color/applozic_theme_color_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailIdEt"/>
 
     <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginBottom="@dimen/material_default_padding"
         android:layout_marginTop="@dimen/material_default_padding"
-        android:background="#e7e4e4"/>
+        android:background="#e7e4e4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contactNumberEt"/>
 
     <TextView
         android:id="@+id/submitDetails"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/material_default_padding"
         android:background="@drawable/al_count_button_shape"
         android:paddingBottom="@dimen/material_half_padding"
         android:paddingLeft="@dimen/material_default_padding"
         android:paddingRight="@dimen/material_default_padding"
         android:paddingTop="@dimen/material_half_padding"
         android:text="Submit"
-        android:textColor="@color/applozic_theme_color_primary"/>
+        android:textColor="@color/applozic_theme_color_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,7 @@ public class PictureUploadPopUpFragment extends DialogFragment {
     public static final String REMOVE_PHOTO = "REMOVE_PHOTO";
     public static final String REMOVE_OPTION = "REMOVE_OPTION";
     private static final String TAG = "PictureUploadPopUpFrag";
-    LinearLayout removeLayout, galleryLayout, cameraLayout;
+    ConstraintLayout removeLayout, galleryLayout, cameraLayout;
     boolean removePhoto;
     boolean disableRemoveOption;
     Bundle bundle;
@@ -67,8 +68,8 @@ public class PictureUploadPopUpFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.attach_photo_popup_window_layout, container, false);
         bundle = getArguments();
         getDialog().setCancelable(Boolean.TRUE);
-        cameraLayout = (LinearLayout) view.findViewById(R.id.upload_camera_layout);
-        removeLayout = (LinearLayout) view.findViewById(R.id.upload_remove_image_layout);
+        cameraLayout = view.findViewById(R.id.upload_camera_layout);
+        removeLayout = view.findViewById(R.id.upload_remove_image_layout);
         removeLayout.setVisibility(View.GONE);
 
         if (bundle != null) {
@@ -89,7 +90,7 @@ public class PictureUploadPopUpFragment extends DialogFragment {
                 getDialog().dismiss();
             }
         });
-        galleryLayout = (LinearLayout) view.findViewById(R.id.upload_gallery_layout);
+        galleryLayout = view.findViewById(R.id.upload_gallery_layout);
         galleryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

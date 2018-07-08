@@ -16,11 +16,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
 }
 
 configurations.all {
     resolutionStrategy {
         force 'com.android.support:support-v4:27.1.1'
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -40,4 +49,7 @@ dependencies {
     api 'com.google.android.gms:play-services-location:15.0.1'
     api 'com.android.support:design:27.1.1'
     api 'com.applozic.communication.message:mobicomkit:5.8.7'
+    implementation ('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
+        transitive = true;
+    }
 }

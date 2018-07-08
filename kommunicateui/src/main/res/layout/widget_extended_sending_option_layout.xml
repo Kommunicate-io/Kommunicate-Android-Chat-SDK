@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/extended_sending_option_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/material_touchable_minheight"
     android:layout_gravity="bottom"
     android:baselineAligned="false"
     android:clickable="false"
     android:longClickable="false"
     android:orientation="horizontal"
     android:visibility="gone"
-    android:weightSum="3"
     tools:showIn="@layout/mobicom_message_list">
 
     <FrameLayout
         android:id="@+id/sendTypeFrame"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/message_action_button">
+        android:background="@color/message_action_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/scheduleOptionFrame"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Spinner
             android:id="@+id/sendTypeSpinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
+            android:focusable="true"
             android:entries="@array/send_type_options"/>
 
     </FrameLayout>
@@ -33,8 +38,11 @@
         android:id="@+id/scheduleOptionFrame"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@color/message_action_button">
+        android:background="@color/message_action_button"
+        app:layout_constraintEnd_toStartOf="@+id/secretMessageSpinnerFrame"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/sendTypeFrame"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/scheduleOption"
@@ -42,6 +50,7 @@
             android:layout_height="match_parent"
             android:background="@color/message_action_button"
             android:clickable="true"
+            android:focusable="true"
             android:text="@string/schedule"
             android:textColor="@color/material_black_1000"/>
 
@@ -51,15 +60,21 @@
         android:id="@+id/secretMessageSpinnerFrame"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/message_action_button">
+        android:background="@color/message_action_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/scheduleOptionFrame"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
 
         <Spinner
             android:id="@+id/secret_message_spinner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clickable="true"/>
+            android:clickable="true"
+            android:focusable="true"/>
 
     </FrameLayout>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

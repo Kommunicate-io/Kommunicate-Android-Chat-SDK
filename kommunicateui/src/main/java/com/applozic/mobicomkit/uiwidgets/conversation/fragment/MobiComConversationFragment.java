@@ -641,7 +641,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // EmojiconHandler.addEmojis(getActivity(), messageEditText.getText(), Utils.dpToPx(30));
                 //TODO: write code to emoticons .....
-
+                cameraButton.setVisibility(View.GONE);
             }
 
             public void afterTextChanged(Editable s) {
@@ -655,6 +655,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
                         intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                        cameraButton.setVisibility(View.GONE);
                     } else if (s.toString().trim().length() == 0 && typingStarted) {
                         //Log.i(TAG, "typing stopped event...");
                         typingStarted = false;
@@ -664,6 +665,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
                         intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                        cameraButton.setVisibility(View.VISIBLE);
                     }
 
                 } catch (Exception e) {

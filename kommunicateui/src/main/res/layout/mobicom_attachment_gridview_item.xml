@@ -19,9 +19,9 @@
             android:id="@+id/galleryImageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:background="@color/whitesmoke"
             android:contentDescription="@string/image_description_default"
             android:scaleType="centerCrop"
-            android:background="@color/whitesmoke"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,26 +41,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <ImageView
-            android:id="@+id/mobicom_attachment_delete_btn"
-            android:layout_width="@dimen/material_touchable_minheight"
-            android:layout_height="@dimen/material_touchable_minheight"
-            android:background="?attr/selectableItemBackground"
-            android:contentDescription="@string/image_description_default"
-            android:scaleType="center"
-            android:src="@drawable/ic_delete_white_24dp"
-            android:tint="@color/material_grey_700"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/galleryImageView"/>
 
-        <android.support.constraint.ConstraintLayout
+        <RelativeLayout
             android:id="@+id/constraint_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/material_default_padding"
-            android:layout_marginRight="@dimen/material_default_padding"
             app:layout_constraintBottom_toBottomOf="@id/profile_image_layout"
-            app:layout_constraintEnd_toStartOf="@+id/mobicom_attachment_delete_btn"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/galleryImageView">
 
@@ -68,36 +55,47 @@
                 android:id="@+id/mobicom_attachment_file_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/material_default_padding"
                 android:layout_marginStart="@dimen/material_default_padding"
-                android:gravity="center_vertical"
-                android:minHeight="@dimen/material_touchable_minheight"
-                android:textColor="@color/material_grey_700"
-                android:textSize="@dimen/material_typography_textsize_caption"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="40MB"/>
-
-            <TextView
-                android:id="@+id/mobicom_attachment_file_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/material_default_padding"
-                android:layout_marginStart="@dimen/material_default_padding"
-                android:gravity="center_vertical"
-                android:maxLines="2"
-                android:minHeight="@dimen/material_touchable_minheight"
-                android:text="@string/file_name_will_come_here_for_attachment"
                 android:textColor="@color/material_grey_700"
                 android:textSize="@dimen/material_typography_textsize_caption"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/mobicom_attachment_file_size"
-                app:layout_constraintTop_toTopOf="parent"/>
+                tools:text="40Mb"/>
 
-        </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/mobicom_attachment_file_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/material_default_padding"
+                android:layout_marginStart="@dimen/material_default_padding"
+                android:layout_toEndOf="@+id/mobicom_attachment_file_size"
+                android:layout_toLeftOf="@+id/mobicom_attachment_delete_btn"
+                android:layout_toRightOf="@+id/mobicom_attachment_file_size"
+                android:layout_toStartOf="@+id/mobicom_attachment_delete_btn"
+                android:maxLines="2"
+                android:text="@string/file_name_will_come_here_for_attachment"
+                android:textColor="@color/material_grey_700"
+                android:textSize="@dimen/material_typography_textsize_caption"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/mobicom_attachment_delete_btn"
+                android:layout_width="@dimen/material_touchable_minheight"
+                android:layout_height="@dimen/material_touchable_minheight"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@string/image_description_default"
+                android:scaleType="center"
+                android:src="@drawable/ic_delete_white_24dp"
+                android:tint="@color/material_grey_700"/>
+
+        </RelativeLayout>
 
     </android.support.constraint.ConstraintLayout>
 

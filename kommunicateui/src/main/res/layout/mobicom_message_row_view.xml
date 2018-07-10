@@ -107,6 +107,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@color/material_grey_500"
             android:textIsSelectable="true"
             android:textSize="@dimen/material_typography_textsize_caption"

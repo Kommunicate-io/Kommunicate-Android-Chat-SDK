@@ -67,7 +67,7 @@
                         android:id="@+id/applozic_file_info_inner_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/sent_message_bg_color">
+                        android:background="@drawable/applozic_sent_message">
 
                         <com.applozic.mobicomkit.api.attachment.AttachmentView
                             android:id="@+id/applozic_message_info_attachmentview"
@@ -98,7 +98,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:src="@drawable/ic_attachment_grey_600_24dp"
-                                android:tint="@color/material_white_1000"
+                                android:tint="@color/sent_message_text_color"
                                 android:visibility="visible"/>
 
                             <TextView
@@ -108,7 +108,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="@dimen/material_default_padding"
                                 android:text="@string/message_text"
-                                android:textColor="@color/applozic_send_message_layout_background_color"
+                                android:textColor="@color/sent_message_text_color"
                                 android:textSize="@dimen/material_typography_textsize_subheading"/>
 
                         </LinearLayout>
@@ -135,20 +135,27 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/material_lists_height_row"
             android:orientation="vertical"
-            app:cardBackgroundColor="@color/sent_message_bg_color"
             app:cardCornerRadius="6dp"
             app:cardElevation="@dimen/cardview_default_elevation"
             app:cardPreventCornerOverlap="false"
             app:cardUseCompatPadding="true">
 
-            <TextView
-                android:id="@+id/applozic_message_info_message_text"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/background"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/material_default_padding"
-                android:text="@string/message_text"
-                android:textColor="@color/applozic_send_message_layout_background_color"
-                android:textSize="@dimen/material_typography_textsize_subheading"/>
+                android:background="@drawable/applozic_sent_message">
+
+                <TextView
+                    android:id="@+id/applozic_message_info_message_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/material_default_padding"
+                    android:text="@string/message_text"
+                    android:textColor="@color/sent_message_text_color"
+                    android:textSize="@dimen/material_typography_textsize_subheading"/>
+
+            </RelativeLayout>
 
         </android.support.v7.widget.CardView>
 

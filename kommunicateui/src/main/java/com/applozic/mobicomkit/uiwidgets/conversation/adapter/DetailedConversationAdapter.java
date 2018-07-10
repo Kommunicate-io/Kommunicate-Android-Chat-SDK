@@ -518,6 +518,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         String userId = contactDisplayName.getDisplayName();
                         char firstLetter = contactDisplayName.getDisplayName().charAt(0);
                         if (userId.length() > 0) {
+                            //myHolder.nameTextView.setVisibility(View.VISIBLE);
                             myHolder.nameTextView.setText(String.valueOf(userId));
                         }
 
@@ -569,10 +570,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         if (message.isCall()) {
                             myHolder.messageTextView.setTextColor(context.getResources().getColor(message.isIncomingCall() ? R.color.incoming_call : R.color.outgoing_call));
                         }
-                    }
-
-                    if (myHolder.nameTextLayout != null && contact != null && hideRecursiveImages) {
-                        myHolder.nameTextLayout.setVisibility(View.GONE);
                     }
 
                     if (message.isCall() || message.isDummyEmptyMessage()) {
@@ -627,6 +624,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         });
                     }
 
+                    if (!message.isTypeOutbox()) {
+                        myHolder.profileImageLayout.setVisibility(hideRecursiveImages ? View.GONE : View.VISIBLE);
+                    }
                     loadContactImage(message.isTypeOutbox() ? senderContact : receiverContact, contactDisplayName, message, myHolder.contactImage, myHolder.alphabeticTextView, myHolder.onlineTextView, hideRecursiveImages);
 
                     ApplozicDocumentView audioView = new ApplozicDocumentView(this.context);
@@ -1214,7 +1214,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             params = new RelativeLayout.LayoutParams(metrics.widthPixels + (int) wt_px * 2, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins((int) wt_px, 0, (int) wt_px, 0);
         } else {
-            params = new LinearLayout.LayoutParams(metrics.widthPixels - (int) wt_px * 2, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 0, 0, 0);
         }
         return params;
@@ -1289,7 +1289,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         ConstraintLayout attachmentDownloadLayout;
         ImageView preview;
         RelativeLayout attachmentDownloadProgressLayout;
-        ConstraintLayout mainAttachmentLayout;
+        RelativeLayout mainAttachmentLayout;
         ConstraintLayout mainContactShareLayout;
         TextView attachmentRetry;
         ImageView videoIcon;
@@ -1297,6 +1297,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         ProgressBar mediaUploadProgressBar;
         ImageView attachmentIcon, shareContactImage;
         TextView alphabeticTextView;
+        ConstraintLayout profileImageLayout;
         CircleImageView contactImage;
         TextView nameTextView;
         TextView attachedFile;
@@ -1307,7 +1308,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         TextView selfDestruct;
         //TextView deliveryStatus;
         TextView shareContactName, shareContactNo, shareEmailContact;
-        LinearLayout nameTextLayout;
+        //LinearLayout nameTextLayout;
         View view;
         CardView replyRelativeLayout;
         RelativeLayout imageViewRLayout;
@@ -1343,6 +1344,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             mediaUploadProgressBar = (ProgressBar) customView.findViewById(R.id.media_upload_progress_bar);
             createdAtTime = customView.findViewById(R.id.createdAtTime);
             messageTextView = customView.findViewById(R.id.message);
+            profileImageLayout = customView.findViewById(R.id.profile_image_layout);
             contactImage = (CircleImageView) customView.findViewById(R.id.contactImage);
             alphabeticTextView = (TextView) customView.findViewById(R.id.alphabeticImage);
             //deliveryStatus = (TextView) customView.findViewById(R.id.status);
@@ -1350,7 +1352,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             nameTextView = (TextView) customView.findViewById(R.id.name_textView);
             attachedFile = (TextView) customView.findViewById(R.id.attached_file);
             onlineTextView = (TextView) customView.findViewById(R.id.onlineTextView);
-            nameTextLayout = (LinearLayout) customView.findViewById(R.id.nameTextLayout);
+            //nameTextLayout = (LinearLayout) customView.findViewById(R.id.nameTextLayout);
             replyRelativeLayout = customView.findViewById(R.id.reply_message_layoutt);
             imageViewRLayout = (RelativeLayout) customView.findViewById(R.id.imageViewRLayout);
             replyMessageTextView = (TextView) customView.findViewById(R.id.messageTextView);

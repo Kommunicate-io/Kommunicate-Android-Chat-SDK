@@ -1,233 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/attachment_doc_layout"
+    android:id="@+id/attachmentLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/apploizc_transparent_color"
     android:padding="@dimen/material_default_padding"
-    android:layout_gravity="right"
-    android:background="@color/sent_message_bg_color"
-    android:visibility="visible"
-    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
+    android:visibility="gone"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter"
+    tools:showIn="@layout/mobicom_received_message_list_view">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/download_doc_size_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
-
-        <ImageView
-            android:id="@+id/applozic_doc_file_size_image"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/image_description_default"
-            android:src="@drawable/ic_archive_white_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@+id/applozic_doc_file_size_divider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <View
-            android:id="@+id/applozic_doc_file_size_divider"
-            android:layout_width="0.2dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/material_default_padding"
-            android:layout_marginLeft="@dimen/material_default_padding"
-            android:layout_marginRight="@dimen/material_default_padding"
-            android:layout_marginStart="@dimen/material_default_padding"
-            android:background="@color/material_white_1000"
-            app:layout_constraintBottom_toBottomOf="@+id/applozic_doc_file_size_image"
-            app:layout_constraintEnd_toStartOf="@+id/applozic_doc_file_size"
-            app:layout_constraintStart_toEndOf="@+id/applozic_doc_file_size_image"
-            app:layout_constraintTop_toTopOf="@+id/applozic_doc_file_size_image"/>
-
-        <TextView
-            android:id="@+id/applozic_doc_file_size"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:text="@string/kb45"
-            android:textColor="@color/material_white_1000"
-            android:textSize="@dimen/material_typography_textsize_body"
-            app:layout_constraintBottom_toBottomOf="@+id/applozic_doc_file_size_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/applozic_doc_file_size_image"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/retry_doc_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
-
-        <ImageView
-            android:id="@+id/applozic_retry_image"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/image_description_default"
-            android:src="@drawable/ic_unarchive_white_24dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@+id/applozic_doc_retry_divider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <View
-            android:id="@+id/applozic_doc_retry_divider"
-            android:layout_width="0.2dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/material_default_padding"
-            android:layout_marginLeft="@dimen/material_default_padding"
-            android:layout_marginRight="@dimen/material_default_padding"
-            android:layout_marginStart="@dimen/material_default_padding"
-            android:background="@color/material_white_1000"
-            app:layout_constraintBottom_toBottomOf="@+id/applozic_retry_image"
-            app:layout_constraintEnd_toStartOf="@+id/applozic_doc_retry"
-            app:layout_constraintStart_toEndOf="@+id/applozic_retry_image"
-            app:layout_constraintTop_toTopOf="@+id/applozic_retry_image"/>
-
-        <TextView
-            android:id="@+id/applozic_doc_retry"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:text="@string/attachment_retry"
-            android:textColor="@color/material_white_1000"
-            android:textSize="@dimen/material_typography_textsize_body"
-            app:layout_constraintBottom_toBottomOf="@+id/applozic_retry_image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/applozic_retry_image"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/applozic_doc_download_progress_rl"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
-
-        <ProgressBar
-            android:id="@+id/applozic_doc_download_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:indeterminate="true"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <ImageView
-            android:id="@+id/download_calcle_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/image_description_default"
-            android:src="@drawable/ic_close_grey_600_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/applozic_doc_downloaded"
+    <RelativeLayout
+        android:id="@+id/attachmentLayoutIcons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/applozic_doc_file_name"
-        app:layout_constraintStart_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="parent">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true">
 
         <ImageView
-            android:id="@+id/doc_icon"
-            android:layout_width="0dp"
+            android:id="@+id/attachmentIcon"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/image_description_default"
             android:src="@drawable/ic_description_white_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintEnd_toStartOf="@+id/applozic_doc_downloaded_divider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:visibility="gone"/>
 
-        <View
-            android:id="@+id/applozic_doc_downloaded_divider"
-            android:layout_width="0.2dp"
-            android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/material_default_padding"
-            android:layout_marginStart="@dimen/material_default_padding"
-            android:background="@color/material_white_1000"
-            app:layout_constraintBottom_toBottomOf="@+id/doc_icon"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/doc_icon"
-            app:layout_constraintTop_toTopOf="@+id/doc_icon"/>
+        <ProgressBar
+            android:id="@+id/applozic_doc_download_progress"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerInParent="true"
+            android:indeterminate="true"
+            android:visibility="gone"/>
 
-    </android.support.constraint.ConstraintLayout>
+        <ImageView
+            android:id="@+id/attachmentCancelIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/image_description_default"
+            android:src="@drawable/ic_close_grey_600_18dp"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 
     <TextView
-        android:id="@+id/applozic_doc_file_name"
+        android:id="@+id/attachmentInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/material_default_padding"
         android:layout_marginStart="@dimen/material_default_padding"
-        android:maxLines="2"
-        android:text=""
+        android:layout_toEndOf="@+id/attachmentLayoutIcons"
+        android:layout_toRightOf="@+id/attachmentLayoutIcons"
+        android:text="@string/kb45"
         android:textColor="@color/material_white_1000"
         android:textSize="@dimen/material_typography_textsize_body"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/applozic_doc_downloaded"
-        app:layout_constraintEnd_toStartOf="@+id/applozic_audio_seekbar"
-        app:layout_constraintStart_toEndOf="@+id/applozic_doc_downloaded"
-        app:layout_constraintTop_toTopOf="@+id/applozic_doc_downloaded"/>
+        android:visibility="gone"/>
 
-    <SeekBar
-        android:id="@+id/applozic_audio_seekbar"
+    <View
+        android:id="@+id/attachmentDivider"
+        android:layout_width="0.2dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@id/attachmentLayoutContent"
+        android:layout_alignTop="@id/attachmentLayoutContent"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:layout_toEndOf="@+id/attachmentInfo"
+        android:layout_toRightOf="@+id/attachmentInfo"
+        android:background="@color/material_white_1000"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:id="@+id/attachmentLayoutContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:minWidth="100dp"
-        android:thumbTint="@color/material_white_1000"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/applozic_doc_downloaded"
-        app:layout_constraintEnd_toStartOf="@+id/audio_duration_textView"
-        app:layout_constraintStart_toEndOf="@+id/applozic_doc_file_name"
-        app:layout_constraintTop_toTopOf="@+id/applozic_doc_downloaded"/>
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:layout_toEndOf="@+id/attachmentDivider"
+        android:layout_toRightOf="@+id/attachmentDivider">
 
-    <TextView
-        android:id="@+id/audio_duration_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:maxLines="1"
-        android:paddingLeft="4dip"
-        android:textColor="@color/material_white_1000"
-        android:textSize="@dimen/material_typography_textsize_caption"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/applozic_doc_downloaded"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/applozic_audio_seekbar"
-        app:layout_constraintTop_toTopOf="@+id/applozic_doc_downloaded"
-        tools:text="04:30"/>
+        <TextView
+            android:id="@+id/attachmentName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/material_grey_900"
+            android:textSize="@dimen/material_typography_textsize_body"
+            android:visibility="gone"
+            tools:text="18_07_2018.png"/>
 
-</android.support.constraint.ConstraintLayout>
+        <SeekBar
+            android:id="@+id/applozic_audio_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/audio_duration_textView"
+            android:layout_toStartOf="@+id/audio_duration_textView"
+            android:minWidth="@dimen/material_lists_height_row"
+            android:thumbTint="@color/material_white_1000"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/audio_duration_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/material_half_padding"
+            android:layout_marginStart="@dimen/material_half_padding"
+            android:maxLines="1"
+            android:textColor="@color/material_grey_200"
+            android:textSize="@dimen/material_typography_textsize_caption"
+            android:visibility="gone"
+            tools:text="02:15"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -2327,17 +2327,25 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     }
                     View view = recyclerView.getChildAt(index - linearLayoutManager.findFirstVisibleItemPosition());
                     if (view != null) {
-                        ProgressBar mediaUploadProgressBarIndividualMessage = (ProgressBar) view.findViewById(R.id.media_upload_progress_bar);
-                        ConstraintLayout downloadInProgressLayout = view.findViewById(R.id.applozic_doc_download_progress_rl);
+                        ProgressBar mediaUploadProgressBarIndividualMessage = (ProgressBar) view.findViewById(R.id.applozic_doc_download_progress);
+                        RelativeLayout downloadInProgressLayout = view.findViewById(R.id.attachmentLayout);
                         if (mediaUploadProgressBarIndividualMessage != null) {
                             mediaUploadProgressBarIndividualMessage.setVisibility(View.GONE);
                         }
                         if (downloadInProgressLayout != null) {
                             downloadInProgressLayout.setVisibility(View.GONE);
                         }
+                        TextView infoTextView = view.findViewById(R.id.attachmentInfo);
+                        if (infoTextView != null) {
+                            infoTextView.setVisibility(View.GONE);
+                        }
+                        applozicDocumentView.setBooleanViews(false, false, true, false);
+                        if (recyclerDetailConversationAdapter != null) {
+                            recyclerDetailConversationAdapter.notifyDataSetChanged();
+                        }
                         if (message.getFileMetas() != null && !"image".contains(message.getFileMetas().getContentType()) && !"video".contains(message.getFileMetas().getContentType())) {
-                            LinearLayout applozicDocRelativeLayout = view.findViewById(R.id.applozic_doc_downloaded);
-                            ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.doc_icon);
+                            RelativeLayout applozicDocRelativeLayout = view.findViewById(R.id.attachmentLayout);
+                            ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.attachmentIcon);
                             if (message.getFileMetas() != null) {
                                 if (message.getFileMetas().getContentType().contains("audio")) {
                                     imageViewDoc.setImageResource(R.drawable.ic_play_arrow_white_24dp);
@@ -2406,8 +2414,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                 preview.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(message.getFilePaths().get(0)));
                             } else if (message.getFileMetas() != null) {
                                 //Hide Attachment View...
-                                LinearLayout applozicDocRelativeLayout = view.findViewById(R.id.applozic_doc_downloaded);
-                                ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.doc_icon);
+                                RelativeLayout applozicDocRelativeLayout = view.findViewById(R.id.attachmentLayout);
+                                ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.attachmentIcon);
                                 if (message.getFileMetas() != null && message.getFilePaths() == null) {
                                     if (message.getFileMetas().getContentType().contains("audio")) {
                                         imageViewDoc.setImageResource(R.drawable.ic_play_arrow_white_24dp);
@@ -2433,10 +2441,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                     }
                                     applozicDocRelativeLayout.setVisibility(VISIBLE);
                                 }
-                                view.findViewById(R.id.applozic_doc_download_progress_rl).setVisibility(View.GONE);
+                                view.findViewById(R.id.applozic_doc_download_progress).setVisibility(View.GONE);
+                                view.findViewById(R.id.attachmentInfo).setVisibility(View.GONE);
+                                view.findViewById(R.id.attachmentCancelIcon).setVisibility(View.GONE);
+                                applozicDocumentView.setBooleanViews(false, false, true, false);
                             }
                         }
-
                     }
                 } catch (Exception ex) {
                     Utils.printLog(getContext(), TAG, "Exception while updating download status: " + ex.getMessage());

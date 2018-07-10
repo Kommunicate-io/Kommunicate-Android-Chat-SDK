@@ -1,48 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/attachment_preview_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:visibility="visible">
+    android:visibility="gone">
 
-    <com.applozic.mobicomkit.api.attachment.AttachmentView
-        android:id="@+id/main_attachment_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/preview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/image_description_default"
-        android:scaleType="centerCrop"
-        android:visibility="visible"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/emoji_ios_1f61b"/>
+        <com.applozic.mobicomkit.api.attachment.AttachmentView
+            android:id="@+id/main_attachment_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <ImageView
-        android:id="@+id/video_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:contentDescription="@string/image_description_default"
-        android:src="@drawable/ic_play_circle_filled_grey_200_48dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/preview"
-        app:layout_constraintEnd_toEndOf="@+id/preview"
-        app:layout_constraintStart_toStartOf="@+id/preview"
-        app:layout_constraintTop_toTopOf="@+id/preview"/>
+        <ImageView
+            android:id="@+id/preview"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/image_description_default"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:layout_constraintDimensionRatio="16:9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/emoji_ios_1f61b"/>
+
+        <ImageView
+            android:id="@+id/video_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/image_description_default"
+            android:src="@drawable/ic_play_circle_filled_grey_200_48dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/preview"
+            app:layout_constraintEnd_toEndOf="@+id/preview"
+            app:layout_constraintStart_toStartOf="@+id/preview"
+            app:layout_constraintTop_toTopOf="@+id/preview"/>
+
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/attachment_download_layout"
@@ -54,11 +60,7 @@
         android:paddingLeft="@dimen/material_default_padding"
         android:paddingRight="@dimen/material_default_padding"
         android:paddingTop="@dimen/material_half_padding"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/download_image"
@@ -93,11 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:indeterminate="false"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/attachment_download_progress_layout"
@@ -109,11 +107,7 @@
         android:paddingLeft="@dimen/material_default_padding"
         android:paddingRight="@dimen/material_default_padding"
         android:paddingTop="@dimen/material_half_padding"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/attachment_download_cancel"
@@ -136,7 +130,7 @@
         android:id="@+id/attachment_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_centerInParent="true"
         android:background="@drawable/mobicom_attachment_download"
         android:paddingBottom="@dimen/material_half_padding"
         android:paddingLeft="@dimen/material_default_padding"
@@ -146,10 +140,6 @@
         android:textAlignment="gravity"
         android:textColor="@color/material_white_1000"
         android:textSize="@dimen/material_typography_textsize_subheading"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:visibility="gone"/>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

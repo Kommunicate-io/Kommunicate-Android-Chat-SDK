@@ -630,7 +630,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     loadContactImage(message.isTypeOutbox() ? senderContact : receiverContact, contactDisplayName, message, myHolder.contactImage, myHolder.alphabeticTextView, myHolder.onlineTextView, hideRecursiveImages);
 
                     ApplozicDocumentView audioView = new ApplozicDocumentView(this.context);
-                    audioView.inflateViewWithMessage(myHolder.view, message);
+                    audioView.inflateViewWithMessage(myHolder.view, message, alCustomizationSettings);
                     audioView.hideView(true);
 
                     if (message.hasAttachment() && myHolder.attachedFile != null & !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {

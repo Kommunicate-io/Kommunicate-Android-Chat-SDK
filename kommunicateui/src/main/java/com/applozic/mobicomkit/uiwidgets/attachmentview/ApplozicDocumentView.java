@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import com.applozic.mobicomkit.api.attachment.AttachmentViewProperties;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -62,13 +64,15 @@ public class ApplozicDocumentView {
     private AttachmentTask mDownloadThread;
     private boolean mCacheFlag = false;
     private Handler mHandler = new Handler();
+    private AlCustomizationSettings alCustomizationSettings;
 
     public ApplozicDocumentView(Context context) {
         this.context = context;
     }
 
-    public void inflateViewWithMessage(View rootview, Message message) {
+    public void inflateViewWithMessage(View rootview, Message message, AlCustomizationSettings alCustomizationSettings) {
         this.message = message;
+        this.alCustomizationSettings = alCustomizationSettings;
         mainLayout = rootview.findViewById(R.id.attachment_doc_layout);
         downloadInProgressLayout = rootview.findViewById(R.id.applozic_doc_download_progress_rl);
         downloadedLayout = rootview.findViewById(R.id.applozic_doc_downloaded);
@@ -114,7 +118,8 @@ public class ApplozicDocumentView {
             }
         }
 
-        fileText.setTextColor(ContextCompat.getColor(context, R.color.message_text_color));
+        fileText.setTextColor(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) :
+                Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
         audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? 0xFFFFFFFF : 0xFFFFB242, PorterDuff.Mode.MULTIPLY);
         cancelIcon.setVisibility(message.isTypeOutbox() ? GONE : View.VISIBLE);
         if (message.isTypeOutbox()) {

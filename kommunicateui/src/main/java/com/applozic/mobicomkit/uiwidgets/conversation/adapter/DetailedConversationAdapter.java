@@ -905,13 +905,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             }
                         }*/
                         }
+
                         if (myHolder.messageTextInsideLayout != null) {
                             GradientDrawable bgShape = (GradientDrawable) myHolder.messageTextInsideLayout.getBackground();
                             if (bgShape != null) {
-                                bgShape.setColor(message.isTypeOutbox() ?
-                                        Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
-                                bgShape.setStroke(3, message.isTypeOutbox() ?
-                                        Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                                bgShape.setColor(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                                bgShape.setStroke(3, message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
                             }
                         }
                     }

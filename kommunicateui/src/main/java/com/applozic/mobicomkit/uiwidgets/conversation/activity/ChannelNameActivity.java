@@ -112,8 +112,8 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 getWindow().setStatusBarColor(Color.parseColor(alCustomizationSettings.getThemeColorPrimaryDark()));
             }
         }
-        int drawableResourceId = getResources().getIdentifier(alCustomizationSettings.getAttachCameraIconName(), "drawable", getPackageName());
-        selectImageProfileIcon.setImageResource(drawableResourceId);
+        //int drawableResourceId = getResources().getIdentifier(alCustomizationSettings.getAttachCameraIconName(), "drawable", getPackageName());
+        //selectImageProfileIcon.setImageResource(drawableResourceId);
 
         if (getIntent().getExtras() != null) {
             String groupInfoJson = getIntent().getExtras().getString(ChannelInfoActivity.GROUP_UPDTAE_INFO);
@@ -128,7 +128,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 applozicGroupProfileIcon.setImageURI(uri);
             }
         } else {
-            applozicGroupProfileIcon.setImageResource(R.drawable.ic_people_grey_600_24dp);
+            applozicGroupProfileIcon.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
 
         }
         channelName = (EditText) findViewById(R.id.newChannelName);
@@ -380,11 +380,10 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 if (imageView != null) {
                     imageChangeUri = null;
                     imageView.setImageDrawable(null); // <--- added to force redraw of ImageView
-                    imageView.setImageResource(R.drawable.ic_people_grey_600_24dp);
+                    imageView.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
                 }
             }
         }
 
     }
-
 }

@@ -176,11 +176,11 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                                 + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
                     }
                     myholder.smReceivers.setText(contactInfo);
-                    contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+                    contactImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
                     processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                 } else if (message.getGroupId() != null) {
                     if (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                        contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+                        contactImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
                         Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
                         if (withUserContact != null) {
                             myholder.smReceivers.setText(withUserContact.getDisplayName());
@@ -188,16 +188,16 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         }
                     } else {
                         if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
-                            myholder.contactImage.setImageResource(R.drawable.ic_person_grey_600_24dp);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
+                            myholder.contactImage.setImageResource(R.drawable.ic_account_circle_grey_600_24dp_v);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
-                            myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp_v);
+                            myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
                         }
 
                         myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
                         myholder.alphabeticTextView.setVisibility(View.GONE);
-                        myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
+                        myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
                         myholder.contactImage.setVisibility(View.VISIBLE);
 
                         if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
@@ -205,9 +205,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         } else if (channel != null && channel.isBroadcastMessage()) {
                             myholder.contactImage.setImageResource(R.drawable.ic_volume_up_white_24dp);
                         } else if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp_v);
                         }
                     }
                 }

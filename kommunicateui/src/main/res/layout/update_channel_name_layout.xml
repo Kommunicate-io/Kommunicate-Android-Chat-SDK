@@ -21,32 +21,44 @@
         app:subtitleTextAppearance="@style/ToolbarSubtitle"
         app:titleTextAppearance="@style/ToolbarTitle"/>
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guidelineTop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1"/>
+    <View
+        android:id="@+id/header_background_top"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/material_grey_200"
+        app:layout_constraintBottom_toTopOf="@+id/header_background_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"/>
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guidelineBottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5"/>
+    <View
+        android:id="@+id/header_background_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/material_grey_300"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header_background_top"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/applozic_group_profile"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_centerHorizontal="true"
-        android:background="@color/material_grey_200"
-        android:src="@drawable/ic_people_grey_600_24dp"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        android:background="@drawable/user_background_circle_grey_400"
+        android:src="@drawable/ic_people_grey_600_24dp_v"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/header_background_bottom"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"/>
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.5"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/applozic_group_profile_camera"
@@ -77,6 +89,13 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/material_default_padding"/>
 
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6"/>
+
     <EditText
         android:id="@+id/newChannelName"
         android:layout_width="0dp"
@@ -90,7 +109,7 @@
         android:textAlignment="viewStart"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toEndOf="@+id/guidelineStart"
-        app:layout_constraintTop_toBottomOf="@+id/guidelineBottom"/>
+        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"/>
 
     <Button
         android:id="@+id/channelNameOk"

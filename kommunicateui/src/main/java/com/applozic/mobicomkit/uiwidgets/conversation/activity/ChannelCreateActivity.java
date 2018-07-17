@@ -302,7 +302,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
             imageChangeUri = null;
             groupIconImageLink = null;
             circleImageView.setImageDrawable(null); // <--- added to force redraw of ImageView
-            circleImageView.setImageResource(R.drawable.ic_people_grey_600_24dp);
+            circleImageView.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
@@ -10,18 +11,24 @@
     android:visibility="visible"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/awayMessageDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <FrameLayout
             android:id="@+id/contextFrameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="@dimen/material_lists_height_row"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <Spinner
                 android:id="@+id/spinner_show"
@@ -31,18 +38,23 @@
 
         </FrameLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/contextFrameLayout">
 
             <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swipe_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/content_layout"
-                android:visibility="visible">
+                android:visibility="visible"
+                app:layout_constraintBottom_toTopOf="@+id/content_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/messageList"
@@ -66,50 +78,38 @@
                 android:text="@string/no_conversation"
                 android:textColor="@color/material_grey_700"
                 android:textSize="@dimen/material_typography_textsize_body"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_start_new"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
                 android:layout_marginBottom="@dimen/material_half_padding"
-                android:layout_marginRight="@dimen/material_default_padding"
                 android:src="@drawable/ic_add_white_24dp"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/start_new_conversation"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
-                android:weightSum="5">
-
-                <View
-                    android:layout_width="0dip"
-                    android:layout_height="@dimen/material_touchable_minheight"
-                    android:layout_weight="0.8"/>
-
-                <Button
-                    android:id="@+id/start_new_conversation"
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/material_drawer_bottom_navigation_icon_height"
-                    android:layout_weight="3.4"
-                    android:background="@drawable/start_new_conv_shape"
-                    android:text="@string/default_start_new_conversation"
-                    android:textAllCaps="false"
-                    android:textColor="@color/material_white_1000"
-                    android:textSize="@dimen/material_typography_textsize_button"
-                    android:visibility="gone"/>
-
-                <View
-                    android:layout_width="0dip"
-                    android:layout_height="@dimen/material_touchable_minheight"
-                    android:layout_weight="0.8"/>
-
-            </LinearLayout>
+                android:layout_marginBottom="@dimen/material_drawer_bottom_navigation_icon_height"
+                android:background="@drawable/start_new_conv_shape"
+                android:paddingLeft="@dimen/material_touchable_minheight"
+                android:paddingRight="@dimen/material_touchable_minheight"
+                android:text="@string/default_start_new_conversation"
+                android:textAllCaps="false"
+                android:textColor="@color/material_white_1000"
+                android:textSize="@dimen/material_typography_textsize_button"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <TextView
                 android:id="@+id/emptyConversation"
@@ -124,10 +124,13 @@
 
             <LinearLayout
                 android:id="@+id/content_layout"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="vertical">
+                android:background="@color/material_grey_200"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <include layout="@layout/widget_attachment_layout"/>
 
@@ -153,81 +156,100 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <com.applozic.mobicomkit.uiwidgets.DashedLineView
-                        android:id="@+id/awayMessageDivider"
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:visibility="gone"/>
-
-                    <TextView
-                        android:id="@+id/awayMessageTV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="@dimen/material_half_padding"
-                        android:layout_marginRight="@dimen/material_half_padding"
-                        android:gravity="center"
-                        android:padding="@dimen/material_half_padding"
-                        android:textSize="@dimen/material_typography_textsize_body"
-                        android:textStyle="italic"
-                        android:visibility="gone"/>
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/mobicomMessageTemplateView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/material_half_padding"
-                        android:layout_marginRight="@dimen/material_half_padding"
-                        android:visibility="gone"/>
-
-                    <TextView
-                        android:id="@+id/applozicLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/material_grey_700"
-                        android:gravity="center"
-                        android:padding="2dp"
-                        android:text="@string/powered_by_applozic_message"
-                        android:textColor="@color/material_white_1000"
-                        android:textSize="@dimen/material_typography_textsize_caption"
-                        android:visibility="gone"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/material_grey_300"/>
-
-                </LinearLayout>
-
             </LinearLayout>
 
-            <include layout="@layout/widget_reveal_fragment_layout"/>
+        </android.support.constraint.ConstraintLayout>
 
-        </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
-    </LinearLayout>
+    <com.applozic.mobicomkit.uiwidgets.DashedLineView
+        android:id="@+id/awayMessageDivider"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/awayMessageTV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/awayMessageTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/material_half_padding"
+        android:layout_marginRight="@dimen/material_half_padding"
+        android:gravity="center"
+        android:padding="@dimen/material_half_padding"
+        android:textSize="@dimen/material_typography_textsize_body"
+        android:textStyle="italic"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/mobicomMessageTemplateView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mobicomMessageTemplateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/material_half_padding"
+        android:layout_marginRight="@dimen/material_half_padding"
+        android:minHeight="@dimen/material_touchable_minheight"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/applozicLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/applozicLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/material_grey_700"
+        android:gravity="center"
+        android:padding="2dp"
+        android:text="@string/powered_by_applozic_message"
+        android:textColor="@color/material_white_1000"
+        android:textSize="@dimen/material_typography_textsize_caption"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/widget_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <include
+        layout="@layout/widget_reveal_fragment_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        app:layout_constraintBottom_toTopOf="@+id/widget_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-        <include layout="@layout/widget_input_layout"/>
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/widget_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <include
+            layout="@layout/widget_input_layout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <LinearLayout
             android:id="@+id/user_not_able_to_chat_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:background="@color/material_grey_200"
             android:minHeight="@dimen/material_touchable_minheight"
             android:orientation="horizontal"
             android:padding="@dimen/material_default_padding"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <TextView
                 android:id="@+id/user_not_able_to_chat_textView"
@@ -242,26 +264,20 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <GridView
+            android:id="@+id/mobicom_multimedia_options1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/material_grey_200"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:horizontalSpacing="1dp"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="1dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <GridView
-                android:id="@+id/mobicom_multimedia_options1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:horizontalSpacing="1dp"
-                android:numColumns="3"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="1dp"
-                android:visibility="gone"/>
+    </android.support.constraint.ConstraintLayout>
 
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

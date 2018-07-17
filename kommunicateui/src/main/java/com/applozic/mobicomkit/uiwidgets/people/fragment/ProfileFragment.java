@@ -145,7 +145,7 @@ public class ProfileFragment extends Fragment {
         contactEdit.setOnClickListener(contactEditListener);
 
         mImageLoader.setImageFadeIn(false);
-        mImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+        mImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
         mImageLoader.loadImage(userContact, img_profile);
     }
 
@@ -201,7 +201,7 @@ public class ProfileFragment extends Fragment {
             File file = FileClientService.getFilePath(DEFAULT_CONATCT_IMAGE, getContext(), "image", true);
             if (file == null || !file.exists()) {
                 Utils.printLog(getActivity(), TAG, "file not found,exporting it from drawable");
-                Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_person_grey_600_24dp);
+                Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_account_circle_grey_600_24dp_v);
                 String filePath = ImageUtils.saveImageToInternalStorage(FileClientService.getFilePath(DEFAULT_CONATCT_IMAGE, getActivity().getApplicationContext(), "image", true), bm);
                 file = new File(filePath);
             }

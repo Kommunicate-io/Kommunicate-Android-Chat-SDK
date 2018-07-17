@@ -52,7 +52,7 @@
         android:id="@+id/contactImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:src="@drawable/ic_account_circle_grey_600_24dp"
+        android:src="@drawable/ic_account_circle_grey_600_24dp_v"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/header_background_bottom"
         app:layout_constraintEnd_toEndOf="parent"

@@ -18,6 +18,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <View
+            android:id="@+id/colorView"
+            android:layout_width="5dp"
+            android:layout_height="0dp"
+            android:background="@color/material_grey_500"
+            app:layout_constraintBottom_toBottomOf="@+id/messageTextViewWidget"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <TextView
             android:id="@+id/replyNameTextViewWidget"
             android:layout_width="0dp"
@@ -28,7 +37,7 @@
             android:textColor="@color/material_grey_700"
             android:textSize="@dimen/material_typography_textsize_subheading"
             app:layout_constraintEnd_toStartOf="@+id/imageViewForPhotoWidget"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/colorView"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Cati Rísquez"/>
 
@@ -62,7 +71,7 @@
             app:layout_constraintVertical_bias="0.0"
             tools:layout_constraintBottom_creator="1"
             tools:layout_constraintTop_creator="1"
-            tools:src="@drawable/beach"/>
+            tools:src="@drawable/emoji_ios_1f61b"/>
 
         <ImageView
             android:id="@+id/imageCancelWidget"

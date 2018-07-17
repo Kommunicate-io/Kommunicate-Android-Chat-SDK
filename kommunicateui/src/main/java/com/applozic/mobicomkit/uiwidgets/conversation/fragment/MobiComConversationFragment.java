@@ -104,6 +104,7 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioRecordManager;
@@ -250,6 +251,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     CardView replyLayout;
     ImageView attachReplyCancelLayout;
     TextView nameTextView, messageTextView;
+    private View colorView;
     ImageView galleryImageView;
     FileClientService fileClientService;
     ImageLoader imageThumbnailLoader, messageImageLoader;
@@ -286,7 +288,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private EditText errorEditTextView;
     private RecyclerView messageTemplateView;
     private ImageView audioRecordIconImageView;
-    private ImageView cameraButton, cameraOptionsButton, locationButton, fileAttachmentButton;
+    private FloatingActionButton cameraOptionsButton, fileAttachmentButton;
+    private ImageView cameraButton, locationButton;
     private ImageView optionsAttachmentButton;
     WeakReference<ImageButton> recordButtonWeakReference;
     RecyclerView recyclerView;
@@ -300,7 +303,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     DashedLineView awayMessageDivider;
     TextView awayMessageTv;
     TextView applozicLabel;
-    private LinearLayout mainLayout, contentLayout;
+    private ConstraintLayout mainLayout;
+    private LinearLayout contentLayout;
     private CardView optionsLayout;
     private boolean isOpen = false;
 
@@ -442,6 +446,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         mediaUploadProgressBar = (ProgressBar) attachmentLayout.findViewById(R.id.media_upload_progress_bar);
         emoticonsBtn = list.findViewById(R.id.emoji_btn);
         replyLayout = list.findViewById(R.id.replyMessageLayoutWidget);
+        colorView = list.findViewById(R.id.colorView);
         messageTextView = (TextView) list.findViewById(R.id.messageTextViewWidget);
         galleryImageView = (ImageView) list.findViewById(R.id.imageViewForPhotoWidget);
         nameTextView = (TextView) list.findViewById(R.id.replyNameTextViewWidget);
@@ -456,10 +461,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         emoticonsBtn.setOnClickListener(this);
         //listView.addHeaderView(spinnerLayout);
         sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
+        sentIcon.setColorFilter(getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
+        deliveredIcon.setColorFilter(getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
-        //readIcon.setColorFilter(getResources().getColor(R.color.applozic_theme_color_primary), PorterDuff.Mode.MULTIPLY);
+        readIcon.setColorFilter(getResources().getColor(R.color.read_icon_color), PorterDuff.Mode.MULTIPLY);
         pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
+        pendingIcon.setColorFilter(getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
 
         awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
         awayMessageTv = list.findViewById(R.id.awayMessageTV);
@@ -3540,6 +3548,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             displayName = appContactService.getContactById(message.getContactIds()).getDisplayName();
                         }
                     }
+                    Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(displayName.charAt(0)) ? displayName.charAt(0) : null;
+                    nameTextView.setTextColor(getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+                    colorView.setBackgroundColor(getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
                     nameTextView.setText(displayName);
                     if (message.hasAttachment()) {
                         FileMeta fileMeta = message.getFileMetas();

@@ -23,7 +23,7 @@
         android:layout_marginLeft="@dimen/material_default_padding"
         android:layout_marginStart="@dimen/material_default_padding"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/onlineTextView"
@@ -45,7 +45,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/profile_image_layout"
         app:layout_constraintTop_toTopOf="@+id/profile_image_layout"
-        tools:text="Cati Rísquez" />
+        tools:text="Cati Rísquez"/>
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"

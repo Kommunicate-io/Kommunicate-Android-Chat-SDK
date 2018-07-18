@@ -530,7 +530,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     if (message.isTypeOutbox()) {
                         myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getSentMessageCreatedAtTimeColor()));
                     } else {
-                        myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedContactMessageTextColor()));
+                        myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
                     }
 
                     myHolder.attachmentDownloadLayout.setVisibility(View.GONE);

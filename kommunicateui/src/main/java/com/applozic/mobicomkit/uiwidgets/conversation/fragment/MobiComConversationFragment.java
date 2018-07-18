@@ -394,7 +394,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 mainEditTextLinearLayout.setBackgroundResource(R.drawable.applozic_chat_left_icon);
                 audioRecordFrameLayout.setBackgroundResource(R.drawable.applozic_chat_left_icon);
                 slideImageView.setImageResource(R.drawable.ic_keyboard_arrow_right_grey_600_24dp);
-
             }
         }
 

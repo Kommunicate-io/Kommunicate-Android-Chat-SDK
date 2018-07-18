@@ -109,7 +109,7 @@
 
             <include layout="@layout/al_rich_message_layout"/>
 
-            <com.vanniktech.emoji.EmojiTextView
+            <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -122,7 +122,6 @@
                 android:textColor="@color/received_text_color"
                 android:textIsSelectable="true"
                 android:textSize="@dimen/material_typography_textsize_body"
-                app:emojiSize="@dimen/material_typography_textsize_title"
                 tools:text="Material design guidelines mention that cards can be constructed using blocks of content"/>
 
         </LinearLayout>

@@ -37,7 +37,7 @@
         android:layout_marginBottom="@dimen/material_half_padding"
         android:contentDescription="@string/image_description_default"
         android:scaleType="center"
-        android:src="@drawable/emoji_ios_1f613"
+        android:src="@drawable/ic_sentiment_satisfied_grey_600_24dp"
         app:layout_constraintBottom_toTopOf="@+id/guidelineTop"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"

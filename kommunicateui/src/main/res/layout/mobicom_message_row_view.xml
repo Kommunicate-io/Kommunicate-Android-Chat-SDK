@@ -97,7 +97,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/smReceivers"/>
 
-        <com.vanniktech.emoji.EmojiTextView
+        <TextView
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -111,7 +111,6 @@
             android:textColor="@color/material_grey_500"
             android:textIsSelectable="true"
             android:textSize="@dimen/material_typography_textsize_caption"
-            app:emojiSize="@dimen/material_typography_textsize_title"
             app:layout_constraintBottom_toBottomOf="@id/attachmentIcon"
             app:layout_constraintEnd_toStartOf="@id/constraint_extras"
             app:layout_constraintStart_toEndOf="@id/attachmentIcon"

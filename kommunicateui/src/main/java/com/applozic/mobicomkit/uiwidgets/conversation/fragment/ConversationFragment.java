@@ -114,7 +114,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
             @Override
             public void onClick(View v) {
                 multimediaPopupGrid.setVisibility(View.GONE);
-                dismissEmojiKeyboard();
             }
         });
 
@@ -162,11 +161,10 @@ public class ConversationFragment extends MobiComConversationFragment implements
         if ((multimediaPopupGrid.getVisibility() == View.VISIBLE)) {
             multimediaPopupGrid.setVisibility(View.GONE);
         }
-        dismissEmojiKeyboard();
     }
 
     public boolean isAttachmentOptionsOpen() {
-        return (multimediaPopupGrid.getVisibility() == View.VISIBLE || emojiPopup.isShowing());
+        return (multimediaPopupGrid.getVisibility() == View.VISIBLE);
     }
 
     public void updateTitle() {

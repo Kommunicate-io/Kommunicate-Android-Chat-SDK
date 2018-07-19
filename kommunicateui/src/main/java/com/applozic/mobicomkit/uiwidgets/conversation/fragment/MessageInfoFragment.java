@@ -326,7 +326,7 @@ public class MessageInfoFragment extends Fragment {
                     (messageInfo.getDeliveredAtTime() == null ? 0 : messageInfo.getDeliveredAtTime());
             if (timeStamp != 0) {
                 holder.lastSeenAtTextView.setVisibility(View.VISIBLE);
-                holder.lastSeenAtTextView.setText(String.valueOf(KmDateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
+                holder.lastSeenAtTextView.setText(String.valueOf(KmDateUtils.getDateAndTimeInDefaultFormat(getContext(), timeStamp)));
 
             } else {
                 holder.lastSeenAtTextView.setVisibility(View.GONE);

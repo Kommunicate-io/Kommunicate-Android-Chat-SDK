@@ -54,6 +54,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class MobiComKitPeopleActivity extends AppCompatActivity implements OnContactsInteractionListener,
@@ -488,7 +489,7 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
                     if (TextUtils.isEmpty(mimeType)) {
                         return null;
                     }
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
                     String fileName = FileUtils.getFileName(context, uri);
                     String fileFormat = FileUtils.getFileFormat(fileName);
                     if (TextUtils.isEmpty(fileFormat)) {

@@ -47,7 +47,7 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@+id/guidelineStart"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/emoji_ios_1f61b"/>
+        tools:src="@drawable/ic_sentiment_satisfied_grey_600_24dp"/>
 
     <TextView
         android:id="@+id/title"

@@ -33,7 +33,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/emoji_ios_1f61b"/>
+            tools:src="@drawable/ic_sentiment_satisfied_grey_600_24dp"/>
 
         <ImageView
             android:id="@+id/video_icon"

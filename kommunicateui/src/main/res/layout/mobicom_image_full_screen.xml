@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        tools:src="@drawable/emoji_ios_1f61b"/>
+        tools:src="@drawable/ic_sentiment_satisfied_grey_600_24dp"/>
 
     <ProgressBar
         android:id="@+id/full_screen_progress_bar"

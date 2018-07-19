@@ -69,7 +69,6 @@
         app:layout_constraintStart_toEndOf="@id/profile_image_layout"
         app:layout_constraintTop_toBottomOf="@id/name_textView">
 
-        <!-- TODO Refactor - replace by ConstraintLayout-->
         <LinearLayout
             android:id="@+id/messageTextInsideLayout"
             android:layout_width="wrap_content"

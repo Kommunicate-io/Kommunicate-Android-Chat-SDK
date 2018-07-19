@@ -22,6 +22,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationAc
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -67,7 +68,8 @@ public class MultimediaOptionFragment extends DialogFragment {
                             // Create the File where the photo should go
                             File photoFile;
 
-                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                            String timeStamp = new SimpleDateFormat(getContext().getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault())
+                                    .format(new Date());
                             String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
 
                             photoFile = FileClientService.getFilePath(imageFileName, getActivity(), "image/jpeg");
@@ -94,7 +96,8 @@ public class MultimediaOptionFragment extends DialogFragment {
                         // create new Intentwith with Standard Intent action that can be
                         // sent to have the camera application capture an video and return it.
                         intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String timeStamp = new SimpleDateFormat(getContext().getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault())
+                                .format(new Date());
                         String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
 
                         File fileUri = FileClientService.getFilePath(imageFileName, getActivity(), "video/mp4");

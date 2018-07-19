@@ -60,6 +60,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -247,7 +248,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
                         new ProfilePictureUpload(true, profilePhotoFile, imageChangeUri, ChannelCreateActivity.this).execute((Void[]) null);
                     } else {
                         imageChangeUri = result.getUri();
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
                         String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
                         circleImageView.setImageDrawable(null); // <--- added to force redraw of ImageView
                         circleImageView.setImageURI(imageChangeUri);
@@ -379,7 +380,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
 
     @Override
     public Uri getCurrentImageUri() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
         profilePhotoFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
         imageChangeUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", profilePhotoFile);

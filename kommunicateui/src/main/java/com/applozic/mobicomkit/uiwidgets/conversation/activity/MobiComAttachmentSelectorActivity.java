@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -240,7 +241,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                     if (TextUtils.isEmpty(mimeType)) {
                         return;
                     }
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
                     fileName = FileUtils.getFileName(this, selectedFileUri);
                     String fileFormat = FileUtils.getFileFormat(fileName);
                     if (TextUtils.isEmpty(fileFormat)) {

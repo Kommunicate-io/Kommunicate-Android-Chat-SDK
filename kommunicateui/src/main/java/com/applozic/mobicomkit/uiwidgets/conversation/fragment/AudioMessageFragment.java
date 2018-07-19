@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by devashish on 02/03/16.
@@ -57,7 +58,7 @@ public class AudioMessageFragment extends DialogFragment {
         txtcount =  v.findViewById(R.id.txtcount);
         audioRecordingText = v.findViewById(R.id.audio_recording_text);
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat(getContext().getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
         String audioFileName = "AUD_" + timeStamp + "_" + ".m4a";
 
         outputFile = FileClientService.getFilePath(audioFileName, getActivity().getApplicationContext(), "audio/m4a").getAbsolutePath();

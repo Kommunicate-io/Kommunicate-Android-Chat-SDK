@@ -211,7 +211,10 @@
     <string name="TIME_24H_FORMAT">HH:mm</string>
     <string name="DATE_SHORT_FORMAT">dd MMM</string>
     <string name="DATE_LONG_FORMAT">dd MMM yyyy</string>
+    <string name="DATE_MEDIUM_FORMAT">"MMM dd, yyyy"</string>
     <string name="DATE_FULL_FORMAT">EEE, MMM dd,yyyy</string>
     <string name="DATE_TIME_FULL_FORMAT">EEE, MMM dd, yyyy hh:mm aa</string>
     <string name="DATE_TIME_24H_FULL_FORMAT">EEE, MMM dd, yyyy HH:mm</string>
+    <string name="DATE_SAVE_FILE_FORMAT">yyyyMMdd_HHmmss</string>
+    <string name="DATE_DAY_FORMAT">EEEE</string>
 </resources>

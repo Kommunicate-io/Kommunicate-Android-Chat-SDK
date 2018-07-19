@@ -198,10 +198,19 @@
     <string name="default_start_new_conversation">Start new conversation</string>
 
     <string name="JUST_NOW">Just now</string>
-    <string name="MINUTES"> mins</string>
-    <string name="HOURS"> hrs</string>
-    <string name="H">h</string>
-    <string name="MINUTES_AGO"> mins ago</string>
-    <string name="HOURS_AGO"> hrs ago</string>
+    <string name="MINUTES">%s mins</string>
+    <string name="MINUTE">%s min</string>
+    <string name="HOURS">%s hrs</string>
+    <string name="H">%s h</string>
+    <string name="MINUTES_AGO">%s mins ago</string>
+    <string name="HOURS_AGO">%s hrs ago</string>
     <string name="YESTERDAY">Yesterday</string>
+
+    <string name="TIME_FORMAT">hh:mm a</string>
+    <string name="TIME_24H_FORMAT">HH:mm</string>
+    <string name="DATE_SHORT_FORMAT">dd MMM</string>
+    <string name="DATE_LONG_FORMAT">dd MMM yyyy</string>
+    <string name="DATE_FULL_FORMAT">EEE, MMM dd,yyyy</string>
+    <string name="DATE_TIME_FULL_FORMAT">EEE, MMM dd, yyyy hh:mm aa</string>
+    <string name="DATE_TIME_24H_FULL_FORMAT">EEE, MMM dd, yyyy HH:mm</string>
 </resources>

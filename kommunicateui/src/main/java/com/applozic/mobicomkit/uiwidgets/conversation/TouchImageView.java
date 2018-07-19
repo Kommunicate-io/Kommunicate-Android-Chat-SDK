@@ -1,5 +1,4 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
-
 /*
  * TouchImageView.java
  * By: Michael Ortiz
@@ -12,8 +11,6 @@ package com.applozic.mobicomkit.uiwidgets.conversation;
  * Extends Android ImageView to include pinch zooming, panning, fling and double tap zoom.
  */
 
-
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -23,10 +20,9 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -34,11 +30,9 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.OverScroller;
-import android.widget.Scroller;
 
-public class TouchImageView extends ImageView {
+public class TouchImageView extends AppCompatImageView {
 
     private static final String DEBUG = "DEBUG";
 
@@ -63,9 +57,7 @@ public class TouchImageView extends ImageView {
     //
     private Matrix matrix, prevMatrix;
 
-    private static enum State {NONE, DRAG, ZOOM, FLING, ANIMATE_ZOOM}
-
-    ;
+    private static enum State { NONE, DRAG, ZOOM, FLING, ANIMATE_ZOOM }
     private State state;
 
     private float minScale;
@@ -275,7 +267,6 @@ public class TouchImageView extends ImageView {
             super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
             return;
         }
-
         super.onRestoreInstanceState(state);
     }
 
@@ -413,8 +404,6 @@ public class TouchImageView extends ImageView {
     /**
      * Set zoom parameters equal to another TouchImageView. Including scale, position,
      * and ScaleType.
-     *
-     *
      */
     public void setZoom(TouchImageView img) {
         PointF center = img.getScrollPosition();
@@ -1165,7 +1154,6 @@ public class TouchImageView extends ImageView {
 
         @Override
         public void run() {
-
             //
             // OnTouchImageViewListener is set: TouchImageView listener has been flung by user.
             // Listener runnable updated with each frame of fling animation.
@@ -1194,81 +1182,41 @@ public class TouchImageView extends ImageView {
         }
     }
 
-    @TargetApi(VERSION_CODES.GINGERBREAD)
     private class CompatScroller {
-        Scroller scroller;
         OverScroller overScroller;
-        boolean isPreGingerbread;
 
         public CompatScroller(Context context) {
-            if (VERSION.SDK_INT < VERSION_CODES.GINGERBREAD) {
-                isPreGingerbread = true;
-                scroller = new Scroller(context);
-
-            } else {
-                isPreGingerbread = false;
-                overScroller = new OverScroller(context);
-            }
+            overScroller = new OverScroller(context);
         }
 
         public void fling(int startX, int startY, int velocityX, int velocityY, int minX, int maxX, int minY, int maxY) {
-            if (isPreGingerbread) {
-                scroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
-            } else {
-                overScroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
-            }
+            overScroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
         }
 
         public void forceFinished(boolean finished) {
-            if (isPreGingerbread) {
-                scroller.forceFinished(finished);
-            } else {
-                overScroller.forceFinished(finished);
-            }
+            overScroller.forceFinished(finished);
         }
 
         public boolean isFinished() {
-            if (isPreGingerbread) {
-                return scroller.isFinished();
-            } else {
-                return overScroller.isFinished();
-            }
+            return overScroller.isFinished();
         }
 
         public boolean computeScrollOffset() {
-            if (isPreGingerbread) {
-                return scroller.computeScrollOffset();
-            } else {
-                overScroller.computeScrollOffset();
-                return overScroller.computeScrollOffset();
-            }
+            overScroller.computeScrollOffset();
+            return overScroller.computeScrollOffset();
         }
 
         public int getCurrX() {
-            if (isPreGingerbread) {
-                return scroller.getCurrX();
-            } else {
-                return overScroller.getCurrX();
-            }
+            return overScroller.getCurrX();
         }
 
         public int getCurrY() {
-            if (isPreGingerbread) {
-                return scroller.getCurrY();
-            } else {
-                return overScroller.getCurrY();
-            }
+            return overScroller.getCurrY();
         }
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
     private void compatPostOnAnimation(Runnable runnable) {
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
-            postOnAnimation(runnable);
-
-        } else {
-            postDelayed(runnable, 1000 / 60);
-        }
+        postOnAnimation(runnable);
     }
 
     private class ZoomVariables {

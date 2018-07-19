@@ -1653,8 +1653,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         if (!TextUtils.isEmpty(channelUserMapper.getUserKey())) {
                             if (MobiComUserPreference.getInstance(getActivity()).getUserId().equals(channelUserMapper.getUserKey())) {
                                 youString = getString(R.string.you_string);
+                            } else if (channelUserMapper.getUserKey().equals("bot")){
+                                stringBuffer.append("");
                             } else {
-                                stringBuffer.append(contactDisplayName.getDisplayName()).append(", ");
+                                stringBuffer.append(contactDisplayName.getDisplayName().trim()).append(", ");
                             }
                         }
                     }

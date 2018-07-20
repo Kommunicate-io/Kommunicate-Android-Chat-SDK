@@ -12,6 +12,7 @@ import com.applozic.mobicommons.people.channel.Channel;
  */
 
 public class AlGroupInformationAsyncTask extends AsyncTask<Object, Object, Channel> {
+
     Context context;
     ChannelService channelService;
     GroupMemberListener groupMemberListener;
@@ -59,8 +60,8 @@ public class AlGroupInformationAsyncTask extends AsyncTask<Object, Object, Chann
     }
 
     public interface GroupMemberListener {
-        void onSuccess(Channel channel, Context context);
 
+        void onSuccess(Channel channel, Context context);
         void onFailure(Channel channel, Exception e, Context context);
     }
 }

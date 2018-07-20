@@ -1,6 +1,5 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -65,6 +64,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by sunil on 10/3/16.
  */
+
 public class ChannelNameActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, RemoveInterfaceListener {
 
     public static final String CHANNEL_NAME = "CHANNEL_NAME";
@@ -94,27 +94,26 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();
-        layout = (LinearLayout) findViewById(R.id.footerAd);
+        layout = findViewById(R.id.footerAd);
         applozicPermissions = new ApplozicPermissions(this, layout);
         mActionBar.setTitle(getString(R.string.update_channel_title_name));
         selectImageProfileIcon = findViewById(R.id.applozic_group_profile_camera);
-        applozicGroupProfileIcon = (ImageView) findViewById(R.id.applozic_group_profile);
+        applozicGroupProfileIcon = findViewById(R.id.applozic_group_profile);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         fileClientService = new FileClientService(this);
+
         if (!TextUtils.isEmpty(jsonString)) {
             alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
 
-        if(!TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimary()) && !TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimaryDark())){
+        if (!TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimary()) && !TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimaryDark())) {
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(alCustomizationSettings.getThemeColorPrimary())));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getWindow().setStatusBarColor(Color.parseColor(alCustomizationSettings.getThemeColorPrimaryDark()));
             }
         }
-        //int drawableResourceId = getResources().getIdentifier(alCustomizationSettings.getAttachCameraIconName(), "drawable", getPackageName());
-        //selectImageProfileIcon.setImageResource(drawableResourceId);
 
         if (getIntent().getExtras() != null) {
             String groupInfoJson = getIntent().getExtras().getString(ChannelInfoActivity.GROUP_UPDTAE_INFO);
@@ -125,17 +124,17 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
             File file = new File(groupInfoUpdate.getLocalImagePath());
             Uri uri = Uri.parse(file.getAbsolutePath());
             if (uri != null) {
-                Utils.printLog(this,"ChannelNameActivity::", uri.toString());
+                Utils.printLog(this, "ChannelNameActivity::", uri.toString());
                 applozicGroupProfileIcon.setImageURI(uri);
             }
         } else {
             applozicGroupProfileIcon.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
-
         }
-        channelName = (EditText) findViewById(R.id.newChannelName);
+
+        channelName = findViewById(R.id.newChannelName);
         channelName.setText(groupInfoUpdate.getNewName());
-        ok = (Button) findViewById(R.id.channelNameOk);
-        cancel = (Button) findViewById(R.id.channelNameCancel);
+        ok = findViewById(R.id.channelNameOk);
+        cancel = findViewById(R.id.channelNameCancel);
         selectImageProfileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,15 +145,12 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (channelName.getText().toString().equals(groupInfoUpdate.getNewName()) && imageChangeUri == null || groupInfoUpdate.getNewName() == null) {
                     ChannelNameActivity.this.finish();
                 }
                 if (TextUtils.isEmpty(channelName.getText().toString()) || channelName.getText().toString().trim().length() == 0) {
-
                     Toast.makeText(ChannelNameActivity.this, getString(R.string.channel_name_empty), Toast.LENGTH_SHORT).show();
                     ChannelNameActivity.this.finish();
-
                 } else {
                     Intent intent = new Intent();
                     groupInfoUpdate.setNewName(channelName.getText().toString());
@@ -223,7 +219,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                     fileClientService.writeFile(imageChangeUri, profilePhotoFile);
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Utils.printLog(this,ChannelNameActivity.class.getName(),this.getString(R.string.applozic_Cropping_failed)+result.getError());
+                Utils.printLog(this, ChannelNameActivity.class.getName(), this.getString(R.string.applozic_Cropping_failed) + result.getError());
             }
         }
         if (resultCode == Activity.RESULT_OK) {
@@ -232,9 +228,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
     }
 
     public void handleOnActivityResult(int requestCode, Intent intent) {
-
         switch (requestCode) {
-
             case ProfileFragment.REQUEST_CODE_ATTACH_PHOTO:
                 Uri selectedFileUri = (intent == null ? null : intent.getData());
                 imageChangeUri = null;
@@ -253,12 +247,10 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                     .setGuidelines(CropImageView.Guidelines.OFF)
                     .setMultiTouchEnabled(true)
                     .start(this);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public Uri getCurrentImageUri() {
@@ -270,22 +262,18 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
     }
 
     public void showSnackBar(int resId) {
-        snackbar = Snackbar.make(layout, resId,
-                Snackbar.LENGTH_SHORT);
+        snackbar = Snackbar.make(layout, resId, Snackbar.LENGTH_SHORT);
         snackbar.show();
     }
 
     public void processImagePicker() {
-
         if (PermissionsUtils.isCameraPermissionGranted(this) && !PermissionsUtils.checkSelfForStoragePermission(this)) {
-
             new Handler().post(new Runnable() {
                 public void run() {
                     FragmentManager supportFragmentManager = getSupportFragmentManager();
                     Channel channel = ChannelService.getInstance(ChannelNameActivity.this).getChannel(groupInfoUpdate.getGroupId());
                     DialogFragment fragment = PictureUploadPopUpFragment.newInstance(true, TextUtils.isEmpty(channel.getImageUrl()));
-                    FragmentTransaction fragmentTransaction = supportFragmentManager
-                            .beginTransaction();
+                    FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
                     Fragment prev = getSupportFragmentManager().findFragmentByTag("PhotosAttachmentFragment");
                     if (prev != null) {
                         fragmentTransaction.remove(prev);
@@ -294,7 +282,6 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                     fragment.show(fragmentTransaction, "PhotosAttachmentFragment");
                 }
             });
-
         } else {
             if (Utils.hasMarshmallow()) {
                 if (PermissionsUtils.checkSelfForCameraPermission(this)) {
@@ -312,9 +299,8 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
     public void removeCallBack() {
         try {
             new ProfilePictureUpload(this, applozicGroupProfileIcon, groupInfoUpdate).execute((Void) null);
-
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -331,6 +317,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
     }
 
     class ProfilePictureUpload extends AsyncTask<Void, Void, Boolean> {
+
         Context context;
         WeakReference<ImageView> weakReferenceImageView;
         FileClientService fileClientService;
@@ -345,7 +332,6 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
             this.fileClientService = new FileClientService(context);
             this.channelService = ChannelService.getInstance(context);
             this.groupInfoUpdateWeakReference = new WeakReference<GroupInfoUpdate>(groupInfoUpdate);
-
         }
 
         @Override
@@ -385,6 +371,5 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 }
             }
         }
-
     }
 }

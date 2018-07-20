@@ -101,7 +101,6 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
         }
         this.currentView = view;
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
             @Override
             public void onCompletion(MediaPlayer mp) {
                 mp.release();
@@ -112,13 +111,9 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
         });
         currentView.audioseekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-
+            public void onStopTrackingTouch(SeekBar seekBar) { }
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
+            public void onStartTrackingTouch(SeekBar seekBar) { }
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 int duration = progress / 1000;
@@ -215,11 +210,9 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
 
     public void updateAudioDuration(final TextView durationTextView, String filePath) {
         MediaPlayer mediaPlayer = new MediaPlayer();
-
         if (durationTextView == null || filePath == null) {
             return;
         }
-
         try {
             mediaPlayer.setDataSource(filePath);
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -241,23 +234,11 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
     }
 
     @Override
-    public void onAudioFocusChange(int i) {
-       /* switch (i) {
-            case AudioManager.AUDIOFOCUS_GAIN:
-                break;
-            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                break;
-            case AudioManager.AUDIOFOCUS_LOSS:
-                break;
-            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                break;
-        }*/
-    }
+    public void onAudioFocusChange(int i) { }
 
     private boolean requestAudioFocus() {
         boolean gotFocus;
-        int audioFocus = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN);
+        int audioFocus = audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         if (audioFocus == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
             gotFocus = true;
         } else {

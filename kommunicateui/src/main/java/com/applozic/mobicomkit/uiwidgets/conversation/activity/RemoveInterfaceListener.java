@@ -7,5 +7,4 @@ package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 public interface RemoveInterfaceListener {
 
     void removeCallBack();
-
 }

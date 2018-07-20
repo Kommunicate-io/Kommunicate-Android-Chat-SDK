@@ -11,6 +11,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 /**
  * Created by sunil on 17/5/16.
  */
+
 public class ApplozicChannelRemoveMemberTask extends AsyncTask<Void, Void, Boolean> {
 
     Context context;
@@ -51,7 +52,6 @@ public class ApplozicChannelRemoveMemberTask extends AsyncTask<Void, Void, Boole
     @Override
     protected void onPostExecute(Boolean resultBoolean) {
         super.onPostExecute(resultBoolean);
-
         if (resultBoolean && channelRemoveMemberListener != null) {
             channelRemoveMemberListener.onSuccess(removeResponse, context);
         } else if (!resultBoolean && exception != null && channelRemoveMemberListener != null) {
@@ -60,8 +60,8 @@ public class ApplozicChannelRemoveMemberTask extends AsyncTask<Void, Void, Boole
     }
 
     public interface ChannelRemoveMemberListener {
-        void onSuccess(String response, Context context);
 
+        void onSuccess(String response, Context context);
         void onFailure(String response, Exception e, Context context);
     }
 }

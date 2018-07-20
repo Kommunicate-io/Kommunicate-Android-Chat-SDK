@@ -7,5 +7,6 @@ import com.applozic.mobicomkit.api.conversation.Message;
  */
 
 public interface OnClickReplyInterface {
+
     void onClickOnMessageReply(Message message);
 }

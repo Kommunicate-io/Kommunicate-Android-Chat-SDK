@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * Created by sunil on 13/4/16.
  */
+
 public class ApplozicContextSpinnerAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
@@ -111,6 +112,7 @@ public class ApplozicContextSpinnerAdapter extends BaseAdapter {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return convertView;
     }

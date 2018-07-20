@@ -20,6 +20,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 /**
  * Created by devashish on 4/2/15.
  */
+
 public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = "MTBroadcastReceiver";
@@ -41,7 +42,6 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
             message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
         }
         Utils.printLog(context, TAG, "Received broadcast, action: " + action + ", message: " + message);
-
         if (message != null && !message.isSentToMany()) {
             conversationUIService.addMessage(message);
         } else if (message != null && message.isSentToMany() && BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString().equals(intent.getAction())) {

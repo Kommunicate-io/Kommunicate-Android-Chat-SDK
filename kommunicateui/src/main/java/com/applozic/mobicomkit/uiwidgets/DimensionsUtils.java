@@ -52,7 +52,6 @@ public class DimensionsUtils {
             if (configuration == null) {
                 configuration = context.getResources().getConfiguration();
             }
-
             WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             if (manager != null) {
                 Display display = manager.getDefaultDisplay();
@@ -78,11 +77,4 @@ public class DimensionsUtils {
             e.printStackTrace();
         }
     }
-
-    /*public static int dp(float value) {
-        if (value == 0) {
-            return 0;
-        }
-        return (int) Math.ceil(density * value);
-    }*/
 }

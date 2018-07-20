@@ -14,6 +14,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
  */
 
 public class ApplozicGetMemberFromContactGroupTask extends AsyncTask<Void, Void, String[]> {
+
     private final String contactGroupId;
     Context context;
     GroupMemberListener groupMemberListener;
@@ -35,7 +36,6 @@ public class ApplozicGetMemberFromContactGroupTask extends AsyncTask<Void, Void,
         dialog = new ProgressDialog(context);
         dialog.setMessage(context.getResources().getString(R.string.processing_please_wait));
         dialog.show();
-
     }
 
     @Override
@@ -73,10 +73,9 @@ public class ApplozicGetMemberFromContactGroupTask extends AsyncTask<Void, Void,
         }
     }
 
-
     public interface GroupMemberListener {
-        void onSuccess(String[] userIdArray, Context context);
 
+        void onSuccess(String[] userIdArray, Context context);
         void onFailure(String userIdArray, Context context);
     }
 }

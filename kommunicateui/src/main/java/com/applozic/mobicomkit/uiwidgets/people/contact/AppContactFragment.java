@@ -1,7 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.people.contact;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -86,10 +85,10 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     private ImageLoader mImageLoader; // Handles loading the contact image in a background thread
     private String mSearchTerm; // Stores the current search query term
     // Contact selected listener that allows the activity holding this fragment to be notified of
-// a contact being selected
+    // a contact being selected
     private OnContactsInteractionListener mOnContactSelectedListener;
     // Stores the previously selected search item so that on a configuration change the same item
-// can be reselected again
+    // can be reselected again
     private int mPreviouslySelectedSearchItem = 0;
     private BaseContactService contactService;
     private Button shareButton;
@@ -109,8 +108,7 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     /**
      * Fragments require an empty constructor.
      */
-    public AppContactFragment() {
-    }
+    public AppContactFragment() { }
 
     public AppContactFragment(String[] userIdArray) {
         this.userIdArray = userIdArray;
@@ -160,10 +158,8 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                             getLoaderManager().initLoader(ContactSelectionFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
                         }
                     }
-
                     @Override
-                    public void onFailure(String response, Context context) {
-                    }
+                    public void onFailure(String response, Context context) { }
                 };
                 ApplozicGetMemberFromContactGroupTask applozicGetMemberFromContactGroupTask = new ApplozicGetMemberFromContactGroupTask(getActivity(), MobiComUserPreference.getInstance(context).getContactsGroupId(), String.valueOf(Channel.GroupType.CONTACT_GROUP.getValue()), eventMemberListener);
                 applozicGetMemberFromContactGroupTask.execute();
@@ -185,7 +181,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                     userIdArray = contactList;
                     getLoaderManager().initLoader(ContactSelectionFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
                 }
-
                 @Override
                 public void onFailure(Context context, String response, Exception e) {
                     progressBar.dismiss();
@@ -210,7 +205,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         return view;
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -298,19 +292,17 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
             // Assign callback listener which the holding activity must implement. This is used
             // so that when a contact item is interacted with (selected by the user) the holding
             // activity will be notified and can take further action such as populating the contact
             // detail pane (if in multi-pane layout) or starting a new activity with the contact
             // details (single pane layout).
-            mOnContactSelectedListener = (OnContactsInteractionListener) activity;
+            mOnContactSelectedListener = (OnContactsInteractionListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnContactsInteractionListener");
+            throw new ClassCastException(context.toString() + " must implement OnContactsInteractionListener");
         }
     }
 
@@ -336,7 +328,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
      * when search mode is finished and the currently selected
      * contact should no longer be selected.
      */
-    @SuppressLint("NewApi")
     private void onSelectionCleared() {
         // Uses callback to notify activity this contains this fragment
         mOnContactSelectedListener.onSelectionCleared();
@@ -379,12 +370,11 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
      */
     private int getListPreferredItemHeight() {
         final TypedValue typedValue = new TypedValue();
-
         // Resolve list item preferred height theme attribute into typedValue
         getActivity().getTheme().resolveAttribute(
                 android.R.attr.listPreferredItemHeight, typedValue, true);
 
-// Create a new DisplayMetrics object
+        // Create a new DisplayMetrics object
         final DisplayMetrics metrics = new DisplayMetrics();
 
         // Populate the DisplayMetrics
@@ -396,7 +386,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         Loader<Cursor> loader = contactDatabase.getSearchCursorLoader(mSearchTerm, userIdArray);
         return loader;
     }
@@ -411,7 +400,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
         if (loader.getId() == ContactsQuery.QUERY_ID) {
             // When the loader is being reset, clear the cursor from the adapter. This allows the
             // cursor resources to be freed.
@@ -420,7 +408,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     }
 
     public void processLoadRegisteredUsers() {
-
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "",
                 getActivity().getString(R.string.applozic_contacts_loading_info), true);
 
@@ -435,7 +422,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                         getLoaderManager().restartLoader(
                                 AppContactFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -453,9 +439,7 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
             }
 
             @Override
-            public void onCompletion() {
-
-            }
+            public void onCompletion() { }
         };
         RegisteredUsersAsyncTask usersAsyncTask = new RegisteredUsersAsyncTask(getActivity(), usersAsyncTaskTaskListener, alCustomizationSettings.getTotalRegisteredUserToFetch(), userPreference.getRegisteredUsersLastFetchTime(), null, null, true);
         usersAsyncTask.execute((Void) null);
@@ -467,7 +451,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         if (refreshContactsScreenBroadcast != null) {
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(refreshContactsScreenBroadcast, new IntentFilter(BroadcastService.INTENT_ACTIONS.UPDATE_USER_DETAIL.toString()));
         }
-
     }
 
     @Override
@@ -478,7 +461,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         }
     }
 
-
     /**
      * This interface defines constants for the Cursor and CursorLoader, based on constants defined
      * in the {@link android.provider.ContactsContract.Contacts} class.
@@ -486,7 +468,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     public interface ContactsQuery {
         // An identifier for the loader
         int QUERY_ID = 1;
-
     }
 
     /**

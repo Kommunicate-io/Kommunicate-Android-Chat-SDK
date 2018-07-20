@@ -44,7 +44,7 @@ public class MobicomMessageTemplateAdapter extends RecyclerView.Adapter<MobicomM
     public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.messageText.setText(messageList.get(position));
         holder.messageText.setTextColor(Color.parseColor(messageTemplate.getTextColor()));
-        holder.messageText.setBackgroundDrawable(getShape(holder.messageText.getContext()));
+        holder.messageText.setBackground(getShape(holder.messageText.getContext()));
         holder.messageText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -38,9 +38,7 @@ public class AlGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, 
 
     @Override
     protected AlGetMembersModel doInBackground(Void... voids) {
-
         AlGetMembersModel model = new AlGetMembersModel();
-
         try {
             ChannelFeedListResponse response = ChannelClientService.getInstance(context.get()).getMemebersFromContactGroupIds(groupIds, groupNames, groupType);
             if (response != null) {
@@ -81,12 +79,13 @@ public class AlGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, 
     }
 
     public interface GetMembersFromGroupIdListListener {
-        void onSuccess(Context context, String response, String[] contactList);
 
+        void onSuccess(Context context, String response, String[] contactList);
         void onFailure(Context context, String response, Exception e);
     }
 
     public class AlGetMembersModel {
+
         String[] members;
         String response;
         Exception exception;

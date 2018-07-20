@@ -62,8 +62,8 @@ public class RemoveMemberFromContactGroupTask extends AsyncTask<Void, Void, ApiR
     }
 
     public interface RemoveGroupMemberListener {
-        void onSuccess(String response, Context context);
 
+        void onSuccess(String response, Context context);
         void onFailure(String response, Exception e, Context context);
     }
 }

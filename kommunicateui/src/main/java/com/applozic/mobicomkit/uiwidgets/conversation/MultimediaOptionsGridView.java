@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * Created by reytum on 19/3/16.
  */
+
 public class MultimediaOptionsGridView {
     public PopupWindow showPopup;
     FragmentActivity context;
@@ -32,7 +33,6 @@ public class MultimediaOptionsGridView {
         multimediaOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 executeMethod(keys.get(position));
             }
         });

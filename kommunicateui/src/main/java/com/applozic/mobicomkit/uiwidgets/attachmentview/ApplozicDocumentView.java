@@ -109,7 +109,6 @@ public class ApplozicDocumentView {
                 icon.setImageResource(R.drawable.ic_description_white_24dp);
             }
         }
-
         setupAttachmentView();
         registerEvents();
         if (message.isCanceled()) {
@@ -175,7 +174,6 @@ public class ApplozicDocumentView {
                     audioseekbar.setVisibility(GONE);
                     audioTextView.setVisibility(GONE);
                     icon.setVisibility(View.VISIBLE);
-                    //icon.setImageResource(R.drawable.ic_description_white_24dp);
                 } else {
                     if (message.isAttachmentDownloaded()) {
                         ApplozicAudioManager.getInstance(context).updateAudioDuration(audioTextView, filePath);
@@ -185,7 +183,6 @@ public class ApplozicDocumentView {
                         audioTextView.setText("00:00");
                     }
                     nameTextView.setVisibility(GONE);
-                    //icon.setVisibility(GONE);
                     audioseekbar.setVisibility(View.VISIBLE);
                     setAudioIcons();
                 }
@@ -289,16 +286,12 @@ public class ApplozicDocumentView {
             @Override
             public void onClick(View v) {
                 if (isDownloaded) {
-                    Toast.makeText(context, "CLICK: is Downloaded " + isDownloaded, Toast.LENGTH_LONG).show();
                     downloadedClickListener();
                 } else if (isDownloadProgress) {
-                    Toast.makeText(context, "CLICK: is isDownloadProgress " + isDownloadProgress, Toast.LENGTH_LONG).show();
                     cancelDownload();
                 } else if (isPreview) {
-                    Toast.makeText(context, "CLICK: is isPreview " + isPreview, Toast.LENGTH_LONG).show();
                     previewClickListener();
                 } else if (isRetry) {
-                    Toast.makeText(context, "CLICK: is isRetry " + isRetry, Toast.LENGTH_LONG).show();
                     retryClickListener();
                 }
             }
@@ -324,10 +317,8 @@ public class ApplozicDocumentView {
             Log.i(TAG, uri.toString());
         }
         if (mimeType != null && mimeType.contains("audio")) {
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE},
-                        10);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE}, 10);
             } else {
                 ApplozicAudioManager.getInstance(context).play(uri, ApplozicDocumentView.this);
                 setAudioIcons();

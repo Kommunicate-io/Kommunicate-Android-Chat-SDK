@@ -23,9 +23,8 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
     private String outputFile = null;
     private boolean isRecordring;
 
-
     public ApplozicAudioRecordManager(FragmentActivity context) {
-        this.conversationUIService  = new ConversationUIService(context);
+        this.conversationUIService = new ConversationUIService(context);
         this.context = context;
     }
 
@@ -43,10 +42,8 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
 
     public void recordAudio() {
         try {
-
             if (isRecordring) {
                 ApplozicAudioRecordManager.this.stopRecording();
-
             } else {
                 if (audioRecorder == null) {
                     prepareMediaRecorder();
@@ -55,8 +52,7 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
                 audioRecorder.start();
                 isRecordring = true;
             }
-
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -66,38 +62,31 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
             ApplozicAudioRecordManager.this.stopRecording();
         }
 
-        if(outputFile != null){
+        if (outputFile != null) {
             File file = new File(outputFile);
             if (file != null && file.exists()) {
                 Utils.printLog(context, "AudioFRG:", "File deleted...");
                 file.delete();
             }
         }
-
     }
 
     public void sendAudio() {
-
         //IF recording is running stoped it ...
         if (isRecordring) {
             stopRecording();
         }
-
         //FILE CHECK ....
-
-        if(outputFile != null){
+        if (outputFile != null) {
             if (!(new File(outputFile).exists())) {
                 Toast.makeText(context, R.string.tap_on_mic_button_to_record_audio, Toast.LENGTH_SHORT).show();
                 return;
             }
             conversationUIService.sendAudioMessage(outputFile);
         }
-
     }
 
-
     public void stopRecording() {
-
         if (audioRecorder != null) {
             try {
                 audioRecorder.stop();
@@ -107,15 +96,11 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
                 audioRecorder.release();
                 audioRecorder = null;
                 isRecordring = false;
-
             }
-
         }
-
     }
 
     public MediaRecorder prepareMediaRecorder() {
-
         audioRecorder = new MediaRecorder();
         audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -126,18 +111,12 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
         audioRecorder.setOutputFile(outputFile);
         audioRecorder.setOnInfoListener(this);
         audioRecorder.setOnErrorListener(this);
-
         return audioRecorder;
     }
 
+    @Override
+    public void onInfo(MediaRecorder mr, int what, int extra) { }
 
     @Override
-    public void onInfo(MediaRecorder mr, int what, int extra) {
-
-    }
-
-    @Override
-    public void onError(MediaRecorder mr, int what, int extra) {
-
-    }
+    public void onError(MediaRecorder mr, int what, int extra) { }
 }

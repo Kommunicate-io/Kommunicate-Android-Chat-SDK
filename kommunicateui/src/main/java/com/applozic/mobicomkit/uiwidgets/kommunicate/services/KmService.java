@@ -11,7 +11,6 @@ public class KmService {
     private Context context;
     private KmClientService clientService;
 
-
     public KmService(Context context) {
         this.context = context;
         clientService = new KmClientService(context);
@@ -19,11 +18,9 @@ public class KmService {
 
     public String getAwayMessage(String appKey, Integer groupId) throws Exception {
         String response = clientService.getAwayMessage(appKey, groupId);
-
         if (response == null) {
             return null;
         }
-
         return response;
     }
 }

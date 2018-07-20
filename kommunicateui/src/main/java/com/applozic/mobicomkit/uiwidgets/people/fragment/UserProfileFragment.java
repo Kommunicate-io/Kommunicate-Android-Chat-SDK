@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.broadcast.BroadcastService;
@@ -69,12 +68,12 @@ public class UserProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.user_profile_fragment_layout, container, false);
-        name = (TextView) view.findViewById(R.id.userName);
-        status = (TextView) view.findViewById(R.id.applozic_user_status);
-        email = (TextView) view.findViewById(R.id.email);
-        phone = (TextView) view.findViewById(R.id.phone);
-        contactImage = (CircleImageView) view.findViewById(R.id.contactImage);
-        alphabeticTextView = (TextView) view.findViewById(R.id.alphabeticImage);
+        name = view.findViewById(R.id.userName);
+        status = view.findViewById(R.id.applozic_user_status);
+        email = view.findViewById(R.id.email);
+        phone = view.findViewById(R.id.phone);
+        contactImage = view.findViewById(R.id.contactImage);
+        alphabeticTextView = view.findViewById(R.id.alphabeticImage);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -100,7 +99,6 @@ public class UserProfileFragment extends Fragment {
                 contactImageLoader.loadImage(contact, contactImage, alphabeticTextView);
             }
 
-
             name.setText(contact.getDisplayName());
 
             if (!TextUtils.isEmpty(contact.getEmailId())) {
@@ -117,9 +115,7 @@ public class UserProfileFragment extends Fragment {
             } else {
                 phone.setVisibility(View.GONE);
             }
-
         }
-
         return view;
     }
 
@@ -156,7 +152,6 @@ public class UserProfileFragment extends Fragment {
                 status.setVisibility(View.VISIBLE);
                 status.setText(updateContact.getStatus());
             }
-
             if (!TextUtils.isEmpty(updateContact.getContactNumber())) {
                 phone.setVisibility(View.VISIBLE);
                 phone.setText(updateContact.getContactNumber());
@@ -181,5 +176,4 @@ public class UserProfileFragment extends Fragment {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(stringBufferTitle.toString());
         }
     }
-
 }

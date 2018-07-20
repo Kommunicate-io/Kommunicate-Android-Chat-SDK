@@ -25,7 +25,6 @@ public class KmDateUtils {
     }
 
     public static String getFormattedDate(Long timestamp, Context context) {
-        // boolean sameDay = isSameDay(timestamp);
         Date date = new Date(timestamp);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(is24hourFormat(context) ? R.string.TIME_24H_FORMAT
                 : R.string.TIME_FORMAT), Locale.getDefault());
@@ -60,7 +59,6 @@ public class KmDateUtils {
                 : R.string.TIME_FORMAT), Locale.getDefault());
         SimpleDateFormat fullDateFormat = new SimpleDateFormat(context.getString(R.string.DATE_SHORT_FORMAT), Locale.getDefault());
         Date newDate = new Date();
-
         try {
             if (sameDay) {
                 long currentTime = newDate.getTime() - date.getTime();
@@ -84,7 +82,6 @@ public class KmDateUtils {
                 return simpleDateFormat.format(date);
             }
             return fullDateFormat.format(date);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,7 +116,6 @@ public class KmDateUtils {
             e.printStackTrace();
         }
         return null;
-
     }
 
     public static boolean isYesterday(Long timestamp) {
@@ -128,8 +124,7 @@ public class KmDateUtils {
         Date date = new Date(timestamp);
         Calendar c2 = Calendar.getInstance();
         c2.setTime(date);
-        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
-                && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
     }
 
     public static Calendar getDatePart(Date date) {
@@ -139,7 +134,6 @@ public class KmDateUtils {
         cal.set(Calendar.MINUTE, 0);                 // set minute in hour
         cal.set(Calendar.SECOND, 0);                 // set second in minute
         cal.set(Calendar.MILLISECOND, 0);            // set millisecond in second
-
         return cal;                                  // return the date part
     }
 
@@ -162,7 +156,6 @@ public class KmDateUtils {
         Date date = new Date(timestamp);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(is24hourFormat(context) ? R.string.DATE_TIME_24H_FULL_FORMAT
                 : R.string.DATE_TIME_FULL_FORMAT), Locale.getDefault());
-        //return DateFormat.getDateInstance().format(date);
         return simpleDateFormat.format(date);
     }
 }

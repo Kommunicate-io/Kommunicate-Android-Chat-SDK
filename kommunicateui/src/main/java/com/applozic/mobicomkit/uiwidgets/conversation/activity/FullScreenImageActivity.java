@@ -37,6 +37,7 @@ import java.util.List;
 /**
  * Created by devashish on 22/9/14.
  */
+
 public class FullScreenImageActivity extends AppCompatActivity {
     TouchImageView mediaImageViewView;
 
@@ -52,16 +53,13 @@ public class FullScreenImageActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().show();
         showUi();
-
         mediaImageViewView = findViewById(R.id.full_screen_image);
         ProgressBar progressBar = findViewById(R.id.full_screen_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         String messageJson = getIntent().getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
-
         if (!TextUtils.isEmpty(messageJson)) {
             message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
         }
-
         if (message != null && message.getFilePaths() != null && !message.getFilePaths().isEmpty()) {
             try {
                 Bitmap imageBitmap = ImageUtils.decodeSampledBitmapFromPath(message.getFilePaths().get(0));
@@ -70,7 +68,6 @@ public class FullScreenImageActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
         getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
             public void onSystemUiVisibilityChange(int visibility) {

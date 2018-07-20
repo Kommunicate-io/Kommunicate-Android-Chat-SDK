@@ -11,6 +11,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 /**
  * Created by sunil on 17/5/16.
  */
+
 public class ApplozicChannelAddMemberTask extends AsyncTask<Void, Void, Boolean> {
 
     Context context;
@@ -51,7 +52,6 @@ public class ApplozicChannelAddMemberTask extends AsyncTask<Void, Void, Boolean>
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
-
         if (result && channelAddMemberListener != null) {
             channelAddMemberListener.onSuccess(addResponse, context);
         } else if (!result && channelAddMemberListener != null) {
@@ -60,8 +60,8 @@ public class ApplozicChannelAddMemberTask extends AsyncTask<Void, Void, Boolean>
     }
 
     public interface ChannelAddMemberListener {
-        void onSuccess(String response, Context context);
 
+        void onSuccess(String response, Context context);
         void onFailure(String response, Exception e, Context context);
     }
 }

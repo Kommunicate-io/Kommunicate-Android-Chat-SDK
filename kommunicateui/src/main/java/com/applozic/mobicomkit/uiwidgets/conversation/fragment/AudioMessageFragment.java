@@ -27,6 +27,7 @@ import java.util.Locale;
 /**
  * Created by devashish on 02/03/16.
  */
+
 public class AudioMessageFragment extends DialogFragment {
 
     Button cancel, send;
@@ -45,7 +46,6 @@ public class AudioMessageFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
-
         View v = inflater.inflate(R.layout.mobicom_audio_message_layout, container, false);
 
         this.getDialog().setTitle("Voice Message");
@@ -55,7 +55,7 @@ public class AudioMessageFragment extends DialogFragment {
         record = v.findViewById(R.id.audio_mic_imageview);
         send = v.findViewById(R.id.audio_send);
         cancel = v.findViewById(R.id.audio_cancel);
-        txtcount =  v.findViewById(R.id.txtcount);
+        txtcount = v.findViewById(R.id.txtcount);
         audioRecordingText = v.findViewById(R.id.audio_recording_text);
 
         String timeStamp = new SimpleDateFormat(getContext().getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
@@ -87,7 +87,6 @@ public class AudioMessageFragment extends DialogFragment {
                         t.start();
                         cnt = 0;
                     }
-
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -104,7 +103,7 @@ public class AudioMessageFragment extends DialogFragment {
                 }
                 File file = new File(outputFile);
                 if (file != null) {
-                    Utils.printLog(getContext(),"AudioFRG:", "File deleted...");
+                    Utils.printLog(getContext(), "AudioFRG:", "File deleted...");
                     file.delete();
                 }
                 AudioMessageFragment.this.dismiss();
@@ -130,7 +129,6 @@ public class AudioMessageFragment extends DialogFragment {
         });
         // Set Timer
         t = new CountDownTimer(Long.MAX_VALUE, 1000) {
-
             @Override
             public void onTick(long millisUntilFinished) {
                 cnt++;
@@ -151,7 +149,7 @@ public class AudioMessageFragment extends DialogFragment {
             try {
                 audioRecorder.stop();
             } catch (RuntimeException stopException) {
-                Utils.printLog(getContext(),"AudioMsgFrag:", "Runtime exception.This is thrown intentionally if stop is called just after start");
+                Utils.printLog(getContext(), "AudioMsgFrag:", "Runtime exception.This is thrown intentionally if stop is called just after start");
             } finally {
                 audioRecorder.release();
                 audioRecorder = null;

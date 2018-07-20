@@ -24,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +51,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 @SuppressLint("MissingPermission")
-public class MobicomLocationActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MobicomLocationActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener,
+        GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
 
     SupportMapFragment mapFragment;
     LatLng position;
@@ -76,8 +76,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_applozic_location);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_screen);
+        Toolbar toolbar = findViewById(R.id.toolbar_map_screen);
         toolbar.setTitle(getResources().getString(R.string.send_location));
         setSupportActionBar(toolbar);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
@@ -93,7 +92,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             }
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        layout = (LinearLayout) findViewById(R.id.footerAd);
+        layout = findViewById(R.id.footerAd);
         locationIcon = findViewById(R.id.locationIcon);
         locationTitle = findViewById(R.id.locationTitle);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -144,14 +143,14 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             locationIcon.setOnClickListener(sendLocationListener);
             locationTitle.setOnClickListener(sendLocationListener);
         } catch (Exception e) {
-            Utils.printLog(MobicomLocationActivity.this,TAG, "Check if location permission are added");
+            Utils.printLog(MobicomLocationActivity.this, TAG, "Check if location permission are added");
         }
     }
 
     private View.OnClickListener sendLocationListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Utils.printLog(MobicomLocationActivity.this,TAG, "On click of send location button");
+            Utils.printLog(MobicomLocationActivity.this, TAG, "On click of send location button");
             if (myLocationMarker != null) {
                 Intent intent = new Intent();
                 intent.putExtra("latitude", myLocationMarker.getPosition().latitude);
@@ -166,8 +165,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         new ConversationUIService(this).onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOCATION_SERVICE_ENABLE) {
-            if (((LocationManager) getSystemService(Context.LOCATION_SERVICE))
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 googleApiClient.connect();
             } else {
                 Toast.makeText(MobicomLocationActivity.this, R.string.unable_to_fetch_location, Toast.LENGTH_LONG).show();
@@ -177,8 +175,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     }
 
     public void processingLocation() {
-        if (!((LocationManager) getSystemService(Context.LOCATION_SERVICE))
-                .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        if (!((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.location_services_disabled_title)
                     .setMessage(R.string.location_services_disabled_message)
@@ -202,7 +199,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             googleApiClient.connect();
         }
     }
-
 
     public void processLocation() {
         if (Utils.hasMarshmallow()) {
@@ -230,21 +226,17 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.w(TAG,
-                "onConnectionSuspended() called.");
-
+        Log.w(TAG,"onConnectionSuspended() called.");
     }
-
 
     @Override
     public void onConnected(Bundle bundle) {
         try {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
+                // ActivityCompat#requestPermissions
                 // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
+                // public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
                 // to handle the case where the user grants the permission. See the documentation
                 // for ActivityCompat#requestPermissions for more details.
                 return;
@@ -275,13 +267,14 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             if (location != null) {
                 mCurrentLocation = location;
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void showSnackBar(int resId) {
         try {
-            snackbar = Snackbar.make(layout, resId,
-                    Snackbar.LENGTH_SHORT);
+            snackbar = Snackbar.make(layout, resId, Snackbar.LENGTH_SHORT);
             snackbar.show();
         } catch (Exception e) {
             e.printStackTrace();

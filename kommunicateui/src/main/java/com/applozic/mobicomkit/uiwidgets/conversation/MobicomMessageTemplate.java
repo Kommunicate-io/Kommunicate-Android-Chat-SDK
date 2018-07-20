@@ -2,7 +2,6 @@ package com.applozic.mobicomkit.uiwidgets.conversation;
 
 import com.applozic.mobicommons.json.JsonMarker;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -139,6 +138,7 @@ public class MobicomMessageTemplate extends JsonMarker {
     }
 
     public class MessageContentItem extends JsonMarker {
+
         private boolean showOnSenderSide;
         private boolean showOnReceiverSide;
         private boolean sendMessageOnClick;

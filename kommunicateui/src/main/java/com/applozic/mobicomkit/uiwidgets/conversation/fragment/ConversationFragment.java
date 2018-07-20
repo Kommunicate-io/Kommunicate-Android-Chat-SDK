@@ -95,61 +95,21 @@ public class ConversationFragment extends MobiComConversationFragment implements
         populateAttachmentOptions();
 
         if (alCustomizationSettings.isHideAttachmentButton()) {
-
-            //attachButton.setVisibility(View.GONE);
             messageEditText.setPadding(20, 0, 0, 0);
         }
         sendType.setSelection(1);
-
         messageEditText.setHint(R.string.enter_message_hint);
-
         multimediaPopupGrid.setVisibility(View.GONE);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.secret_message_timer_array, R.layout.mobiframework_custom_spinner);
         adapter.setDropDownViewResource(R.layout.mobiframework_custom_spinner);
-
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-
         messageEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 multimediaPopupGrid.setVisibility(View.GONE);
             }
         });
-
-        /*attachButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (contact != null && !contact.isBlocked() || channel != null) {
-                    if (attachmentLayout.getVisibility() == View.VISIBLE) {
-                        Toast.makeText(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                }
-
-                if (channel != null) {
-                    if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                        String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
-                        if (!TextUtils.isEmpty(userId)) {
-                            Contact withUserContact = appContactService.getContactById(userId);
-                            if (withUserContact.isBlocked()) {
-                                userBlockDialog(false, withUserContact, true);
-                            } else {
-                                processAttachButtonClick(view);
-                            }
-                        }
-                    } else {
-                        processAttachButtonClick(view);
-                    }
-                } else if (contact != null) {
-                    if (contact.isBlocked()) {
-                        userBlockDialog(false, contact, false);
-                    } else {
-                        processAttachButtonClick(view);
-                    }
-                }
-            }
-        });*/
         return view;
     }
 
@@ -197,7 +157,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
         if (inputMethodManager.isActive()) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-
         MultimediaOptionsGridView itemClickHandler = new MultimediaOptionsGridView(getActivity(), multimediaPopupGrid);
         itemClickHandler.setMultimediaClickListener(attachmentKey);
     }

@@ -11,8 +11,8 @@ import com.applozic.mobicommons.people.channel.Channel;
 /**
  * Created by sunil on 15/9/16.
  */
-public class ApplozicChannelDeleteTask extends AsyncTask<Void, Void, Boolean> {
 
+public class ApplozicChannelDeleteTask extends AsyncTask<Void, Void, Boolean> {
 
     private final TaskListener taskListener;
     private final Context context;
@@ -51,10 +51,7 @@ public class ApplozicChannelDeleteTask extends AsyncTask<Void, Void, Boolean> {
     public interface TaskListener {
 
         void onSuccess(String response);
-
         void onFailure(String response, Exception exception);
-
         void onCompletion();
     }
-
 }

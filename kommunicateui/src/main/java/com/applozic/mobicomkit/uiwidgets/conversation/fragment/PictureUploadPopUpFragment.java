@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -25,11 +22,10 @@ import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
-import java.util.List;
-
 /**
  * Created by sunil on 25/5/16.
  */
+
 public class PictureUploadPopUpFragment extends DialogFragment {
 
     public static final String REMOVE_PHOTO = "REMOVE_PHOTO";
@@ -51,27 +47,23 @@ public class PictureUploadPopUpFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(final Bundle savedInstanceState) {
-
         RelativeLayout root = new RelativeLayout(getActivity());
         root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(root);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         return dialog;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.attach_photo_popup_window_layout, container, false);
         bundle = getArguments();
         getDialog().setCancelable(Boolean.TRUE);
         cameraLayout = view.findViewById(R.id.upload_camera_layout);
         removeLayout = view.findViewById(R.id.upload_remove_image_layout);
         removeLayout.setVisibility(View.GONE);
-
         if (bundle != null) {
             removePhoto = bundle.getBoolean(REMOVE_PHOTO);
             disableRemoveOption = bundle.getBoolean(REMOVE_OPTION);
@@ -100,7 +92,6 @@ public class PictureUploadPopUpFragment extends DialogFragment {
                 getActivity().startActivityForResult(getContentIntent, ProfileFragment.REQUEST_CODE_ATTACH_PHOTO);
             }
         });
-
         cameraLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,31 +99,22 @@ public class PictureUploadPopUpFragment extends DialogFragment {
                 imageCapture();
             }
         });
-
         return view;
-
     }
 
     public void imageCapture() {
-
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
         if (!(getActivity() instanceof MobicomkitUriListener)) {
             Utils.printLog(getContext(), TAG, "Activity must implement MobicomkitUriListener to get image file uri");
             return;
         }
-
         if (cameraIntent.resolveActivity(getContext().getPackageManager()) != null) {
-
             Uri capturedImageUri = ((MobicomkitUriListener) getActivity()).getCurrentImageUri();
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
-                ClipData clip =
-                        ClipData.newUri(getActivity().getContentResolver(), "a Photo", capturedImageUri);
-
+                ClipData clip = ClipData.newUri(getActivity().getContentResolver(), "a Photo", capturedImageUri);
                 cameraIntent.setClipData(clip);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

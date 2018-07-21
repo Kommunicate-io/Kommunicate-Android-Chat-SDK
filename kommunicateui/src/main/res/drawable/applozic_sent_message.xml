@@ -3,15 +3,14 @@
     android:shape="rectangle">
 
     <!-- view background color -->
-    <solid android:color="@color/applozic_theme_color_primary" />
+    <solid android:color="@color/applozic_theme_color_primary"/>
 
     <!-- view border color and width -->
-    <stroke
-        android:color="#000000" />
+    <stroke android:color="@color/material_black_1000"/>
 
     <!-- If you want to add some padding -->
 
     <!-- Here is the corner radius -->
-    <corners
-        android:radius="5dp" />
+    <corners android:radius="5dp"/>
+
 </shape>

@@ -34,7 +34,7 @@
                 android:contentDescription="@string/image_description_default"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_people_grey_600_24dp_v"
+                android:src="@drawable/ic_people_grey_600_24dp"
                 app:layout_collapseMode="parallax"/>
 
             <TextView

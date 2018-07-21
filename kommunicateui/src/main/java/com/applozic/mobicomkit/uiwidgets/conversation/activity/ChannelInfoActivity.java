@@ -211,7 +211,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 return baseContactService.downloadGroupImage(getApplicationContext(), (Channel) data);
             }
         };
-        channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp_v);
+        channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
         channelImageLoader.addImageCache(this.getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
 
@@ -283,7 +283,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
             Channel newChannel = ChannelService.getInstance(this).getChannelByChannelKey(channel.getKey());
             if (newChannel != null && TextUtils.isEmpty(newChannel.getImageUrl())) {
                 if (!channel.isBroadcastMessage()) {
-                    channelImage.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
+                    channelImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
                 } else {
                     channelImage.setImageResource(R.drawable.ic_volume_up_white_24dp);
                 }

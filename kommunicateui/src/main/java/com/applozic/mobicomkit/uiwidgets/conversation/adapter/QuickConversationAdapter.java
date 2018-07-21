@@ -188,13 +188,13 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             channelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
                             myholder.contactImage.setImageResource(R.drawable.ic_account_circle_grey_600_24dp);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp_v);
-                            myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
+                            myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
                         }
 
                         myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
                         myholder.alphabeticTextView.setVisibility(View.GONE);
-                        myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
+                        myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
                         myholder.contactImage.setVisibility(View.VISIBLE);
 
                         if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
@@ -204,7 +204,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         } else if (channel != null && Short.valueOf("10").equals(channel.getType())) {
                             channelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp_v);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
                         }
                     }
                 }

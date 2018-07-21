@@ -135,7 +135,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
 
     private void setNewAttachmentView() {
         deleteButton.setVisibility(View.GONE);
-        galleryImageView.setImageResource(R.drawable.ic_add_white_24dp_v);
+        galleryImageView.setImageResource(R.drawable.ic_add_white_24dp);
         fileName.setVisibility(View.GONE);
         attachmentImageView.setVisibility(View.GONE);
         fileSize.setText(R.string.New_Attachment);

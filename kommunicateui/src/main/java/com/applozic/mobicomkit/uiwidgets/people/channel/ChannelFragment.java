@@ -301,7 +301,7 @@ public class ChannelFragment extends ListFragment implements
             } else if (channel.isBroadcastMessage()) {
                 holder.groupIcon.setImageResource(R.drawable.ic_volume_up_white_24dp);
             } else {
-                holder.groupIcon.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
+                holder.groupIcon.setImageResource(R.drawable.ic_people_grey_600_24dp);
             }
             // Returns the item layout view
             ///////////////////////

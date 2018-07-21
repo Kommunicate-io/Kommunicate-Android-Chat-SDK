@@ -114,7 +114,7 @@ public class ApplozicSetting {
     }
 
     public int getReceivedMessageBackgroundColor() {
-        return sharedPreferences.getInt(RECEIVED_MESSAGE_BACKGROUND_COLOR, R.color.white);
+        return sharedPreferences.getInt(RECEIVED_MESSAGE_BACKGROUND_COLOR, R.color.material_white_1000);
     }
 
     public ApplozicSetting setReceivedMessageBackgroundColor(int color) {
@@ -132,7 +132,7 @@ public class ApplozicSetting {
     }
 
     public int getReceivedMessageBorderColor() {
-        return sharedPreferences.getInt(RECEIVED_MESSAGE_BORDER_COLOR, R.color.white);
+        return sharedPreferences.getInt(RECEIVED_MESSAGE_BORDER_COLOR, R.color.material_white_1000);
     }
 
     public ApplozicSetting setReceivedMessageBorderColor(int color) {
@@ -177,7 +177,7 @@ public class ApplozicSetting {
     }
 
     public int getTypingTextColor() {
-        return sharedPreferences.getInt(TYPING_TEXT_COLOR, R.color.black);
+        return sharedPreferences.getInt(TYPING_TEXT_COLOR, R.color.material_black_1000);
     }
 
     public ApplozicSetting setTypingTextColor(int color) {
@@ -186,7 +186,7 @@ public class ApplozicSetting {
     }
 
     public int getMessageEditTextTextColor() {
-        return sharedPreferences.getInt(MESSAGE_EDITTEXT_TEXT_COLOR, R.color.black);
+        return sharedPreferences.getInt(MESSAGE_EDITTEXT_TEXT_COLOR, R.color.material_black_1000);
     }
 
     public ApplozicSetting setMessageEditTextTextColor(int textColor) {
@@ -204,7 +204,7 @@ public class ApplozicSetting {
     }
 
     public int getSentContactMessageTextColor() {
-        return sharedPreferences.getInt(SENT_CONTACT_MESSAGE_TEXT_COLOR, R.color.white);
+        return sharedPreferences.getInt(SENT_CONTACT_MESSAGE_TEXT_COLOR, R.color.material_white_1000);
     }
 
     public ApplozicSetting setSentContactMessageTextColor(int color) {
@@ -213,7 +213,7 @@ public class ApplozicSetting {
     }
 
     public int getReceivedContactMessageTextColor() {
-        return sharedPreferences.getInt(RECEIVED_CONTACT_MESSAGE_TEXT_COLOR, R.color.black);
+        return sharedPreferences.getInt(RECEIVED_CONTACT_MESSAGE_TEXT_COLOR, R.color.material_black_1000);
     }
 
     public ApplozicSetting setReceivedContactMessageTextColor(int color) {
@@ -222,7 +222,7 @@ public class ApplozicSetting {
     }
 
     public int getSentMessageTextColor() {
-        return sharedPreferences.getInt(SENT_MESSAGE_TEXT_COLOR, R.color.white);
+        return sharedPreferences.getInt(SENT_MESSAGE_TEXT_COLOR, R.color.material_white_1000);
     }
 
     public ApplozicSetting setSentMessageTextColor(int color) {
@@ -231,7 +231,7 @@ public class ApplozicSetting {
     }
 
     public int getReceivedMessageTextColor() {
-        return sharedPreferences.getInt(RECEIVED_MESSAGE_TEXT_COLOR, R.color.black);
+        return sharedPreferences.getInt(RECEIVED_MESSAGE_TEXT_COLOR, R.color.material_black_1000);
     }
 
     public ApplozicSetting setReceivedMessageTextColor(int color) {
@@ -240,7 +240,7 @@ public class ApplozicSetting {
     }
 
     public int getSentMessageLinkTextColor() {
-        return sharedPreferences.getInt(SENT_MESSAGE_LINK_TEXT_COLOR, R.color.white);
+        return sharedPreferences.getInt(SENT_MESSAGE_LINK_TEXT_COLOR, R.color.material_white_1000);
     }
 
     public ApplozicSetting setSentMessageLinkTextColor(int color) {
@@ -546,7 +546,7 @@ public class ApplozicSetting {
     }
 
     public int getNoConversationLabelTextColor() {
-        return sharedPreferences.getInt(NO_CONVERSATION_LABEL_TEXT_COLOR, R.color.black);
+        return sharedPreferences.getInt(NO_CONVERSATION_LABEL_TEXT_COLOR, R.color.material_black_1000);
     }
 
     public ApplozicSetting setNoConversationLabelTextColor(int color) {

@@ -51,7 +51,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="Room Type:"
-                android:textColor="@color/black"
+                android:textColor="@color/material_black_1000"
                 android:textSize="12sp"/>
 
             <TextView
@@ -62,7 +62,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Double Superier Deluxe"
-                android:textColor="@color/black"
+                android:textColor="@color/material_black_1000"
                 android:textStyle="bold"/>
 
         </LinearLayout>
@@ -87,7 +87,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
                 android:text="Guests:"
-                android:textColor="@color/black"
+                android:textColor="@color/material_black_1000"
                 android:textSize="12sp"/>
 
             <TextView
@@ -98,7 +98,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="6"
-                android:textColor="@color/black"
+                android:textColor="@color/material_black_1000"
                 android:textStyle="bold"/>
 
         </LinearLayout>
@@ -128,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="Price:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/material_black_1000"
                     android:textStyle="bold"/>
 
                 <TextView
@@ -138,7 +138,7 @@
                     android:layout_gravity="center_vertical"
                     android:gravity="bottom"
                     android:text="(Per room per night)"
-                    android:textColor="@color/black"
+                    android:textColor="@color/material_black_1000"
                     android:textSize="11sp"/>
 
             </RelativeLayout>
@@ -150,7 +150,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Rs 889.67"
-                android:textColor="@color/black"
+                android:textColor="@color/material_black_1000"
                 android:textStyle="bold"/>
 
         </LinearLayout>
@@ -180,7 +180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="Total:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/material_black_1000"
                     android:textStyle="bold"/>
 
                 <TextView
@@ -191,7 +191,7 @@
                     android:layout_gravity="center_vertical"
                     android:maxLines="1"
                     android:text="(1 Room for 2 Nights)"
-                    android:textColor="@color/black"
+                    android:textColor="@color/material_black_1000"
                     android:textSize="11sp"/>
 
             </RelativeLayout>
@@ -203,7 +203,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Rs. 173489.23"
-                android:textColor="@color/black"
+                android:textColor="@color/material_black_1000"
                 android:textStyle="bold"/>
 
         </LinearLayout>

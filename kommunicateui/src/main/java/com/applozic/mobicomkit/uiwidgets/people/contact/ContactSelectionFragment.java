@@ -630,13 +630,13 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                 } else {
                     holder.textView1.setVisibility(View.GONE);
                     holder.contactNumberTextView.setVisibility(View.VISIBLE);
-                    holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.black));
+                    holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.material_black_1000));
                 }
                 holder.checkBox.setVisibility(View.GONE);
             } else {
                 holder.checkBox.setVisibility(View.VISIBLE);
                 holder.contactNumberTextView.setVisibility(View.VISIBLE);
-                holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.black));
+                holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.material_black_1000));
             }
 
             if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {

@@ -6,6 +6,4 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
  * Created by ashish on 23/01/18.
  */
 
-public class KMConversationActivity extends ConversationActivity {
-
-}
+public class KMConversationActivity extends ConversationActivity { }

@@ -293,5 +293,4 @@ public class Result {
     public void setApplication(Application application) {
         this.application = application;
     }
-
 }

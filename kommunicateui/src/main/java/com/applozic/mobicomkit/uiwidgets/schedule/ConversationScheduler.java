@@ -111,7 +111,7 @@ public class ConversationScheduler extends DialogFragment {
     }
 
     public void resetColor(TextView scheduledDate, TextView scheduledTime) {
-        scheduledDate.setTextColor(getResources().getColor(R.color.holo_blue));
-        scheduledTime.setTextColor(getResources().getColor(R.color.holo_blue));
+        scheduledDate.setTextColor(getResources().getColor(R.color.material_light_blue_400));
+        scheduledTime.setTextColor(getResources().getColor(R.color.material_light_blue_400));
     }
 }

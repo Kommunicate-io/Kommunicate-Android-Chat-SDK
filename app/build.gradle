@@ -11,8 +11,10 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "KOMMUNICATE_AGENT", '"cati.risquez@frogtek.org"'
-        buildConfigField "String", "KOMMUNICATE_APP_ID", '"2c037c709c9113324db41d7b2d248c0e5"'
+        buildConfigField "String", "KOMMUNICATE_AGENT", '"reytum@live.com"'
+        buildConfigField "String", "KOMMUNICATE_APP_ID", '"22823b4a764f9944ad7913ddb3e43cae1"'  //prod
+        buildConfigField "String", "KOMMUNICATE_APP_PRE_VIPIN_ID", '"3c951e76437b755ce5ee8ad8a06703505"'  //test encv key vipin
+        buildConfigField "String", "KOMMUNICATE_APP_PRE_DEVRAJ_ID", '"3c951e76437b755ce5ee8ad8a06703505"'  //test key devraj
     }
     buildTypes {
         release {

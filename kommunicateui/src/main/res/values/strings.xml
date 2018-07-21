@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-
     <string name="internet_connection_not_available">No internet connection</string>
     <string name="you_need_network_access_for_delete">You need to have network access for deleting Conversation </string>
     <string name="applozic_server_error">Oops! You caught an error, try again later</string>
@@ -15,7 +14,7 @@
     <string name="menu_edit_contact">Edit Contact</string>
     <string name="no_contacts">No Contacts Found</string>
     <string name="no_contact_selected">No Contact Selected</string>
-    <string name="search_hint">Search...</string>
+    <string name="search_hint">Search&#8230;</string>
     <string name="activity_contacts_list">MobiTexter</string>
     <string name="activity_contacts_title">Select contact</string>
     <string name="activity_contact_detail">Contact Detail</string>
@@ -28,29 +27,25 @@
     <string name="contact_sync_in_progress">Contact sync is in progress, might take few mins</string>
     <string name="zero_friends_on_app">Contacts not found</string>
     <string name="zero_groups_on_app">Groups not found</string>
-    <string name="delete_thread_text">Deleting....</string>
+    <string name="delete_thread_text">Deleting&#8230;.</string>
     <string name="search_title">Search</string>
     <string name="applozic_user_already_in_a_group">Already added to the [groupType]</string>
-    <string name="applozic_contacts_loading_info">Loading please wait...</string>
+    <string name="applozic_contacts_loading_info">Loading please wait&#8230;</string>
     <string name="applozic_contacts_loading_error">You need to have network access for loading contacts</string>
-    <string name="applozic_enter_group_name">Please enter a group name to proceed..</string>
+    <string name="applozic_enter_group_name">Please enter a group name to proceed&#8230;</string>
     <string name="snap_text">Oh Snap!</string>
     <string name="account_disconnection_message">We’re sorry but messaging is not \navailable at the moment.\nPlease contact support for more details</string>
     <string name="powered_by_applozic_message">We are powered by Kommunicate</string>
 
-    <!--
-         Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
-         alphabet using ListView fast scroll.
-    -->
+    <!-- Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
+         alphabet using ListView fast scroll.  -->
     <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 
-    <!--
-         When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
+    <!-- When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
          when using a number of different fields, such as name, e-mail address, address, phone
          number, etc. When a match occurs that is not the name, there is currently no way to tell
          which other field was matched. This string is displayed in the secondary display text in
-         ContactsListFragment when a search query match occurs that is not the display name.
-    -->
+         ContactsListFragment when a search query match occurs that is not the display name. -->
     <string name="search_match_other">Matches Other Field</string>
     <string name="invite">Invite your friends</string>
     <array name="alphabet_color">
@@ -63,6 +58,7 @@
         <item>#2093cd</item>
         <item>#ad62a7</item>
     </array>
+
     <dimen name="tile_letter_font_size">250dp</dimen>
     <!-- The deafult tile size -->
     <dimen name="letter_tile_size">64dp</dimen>
@@ -103,10 +99,10 @@
     <string name="applozic_message_info">Message Info</string>
     <string name="applozic_message_info_no_network">Not able to fetch message info.</string>
     <string name="applozic_user_profile_heading">Profile</string>
-    <string name="send_message_to">Send to..</string>
+    <string name="send_message_to">Send to&#8230;</string>
     <string name="info_attachment_max_allowed_file_size_exceeded">Can\'t send maximum uploading file size limit exceeded </string>
     <string name="group_members_limit_exceeds">Limit reached, remove someone from the Group first</string>
-    <string name="please_wait_creating_group_of_two">Please wait...</string>
+    <string name="please_wait_creating_group_of_two">Please wait&#8230;</string>
     <string name="sort_contacts_by_lastSeenAt">Sort by lastSeen</string>
     <string name="sort_contacts_by_recent_chats">Sort by recent chats</string>
     <string name="chats">Chats</string>
@@ -161,7 +157,7 @@
     <string name="Contact">CONTACT</string>
     <string name="participants">Participants</string>
     <string name="cancel">Cancel</string>
-    <string name="Add_caption">Add caption...</string>
+    <string name="Add_caption">Add caption&#8230;</string>
     <string name="New_Attachment">New Attachment</string>
     <string name="send_location">Send Location</string>
     <string name="send_your_current_location">Send your current Location</string>
@@ -194,13 +190,13 @@
     <string name="remove_image">Remove image</string>
     <string name="applozic_failed_to_load_contact">Failed to load Contact</string>
     <string name="applozic_Cropping_failed">Cropping failed</string>
-    <string name="applozic_resending_attachment">Resending attachment....</string>
+    <string name="applozic_resending_attachment">Resending attachment&#8230;.</string>
     <string name="Location">Location</string>
-    <string name="processing_please_wait">Processing... Please wait</string>
+    <string name="processing_please_wait">Processing&#8230; Please wait</string>
     <string name="success">success</string>
     <string name="error">error</string>
-    <string name="mute_group_for">Mute Group For..</string>
-    <string name="mute_user_for">Mute user for..</string>
+    <string name="mute_group_for">Mute Group For&#8230;</string>
+    <string name="mute_user_for">Mute user for&#8230;</string>
     <string name="eight_Hours">8 Hours</string>
     <string name="one_week">1 Week </string>
     <string name="one_year"> 1 Year </string>
@@ -216,4 +212,5 @@
     <string name="user_name">User Name</string>
     <string name="rupee_symbol">\u20B9</string>
     <string name="image_description_default">image</string>
+
 </resources>

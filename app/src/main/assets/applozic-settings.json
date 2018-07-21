@@ -59,7 +59,7 @@
   "hideGroupNameUpdateButton": false,
   "hideGroupExitButton": false,
   "hideGroupRemoveMemberOption": false,
-  "profileOption": true,
+  "profileOption": false,
   "broadcastOption": false,
   "restrictedWordMessage": " Please don't use restricted word",
   "hideAttachmentButton": false,
@@ -87,7 +87,7 @@
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",
   "replyMessageLayoutReceivedMessageBackground": "#F5F5F5",
   "groupInfoScreenVisible": true,
-  "forwardOption": true,
+  "forwardOption": false,
   "recordButton": false,
   "messageTemplate": {
     "isEnabled": false,

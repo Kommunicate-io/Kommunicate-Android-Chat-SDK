@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources  xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="internet_connection_not_available">कोई इंटरनेट कनेक्शन नहीं</string>
     <string name="you_need_network_access_for_delete">वार्तालाप हटाने के लिए आपको नेटवर्क एक्सेस की आवश्यकता है </string>
     <string name="applozic_server_error">ऊप्स! आपको एक त्रुटि मिली, बाद में फिर से प्रयास करें</string>
@@ -18,9 +17,9 @@
     <string name="zero_friends_on_phone">फोन संपर्कों पर कोई मिलान संपर्क नहीं मिला लेकिन आप अभी भी ईमेल, यूजर आईडी या फोन नंबर दर्ज करके संदेश भेज सकते हैं</string>
     <string name="delete_thread_text">हटाया जा रहा है ....</string>
     <string name="search_title">खोज</string>
-    <string name ="applozic_user_already_in_a_group">समूह प्रकार में पहले से ही जोड़ा गया है</string>
-    <string name ="applozic_contacts_loading_info">लोड हो रहा है, कृपया प्रतीक्षा करें...</string>
-    <string name ="applozic_contacts_loading_error">संपर्कों को लोड करने के लिए आपको नेटवर्क एक्सेस की आवश्यकता है</string>
+    <string name="applozic_user_already_in_a_group">समूह प्रकार में पहले से ही जोड़ा गया है</string>
+    <string name="applozic_contacts_loading_info">लोड हो रहा है, कृपया प्रतीक्षा करें...</string>
+    <string name="applozic_contacts_loading_error">संपर्कों को लोड करने के लिए आपको नेटवर्क एक्सेस की आवश्यकता है</string>
     <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="contact_permission">संपर्क की अनुमति के उपयोग के लिए आवश्यक हैं</string>
     <string name="storage_permission">उपयोग करने के लिए संग्रहण अनुमति आवश्यक है</string>
@@ -112,11 +111,11 @@
     <string name="wearable_action_title">जवाब दें</string>
     <string name="wearable_action_label"> को जवाब दें</string>
 
-    <string name ="you_string">आप</string>
+    <string name="you_string">आप</string>
     <string name="applozic_account_closed">अपने ऐप में चैट को सक्रिय करने के लिए कृपया एप्लीकोज से संपर्क करें</string>
     <string name="applozic_free_version_not_allowed_on_release_build">अपने ऐप में चैट को सक्रिय करने के लिए कृपया एप्लीकोज से संपर्क करें</string>
-    <string name ="ok_alert">ठीक</string>
-    <string name ="subtitle_last_seen_at_time">अंतिम बार देखा गया</string>
+    <string name="ok_alert">ठीक</string>
+    <string name="subtitle_last_seen_at_time">अंतिम बार देखा गया</string>
     <string name="is_typing">टाइप कर रहा है...</string>
     <string name="user_online">ऑनलाइन</string>
     <string name="removing_channel_user">निकाला जा रहा है</string>

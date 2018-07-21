@@ -18,6 +18,7 @@ import io.kommunicate.services.KmUserService;
  */
 
 public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
+
     private WeakReference<Context> context;
     private String type;
     private Exception exception;
@@ -32,7 +33,6 @@ public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
         String helpDocsKey = KmPreference.getInstance(context.get()).getHelpDocsKey();
-
         if (helpDocsKey == null) {
             try {
                 helpDocsKey = parseHelpDocsKey(new KmUserService(context.get()).getHelpDocsKey(MobiComKitClientService.getApplicationKey(context.get()), type));
@@ -46,7 +46,6 @@ public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
         if (s != null) {
             listener.onSuccess(context.get(), s);
         } else {

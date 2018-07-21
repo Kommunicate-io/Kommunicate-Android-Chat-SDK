@@ -17,6 +17,7 @@ import io.kommunicate.users.KMUser;
  */
 
 public class KmUserLoginTask extends UserLoginTask {
+
     private Exception e;
     private KMUser user;
     private AlLoginHandler handler;
@@ -24,7 +25,6 @@ public class KmUserLoginTask extends UserLoginTask {
     private RegistrationResponse response;
     private KmUserClientService userClientService;
     private KmUserService userService;
-
 
     public KmUserLoginTask(KMUser user, AlLoginHandler listener, Context context) {
         super(user, listener, context);

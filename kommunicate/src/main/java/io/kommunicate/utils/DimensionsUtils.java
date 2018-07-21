@@ -23,7 +23,6 @@ public class DimensionsUtils {
 
     private int convertDpToPx(int dp) {
         return Math.round(dp * (Resources.getSystem().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
-
     }
 
     private int convertPxToDp(int px) {

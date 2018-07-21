@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mobicomkit="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_search"
@@ -9,9 +9,9 @@
         android:orderInCategory="1"
         android:title="@string/menu_search"
         android:visible="false"
-        mobicomkit:actionViewClass="android.support.v7.widget.SearchView"
-        mobicomkit:iconifiedByDefault="true"
-        mobicomkit:showAsAction="always"/>
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:iconifiedByDefault="true"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/conversations"
@@ -19,7 +19,7 @@
         android:orderInCategory="2"
         android:title="@string/conversation"
         android:visible="false"
-        mobicomkit:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/start_new"
@@ -27,7 +27,7 @@
         android:orderInCategory="3"
         android:title="@string/start_New"
         android:visible="false"
-        mobicomkit:showAsAction="ifRoom|collapseActionView"/>
+        app:showAsAction="ifRoom|collapseActionView"/>
 
     <item
         android:id="@+id/dial"
@@ -35,7 +35,7 @@
         android:orderInCategory="4"
         android:title="@string/dial"
         android:visible="false"
-        mobicomkit:showAsAction="ifRoom|collapseActionView"/>
+        app:showAsAction="ifRoom|collapseActionView"/>
 
     <item
         android:id="@+id/refresh"
@@ -43,7 +43,7 @@
         android:orderInCategory="5"
         android:title="@string/refresh"
         android:visible="false"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>
 
     <item
         android:id="@+id/deleteConversation"
@@ -51,7 +51,7 @@
         android:orderInCategory="6"
         android:title="@string/delete_conversation"
         android:visible="false"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>
 
     <item
         android:id="@+id/shareOptions"
@@ -59,8 +59,8 @@
         android:orderInCategory="10"
         android:title="@string/shareOptions"
         android:visible="false"
-        mobicomkit:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+        app:showAsAction="collapseActionView"/>
 
     <item
         android:id="@+id/video_call"
@@ -69,46 +69,46 @@
         android:padding="8dp"
         android:title="@string/video_string"
         android:visible="false"
-        mobicomkit:showAsAction="ifRoom|collapseActionView"/>
+        app:showAsAction="ifRoom|collapseActionView"/>
 
     <item
         android:id="@+id/userBlock"
         android:orderInCategory="7"
         android:title="@string/user_block"
         android:visible="false"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>
     <item
         android:id="@+id/userUnBlock"
         android:orderInCategory="7"
         android:title="@string/user_un_block"
         android:visible="false"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>
     <item
         android:id="@+id/applozicUserProfile"
         android:orderInCategory="2"
         android:title="@string/applozic_my_profile_option_info"
         android:visible="false"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>
 
     <item
         android:id="@+id/broadcast"
         android:orderInCategory="8"
         android:title="@string/new_broadcast_name_info"
         android:visible="false"
-        mobicomkit:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/muteGroup"
         android:orderInCategory="9"
         android:title="@string/mute_Group"
         android:visible="false"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>
     <item
         android:id="@+id/unmuteGroup"
         android:orderInCategory="9"
         android:title="@string/unmute_Group"
         android:visible="false"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>
 
     <item
         android:id="@+id/logout"
@@ -116,6 +116,6 @@
         android:orderInCategory="11"
         android:title="@string/logout"
         android:visible="false"
-        mobicomkit:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>
 
 </menu>

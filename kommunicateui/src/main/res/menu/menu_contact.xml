@@ -1,13 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mobicomkit="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/ic_search_white_24dp"
         android:iconifiedByDefault="true"
         android:title="@string/menu_search"
-        mobicomkit:actionViewClass="android.support.v7.widget.SearchView"
-        mobicomkit:iconifiedByDefault="true"
-        mobicomkit:showAsAction="always"/>
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:iconifiedByDefault="true"
+        app:showAsAction="always"/>
 
 </menu>

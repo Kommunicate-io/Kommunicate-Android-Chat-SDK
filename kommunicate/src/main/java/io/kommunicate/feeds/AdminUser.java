@@ -1,4 +1,3 @@
-
 package io.kommunicate.feeds;
 
 import com.google.gson.annotations.Expose;
@@ -171,5 +170,4 @@ public class AdminUser {
     public void setMetadata(Metadata_ metadata) {
         this.metadata = metadata;
     }
-
 }

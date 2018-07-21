@@ -368,19 +368,9 @@ public class ApplozicDocumentView {
             Log.i(TAG, uri.toString());
         }
         if (mimeType != null && mimeType.contains("audio")) {
-<<<<<<< HEAD
             ApplozicAudioManager.getInstance(context).play(uri, ApplozicDocumentView.this);
             setAudioIcons();
             updateApplozicSeekBar();
-=======
-            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE}, 10);
-            } else {
-                ApplozicAudioManager.getInstance(context).play(uri, ApplozicDocumentView.this);
-                setAudioIcons();
-                updateApplozicSeekBar();
-            }
->>>>>>> d5a77e2... Remove toast and log from debug
         } else {
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);

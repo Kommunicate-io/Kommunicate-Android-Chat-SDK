@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -38,7 +37,6 @@ public class KMFaqTask extends AsyncTask<Void, Void, String> {
         this.accessKey = accessKey;
         this.data = data;
         this.listener = listener;
-
         kmUserService = new KmUserService(context);
     }
 
@@ -74,11 +72,9 @@ public class KMFaqTask extends AsyncTask<Void, Void, String> {
                     return kmUserService.getSelectedArticles(accessKey, data);
                 }
             }
-
             if (isDashBoardFaqRequest) {
                 return kmUserService.getDashboardFaq(MobiComKitClientService.getApplicationKey(context.get()), data);
             }
-
         } catch (Exception e) {
             exception = e;
         }
@@ -88,7 +84,6 @@ public class KMFaqTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
         if (listener != null) {
             if (s == null) {
                 listener.onFailure(context.get(), exception, null);

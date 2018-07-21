@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
@@ -149,14 +148,10 @@ public class Kommunicate {
         if (handler == null) {
             handler = new KMStartChatHandler() {
                 @Override
-                public void onSuccess(Channel channel, Context context) {
-
-                }
+                public void onSuccess(Channel channel, Context context) { }
 
                 @Override
-                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-
-                }
+                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) { }
             };
         }
 
@@ -167,7 +162,6 @@ public class Kommunicate {
         List<String> roleName = new ArrayList<>();
         roleName.add(KMUser.RoleName.APPLICATION_ADMIN.getValue());
         roleName.add(KMUser.RoleName.APPLICATION_WEB_ADMIN.getValue());
-
         new GetUserListAsyncTask(context, roleName, startIndex, pageSize, handler).execute();
     }
 

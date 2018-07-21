@@ -74,7 +74,7 @@
   "logoutOption": true,
   "isAgentApp": false,
   "logoutPackageName": "kommunicate.io.sample.MainActivity",
-  "enableAwayMessage": false,
+  "enableAwayMessage": true,
   "awayMessageTextColor": "#A9A4A4",
   "hideGroupSubtitle" : false,
   "attachmentOptions": {

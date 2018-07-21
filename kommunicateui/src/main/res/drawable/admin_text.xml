@@ -3,17 +3,18 @@
 
     <stroke
         android:width="2dp"
-        android:color="@color/applozic_theme_color_primary" />
+        android:color="@color/applozic_theme_color_primary"/>
 
     <padding
         android:bottom="2dp"
         android:left="2dp"
         android:right="9dp"
-        android:top="2dp" />
+        android:top="2dp"/>
 
     <corners
         android:bottomLeftRadius="7dp"
         android:bottomRightRadius="7dp"
         android:topLeftRadius="7dp"
-        android:topRightRadius="7dp" />
+        android:topRightRadius="7dp"/>
+
 </shape>

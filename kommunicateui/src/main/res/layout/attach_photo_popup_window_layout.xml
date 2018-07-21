@@ -108,7 +108,7 @@
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/image_description_default"
             android:src="@drawable/ic_close_grey_600_24dp"
-            android:tint="@color/white"
+            android:tint="@color/material_white_1000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toStartOf="@+id/upload_remove_text"

@@ -19,7 +19,7 @@
             android:id="@+id/galleryImageView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/whitesmoke"
+            android:background="@color/material_grey_100"
             android:contentDescription="@string/image_description_default"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1:1"

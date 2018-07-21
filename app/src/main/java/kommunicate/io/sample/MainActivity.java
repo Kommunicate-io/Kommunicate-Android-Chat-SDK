@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     public void initLoginData(String userId, String password, final ProgressDialog progressDialog) {
         final KMUser user = new KMUser();
         user.setUserId(userId);
-        user.setApplicationId(KmHelper.APP_KEY);
+        user.setApplicationId(BuildConfig.KOMMUNICATE_APP_ID);
         if (!TextUtils.isEmpty(password)) {
             user.setPassword(password);
         }

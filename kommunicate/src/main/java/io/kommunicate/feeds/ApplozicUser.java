@@ -1,4 +1,3 @@
-
 package io.kommunicate.feeds;
 
 import com.google.gson.annotations.Expose;
@@ -182,5 +181,4 @@ public class ApplozicUser {
     public void setNewUser(Boolean newUser) {
         this.newUser = newUser;
     }
-
 }

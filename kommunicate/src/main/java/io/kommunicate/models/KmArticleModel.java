@@ -46,6 +46,7 @@ public class KmArticleModel {
     }
 
     public class KmArticle {
+
         private String _id;
         private String article_id;
         private String title;
@@ -155,6 +156,7 @@ public class KmArticleModel {
     }
 
     public class KmAuthor {
+
         private String name;
         private String profile_image;
 
@@ -184,6 +186,7 @@ public class KmArticleModel {
     }
 
     public class KmDashboardData {
+
         private String id;
         private String name;
         private String content;

@@ -11,6 +11,5 @@ import io.kommunicate.KmConversationResponse;
 public interface KmCreateConversationHandler {
 
     void onSuccess(Context context, KmConversationResponse response);
-
     void onFailure(Context context, Exception e, String error);
 }

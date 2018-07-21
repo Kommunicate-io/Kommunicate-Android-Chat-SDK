@@ -7,6 +7,7 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
  */
 
 public class KmConversationResponse extends ChannelFeedApiResponse {
+
     private String code;
     private Object data;
 
@@ -26,7 +27,8 @@ public class KmConversationResponse extends ChannelFeedApiResponse {
         this.data = data;
     }
 
-    public class KmConversationResponseData{
+    public class KmConversationResponseData {
+
         private long id;
         private Integer groupId;
         private String participentUserId;

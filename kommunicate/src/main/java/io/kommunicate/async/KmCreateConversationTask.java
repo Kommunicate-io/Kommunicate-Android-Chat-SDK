@@ -61,7 +61,6 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
     @Override
     protected void onPostExecute(KmConversationResponse response) {
         super.onPostExecute(response);
-
         if (handler != null) {
             if (response != null) {
                 if ("SUCCESS".equals(response.getCode())) {
@@ -73,9 +72,8 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
                 handler.onFailure(context.get(), e, "Some error occurred");
             }
         }
-
         if (startChatHandler != null) {
-               if (response != null) {
+            if (response != null) {
                 if ("SUCCESS".equalsIgnoreCase(response.getStatus())) {
                     startChatHandler.onSuccess(ChannelService.getInstance(context.get()).getChannel(response.getResponse()), context.get());
                 } else {

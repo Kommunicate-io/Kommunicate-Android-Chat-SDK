@@ -1,4 +1,3 @@
-
 package io.kommunicate.feeds;
 
 import com.google.gson.annotations.Expose;
@@ -50,5 +49,4 @@ public class AppModulePxy {
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
-
 }

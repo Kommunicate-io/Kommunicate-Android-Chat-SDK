@@ -49,4 +49,5 @@
     <dimen name="material_steppers_padding_inter">8dip</dimen>
     <!-- Toolbar -->
     <dimen name="material_toolbar_height">48dp</dimen>
+
 </resources>

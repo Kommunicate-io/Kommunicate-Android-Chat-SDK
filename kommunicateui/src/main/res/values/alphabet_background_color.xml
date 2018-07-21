@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <color name="mg_alphabet_first">#FF617D8A</color>
     <color name="mg_alphabet_second">#FF628B70</color>
     <color name="mg_alphabet_third">#FF6F628B</color>
     <color name="mg_alphabet_fourth">#FF8C8863</color>
     <color name="mg_alphabet_fifth">#FF8B627D</color>
     <color name="mg_alphabet_sixth">#FF8B6F62</color>
-
 
     <color name="non_alpha">#FFDDA185</color>
     <color name="alphabet_a">#FF4FC3F7</color>

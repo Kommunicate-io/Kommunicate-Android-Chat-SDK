@@ -15,6 +15,7 @@ import io.kommunicate.services.KmUserService;
  */
 
 public class GetUserListAsyncTask extends AsyncTask<Void, Void, KmUserResponse> {
+
     private WeakReference<Context> context;
     private List<String> userRoleList;
     private int startIndex;
@@ -31,7 +32,6 @@ public class GetUserListAsyncTask extends AsyncTask<Void, Void, KmUserResponse> 
 
     @Override
     protected KmUserResponse doInBackground(Void... voids) {
-
         KmUserResponse response;
         try {
             response = new KmUserService(context.get()).getUserList(userRoleList, startIndex, pageSize);
@@ -49,7 +49,6 @@ public class GetUserListAsyncTask extends AsyncTask<Void, Void, KmUserResponse> 
         if (handler == null) {
             return;
         }
-
         if (kmUserResponse != null) {
             if (kmUserResponse.isSuccess() && kmUserResponse.getContactList() != null) {
                 handler.onSuccess(kmUserResponse.getContactList());
@@ -59,7 +58,6 @@ public class GetUserListAsyncTask extends AsyncTask<Void, Void, KmUserResponse> 
                 } else if (kmUserResponse.getException() != null) {
                     handler.onFailure(null, kmUserResponse.getException());
                 }
-
             }
         } else {
             handler.onFailure(null, null);

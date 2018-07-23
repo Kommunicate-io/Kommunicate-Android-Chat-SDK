@@ -1,36 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
     android:layout_gravity="center"
-    android:clickable="false"
-    android:gravity="center"
     android:longClickable="false"
     android:orientation="horizontal"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp">
+    android:padding="@dimen/material_default_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
-    <TextView
-        android:id="@+id/chat_screen_day"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:text="10"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/chat_screen_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:paddingLeft="10dp"
-        android:paddingStart="10dp"
-        android:text=""
-        android:textSize="14sp"
-        android:visibility="gone" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/chat_screen_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/material_grey_600"
+            android:textSize="@dimen/material_typography_textsize_subheading"
+            android:textStyle="bold"
+            android:visibility="visible"
+            tools:text="Domingo"/>
+
+        <TextView
+            android:id="@+id/chat_screen_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/material_half_padding"
+            android:layout_marginStart="@dimen/material_half_padding"
+            android:textColor="@color/material_grey_500"
+            android:textSize="@dimen/material_typography_textsize_subheading"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@id/chat_screen_day"
+            tools:text="jul. 08, 2018"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -5,6 +5,7 @@ package io.kommunicate.users;
  */
 
 public class KMGroupUser {
+
     String userId;
     int groupRole;
 

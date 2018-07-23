@@ -8,6 +8,7 @@ import com.applozic.mobicommons.commons.core.utils.SntpClient;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class KmDateUtils {
@@ -23,17 +24,21 @@ public class KmDateUtils {
                 calendarForCurrent.get(Calendar.DAY_OF_YEAR) == calendarForScheduled.get(Calendar.DAY_OF_YEAR);
     }
 
-    public static String getFormattedDate(Long timestamp) {
-        // boolean sameDay = isSameDay(timestamp);
+    public static String getFormattedDate(Long timestamp, Context context) {
         Date date = new Date(timestamp);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
-        SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd MMM");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(is24hourFormat(context) ? R.string.TIME_24H_FORMAT
+                : R.string.TIME_FORMAT), Locale.getDefault());
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat(context.getString(R.string.DATE_SHORT_FORMAT), Locale.getDefault());
         return simpleDateFormat.format(date);
     }
 
-    public static String getDate(Long timestamp) {
+    private static boolean is24hourFormat(Context context) {
+        return android.text.format.DateFormat.is24HourFormat(context.getApplicationContext());
+    }
+
+    public static String getDate(Context context, Long timestamp) {
         Date date = new Date(timestamp);
-        SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd MMM yyyy");
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat(context.getString(R.string.DATE_LONG_FORMAT), Locale.getDefault());
         return fullDateFormat.format(date);
     }
 
@@ -50,28 +55,33 @@ public class KmDateUtils {
     public static String getFormattedDateAndTime(Long timestamp, Context context) {
         boolean sameDay = isSameDay(timestamp);
         Date date = new Date(timestamp);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
-        SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd MMM");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(is24hourFormat(context) ? R.string.TIME_24H_FORMAT
+                : R.string.TIME_FORMAT), Locale.getDefault());
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat(context.getString(R.string.DATE_SHORT_FORMAT), Locale.getDefault());
         Date newDate = new Date();
-
         try {
             if (sameDay) {
                 long currentTime = newDate.getTime() - date.getTime();
                 long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(currentTime);
                 long diffHours = TimeUnit.MILLISECONDS.toHours(currentTime);
-                if (diffMinutes <= 1 && diffHours == 0) {
+                if (diffMinutes < 1 && diffHours == 0) {
                     return context.getString(R.string.JUST_NOW);
                 }
-                if (diffMinutes <= 59 && diffHours == 0) {
-                    return String.valueOf(diffMinutes) + context.getString(R.string.MINUTES);
+                if (diffMinutes == 1 && diffHours == 0) {
+                    return context.getString(R.string.MINUTE, String.valueOf(diffMinutes));
                 }
-                if (diffHours <= 2) {
-                    return String.valueOf(diffHours) + context.getString(R.string.H);
+                if (diffMinutes <= 59 && diffHours == 0) {
+                    return context.getString(R.string.MINUTES, String.valueOf(diffMinutes));
+                }
+                if (diffHours == 1) {
+                    return context.getString(R.string.H, String.valueOf(diffHours));
+                }
+                if (diffHours >= 2) {
+                    return context.getString(R.string.HOURS, String.valueOf(diffHours));
                 }
                 return simpleDateFormat.format(date);
             }
             return fullDateFormat.format(date);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,8 +91,7 @@ public class KmDateUtils {
     public static String getDateAndTimeForLastSeen(Long timestamp, Context context) {
         boolean sameDay = isSameDay(timestamp);
         Date date = new Date(timestamp);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM dd,yyyy");
-
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(R.string.DATE_FULL_FORMAT), Locale.getDefault());
         try {
             if (sameDay) {
                 Date newDate = new Date();
@@ -93,10 +102,10 @@ public class KmDateUtils {
                     return context.getString(R.string.JUST_NOW);
                 }
                 if (diffMinutes <= 59 && diffHours == 0) {
-                    return String.valueOf(diffMinutes) + context.getString(R.string.MINUTES_AGO);
+                    return context.getString(R.string.MINUTES_AGO, String.valueOf(diffMinutes));
                 }
                 if (diffHours < 24) {
-                    return String.valueOf(diffHours) + context.getString(R.string.HOURS_AGO);
+                    return context.getString(R.string.HOURS_AGO, String.valueOf(diffHours));
                 }
             }
             if (isYesterday(timestamp)) {
@@ -107,7 +116,6 @@ public class KmDateUtils {
             e.printStackTrace();
         }
         return null;
-
     }
 
     public static boolean isYesterday(Long timestamp) {
@@ -116,8 +124,7 @@ public class KmDateUtils {
         Date date = new Date(timestamp);
         Calendar c2 = Calendar.getInstance();
         c2.setTime(date);
-        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)
-                && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
+        return c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR) && c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR);
     }
 
     public static Calendar getDatePart(Date date) {
@@ -127,7 +134,6 @@ public class KmDateUtils {
         cal.set(Calendar.MINUTE, 0);                 // set minute in hour
         cal.set(Calendar.SECOND, 0);                 // set second in minute
         cal.set(Calendar.MILLISECOND, 0);            // set millisecond in second
-
         return cal;                                  // return the date part
     }
 
@@ -146,10 +152,10 @@ public class KmDateUtils {
         return daysBetween;
     }
 
-    public static String getDateAndTimeInDefaultFormat(long timestamp) {
+    public static String getDateAndTimeInDefaultFormat(Context context, long timestamp) {
         Date date = new Date(timestamp);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy hh:mm aa");
-        //return DateFormat.getDateInstance().format(date);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(is24hourFormat(context) ? R.string.DATE_TIME_24H_FULL_FORMAT
+                : R.string.DATE_TIME_FULL_FORMAT), Locale.getDefault());
         return simpleDateFormat.format(date);
     }
 }

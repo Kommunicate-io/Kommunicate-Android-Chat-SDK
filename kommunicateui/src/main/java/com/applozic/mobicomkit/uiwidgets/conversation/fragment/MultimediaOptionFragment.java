@@ -17,11 +17,11 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created with IntelliJ IDEA.
@@ -42,9 +42,7 @@ public class MultimediaOptionFragment extends DialogFragment {
     private Uri capturedImageUri;
     private int menuOptionsResourceId = R.array.multimediaOptions_sms;
 
-    public MultimediaOptionFragment() {
-
-    }
+    public MultimediaOptionFragment() { }
 
     public Uri getCapturedImageUri() {
         return capturedImageUri;
@@ -60,18 +58,16 @@ public class MultimediaOptionFragment extends DialogFragment {
                     case 0:
                         ((ConversationActivity) getActivity()).processLocation();
                         break;
+
                     case 1:
                         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         // Ensure that there's a camera activity to handle the intent
                         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
                             // Create the File where the photo should go
                             File photoFile;
-
-                            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                            String timeStamp = new SimpleDateFormat(getContext().getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
                             String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
-
                             photoFile = FileClientService.getFilePath(imageFileName, getActivity(), "image/jpeg");
-
                             // Continue only if the File was successfully created
                             if (photoFile != null) {
                                 capturedImageUri = Uri.fromFile(photoFile);
@@ -81,22 +77,22 @@ public class MultimediaOptionFragment extends DialogFragment {
                             }
                         }
                         break;
-                    case 2:
 
+                    case 2:
                         Intent intentPick = new Intent(getActivity(), MobiComAttachmentSelectorActivity.class);
                         getActivity().startActivityForResult(intentPick, REQUEST_MULTI_ATTCAHMENT);
                         break;
+
                     case 3:
                         ((ConversationActivity) getActivity()).showAudioRecordingDialog();
                         break;
-                    case 4:
 
+                    case 4:
                         // create new Intentwith with Standard Intent action that can be
                         // sent to have the camera application capture an video and return it.
                         intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String timeStamp = new SimpleDateFormat(getContext().getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
                         String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
-
                         File fileUri = FileClientService.getFilePath(imageFileName, getActivity(), "video/mp4");
                         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(fileUri));
                         intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);

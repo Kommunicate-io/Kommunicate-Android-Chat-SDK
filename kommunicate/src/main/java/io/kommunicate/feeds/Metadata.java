@@ -1,8 +1,3 @@
-
 package io.kommunicate.feeds;
 
-
-public class Metadata {
-
-
-}
+public class Metadata { }

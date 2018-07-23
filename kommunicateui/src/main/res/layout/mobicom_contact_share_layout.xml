@@ -1,108 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/contact_share_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/apploizc_transparent_color"
-    android:orientation="vertical"
-    android:visibility="gone">
+    android:padding="@dimen/material_default_padding"
+    android:visibility="gone"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
-
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/apploizc_transparent_color"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:weightSum="3">
-
+        android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/contact_share_image"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_weight="2.16"
-            android:src="@drawable/applozic_ic_contact_picture_180_holo_light"
-            android:visibility="visible" />
+            android:layout_width="@dimen/material_drawer_bottom_navigation_height"
+            android:layout_height="@dimen/material_drawer_bottom_navigation_height"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/material_default_padding"
+            android:src="@drawable/ic_account_circle_grey_600_24dp_v"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
-            android:layout_width="243dp"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraint_text"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_gravity="end"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="28dp"
-            android:layout_toEndOf="@+id/contact_share_image"
-            android:layout_toRightOf="@+id/contact_share_image">
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-            <!--android:text="Contacts"-->
-            <!--android:id="@+id/share_contact_heading"-->
-            <!--android:layout_weight="2.16" />-->
+            android:layout_marginLeft="@dimen/material_default_padding"
+            android:layout_marginStart="@dimen/material_default_padding"
+            app:layout_constraintBottom_toBottomOf="@id/contact_share_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/contact_share_image"
+            app:layout_constraintTop_toTopOf="@+id/contact_share_image">
+
             <TextView
                 android:id="@+id/contact_share_tv_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_weight="2.16"
-                android:text=""
-                android:textAlignment="gravity"
-                android:textColor="@color/black"
-                android:textDirection="locale"
-                android:textSize="16sp" />
+                android:singleLine="true"
+                android:textColor="@color/material_grey_900"
+                android:textSize="@dimen/material_typography_textsize_subheading"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Cati Rísquez"/>
 
             <TextView
                 android:id="@+id/contact_share_tv_no"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/contact_share_tv_name"
-                android:layout_marginTop="5dp"
-                android:text=""
-                android:textAlignment="gravity"
-                android:textDirection="locale"
-                android:textSize="14sp" />
+                android:singleLine="true"
+                android:textColor="@color/material_grey_500"
+                android:textSize="@dimen/material_typography_textsize_caption"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contact_share_tv_name"
+                tools:text="00 34 608"/>
 
             <TextView
                 android:id="@+id/contact_share_emailId"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/contact_share_tv_no"
-                android:text=""
-                android:textAlignment="gravity"
-                android:textDirection="locale"
-                android:textSize="14sp" />
+                android:singleLine="true"
+                android:textColor="@color/material_grey_500"
+                android:textSize="@dimen/material_typography_textsize_caption"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contact_share_tv_no"
+                tools:text="cati.risquez@gmail.com"/>
 
+        </android.support.constraint.ConstraintLayout>
 
-        </RelativeLayout>
-    </RelativeLayout>
+        <View
+            android:id="@+id/divider"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:background="@color/material_grey_200"
+            app:layout_constraintBottom_toTopOf="@+id/contact_share_add_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/constraint_text"/>
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="2dp"
-        android:background="@color/applozic_share_contact_divider" />
+        <Button
+            android:id="@+id/contact_share_add_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:paddingLeft="@dimen/material_default_padding"
+            android:paddingRight="@dimen/material_default_padding"
+            android:text="@string/Add_Contacts"
+            android:textColor="@color/material_grey_800"
+            android:textSize="@dimen/material_typography_textsize_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-    <Button
-        android:id="@+id/contact_share_add_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/relativeLayout"
-        android:layout_alignRight="@+id/relativeLayout"
-        android:layout_marginTop="3dp"
-        android:background="@color/apploizc_transparent_color"
-        android:text="@string/Add_Contacts" />
+    </android.support.constraint.ConstraintLayout>
 
-
-</LinearLayout>
+</RelativeLayout>

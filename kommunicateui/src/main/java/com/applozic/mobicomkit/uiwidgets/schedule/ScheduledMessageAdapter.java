@@ -1,12 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.schedule;
 
-
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -32,8 +29,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
 public class ScheduledMessageAdapter extends ArrayAdapter<Message> {
+
     private ImageLoader mImageLoader;
     private BaseContactService baseContactService;
 
@@ -46,29 +43,25 @@ public class ScheduledMessageAdapter extends ArrayAdapter<Message> {
                 return loadContactPhoto((Uri) data, getImageSize());
             }
         };
-        mImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_180_holo_light);
+        mImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
         mImageLoader.setImageFadeIn(false);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View customView = convertView;
-
         if (customView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             customView = inflater.inflate(R.layout.mobicom_message_row_view, null);
-            //ImageView sentOrReceived = (ImageView) customView.findViewById(R.id.sentOrReceivedIcon);
-            //sentOrReceived.setVisibility(View.GONE);
-            TextView unreadSmsTxtView = (TextView) customView.findViewById(R.id.unreadSmsCount);
+            TextView unreadSmsTxtView = customView.findViewById(R.id.unreadSmsCount);
             unreadSmsTxtView.setVisibility(View.GONE);
         }
+
         Message messageListItem = getItem(position);
         if (messageListItem != null) {
-            TextView smReceivers = (TextView) customView.findViewById(R.id.smReceivers);
-            TextView smTime = (TextView) customView.findViewById(R.id.createdAtTime);
-            //TextView createdAtTime = (TextView) customView.findViewById(R.id.createdAtTime);
-            TextView scheduledMessage = (TextView) customView.findViewById(R.id.message);
-            ImageView contactImage = (ImageView) customView.findViewById(R.id.contactImage);
-
+            TextView smReceivers = customView.findViewById(R.id.smReceivers);
+            TextView smTime = customView.findViewById(R.id.createdAtTime);
+            TextView scheduledMessage = customView.findViewById(R.id.message);
+            ImageView contactImage = customView.findViewById(R.id.contactImage);
 
             if (smReceivers != null) {
                 List<String> items = Arrays.asList(messageListItem.getTo().split("\\s*,\\s*"));
@@ -77,10 +70,8 @@ public class ScheduledMessageAdapter extends ArrayAdapter<Message> {
                 if (items.size() > 1) {
                     Contact contact2 = baseContactService.getContactById(items.get(1));
                     contactinfo = contactinfo + " , " + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName());
-
                 }
                 smReceivers.setText(contactinfo.length() > 22 ? contactinfo.substring(0, 22) + "..." : contactinfo);
-
                 String contactId = ContactUtils.getContactId(items.get(0), getContext().getContentResolver());
                 //Todo: Check if contactId is working or not.
                 Uri contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId);
@@ -108,7 +99,6 @@ public class ScheduledMessageAdapter extends ArrayAdapter<Message> {
         return customView;
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private Bitmap loadContactPhoto(Uri contactUri, int imageSize) {
         if (getContext() == null) {
             return null;

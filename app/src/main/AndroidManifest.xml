@@ -2,10 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.kommunicate.app">
 
-    <uses-permission android:name="io.kommunicate.app.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="io.kommunicate.app.permission.MAPS_RECEIVE"/>
+
     <permission
         android:name="io.kommunicate.app.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
+        android:protectionLevel="signature"/>
 
     <application
         android:name="kommunicate.io.sample.KommunicateApplication"
@@ -15,45 +16,33 @@
         android:roundIcon="@mipmap/ic_launcher_with_shape"
         android:supportsRtl="true"
         android:theme="@style/ApplozicTheme">
+
         <activity
             android:name="kommunicate.io.sample.MainActivity"
             android:launchMode="singleTask"
-            android:theme="@style/ApplozicTheme" />
+            android:theme="@style/ApplozicTheme"/>
 
         <activity
             android:name="kommunicate.io.sample.SplashScreenActivity"
             android:launchMode="singleTask"
             android:theme="@style/ApplozicTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAv1wf5eMyErPaU3l8EnMUmOsoYJ2joC70" />
-
+            android:value="AIzaSyAv1wf5eMyErPaU3l8EnMUmOsoYJ2joC70"/>
 
         <service
             android:name="kommunicate.io.sample.pushnotification.FcmListenerService"
             android:stopWithTask="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <service
-            android:name="kommunicate.io.sample.pushnotification.FcmInstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-
-        <!--<meta-data
-            android:name="com.applozic.server.url"
-            android:value="https://chat.kommunicate.io" />-->
 
     </application>
 

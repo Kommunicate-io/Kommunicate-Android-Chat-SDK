@@ -27,7 +27,6 @@ public class KMUser extends User {
         user.setPassword(MobiComUserPreference.getInstance(context).getPassword());
         user.setEmail(MobiComUserPreference.getInstance(context).getEmailIdValue());
         user.setContactNumber(MobiComUserPreference.getInstance(context).getContactNumber());
-
         return user;
     }
 

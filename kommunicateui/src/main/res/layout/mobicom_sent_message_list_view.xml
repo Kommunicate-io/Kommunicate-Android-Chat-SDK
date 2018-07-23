@@ -1,172 +1,128 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/messageLayout"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
-    android:gravity="end"
-    android:longClickable="true"
-    android:orientation="horizontal">
+    android:layout_marginEnd="@dimen/material_default_padding"
+    android:layout_marginRight="@dimen/material_default_padding"
+    android:layout_marginTop="@dimen/material_half_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/messageTextLayout"
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="70dp"
-        android:elevation="1dp"
-        android:gravity="end|center_vertical"
-        android:orientation="horizontal">
+        android:layout_marginEnd="3dip"
+        android:layout_marginRight="3dip"
+        android:minHeight="@dimen/material_chips_height"
+        android:minWidth="@dimen/material_chips_height"
+        android:orientation="vertical"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/statusImage"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/guidelineStart"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:id="@+id/messageTextInsideLayout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:background="@drawable/applozic_sent_message"
-            android:minHeight="40dp"
-            android:minWidth="94dp"
-            android:orientation="vertical"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
-            android:paddingTop="6dp">
+            android:minHeight="@dimen/material_chips_height"
+            android:minWidth="@dimen/material_chips_height"
+            android:orientation="vertical">
 
-            <include layout="@layout/reply_message_layout" />
+            <include layout="@layout/reply_message_layout"/>
 
             <TextView
                 android:id="@+id/attached_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/applozic_ic_action_attachment"
-                android:drawablePadding="8dp"
-                android:drawableStart="@drawable/applozic_ic_action_attachment"
-                android:textAlignment="gravity"
-                android:textColor="@color/white"
-                android:textDirection="locale"
-                android:textSize="16sp"
-                android:visibility="gone" />
+                android:drawableLeft="@drawable/ic_attachment_grey_600_24dp"
+                android:drawablePadding="@dimen/material_default_padding"
+                android:drawableStart="@drawable/ic_attachment_grey_600_24dp"
+                android:drawableTint="@color/material_white_1000"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/material_half_padding"
+                android:paddingLeft="@dimen/material_default_padding"
+                android:paddingRight="@dimen/material_default_padding"
+                android:paddingTop="@dimen/material_half_padding"
+                android:textColor="@color/sent_message_text_color"
+                android:textSize="@dimen/material_typography_textsize_body"
+                android:visibility="gone"/>
 
-            <include layout="@layout/mobicom_attachment_preview_layout" />
+            <include layout="@layout/mobicom_attachment_preview_layout"/>
 
-            <include layout="@layout/mobicom_contact_share_layout" />
+            <include layout="@layout/mobicom_contact_share_layout"/>
 
-            <include layout="@layout/mobicom_chat_location_view" />
+            <include layout="@layout/mobicom_chat_location_view"/>
 
-            <include layout="@layout/applozic_document_attachment" />
+            <include layout="@layout/applozic_document_attachment"/>
 
-            <com.rockerhieu.emojicon.EmojiconTextView
+            <include layout="@layout/al_rich_message_layout"/>
+
+            <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
-                android:layout_marginStart="3dp"
-                android:layout_marginTop="2dp"
                 android:autoLink="all"
-                android:maxEms="14"
-                android:text="Hi"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/material_half_padding"
+                android:paddingLeft="@dimen/material_default_padding"
+                android:paddingRight="@dimen/material_default_padding"
+                android:paddingTop="@dimen/material_half_padding"
                 android:textColor="@color/sent_message_text_color"
-                android:textDirection="locale"
-                android:textSize="14sp"
-                android:visibility="visible" />
+                android:textIsSelectable="true"
+                android:textSize="@dimen/material_typography_textsize_body"
+                android:visibility="visible"
+                tools:text="Material design guidelines mention that cards can be constructed using blocks of content"/>
 
-            <TextView
-                android:id="@+id/createdAtTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|end|bottom"
-                android:layout_marginBottom="3dp"
-                android:fontFamily="sans-serif"
-                android:letterSpacing="0.01"
-                android:text="12:34 PM"
-                android:textColor="#ede6e6"
-                android:textSize="10sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/selfDestruct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:paddingEnd="8dp"
-            android:paddingLeft="2dp"
-            android:paddingRight="8dp"
-            android:paddingStart="2dp"
-            android:text="@string/self_destruct"
-            android:textColor="@color/message_details_text_color"
-            android:textSize="12sp"
-            android:visibility="gone" />
+    </android.support.v7.widget.CardView>
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="2dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginStart="4dp">
-
-            <View
-                android:layout_width="11dp"
-                android:layout_height="11dp"
-                android:background="@drawable/km_status_icon_background" />
-
-            <TextView
-                android:id="@+id/statusImage"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_gravity="center" />
-        </FrameLayout>
-    </LinearLayout>
-
-    <include layout="@layout/al_rich_message_layout" />
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/statusMainLayout"
+    <TextView
+        android:id="@+id/statusImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/messageTextLayout"
-        android:layout_marginRight="21dp"
-        android:layout_marginTop="4dp"
-        android:orientation="horizontal"
-        android:visibility="gone">
+        app:layout_constraintBottom_toBottomOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="v--"/>
 
-        <!-- <TextView
-             android:id="@+id/createdAtTime"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:fontFamily="sans-serif"
-             android:gravity="center"
-             android:letterSpacing="0.01"
-             android:text="@string/created_at_time"
-             android:textColor="#a6a2a2"
-             android:textSize="12sp" />-->
-
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="14dp"
-            android:layout_marginLeft="5dp"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:letterSpacing="0.01"
-            android:text="Read"
-            android:textColor="#a6a2a2"
-            android:textSize="12sp"
-            android:visibility="gone" />
-    </LinearLayout>
-
-    <!--
-    <ImageView
-        android:id="@+id/contactImage"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="4dp"
+    <TextView
+        android:id="@+id/selfDestruct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/self_destruct"
+        android:textColor="@color/material_grey_600"
+        android:textSize="@dimen/material_typography_textsize_caption"
         android:visibility="gone"
-        android:src="@drawable/applozic_ic_contact_picture_180_holo_light" />
-    -->
-</RelativeLayout>
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"/>
+
+    <TextView
+        android:id="@+id/createdAtTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/material_grey_500"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/selfDestruct"
+        tools:text="12:34 PM"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/material_lists_height_row"/>
+
+</android.support.constraint.ConstraintLayout>

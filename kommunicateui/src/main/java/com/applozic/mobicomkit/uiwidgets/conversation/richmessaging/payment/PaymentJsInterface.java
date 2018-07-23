@@ -8,6 +8,7 @@ import android.widget.Toast;
  */
 
 public class PaymentJsInterface {
+
     Context mContext;
 
     PaymentJsInterface(Context c) {

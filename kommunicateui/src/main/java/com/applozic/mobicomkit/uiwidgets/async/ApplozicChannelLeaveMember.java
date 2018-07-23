@@ -12,6 +12,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 /**
  * Created by sunil on 17/5/16.
  */
+
 public class ApplozicChannelLeaveMember extends AsyncTask<Void, Void, Boolean> {
 
     Context context;
@@ -87,7 +88,6 @@ public class ApplozicChannelLeaveMember extends AsyncTask<Void, Void, Boolean> {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-
         if (resultBoolean && channelLeaveMemberListener != null) {
             channelLeaveMemberListener.onSuccess(leaveResponse, context);
         } else if (!resultBoolean && exception != null && channelLeaveMemberListener != null) {
@@ -96,8 +96,8 @@ public class ApplozicChannelLeaveMember extends AsyncTask<Void, Void, Boolean> {
     }
 
     public interface ChannelLeaveMemberListener {
-        void onSuccess(String response, Context context);
 
+        void onSuccess(String response, Context context);
         void onFailure(String response, Exception e, Context context);
     }
 }

@@ -8,6 +8,7 @@ import android.widget.ListView;
 /**
  * Created by devashish on 3/2/14.
  */
+
 public class ConversationListView extends ListView {
     private boolean scrollToBottomOnSizeChange;
     private EditText messageEditText;
@@ -31,7 +32,6 @@ public class ConversationListView extends ListView {
     @Override
     protected void onSizeChanged(int xNew, int yNew, int xOld, int yOld) {
         super.onSizeChanged(xNew, yNew, xOld, yOld);
-
         postDelayed(new Runnable() {
             @Override
             public void run() {

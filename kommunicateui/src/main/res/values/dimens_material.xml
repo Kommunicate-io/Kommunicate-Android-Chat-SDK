@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+    <!-- Default -->
+    <dimen name="material_default_padding">16dip</dimen>
+    <dimen name="material_half_padding">8dip</dimen>
+    <dimen name="material_default_elevation">4dip</dimen>
+    <dimen name="material_touchable_minheight">48dip</dimen>
+    <!-- Typography -->
+    <dimen name="material_typography_textsize_display4">112sp</dimen>
+    <dimen name="material_typography_textsize_display3">56sp</dimen>
+    <dimen name="material_typography_textsize_display2">45sp</dimen>
+    <dimen name="material_typography_textsize_display1">34sp</dimen>
+    <dimen name="material_typography_textsize_headline">24sp</dimen>
+    <dimen name="material_typography_textsize_title">20sp</dimen>
+    <dimen name="material_typography_textsize_subheading">16sp</dimen>
+    <dimen name="material_typography_textsize_body">14sp</dimen>
+    <dimen name="material_typography_textsize_caption">12sp</dimen>
+    <dimen name="material_typography_textsize_button">14sp</dimen>
+    <!-- Navigation drawer -->
+    <dimen name="material_drawer_size_avatar">64dip</dimen>
+    <dimen name="material_drawer_size">280dip</dimen>
+    <dimen name="material_drawer_bottom_navigation_height">56dp</dimen>
+    <dimen name="material_drawer_bottom_navigation_icon_min_widht">80dp</dimen>
+    <dimen name="material_drawer_bottom_navigation_icon_max_widht">128dp</dimen>
+    <dimen name="material_drawer_bottom_navigation_icon_height">24dp</dimen>
+    <dimen name="material_drawer_bottom_navigation_lateral_padding">12dp</dimen>
+    <dimen name="material_drawer_bottom_navigation_bottom_padding">10dp</dimen>
+    <dimen name="material_drawer_bottom_navigation_between_elements_padding">4dp</dimen>
+    <dimen name="material_drawer_list_item_size">24dip</dimen>
+    <dimen name="material_drawer_list_item_margin_left">72dip</dimen>
+    <!-- Lists -->
+    <dimen name="material_lists_height_row">72dip</dimen>
+    <dimen name="material_lists_height_row_1line">48dip</dimen>
+    <dimen name="material_lists_height_row_2lines">60dip</dimen>
+    <dimen name="material_lists_padding_top">8dip</dimen>
+    <dimen name="material_lists_textsize">16sp</dimen>
+    <dimen name="material_lists_size_avatar">40dip</dimen>
+    <dimen name="material_label_textsize">14sp</dimen>
+    <!-- Chips -->
+    <dimen name="material_chips_textsize">13sp</dimen>
+    <dimen name="material_chips_padding_left">12dip</dimen>
+    <dimen name="material_chips_padding_right">4dip</dimen>
+    <dimen name="material_chips_height">32dip</dimen>
+    <dimen name="material_chips_margin_right">6dip</dimen>
+    <!-- Steppers -->
+    <dimen name="material_steppers_textsize_circle">12sp</dimen>
+    <dimen name="material_steppers_textsize_title">14sp</dimen>
+    <dimen name="material_steppers_height">24dip</dimen>
+    <dimen name="material_steppers_padding_inter">8dip</dimen>
+    <!-- Toolbar -->
+    <dimen name="material_toolbar_height">48dp</dimen>
+
+</resources>

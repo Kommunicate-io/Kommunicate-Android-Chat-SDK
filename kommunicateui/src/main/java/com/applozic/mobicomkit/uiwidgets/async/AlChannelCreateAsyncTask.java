@@ -13,6 +13,7 @@ import com.applozic.mobicommons.people.channel.Channel;
  */
 
 public class AlChannelCreateAsyncTask extends AsyncTask<Void, Void, ChannelFeedApiResponse> {
+
     Context context;
     ChannelService channelService;
     ChannelInfo channelInfo;
@@ -48,8 +49,8 @@ public class AlChannelCreateAsyncTask extends AsyncTask<Void, Void, ChannelFeedA
     }
 
     public interface TaskListenerInterface {
-        void onSuccess(Channel channel, Context context);
 
+        void onSuccess(Channel channel, Context context);
         void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context);
     }
 }

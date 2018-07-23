@@ -2,6 +2,10 @@ package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
 /**
  * Created by akshat on 10-Dec-16.
+ * <p>
+ * RecyclerView position helper class for any LayoutManager.
+ * <p>
+ * compile 'com.android.support:recyclerview-v7:22.0.0'
  */
 
 /**
@@ -17,29 +21,25 @@ import android.view.View;
 
 public class RecyclerViewPositionHelper {
 
-     RecyclerView recyclerView;
-     LinearLayoutManager linearLayoutManager;
+    RecyclerView recyclerView;
+    LinearLayoutManager linearLayoutManager;
 
 
-    public RecyclerViewPositionHelper(RecyclerView recyclerView)
-    {
-          this.recyclerView=recyclerView;
+    public RecyclerViewPositionHelper(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
     }
+
     public RecyclerViewPositionHelper(RecyclerView recyclerView, LinearLayoutManager linearLayoutManager) {
         this.recyclerView = recyclerView;
         this.linearLayoutManager = linearLayoutManager;
     }
 
-
-
     public static RecyclerViewPositionHelper createHelper(RecyclerView recyclerView) {
         if (recyclerView == null) {
             throw new NullPointerException("Recycler View is null");
         }
-
         return new RecyclerViewPositionHelper(recyclerView);
     }
-
 
     /**
      * Returns the adapter item count.
@@ -98,15 +98,13 @@ public class RecyclerViewPositionHelper {
         return child == null ? RecyclerView.NO_POSITION : recyclerView.getChildAdapterPosition(child);
     }
 
-    View findOneVisibleChild(int fromIndex, int toIndex, boolean completelyVisible,
-                             boolean acceptPartiallyVisible) {
+    View findOneVisibleChild(int fromIndex, int toIndex, boolean completelyVisible, boolean acceptPartiallyVisible) {
         OrientationHelper helper;
         if (linearLayoutManager.canScrollVertically()) {
             helper = OrientationHelper.createVerticalHelper(linearLayoutManager);
         } else {
             helper = OrientationHelper.createHorizontalHelper(linearLayoutManager);
         }
-
         final int start = helper.getStartAfterPadding();
         final int end = helper.getEndAfterPadding();
         final int next = toIndex > fromIndex ? 1 : -1;

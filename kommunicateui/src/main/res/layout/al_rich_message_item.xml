@@ -1,223 +1,265 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/roomRootLayout"
-    android:layout_width="242dp"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="14dp"
-    android:layout_marginRight="14dp"
-    android:background="@drawable/al_rich_message_border"
-    android:elevation="2dp"
-    android:orientation="vertical">
+    android:layout_margin="2dip"
+    android:orientation="vertical"
+    android:visibility="visible"
+    app:cardBackgroundColor="#BFFFFFFF"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="2dip"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    tools:showIn="@layout/mobicom_received_message_list_view">
 
-    <FrameLayout
+    <LinearLayout
+        android:id="@+id/roomRootLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/productImage"
-            android:layout_width="match_parent"
-            android:layout_height="93dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            android:visibility="visible" />
-
-        <View
-            android:id="@+id/productImageOverlay"
-            android:layout_width="match_parent"
-            android:layout_height="93dp"
-            android:alpha="0.25"
-            android:visibility="visible" />
-
-        <TextView
-            android:id="@+id/productPrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/al_rich_messaging_price_border"
-            android:elevation="2dp"
-            android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.04"
-            android:paddingBottom="7dp"
-            android:paddingEnd="7dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="7dp"
-            android:paddingStart="5dp"
-            android:paddingTop="7dp"
-            android:text="$5000"
-            android:textColor="#0d0d0e"
-            android:textSize="16sp"
-            android:textStyle="normal" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/productNameSingleLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="12"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.04"
-            android:maxLines="1"
-            android:text="OYO Rooms Kodihalli (4.2/5)"
-            android:textColor="#393838"
-            android:textSize="16sp"
-            android:visibility="visible"
-            android:textStyle="normal" />
-
-        <RelativeLayout
-            android:id="@+id/productNameSplitLayout"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:paddingBottom="@dimen/material_default_padding">
 
-            <TextView
-                android:id="@+id/productName"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/contentImage"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/productImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/image_description_default"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="16:9"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/ic_sentiment_satisfied_grey_600_24dp"/>
+
+                <View
+                    android:id="@+id/productImageOverlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/material_drawer_bottom_navigation_icon_min_widht"
+                    android:alpha="0.25"
+                    android:background="@color/applozic_theme_color_primary"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guidelineStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginStart="7dp"
-                android:layout_weight="12"
-                android:ellipsize="end"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guidelineEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/material_default_padding"/>
+
+            <TextView
+                android:id="@+id/productPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/material_half_padding"
+                android:background="@drawable/al_rich_messaging_price_border"
+                android:elevation="2dp"
                 android:fontFamily="sans-serif-medium"
-                android:letterSpacing="0.04"
-                android:maxLines="1"
-                android:maxWidth="170dp"
-                android:text="OYO Rooms Kodihalli"
-                android:textColor="#393838"
-                android:textSize="16sp"
-                android:textStyle="normal" />
+                android:padding="@dimen/material_half_padding"
+                android:text="$5000"
+                android:textColor="@color/material_grey_900"
+                android:textSize="@dimen/material_typography_textsize_body"
+                android:textStyle="normal"
+                app:layout_constraintBottom_toBottomOf="@+id/contentImage"
+                app:layout_constraintStart_toStartOf="parent"/>
 
             <TextView
-                android:id="@+id/productRating"
+                android:id="@+id/productNameSingleLine"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:text="OYO Rooms Kodihalli (4.2/5)"
+                android:textColor="@color/material_grey_800"
+                android:textSize="@dimen/material_typography_textsize_subheading"
+                android:visibility="visible"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toBottomOf="@+id/contentImage"/>
+
+            <RelativeLayout
+                android:id="@+id/productNameSplitLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toBottomOf="@+id/productNameSingleLine">
+
+                <TextView
+                    android:id="@+id/productName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/productRating"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="OYO Rooms Kodihalli"
+                    android:textColor="#393838"
+                    android:textSize="@dimen/material_typography_textsize_subheading"
+                    android:textStyle="normal"/>
+
+                <TextView
+                    android:id="@+id/productRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/material_half_padding"
+                    android:drawableLeft="@drawable/offline_circle"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="2078"
+                    android:textColor="@color/material_grey_700"
+                    android:textSize="@dimen/material_typography_textsize_caption"
+                    android:textStyle="normal"
+                    android:visibility="visible"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/productLocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_half_padding"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Bangalore India"
+                android:textColor="@color/material_grey_700"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toBottomOf="@+id/productNameSplitLayout"/>
+
+            <TextView
+                android:id="@+id/productDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_half_padding"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:text="This large room with hardwood floors features a sofa, city views, a piano with leather seats with a lot of"
+                android:textColor="@color/material_grey_500"
+                android:textSize="@dimen/material_typography_textsize_body"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toBottomOf="@+id/productLocation"/>
+
+            <View
+                android:id="@+id/viewAction1"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:background="@color/material_grey_300"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/productDescription"/>
+
+            <TextView
+                android:id="@+id/bookingAction1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_toRightOf="@+id/productName"
-                android:layout_weight="2"
-                android:drawableLeft="@drawable/offline_circle"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif"
-                android:letterSpacing="-0.01"
-                android:maxLines="1"
-                android:text="2078"
-                android:layout_centerVertical="true"
-                android:textColor="#6a6868"
-                android:textSize="12sp"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:gravity="center_horizontal"
+                android:text="VIEW DETAILS"
+                android:textAlignment="center"
+                android:textColor="@color/applozic_theme_color_primary"
+                android:textSize="@dimen/material_typography_textsize_button"
                 android:textStyle="normal"
-                android:visibility="visible" />
-        </RelativeLayout>
-    </FrameLayout>
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toBottomOf="@+id/viewAction1"/>
 
-    <TextView
-        android:id="@+id/productLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="4dp"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif-medium"
-        android:letterSpacing="0.04"
-        android:maxLines="1"
-        android:text="Bangalore India"
-        android:textColor="#696767"
-        android:textSize="14sp"
-        android:textStyle="normal" />
+            <View
+                android:id="@+id/viewAction2"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:background="@color/material_grey_300"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bookingAction1"/>
 
-    <TextView
-        android:id="@+id/productDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="4dp"
-        android:ellipsize="end"
-        android:fontFamily="sans-serif"
-        android:letterSpacing="0.04"
-        android:maxLines="3"
-        android:paddingBottom="4dp"
-        android:text="This large room with hardwood floors features a sofa, city views, a piano with leather seats with a lot of"
-        android:textColor="#827e7e"
-        android:textSize="14sp"
-        android:textStyle="normal" />
+            <TextView
+                android:id="@+id/bookingAction2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:gravity="center_horizontal"
+                android:text="BOOK NOW"
+                android:textAlignment="center"
+                android:textColor="@color/applozic_theme_color_primary"
+                android:textSize="@dimen/material_typography_textsize_button"
+                android:textStyle="normal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toBottomOf="@+id/viewAction2"/>
 
-    <View
-        android:id="@+id/viewAction1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e7e4e4" />
+            <View
+                android:id="@+id/viewAction3"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:background="@color/material_grey_300"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bookingAction2"/>
 
-    <TextView
-        android:id="@+id/bookingAction1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:letterSpacing="0.05"
-        android:padding="5dp"
-        android:text="VIEW DETAILS"
-        android:textAlignment="center"
-        android:textColor="#5c5aa7"
-        android:textSize="12sp"
-        android:textStyle="normal" />
+            <TextView
+                android:id="@+id/bookingAction3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_horizontal"
+                android:text="BOOK NOW OR NEVER"
+                android:textAlignment="center"
+                android:textColor="@color/applozic_theme_color_primary"
+                android:textSize="@dimen/material_typography_textsize_button"
+                android:textStyle="normal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toBottomOf="@+id/viewAction3"/>
 
-    <View
-        android:id="@+id/viewAction2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e7e4e4" />
+        </android.support.constraint.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/bookingAction2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:letterSpacing="0.05"
-        android:padding="5dp"
-        android:text="BOOK NOW"
-        android:textAlignment="center"
-        android:textColor="#5c5aa7"
-        android:textSize="12sp"
-        android:textStyle="normal"
-        android:visibility="gone" />
+    </LinearLayout>
 
-    <View
-        android:id="@+id/viewAction3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e7e4e4" />
-
-    <TextView
-        android:id="@+id/bookingAction3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:letterSpacing="0.05"
-        android:padding="5dp"
-        android:text="BOOK NOW OR NEVER"
-        android:textAlignment="center"
-        android:textColor="#5c5aa7"
-        android:textSize="12sp"
-        android:textStyle="normal"
-        android:visibility="gone" />
-</LinearLayout>
+</android.support.v7.widget.CardView>

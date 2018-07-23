@@ -28,7 +28,6 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobiComAttachmentGridViewAdapter;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FilePathFinder;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -37,10 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-/**
- *
- */
 public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
     public static final String MULTISELECT_SELECTED_FILES = "multiselect.selectedFiles";
@@ -77,7 +74,6 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
-
         fileClientService = new FileClientService(this);
         userPreferences = MobiComUserPreference.getInstance(this);
         Intent intent = getIntent();
@@ -108,17 +104,14 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
      * views initialisation.
      */
     private void initViews() {
-
-        sendAttachment = (Button) findViewById(R.id.mobicom_attachment_send_btn);
-        cancelAttachment = (Button) findViewById(R.id.mobicom_attachment_cancel_btn);
-        galleryImagesGridView = (GridView) findViewById(R.id.mobicom_attachment_grid_View);
-        messageEditText = (EditText) findViewById(R.id.mobicom_attachment_edit_text);
-
+        sendAttachment = findViewById(R.id.mobicom_attachment_send_btn);
+        cancelAttachment = findViewById(R.id.mobicom_attachment_cancel_btn);
+        galleryImagesGridView = findViewById(R.id.mobicom_attachment_grid_View);
+        messageEditText = findViewById(R.id.mobicom_attachment_edit_text);
 
         cancelAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent();
                 setResult(RESULT_CANCELED, intent);
                 finish();
@@ -128,12 +121,10 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         sendAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (attachmentFileList.isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.mobicom_select_attachment_text, Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 if (imageUri != null) {
                     for (Uri uri : attachmentFileList) {
                         try {
@@ -181,7 +172,6 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-
                 } else {
                     Intent intent = new Intent();
                     intent.putParcelableArrayListExtra(MULTISELECT_SELECTED_FILES, attachmentFileList);
@@ -189,27 +179,18 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                     setResult(RESULT_OK, intent);
                     finish();
                 }
-
-
             }
         });
-
     }
 
     /**
      * @param uri
      */
     private void addUri(Uri uri) {
-
         attachmentFileList.add(uri);
         Utils.printLog(MobiComAttachmentSelectorActivity.this, TAG, "attachmentFileList  :: " + attachmentFileList);
-
-
     }
 
-    /**
-     *
-     */
     private void setUpGridView() {
         imagesAdapter = new MobiComAttachmentGridViewAdapter(MobiComAttachmentSelectorActivity.this, attachmentFileList, alCustomizationSettings, imageUri != null);
         galleryImagesGridView.setAdapter(imagesAdapter);
@@ -240,7 +221,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                     if (TextUtils.isEmpty(mimeType)) {
                         return;
                     }
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
                     fileName = FileUtils.getFileName(this, selectedFileUri);
                     String fileFormat = FileUtils.getFileFormat(fileName);
                     if (TextUtils.isEmpty(fileFormat)) {
@@ -270,6 +251,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     }
 
     public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
+
         Context context;
         FileClientService fileClientService;
         File file;
@@ -281,7 +263,6 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             this.file = file;
             this.uri = uri;
             this.fileClientService = new FileClientService(context);
-
         }
 
         @Override
@@ -310,6 +291,5 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             addUri(uri);
             imagesAdapter.notifyDataSetChanged();
         }
-
     }
 }

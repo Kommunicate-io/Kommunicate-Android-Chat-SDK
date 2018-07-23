@@ -1,4 +1,3 @@
-
 package io.kommunicate.feeds;
 
 import com.google.gson.annotations.Expose;
@@ -94,5 +93,4 @@ public class ApplicationWebhookPxy {
     public void setUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
     }
-
 }

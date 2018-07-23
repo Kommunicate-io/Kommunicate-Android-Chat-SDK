@@ -16,6 +16,7 @@ import java.util.List;
  */
 
 public class AlChannelAddMemberTask extends AsyncTask<Void, Void, Boolean> {
+
     Context context;
     Integer channelKey;
     String userId;
@@ -65,7 +66,6 @@ public class AlChannelAddMemberTask extends AsyncTask<Void, Void, Boolean> {
         return false;
     }
 
-
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
@@ -81,11 +81,8 @@ public class AlChannelAddMemberTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     public interface ChannelAddMemberListener {
-        void onSuccess(String response, Context context);
 
+        void onSuccess(String response, Context context);
         void onFailure(String response, Exception e, Context context, List<ErrorResponseFeed> errorResponseFeeds);
     }
-
 }
-
-

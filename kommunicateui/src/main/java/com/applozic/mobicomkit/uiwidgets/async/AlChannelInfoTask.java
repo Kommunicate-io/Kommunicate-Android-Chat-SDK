@@ -39,7 +39,6 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
     private static final String GROUP_ID = "groupId";
     private static final String CLIENT_GROUPID = "clientGroupId";
 
-
     public AlChannelInfoTask(Context context, Integer groupId, String clientGroupId, boolean isUserListRequest, ChannelInfoListener listener) {
         this.context = new WeakReference<Context>(context);
         this.groupId = groupId;
@@ -54,7 +53,6 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
         ChannelModel model = new ChannelModel();
         Channel channel = null;
         Exception exception = null;
-
         try {
             if (clientGroupId != null) {
                 channel = channelDatabaseService.getChannelByClientGroupId(clientGroupId);
@@ -65,7 +63,6 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
             exception = e;
             e.printStackTrace();
         }
-
         if (channel != null) {
             model.setChannel(channel);
         } else {
@@ -80,7 +77,6 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
                 e.printStackTrace();
             }
         }
-
         if (model != null) {
             model.setException(exception);
         }
@@ -142,8 +138,8 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
     }
 
     public interface ChannelInfoListener {
-        void onSuccess(ChannelInfoModel channelInfoModel, String response, Context context);
 
+        void onSuccess(ChannelInfoModel channelInfoModel, String response, Context context);
         void onFailure(String response, Exception e, Context context);
     }
 
@@ -167,7 +163,6 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
 
     protected String getBaseUrl() {
         String SELECTED_BASE_URL = MobiComUserPreference.getInstance(context.get()).getUrl();
-
         if (!TextUtils.isEmpty(SELECTED_BASE_URL)) {
             return SELECTED_BASE_URL;
         }
@@ -183,6 +178,7 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
     }
 
     public class ChannelInfoModel {
+
         Channel channel;
         ArrayList<String> groupMemberList;
 
@@ -213,6 +209,7 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
 }
 
 class ChannelModel {
+
     private ChannelFeedApiResponse channelFeedApiResponse;
     private Exception exception;
     private Channel channel;
@@ -241,4 +238,3 @@ class ChannelModel {
         this.channel = channel;
     }
 }
-

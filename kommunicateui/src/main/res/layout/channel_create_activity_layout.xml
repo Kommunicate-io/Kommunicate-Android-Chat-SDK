@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_grey_200"
+    android:orientation="vertical"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelCreateActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="@dimen/material_default_elevation"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:subtitleTextAppearance="@style/ToolbarSubtitle"
+        app:titleTextAppearance="@style/ToolbarTitle"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/channelIcon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/user_background_circle_grey_400"
+        android:src="@drawable/ic_people_grey_600_24dp_v"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/applozic_channel_profile_camera"
+        android:layout_width="@dimen/material_touchable_minheight"
+        android:layout_height="@dimen/material_touchable_minheight"
+        android:layout_centerInParent="true"
+        android:clickable="true"
+        android:contentDescription="@string/image_description_default"
+        android:focusable="true"
+        android:scaleType="center"
+        android:src="@drawable/ic_camera_alt_grey_600_24dp"
+        android:tint="@color/material_white_1000"
+        app:elevation="0dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/channelIcon"
+        app:layout_constraintEnd_toEndOf="@+id/channelIcon"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
+
+    <EditText
+        android:id="@+id/channelName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/applozic_group_profile"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/material_default_padding"
+        android:hint="@string/group_name_hint"
+        android:inputType="textAutoCorrect"
+        android:lines="1"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineBottom"/>
+
+    <LinearLayout
+        android:id="@+id/footerAd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

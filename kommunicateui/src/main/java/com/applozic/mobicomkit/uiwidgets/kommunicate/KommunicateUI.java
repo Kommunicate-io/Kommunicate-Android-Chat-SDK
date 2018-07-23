@@ -19,5 +19,4 @@ public class KommunicateUI {
     public static void getAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
         getAwayMessage(context, Applozic.getInstance(context).getApplicationKey(), groupId, handler);
     }
-
 }

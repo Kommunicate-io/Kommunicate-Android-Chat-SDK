@@ -44,7 +44,6 @@ import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelDeleteTask;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelLeaveMember;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
@@ -66,7 +65,6 @@ import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
 import java.util.ArrayList;
-
 
 public class ConversationUIService {
 
@@ -119,9 +117,7 @@ public class ConversationUIService {
     }
 
     public MobiComQuickConversationFragment getQuickConversationFragment() {
-
         MobiComQuickConversationFragment quickConversationFragment = (MobiComQuickConversationFragment) UIService.getFragmentByTag(fragmentActivity, QUICK_CONVERSATION_FRAGMENT);
-
         if (quickConversationFragment == null) {
             quickConversationFragment = new MobiComQuickConversationFragment();
             ConversationActivity.addFragment(fragmentActivity, quickConversationFragment, QUICK_CONVERSATION_FRAGMENT);
@@ -130,9 +126,7 @@ public class ConversationUIService {
     }
 
     public ConversationFragment getConversationFragment() {
-
         ConversationFragment conversationFragment = (ConversationFragment) UIService.getFragmentByTag(fragmentActivity, CONVERSATION_FRAGMENT);
-
         if (conversationFragment == null) {
             Contact contact = ((ConversationActivity) fragmentActivity).getContact();
             Channel channel = ((ConversationActivity) fragmentActivity).getChannel();
@@ -195,8 +189,7 @@ public class ConversationUIService {
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         try {
-            if ((requestCode == MultimediaOptionFragment.REQUEST_CODE_ATTACH_PHOTO ||
-                    requestCode == MultimediaOptionFragment.REQUEST_CODE_TAKE_PHOTO)
+            if ((requestCode == MultimediaOptionFragment.REQUEST_CODE_ATTACH_PHOTO || requestCode == MultimediaOptionFragment.REQUEST_CODE_TAKE_PHOTO)
                     && resultCode == Activity.RESULT_OK) {
                 Uri selectedFileUri = (intent == null ? null : intent.getData());
                 File file = null;
@@ -204,7 +197,6 @@ public class ConversationUIService {
                     file = ((ConversationActivity) fragmentActivity).getFileObject();
                     selectedFileUri = ((ConversationActivity) fragmentActivity).getCapturedImageUri();
                 }
-
                 if (selectedFileUri != null) {
                     selectedFileUri = ((ConversationActivity) fragmentActivity).getCapturedImageUri();
                     file = ((ConversationActivity) fragmentActivity).getFileObject();
@@ -222,16 +214,13 @@ public class ConversationUIService {
             if (requestCode == REQUEST_CODE_CONTACT_GROUP_SELECTION && resultCode == Activity.RESULT_OK) {
                 checkForStartNewConversation(intent);
             }
+
             if (requestCode == MultimediaOptionFragment.REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY && resultCode == Activity.RESULT_OK) {
-
                 Uri selectedFilePath = ((ConversationActivity) fragmentActivity).getVideoFileUri();
-
                 File file = ((ConversationActivity) fragmentActivity).getFileObject();
-
                 if (!(file != null && file.exists())) {
                     FileUtils.getLastModifiedFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/").renameTo(file);
                 }
-
                 if (selectedFilePath != null) {
                     getConversationFragment().loadFile(selectedFilePath, file);
                     getConversationFragment().sendMessage("", Message.ContentType.VIDEO_MSG.getValue());
@@ -239,30 +228,24 @@ public class ConversationUIService {
             }
 
             if (requestCode == MultimediaOptionFragment.REQUEST_CODE_CONTACT_SHARE && resultCode == Activity.RESULT_OK) {
-
                 try {
                     File vCradFile = new ContactService(fragmentActivity).vCard(intent.getData());
-
                     if (vCradFile != null) {
                         getConversationFragment().sendMessage(Message.ContentType.CONTACT_MSG.getValue(), vCradFile.getAbsolutePath());
                     }
-
                 } catch (Exception e) {
                     Toast.makeText(fragmentActivity, fragmentActivity.getString(R.string.applozic_failed_to_load_contact), Toast.LENGTH_SHORT).show();
                     Log.e("Exception::", "Exception", e);
                 }
             }
-            if (requestCode == MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT && resultCode == Activity.RESULT_OK) {
 
+            if (requestCode == MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT && resultCode == Activity.RESULT_OK) {
                 ArrayList<Uri> attachmentList = intent.getParcelableArrayListExtra(MobiComAttachmentSelectorActivity.MULTISELECT_SELECTED_FILES);
                 String messageText = intent.getStringExtra(MobiComAttachmentSelectorActivity.MULTISELECT_MESSAGE);
-
                 //TODO: check performance, we might need to put in each posting in separate thread.
-
                 for (Uri info : attachmentList) {
                     getConversationFragment().sendMessage(messageText, Message.ContentType.ATTACHMENT.getValue(), info.toString());
                 }
-
             }
 
             if (requestCode == MultimediaOptionFragment.REQUEST_CODE_SEND_LOCATION && resultCode == Activity.RESULT_OK) {
@@ -314,37 +297,30 @@ public class ConversationUIService {
     }
 
     public void deleteGroupConversation(final Channel channel) {
-
         if (!Utils.isInternetAvailable(fragmentActivity)) {
             showToastMessage(fragmentActivity.getString(R.string.you_dont_have_any_network_access_info));
             return;
         }
-
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity).
                 setPositiveButton(R.string.channel_deleting, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
                         final ProgressDialog progressDialog = ProgressDialog.show(fragmentActivity, "",
                                 fragmentActivity.getString(R.string.deleting_channel_user), true);
                         ApplozicChannelDeleteTask.TaskListener channelDeleteTask = new ApplozicChannelDeleteTask.TaskListener() {
                             @Override
                             public void onSuccess(String response) {
                                 Log.i(TAG, "Channel deleted response:" + response);
-
                             }
-
                             @Override
                             public void onFailure(String response, Exception exception) {
                                 showToastMessage(fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.applozic_server_error : R.string.you_dont_have_any_network_access_info));
                             }
-
                             @Override
                             public void onCompletion() {
                                 if (progressDialog != null && progressDialog.isShowing()) {
                                     progressDialog.dismiss();
                                 }
-
                             }
                         };
                         ApplozicChannelDeleteTask applozicChannelDeleteTask = new ApplozicChannelDeleteTask(fragmentActivity, channelDeleteTask, channel);
@@ -372,9 +348,7 @@ public class ConversationUIService {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         ApplozicChannelLeaveMember.ChannelLeaveMemberListener applozicLeaveMemberListener = new ApplozicChannelLeaveMember.ChannelLeaveMemberListener() {
                             @Override
-                            public void onSuccess(String response, Context context) {
-                            }
-
+                            public void onSuccess(String response, Context context) { }
                             @Override
                             public void onFailure(String response, Exception e, Context context) {
                                 showToastMessage(fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.applozic_server_error : R.string.you_dont_have_any_network_access_info));
@@ -383,7 +357,6 @@ public class ConversationUIService {
                         ApplozicChannelLeaveMember applozicChannelLeaveMember = new ApplozicChannelLeaveMember(fragmentActivity, channel.getKey(), MobiComUserPreference.getInstance(fragmentActivity).getUserId(), applozicLeaveMemberListener);
                         applozicChannelLeaveMember.setEnableProgressDialog(true);
                         applozicChannelLeaveMember.execute((Void) null);
-
                     }
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -415,7 +388,6 @@ public class ConversationUIService {
             if (!BroadcastService.isQuick()) {
                 return;
             }
-
             MobiComQuickConversationFragment fragment = (MobiComQuickConversationFragment) UIService.getFragmentByTag(fragmentActivity, QUICK_CONVERSATION_FRAGMENT);
             if (fragment != null) {
                 if (message.isHidden()) {
@@ -443,14 +415,12 @@ public class ConversationUIService {
 
     public void syncMessages(Message message, String keyString) {
         if (!message.isHidden() && !message.isVideoNotificationMessage()) {
-
             if (BroadcastService.isIndividual()) {
                 ConversationFragment conversationFragment = getConversationFragment();
                 if (conversationFragment.isMsgForConversation(message) && !Message.GroupMessageMetaData.TRUE.getValue().equals(message.getMetaDataValueForKey(Message.GroupMessageMetaData.HIDE_KEY.getValue()))) {
                     conversationFragment.addMessage(message);
                 }
             }
-
             if (!Message.MetaDataType.ARCHIVE.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))) {
                 updateLastMessage(message);
             }
@@ -549,7 +519,6 @@ public class ConversationUIService {
                     Toast.makeText(fragmentActivity, fragmentActivity.getString(R.string.delete_conversation_failed), Toast.LENGTH_SHORT).show();
                 }
             }
-
         }
         if (BroadcastService.isQuick()) {
             getQuickConversationFragment().removeConversation(contact, channelKey, response);
@@ -592,7 +561,6 @@ public class ConversationUIService {
         if (conversationFragment.getContact() != null && userId.equals(conversationFragment.getContact().getContactIds()) || conversationFragment.getChannel() != null) {
             conversationFragment.updateUserTypingStatus(userId, isTypingStatus);
         }
-
     }
 
     public void updateChannelSync() {
@@ -634,9 +602,7 @@ public class ConversationUIService {
                 conversationFragment.reload();
             }
         }
-
     }
-
 
     public void updateConversationRead(String currentId, boolean isGroup) {
         if (TextUtils.isEmpty(currentId)) {
@@ -660,7 +626,6 @@ public class ConversationUIService {
         if (userIdArray != null) {
             intent.putExtra(MobiComKitPeopleActivity.USER_ID_ARRAY, userIdArray);
         }
-
         fragmentActivity.startActivityForResult(intent, REQUEST_CODE_CONTACT_GROUP_SELECTION);
     }
 
@@ -689,7 +654,6 @@ public class ConversationUIService {
     }
 
     public void sendPriceMessage() {
-
         try {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
             alertDialog.setTitle("Price");
@@ -702,7 +666,6 @@ public class ConversationUIService {
                     LinearLayout.LayoutParams.MATCH_PARENT);
             inputText.setLayoutParams(linearParams);
             alertDialog.setView(inputText);
-
             alertDialog.setPositiveButton(fragmentActivity.getString(R.string.send_text),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -711,7 +674,6 @@ public class ConversationUIService {
                             }
                         }
                     });
-
             alertDialog.setNegativeButton(fragmentActivity.getString(R.string.cancel_text),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -721,19 +683,14 @@ public class ConversationUIService {
             if (!fragmentActivity.isFinishing()) {
                 alertDialog.show();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void sendAudioMessage(String selectedFilePath) {
-
         Utils.printLog(fragmentActivity, "ConversationUIService:", "Send audio message ...");
-
         getConversationFragment().sendMessage(Message.ContentType.AUDIO_MSG.getValue(), selectedFilePath);
-
     }
 
     public void updateMessageMetadata(String keyString) {
@@ -758,7 +715,6 @@ public class ConversationUIService {
             ConversationActivity.addFragment(fragmentActivity, messageInfoFragment, MESSGAE_INFO_FRAGMENT);
         }
     }
-
 
     public void checkForStartNewConversation(Intent intent) {
         Contact contact = null;
@@ -893,7 +849,6 @@ public class ConversationUIService {
         if (!TextUtils.isEmpty(sharedText)) {
             getConversationFragment().sendMessage(sharedText);
         }
-
     }
 
     void showToastMessage(final String messageToShow) {
@@ -910,8 +865,7 @@ public class ConversationUIService {
                     ((MobiComKitActivityInterface) fragmentActivity).retry();
                     Intent intent = new Intent(fragmentActivity, ApplozicMqttIntentService.class);
                     intent.putExtra(ApplozicMqttIntentService.SUBSCRIBE, true);
-                    ApplozicMqttIntentService.enqueueWork(fragmentActivity,intent);
-
+                    ApplozicMqttIntentService.enqueueWork(fragmentActivity, intent);
                 }
             }
         } catch (Exception e) {
@@ -940,7 +894,6 @@ public class ConversationUIService {
                         Intent intent = new Intent(fragmentActivity, MobiComKitPeopleActivity.class);
                         startContactActivityForResult(intent, message, messageContent, null);
                     }
-
                     if (userIdArray != null && userIdArray.length > 0) {
                         Intent intent = new Intent(fragmentActivity, MobiComKitPeopleActivity.class);
                         startContactActivityForResult(intent, message, messageContent, userIdArray);
@@ -962,9 +915,7 @@ public class ConversationUIService {
             }
 
             @Override
-            public void onCompletion() {
-
-            }
+            public void onCompletion() { }
         };
         RegisteredUsersAsyncTask usersAsyncTask;
         if (isRegisteredUserCall) {
@@ -975,6 +926,4 @@ public class ConversationUIService {
         usersAsyncTask.execute((Void) null);
 
     }
-
-
 }

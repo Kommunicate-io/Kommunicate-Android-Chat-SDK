@@ -72,7 +72,7 @@ public class PaymentActivity extends AppCompatActivity {
         sb.append(String.format("<form id='form1' action='%s' method='%s'>", url, "post"));
 
         for (Map.Entry<String, String> item : postData) {
-            sb.append(String.format("<input name='%s' type='hidden' value='%s' />", item.getKey(), item.getValue()));
+            sb.append(String.format("<bubble_chat_input name='%s' type='hidden' value='%s' />", item.getKey(), item.getValue()));
         }
         sb.append("</form></body></html>");
 

@@ -31,7 +31,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/applozic_ic_contact_picture_180_holo_light" />
+                    android:src="@drawable/ic_person_grey_600_24dp" />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/applozic_user_profile_camera"
@@ -104,7 +104,7 @@
                     android:layout_alignParentTop="true"
                     android:textDirection="locale"
                     android:padding="10dp"
-                    android:src="@drawable/applozic_ic_action_edit" />
+                    android:src="@drawable/ic_edit_white_24dp" />
 
                 <TextView
                     android:id="@+id/applozic_profile_displayname_section_heading"
@@ -162,7 +162,7 @@
                     android:layout_alignParentTop="true"
                     android:padding="10dp"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/applozic_ic_action_edit" />
+                    android:src="@drawable/ic_edit_white_24dp" />
 
                 <TextView
                     android:id="@+id/applozic_profile_section_heading"
@@ -252,7 +252,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:padding="10dp"
-                    android:src="@drawable/applozic_ic_action_edit" />
+                    android:src="@drawable/ic_edit_white_24dp" />
 
                 <TextView
                     android:id="@+id/applozic_profile_contact_section_heading"

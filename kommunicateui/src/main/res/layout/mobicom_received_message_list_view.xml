@@ -35,7 +35,7 @@
             android:layout_height="30dp"
             android:layout_toEndOf="@+id/alphabeticImage"
             android:layout_toRightOf="@+id/alphabeticImage"
-            android:src="@drawable/applozic_ic_contact_picture_180_holo_light"
+            android:src="@drawable/ic_person_grey_600_24dp"
             android:visibility="gone"/>
 
     </RelativeLayout>
@@ -94,9 +94,9 @@
                 android:id="@+id/attached_file"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/applozic_ic_action_attachment"
+                android:drawableLeft="@drawable/ic_attachment_grey_600_24dp"
                 android:drawablePadding="8dp"
-                android:drawableStart="@drawable/applozic_ic_action_attachment"
+                android:drawableStart="@drawable/ic_attachment_grey_600_24dp"
                 android:textAlignment="gravity"
                 android:textColor="@color/black"
                 android:textDirection="locale"
@@ -188,8 +188,8 @@
             android:id="@+id/tempForLayoutAdjustment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/applozic_ic_action_message_pending"
-            android:drawableRight="@drawable/applozic_ic_action_message_pending"
+            android:drawableEnd="@drawable/km_pending_icon_c"
+            android:drawableRight="@drawable/km_pending_icon_c"
             android:gravity="center_vertical"
             android:textColor="@color/apploizc_darker_gray_color"
             android:textSize="11sp"

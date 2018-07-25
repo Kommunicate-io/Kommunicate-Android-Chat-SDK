@@ -20,7 +20,7 @@
         android:id="@+id/contactImage"
         android:layout_width="@dimen/material_lists_size_avatar"
         android:layout_height="@dimen/material_lists_size_avatar"
-        android:src="@drawable/applozic_ic_contact_picture_holo_light"
+        android:src="@drawable/ic_person_grey_600_24dp"
         android:visibility="visible"/>
 
 </RelativeLayout>

@@ -24,12 +24,12 @@
         android:id="@+id/contactImage"
         android:layout_width="@dimen/material_lists_size_avatar"
         android:layout_height="@dimen/material_lists_size_avatar"
-        android:scaleType="centerCrop"
         android:background="@drawable/user_background_circle_grey_200"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_account_circle_grey_600_24dp"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"/>
-
+    
 </android.support.constraint.ConstraintLayout>

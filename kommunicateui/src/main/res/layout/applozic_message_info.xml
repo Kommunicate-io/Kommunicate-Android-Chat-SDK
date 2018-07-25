@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/material_lists_height_row"
+            android:layout_marginStart="@dimen/material_lists_height_row"
             android:orientation="vertical"
             app:cardBackgroundColor="@color/sent_message_bg_color"
             app:cardCornerRadius="6dp"
@@ -47,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginLeft="@dimen/material_lists_height_row"
+            android:layout_marginStart="@dimen/material_lists_height_row"
             android:clickable="false">
 
             <android.support.v7.widget.CardView
@@ -97,6 +99,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
+                                android:contentDescription="@string/image_description_default"
                                 android:src="@drawable/ic_attachment_grey_600_24dp"
                                 android:tint="@color/sent_message_text_color"
                                 android:visibility="visible"/>
@@ -107,6 +110,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="@dimen/material_default_padding"
+                                android:layout_marginStart="@dimen/material_default_padding"
                                 android:text="@string/message_text"
                                 android:textColor="@color/sent_message_text_color"
                                 android:textSize="@dimen/material_typography_textsize_subheading"/>
@@ -134,6 +138,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/material_lists_height_row"
+            android:layout_marginStart="@dimen/material_default_padding"
             android:orientation="vertical"
             app:cardCornerRadius="6dp"
             app:cardElevation="@dimen/cardview_default_elevation"
@@ -198,7 +203,9 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
+                            android:contentDescription="@string/image_description_default"
                             android:src="@drawable/ic_done_all_grey_600_24dp"
                             android:tint="@color/sent_message_bg_color"/>
                     </RelativeLayout>
@@ -262,8 +269,11 @@
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
+                            android:contentDescription="@string/image_description_default"
                             android:src="@drawable/ic_done_all_grey_600_24dp"/>
+
                     </RelativeLayout>
 
                     <LinearLayout

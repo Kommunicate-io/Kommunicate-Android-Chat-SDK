@@ -49,7 +49,6 @@
         app:layout_constraintStart_toEndOf="@+id/applozic_call_image_type"
         app:layout_constraintTop_toTopOf="@+id/applozic_call_image_type"/>
 
-
     <TextView
         android:id="@+id/applozic_call_timing"
         android:layout_width="wrap_content"

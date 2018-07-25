@@ -196,6 +196,7 @@
     <string name="km_not_read">Not read yet</string>
     <string name="km_not_sent">Not sent</string>
     <string name="default_start_new_conversation">Start new conversation</string>
+    <string name="subtitle_user_support">Customer Support</string>
 
     <string name="JUST_NOW">Just now</string>
     <string name="MINUTES">%s mins</string>

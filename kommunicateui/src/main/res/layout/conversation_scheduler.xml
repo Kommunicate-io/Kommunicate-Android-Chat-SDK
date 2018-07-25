@@ -77,6 +77,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
         android:text="@string/defaultTime"
         android:textColor="@color/holo_blue"
         android:textSize="@dimen/material_typography_textsize_subheading"

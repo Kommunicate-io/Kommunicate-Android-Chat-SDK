@@ -29,8 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:focusable="true"
-            android:entries="@array/send_type_options"/>
+            android:entries="@array/send_type_options"
+            android:focusable="true"/>
 
     </FrameLayout>
 
@@ -61,12 +61,12 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:background="@color/message_action_button"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/scheduleOptionFrame"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone">
+        app:layout_constraintTop_toTopOf="parent">
 
         <Spinner
             android:id="@+id/secret_message_spinner"

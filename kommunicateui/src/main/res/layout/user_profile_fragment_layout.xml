@@ -102,7 +102,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dip"
-        android:text="Customer Support"
+        android:text="@string/subtitle_user_support"
         android:textColor="@color/material_grey_500"
         android:textSize="@dimen/material_typography_textsize_body"
         android:textStyle="italic"

@@ -79,13 +79,13 @@
             android:ellipsize="marquee"
             android:gravity="center_vertical"
             android:singleLine="true"
-            android:text="00 34 608"
             android:textColor="@color/material_grey_500"
             android:textSize="@dimen/material_typography_textsize_caption"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/applozic_group_member_info"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="00 34 608"/>
 
     </android.support.constraint.ConstraintLayout>
 

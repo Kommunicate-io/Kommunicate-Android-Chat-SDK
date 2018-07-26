@@ -200,13 +200,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         imageThumbnailLoader.setImageFadeIn(false);
         imageThumbnailLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon_c);
-        sentIcon.setColorFilter(context.getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_c);
-        deliveredIcon.setColorFilter(context.getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_c);
-        readIcon.setColorFilter(context.getResources().getColor(R.color.read_icon_color), PorterDuff.Mode.MULTIPLY);
         pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
-        pendingIcon.setColorFilter(context.getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         scheduledIcon = context.getResources().getDrawable(R.drawable.ic_schedule_grey_600_24dp);
         final String alphabet = context.getString(R.string.alphabet);
         mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);

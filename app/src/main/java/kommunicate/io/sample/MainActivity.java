@@ -21,7 +21,6 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
-import io.kommunicate.KmHelper;
 import io.kommunicate.app.BuildConfig;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.utils.KMPermissionUtils;
@@ -119,8 +118,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showSnackBar(int resId) {
-        Snackbar.make(layout, resId,
-                Snackbar.LENGTH_SHORT)
+        Snackbar.make(layout, resId, Snackbar.LENGTH_SHORT)
                 .show();
     }
 
@@ -129,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         if (exit) {
             finish();
         } else {
-            Toast.makeText(this, "Press Back again to Exit.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT).show();
             exit = true;
             new Handler().postDelayed(new Runnable() {
                 @Override

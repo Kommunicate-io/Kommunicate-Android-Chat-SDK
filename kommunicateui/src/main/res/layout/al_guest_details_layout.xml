@@ -1,183 +1,268 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rootSelectionLayout"
-    android:layout_width="280dp"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="10dp"
-    android:layout_marginRight="10dp"
-    android:background="@drawable/al_rich_message_border"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:visibility="visible"
+    app:cardBackgroundColor="#BFFFFFFF"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="2dip"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="@dimen/material_default_padding"
+    tools:showIn="@layout/mobicom_received_message_list_view">
 
-    <TextView
-        android:id="@+id/alRoomDetailsTv"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rootSelectionLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ROOM 1"
-        android:textColor="@color/material_black_1000"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="65dp"
-            android:layout_height="wrap_content"
-            android:text="Guest :"
-            android:textColor="@color/material_black_1000"/>
-
-        <Button
-            android:id="@+id/adultCountDecBt"
-            android:layout_width="65dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:text="-"/>
-
-        <TextView
-            android:id="@+id/adultCountTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginStart="5dp"
-            android:text="1"/>
-
-        <Button
-            android:id="@+id/adultCountIncrementBt"
-            android:layout_width="65dp"
-            android:layout_height="wrap_content"
-            android:text="+"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="65dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Children :"
-                android:textColor="@color/material_black_1000"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="(1-12yrs)"/>
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/childCountDecBt"
-            android:layout_width="65dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:text="-"/>
-
-        <TextView
-            android:id="@+id/childCountTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginStart="5dp"
-            android:text="0"/>
-
-        <Button
-            android:id="@+id/childCountIncrementBt"
-            android:layout_width="65dp"
-            android:layout_height="wrap_content"
-            android:text="+"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/actionLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="visible">
-
-        <View
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/applozic_theme_color_primary"/>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:paddingTop="8dp">
+            android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/addRoomTv"
+                android:id="@+id/alRoomDetailsTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/al_count_button_shape"
-                android:paddingBottom="5dp"
-                android:paddingEnd="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingStart="8dp"
-                android:paddingTop="5dp"
-                android:text="Add Room"
-                android:textColor="@color/applozic_theme_color_primary"/>
+                android:text="ROOM 1"
+                android:textColor="@color/material_black_1000"
+                android:textSize="@dimen/material_typography_textsize_subheading"
+                android:textStyle="bold"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            <TextView
-                android:id="@+id/removeRoomTv"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/contentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/alRoomDetailsTv">
+
+                <TextView
+                    android:id="@+id/adultCountTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:gravity="left"
+                    android:text="Guest :"
+                    android:textColor="@color/material_black_1000"
+                    app:layout_constraintBottom_toBottomOf="@+id/adultCountButtons"
+                    app:layout_constraintEnd_toStartOf="@+id/adultCountButtons"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/adultCountButtons"/>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/adultCountButtons"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center_vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/childCountButtons"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <Button
+                        android:id="@+id/adultCountDecBt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/adultCountTv"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/adultCountTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_half_padding"
+                        android:layout_marginStart="@dimen/material_half_padding"
+                        android:text="1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/adultCountIncrementBt"
+                        app:layout_constraintStart_toEndOf="@+id/adultCountDecBt"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <Button
+                        android:id="@+id/adultCountIncrementBt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_half_padding"
+                        android:layout_marginStart="@dimen/material_half_padding"
+                        android:text="+"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/adultCountTv"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/childCountButtons"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/material_default_padding"
+                    android:layout_marginStart="@dimen/material_default_padding"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/childCountTitleLayout"
+                    app:layout_constraintTop_toBottomOf="@+id/adultCountButtons">
+
+                    <Button
+                        android:id="@+id/childCountDecBt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/childCountTv"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/childCountTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_half_padding"
+                        android:layout_marginStart="@dimen/material_half_padding"
+                        android:text="0"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/childCountIncrementBt"
+                        app:layout_constraintStart_toEndOf="@+id/childCountDecBt"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <Button
+                        android:id="@+id/childCountIncrementBt"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/material_half_padding"
+                        android:layout_marginStart="@dimen/material_half_padding"
+                        android:text="+"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/childCountTv"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+                </android.support.constraint.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/childCountTitleLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@+id/childCountButtons"
+                    app:layout_constraintEnd_toStartOf="@+id/childCountButtons"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/childCountButtons">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Children :"
+                        android:textColor="@color/material_black_1000"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="(1-12yrs)"/>
+
+                </LinearLayout>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/actionLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_toEndOf="@id/addRoomTv"
-                android:layout_toRightOf="@id/addRoomTv"
-                android:background="@drawable/al_count_button_shape"
-                android:paddingBottom="5dp"
-                android:paddingEnd="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingStart="8dp"
-                android:paddingTop="5dp"
-                android:text="Remove Room"
-                android:textColor="@color/applozic_theme_color_primary"
-                android:visibility="gone"/>
+                android:orientation="vertical"
+                android:visibility="visible"
+                app:layout_constraintBaseline_toBaselineOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="wrap"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/contentLayout">
 
-            <TextView
-                android:id="@+id/doneButtonTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="end"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/al_count_button_shape"
-                android:paddingBottom="5dp"
-                android:paddingEnd="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingStart="8dp"
-                android:paddingTop="5dp"
-                android:text="Done"
-                android:textColor="@color/applozic_theme_color_primary"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/material_default_padding"
+                    android:background="@color/applozic_theme_color_primary"/>
 
-        </RelativeLayout>
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/material_default_padding">
+
+                    <TextView
+                        android:id="@+id/addRoomTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/al_count_button_shape"
+                        android:paddingBottom="@dimen/material_half_padding"
+                        android:paddingLeft="@dimen/material_default_padding"
+                        android:paddingRight="@dimen/material_default_padding"
+                        android:paddingTop="@dimen/material_half_padding"
+                        android:text="Add Room"
+                        android:textColor="@color/applozic_theme_color_primary"
+                        android:textSize="@dimen/material_typography_textsize_caption"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/removeRoomTv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginEnd="@dimen/material_half_padding"
+                        android:layout_marginLeft="@dimen/material_half_padding"
+                        android:layout_marginRight="@dimen/material_half_padding"
+                        android:layout_marginStart="@dimen/material_half_padding"
+                        android:background="@drawable/al_count_button_shape"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingBottom="@dimen/material_half_padding"
+                        android:paddingLeft="@dimen/material_default_padding"
+                        android:paddingRight="@dimen/material_default_padding"
+                        android:paddingTop="@dimen/material_half_padding"
+                        android:text="Remove Room"
+                        android:textColor="@color/applozic_theme_color_primary"
+                        android:textSize="@dimen/material_typography_textsize_caption"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toStartOf="@+id/doneButtonTv"
+                        app:layout_constraintStart_toEndOf="@+id/addRoomTv"/>
+
+                    <TextView
+                        android:id="@+id/doneButtonTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:background="@drawable/al_count_button_shape"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:paddingBottom="@dimen/material_half_padding"
+                        android:paddingLeft="@dimen/material_default_padding"
+                        android:paddingRight="@dimen/material_default_padding"
+                        android:paddingTop="@dimen/material_half_padding"
+                        android:text="Done"
+                        android:textColor="@color/applozic_theme_color_primary"
+                        android:textSize="@dimen/material_typography_textsize_caption"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</android.support.v7.widget.CardView>

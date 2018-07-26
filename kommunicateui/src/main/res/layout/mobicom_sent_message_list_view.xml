@@ -89,22 +89,10 @@
 
     </android.support.v7.widget.CardView>
 
-    <View
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:background="@drawable/km_status_icon_background"
-        app:layout_constraintTop_toTopOf="@+id/statusImage"
-        app:layout_constraintBottom_toBottomOf="@+id/statusImage"
-        app:layout_constraintEnd_toEndOf="@+id/statusImage"
-        app:layout_constraintStart_toStartOf="@+id/statusImage"/>
-
     <TextView
         android:id="@+id/statusImage"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="2dip"
-        android:textColor="@color/material_white_1000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="v"/>

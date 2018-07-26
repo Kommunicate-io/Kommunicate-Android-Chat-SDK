@@ -465,13 +465,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
 
         sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
-        sentIcon.setColorFilter(getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
-        deliveredIcon.setColorFilter(getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
-        readIcon.setColorFilter(getResources().getColor(R.color.read_icon_color), PorterDuff.Mode.MULTIPLY);
         pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
-        pendingIcon.setColorFilter(getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
 
         awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
         awayMessageTv = list.findViewById(R.id.awayMessageTV);

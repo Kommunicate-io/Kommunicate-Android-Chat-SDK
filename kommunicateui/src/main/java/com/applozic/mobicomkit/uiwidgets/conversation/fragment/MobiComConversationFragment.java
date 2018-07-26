@@ -603,7 +603,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         messageEditText.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //TODO: write code to emoticons .....
+                cameraButton.setVisibility(isLegacyWidgetInputLayout ? View.VISIBLE : View.GONE);
             }
             public void afterTextChanged(Editable s) {
                 try {
@@ -615,6 +615,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
                         intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                        cameraButton.setVisibility(isLegacyWidgetInputLayout ? View.VISIBLE : View.GONE);
                     } else if (s.toString().trim().length() == 0 && typingStarted) {
                         typingStarted = false;
                         handleSendAndRecordButtonView(false);
@@ -623,6 +624,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
                         intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                        cameraButton.setVisibility(View.VISIBLE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -30,7 +30,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -450,9 +452,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
 
         sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
+        DrawableCompat.setTint(sentIcon, ContextCompat.getColor(getContext(), R.color.sent_icon_color));
         deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
-        readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
+        DrawableCompat.setTint(deliveredIcon, ContextCompat.getColor(getContext(), R.color.sent_icon_color));
+        readIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
+        DrawableCompat.setTint(readIcon, ContextCompat.getColor(getContext(), R.color.read_icon_color));
         pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
+        DrawableCompat.setTint(pendingIcon, ContextCompat.getColor(getContext(), R.color.sent_icon_color));
 
         awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
         awayMessageTv = list.findViewById(R.id.awayMessageTV);
@@ -523,7 +529,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         };
 
         recordButton.setOnTouchListener(new View.OnTouchListener() {
-
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 mDetector.onTouchEvent(motionEvent);

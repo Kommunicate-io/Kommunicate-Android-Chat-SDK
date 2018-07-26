@@ -232,11 +232,20 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <include
+            android:id="@+id/widget_input_legacy"
             layout="@layout/widget_input_layout_legacy"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
+        <include
+            android:id="@+id/widget_input"
+            layout="@layout/widget_input_layout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"/>
+        
         <LinearLayout
             android:id="@+id/user_not_able_to_chat_layout"
             android:layout_width="match_parent"

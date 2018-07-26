@@ -43,4 +43,6 @@
     <color name="sent_icon_color">@color/material_grey_600</color>
     <color name="read_icon_color">@color/applozic_theme_color_primary</color>
 
+    <color name="message_status_icon_colors">@color/applozic_theme_color_primary</color>
+
 </resources>

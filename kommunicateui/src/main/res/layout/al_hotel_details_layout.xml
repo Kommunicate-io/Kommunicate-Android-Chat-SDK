@@ -1,126 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_margin="2dip"
+    android:orientation="vertical"
+    android:visibility="visible"
+    app:cardBackgroundColor="#BFFFFFFF"
+    app:cardCornerRadius="6dp"
+    app:cardElevation="2dip"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    tools:showIn="@layout/mobicom_received_message_list_view">
 
     <LinearLayout
         android:id="@+id/roomRootLayout"
-        android:layout_width="242dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="14dp"
-        android:layout_marginRight="14dp"
-        android:background="@drawable/al_rich_message_border"
-        android:elevation="2dp"
         android:orientation="vertical"
         android:visibility="visible">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/productImage"
-                android:layout_width="match_parent"
-                android:layout_height="93dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/image_description_default"
-                android:scaleType="centerCrop"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="93dp"
-                android:alpha="0.25"
-                android:background="@color/applozic_theme_color_primary"
-                android:visibility="visible"/>
-        </FrameLayout>
-
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:paddingBottom="@dimen/material_default_padding">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/contentImage"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/productImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/image_description_default"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible"
+                    app:layout_constraintDimensionRatio="16:9"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:src="@drawable/ic_sentiment_satisfied_grey_600_24dp"/>
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/material_drawer_bottom_navigation_icon_min_widht"
+                    android:alpha="0.25"
+                    android:background="@color/applozic_theme_color_primary"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guidelineStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guidelineEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="@dimen/material_default_padding"/>
 
             <TextView
+                android:id="@+id/roomTypeTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
                 android:text="Room Type:"
                 android:textColor="@color/material_black_1000"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/material_typography_textsize_caption"
+                app:layout_constraintBottom_toBottomOf="@+id/roomTypeTv"
+                app:layout_constraintEnd_toStartOf="@id/roomTypeTv"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toTopOf="@+id/roomTypeTv"/>
 
             <TextView
                 android:id="@+id/roomTypeTv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_weight="1"
+                android:layout_marginTop="@dimen/material_default_padding"
                 android:gravity="center"
-                android:text="Double Superier Deluxe"
+                android:text="Double Superior Deluxe"
                 android:textColor="@color/material_black_1000"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/roomTypeTitle"
+                app:layout_constraintTop_toBottomOf="@+id/contentImage"/>
 
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e7e4e4"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            <View
+                android:id="@+id/dividerOne"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:background="@color/material_grey_300"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/roomTypeTv"/>
 
             <TextView
+                android:id="@+id/noOfGuestsTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
                 android:text="Guests:"
                 android:textColor="@color/material_black_1000"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/material_typography_textsize_caption"
+                app:layout_constraintBottom_toBottomOf="@+id/noOfGuestsTv"
+                app:layout_constraintEnd_toStartOf="@id/noOfGuestsTv"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toTopOf="@+id/noOfGuestsTv"/>
 
             <TextView
                 android:id="@+id/noOfGuestsTv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_weight="1"
+                android:layout_marginTop="@dimen/material_default_padding"
                 android:gravity="center"
                 android:text="6"
                 android:textColor="@color/material_black_1000"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/noOfGuestsTitle"
+                app:layout_constraintTop_toBottomOf="@+id/dividerOne"/>
 
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e7e4e4"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            <View
+                android:id="@+id/dividerTwo"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:background="@color/material_grey_300"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/noOfGuestsTv"/>
 
             <RelativeLayout
+                android:id="@+id/hotelPriceTitleLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1">
+                app:layout_constraintBottom_toBottomOf="@+id/hotelPriceTv"
+                app:layout_constraintEnd_toStartOf="@id/hotelPriceTv"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toTopOf="@+id/hotelPriceTv">
 
                 <TextView
                     android:id="@+id/price1Tv"
@@ -147,32 +187,35 @@
                 android:id="@+id/hotelPriceTv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginTop="@dimen/material_default_padding"
                 android:gravity="center"
                 android:text="Rs 889.67"
                 android:textColor="@color/material_black_1000"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/hotelPriceTitleLayout"
+                app:layout_constraintTop_toBottomOf="@+id/dividerTwo"/>
 
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e7e4e4"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+            <View
+                android:id="@+id/dividerThree"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:background="@color/material_grey_300"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/hotelPriceTv"/>
 
             <RelativeLayout
+                android:id="@+id/totalPriceTitleLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1">
+                app:layout_constraintBottom_toBottomOf="@+id/totalPriceTv"
+                app:layout_constraintEnd_toStartOf="@id/totalPriceTv"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+                app:layout_constraintTop_toTopOf="@+id/totalPriceTv">
 
                 <TextView
                     android:id="@+id/price2Tv"
@@ -200,33 +243,47 @@
                 android:id="@+id/totalPriceTv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_default_padding"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Rs. 173489.23"
                 android:textColor="@color/material_black_1000"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@+id/totalPriceTitleLayout"
+                app:layout_constraintTop_toBottomOf="@+id/dividerThree"/>
 
-        </LinearLayout>
+            <View
+                android:id="@+id/dividerEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="0.5dp"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:background="@color/material_grey_300"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/totalPriceTv"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e7e4e4"/>
+            <TextView
+                android:id="@+id/bookingAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/material_default_padding"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center_horizontal"
+                android:letterSpacing="0.05"
+                android:padding="5dp"
+                android:text="Book"
+                android:textAlignment="center"
+                android:textColor="@color/applozic_theme_color_primary"
+                android:textSize="@dimen/material_typography_textsize_caption"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dividerEnd"/>
 
-        <TextView
-            android:id="@+id/bookingAction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center_horizontal"
-            android:letterSpacing="0.05"
-            android:padding="5dp"
-            android:text="Book"
-            android:textAlignment="center"
-            android:textColor="@color/applozic_theme_color_primary"
-            android:textSize="12sp"
-            android:textStyle="normal"/>
+        </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</android.support.v7.widget.CardView>

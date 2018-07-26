@@ -4,10 +4,7 @@
     android:id="@+id/listItemLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/material_default_padding"
-    android:layout_marginLeft="@dimen/material_lists_height_row"
-    android:layout_marginRight="@dimen/material_lists_height_row"
-    android:layout_marginTop="@dimen/material_default_padding"
+    android:layout_margin="@dimen/material_default_padding"
     android:background="@drawable/al_rich_message_border"
     android:orientation="vertical"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter"/>

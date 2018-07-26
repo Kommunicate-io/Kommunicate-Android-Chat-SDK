@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="2dip"
     android:orientation="vertical"
-    android:visibility="visible"
+    android:visibility="gone"
     app:cardBackgroundColor="#BFFFFFFF"
     app:cardCornerRadius="6dp"
     app:cardElevation="0dp"

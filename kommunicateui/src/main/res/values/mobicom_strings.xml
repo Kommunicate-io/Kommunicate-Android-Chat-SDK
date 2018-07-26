@@ -219,4 +219,6 @@
     <string name="DATE_SAVE_FILE_FORMAT">yyyyMMdd_HHmmss</string>
     <string name="DATE_DAY_FORMAT">EEEE</string>
 
+    <bool name="widget_input_legacy">true</bool>  <!--Set true if want to keep legacy design, false to implement new design-->
+
 </resources>

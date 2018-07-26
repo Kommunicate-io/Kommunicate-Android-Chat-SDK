@@ -29,7 +29,7 @@ public class KmHelper {
 
     public static void performLogout(Context context, final Object object) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Logging out, please wait...");
+        dialog.setMessage(context.getString(R.string.logging_out_wait));
         dialog.setCancelable(false);
         dialog.show();
         Kommunicate.logout(context, new KMLogoutHandler() {
@@ -47,7 +47,6 @@ public class KmHelper {
                     e.printStackTrace();
                 }
             }
-
             @Override
             public void onFailure(Exception exception) {
                 dialog.dismiss();
@@ -57,7 +56,7 @@ public class KmHelper {
 
     public static void setStartNewUniqueChat(Context context, final List<String> agentIds, List<String> botIds) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Creating conversation, please wait...");
+        dialog.setMessage(context.getString(R.string.start_chat_wait));
         dialog.setCancelable(false);
         dialog.show();
         try {
@@ -82,7 +81,7 @@ public class KmHelper {
 
     public static void setStartNewChat(Context context, final List<String> agentIds, List<String> botIds) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Creating conversation, please wait...");
+        dialog.setMessage(context.getString(R.string.start_chat_wait));
         dialog.setCancelable(false);
         dialog.show();
         try {
@@ -97,7 +96,7 @@ public class KmHelper {
                 @Override
                 public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
                     dialog.dismiss();
-                    Toast.makeText(context, "Unable to create conversation : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.start_chat_unable) + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (KmException e) {

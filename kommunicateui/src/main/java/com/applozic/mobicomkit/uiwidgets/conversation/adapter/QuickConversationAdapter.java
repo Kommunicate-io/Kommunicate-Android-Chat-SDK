@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -174,11 +176,11 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                                 + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
                     }
                     myholder.smReceivers.setText(contactInfo);
-                    contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+                    contactImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
                     processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                 } else if (message.getGroupId() != null) {
                     if (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                        contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+                        contactImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
                         Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
                         if (withUserContact != null) {
                             myholder.smReceivers.setText(withUserContact.getDisplayName());
@@ -186,16 +188,16 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         }
                     } else {
                         if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
-                            myholder.contactImage.setImageResource(R.drawable.ic_person_grey_600_24dp);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
+                            myholder.contactImage.setImageResource(R.drawable.ic_account_circle_grey_600_24dp_v);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
-                            myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp_v);
+                            myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
                         }
 
                         myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
                         myholder.alphabeticTextView.setVisibility(View.GONE);
-                        myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
+                        myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
                         myholder.contactImage.setVisibility(View.VISIBLE);
 
                         if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
@@ -203,9 +205,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         } else if (channel != null && channel.isBroadcastMessage()) {
                             myholder.contactImage.setImageResource(R.drawable.ic_volume_up_white_24dp);
                         } else if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp_v);
                         }
                     }
                 }
@@ -425,24 +427,25 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         final ImageView attachmentIcon;
         TextView unReadCountTextView;
         TextView smTime;
-        RelativeLayout rootView, profileImageRelativeLayout;
+        ConstraintLayout rootView;
+        ConstraintLayout profileImageLayout;
 
         public Myholder(View itemView) {
             super(itemView);
 
-            smReceivers = (TextView) itemView.findViewById(R.id.smReceivers);
-            createdAtTime = (TextView) itemView.findViewById(R.id.createdAtTime);
-            messageTextView = (TextView) itemView.findViewById(R.id.message);
-            //ImageView contactImage = (ImageView) customView.findViewById(R.id.contactImage);
-            contactImage = (CircleImageView) itemView.findViewById(R.id.contactImage);
-            alphabeticTextView = (TextView) itemView.findViewById(R.id.alphabeticImage);
-            onlineTextView = (TextView) itemView.findViewById(R.id.onlineTextView);
-            //sentOrReceived = (ImageView) itemView.findViewById(R.id.sentOrReceivedIcon);
-            attachedFile = (TextView) itemView.findViewById(R.id.attached_file);
-            attachmentIcon = (ImageView) itemView.findViewById(R.id.attachmentIcon);
-            unReadCountTextView = (TextView) itemView.findViewById(R.id.unreadSmsCount);
-            smTime = (TextView) itemView.findViewById(R.id.smTime);
-            profileImageRelativeLayout = itemView.findViewById(R.id.profile_image_relative_layout);
+            smReceivers = itemView.findViewById(R.id.smReceivers);
+            createdAtTime = itemView.findViewById(R.id.createdAtTime);
+            messageTextView = itemView.findViewById(R.id.message);
+
+            contactImage = itemView.findViewById(R.id.contactImage);
+            alphabeticTextView = itemView.findViewById(R.id.alphabeticImage);
+            onlineTextView = itemView.findViewById(R.id.onlineTextView);
+
+            attachedFile = itemView.findViewById(R.id.attached_file);
+            attachmentIcon = itemView.findViewById(R.id.attachmentIcon);
+            unReadCountTextView = itemView.findViewById(R.id.unreadSmsCount);
+            smTime = itemView.findViewById(R.id.smTime);
+            profileImageLayout = itemView.findViewById(R.id.profile_image_layout);
             rootView = itemView.findViewById(R.id.rootView);
             offlineTextView = itemView.findViewById(R.id.offlineTextView);
 
@@ -452,7 +455,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
         @Override
         public void onClick(View v) {
-
             int itemPosition = this.getLayoutPosition();
             if (itemPosition != -1 && !messageList.isEmpty()) {
                 Message message = getItem(itemPosition);

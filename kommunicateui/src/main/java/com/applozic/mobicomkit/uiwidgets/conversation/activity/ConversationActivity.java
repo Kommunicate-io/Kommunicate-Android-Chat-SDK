@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -112,7 +113,7 @@ import java.util.Set;
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface  {
+public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
@@ -166,8 +167,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private SearchView searchView;
     private String searchTerm;
     private SearchListFragment searchListFragment;
-    public EditText editText;
-    private LinearLayout serviceDisconnectionLayout;
+    public EditText editTextMessage;
+    private ConstraintLayout serviceDisconnectionLayout;
 
     public ConversationActivity() { }
 
@@ -218,7 +219,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             TextView txtView = (TextView) group.findViewById(R.id.snackbar_text);
             txtView.setMaxLines(5);
             snackbar.show();
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -329,7 +331,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (resourceId != 0) {
             getWindow().setBackgroundDrawableResource(resourceId);
         }
-        setContentView(R.layout.quickconversion_activity);
+        setContentView(R.layout.quick_conversation_activity);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         baseContactService = new AppContactService(this);
@@ -820,11 +822,12 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public void removeConversation(Message message, String formattedContactNumber) {
         conversationUIService.removeConversation(message, formattedContactNumber);
     }
+
     @SuppressLint("MissingPermission")
     @Override
     public void onConnected(Bundle bundle) {
         try {
-           Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (mCurrentLocation == null) {
                 Toast.makeText(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
                 locationRequest = new LocationRequest();

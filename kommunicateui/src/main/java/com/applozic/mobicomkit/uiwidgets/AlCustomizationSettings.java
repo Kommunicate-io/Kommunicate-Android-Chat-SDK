@@ -521,6 +521,14 @@ public class AlCustomizationSettings extends JsonMarker {
         this.messageTemplate = messageTemplate;
     }
 
+    public void setSentMessageTextColor(String sentMessageTextColor) {
+        this.sentMessageTextColor = sentMessageTextColor;
+    }
+
+    public void setReceivedMessageTextColor(String receivedMessageTextColor) {
+        this.receivedMessageTextColor = receivedMessageTextColor;
+    }
+
     public MobicomMessageTemplate getMessageTemplate() {
         return messageTemplate;
     }

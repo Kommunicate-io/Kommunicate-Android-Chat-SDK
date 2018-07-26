@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/audio_record_constraint_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:minHeight="@dimen/material_touchable_minheight"
+    android:orientation="vertical"
+    android:padding="@dimen/material_half_padding"
+    android:visibility="gone"
+    tools:showIn="@layout/widget_input_layout">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/record_button"
+        android:layout_width="@dimen/material_touchable_minheight"
+        android:layout_height="@dimen/material_touchable_minheight"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_mic_white_24dp"
+        android:visibility="visible"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/slide_LinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/recording_time_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="00:00"
+        android:textColor="@color/material_grey_800"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintBottom_toBottomOf="@+id/record_button"
+        app:layout_constraintEnd_toStartOf="@+id/record_button"
+        app:layout_constraintStart_toEndOf="@+id/audio_record_icon_image_view"
+        app:layout_constraintTop_toTopOf="@+id/record_button"/>
+
+    <ImageView
+        android:id="@+id/audio_record_icon_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/material_half_padding"
+        android:contentDescription="@string/image_description_default"
+        android:src="@drawable/ic_mic_white_24dp"
+        android:tint="@color/material_red_800"
+        app:layout_constraintBottom_toBottomOf="@+id/record_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/record_button"/>
+
+    <EditText
+        android:id="@+id/error_edit_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:enabled="false"
+        android:inputType="none"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/record_button"
+        app:layout_constraintStart_toEndOf="@+id/recording_time_text_view"
+        app:layout_constraintTop_toTopOf="@+id/record_button"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/slide_LinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/slide_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/image_description_default"
+            android:src="@drawable/slide_arrow_left"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/slide_to_cancel_text_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:paddingRight="40dip"
+            android:text="@string/slide_to_cancel"
+            android:textColor="@color/material_grey_500"
+            android:textSize="@dimen/material_typography_textsize_caption"
+            app:layout_constraintBottom_toBottomOf="@+id/slide_image_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/slide_image_view"
+            app:layout_constraintTop_toTopOf="@+id/slide_image_view"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

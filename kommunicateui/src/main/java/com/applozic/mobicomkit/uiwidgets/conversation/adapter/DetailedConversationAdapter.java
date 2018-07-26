@@ -6,12 +6,15 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -171,7 +174,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 return contactService.downloadContactImage(context, (Contact) data);
             }
         };
-        contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+        contactImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp_v);
         contactImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         contactImageLoader.setImageFadeIn(false);
 
@@ -193,10 +196,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         imageThumbnailLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
 
         sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon_c);
+        sentIcon.setColorFilter(context.getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_c);
+        deliveredIcon.setColorFilter(context.getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_c);
-        //readIcon.setColorFilter(context.getResources().getColor(R.color.applozic_theme_color_primary), PorterDuff.Mode.MULTIPLY);
+        readIcon.setColorFilter(context.getResources().getColor(R.color.read_icon_color), PorterDuff.Mode.MULTIPLY);
         pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
+        pendingIcon.setColorFilter(context.getResources().getColor(R.color.sent_icon_color), PorterDuff.Mode.MULTIPLY);
         scheduledIcon = context.getResources().getDrawable(R.drawable.ic_schedule_grey_600_24dp);
         final String alphabet = context.getString(R.string.alphabet);
         mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);
@@ -349,15 +355,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         final Message msg = messageDatabaseService.getMessage(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()));
                         if (msg != null) {
                             String displayName;
+                            //myHolder.replyRelativeLayout.setLayoutParams(getImageLayoutParam(false));
+                           // myHolder.replyRelativeLayout.setBackgroundColor(message.isTypeOutbox() ?
+                             //       Color.parseColor(alCustomizationSettings.getReplyMessageLayoutSentMessageBackground()) : Color.parseColor(alCustomizationSettings.getReplyMessageLayoutReceivedMessageBackground()));
 
-                            myHolder.replyRelativeLayout.setBackgroundColor(message.isTypeOutbox() ?
-                                    Color.parseColor(alCustomizationSettings.getReplyMessageLayoutSentMessageBackground()) : Color.parseColor(alCustomizationSettings.getReplyMessageLayoutReceivedMessageBackground()));
+                            //myHolder.replyNameTextView.setTextColor(message.isTypeOutbox() ?
+                                    //Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
 
-                            myHolder.replyNameTextView.setTextColor(message.isTypeOutbox() ?
-                                    Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
-
-                            myHolder.replyMessageTextView.setTextColor(message.isTypeOutbox() ?
-                                    Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+                            //   myHolder.replyMessageTextView.setTextColor(message.isTypeOutbox() ?
+                              //      Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
 
                             if (msg.getGroupId() != null) {
                                 if (MobiComUserPreference.getInstance(context).getUserId().equals(msg.getContactIds()) || TextUtils.isEmpty(msg.getContactIds())) {
@@ -373,25 +379,27 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 }
                             }
 
+                            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(displayName.charAt(0)) ? displayName.charAt(0) : null;
+                            myHolder.replyNameTextView.setTextColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+                            myHolder.replyColorView.setBackgroundColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
                             myHolder.replyNameTextView.setText(displayName);
                             if (msg.hasAttachment()) {
                                 FileMeta fileMeta = msg.getFileMetas();
-                                myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
+                                //myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
                                 if (fileMeta.getContentType().contains("image")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_camera_alt_grey_600_24dp);
+                                    //myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_camera_alt_grey_600_24dp);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.photo_string));
                                     } else {
                                         myHolder.replyMessageTextView.setText(msg.getMessage());
                                     }
                                     myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
-                                    myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                                     imageThumbnailLoader.loadImage(msg, myHolder.imageViewPhoto);
                                 } else if (fileMeta.getContentType().contains("video")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_videocam_white_24dp);
+                                    //myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_videocam_white_24dp);
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                                         if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-                                            myHolder.imageViewForAttachmentType.setScaleX(-1);
+                                            //myHolder.imageViewForAttachmentType.setScaleX(-1);
                                         }
                                     }
                                     if (TextUtils.isEmpty(msg.getMessage())) {
@@ -400,7 +408,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                         myHolder.replyMessageTextView.setText(msg.getMessage());
                                     }
                                     myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
-                                    myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                                     if (msg.getFilePaths() != null && msg.getFilePaths().size() > 0) {
                                         if (imageCache.getBitmapFromMemCache(msg.getKeyString()) != null) {
                                             myHolder.imageViewPhoto.setImageBitmap(imageCache.getBitmapFromMemCache(msg.getKeyString()));
@@ -410,55 +417,51 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                         }
                                     }
                                 } else if (fileMeta.getContentType().contains("audio")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_music_note_white_24dp);
+                                    //myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_music_note_white_24dp);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.audio_string));
                                     } else {
                                         myHolder.replyMessageTextView.setText(msg.getMessage());
                                     }
                                     myHolder.imageViewPhoto.setVisibility(View.GONE);
-                                    myHolder.imageViewRLayout.setVisibility(View.GONE);
                                 } else if (msg.isContactMessage()) {
                                     MobiComVCFParser parser = new MobiComVCFParser();
                                     try {
                                         VCFContactData data = parser.parseCVFContactData(msg.getFilePaths().get(0));
                                         if (data != null) {
-                                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
+                                            //myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
                                             myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
                                             myHolder.replyMessageTextView.append(" " + data.getName());
                                         }
                                     } catch (Exception e) {
-                                        myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
+                                        //myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
                                     }
                                     myHolder.imageViewPhoto.setVisibility(View.GONE);
-                                    myHolder.imageViewRLayout.setVisibility(View.GONE);
                                 } else {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_attachment_grey_600_24dp);
+                                    //myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_attachment_grey_600_24dp);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.attachment_string));
                                     } else {
                                         myHolder.replyMessageTextView.setText(msg.getMessage());
                                     }
                                     myHolder.imageViewPhoto.setVisibility(View.GONE);
-                                    myHolder.imageViewRLayout.setVisibility(View.GONE);
                                 }
-                                myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                                //myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
                             } else if (msg.getContentType() == Message.ContentType.LOCATION.getValue()) {
-                                myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
+                                //myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
                                 myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
-                                myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                                 myHolder.replyMessageTextView.setText(context.getString(R.string.al_location_string));
-                                myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
-                                myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_location_on_grey_600_24dp);
+                                //myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                                //myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_location_on_grey_600_24dp);
                                 loadImage.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
                                 loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage()), myHolder.imageViewPhoto);
                             } else {
-                                myHolder.imageViewForAttachmentType.setVisibility(View.GONE);
-                                myHolder.imageViewRLayout.setVisibility(View.GONE);
+                                //myHolder.imageViewForAttachmentType.setVisibility(View.GONE);
                                 myHolder.imageViewPhoto.setVisibility(View.GONE);
                                 myHolder.replyMessageTextView.setText(msg.getMessage());
                             }
+
                             myHolder.replyRelativeLayout.setVisibility(View.VISIBLE);
                             myHolder.replyRelativeLayout.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -516,6 +519,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         String userId = contactDisplayName.getDisplayName();
                         char firstLetter = contactDisplayName.getDisplayName().charAt(0);
                         if (userId.length() > 0) {
+                            //myHolder.nameTextView.setVisibility(View.VISIBLE);
                             myHolder.nameTextView.setText(String.valueOf(userId));
                         }
 
@@ -569,10 +573,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     }
 
-                    if (myHolder.nameTextLayout != null && contact != null && hideRecursiveImages) {
-                        myHolder.nameTextLayout.setVisibility(View.GONE);
-                    }
-
                     if (message.isCall() || message.isDummyEmptyMessage()) {
                         //myHolder.createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                         myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
@@ -596,7 +596,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (message.isCall()) {
-                        myHolder.deliveryStatus.setText("");
+                        //myHolder.deliveryStatus.setText("");
                     }
 
                     if (contactDisplayName != null && myHolder.contactImage != null && alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
@@ -625,10 +625,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         });
                     }
 
+                    if (!message.isTypeOutbox()) {
+                        myHolder.profileImageLayout.setVisibility(hideRecursiveImages ? View.GONE : View.VISIBLE);
+                    }
                     loadContactImage(message.isTypeOutbox() ? senderContact : receiverContact, contactDisplayName, message, myHolder.contactImage, myHolder.alphabeticTextView, myHolder.onlineTextView, hideRecursiveImages);
 
                     ApplozicDocumentView audioView = new ApplozicDocumentView(this.context);
-                    audioView.inflateViewWithMessage(myHolder.view, message);
+                    audioView.inflateViewWithMessage(myHolder.view, message, alCustomizationSettings);
                     audioView.hideView(true);
 
                     if (message.hasAttachment() && myHolder.attachedFile != null & !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
@@ -903,15 +906,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             }
                         }*/
                         }
-
-                        if (myHolder.messageTextLayout != null) {
-                            GradientDrawable bgShape;
-                            if (message.isTypeOutbox()) {
-                                bgShape = (GradientDrawable) myHolder.messageTextInsideLayout.getBackground();
-                            } else {
-                                bgShape = (GradientDrawable) myHolder.messageTextLayout.getBackground();
-                            }
-
+                        if (myHolder.messageTextInsideLayout != null) {
+                            GradientDrawable bgShape = (GradientDrawable) myHolder.messageTextInsideLayout.getBackground();
                             if (bgShape != null) {
                                 bgShape.setColor(message.isTypeOutbox() ?
                                         Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
@@ -1130,11 +1126,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     Utils.printLog(context, TAG, "No application found to open this file");
                 }
             }
-
         });
     }
 
-    private void showPreview(Message message, ImageView preview, LinearLayout attachmentDownloadLayout) {
+    private void showPreview(Message message, ImageView preview, ConstraintLayout attachmentDownloadLayout) {
         imageThumbnailLoader.setImageFadeIn(false);
         imageThumbnailLoader.setLoadingImage(R.id.media_upload_progress_bar);
         imageThumbnailLoader.loadImage(message, preview);
@@ -1173,7 +1168,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } catch (Exception e) {
             Utils.printLog(context, TAG, "No application found to open this file");
         }
-
     }
 
     @Override
@@ -1211,7 +1205,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         return position;
     }
 
-
     public ViewGroup.LayoutParams getImageLayoutParam(boolean outBoxType) {
         DisplayMetrics metrics = new DisplayMetrics();
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -1222,9 +1215,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             params = new RelativeLayout.LayoutParams(metrics.widthPixels + (int) wt_px * 2, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins((int) wt_px, 0, (int) wt_px, 0);
         } else {
-            params = new LinearLayout.LayoutParams(metrics.widthPixels - (int) wt_px * 2, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 0, 0, 0);
-
         }
         return params;
     }
@@ -1234,7 +1226,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-
                 final FilterResults oReturn = new FilterResults();
                 final List<Message> results = new ArrayList<Message>();
                 if (originalList == null)
@@ -1243,11 +1234,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     searchString = constraint.toString();
                     if (originalList != null && originalList.size() > 0) {
                         for (final Message message : originalList) {
-                            if (message.getMessage().toLowerCase()
-                                    .contains(constraint.toString())) {
+                            if (message.getMessage().toLowerCase().contains(constraint.toString())) {
                                 results.add(message);
-
-
                             }
                         }
                     }
@@ -1260,8 +1248,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             @SuppressWarnings("unchecked")
             @Override
-            protected void publishResults(CharSequence constraint,
-                                          FilterResults results) {
+            protected void publishResults(CharSequence constraint, FilterResults results) {
                 messageList = (ArrayList<Message>) results.values;
                 notifyDataSetChanged();
             }
@@ -1270,8 +1257,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     private int indexOfSearchQuery(String message) {
         if (!TextUtils.isEmpty(searchString)) {
-            return message.toLowerCase(Locale.getDefault()).indexOf(
-                    searchString.toString().toLowerCase(Locale.getDefault()));
+            return message.toLowerCase(Locale.getDefault()).indexOf(searchString.toString().toLowerCase(Locale.getDefault()));
         }
         return -1;
     }
@@ -1301,19 +1287,19 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         RelativeLayout chatLocation;
         TextView downloadSizeTextView;
         AttachmentView attachmentView;
-        LinearLayout attachmentDownloadLayout;
+        ConstraintLayout attachmentDownloadLayout;
         ImageView preview;
-        LinearLayout attachmentRetry;
         RelativeLayout attachmentDownloadProgressLayout;
         RelativeLayout mainAttachmentLayout;
-        LinearLayout mainContactShareLayout;
+        RelativeLayout mainContactShareLayout;
+        TextView attachmentRetry;
         ImageView videoIcon;
         ProgressBar mediaDownloadProgressBar;
         ProgressBar mediaUploadProgressBar;
         ImageView attachmentIcon, shareContactImage;
         TextView alphabeticTextView;
+        ConstraintLayout profileImageLayout;
         CircleImageView contactImage;
-        View messageTextLayout;
         TextView nameTextView;
         TextView attachedFile;
         ImageView sentOrReceived;
@@ -1321,15 +1307,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         TextView createdAtTime;
         TextView onlineTextView;
         TextView selfDestruct;
-        TextView deliveryStatus, shareContactName, shareContactNo, shareEmailContact;
-        LinearLayout nameTextLayout;
+        //TextView deliveryStatus;
+        TextView shareContactName, shareContactNo, shareEmailContact;
+        //LinearLayout nameTextLayout;
         View view;
-        RelativeLayout replyRelativeLayout;
-        RelativeLayout imageViewRLayout;
+        CardView replyRelativeLayout;
+        View replyColorView;
         TextView replyMessageTextView;
         ImageView imageViewPhoto;
         TextView replyNameTextView;
-        ImageView imageViewForAttachmentType;
         Button addContactButton;
         int position;
         TextView statusTextView;
@@ -1343,36 +1329,35 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             position = getLayoutPosition();               //   getAdapterPosition();
             this.view = customView;
             mapImageView = (ImageView) customView.findViewById(R.id.static_mapview);
-            chatLocation = (RelativeLayout) customView.findViewById(R.id.chat_location);
+            chatLocation = customView.findViewById(R.id.chat_location);
             preview = (ImageView) customView.findViewById(R.id.preview);
             attachmentView = (AttachmentView) customView.findViewById(R.id.main_attachment_view);
             attachmentIcon = (ImageView) customView.findViewById(R.id.attachmentIcon);
             downloadSizeTextView = (TextView) customView.findViewById(R.id.attachment_size_text);
-            attachmentDownloadLayout = (LinearLayout) customView.findViewById(R.id.attachment_download_layout);
-            attachmentRetry = (LinearLayout) customView.findViewById(R.id.attachment_retry_layout);
-            attachmentDownloadProgressLayout = (RelativeLayout) customView.findViewById(R.id.attachment_download_progress_layout);
-            mainAttachmentLayout = (RelativeLayout) customView.findViewById(R.id.attachment_preview_layout);
-            mainContactShareLayout = (LinearLayout) customView.findViewById(R.id.contact_share_layout);
+            attachmentDownloadLayout = customView.findViewById(R.id.attachment_download_layout);
+            attachmentRetry = customView.findViewById(R.id.attachment_retry);
+            attachmentDownloadProgressLayout = customView.findViewById(R.id.attachment_download_progress_layout);
+            mainAttachmentLayout = customView.findViewById(R.id.attachment_preview_layout);
+            mainContactShareLayout = customView.findViewById(R.id.contact_share_layout);
             videoIcon = (ImageView) customView.findViewById(R.id.video_icon);
             mediaDownloadProgressBar = (ProgressBar) customView.findViewById(R.id.media_download_progress_bar);
             mediaUploadProgressBar = (ProgressBar) customView.findViewById(R.id.media_upload_progress_bar);
-            messageTextLayout = customView.findViewById(R.id.messageTextLayout);
-            createdAtTime = (TextView) customView.findViewById(R.id.createdAtTime);
-            messageTextView = (TextView) customView.findViewById(R.id.message);
+            createdAtTime = customView.findViewById(R.id.createdAtTime);
+            messageTextView = customView.findViewById(R.id.message);
+            profileImageLayout = customView.findViewById(R.id.profile_image_layout);
             contactImage = (CircleImageView) customView.findViewById(R.id.contactImage);
             alphabeticTextView = (TextView) customView.findViewById(R.id.alphabeticImage);
-            deliveryStatus = (TextView) customView.findViewById(R.id.status);
+            //deliveryStatus = (TextView) customView.findViewById(R.id.status);
             selfDestruct = (TextView) customView.findViewById(R.id.selfDestruct);
-            nameTextView = (TextView) customView.findViewById(R.id.name_textView);
+            //nameTextView = (TextView) customView.findViewById(R.id.name_textView);
             attachedFile = (TextView) customView.findViewById(R.id.attached_file);
             onlineTextView = (TextView) customView.findViewById(R.id.onlineTextView);
-            nameTextLayout = (LinearLayout) customView.findViewById(R.id.nameTextLayout);
-            replyRelativeLayout = (RelativeLayout) customView.findViewById(R.id.reply_message_layout);
-            imageViewRLayout = (RelativeLayout) customView.findViewById(R.id.imageViewRLayout);
+            //nameTextLayout = (LinearLayout) customView.findViewById(R.id.nameTextLayout);
+            replyRelativeLayout = customView.findViewById(R.id.replyMessageLayout);
+            replyColorView = customView.findViewById(R.id.colorView);
             replyMessageTextView = (TextView) customView.findViewById(R.id.messageTextView);
             imageViewPhoto = (ImageView) customView.findViewById(R.id.imageViewForPhoto);
             replyNameTextView = (TextView) customView.findViewById(R.id.replyNameTextView);
-            imageViewForAttachmentType = (ImageView) customView.findViewById(R.id.imageViewForAttachmentType);
             statusTextView = (TextView) customView.findViewById(R.id.statusImage);
             messageTextInsideLayout = customView.findViewById(R.id.messageTextInsideLayout);
             richMessageLayout = (LinearLayout) customView.findViewById(R.id.alRichMessageView);

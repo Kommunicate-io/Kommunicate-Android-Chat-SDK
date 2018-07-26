@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
@@ -97,7 +96,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
         if (alCustomizationSettings.isHideAttachmentButton()) {
 
-            attachButton.setVisibility(View.GONE);
+            //attachButton.setVisibility(View.GONE);
             messageEditText.setPadding(20, 0, 0, 0);
         }
         sendType.setSelection(1);
@@ -118,7 +117,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
             }
         });
 
-        attachButton.setOnClickListener(new View.OnClickListener() {
+        /*attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (contact != null && !contact.isBlocked() || channel != null) {
@@ -150,7 +149,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
                     }
                 }
             }
-        });
+        });*/
         return view;
     }
 

@@ -1,14 +1,20 @@
+<img align="center" src="https://raw.githubusercontent.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/master/img/Header.png" width="900" />
 
-### Kommunicate Android Chat SDK for Customer Support https://www.kommunicate.io/
+### [Kommunicate](https://www.kommunicate.io/?utm_source=github&utm_medium=readme&utm_campaign=android) Android Chat SDK for Customer Support
 
-<img align="right" src="https://raw.githubusercontent.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/master/img/demo.png" width="300" />
+An Open Source Android Live Chat SDK for Customer Support
 
-Open Source Android Live Chat SDK for Customer Support
+## Overview
 
-# Overview
-Kommunicate provides open source live chat sdk in android. Kommunicate lets you add real time live chat, in-app messaging and bot integration in your mobile (android, iOS) applications and website for customer support.
+Kommunicate provides open source live chat SDK in android. The Kommunicate SDK is flexible, lightweight and easily integrable. It lets you easily add real time live chat and in-app messaging in your mobile applications and websites for customer support. The SDK is equipped with advance messaging options such as sending attachments, sharing location and rich messaging. 
 
-Signup at [https://dashboard.kommunicate.io/signup](https://dashboard.kommunicate.io/signup?utm_source=github&utm_medium=readme&utm_campaign=android) to get the Application ID.
+<img align="center" src="https://raw.githubusercontent.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/master/img/Support.gif" height="520" />
+
+Kommunicate SDK lets you integrate custom chatbots in your mobile apps for automating tasks. It comes with multiple features to make it a full fledged customer support SDK. 
+
+<img align="center" src="https://raw.githubusercontent.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/master/img/Bot.gif" height="520" />
+
+To get started with Kommunicate Android SDK, head over to Kommunicate website and [Signup](https://dashboard.kommunicate.io/signup?utm_source=github&utm_medium=readme&utm_campaign=android) to get your Application ID.
 
 
 ### Installation 

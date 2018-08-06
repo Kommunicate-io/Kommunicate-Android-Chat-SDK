@@ -25,7 +25,6 @@ import static android.content.Context.TELEPHONY_SERVICE;
 
 public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeListener {
     private static ApplozicAudioManager myObj;
-    private final TelephonyManager mTelephonyMgr;
     public ApplozicDocumentView currentView;
     Map<String, MediaPlayer> pool = new HashMap<>();
     Context context;
@@ -38,9 +37,10 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
 
     private ApplozicAudioManager(Context context) {
         this.context = context;
-        mTelephonyMgr = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-        mTelephonyMgr.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null) {
+            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
     }
 
     public static ApplozicAudioManager getInstance(Context context) {
@@ -135,22 +135,23 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
                 }
             }
         });
-        mPhoneStateListener = new PhoneStateListener() {
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                super.onCallStateChanged(state, incomingNumber);
-                if (state == TelephonyManager.CALL_STATE_RINGING || state == TelephonyManager.CALL_STATE_OFFHOOK) {
-                    if (getMediaPlayer(key) != null) {
-                        getMediaPlayer(key).pause();
-                        currentView.setAudioIcons();
-                    }
-                }
-            }
-        };
-        mTelephonyMgr.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     public void pauseOthersifPlaying() {
+        MediaPlayer m;
+        Iterator it = pool.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            {
+                m = (MediaPlayer) pair.getValue();
+                if (m.isPlaying()) {
+                    m.pause();
+                }
+            }
+        }
+    }
+
+    private void pauseIfPlaying() {
         MediaPlayer m;
         Iterator it = pool.entrySet().iterator();
         while (it.hasNext()) {
@@ -243,16 +244,28 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
 
     @Override
     public void onAudioFocusChange(int i) {
-       /* switch (i) {
+        switch (i) {
             case AudioManager.AUDIOFOCUS_GAIN:
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                pauseIfPlaying();
+                if (currentView != null) {
+                    currentView.setAudioIcons();
+                }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS:
+                pauseIfPlaying();
+                if (currentView != null) {
+                    currentView.setAudioIcons();
+                }
                 break;
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                pauseIfPlaying();
+                if (currentView != null) {
+                    currentView.setAudioIcons();
+                }
                 break;
-        }*/
+        }
     }
 
     private boolean requestAudioFocus() {

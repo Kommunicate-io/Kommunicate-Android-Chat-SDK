@@ -86,6 +86,8 @@ import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -101,10 +103,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.rockerhieu.emojicon.EmojiconEditText;
-import com.rockerhieu.emojicon.EmojiconGridFragment;
-import com.rockerhieu.emojicon.EmojiconsFragment;
-import com.rockerhieu.emojicon.emoji.Emojicon;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -121,7 +119,7 @@ import java.util.Set;
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, EmojiconsFragment.OnEmojiconBackspaceClickedListener, EmojiconGridFragment.OnEmojiconClickedListener {
+public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
@@ -175,8 +173,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private SearchView searchView;
     private String searchTerm;
     private SearchListFragment searchListFragment;
-    public EmojiconEditText mEditEmojicon;
     private LinearLayout serviceDisconnectionLayout;
+    private KmStoragePermission alStoragePermission;
 
     public ConversationActivity() {
 
@@ -360,7 +358,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         profilefragment.setAlCustomizationSettings(alCustomizationSettings);
         contactsGroupId = MobiComUserPreference.getInstance(this).getContactsGroupId();
         serviceDisconnectionLayout = findViewById(R.id.serviceDisconnectionLayout);
-        if (Utils.hasMarshmallow()) {
+        if (Utils.hasMarshmallow() && !alCustomizationSettings.isGlobalStoragePermissionDisabled()) {
             applozicPermission.checkRuntimePermissionForStorage();
         }
         mActionBar = getSupportActionBar();
@@ -574,6 +572,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PermissionsUtils.REQUEST_STORAGE) {
+            if (alStoragePermission != null) {
+                alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));
+            }
             if (PermissionsUtils.verifyPermissions(grantResults)) {
                 showSnackBar(R.string.storage_permission_granted);
                 if (isAttachment) {
@@ -694,6 +695,17 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         }
 
+    }
+
+    @Override
+    public boolean isPermissionGranted() {
+        return !PermissionsUtils.checkSelfForStoragePermission(this);
+    }
+
+    @Override
+    public void checkPermission(KmStoragePermission storagePermission) {
+        PermissionsUtils.requestPermissions(this, PermissionsUtils.PERMISSIONS_STORAGE, PermissionsUtils.REQUEST_STORAGE);
+        this.alStoragePermission = storagePermission;
     }
 
     public void processLocation() {
@@ -1276,16 +1288,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (message != null && conversation != null) {
             conversation.onClickOnMessageReply(message);
         }
-    }
-
-    @Override
-    public void onEmojiconClicked(Emojicon emojicon) {
-        EmojiconsFragment.input(mEditEmojicon, emojicon);
-    }
-
-    @Override
-    public void onEmojiconBackspaceClicked(View v) {
-        EmojiconsFragment.backspace(mEditEmojicon);
     }
 
     private class SyncMessagesAsyncTask extends AsyncTask<Boolean, Void, Void> {

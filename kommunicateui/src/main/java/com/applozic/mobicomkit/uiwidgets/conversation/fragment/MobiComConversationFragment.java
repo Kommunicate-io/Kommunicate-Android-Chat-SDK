@@ -131,6 +131,8 @@ import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Support;
@@ -148,8 +150,6 @@ import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.rockerhieu.emojicon.EmojiconEditText;
-
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -257,7 +257,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     boolean longPress;
     boolean isToastVisible = false;
     int seconds = 0, minutes = 0;
-    ApplozicDocumentView applozicDocumentView;
     ImageView slideImageView;
     private EmojiconHandler emojiIconHandler;
     private Bitmap previewThumbnail;
@@ -307,7 +306,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
-        applozicDocumentView = new ApplozicDocumentView(getContext());
         restrictedWords = FileUtils.loadRestrictedWordsFile(getContext());
         conversationUIService = new ConversationUIService(getActivity());
         syncCallService = SyncCallService.getInstance(getActivity());
@@ -465,8 +463,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         messageEditText.setTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextTextColor()));
 
         messageEditText.setHintTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextHintTextColor()));
-
-        ((ConversationActivity) getActivity()).mEditEmojicon = (EmojiconEditText) messageEditText;
 
         userNotAbleToChatLayout = (LinearLayout) list.findViewById(R.id.user_not_able_to_chat_layout);
         userNotAbleToChatTextView = (TextView) userNotAbleToChatLayout.findViewById(R.id.user_not_able_to_chat_textView);
@@ -906,6 +902,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             });
         }
 
+        emoticonsBtn.setVisibility(View.GONE);
+
         if (alCustomizationSettings.getAttachmentOptions() != null && !alCustomizationSettings.getAttachmentOptions().isEmpty()) {
             Map<String, Boolean> attachmentOptions = alCustomizationSettings.getAttachmentOptions();
 
@@ -919,10 +917,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             if (attachmentOptions.containsKey(":file")) {
                 fileAttachmentButton.setVisibility(attachmentOptions.get(":file") ? VISIBLE : View.GONE);
-            }
-
-            if (attachmentOptions.containsKey(":emoticons")) {
-                emoticonsBtn.setVisibility(attachmentOptions.get(":emoticons") ? VISIBLE : View.GONE);
             }
         }
 
@@ -1507,12 +1501,40 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
             recyclerDetailConversationAdapter.setContextMenuClickListener(this);
             recyclerDetailConversationAdapter.setRichMessageCallbackListener(this);
+            if (getActivity() instanceof KmStoragePermissionListener) {
+                recyclerDetailConversationAdapter.setStoragePermissionListener((KmStoragePermissionListener) getActivity());
+            } else {
+                recyclerDetailConversationAdapter.setStoragePermissionListener(new KmStoragePermissionListener() {
+                    @Override
+                    public boolean isPermissionGranted() {
+                        return false;
+                    }
+
+                    @Override
+                    public void checkPermission(KmStoragePermission storagePermission) {
+                    }
+                });
+            }
         } else if (channel != null) {
             recyclerDetailConversationAdapter = new DetailedConversationAdapter(getActivity(),
                     R.layout.mobicom_message_row_view, messageList, channel, messageIntentClass, emojiIconHandler);
             recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
             recyclerDetailConversationAdapter.setContextMenuClickListener(this);
             recyclerDetailConversationAdapter.setRichMessageCallbackListener(this);
+            if (getActivity() instanceof KmStoragePermissionListener) {
+                recyclerDetailConversationAdapter.setStoragePermissionListener((KmStoragePermissionListener) getActivity());
+            } else {
+                recyclerDetailConversationAdapter.setStoragePermissionListener(new KmStoragePermissionListener() {
+                    @Override
+                    public boolean isPermissionGranted() {
+                        return false;
+                    }
+
+                    @Override
+                    public void checkPermission(KmStoragePermission storagePermission) {
+                    }
+                });
+            }
         }
         //  listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         linearLayoutManager.setSmoothScrollbarEnabled(true);
@@ -3620,8 +3642,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             public void onClick(View v) {
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
-                    ((ConversationActivity) getActivity()).isTakePhoto(true);
-                    ((ConversationActivity) getActivity()).processCameraAction();
+                    if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
+                        ((ConversationActivity) getActivity()).isTakePhoto(true);
+                        ((ConversationActivity) getActivity()).processCameraAction();
+                    } else {
+                        ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
+                            @Override
+                            public void onAction(boolean didGrant) {
+                                if (didGrant) {
+                                    ((ConversationActivity) getActivity()).isTakePhoto(true);
+                                    ((ConversationActivity) getActivity()).processCameraAction();
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -3631,8 +3665,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             public void onClick(View v) {
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
-                    ((ConversationActivity) getActivity()).isAttachment(true);
-                    ((ConversationActivity) getActivity()).processAttachment();
+                    if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
+                        ((ConversationActivity) getActivity()).isAttachment(true);
+                        ((ConversationActivity) getActivity()).processAttachment();
+                    } else {
+                        ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
+                            @Override
+                            public void onAction(boolean didGrant) {
+                                if (didGrant) {
+                                    ((ConversationActivity) getActivity()).isAttachment(true);
+                                    ((ConversationActivity) getActivity()).processAttachment();
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });

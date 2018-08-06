@@ -105,6 +105,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String awayMessageTextColor = "#A9A4A4";
     private boolean isAgentApp = false;
     private boolean hideGroupSubtitle = false;
+    private boolean disableGlobalStoragePermission = false;
 
     private boolean launchChatFromProfilePicOrName = false;
 
@@ -575,6 +576,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isGroupSubtitleHidden() {
         return hideGroupSubtitle;
+    }
+
+    public boolean isGlobalStoragePermissionDisabled() {
+        return disableGlobalStoragePermission;
     }
 
     @Override

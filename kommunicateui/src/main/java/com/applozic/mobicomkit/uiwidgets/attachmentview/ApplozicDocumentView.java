@@ -29,6 +29,8 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -63,11 +65,13 @@ public class ApplozicDocumentView {
     String audio_duration;
     private AttachmentTask mDownloadThread;
     private boolean mCacheFlag = false;
+    private KmStoragePermissionListener kmStoragePermissionListener;
     private Handler mHandler = new Handler();
 
 
-    public ApplozicDocumentView(Context context) {
+    public ApplozicDocumentView(Context context, KmStoragePermissionListener kmStoragePermissionListener) {
         this.context = context;
+        this.kmStoragePermissionListener = kmStoragePermissionListener;
     }
 
     public void inflateViewWithMessage(View rootview, Message message) {
@@ -279,16 +283,37 @@ public class ApplozicDocumentView {
         previewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
-                    // Starts downloading this View, using the current cache setting
-                    mDownloadThread = AttachmentManager.startDownload(attachmentViewProperties, mCacheFlag);
-                    // After successfully downloading the image, this marks that it's available.
-                    showDownloadInProgress();
-                }
-                if (mDownloadThread == null) {
-                    mDownloadThread = AttachmentManager.getBGThreadForAttachment(message.getKeyString());
-                    if (mDownloadThread != null)
-                        mDownloadThread.setAttachementViewNew(attachmentViewProperties);
+                if (kmStoragePermissionListener.isPermissionGranted()) {
+                    if (!AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
+                        // Starts downloading this View, using the current cache setting
+                        mDownloadThread = AttachmentManager.startDownload(attachmentViewProperties, mCacheFlag);
+                        // After successfully downloading the image, this marks that it's available.
+                        showDownloadInProgress();
+                    }
+                    if (mDownloadThread == null) {
+                        mDownloadThread = AttachmentManager.getBGThreadForAttachment(message.getKeyString());
+                        if (mDownloadThread != null)
+                            mDownloadThread.setAttachementViewNew(attachmentViewProperties);
+                    }
+                } else {
+                    kmStoragePermissionListener.checkPermission(new KmStoragePermission() {
+                        @Override
+                        public void onAction(boolean didGrant) {
+                            if (didGrant) {
+                                if (!AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
+                                    // Starts downloading this View, using the current cache setting
+                                    mDownloadThread = AttachmentManager.startDownload(attachmentViewProperties, mCacheFlag);
+                                    // After successfully downloading the image, this marks that it's available.
+                                    showDownloadInProgress();
+                                }
+                                if (mDownloadThread == null) {
+                                    mDownloadThread = AttachmentManager.getBGThreadForAttachment(message.getKeyString());
+                                    if (mDownloadThread != null)
+                                        mDownloadThread.setAttachementViewNew(attachmentViewProperties);
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -296,33 +321,17 @@ public class ApplozicDocumentView {
         downloadedLayout.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                final String mimeType = FileUtils.getMimeType(message.getFileMetas().getName());
-                if (Utils.hasNougat()) {
-                    uri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+                if (kmStoragePermissionListener.isPermissionGranted()) {
+                    playAudio();
                 } else {
-                    uri = Uri.fromFile(new File(message.getFilePaths().get(0)));
-                    Log.i(TAG, uri.toString());
-                }
-                if (mimeType != null && mimeType.contains("audio")) {
-                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE},
-                                10);
-                    } else {
-                        ApplozicAudioManager.getInstance(context).play(uri, ApplozicDocumentView.this);
-                        setAudioIcons();
-                        updateApplozicSeekBar();
-                    }
-                } else {
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(uri, mimeType);
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    if (intent.resolveActivity(context.getPackageManager()) != null) {
-                        context.startActivity(intent);
-                    } else {
-                        Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
-                    }
+                    kmStoragePermissionListener.checkPermission(new KmStoragePermission() {
+                        @Override
+                        public void onAction(boolean didGrant) {
+                            if (didGrant) {
+                                playAudio();
+                            }
+                        }
+                    });
                 }
             }
 
@@ -343,11 +352,36 @@ public class ApplozicDocumentView {
                 messageDatabaseService.updateCanceledFlag(message.getMessageId(), 0);
                 Intent intent = new Intent(context, MessageIntentService.class);
                 intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(message, Message.class));
-                MessageIntentService.enqueueWork(context,intent,null);
+                MessageIntentService.enqueueWork(context, intent, null);
                 showDownloadInProgress();
 
             }
         });
+    }
+
+    public void playAudio() {
+        final String mimeType = FileUtils.getMimeType(message.getFileMetas().getName());
+        if (Utils.hasNougat()) {
+            uri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+        } else {
+            uri = Uri.fromFile(new File(message.getFilePaths().get(0)));
+            Log.i(TAG, uri.toString());
+        }
+        if (mimeType != null && mimeType.contains("audio")) {
+            ApplozicAudioManager.getInstance(context).play(uri, ApplozicDocumentView.this);
+            setAudioIcons();
+            updateApplozicSeekBar();
+        } else {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, mimeType);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                context.startActivity(intent);
+            } else {
+                Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void setAudioIcons() {

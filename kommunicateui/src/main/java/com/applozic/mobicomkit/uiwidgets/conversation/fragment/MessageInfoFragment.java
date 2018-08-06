@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,7 +39,6 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
-import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
@@ -52,8 +50,6 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.bumptech.glide.Glide;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -371,7 +367,7 @@ public class MessageInfoFragment extends Fragment {
                     (messageInfo.getDeliveredAtTime() == null ? 0 : messageInfo.getDeliveredAtTime());
             if (timeStamp != 0) {
                 holder.lastSeenAtTextView.setVisibility(View.VISIBLE);
-                holder.lastSeenAtTextView.setText(String.valueOf(KmDateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
+                holder.lastSeenAtTextView.setText(String.valueOf(DateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
 
             } else {
                 holder.lastSeenAtTextView.setVisibility(View.GONE);

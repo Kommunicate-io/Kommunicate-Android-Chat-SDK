@@ -131,6 +131,8 @@ import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Support;
@@ -257,7 +259,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     boolean longPress;
     boolean isToastVisible = false;
     int seconds = 0, minutes = 0;
-    ApplozicDocumentView applozicDocumentView;
     ImageView slideImageView;
     private EmojiconHandler emojiIconHandler;
     private Bitmap previewThumbnail;
@@ -307,7 +308,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
-        applozicDocumentView = new ApplozicDocumentView(getContext());
         restrictedWords = FileUtils.loadRestrictedWordsFile(getContext());
         conversationUIService = new ConversationUIService(getActivity());
         syncCallService = SyncCallService.getInstance(getActivity());
@@ -1507,12 +1507,40 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
             recyclerDetailConversationAdapter.setContextMenuClickListener(this);
             recyclerDetailConversationAdapter.setRichMessageCallbackListener(this);
+            if (getActivity() instanceof KmStoragePermissionListener) {
+                recyclerDetailConversationAdapter.setStoragePermissionListener((KmStoragePermissionListener) getActivity());
+            } else {
+                recyclerDetailConversationAdapter.setStoragePermissionListener(new KmStoragePermissionListener() {
+                    @Override
+                    public boolean isPermissionGranted() {
+                        return false;
+                    }
+
+                    @Override
+                    public void checkPermission(KmStoragePermission storagePermission) {
+                    }
+                });
+            }
         } else if (channel != null) {
             recyclerDetailConversationAdapter = new DetailedConversationAdapter(getActivity(),
                     R.layout.mobicom_message_row_view, messageList, channel, messageIntentClass, emojiIconHandler);
             recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
             recyclerDetailConversationAdapter.setContextMenuClickListener(this);
             recyclerDetailConversationAdapter.setRichMessageCallbackListener(this);
+            if (getActivity() instanceof KmStoragePermissionListener) {
+                recyclerDetailConversationAdapter.setStoragePermissionListener((KmStoragePermissionListener) getActivity());
+            } else {
+                recyclerDetailConversationAdapter.setStoragePermissionListener(new KmStoragePermissionListener() {
+                    @Override
+                    public boolean isPermissionGranted() {
+                        return false;
+                    }
+
+                    @Override
+                    public void checkPermission(KmStoragePermission storagePermission) {
+                    }
+                });
+            }
         }
         //  listView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         linearLayoutManager.setSmoothScrollbarEnabled(true);

@@ -76,12 +76,12 @@
   "logoutPackageName": "kommunicate.io.sample.MainActivity",
   "enableAwayMessage": true,
   "awayMessageTextColor": "#A9A4A4",
-  "hideGroupSubtitle" : false,
+  "hideGroupSubtitle": false,
   "attachmentOptions": {
     ":location": true,
     ":camera": true,
     ":file": true,
-    ":emoticons":true
+    ":emoticons": true
   },
   "editTextHintText:": "Type your message...",
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",
@@ -89,6 +89,7 @@
   "groupInfoScreenVisible": true,
   "forwardOption": false,
   "recordButton": false,
+  "disableGlobalStoragePermission": true,
   "messageTemplate": {
     "isEnabled": false,
     "borderColor": "#5c5aa7",

@@ -198,13 +198,32 @@
     <string name="default_start_new_conversation">Start new conversation</string>
     <string name="start_conversation">Start conversation</string>
 
+    <string name="DATE_SAVE_FILE_FORMAT">yyyyMMdd_HHmmss</string>
+    <string name="DATE_MEDIUM_FORMAT">"MMM dd, yyyy"</string>
+    <string name="DATE_DAY_FORMAT">EEEE</string>-->
+
     <string name="JUST_NOW">Just now</string>
-    <string name="MINUTES"> mins</string>
-    <string name="HOURS"> hrs</string>
-    <string name="H">h</string>
-    <string name="MINUTES_AGO"> mins ago</string>
-    <string name="HOURS_AGO"> hrs ago</string>
     <string name="YESTERDAY">Yesterday</string>
+
+    <plurals name="HOURS">
+        <item quantity="one">%d hr</item>
+        <item quantity="other">%d hrs</item>
+    </plurals>
+
+    <plurals name="MINUTES">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
+    <plurals name="MINUTES_AGO">
+        <item quantity="one">%d min ago</item>
+        <item quantity="other">%d mins ago</item>
+    </plurals>
+
+    <plurals name="HOURS_AGO">
+        <item quantity="one">%d hr ago</item>
+        <item quantity="other">%d hrs ago</item>
+    </plurals>
 
     <string name="emailEt">Email</string>
     <string name="nameEt">Name</string>

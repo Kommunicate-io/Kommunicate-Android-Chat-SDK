@@ -38,13 +38,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
-import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPositionHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
+import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -119,7 +119,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                MobiComUserPreference.getInstance(getActivity()).setDeviceTimeOffset(KmDateUtils.getTimeDiffFromUtc());
+                MobiComUserPreference.getInstance(getActivity()).setDeviceTimeOffset(DateUtils.getTimeDiffFromUtc());
             }
         });
         thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);

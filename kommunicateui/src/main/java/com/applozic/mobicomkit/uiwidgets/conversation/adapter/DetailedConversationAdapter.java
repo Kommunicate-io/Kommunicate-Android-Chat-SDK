@@ -52,7 +52,6 @@ import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicDocumentView;
@@ -64,6 +63,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInter
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
+import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Support;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -248,7 +248,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 myViewHolder2.dateView.setTextColor(Color.parseColor(alCustomizationSettings.getConversationDateTextColor().trim()));
                 myViewHolder2.dayTextView.setTextColor(Color.parseColor(alCustomizationSettings.getConversationDayTextColor().trim()));
 
-                if (KmDateUtils.isSameDay(message.getCreatedAtTime())) {
+                if (DateUtils.isSameDay(message.getCreatedAtTime())) {
                     myViewHolder2.dayTextView.setVisibility(View.VISIBLE);
                     myViewHolder2.dateView.setVisibility(GONE);
                     myViewHolder2.dayTextView.setText(R.string.today);
@@ -276,7 +276,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 MyViewHolder5 myViewHolder5 = (MyViewHolder5) holder;
 
                 if (message != null) {
-                    myViewHolder5.timeTextView.setText(KmDateUtils.getFormattedDate(message.getCreatedAtTime()));
+                    myViewHolder5.timeTextView.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
                     if (message.getMetadata() != null) {
                         myViewHolder5.statusTextView.setText(VideoCallNotificationHelper.getStatus(message.getMetadata()));
                     }
@@ -749,7 +749,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.chatLocation.setVisibility(View.GONE);
                             myHolder.preview.setVisibility(View.GONE);
                             audioView.hideView(false);
-                            myHolder.createdAtTime.setText(KmDateUtils.getFormattedDate(message.getCreatedAtTime()));
+                            myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
                         }
                     }
                     if (message.isCanceled()) {
@@ -826,11 +826,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
 
                     if (message.getScheduledAt() != null) {
-                        myHolder.createdAtTime.setText(KmDateUtils.getFormattedDate(message.getScheduledAt()));
+                        myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));
                     } else if (myHolder.createdAtTime != null && message.isDummyEmptyMessage()) {
                         myHolder.createdAtTime.setText("");
                     } else if (myHolder.createdAtTime != null) {
-                        myHolder.createdAtTime.setText(KmDateUtils.getFormattedDate(message.getCreatedAtTime()));
+                        myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
                     }
 
                     String mimeType = "";

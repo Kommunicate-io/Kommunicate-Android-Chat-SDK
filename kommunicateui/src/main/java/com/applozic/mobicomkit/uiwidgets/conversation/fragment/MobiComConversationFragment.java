@@ -98,7 +98,6 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
-import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
@@ -132,6 +131,7 @@ import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
+import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Support;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -1594,35 +1594,44 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
-        if (userNotAbleToChatLayout != null && individualMessageSendLayout != null) {
-            userNotAbleToChatLayout.setVisibility(withUserContact.isDeleted() ? VISIBLE : View.GONE);
-            individualMessageSendLayout.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
-            bottomlayoutTextView.setText(R.string.user_has_been_deleted_text);
-        }
-
-        if (menu != null) {
-            menu.findItem(R.id.userBlock).setVisible(alCustomizationSettings.isBlockOption() ? !withUserContact.isDeleted() && !withUserContact.isBlocked() : alCustomizationSettings.isBlockOption());
-            menu.findItem(R.id.userUnBlock).setVisible(alCustomizationSettings.isBlockOption() ? !withUserContact.isDeleted() && withUserContact.isBlocked() : alCustomizationSettings.isBlockOption());
-            menu.findItem(R.id.refresh).setVisible(alCustomizationSettings.isRefreshOption() ? !withUserContact.isDeleted() : alCustomizationSettings.isRefreshOption());
-
-        }
-
-        if (withUserContact.isBlocked() || withUserContact.isBlockedBy() || withUserContact.isDeleted()) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
+        if (this.getActivity() == null) {
             return;
         }
-
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (userNotAbleToChatLayout != null && individualMessageSendLayout != null) {
+                    userNotAbleToChatLayout.setVisibility(withUserContact.isDeleted() ? VISIBLE : View.GONE);
+                    individualMessageSendLayout.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
+                    bottomlayoutTextView.setText(R.string.user_has_been_deleted_text);
+                }
+
+                if (menu != null) {
+                    menu.findItem(R.id.userBlock).setVisible(alCustomizationSettings.isBlockOption() ? !withUserContact.isDeleted() && !withUserContact.isBlocked() : alCustomizationSettings.isBlockOption());
+                    menu.findItem(R.id.userUnBlock).setVisible(alCustomizationSettings.isBlockOption() ? !withUserContact.isDeleted() && withUserContact.isBlocked() : alCustomizationSettings.isBlockOption());
+                    menu.findItem(R.id.refresh).setVisible(alCustomizationSettings.isRefreshOption() ? !withUserContact.isDeleted() : alCustomizationSettings.isRefreshOption());
+                }
+
+                if (withUserContact.isBlocked() || withUserContact.isBlockedBy() || withUserContact.isDeleted()) {
+                    if (getActivity() != null) {
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
+                    }
+                    return;
+                }
                 if (withUserContact != null) {
                     if (withUserContact.isConnected()) {
                         typingStarted = false;
-                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.user_online));
+                        if (getActivity() != null) {
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.user_online));
+                        }
                     } else if (withUserContact.getLastSeenAt() != 0) {
-                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + KmDateUtils.getDateAndTimeForLastSeen(withUserContact.getLastSeenAt(), getContext()));
+                        if (getActivity() != null) {
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + DateUtils.getDateAndTimeForLastSeen(getContext(), withUserContact.getLastSeenAt(), R.string.JUST_NOW, R.plurals.MINUTES_AGO, R.plurals.HOURS_AGO, R.string.YESTERDAY));
+                        }
                     } else {
-                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
+                        if (getActivity() != null) {
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
+                        }
                     }
                 }
             }
@@ -1644,7 +1653,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             if (withUserContact.isConnected()) {
                                 ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.user_online));
                             } else if (withUserContact.getLastSeenAt() != 0) {
-                                ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + KmDateUtils.getDateAndTimeForLastSeen(withUserContact.getLastSeenAt(), getContext()));
+                                ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + DateUtils.getDateAndTimeForLastSeen(getContext(), withUserContact.getLastSeenAt(), R.string.JUST_NOW, R.plurals.MINUTES_AGO, R.plurals.HOURS_AGO, R.string.YESTERDAY));
                             } else {
                                 ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
                             }
@@ -2631,20 +2640,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 downloadConversation.cancel(true);
             }
 
-            if (contact != null) {
-                if (contact.isDeleted()) {
-                    individualMessageSendLayout.setVisibility(View.GONE);
-                    userNotAbleToChatLayout.setVisibility(VISIBLE);
-                } else {
-                    userNotAbleToChatLayout.setVisibility(View.GONE);
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        if (appContactService != null && contact != null) {
+                            updateLastSeenStatus();
+                        }
+                    } catch (Exception e) {
+
+                    }
                 }
-                contact = appContactService.getContactById(contact.getContactIds());
-                if (contact.isBlocked() || contact.isBlockedBy()) {
-                    ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("");
-                } else {
-                    updateLastSeenStatus();
-                }
-            }
+            });
+            thread.setPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+            thread.start();
 
             if (SyncCallService.refreshView) {
                 messageList.clear();
@@ -3268,7 +3277,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     }
 
                     for (int i = 1; i <= nextMessageList.size() - 1; i++) {
-                        long dayDifference = KmDateUtils.daysBetween(new Date(nextMessageList.get(i - 1).getCreatedAtTime()), new Date(nextMessageList.get(i).getCreatedAtTime()));
+                        long dayDifference = DateUtils.daysBetween(new Date(nextMessageList.get(i - 1).getCreatedAtTime()), new Date(nextMessageList.get(i).getCreatedAtTime()));
 
                         if (dayDifference >= 1) {
                             Message message = new Message();

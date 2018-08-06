@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageBuilder;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
@@ -59,6 +60,11 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
             case Kommunicate.LOGOUT_CALL:
                 KmHelper.performLogout(context, object); //object will receive the exit Activity, the one that will be launched when logout is successfull
                 break;
+
+            case Kommunicate.PRECHAT_LOGIN_CALL:
+                KmHelper.performLogin(context, (User) object);
+                break;
+
         }
     }
 

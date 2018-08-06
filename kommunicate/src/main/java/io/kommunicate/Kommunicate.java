@@ -9,6 +9,7 @@ import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
+import com.applozic.mobicomkit.uiwidgets.LeadCollectionActivity;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
@@ -44,6 +45,7 @@ public class Kommunicate {
     private static final String KM_BOT = "bot";
     public static final String START_NEW_CHAT = "startNewChat";
     public static final String LOGOUT_CALL = "logoutCall";
+    public static final String PRECHAT_LOGIN_CALL = "prechatLogin";
 
     public static void init(Context context, String applicationKey) {
         Applozic.init(context, applicationKey);
@@ -63,6 +65,11 @@ public class Kommunicate {
 
     public static void openConversation(Context context) {
         Intent intent = new Intent(context, KMConversationActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void openConversation(Context context, boolean prechatLeadCollection) {
+        Intent intent = new Intent(context, (prechatLeadCollection && !KMUser.isLoggedIn(context)) ? LeadCollectionActivity.class : KMConversationActivity.class);
         context.startActivity(intent);
     }
 

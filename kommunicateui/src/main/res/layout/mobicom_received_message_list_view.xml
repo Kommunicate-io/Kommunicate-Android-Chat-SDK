@@ -81,7 +81,6 @@
             android:id="@+id/messageTextInsideLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="40dp"
             android:minWidth="94dp"
             android:orientation="vertical">
 
@@ -122,18 +121,20 @@
                 android:textColor="#646262"
                 android:textDirection="locale"
                 android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/createdAtTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|end|bottom"
-                android:fontFamily="sans-serif"
-                android:letterSpacing="0.01"
-                android:text="12:34 PM"
-                android:textColor="#8a8686"
-                android:textSize="10sp" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/createdAtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|end|bottom"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.01"
+            android:text="12:34 PM"
+            android:layout_marginBottom="2dp"
+            android:paddingTop="2dp"
+            android:textColor="#8a8686"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/selfDestruct"
@@ -148,7 +149,6 @@
             android:textColor="@color/apploizc_darker_gray_color"
             android:textSize="11sp"
             android:visibility="gone" />
-
     </LinearLayout>
 
     <include layout="@layout/al_rich_message_layout" />

@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class AlCustomizationSettings extends JsonMarker {
 
-    public String customMessageBackgroundColor = "#e6e5ec";
+    private String customMessageBackgroundColor = "#e6e5ec";
     private String sentMessageBackgroundColor = "#5c5aa7";
     private String receivedMessageBackgroundColor = "#e6e5ec";
     private String sendButtonBackgroundColor = "#5c5aa7";
@@ -568,10 +568,6 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isAgentApp() {
         return isAgentApp;
-    }
-
-    public void setAgentApp(boolean agentApp) {
-        isAgentApp = agentApp;
     }
 
     public boolean isGroupSubtitleHidden() {

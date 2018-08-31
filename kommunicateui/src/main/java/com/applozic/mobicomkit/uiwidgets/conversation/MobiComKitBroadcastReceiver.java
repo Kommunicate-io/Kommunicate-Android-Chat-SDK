@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
@@ -26,10 +27,12 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
 
     private ConversationUIService conversationUIService;
     private BaseContactService baseContactService;
+    private boolean hideActionMessages;
 
     public MobiComKitBroadcastReceiver(FragmentActivity fragmentActivity) {
         this.conversationUIService = new ConversationUIService(fragmentActivity);
         this.baseContactService = new AppContactService(fragmentActivity);
+        this.hideActionMessages = ApplozicClient.getInstance(fragmentActivity).isActionMessagesHidden();
     }
 
     @Override
@@ -39,6 +42,12 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
         String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
         if (!TextUtils.isEmpty(messageJson)) {
             message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+
+            if (message != null) {
+                if (hideActionMessages && message.isActionMessage()) {
+                    message.setHidden(true);
+                }
+            }
         }
         Utils.printLog(context, TAG, "Received broadcast, action: " + action + ", message: " + message);
 

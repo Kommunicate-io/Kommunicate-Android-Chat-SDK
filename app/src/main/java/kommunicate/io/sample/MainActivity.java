@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
         Kommunicate.login(MainActivity.this, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                ApplozicClient.getInstance(context).hideActionMessages(true);
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }

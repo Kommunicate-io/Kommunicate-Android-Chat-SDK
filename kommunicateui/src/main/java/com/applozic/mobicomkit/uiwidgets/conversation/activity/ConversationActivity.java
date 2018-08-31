@@ -1216,11 +1216,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     public boolean isServiceDisconnected() {
-        /*int pricingPackage = MobiComUserPreference.getInstance(this).getPricingPackage();
-        boolean isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-        boolean isAgentApp = alCustomizationSettings != null && alCustomizationSettings.isAgentApp();
-
-        return !isAgentApp && (pricingPackage == -1 || pricingPackage == 6 || (pricingPackage == 0 && !isDebuggable));*/
         return false;
     }
 

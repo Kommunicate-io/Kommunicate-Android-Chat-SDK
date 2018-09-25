@@ -17,12 +17,11 @@ import com.applozic.mobicommons.people.channel.Channel;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.async.GetUserListAsyncTask;
@@ -223,34 +222,31 @@ public class Kommunicate {
         new AlGroupInformationAsyncTask(context, clientGroupId, groupMemberListener).execute();
     }
 
-    private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
+    public static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
 
-        if (botIds != null && !botIds.contains(KM_BOT)) {
-            botIds.add(KM_BOT);
+        if (agentIds == null || agentIds.isEmpty()) {
+            throw new KmException("Please add at-least one Agent");
         }
 
-        if (botIds == null) {
-            botIds = new ArrayList<>();
-            botIds.add(KM_BOT);
-        }
+        Collections.sort(agentIds);
 
-        List<String> tempList = new ArrayList<>();
-
+        List<String> tempList = new ArrayList<>(agentIds);
         tempList.add(userId);
-        tempList.addAll(botIds);
-        tempList.addAll(agentIds);
 
-        SortedSet<String> userIds = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-        userIds.addAll(tempList);
+        if (botIds != null && !botIds.isEmpty()) {
+            Collections.sort(botIds);
+            tempList.addAll(botIds);
+        }
 
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
 
-        Iterator<String> iterator = userIds.iterator();
+        Iterator<String> iterator = tempList.iterator();
+
         while (iterator.hasNext()) {
             String temp = iterator.next();
             sb.append(temp);
 
-            if (!temp.equals(userIds.last())) {
+            if (!temp.equals(tempList.get(tempList.size() - 1))) {
                 sb.append("_");
             }
         }

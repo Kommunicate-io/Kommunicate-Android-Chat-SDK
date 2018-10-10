@@ -238,6 +238,9 @@ public class Kommunicate {
         tempList.add(userId);
 
         if (botIds != null && !botIds.isEmpty()) {
+            if (botIds.contains(KM_BOT)) {
+                botIds.remove(KM_BOT);
+            }
             Collections.sort(botIds);
             tempList.addAll(botIds);
         }

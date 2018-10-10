@@ -62,6 +62,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivit
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -320,14 +321,27 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     int index = messageList.indexOf(message);
                     boolean hideRecursiveImages = false;
 
-                    if (!message.isTypeOutbox() && index != 0 && !messageList.get(index - 1).isTypeOutbox()
-                            && messageList.get(index - 1).getContentType() != 10
-                            && messageList.get(index - 1).getContentType() != 103
-                            && messageList.get(index - 1).getTo() != null
-                            && message.getTo() != null
-                            && messageList.get(index - 1).getTo().equals(message.getTo())) {
+                    RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
 
-                        hideRecursiveImages = true;
+                    if (!message.isTypeOutbox()) {
+                        if (index != 0 && !messageList.get(index - 1).isTypeOutbox()
+                                && messageList.get(index - 1).getContentType() != 10
+                                && messageList.get(index - 1).getContentType() != 103
+                                && messageList.get(index - 1).getTo() != null
+                                && message.getTo() != null
+                                && messageList.get(index - 1).getTo().equals(message.getTo())) {
+
+                            hideRecursiveImages = true;
+                            params.setMargins(0, DimensionsUtils.convertDpToPx(3), 0, 0);
+                        } else {
+                            params.setMargins(0, DimensionsUtils.convertDpToPx(8), 0, 0);
+                        }
+                    } else {
+                        if (index != 0 && !messageList.get(index - 1).isTypeOutbox()) {
+                            params.setMargins(0, DimensionsUtils.convertDpToPx(8), 0, 0);
+                        } else {
+                            params.setMargins(0, DimensionsUtils.convertDpToPx(3), 0, 0);
+                        }
                     }
 
                     if (message.getGroupId() == null) {
@@ -1380,6 +1394,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         TextView statusTextView;
         LinearLayout messageTextInsideLayout;
         LinearLayout richMessageLayout;
+        RelativeLayout messageRootLayout;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1420,6 +1435,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             statusTextView = (TextView) customView.findViewById(R.id.statusImage);
             messageTextInsideLayout = customView.findViewById(R.id.messageTextInsideLayout);
             richMessageLayout = (LinearLayout) customView.findViewById(R.id.alRichMessageView);
+            messageRootLayout = (RelativeLayout) customView.findViewById(R.id.messageLayout);
 
             shareContactImage = (ImageView) mainContactShareLayout.findViewById(R.id.contact_share_image);
             shareContactName = (TextView) mainContactShareLayout.findViewById(R.id.contact_share_tv_name);

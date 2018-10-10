@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicomkit.feed.AlResponse;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.List;
@@ -61,7 +62,12 @@ public class ApplozicChannelCreateTask extends AsyncTask<Void, Void, Boolean> {
                     channelInfo.setClientGroupId(clientGroupId);
                 }
                 channelInfo.setType(type);
-                channel = channelService.createChannel(channelInfo);
+                AlResponse response = channelService.createChannel(channelInfo);
+
+                if (response.isSuccess()) {
+                    channel = (Channel) response.getResponse();
+                }
+
                 return channel != null;
             }
             return false;

@@ -72,6 +72,10 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
+    public static void setNotificationSoundPath(Context context, String path) {
+        Applozic.getInstance(context).setCustomNotificationSound(path);
+    }
+
     public static void openParticularConversation(Context context, Integer groupId) {
         Intent intent = new Intent(context, KMConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, groupId);

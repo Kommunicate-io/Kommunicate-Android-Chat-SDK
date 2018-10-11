@@ -119,6 +119,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALGuestCount
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlHotelBookingModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
@@ -3737,32 +3738,36 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onAction(Context context, String action, Message message, Object object) {
         switch (action) {
-            case "sendGuestList":
+            case AlRichMessage.SEND_GUEST_LIST:
                 List<ALGuestCountModel> guestCountModels = (List<ALGuestCountModel>) object;
                 sendGuestListMessage(guestCountModels);
                 break;
 
-            case "sendHotelRating":
+            case AlRichMessage.SEND_HOTEL_RATING:
                 sendMessage((String) object);
                 break;
 
-            case "sendHotelDetails":
+            case AlRichMessage.SEND_HOTEL_DETAILS:
                 sendHotelDetailMessage((AlHotelBookingModel) object);
                 break;
 
-            case "sendRoomDetailsMessage":
+            case AlRichMessage.SEND_ROOM_DETAILS_MESSAGE:
                 sendRoomDetailsMessage((AlHotelBookingModel) object);
                 break;
 
-            case "sendBookingDetails":
+            case AlRichMessage.SEND_BOOKING_DETAILS:
                 sendBookingDetailsMessage((ALBookingDetailsModel) object);
                 break;
 
-            case "makePayment":
+            case AlRichMessage.MAKE_PAYMENT:
                 makePaymentForBooking((ALRichMessageModel) object);
                 break;
 
-            case "listItemClick":
+            case AlRichMessage.LIST_ITEM_CLICK:
+                sendFaqMessage((ALRichMessageModel.AlElementModel) object);
+                break;
+
+            case AlRichMessage.FAQ_ACTIONS:
                 sendMessage((String) object);
                 break;
         }
@@ -3832,5 +3837,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         intent.putExtra("formData", model.getFormData());
         intent.putExtra("formAction", model.getFormAction());
         getContext().startActivity(intent);
+    }
+
+    public void sendFaqMessage(ALRichMessageModel.AlElementModel model) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("KM_FAQ_ID", String.valueOf(model.getArticleId()));
+        metadata.put("source", model.getSource());
+        sendMessage(model.getTitle(), metadata, Message.ContentType.DEFAULT.getValue());
     }
 }

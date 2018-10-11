@@ -1,25 +1,19 @@
 package io.kommunicate.services;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.media.AudioAttributes;
-import android.media.RingtoneManager;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.HttpRequestUtils;
-import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
 import com.applozic.mobicomkit.api.conversation.ConversationIntentService;
+import com.applozic.mobicomkit.api.notification.NotificationChannels;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.exception.InvalidApplicationException;
 import com.applozic.mobicomkit.exception.UnAuthoriseException;
@@ -356,7 +350,7 @@ public class KmUserClientService extends UserClientService {
             mobiComUserPreference.setUserTypeId(String.valueOf(user.getUserTypeId()));
         }
         if (!TextUtils.isEmpty(user.getNotificationSoundFilePath())) {
-            mobiComUserPreference.setNotificationSoundFilePath(user.getNotificationSoundFilePath());
+            Applozic.getInstance(context).setCustomNotificationSound(user.getNotificationSoundFilePath());
         }
         Contact contact = new Contact();
         contact.setUserId(user.getUserId());
@@ -370,7 +364,8 @@ public class KmUserClientService extends UserClientService {
         contact.setMetadata(user.getMetadata());
         contact.setStatus(registrationResponse.getStatusMessage());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(context);
+            Applozic.getInstance(context).setNotificationChannelVersion(NotificationChannels.NOTIFICATION_CHANNEL_VERSION - 1);
+            new NotificationChannels(context, Applozic.getInstance(context).getCustomNotificationSound()).prepareNotificationChannels();
         }
         contact.processContactNumbers(context);
         new AppContactService(context).upsert(contact);
@@ -390,34 +385,6 @@ public class KmUserClientService extends UserClientService {
         ApplozicMqttIntentService.enqueueWork(context, intent);
 
         return registrationResponse;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    void createNotificationChannel(Context context) {
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        CharSequence name = MobiComKitConstants.PUSH_NOTIFICATION_NAME;
-        ;
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-        if (mNotificationManager.getNotificationChannel(MobiComKitConstants.AL_PUSH_NOTIFICATION) == null) {
-            NotificationChannel mChannel = new NotificationChannel(MobiComKitConstants.AL_PUSH_NOTIFICATION, name, importance);
-            mChannel.enableLights(true);
-            mChannel.setLightColor(Color.GREEN);
-            if (ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled()) {
-                mChannel.setShowBadge(true);
-            } else {
-                mChannel.setShowBadge(false);
-            }
-            if (ApplozicClient.getInstance(context).getVibrationOnNotification()) {
-                mChannel.enableVibration(true);
-                mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-            }
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
-            mChannel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), audioAttributes);
-            mNotificationManager.createNotificationChannel(mChannel);
-
-        }
     }
 
     public String getResponse(String urlString, String contentType, String accept) {

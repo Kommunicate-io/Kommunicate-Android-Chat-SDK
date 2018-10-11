@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -43,10 +44,9 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
     private ALRichMessageListener listener;
     private List<ALRichMessageModel.ALPayloadModel> payloadList;
     private Message message;
-    List<String> titleList;
+    private List<String> titleList;
 
     public ALRichMessageAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
-        this.model = model;
         this.context = context;
         this.model = model;
         this.listener = listener;
@@ -74,6 +74,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         }
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -273,12 +274,12 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                         if (context.getApplicationContext() instanceof ALRichMessageListener) {
                             ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, payloadList.get(getLayoutPosition()).getMessage().trim());
                         }
-                        listener.onAction(context, "sendHotelRating", null, payloadList.get(getLayoutPosition()).getMessage().trim());
+                        listener.onAction(context, AlRichMessage.SEND_HOTEL_RATING, null, payloadList.get(getLayoutPosition()).getMessage().trim());
                     } else {
                         if (context.getApplicationContext() instanceof ALRichMessageListener) {
                             ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, model);
                         }
-                        listener.onAction(context, "makePayment", null, model);
+                        listener.onAction(context, AlRichMessage.MAKE_PAYMENT, null, model);
                     }
                 }
             });
@@ -356,7 +357,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         holder.doneTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onAction(context, "sendGuestList", null, guestList);
+                listener.onAction(context, AlRichMessage.SEND_GUEST_LIST, null, guestList);
             }
         });
     }
@@ -434,7 +435,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     hotel.setSessionId(model.getSessionId());
-                    listener.onAction(context, "sendHotelDetails", null, hotel);
+                    listener.onAction(context, AlRichMessage.SEND_HOTEL_DETAILS, null, hotel);
                 }
             });
         } else if (payloadList != null) {
@@ -580,7 +581,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     hotel.setSessionId(model.getSessionId());
-                    listener.onAction(context, "sendRoomDetailsMessage", null, hotel);
+                    listener.onAction(context, AlRichMessage.SEND_ROOM_DETAILS_MESSAGE, null, hotel);
                 }
             });
         }
@@ -621,7 +622,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                     bookingDetails.setEmailId(holder.emailIdEt.getText().toString().trim());
                     bookingDetails.setPhoneNo(holder.contactNumberEt.getText().toString().trim());
 
-                    listener.onAction(context, "sendBookingDetails", null, detailsModel);
+                    listener.onAction(context, AlRichMessage.SEND_BOOKING_DETAILS, null, detailsModel);
                 }
             }
         });
@@ -632,10 +633,10 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, action.getAction(), message, action.getData());
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, (String) action.getAction(), message, action.getData());
                 }
                 if (listener != null) {
-                    listener.onAction(context, action.getAction(), message, action.getData());
+                    listener.onAction(context, (String) action.getAction(), message, action.getData());
                 }
             }
         };

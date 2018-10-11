@@ -20,6 +20,7 @@ public class ALRichMessageModel extends JsonMarker {
     private String formAction;
     private String formData;
     private String headerText;
+    private String messagePreview;
 
     public Short getContentType() {
         return contentType;
@@ -81,6 +82,14 @@ public class ALRichMessageModel extends JsonMarker {
         return headerText;
     }
 
+    public String getMessagePreview() {
+        return messagePreview;
+    }
+
+    public void setMessagePreview(String messagePreview) {
+        this.messagePreview = messagePreview;
+    }
+
     public void setHeaderText(String headerText) {
         this.headerText = headerText;
     }
@@ -109,6 +118,54 @@ public class ALRichMessageModel extends JsonMarker {
         this.formData = formData;
     }
 
+    public class AlElementModel extends JsonMarker {
+        private String title;
+        private String description;
+        private long articleId;
+        private String source;
+        private String imgSrc;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public long getArticleId() {
+            return articleId;
+        }
+
+        public void setArticleId(long articleId) {
+            this.articleId = articleId;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        public void setSource(String source) {
+            this.source = source;
+        }
+
+        public String getImgSrc() {
+            return imgSrc;
+        }
+
+        public void setImgSrc(String imgSrc) {
+            this.imgSrc = imgSrc;
+        }
+    }
+
     public class ALPayloadModel extends JsonMarker {
         private String title;
         private String type;
@@ -117,12 +174,17 @@ public class ALRichMessageModel extends JsonMarker {
         private String handlerId;
         private String formAction;
         private String message;
+        private String headerText;
+        private String headerImgSrc;
         private String headerImageUrl;
         private String subtitle;
         private String description;
+        private List<AlElementModel> elements;
         private List<AlActionModel> actions;
         private String rating;
         private String overlayText;
+        private String buttonLabel;
+        private AlActionModel[] buttons;
         private AlFormDataModel formData;
 
         public String getTitle() {
@@ -236,6 +298,47 @@ public class ALRichMessageModel extends JsonMarker {
         public void setOverlayText(String overlayText) {
             this.overlayText = overlayText;
         }
+
+
+        public String getButtonLabel() {
+            return buttonLabel;
+        }
+
+        public void setButtonLabel(String buttonLabel) {
+            this.buttonLabel = buttonLabel;
+        }
+
+        public AlActionModel[] getButtons() {
+            return buttons;
+        }
+
+        public void setButtons(AlActionModel[] buttons) {
+            this.buttons = buttons;
+        }
+
+        public String getHeaderText() {
+            return headerText;
+        }
+
+        public void setHeaderText(String headerText) {
+            this.headerText = headerText;
+        }
+
+        public String getHeaderImgSrc() {
+            return headerImgSrc;
+        }
+
+        public void setHeaderImgSrc(String headerImgSrc) {
+            this.headerImgSrc = headerImgSrc;
+        }
+
+        public List<AlElementModel> getElements() {
+            return elements;
+        }
+
+        public void setElements(List<AlElementModel> elements) {
+            this.elements = elements;
+        }
     }
 
     public class AlFormDataModel extends JsonMarker {
@@ -331,16 +434,17 @@ public class ALRichMessageModel extends JsonMarker {
         }
     }
 
-    public class AlActionModel extends JsonMarker{
-        private String action;
+    public class AlActionModel extends JsonMarker {
+        private Object action;
+        private String type;
         private String name;
         private String data;
 
-        public String getAction() {
+        public Object getAction() {
             return action;
         }
 
-        public void setAction(String action) {
+        public void setAction(Object action) {
             this.action = action;
         }
 
@@ -359,6 +463,14 @@ public class ALRichMessageModel extends JsonMarker {
         public void setData(String data) {
             this.data = data;
         }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
     }
 
     @Override
@@ -374,6 +486,8 @@ public class ALRichMessageModel extends JsonMarker {
                 ", price='" + price + '\'' +
                 ", formAction='" + formAction + '\'' +
                 ", formData='" + formData + '\'' +
+                ", headerText='" + headerText + '\'' +
+                ", messagePreview='" + messagePreview + '\'' +
                 '}';
     }
 }

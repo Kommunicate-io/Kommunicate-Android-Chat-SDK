@@ -156,6 +156,14 @@ public class ALRichMessageModel extends JsonMarker {
         public void setSource(String source) {
             this.source = source;
         }
+
+        public String getImgSrc() {
+            return imgSrc;
+        }
+
+        public void setImgSrc(String imgSrc) {
+            this.imgSrc = imgSrc;
+        }
     }
 
     public class ALPayloadModel extends JsonMarker {

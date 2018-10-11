@@ -7,13 +7,15 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -44,16 +46,23 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
     public void bindView(AlListItemViewHolder holder, ALRichMessageModel.AlElementModel element) {
         if (!TextUtils.isEmpty(element.getTitle())) {
             holder.headerTv.setVisibility(View.VISIBLE);
-            holder.headerTv.setText(element.getTitle());
+            holder.headerTv.setText(element.getTitle().trim());
         } else {
             holder.headerTv.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(element.getDescription())) {
+        if (!TextUtils.isEmpty(element.getDescription().trim())) {
             holder.detailsTv.setVisibility(View.VISIBLE);
             holder.detailsTv.setText(element.getDescription());
         } else {
             holder.detailsTv.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(element.getImgSrc())) {
+            holder.listImage.setVisibility(View.VISIBLE);
+            Glide.with(context).load(element.getImgSrc()).into(holder.listImage);
+        } else {
+            holder.listImage.setVisibility(View.GONE);
         }
     }
 
@@ -66,7 +75,8 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
 
         private TextView headerTv;
         private TextView detailsTv;
-        private LinearLayout rootLayout;
+        private RelativeLayout rootLayout;
+        private ImageView listImage;
 
         public AlListItemViewHolder(View itemView) {
             super(itemView);
@@ -74,6 +84,7 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
             headerTv = itemView.findViewById(R.id.listItemHeaderText);
             detailsTv = itemView.findViewById(R.id.listItemText);
             rootLayout = itemView.findViewById(R.id.rootLayout);
+            listImage = itemView.findViewById(R.id.listItemImage);
 
             rootLayout.setOnClickListener(this);
         }

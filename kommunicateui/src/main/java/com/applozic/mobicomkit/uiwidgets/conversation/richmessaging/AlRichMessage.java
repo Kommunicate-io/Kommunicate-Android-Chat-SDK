@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.lists.AlRichListsAdapter;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.bumptech.glide.Glide;
 
 import java.util.Map;
 
@@ -172,6 +174,7 @@ public class AlRichMessage {
         if (model != null) {
             if (model.getPayload() != null) {
                 TextView headerText = listItemLayout.findViewById(R.id.headerText);
+                ImageView headerImage = listItemLayout.findViewById(R.id.headerImage);
                 final TextView actionText = listItemLayout.findViewById(R.id.actionButton);
                 ALRichMessageModel.ALPayloadModel payload = (ALRichMessageModel.ALPayloadModel) GsonUtils.getObjectFromJson(model.getPayload(), ALRichMessageModel.ALPayloadModel.class);
                 if (payload != null) {
@@ -186,6 +189,13 @@ public class AlRichMessage {
                         headerText.setText(payload.getHeaderText());
                     } else {
                         headerText.setVisibility(View.GONE);
+                    }
+
+                    if (!TextUtils.isEmpty(payload.getHeaderImgSrc())) {
+                        headerImage.setVisibility(View.VISIBLE);
+                        Glide.with(context).load(payload.getHeaderImgSrc()).into(headerImage);
+                    } else {
+                        headerImage.setVisibility(View.GONE);
                     }
 
                     if (payload.getButtons() != null) {

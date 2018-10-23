@@ -758,6 +758,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                     if (message.isCanceled()) {
                         myHolder.attachmentRetry.setVisibility(View.VISIBLE);
+                    }else{
+                        myHolder.attachmentRetry.setVisibility(View.GONE);
                     }
                     myHolder.attachmentRetry.setOnClickListener(new View.OnClickListener() {
                         @Override

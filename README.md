@@ -21,7 +21,7 @@ To get started with Kommunicate Android SDK, head over to Kommunicate website an
 
 Add the following in your app build.gradle dependency:
 
-```compile 'io.kommunicate:kommunicate:1.6.1'```
+```compile 'io.kommunicate:kommunicate:1.6.2'```
 
 Add the following permissions in your `AndroidManifest.xml` file:
 

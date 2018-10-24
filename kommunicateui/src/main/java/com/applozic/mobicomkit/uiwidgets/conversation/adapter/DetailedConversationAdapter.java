@@ -1119,7 +1119,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     public void loadProfileImage(Contact contact, CircleImageView imageView, TextView textView, boolean hideRecursiveImages) {
-        Utils.printLog(context, "ImageTest", "Contact : " + contact);
         if (hideRecursiveImages) {
             imageView.setVisibility(GONE);
             textView.setVisibility(GONE);

@@ -16,6 +16,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String receivedMessageBackgroundColor = "#e6e5ec";
     private String sendButtonBackgroundColor = "#5c5aa7";
     private String attachmentIconsBackgroundColor = "#FF03A9F4";
+    private String attachmentIconsColor = "#FF5c5aa7";
     private String chatBackgroundColorOrDrawable;
     private String editTextBackgroundColorOrDrawable;
     private String editTextLayoutBackgroundColorOrDrawable;
@@ -588,6 +589,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setLegacyWidgetInputLayout(boolean legacyWidgetInputLayout) {
         this.legacyWidgetInputLayout = legacyWidgetInputLayout;
+    }
+
+    public String getAttachmentIconsColor() {
+        return attachmentIconsColor;
+    }
+
+    public void setAttachmentIconsColor(String attachmentIconsColor) {
+        this.attachmentIconsColor = attachmentIconsColor;
     }
 
     @Override

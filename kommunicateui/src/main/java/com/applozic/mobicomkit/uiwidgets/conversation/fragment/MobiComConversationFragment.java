@@ -283,9 +283,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private EditText errorEditTextView;
     private RecyclerView messageTemplateView;
     private ImageView audioRecordIconImageView;
-    private FloatingActionButton cameraOptionsButton, fileAttachmentButton, locationButton;
     private ImageView cameraButton, locationBtn;
-    private ImageView optionsAttachmentButton;
+    protected ImageView optionsAttachmentButton;
     WeakReference<ImageButton> recordButtonWeakReference;
     RecyclerView recyclerView;
     RecyclerViewPositionHelper recyclerViewPositionHelper;
@@ -300,12 +299,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     TextView applozicLabel;
     private ConstraintLayout mainLayout;
     private LinearLayout contentLayout;
-    private CardView optionsLayout;
-    private boolean isOpen = false;
 
     private View widgetInputLayout;
     private View widgetInputLegacyLayout;
-    private boolean isLegacyWidgetInputLayout = true; //TODO ADD BOOLEAN VALUE TO LOAD widget_input_layout and set isLegacyWidgetInputLayout = true
+    private boolean isLegacyWidgetInputLayout = true;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -381,7 +378,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         applozicLabel = list.findViewById(R.id.applozicLabel);
         mainLayout = list.findViewById(R.id.main_layout);
         contentLayout = list.findViewById(R.id.content_layout);
-        optionsLayout = list.findViewById(R.id.options_attachment_layout);
         mainEditTextLinearLayout = list.findViewById(isLegacyWidgetInputLayout ? R.id.main_edit_text_constraint_layout_legacy : R.id.main_edit_text_constraint_layout);
         individualMessageSendLayout = list.findViewById(isLegacyWidgetInputLayout ? R.id.individual_message_send_layout_legacy : R.id.individual_message_send_layout);
         optionsAttachmentButton = list.findViewById(isLegacyWidgetInputLayout ? R.id.options_attachment_btn_legacy : R.id.options_attachment_btn);
@@ -391,9 +387,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (isLegacyWidgetInputLayout) {
             locationBtn = list.findViewById(R.id.location_btn_legacy);
         }
-        fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
-        cameraOptionsButton = list.findViewById(R.id.camera_options_btn);
-        locationButton = list.findViewById(R.id.location_btn);
         recordButton = list.findViewById(R.id.record_button);
         audioRecordFrameLayout = list.findViewById(R.id.audio_record_constraint_layout);
         processAttachmentIconsClick();
@@ -665,7 +658,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
 
                     }
-                    dismissOptionsAttachmentView();
                     multimediaPopupGrid.setVisibility(View.GONE);
                 }
             }
@@ -704,7 +696,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     errorEditTextView.setError(null);
                     isToastVisible = false;
                 }
-                dismissOptionsAttachmentView();
                 sendMessage();
                 handleSendAndRecordButtonView(false);
                 errorEditTextView.setVisibility(View.VISIBLE);
@@ -714,7 +705,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dismissOptionsAttachmentView();
                 sendMessage();
                 if (contact != null && !contact.isBlocked() || channel != null) {
                     handleSendAndRecordButtonView(false);
@@ -863,17 +853,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (alCustomizationSettings.getAttachmentOptions() != null && !alCustomizationSettings.getAttachmentOptions().isEmpty()) {
             Map<String, Boolean> attachmentOptions = alCustomizationSettings.getAttachmentOptions();
             if (attachmentOptions.containsKey(":location")) {
-                locationButton.setVisibility(attachmentOptions.get(":location") ? VISIBLE : View.GONE);
                 if (isLegacyWidgetInputLayout) {
                     locationBtn.setVisibility(attachmentOptions.get(":location") ? VISIBLE : View.GONE);
                 }
             }
             if (attachmentOptions.containsKey(":camera")) {
                 cameraButton.setVisibility(attachmentOptions.get(":camera") ? VISIBLE : View.GONE);
-                cameraOptionsButton.setVisibility(attachmentOptions.get(":camera") ? VISIBLE : View.GONE);
-            }
-            if (attachmentOptions.containsKey(":file")) {
-                fileAttachmentButton.setVisibility(attachmentOptions.get(":file") ? VISIBLE : View.GONE);
             }
         }
         return list;
@@ -1477,7 +1462,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (hideExtendedSendingOptionLayout) {
             extendedSendingOptionLayout.setVisibility(View.GONE);
         }
-        dismissOptionsAttachmentView();
         if (contact != null) {
             Intent intent = new Intent(getActivity(), UserIntentService.class);
             intent.putExtra(UserIntentService.USER_ID, contact.getUserId());
@@ -3404,13 +3388,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void processAttachmentIconsClick() {
-        optionsAttachmentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickOptionsAttachment();
-            }
-        });
-
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -3418,51 +3395,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
         });
 
-        cameraOptionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openCamera();
-            }
-        });
-
-        fileAttachmentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismissOptionsAttachmentView();
-                if (getActivity() != null) {
-                    if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
-                        ((ConversationActivity) getActivity()).isAttachment(true);
-                        ((ConversationActivity) getActivity()).processAttachment();
-                    } else {
-                        ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
-                            @Override
-                            public void onAction(boolean didGrant) {
-                                if (didGrant) {
-                                    ((ConversationActivity) getActivity()).isAttachment(true);
-                                    ((ConversationActivity) getActivity()).processAttachment();
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-        locationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismissOptionsAttachmentView();
-                if (getActivity() != null) {
-                    ((ConversationActivity) getActivity()).processLocation();
-                }
-            }
-        });
-
         if (isLegacyWidgetInputLayout) {
             locationBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dismissOptionsAttachmentView();
                     if (getActivity() != null) {
                         ((ConversationActivity) getActivity()).processLocation();
                     }
@@ -3472,7 +3408,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void openCamera() {
-        dismissOptionsAttachmentView();
         if (getActivity() != null) {
             if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
                 ((ConversationActivity) getActivity()).isTakePhoto(true);
@@ -3488,56 +3423,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     }
                 });
             }
-        }
-    }
-
-    private void clickOptionsAttachment() {
-        if (!isOpen) {
-            revealAnimationView();
-        } else {
-            unrevealAnimationView();
-        }
-    }
-
-    private void revealAnimationView() {
-        int endCenterX = optionsLayout.getWidth() / 2;
-        int endCenterY = optionsLayout.getHeight() / 2;
-        float startRadius = 0;
-        float finalRadius = Math.max(optionsLayout.getWidth(), optionsLayout.getHeight()) * 1.1f;
-        Animator circularReveal = ViewAnimationUtils.createCircularReveal(optionsLayout, endCenterX, endCenterY, startRadius, finalRadius);
-        circularReveal.setDuration(500);
-        circularReveal.setInterpolator(new AccelerateInterpolator());
-        optionsLayout.setVisibility(View.VISIBLE);
-        circularReveal.start();
-        isOpen = true;
-    }
-
-    private void unrevealAnimationView() {
-        int startCenterX = optionsLayout.getWidth() / 2;
-        int startCenterY = optionsLayout.getHeight() / 2;
-        float startRadius = Math.max(optionsLayout.getWidth(), optionsLayout.getHeight()) * 1.1f;
-        float finalRadius = 0;
-        Animator circularReveal = ViewAnimationUtils.createCircularReveal(optionsLayout, startCenterX, startCenterY, startRadius, finalRadius);
-        circularReveal.setDuration(500);
-        circularReveal.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) { }
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                optionsLayout.setVisibility(View.GONE);
-            }
-            @Override
-            public void onAnimationCancel(Animator animator) { }
-            @Override
-            public void onAnimationRepeat(Animator animator) { }
-        });
-        circularReveal.start();
-        isOpen = false;
-    }
-
-    private void dismissOptionsAttachmentView() {
-        if (isOpen) {
-            unrevealAnimationView();
         }
     }
 

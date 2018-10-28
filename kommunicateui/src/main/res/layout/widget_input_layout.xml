@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/individual_message_send_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -30,77 +29,81 @@
             android:layout_height="match_parent"
             android:minHeight="@dimen/material_touchable_minheight">
 
-            <include
-                android:id="@+id/replyMessageLayoutWidget"
-                layout="@layout/widget_reply_message_edit_layout"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/material_half_padding"
-                app:layout_constraintTop_toBottomOf="@+id/guidelineTop"/>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/main_edit_text_constraint_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/material_touchable_minheight"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/replyMessageLayoutWidget">
+                app:layout_constraintTop_toTopOf="parent">
 
-                <EditText
-                    android:id="@+id/conversation_message"
-                    android:layout_width="0dp"
+                <include layout="@layout/widget_reply_message_edit_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:background="@color/apploizc_transparent_color"
-                    android:cursorVisible="true"
-                    android:hint="Escribe tu mensaje..."
-                    android:imeOptions="actionSend|flagNoExtractUi"
-                    android:inputType="textCapSentences|textMultiLine"
-                    android:maxLines="6"
-                    android:paddingLeft="@dimen/material_default_padding"
-                    android:paddingStart="@dimen/material_default_padding"
-                    android:textColor="@color/material_grey_800"
-                    android:textColorHint="@color/material_grey_500"
-                    android:textSize="@dimen/material_typography_textsize_subheading"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/options_attachment_btn"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    android:layout_margin="@dimen/material_half_padding"/>
 
-                <ImageView
-                    android:id="@+id/camera_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:contentDescription="@string/image_description_default"
-                    android:paddingEnd="@dimen/material_default_padding"
-                    android:paddingRight="@dimen/material_default_padding"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_camera_alt_grey_600_24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/options_attachment_btn"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/main_edit_text_constraint_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/material_touchable_minheight">
 
-                <ImageView
-                    android:id="@+id/options_attachment_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_alignBottom="@+id/conversation_message"
-                    android:contentDescription="@string/image_description_default"
-                    android:paddingEnd="@dimen/material_default_padding"
-                    android:paddingLeft="@dimen/material_half_padding"
-                    android:paddingRight="@dimen/material_default_padding"
-                    android:paddingStart="@dimen/material_half_padding"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_attach_file_grey_600_24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/camera_btn"
-                    app:layout_constraintStart_toEndOf="@+id/conversation_message"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    <EditText
+                        android:id="@+id/conversation_message"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:background="@color/apploizc_transparent_color"
+                        android:cursorVisible="true"
+                        android:hint="Escribe tu mensaje..."
+                        android:imeOptions="actionSend|flagNoExtractUi"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:maxLines="6"
+                        android:paddingStart="@dimen/material_default_padding"
+                        android:paddingLeft="@dimen/material_default_padding"
+                        android:textColor="@color/material_grey_800"
+                        android:textColorHint="@color/material_grey_500"
+                        android:textSize="@dimen/material_typography_textsize_subheading"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/options_attachment_btn"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-            </android.support.constraint.ConstraintLayout>
+                    <ImageView
+                        android:id="@+id/camera_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:contentDescription="@string/image_description_default"
+                        android:paddingEnd="@dimen/material_default_padding"
+                        android:paddingRight="@dimen/material_default_padding"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_photo_camera_grey_600_24dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/options_attachment_btn"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <ImageView
+                        android:id="@+id/options_attachment_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_alignBottom="@+id/conversation_message"
+                        android:contentDescription="@string/image_description_default"
+                        android:paddingStart="@dimen/material_half_padding"
+                        android:paddingLeft="@dimen/material_half_padding"
+                        android:paddingEnd="@dimen/material_default_padding"
+                        android:paddingRight="@dimen/material_default_padding"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_attach_file_grey_600_24dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/camera_btn"
+                        app:layout_constraintStart_toEndOf="@+id/conversation_message"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
 
             <android.support.constraint.Guideline
                 android:id="@+id/guidelineTop"

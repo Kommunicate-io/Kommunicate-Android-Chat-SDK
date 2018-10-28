@@ -110,6 +110,8 @@ public class AlCustomizationSettings extends JsonMarker {
 
     private boolean launchChatFromProfilePicOrName = false;
 
+    private boolean legacyWidgetInputLayout = true;
+
     private Map<String, Boolean> attachmentOptions;
 
     public boolean isBroadcastOption() {
@@ -578,6 +580,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isGlobalStoragePermissionDisabled() {
         return disableGlobalStoragePermission;
+    }
+
+    public boolean isLegacyWidgetInputLayout() {
+        return legacyWidgetInputLayout;
+    }
+
+    public void setLegacyWidgetInputLayout(boolean legacyWidgetInputLayout) {
+        this.legacyWidgetInputLayout = legacyWidgetInputLayout;
     }
 
     @Override

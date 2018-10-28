@@ -144,8 +144,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         toolbar.setClickable(false);
         fabButton = list.findViewById(R.id.fab_start_new);
         loading = true;
-        ConstraintLayout individualMessageSendLayout = list.findViewById(R.id.individual_message_send_layout);
-        ConstraintLayout extendedSendingOptionLayout = list.findViewById(R.id.extended_sending_option_layout);
         startNewConv = list.findViewById(R.id.start_new_conversation);
         if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation()) {
             startNewConv.setVisibility(View.VISIBLE);
@@ -159,7 +157,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(new Intent("KmStartNewConversation"));
             }
         });
-        individualMessageSendLayout.setVisibility(View.GONE);
+        list.findViewById(R.id.widget_input).setVisibility(View.GONE);
+        list.findViewById(R.id.widget_input_legacy).setVisibility(View.GONE);
+        ConstraintLayout extendedSendingOptionLayout = list.findViewById(R.id.extended_sending_option_layout);
         extendedSendingOptionLayout.setVisibility(View.GONE);
         View view = recyclerView.getChildAt(messageList.size());
         if (view != null) {

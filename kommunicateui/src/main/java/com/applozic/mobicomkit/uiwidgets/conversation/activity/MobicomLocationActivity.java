@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -22,8 +24,9 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
@@ -48,12 +51,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
+@SuppressLint("MissingPermission")
 public class MobicomLocationActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
 
     SupportMapFragment mapFragment;
     LatLng position;
-    RelativeLayout sendLocation;
+    FloatingActionButton locationIcon;
+    TextView locationTitle;
     private LinearLayout layout;
     public Snackbar snackbar;
     Location mCurrentLocation;
@@ -90,7 +94,8 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         layout = (LinearLayout) findViewById(R.id.footerAd);
-        sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);
+        locationIcon = findViewById(R.id.locationIcon);
+        locationTitle = findViewById(R.id.locationTitle);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         applozicPermissions = new ApplozicPermissions(MobicomLocationActivity.this, layout);
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
@@ -102,7 +107,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         connectivityReceiver = new ConnectivityReceiver();
         registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
-
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
@@ -123,15 +127,9 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                 googleMap.getUiSettings().setZoomGesturesEnabled(true);
                 googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
                     @Override
-                    public void onMarkerDragStart(Marker marker) {
-
-                    }
-
+                    public void onMarkerDragStart(Marker marker) { }
                     @Override
-                    public void onMarkerDrag(Marker marker) {
-
-                    }
-
+                    public void onMarkerDrag(Marker marker) { }
                     @Override
                     public void onMarkerDragEnd(Marker marker) {
                         if (myLocationMarker != null) {
@@ -143,25 +141,26 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                     }
                 });
             }
-
-            sendLocation.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Utils.printLog(MobicomLocationActivity.this,TAG, "On click of send location button");
-                    if (myLocationMarker != null) {
-                        Intent intent = new Intent();
-                        intent.putExtra("latitude", myLocationMarker.getPosition().latitude);
-                        intent.putExtra("longitude", myLocationMarker.getPosition().longitude);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                }
-            });
+            locationIcon.setOnClickListener(sendLocationListener);
+            locationTitle.setOnClickListener(sendLocationListener);
         } catch (Exception e) {
             Utils.printLog(MobicomLocationActivity.this,TAG, "Check if location permission are added");
         }
-
     }
+
+    private View.OnClickListener sendLocationListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Utils.printLog(MobicomLocationActivity.this,TAG, "On click of send location button");
+            if (myLocationMarker != null) {
+                Intent intent = new Intent();
+                intent.putExtra("latitude", myLocationMarker.getPosition().latitude);
+                intent.putExtra("longitude", myLocationMarker.getPosition().longitude);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -221,7 +220,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         }
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -236,6 +234,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                 "onConnectionSuspended() called.");
 
     }
+
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -267,7 +266,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -277,8 +275,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             if (location != null) {
                 mCurrentLocation = location;
             }
-        } catch (Exception e) {
-        }
+        } catch (Exception e) { }
     }
 
     public void showSnackBar(int resId) {
@@ -292,9 +289,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
+    public void onConnectionFailed(ConnectionResult connectionResult) { }
 
     @Override
     protected void onDestroy() {
@@ -321,5 +316,4 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 }

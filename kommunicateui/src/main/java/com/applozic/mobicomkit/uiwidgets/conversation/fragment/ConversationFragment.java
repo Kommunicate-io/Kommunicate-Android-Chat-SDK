@@ -1,17 +1,19 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
+import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
@@ -92,7 +94,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
         populateAttachmentOptions();
 
         if (alCustomizationSettings.isHideAttachmentButton()) {
-            attachButton.setVisibility(View.GONE);
             messageEditText.setPadding(20, 0, 0, 0);
         }
         sendType.setSelection(1);
@@ -111,38 +112,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
             }
         });
 
-        attachButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (contact != null && !contact.isBlocked() || channel != null) {
-                    if (attachmentLayout.getVisibility() == View.VISIBLE) {
-                        Toast.makeText(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                }
-                if (channel != null) {
-                    if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                        String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
-                        if (!TextUtils.isEmpty(userId)) {
-                            Contact withUserContact = appContactService.getContactById(userId);
-                            if (withUserContact.isBlocked()) {
-                                userBlockDialog(false, withUserContact, true);
-                            } else {
-                                processAttachButtonClick(view);
-                            }
-                        }
-                    } else {
-                        processAttachButtonClick(view);
-                    }
-                } else if (contact != null) {
-                    if (contact.isBlocked()) {
-                        userBlockDialog(false, contact, false);
-                    } else {
-                        processAttachButtonClick(view);
-                    }
-                }
-            }
-        });
         return view;
     }
 

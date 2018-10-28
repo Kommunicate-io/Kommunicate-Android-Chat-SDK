@@ -88,7 +88,7 @@ public class ChannelFragment extends ListFragment implements
             }
         };
         // Set a placeholder loading image for the image loader
-        mChannelImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+        mChannelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
         // Add a cache to the image loader
         mChannelImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
         mChannelImageLoader.setImageFadeIn(false);
@@ -333,7 +333,7 @@ public class ChannelFragment extends ListFragment implements
             } else if (channel.isBroadcastMessage()) {
                 holder.groupIcon.setImageResource(R.drawable.ic_volume_up_white_24dp);
             } else {
-                holder.groupIcon.setImageResource(R.drawable.ic_people_grey_600_24dp);
+                holder.groupIcon.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
             }
 
             // Returns the item layout view

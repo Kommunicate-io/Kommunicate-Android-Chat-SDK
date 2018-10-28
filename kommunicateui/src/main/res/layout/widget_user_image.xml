@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/profile_image_relative_layout"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/profile_image_layout"
     android:layout_width="@dimen/material_lists_size_avatar"
     android:layout_height="@dimen/material_lists_size_avatar"
     android:layout_centerVertical="true">
@@ -14,13 +15,21 @@
         android:gravity="center"
         android:textColor="@color/material_white_1000"
         android:textSize="@dimen/material_typography_textsize_title"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/contactImage"
         android:layout_width="@dimen/material_lists_size_avatar"
         android:layout_height="@dimen/material_lists_size_avatar"
-        android:src="@drawable/ic_person_grey_600_24dp"
-        android:visibility="visible"/>
+        android:scaleType="centerCrop"
+        android:background="@drawable/user_background_circle_grey_200"
+        android:src="@drawable/ic_account_circle_grey_600_24dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

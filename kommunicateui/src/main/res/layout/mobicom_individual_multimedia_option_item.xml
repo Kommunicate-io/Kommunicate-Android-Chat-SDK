@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="70dp"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/material_lists_height_row"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="2dp"
-    android:layout_marginRight="2dp"
-    android:layout_marginStart="2dp"
-    android:layout_marginEnd="2dp"
-    android:background="@color/white"
+    android:background="@color/material_white_1000"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="@dimen/material_default_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMultimediaPopupAdapter">
 
     <TextView
         android:id="@+id/mobicom_multimedia_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:textSize="30sp" />
+        android:textSize="@dimen/material_typography_textsize_display1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="C"/>
 
     <TextView
         android:id="@+id/mobicom_multimedia_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="10dp" />
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mobicom_multimedia_icon"
+        tools:text="Cati"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

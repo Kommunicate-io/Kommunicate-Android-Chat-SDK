@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_centerInParent="true"
     android:layout_gravity="center"
     android:clickable="false"
-    android:gravity="center"
     android:longClickable="false"
-    android:orientation="horizontal"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp">
+    android:padding="@dimen/material_default_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
     <TextView
         android:id="@+id/applozic_custom_message_layout_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:background="@color/applozic_theme_color"
-        android:gravity="center_horizontal"
-        android:paddingBottom="10dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        android:text=""
-        android:textColor="#333"
-        android:textSize="14sp"
-        android:visibility="gone" />
+        android:gravity="center"
+        android:padding="@dimen/material_default_padding"
+        android:textColor="@color/material_grey_900"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

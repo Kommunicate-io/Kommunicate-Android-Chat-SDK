@@ -1,106 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/messageLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="3dp"
-    android:gravity="start"
-    android:longClickable="true"
-    android:orientation="horizontal">
+    android:layout_marginTop="@dimen/material_half_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
-    <RelativeLayout
-        android:id="@+id/profileImageLayout"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp">
-
-        <TextView
-            android:id="@+id/alphabeticImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/mobiframework_circular_text_view"
-            android:gravity="center"
-            android:text=""
-            android:textColor="#ffffff"
-            android:textSize="20sp"
-            android:visibility="gone"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/contactImage"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_toEndOf="@+id/alphabeticImage"
-            android:layout_toRightOf="@+id/alphabeticImage"
-            android:src="@drawable/ic_person_grey_600_24dp"
-            android:visibility="gone"/>
-
-    </RelativeLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/messageTextLayout"
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="43dp"
-        android:layout_marginRight="43dp"
-        android:layout_toEndOf="@+id/profileImageLayout"
-        android:layout_toRightOf="@+id/profileImageLayout"
-        android:background="@drawable/applozic_received_message"
-        android:elevation="1dp"
-        android:gravity="center_vertical"
-        android:minWidth="94dp"
-        android:minHeight="40dp"
         android:orientation="vertical"
-        android:paddingLeft="6dp"
-        android:paddingTop="6dp"
-        android:paddingRight="6dp">
+        app:layout_constraintGuide_end="@dimen/material_lists_height_row"/>
 
+    <include
+        android:id="@+id/profile_image_layout"
+        layout="@layout/widget_user_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/onlineTextView"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/online_circle"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image_layout"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image_layout"/>
+
+    <TextView
+        android:id="@+id/name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:gravity="top"
+        android:textSize="@dimen/material_typography_textsize_body"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/profile_image_layout"
+        app:layout_constraintTop_toTopOf="@+id/profile_image_layout"
+        tools:text="Cati Rísquez"/>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dip"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginRight="3dip"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:minHeight="@dimen/material_chips_height"
+        android:minWidth="@dimen/material_chips_height"
+        android:orientation="vertical"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/guidelineEnd"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/profile_image_layout"
+        app:layout_constraintTop_toBottomOf="@id/name_textView">
+
+        <!-- TODO Refactor - replace by ConstraintLayout-->
         <LinearLayout
-            android:id="@+id/nameTextLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-4dp">
-
-            <TextView
-                android:id="@+id/onlineTextView"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:background="@drawable/online_circle"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@+id/name_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:visibility="gone"/>
-
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/messageTextInsideLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="94dp"
-            android:minHeight="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/applozic_received_message"
+            android:minHeight="@dimen/material_chips_height"
+            android:minWidth="@dimen/material_chips_height"
             android:orientation="vertical">
 
             <include layout="@layout/reply_message_layout"/>
 
             <TextView
                 android:id="@+id/attached_file"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_attachment_grey_600_24dp"
-                android:drawablePadding="8dp"
+                android:drawablePadding="@dimen/material_default_padding"
                 android:drawableStart="@drawable/ic_attachment_grey_600_24dp"
-                android:textAlignment="gravity"
-                android:textColor="@color/black"
-                android:textDirection="locale"
-                android:textSize="16sp"
+                android:drawableTint="@color/material_grey_600"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/material_half_padding"
+                android:paddingLeft="@dimen/material_default_padding"
+                android:paddingRight="@dimen/material_default_padding"
+                android:paddingTop="@dimen/material_half_padding"
+                android:textColor="@color/received_message_bg_color"
+                android:textSize="@dimen/material_typography_textsize_body"
                 android:visibility="gone"/>
 
             <include layout="@layout/mobicom_attachment_preview_layout"/>
@@ -111,90 +107,46 @@
 
             <include layout="@layout/applozic_document_attachment"/>
 
+            <include layout="@layout/al_rich_message_layout"/>
+
             <TextView
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|left"
-                android:layout_marginStart="3dp"
-                android:layout_marginLeft="3dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginRight="3dp"
                 android:autoLink="all"
-                android:textColor="#646262"
-                android:textDirection="locale"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/material_half_padding"
+                android:paddingLeft="@dimen/material_default_padding"
+                android:paddingRight="@dimen/material_default_padding"
+                android:paddingTop="@dimen/material_half_padding"
+                android:textColor="@color/received_text_color"
                 android:textIsSelectable="true"
-                android:textSize="@dimen/material_typography_textsize_body"/>
-
-            <TextView
-                android:id="@+id/createdAtTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|end|bottom"
-                android:fontFamily="sans-serif"
-                android:letterSpacing="0.01"
-                android:text="12:34 PM"
-                android:textColor="#8a8686"
-                android:textSize="10sp"/>
+                android:textSize="@dimen/material_typography_textsize_body"
+                tools:text="Material design guidelines mention that cards can be constructed using blocks of content"/>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/selfDestruct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:paddingStart="8dp"
-            android:paddingLeft="8dp"
-            android:paddingEnd="2dp"
-            android:paddingRight="2dp"
-            android:text="@string/self_destruct"
-            android:textColor="@color/apploizc_darker_gray_color"
-            android:textSize="11sp"
-            android:visibility="gone"/>
+    </android.support.v7.widget.CardView>
 
-    </LinearLayout>
-
-    <include layout="@layout/al_rich_message_layout"/>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
+        android:id="@+id/selfDestruct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/messageTextLayout"
-        android:layout_marginStart="44dp"
-        android:layout_marginLeft="44dp"
-        android:layout_marginTop="2dp"
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:paddingStart="15dp"
-        android:paddingLeft="15dp"
-        android:paddingBottom="6dp"
-        android:visibility="gone">
+        android:text="@string/self_destruct"
+        android:textColor="@color/material_grey_600"
+        android:textSize="@dimen/material_typography_textsize_caption"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"/>
 
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingStart="0dp"
-            android:paddingLeft="0dp"
-            android:paddingEnd="2dp"
-            android:paddingRight="2dp"
-            android:text=""
-            android:textColor="@color/message_details_text_color"
-            android:textSize="11sp"/>
+    <TextView
+        android:id="@+id/createdAtTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/material_grey_500"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/selfDestruct"
+        tools:text="12:34 PM"/>
 
-        <TextView
-            android:id="@+id/tempForLayoutAdjustment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/km_pending_icon_c"
-            android:drawableRight="@drawable/km_pending_icon_c"
-            android:gravity="center_vertical"
-            android:textColor="@color/apploizc_darker_gray_color"
-            android:textSize="11sp"
-            android:visibility="gone"/>
-
-    </LinearLayout>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

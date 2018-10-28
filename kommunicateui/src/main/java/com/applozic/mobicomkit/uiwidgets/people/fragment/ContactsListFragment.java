@@ -153,7 +153,7 @@ public class ContactsListFragment extends ListFragment implements SearchListFrag
         };
 
         // Set a placeholder loading image for the image loader
-        mImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+        mImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
 
         // Add a cache to the image loader
         mImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);

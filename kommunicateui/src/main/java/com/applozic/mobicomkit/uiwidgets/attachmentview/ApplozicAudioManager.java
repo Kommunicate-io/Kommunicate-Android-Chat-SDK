@@ -107,7 +107,7 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
                 mp.release();
                 pool.remove(key);
                 currentView.setAudioIcons();
-                updateAudioDuration(view.audio_duration_textView, uri.getPath());
+                updateAudioDuration(view.audioTextView, uri.getPath());
             }
         });
         currentView.audioseekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -124,10 +124,9 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
                 int duration = progress / 1000;
                 int min = duration / 60;
                 int seconds = duration % 60;
-                if (view != null && view.audio_duration_textView != null) {
-                    view.audio_duration_textView.setText(String.format("%02d:%02d", min, seconds));
+                if (view != null && view.audioTextView != null) {
+                    view.audioTextView.setText(String.format("%02d:%02d", min, seconds));
                 }
-
                 if (fromUser) {
                     if (getMediaPlayer(key) != null) {
                         getMediaPlayer(key).seekTo(progress);

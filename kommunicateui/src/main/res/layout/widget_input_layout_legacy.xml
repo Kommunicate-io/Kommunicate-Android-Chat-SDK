@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/individual_message_send_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_marginBottom="@dimen/material_half_padding"
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/material_half_padding"
+    android:paddingTop="@dimen/material_half_padding"
+    android:visibility="visible"
+    tools:showIn="@layout/mobicom_message_list">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/main_edit_text_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/widget_reply_message_edit_layout"/>
+
+            <RelativeLayout
+                android:id="@+id/edit_text_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/material_touchable_minheight"
+                android:paddingLeft="@dimen/material_half_padding"
+                android:paddingRight="@dimen/material_half_padding">
+
+                <ImageView
+                    android:id="@+id/emoticons_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:background="@color/apploizc_transparent_color"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:paddingEnd="20dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="20dp"
+                    android:paddingStart="10dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_attachment_grey_600_24dp"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/attach_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:background="@color/apploizc_transparent_color"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:paddingEnd="20dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="20dp"
+                    android:paddingStart="10dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_attachment_grey_600_24dp"
+                    android:visibility="gone"/>
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/conversation_send"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="end"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/button_circle"
+                    android:clickable="true"
+                    android:gravity="right"
+                    app:fabSize="mini"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_send_white_24dp"
+                    android:visibility="visible"/>
+
+                <EditText
+                    android:id="@+id/conversation_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_toLeftOf="@id/conversation_send"
+                    android:background="@color/apploizc_transparent_color"
+                    android:cursorVisible="true"
+                    android:hint="Escribe tu mensaje..."
+                    android:imeOptions="actionSend|flagNoExtractUi"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLines="6"
+                    android:textColor="@color/black"
+                    android:textColorHint="#8f8b8b"
+                    android:textSize="@dimen/material_typography_textsize_subheading"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/attachment_icon_layout"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="@dimen/material_default_padding"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/camera_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/material_half_padding"
+                    android:paddingRight="@dimen/material_half_padding"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_photo_camera_grey_600_24dp"/>
+
+                <ImageView
+                    android:id="@+id/options_attachment_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/material_half_padding"
+                    android:paddingRight="@dimen/material_half_padding"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_attach_file_grey_600_24dp"/>
+
+                <ImageView
+                    android:id="@+id/location_main_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/material_half_padding"
+                    android:paddingRight="@dimen/material_half_padding"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_location_on_grey_600_24dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <include
+        android:id="@+id/widget_record"
+        layout="@layout/widget_record_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_edit_text_constraint_layout"/>
+
+</android.support.constraint.ConstraintLayout>

@@ -16,7 +16,6 @@ import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.uiwidgets.ApplozicApplication;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.MultimediaOptionsGridView;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMultimediaPopupAdapter;
@@ -29,7 +28,6 @@ import com.applozic.mobicommons.people.contact.Contact;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment {
 
@@ -81,16 +79,11 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
     public void attachLocation(Location mCurrentLocation) {
         String address = LocationUtils.getAddress(getActivity(), mCurrentLocation);
-        if (!TextUtils.isEmpty(address)) {
-            address = "Address: " + address + "\n";
-        } else {
-            address = "";
-        }
+        address = !TextUtils.isEmpty(address) ? "Address: " + address + "\n" : "";
         this.messageEditText.setText(address + "http://maps.google.com/?q=" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude());
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.title = getResources().getString(R.string.chats);
         this.conversationService = new MobiComConversationService(getActivity());
         hideExtendedSendingOptionLayout = true;
@@ -99,14 +92,11 @@ public class ConversationFragment extends MobiComConversationFragment implements
         populateAttachmentOptions();
 
         if (alCustomizationSettings.isHideAttachmentButton()) {
-
             attachButton.setVisibility(View.GONE);
             messageEditText.setPadding(20, 0, 0, 0);
         }
         sendType.setSelection(1);
-
         messageEditText.setHint(R.string.enter_message_hint);
-
         multimediaPopupGrid.setVisibility(View.GONE);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.secret_message_timer_array, R.layout.mobiframework_custom_spinner);
@@ -118,22 +108,18 @@ public class ConversationFragment extends MobiComConversationFragment implements
             @Override
             public void onClick(View v) {
                 multimediaPopupGrid.setVisibility(View.GONE);
-                emoticonsFrameLayout.setVisibility(View.GONE);
             }
         });
-
 
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                emoticonsFrameLayout.setVisibility(View.GONE);
                 if (contact != null && !contact.isBlocked() || channel != null) {
                     if (attachmentLayout.getVisibility() == View.VISIBLE) {
                         Toast.makeText(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();
                         return;
                     }
                 }
-
                 if (channel != null) {
                     if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                         String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
@@ -161,31 +147,20 @@ public class ConversationFragment extends MobiComConversationFragment implements
     }
 
     @Override
-    protected void processMobiTexterUserCheck() {
-
-    }
+    protected void processMobiTexterUserCheck() { }
 
     public void handleAttachmentToggle() {
         if ((multimediaPopupGrid.getVisibility() == View.VISIBLE)) {
             multimediaPopupGrid.setVisibility(View.GONE);
-        } else if (emoticonsFrameLayout.getVisibility() == View.VISIBLE) {
-            emoticonsFrameLayout.setVisibility(View.GONE);
         }
     }
 
     public boolean isAttachmentOptionsOpen() {
-        return (multimediaPopupGrid.getVisibility() == View.VISIBLE || emoticonsFrameLayout.getVisibility() == View.VISIBLE);
+        return (multimediaPopupGrid.getVisibility() == View.VISIBLE);
     }
 
     public void updateTitle() {
-        //((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(ApplozicApplication.TITLE);
         super.updateTitle();
-    }
-
-    public void hideMultimediaOptionGrid() {
-        if (multimediaPopupGrid.getVisibility() == View.VISIBLE) {
-            multimediaPopupGrid.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -197,7 +172,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
         }
         return true;
     }
-
 
     void processAttachButtonClick(View view) {
         MobicomMultimediaPopupAdapter mobicomMultimediaPopupAdapter = new MobicomMultimediaPopupAdapter(getActivity(), attachmentIcon, attachmentText);
@@ -213,7 +187,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
         MultimediaOptionsGridView itemClickHandler = new MultimediaOptionsGridView(getActivity(), multimediaPopupGrid);
         itemClickHandler.setMultimediaClickListener(attachmentKey);
-
     }
 
     private void populateAttachmentOptions() {
@@ -241,7 +214,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
     }
 
     public void reload() {
-
         try {
             StringBuffer stringBufferTitle = new StringBuffer();
             if (contact != null) {
@@ -275,6 +247,5 @@ public class ConversationFragment extends MobiComConversationFragment implements
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

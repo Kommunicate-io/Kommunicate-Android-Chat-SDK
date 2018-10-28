@@ -204,7 +204,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     protected Channel channel;
     protected Integer currentConversationId;
     protected EditText messageEditText;
-    protected FloatingActionButton sendButton;
+    protected View sendButton;
     protected FloatingActionButton recordButton;
     protected Spinner sendType;
     protected ConstraintLayout mainEditTextLinearLayout;
@@ -305,6 +305,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private CardView optionsLayout;
     private boolean isOpen = false;
 
+    private View widgetInputLayout;
+    private View widgetInputLegacyLayout;
     private boolean isLegacyWidgetInputLayout = true; //TODO ADD BOOLEAN VALUE TO LOAD widget_input_layout and set isLegacyWidgetInputLayout = true
 
     public static int dp(float value) {
@@ -320,6 +322,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+        isLegacyWidgetInputLayout = alCustomizationSettings.isLegacyWidgetInputLayout();
         applozicDocumentView = new ApplozicDocumentView(getContext(), new KmStoragePermissionListener() {
             @Override
             public boolean isPermissionGranted() {
@@ -360,6 +363,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @SuppressLint("ClickableViewAccessibility")
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
+        widgetInputLegacyLayout = list.findViewById(R.id.widget_input_legacy);
+        widgetInputLayout = list.findViewById(R.id.widget_input);
+        widgetInputLegacyLayout.setVisibility(isLegacyWidgetInputLayout ? View.VISIBLE : View.GONE);
+        widgetInputLayout.setVisibility(isLegacyWidgetInputLayout ? View.GONE : View.VISIBLE);
         recyclerView = list.findViewById(R.id.messageList);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -371,24 +378,26 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         toolbar = getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(true);
-        mainEditTextLinearLayout = list.findViewById(R.id.main_edit_text_constraint_layout);
-        individualMessageSendLayout = list.findViewById(R.id.individual_message_send_layout);
         slideImageView = list.findViewById(R.id.slide_image_view);
-        sendButton = individualMessageSendLayout.findViewById(R.id.conversation_send);
-        recordButton = individualMessageSendLayout.findViewById(R.id.record_button);
-        mainEditTextLinearLayout = list.findViewById(R.id.main_edit_text_constraint_layout);
-        audioRecordFrameLayout = list.findViewById(R.id.audio_record_constraint_layout);
         messageTemplateView = list.findViewById(R.id.mobicomMessageTemplateView);
         applozicLabel = list.findViewById(R.id.applozicLabel);
-        cameraButton = list.findViewById(R.id.camera_btn);
-        cameraOptionsButton = list.findViewById(R.id.camera_options_btn);
-        locationButton = list.findViewById(R.id.location_btn);
-        locationBtn = list.findViewById(R.id.location_main_btn);
-        fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
-        optionsAttachmentButton = list.findViewById(R.id.options_attachment_btn);
         mainLayout = list.findViewById(R.id.main_layout);
         contentLayout = list.findViewById(R.id.content_layout);
         optionsLayout = list.findViewById(R.id.options_attachment_layout);
+        mainEditTextLinearLayout = list.findViewById(isLegacyWidgetInputLayout ? R.id.main_edit_text_constraint_layout_legacy : R.id.main_edit_text_constraint_layout);
+        individualMessageSendLayout = list.findViewById(isLegacyWidgetInputLayout ? R.id.individual_message_send_layout_legacy : R.id.individual_message_send_layout);
+        optionsAttachmentButton = list.findViewById(isLegacyWidgetInputLayout ? R.id.options_attachment_btn_legacy : R.id.options_attachment_btn);
+        cameraButton = list.findViewById(isLegacyWidgetInputLayout ? R.id.camera_btn_legacy : R.id.camera_btn);
+        messageEditText = list.findViewById(isLegacyWidgetInputLayout ? R.id.conversation_message_legacy : R.id.conversation_message);
+        sendButton = list.findViewById(isLegacyWidgetInputLayout ? R.id.conversation_send_legacy : R.id.conversation_send);
+        if (isLegacyWidgetInputLayout) {
+            locationBtn = list.findViewById(R.id.location_btn_legacy);
+        }
+        fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
+        cameraOptionsButton = list.findViewById(R.id.camera_options_btn);
+        locationButton = list.findViewById(R.id.location_btn);
+        recordButton = list.findViewById(R.id.record_button);
+        audioRecordFrameLayout = list.findViewById(R.id.audio_record_constraint_layout);
         processAttachmentIconsClick();
         Configuration config = getResources().getConfiguration();
         recordButtonWeakReference = new WeakReference<ImageButton>(recordButton);
@@ -436,14 +445,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) { }
         };
-
         mediaUploadProgressBar = attachmentLayout.findViewById(R.id.media_upload_progress_bar);
-        replyLayout = list.findViewById(R.id.replyMessageLayoutWidget);
-        colorView = list.findViewById(R.id.colorView);
-        messageTextView = list.findViewById(R.id.messageTextViewWidget);
-        galleryImageView = list.findViewById(R.id.imageViewForPhotoWidget);
-        nameTextView = list.findViewById(R.id.replyNameTextViewWidget);
-        attachReplyCancelLayout = list.findViewById(R.id.imageCancelWidget);
+        replyLayout = list.findViewById(isLegacyWidgetInputLayout ? R.id.replyMessageLayoutWidgetLegacy : R.id.replyMessageLayoutWidget);
+        colorView = list.findViewById(isLegacyWidgetInputLayout ? R.id.colorViewLegacy : R.id.colorView);
+        messageTextView = list.findViewById(isLegacyWidgetInputLayout ? R.id.messageTextViewWidgetLegacy : R.id.messageTextViewWidget);
+        galleryImageView = list.findViewById(isLegacyWidgetInputLayout ? R.id.imageViewForPhotoWidgetLegacy : R.id.imageViewForPhotoWidget);
+        nameTextView = list.findViewById(isLegacyWidgetInputLayout ? R.id.replyNameTextViewWidgetLegacy : R.id.replyNameTextViewWidget);
+        attachReplyCancelLayout = list.findViewById(isLegacyWidgetInputLayout ? R.id.imageCancelWidgetLegacy : R.id.imageCancelWidget);
         spinnerLayout = inflater.inflate(R.layout.mobicom_message_list_header_footer, null);
         infoBroadcast = spinnerLayout.findViewById(R.id.info_broadcast);
         spinnerLayout.setVisibility(View.GONE);
@@ -466,7 +474,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         sendButton.setVisibility(alCustomizationSettings.isRecordButton() ? View.GONE : View.VISIBLE);
         sendType = extendedSendingOptionLayout.findViewById(R.id.sendTypeSpinner);
-        messageEditText = individualMessageSendLayout.findViewById(R.id.conversation_message);
+
         messageEditText.setTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextTextColor()));
         messageEditText.setHintTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextHintTextColor()));
         userNotAbleToChatLayout = list.findViewById(R.id.user_not_able_to_chat_layout);
@@ -1366,10 +1374,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (userNotAbleToChatLayout != null) {
             if (contact != null && contact.isDeleted()) {
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
-                individualMessageSendLayout.setVisibility(View.GONE);
+                //individualMessageSendLayout.setVisibility(View.GONE);
+                widgetInputLayout.setVisibility(View.GONE);
+                widgetInputLegacyLayout.setVisibility(View.GONE);
             } else {
                 userNotAbleToChatLayout.setVisibility(View.GONE);
-                individualMessageSendLayout.setVisibility(VISIBLE);
+                //individualMessageSendLayout.setVisibility(VISIBLE);
+                widgetInputLegacyLayout.setVisibility(isLegacyWidgetInputLayout ? View.VISIBLE : View.GONE);
+                widgetInputLayout.setVisibility(isLegacyWidgetInputLayout ? View.GONE : View.VISIBLE);
             }
         }
         if (contact != null && this.channel != null) {
@@ -1517,9 +1529,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (userNotAbleToChatLayout != null && individualMessageSendLayout != null) {
+                if (userNotAbleToChatLayout != null) {
                     userNotAbleToChatLayout.setVisibility(withUserContact.isDeleted() ? VISIBLE : View.GONE);
-                    individualMessageSendLayout.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
+                    //individualMessageSendLayout.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
                     bottomlayoutTextView.setText(R.string.user_has_been_deleted_text);
                 }
 
@@ -2348,14 +2360,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-//    public void onEmojiconClicked(Emojicon emojicon) {
-//        //TODO: Move OntextChangeListiner to EmojiEditableTExt
-//        int currentPos = messageEditText.getSelectionStart();
-//        messageEditText.setTextKeepState(messageEditText.getText().
-//                insert(currentPos, emojicon.getEmoji()));
-//    }
-
-
     @SuppressLint("RestrictedApi")
     @Override
     public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
@@ -2509,7 +2513,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             updateLastSeenStatus();
                         }
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }
             });
@@ -2559,7 +2563,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     private void hideSendMessageLayout(boolean hide) {
         if (hide) {
-            individualMessageSendLayout.setVisibility(View.GONE);
+            //individualMessageSendLayout.setVisibility(View.GONE);
+            widgetInputLayout.setVisibility(View.GONE);
+            widgetInputLegacyLayout.setVisibility(View.GONE);
             userNotAbleToChatLayout.setVisibility(VISIBLE);
         } else {
             userNotAbleToChatLayout.setVisibility(View.GONE);
@@ -2571,7 +2577,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             Channel channelInfo = ChannelService.getInstance(getActivity()).getChannelInfo(channel.getKey());
             if (channelInfo.isDeleted()) {
                 channel.setDeletedAtTime(channelInfo.getDeletedAtTime());
-                individualMessageSendLayout.setVisibility(View.GONE);
+                //individualMessageSendLayout.setVisibility(View.GONE);
+                widgetInputLayout.setVisibility(View.GONE);
+                widgetInputLegacyLayout.setVisibility(View.GONE);
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
                 userNotAbleToChatTextView.setText(R.string.group_has_been_deleted_text);
                 if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
@@ -2582,7 +2590,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 if ((!ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey()) && userNotAbleToChatLayout != null
                         && !Channel.GroupType.OPEN.getValue().equals(channel.getType()))) {
-                    individualMessageSendLayout.setVisibility(View.GONE);
+                    //individualMessageSendLayout.setVisibility(View.GONE);
+                    widgetInputLayout.setVisibility(View.GONE);
+                    widgetInputLegacyLayout.setVisibility(View.GONE);
                     userNotAbleToChatLayout.setVisibility(VISIBLE);
                     if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                             && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {

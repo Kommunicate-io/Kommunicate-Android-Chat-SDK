@@ -9,9 +9,7 @@ public class ScheduledTimeHolder {
     String time = null;
     Long timestamp = null;
 
-    public ScheduledTimeHolder() {
-
-    }
+    public ScheduledTimeHolder() { }
 
     public String getDate() {
         return date;

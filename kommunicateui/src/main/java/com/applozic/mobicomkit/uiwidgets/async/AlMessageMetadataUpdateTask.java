@@ -37,7 +37,6 @@ public class AlMessageMetadataUpdateTask extends AsyncTask<Void, Void, ApiRespon
     @Override
     protected void onPostExecute(ApiResponse apiResponse) {
         super.onPostExecute(apiResponse);
-
         if (apiResponse == null) {
             listener.onFailure(context.get(), "Some error occurred");
         } else if (!"success".equals(apiResponse.getStatus()) && apiResponse.getErrorResponse() != null) {
@@ -51,7 +50,6 @@ public class AlMessageMetadataUpdateTask extends AsyncTask<Void, Void, ApiRespon
     public interface MessageMetadataListener {
 
         void onSuccess(Context context, String message);
-
         void onFailure(Context context, String error);
     }
 }

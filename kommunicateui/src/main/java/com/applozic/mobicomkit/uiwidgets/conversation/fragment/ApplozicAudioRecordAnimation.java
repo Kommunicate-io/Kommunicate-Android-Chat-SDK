@@ -1,6 +1,5 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
-import android.os.Build;
 import android.view.View;
 import android.view.animation.Animation;
 
@@ -10,7 +9,6 @@ import java.util.WeakHashMap;
 public class ApplozicAudioRecordAnimation extends Animation {
 
     private static final WeakHashMap<View, ApplozicAudioRecordAnimation> PROXIES = new WeakHashMap<View, ApplozicAudioRecordAnimation>();
-    public static boolean NEED_PROXY = Build.VERSION.SDK_INT < 11;
     private final WeakReference<View> mView;
     private float mAlpha = 1;
 
@@ -34,19 +32,11 @@ public class ApplozicAudioRecordAnimation extends Animation {
     }
 
     public static void setAlpha(View view, float alpha) {
-        if (ApplozicAudioRecordAnimation.NEED_PROXY) {
-            ApplozicAudioRecordAnimation.wrap(view).setAlpha(alpha);
-        } else {
-            view.setAlpha(alpha);
-        }
+        view.setAlpha(alpha);
     }
 
     public static float getX(View view) {
-        if (ApplozicAudioRecordAnimation.NEED_PROXY) {
-            return ApplozicAudioRecordAnimation.wrap(view).getX();
-        } else {
-            return view.getX();
-        }
+        return view.getX();
     }
 
     public float getAlpha() {
@@ -70,5 +60,4 @@ public class ApplozicAudioRecordAnimation extends Animation {
         }
         return view.getLeft();
     }
-
 }

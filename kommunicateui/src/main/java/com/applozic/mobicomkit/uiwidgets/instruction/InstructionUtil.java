@@ -13,7 +13,6 @@ import com.applozic.mobicomkit.broadcast.BroadcastService;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * Created by devashish on 25/9/14.
  */
@@ -66,20 +65,15 @@ public class InstructionUtil {
         if (!sharedPreferences.contains(SHARED_PREFERENCE_INSTRUCTION_KEY + "." + resId)) {
             return;
         }
-
         Toast toast = Toast.makeText(context, context.getString(resId), Toast.LENGTH_LONG);
         if (actionable) {
             toast.getView().setBackgroundColor(context.getResources().getColor(colorId));
         }
-
         toast.setGravity(Gravity.CENTER, 0, 0);
-
         if (!enabled) {
             return;
         }
-
         toast.show();
-
         sharedPreferences.edit().remove(SHARED_PREFERENCE_INSTRUCTION_KEY + "." + resId).commit();
         toastMap.put(resId, toast);
     }
@@ -92,7 +86,6 @@ public class InstructionUtil {
         if (toastMap.get(resId) != null) {
             toastMap.get(resId).cancel();
         }
-
         SharedPreferences sharedPreferences = context.getSharedPreferences(MobiComKitClientService.getApplicationKey(context), Context.MODE_PRIVATE);
         sharedPreferences.edit().remove(SHARED_PREFERENCE_INSTRUCTION_KEY + "." + resId).commit();
     }

@@ -1,15 +1,13 @@
 package com.applozic.mobicomkit.uiwidgets;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Application;
-import android.os.Build;
 import android.os.Bundle;
 
 /**
  * Created by sunil on 27/11/15.
  */
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+
 public class ActivityLifecycleHandler implements Application.ActivityLifecycleCallbacks {
 
     private static int resumed;
@@ -26,9 +24,7 @@ public class ActivityLifecycleHandler implements Application.ActivityLifecycleCa
     }
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
-    }
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) { }
 
     @Override
     public void onActivityStarted(Activity activity) {
@@ -38,7 +34,6 @@ public class ActivityLifecycleHandler implements Application.ActivityLifecycleCa
     @Override
     public void onActivityResumed(Activity activity) {
         ++resumed;
-
     }
 
     @Override
@@ -52,12 +47,8 @@ public class ActivityLifecycleHandler implements Application.ActivityLifecycleCa
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-    }
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
 
     @Override
-    public void onActivityDestroyed(Activity activity) {
-
-    }
+    public void onActivityDestroyed(Activity activity) { }
 }

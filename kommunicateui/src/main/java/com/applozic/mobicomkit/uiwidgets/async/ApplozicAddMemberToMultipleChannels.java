@@ -13,8 +13,8 @@ import java.util.Set;
 /**
  * Created by sunil on 31/5/16.
  */
-public class ApplozicAddMemberToMultipleChannels extends AsyncTask<Void, Void, Boolean> {
 
+public class ApplozicAddMemberToMultipleChannels extends AsyncTask<Void, Void, Boolean> {
 
     Context context;
     Set<String> clientGroupIds;
@@ -60,17 +60,16 @@ public class ApplozicAddMemberToMultipleChannels extends AsyncTask<Void, Void, B
     @Override
     protected void onPostExecute(Boolean resultBoolean) {
         super.onPostExecute(resultBoolean);
-
         if (resultBoolean && addMemberToMultipleChannels != null) {
             addMemberToMultipleChannels.onSuccess(addResponse, context);
-        } else if (!resultBoolean  && addMemberToMultipleChannels != null) {
+        } else if (!resultBoolean && addMemberToMultipleChannels != null) {
             addMemberToMultipleChannels.onFailure(addResponse, exception, context);
         }
     }
 
     public interface AddMemberToMultipleChannels {
-        void onSuccess(String response, Context context);
 
+        void onSuccess(String response, Context context);
         void onFailure(String response, Exception e, Context context);
     }
 }

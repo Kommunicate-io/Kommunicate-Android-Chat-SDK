@@ -589,7 +589,6 @@ public class TouchImageView extends AppCompatImageView {
                 // FIT_START and FIT_END not supported
                 //
                 throw new UnsupportedOperationException("TouchImageView does not support FIT_START or FIT_END");
-
         }
 
         //
@@ -732,17 +731,13 @@ public class TouchImageView extends AppCompatImageView {
     public boolean canScrollHorizontally(int direction) {
         matrix.getValues(m);
         float x = m[Matrix.MTRANS_X];
-
         if (getImageWidth() < viewWidth) {
             return false;
-
         } else if (x >= -1 && direction < 0) {
             return false;
-
         } else if (Math.abs(x) + viewWidth + 1 >= getImageWidth() && direction > 0) {
             return false;
         }
-
         return true;
     }
 
@@ -806,6 +801,7 @@ public class TouchImageView extends AppCompatImageView {
     }
 
     public interface OnTouchImageViewListener {
+
         public void onMove();
     }
 

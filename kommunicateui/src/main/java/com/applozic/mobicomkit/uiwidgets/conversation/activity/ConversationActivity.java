@@ -171,19 +171,16 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private ConstraintLayout serviceDisconnectionLayout;
     private KmStoragePermission alStoragePermission;
 
-    public ConversationActivity() {
-    }
+    public ConversationActivity() { }
 
     public static void addFragment(FragmentActivity fragmentActivity, Fragment fragmentToAdd, String fragmentTag) {
         FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.layout_child_activity, fragmentToAdd, fragmentTag);
-
         if (supportFragmentManager.getBackStackEntryCount() > 1
                 && !ConversationUIService.MESSGAE_INFO_FRAGMENT.equalsIgnoreCase(fragmentTag) && !ConversationUIService.USER_PROFILE_FRAMENT.equalsIgnoreCase(fragmentTag)) {
             supportFragmentManager.popBackStackImmediate();
         }
-
         fragmentTransaction.addToBackStack(fragmentTag);
         fragmentTransaction.commitAllowingStateLoss();
         supportFragmentManager.executePendingTransactions();
@@ -254,7 +251,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         Intent subscribeIntent = new Intent(this, ApplozicMqttIntentService.class);
         subscribeIntent.putExtra(ApplozicMqttIntentService.SUBSCRIBE, true);
         ApplozicMqttIntentService.enqueueWork(this, subscribeIntent);
-
         if (!Utils.isInternetAvailable(getApplicationContext())) {
             String errorMessage = getResources().getString(R.string.internet_connection_not_available);
             showErrorMessageView(errorMessage);
@@ -271,7 +267,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         savedInstanceState.putSerializable(CONTACT, contact);
         savedInstanceState.putSerializable(CHANNEL, channel);
         savedInstanceState.putSerializable(CONVERSATION_ID, currentConversationId);
-
         if (capturedImageUri != null) {
             savedInstanceState.putString(CAPTURED_IMAGE_URI, capturedImageUri.toString());
         }
@@ -281,7 +276,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (mediaFile != null) {
             savedInstanceState.putSerializable(LOAD_FILE, mediaFile);
         }
-
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -329,7 +323,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             getWindow().setBackgroundDrawableResource(resourceId);
         }
         setContentView(R.layout.quick_conversation_activity);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         baseContactService = new AppContactService(this);
         conversationUIService = new ConversationUIService(this);
@@ -338,9 +332,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         connectivityReceiver = new ConnectivityReceiver();
         geoApiKey = Utils.getMetaDataValue(getApplicationContext(), GOOGLE_API_KEY_META_DATA);
         activityToOpenOnClickOfCallButton = Utils.getMetaDataValue(getApplicationContext(), ACTIVITY_TO_OPEN_ONCLICK_OF_CALL_BUTTON_META_DATA);
-        layout = (LinearLayout) findViewById(R.id.footerAd);
+        layout = findViewById(R.id.footerAd);
         applozicPermission = new ApplozicPermissions(this, layout);
-        childFragmentLayout = (RelativeLayout) findViewById(R.id.layout_child_activity);
+        childFragmentLayout = findViewById(R.id.layout_child_activity);
         profilefragment = new ProfileFragment();
         profilefragment.setAlCustomizationSettings(alCustomizationSettings);
         contactsGroupId = MobiComUserPreference.getInstance(this).getContactsGroupId();
@@ -357,17 +351,13 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         inviteMessage = Utils.getMetaDataValue(getApplicationContext(), SHARE_TEXT);
         retry = 0;
-
         if (isServiceDisconnected()) {
             serviceDisconnectionLayout.setVisibility(View.VISIBLE);
         } else {
             if (savedInstanceState != null) {
-                capturedImageUri = savedInstanceState.getString(CAPTURED_IMAGE_URI) != null ?
-                        Uri.parse(savedInstanceState.getString(CAPTURED_IMAGE_URI)) : null;
-                videoFileUri = savedInstanceState.getString(CAPTURED_VIDEO_URI) != null ?
-                        Uri.parse(savedInstanceState.getString(CAPTURED_VIDEO_URI)) : null;
+                capturedImageUri = savedInstanceState.getString(CAPTURED_IMAGE_URI) != null ? Uri.parse(savedInstanceState.getString(CAPTURED_IMAGE_URI)) : null;
+                videoFileUri = savedInstanceState.getString(CAPTURED_VIDEO_URI) != null ? Uri.parse(savedInstanceState.getString(CAPTURED_VIDEO_URI)) : null;
                 mediaFile = savedInstanceState.getSerializable(LOAD_FILE) != null ? (File) savedInstanceState.getSerializable(LOAD_FILE) : null;
-
                 contact = (Contact) savedInstanceState.getSerializable(CONTACT);
                 channel = (Channel) savedInstanceState.getSerializable(CHANNEL);
                 currentConversationId = savedInstanceState.getInt(CONVERSATION_ID);
@@ -389,7 +379,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         InstructionUtil.showInfo(this, R.string.info_message_sync, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());
 
         mActionBar.setTitle(R.string.conversations);
-
         if (alCustomizationSettings != null && !alCustomizationSettings.isAgentApp()) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
             mActionBar.setHomeButtonEnabled(true);
@@ -402,7 +391,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         onNewIntent(getIntent());
 
         Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
-
         if (!takeOrder) {
             Intent lastSeenStatusIntent = new Intent(this, UserIntentService.class);
             lastSeenStatusIntent.putExtra(UserIntentService.USER_LAST_SEEN_AT_STATUS, true);
@@ -440,7 +428,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             Utils.printLog(this, "AL", "user is not logged in yet.");
             return;
         }
-
         try {
             if (isServiceDisconnected()) {
                 serviceDisconnectionLayout.setVisibility(View.VISIBLE);
@@ -568,7 +555,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 showSnackBar(R.string.location_permission_not_granted);
             }
-
         } else if (requestCode == PermissionsUtils.REQUEST_PHONE_STATE) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showSnackBar(R.string.phone_state_permission_granted);
@@ -1052,10 +1038,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         try {
             String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
             String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
-
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
             capturedImageUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", mediaFile);
-
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageUri);
 
@@ -1092,11 +1076,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
             String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
-
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "video/mp4");
-
             videoFileUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", mediaFile);
-
             videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoFileUri);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -1204,6 +1185,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     public class SyncAccountStatusAsyncTask extends AsyncTask<Void, Void, Boolean> {
+
         Context context;
         RegisterUserClientService registerUserClientService;
         String loggedInUserId;

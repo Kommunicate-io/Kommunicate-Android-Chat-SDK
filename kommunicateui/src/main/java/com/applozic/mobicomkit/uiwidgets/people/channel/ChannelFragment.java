@@ -1,6 +1,5 @@
 package com.applozic.mobicomkit.uiwidgets.people.channel;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -59,24 +58,20 @@ public class ChannelFragment extends ListFragment implements
     BaseContactService baseContactService;
     private ChannelAdapter mAdapter; // The main query adapter
     // Contact selected listener that allows the activity holding this fragment to be notified of
-// a contact being selected
+    // a contact being selected
     private OnContactsInteractionListener mOnChannelSelectedListener;
     private Button shareButton;
     private TextView resultTextView;
     private boolean syncStatus = true;
     private int mPreviouslySelectedSearchItem = 0;
 
-    public ChannelFragment() {
-
-    }
-
+    public ChannelFragment() { }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inviteMessage = Utils.getMetaDataValue(getActivity().getApplicationContext(), SHARE_TEXT);
         baseContactService = new AppContactService(getActivity());
         mAdapter = new ChannelAdapter(getActivity().getApplicationContext());
-
         if (savedInstanceState != null) {
             mSearchTerm = savedInstanceState.getString(SearchManager.QUERY);
         }
@@ -96,9 +91,7 @@ public class ChannelFragment extends ListFragment implements
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
         final Cursor cursor = mAdapter.getCursor();
-
         // Moves to the Cursor row corresponding to the ListView item that was clicked
         cursor.moveToPosition(position);
         Channel channel = ChannelDatabaseService.getInstance(getContext()).getChannel(cursor);
@@ -106,43 +99,34 @@ public class ChannelFragment extends ListFragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the list fragment layout
         View view = inflater.inflate(R.layout.contact_list_fragment, container, false);
-        shareButton = (Button) view.findViewById(R.id.actionButton);
+        shareButton = view.findViewById(R.id.actionButton);
         shareButton.setVisibility(View.GONE);
-        resultTextView = (TextView) view.findViewById(R.id.result);
+        resultTextView = view.findViewById(R.id.result);
         resultTextView.setText(getString(R.string.no_groups));
         return view;
     }
 
-
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            mOnChannelSelectedListener = (OnContactsInteractionListener) activity;
+            mOnChannelSelectedListener = (OnContactsInteractionListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnContactsInteractionListener");
+            throw new ClassCastException(context.toString() + " must implement OnContactsInteractionListener");
         }
     }
 
-
-    @SuppressLint("NewApi")
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         shareButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_SEND)
-                        .setType("text/plain").putExtra(Intent.EXTRA_TEXT, inviteMessage);
-
+                intent.setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, inviteMessage);
                 List<Intent> targetedShareIntents = new ArrayList<Intent>();
-
                 List<ResolveInfo> resInfo = getActivity().getPackageManager().queryIntentActivities(intent, 0);
                 if (!resInfo.isEmpty()) {
                     for (ResolveInfo resolveInfo : resInfo) {
@@ -168,10 +152,8 @@ public class ChannelFragment extends ListFragment implements
             public void onScrollStateChanged(AbsListView absListView, int scrollState) {
                 mChannelImageLoader.setPauseWork(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING);
             }
-
             @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-            }
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) { }
         });
 
         // the action bar search view (see onQueryTextChange() in onCreateOptionsMenu()).
@@ -197,14 +179,12 @@ public class ChannelFragment extends ListFragment implements
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
         if (loader.getId() == QUERY_ID) {
             // When the loader is being reset, clear the cursor from the adapter. This allows the
             // cursor resources to be freed.
             mAdapter.swapCursor(null);
         }
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -224,28 +204,21 @@ public class ChannelFragment extends ListFragment implements
 
         // Updates current filter to new filter
         mSearchTerm = newFilter;
-        if(mAdapter != null){
+        if (mAdapter != null) {
             mAdapter.indexOfSearchQuery(newFilter);
         }
-        getLoaderManager().restartLoader(
-                QUERY_ID, null, ChannelFragment.this);
-
+        getLoaderManager().restartLoader(QUERY_ID, null, ChannelFragment.this);
         return true;
     }
 
     private int getListPreferredItemHeight() {
         final TypedValue typedValue = new TypedValue();
-
         // Resolve list item preferred height theme attribute into typedValue
-        getActivity().getTheme().resolveAttribute(
-                android.R.attr.listPreferredItemHeight, typedValue, true);
-
-// Create a new DisplayMetrics object
+        getActivity().getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, typedValue, true);
+        // Create a new DisplayMetrics object
         final DisplayMetrics metrics = new DisplayMetrics();
-
         // Populate the DisplayMetrics
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
         // Return theme value based on DisplayMetrics
         return (int) typedValue.getDimension(metrics);
     }
@@ -318,16 +291,11 @@ public class ChannelFragment extends ListFragment implements
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-
             // Gets handles to individual view resources
             final ViewHolder holder = (ViewHolder) view.getTag();
-
-            //////////////////////////
+            ///////////////////////
             Channel channel = ChannelDatabaseService.getInstance(getContext()).getChannel(cursor);
-
-            ///////////////////
-
-
+            ///////////////////////
             if (!TextUtils.isEmpty(channel.getImageUrl())) {
                 mChannelImageLoader.loadImage(channel, holder.groupIcon);
             } else if (channel.isBroadcastMessage()) {
@@ -335,17 +303,13 @@ public class ChannelFragment extends ListFragment implements
             } else {
                 holder.groupIcon.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
             }
-
             // Returns the item layout view
-
             ///////////////////////
             final int startIndex = indexOfSearchQuery(channel.getName());
-
             if (startIndex == -1) {
                 // If the user didn't do a search, or the search string didn't match a display
                 // name, show the display name without highlighting
                 holder.groupName.setText(channel.getName());
-
                 if (TextUtils.isEmpty(mSearchTerm)) {
                     // If the search search is empty, hide the second line of text
                     holder.totalmembers.setVisibility(View.GONE);
@@ -357,21 +321,15 @@ public class ChannelFragment extends ListFragment implements
             } else {
                 // If the search string matched the display name, applies a SpannableString to
                 // highlight the search string with the displayed display name
-
                 // Wraps the display name in the SpannableString
                 final SpannableString highlightedName = new SpannableString(channel.getName());
-
                 // Sets the span to start at the starting point of the match and end at "length"
                 // characters beyond the starting point
-                highlightedName.setSpan(highlightTextSpan, startIndex,
-                        startIndex + mSearchTerm.length(), 0);
-
+                highlightedName.setSpan(highlightTextSpan, startIndex, startIndex + mSearchTerm.length(), 0);
                 // Binds the SpannableString to the display name View object
                 holder.groupName.setText(highlightedName);
-
                 // Since the search string matched the name, this hides the secondary message
             }
-
         }
 
         /**
@@ -438,5 +396,4 @@ public class ChannelFragment extends ListFragment implements
             CircleImageView groupIcon;
         }
     }
-
 }

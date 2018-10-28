@@ -12,6 +12,7 @@ import com.applozic.mobicommons.people.channel.Channel;
  */
 
 public class AlCreateGroupOfTwoTask extends AsyncTask<Void, Void, Channel> {
+
     Context context;
     ChannelService channelService;
     ChannelInfo channelInfo;
@@ -43,8 +44,8 @@ public class AlCreateGroupOfTwoTask extends AsyncTask<Void, Void, Channel> {
     }
 
     public interface TaskListenerInterface {
-        void onSuccess(Channel channel, Context context);
 
+        void onSuccess(Channel channel, Context context);
         void onFailure(String error, Context context);
     }
 }

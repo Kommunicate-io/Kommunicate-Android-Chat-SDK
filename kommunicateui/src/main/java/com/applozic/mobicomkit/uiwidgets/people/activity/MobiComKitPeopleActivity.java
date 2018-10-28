@@ -1,6 +1,5 @@
 package com.applozic.mobicomkit.uiwidgets.people.activity;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -86,12 +85,8 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
 
     public static void addFragment(FragmentActivity fragmentActivity, Fragment fragmentToAdd, String fragmentTag) {
         FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
-
-        FragmentTransaction fragmentTransaction = supportFragmentManager
-                .beginTransaction();
-        fragmentTransaction.replace(R.id.layout_child_activity, fragmentToAdd,
-                fragmentTag);
-
+        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.layout_child_activity, fragmentToAdd, fragmentTag);
         if (supportFragmentManager.getBackStackEntryCount() > 1) {
             supportFragmentManager.popBackStack();
         }
@@ -113,9 +108,9 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
-
         onContactsInteractionListener = this;
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         // Set up the action bar.
         actionBar = getSupportActionBar();
@@ -128,7 +123,6 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(true);
-
 
         intentExtra = getIntent();
         action = intentExtra.getAction();
@@ -159,24 +153,12 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         } else {
             addFragment(this, appContactFragment, "AppContactFragment");
         }
-      /*  mContactsListFragment = (AppContactFragment)
-                getSupportFragmentManager().findFragmentById(R.id.contact_list);*/
-
         // This flag notes that the Activity is doing a search, and so the result will be
         // search results rather than all contacts. This prevents the Activity and Fragment
         // from trying to a search on search results.
         isSearchResultView = true;
-
-        // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        // Set special title for search results
-
-      /*  if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            mContactsListFragment.onQueryTextChange(searchQuery);
-        }*/
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_contact, menu);
@@ -201,14 +183,12 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
     public void onContactSelected(Uri contactUri) {
         Long contactId = ContactUtils.getContactId(getContentResolver(), contactUri);
         Map<String, String> phoneNumbers = ContactUtils.getPhoneNumbers(getApplicationContext(), contactId);
-
         if (phoneNumbers.isEmpty()) {
             Toast toast = Toast.makeText(this.getApplicationContext(), R.string.phone_number_not_present, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
             return;
         }
-
         Intent intent = new Intent();
         intent.putExtra(CONTACT_ID, contactId);
         intent.setData(contactUri);
@@ -220,7 +200,6 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         intent.putExtra(USER_ID, contactNumber);
         finishActivity(intent);
     }
-
 
     @Override
     public void onGroupSelected(Channel channel) {
@@ -256,9 +235,7 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
                         }
                         startActivity(intentImage);
                     }
-
                 }
-
             }
         } else {
             intent = new Intent();
@@ -300,7 +277,6 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
                     }
                     startActivity(intentImage);
                 }
-
             }
         } else {
             intent = new Intent();
@@ -309,26 +285,21 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         }
     }
 
-
     public void finishActivity(Intent intent) {
         String forwardMessage = getIntent().getStringExtra(FORWARD_MESSAGE);
         if (!TextUtils.isEmpty(forwardMessage)) {
             intent.putExtra(FORWARD_MESSAGE, forwardMessage);
         }
-
         String sharedText = getIntent().getStringExtra(SHARED_TEXT);
         if (!TextUtils.isEmpty(sharedText)) {
             intent.putExtra(SHARED_TEXT, sharedText);
         }
-
         setResult(RESULT_OK, intent);
         finish();
     }
 
     @Override
-    public void onSelectionCleared() {
-
-    }
+    public void onSelectionCleared() { }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -336,11 +307,8 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         if (i == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
             return true;
-            // For platforms earlier than Android 3.0, triggers the search activity
-        } else if (i == R.id.menu_search) {// if (!Utils.hasHoneycomb()) {
+        } else if (i == R.id.menu_search) {
             onSearchRequested();
-            //}
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -372,7 +340,6 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         if (getSearchListFragment() != null) {
             getSearchListFragment().onQueryTextChange(query);
             isSearching = true;
-
             if (query.isEmpty()) {
                 isSearching = false;
             }
@@ -412,7 +379,6 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
                 }
                 break;
         }
-
     }
 
     @Override
@@ -421,9 +387,7 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
     }
 
     @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
-    }
+    public void onTabReselected(TabLayout.Tab tab) { }
 
     @Override
     protected void onDestroy() {
@@ -434,6 +398,7 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
     }
 
     class ViewPagerAdapter extends FragmentStatePagerAdapter {
+
         private final List<Fragment> fragmentList = new ArrayList<>();
         private final List<String> titleList = new ArrayList<>();
 
@@ -460,7 +425,6 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         public CharSequence getPageTitle(int position) {
             return titleList.get(position);
         }
-
     }
 
     private class ShareAsyncTask extends AsyncTask<Void, Void, File> {
@@ -528,6 +492,3 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         }
     }
 }
-
-
-

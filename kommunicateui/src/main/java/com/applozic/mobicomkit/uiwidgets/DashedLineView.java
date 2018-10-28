@@ -44,7 +44,6 @@ public class DashedLineView extends View {
         path = new Path();
         //array is ON and OFF distances in px (4px line then 2px space)
         effects = new DashPathEffect(new float[]{dashWidth, dashSpacing, dashWidth, dashSpacing}, 0);
-
     }
 
     @Override
@@ -65,6 +64,5 @@ public class DashedLineView extends View {
             path.lineTo(0, measuredHeight);
             canvas.drawPath(path, paint);
         }
-
     }
 }

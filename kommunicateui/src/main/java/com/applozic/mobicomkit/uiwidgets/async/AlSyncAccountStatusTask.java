@@ -7,12 +7,12 @@ import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
 
-
 /**
  * Created by sunil on 19/12/2016.
  */
 
 public class AlSyncAccountStatusTask extends AsyncTask<Void, Void, Boolean> {
+
     Context context;
     RegisterUserClientService registerUserClientService;
     TaskListener taskListener;
@@ -46,6 +46,7 @@ public class AlSyncAccountStatusTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     public interface TaskListener {
+
         void onCompletion(Context context);
     }
 }

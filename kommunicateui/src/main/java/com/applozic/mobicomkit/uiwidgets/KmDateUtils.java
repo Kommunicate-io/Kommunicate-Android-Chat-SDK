@@ -1,10 +1,8 @@
 package com.applozic.mobicomkit.uiwidgets;
 
 import android.content.Context;
-import android.os.SystemClock;
 
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
-import com.applozic.mobicommons.commons.core.utils.SntpClient;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -50,7 +48,6 @@ public class KmDateUtils extends DateUtils {
                 : R.string.TIME_FORMAT), Locale.getDefault());
         SimpleDateFormat fullDateFormat = new SimpleDateFormat(context.getString(R.string.DATE_SHORT_FORMAT), Locale.getDefault());
         Date newDate = new Date();
-
         try {
             if (sameDay) {
                 long currentTime = newDate.getTime() - date.getTime();
@@ -69,7 +66,6 @@ public class KmDateUtils extends DateUtils {
                 return simpleDateFormat.format(date);
             }
             return fullDateFormat.format(date);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,7 +100,6 @@ public class KmDateUtils extends DateUtils {
             e.printStackTrace();
         }
         return null;
-
     }
 
     public static String getDateAndTimeInDefaultFormat(Context context, long timestamp) {

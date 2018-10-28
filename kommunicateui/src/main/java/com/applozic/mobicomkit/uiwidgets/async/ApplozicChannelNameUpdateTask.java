@@ -63,7 +63,6 @@ public class ApplozicChannelNameUpdateTask extends AsyncTask<Void, Void, Boolean
     @Override
     protected void onPostExecute(Boolean resultBoolean) {
         super.onPostExecute(resultBoolean);
-
         if (resultBoolean && channelNameUpdateListener != null) {
             channelNameUpdateListener.onSuccess(updateNameResponse, context);
         } else if (!resultBoolean && exception != null && channelNameUpdateListener != null) {
@@ -72,8 +71,8 @@ public class ApplozicChannelNameUpdateTask extends AsyncTask<Void, Void, Boolean
     }
 
     public interface ChannelNameUpdateListener {
-        void onSuccess(String response, Context context);
 
+        void onSuccess(String response, Context context);
         void onFailure(String response, Exception e, Context context);
     }
 }

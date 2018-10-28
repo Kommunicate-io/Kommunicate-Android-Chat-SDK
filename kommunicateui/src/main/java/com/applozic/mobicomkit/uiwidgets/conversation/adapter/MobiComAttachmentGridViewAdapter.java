@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,7 +84,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
                 ((Activity) context).startActivityForResult(intentPick, REQUEST_CODE);
             }
         });
-
         if (disableNewAttachment) {
             deleteButton.setVisibility(View.GONE);
         }
@@ -96,7 +94,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
                 notifyDataSetChanged();
             }
         });
-
         if (position == getCount() - 1) {
             if (!disableNewAttachment) {
                 setNewAttachmentView();
@@ -107,7 +104,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
                 deleteButton.setVisibility(View.VISIBLE);
             }
         }
-
         try {
             Uri uri = (Uri) getItem(position);
             Bitmap previewBitmap = ImageUtils.getPreview(context, uri);
@@ -121,7 +117,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return view;
     }
 

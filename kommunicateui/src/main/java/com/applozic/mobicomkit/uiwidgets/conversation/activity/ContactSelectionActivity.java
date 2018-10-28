@@ -34,7 +34,9 @@ import com.applozic.mobicommons.people.channel.Channel;
 /**
  * Created by sunil on 6/2/16.
  */
+
 public class ContactSelectionActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+
     public static final String CHANNEL = "CHANNEL_NAME";
     public static final String CHANNEL_OBJECT = "CHANNEL";
     public static final String CHECK_BOX = "CHECK_BOX";
@@ -59,12 +61,8 @@ public class ContactSelectionActivity extends AppCompatActivity implements Searc
 
     public static void addFragment(FragmentActivity fragmentActivity, Fragment fragmentToAdd, String fragmentTag) {
         FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
-
-        FragmentTransaction fragmentTransaction = supportFragmentManager
-                .beginTransaction();
-        fragmentTransaction.replace(R.id.layout_child_activity, fragmentToAdd,
-                fragmentTag);
-
+        FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.layout_child_activity, fragmentToAdd, fragmentTag);
         if (supportFragmentManager.getBackStackEntryCount() > 1) {
             supportFragmentManager.popBackStack();
         }
@@ -80,7 +78,7 @@ public class ContactSelectionActivity extends AppCompatActivity implements Searc
         contactDatabase = new ContactDatabase(this);
         contactSelectionFragment = new ContactSelectionFragment();
         setSearchListFragment(contactSelectionFragment);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         contactService = new AppContactService(this);
         mActionBar = getSupportActionBar();
@@ -125,7 +123,6 @@ public class ContactSelectionActivity extends AppCompatActivity implements Searc
         super.onBackPressed();
         this.finish();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -179,7 +176,6 @@ public class ContactSelectionActivity extends AppCompatActivity implements Searc
         if (getSearchListFragment() != null) {
             getSearchListFragment().onQueryTextChange(query);
             isSearching = true;
-
             if (query.isEmpty()) {
                 isSearching = false;
             }
@@ -205,7 +201,5 @@ public class ContactSelectionActivity extends AppCompatActivity implements Searc
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 }

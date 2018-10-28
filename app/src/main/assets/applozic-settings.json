@@ -6,6 +6,7 @@
   "sentMessageCreatedAtTimeColor": "#9E9E9E",
   "receivedMessageCreatedAtTimeColor": "#9E9E9E",
   "attachmentIconsBackgroundColor": "#FF03A9F4",
+  "attachmentIconsColor": "#FF757575",
   "channelCustomMessageBgColor": "#cccccc",
   "sentContactMessageTextColor:": "#5fba7d",
   "receivedContactMessageTextColor": "#646262",

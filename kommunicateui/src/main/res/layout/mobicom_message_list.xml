@@ -214,14 +214,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <include
-        layout="@layout/widget_reveal_fragment_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/widget_bottom"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/widget_bottom"
         android:layout_width="match_parent"

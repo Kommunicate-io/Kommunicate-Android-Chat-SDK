@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
@@ -42,6 +43,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
     private List<String> attachmentKey = new ArrayList<>();
     private List<String> attachmentText = new ArrayList<>();
     private List<String> attachmentIcon = new ArrayList<>();
+    private View view;
 
     public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString) {
         ConversationFragment f = new ConversationFragment();
@@ -87,7 +89,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
         this.conversationService = new MobiComConversationService(getActivity());
         hideExtendedSendingOptionLayout = true;
 
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+        view = super.onCreateView(inflater, container, savedInstanceState);
         populateAttachmentOptions();
 
         if (alCustomizationSettings.isHideAttachmentButton()) {
@@ -106,40 +108,48 @@ public class ConversationFragment extends MobiComConversationFragment implements
                 multimediaPopupGrid.setVisibility(View.GONE);
             }
         });
-//        attachButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (contact != null && !contact.isBlocked() || channel != null) {
-//                    if (attachmentLayout.getVisibility() == View.VISIBLE) {
-//                        Toast.makeText(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();
-//                        return;
-//                    }
-//                }
-//
-//                if (channel != null) {
-//                    if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-//                        String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
-//                        if (!TextUtils.isEmpty(userId)) {
-//                            Contact withUserContact = appContactService.getContactById(userId);
-//                            if (withUserContact.isBlocked()) {
-//                                userBlockDialog(false, withUserContact, true);
-//                            } else {
-//                                processAttachButtonClick(view);
-//                            }
-//                        }
-//                    } else {
-//                        processAttachButtonClick(view);
-//                    }
-//                } else if (contact != null) {
-//                    if (contact.isBlocked()) {
-//                        userBlockDialog(false, contact, false);
-//                    } else {
-//                        processAttachButtonClick(view);
-//                    }
-//                }
-//            }
-//        });
         return view;
+    }
+
+    public void processAttachmentIconsClick() {
+        super.processAttachmentIconsClick();
+        optionsAttachmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickOptionsAttachment();
+            }
+        });
+    }
+
+    private void clickOptionsAttachment() {
+        if (contact != null && !contact.isBlocked() || channel != null) {
+            if (attachmentLayout.getVisibility() == View.VISIBLE) {
+                Toast.makeText(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+        if (channel != null) {
+            if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
+                if (!TextUtils.isEmpty(userId)) {
+                    Contact withUserContact = appContactService.getContactById(userId);
+                    if (withUserContact.isBlocked()) {
+                        userBlockDialog(false, withUserContact, true);
+                    } else {
+                        processAttachButtonClick();
+                    }
+                }
+            } else {
+                processAttachButtonClick();
+            }
+        } else if (contact != null) {
+            if (contact.isBlocked()) {
+                userBlockDialog(false, contact, false);
+            } else {
+                processAttachButtonClick();
+            }
+        }
     }
 
     @Override
@@ -162,7 +172,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
         return true;
     }
 
-    void processAttachButtonClick(View view) {
+    void processAttachButtonClick() {
         MobicomMultimediaPopupAdapter mobicomMultimediaPopupAdapter = new MobicomMultimediaPopupAdapter(getActivity(), attachmentIcon, attachmentText);
         mobicomMultimediaPopupAdapter.setAlCustomizationSettings(alCustomizationSettings);
         multimediaPopupGrid.setAdapter(mobicomMultimediaPopupAdapter);

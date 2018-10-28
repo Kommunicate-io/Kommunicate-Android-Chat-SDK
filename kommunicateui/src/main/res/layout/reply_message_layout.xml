@@ -44,7 +44,7 @@
                     android:layout_height="25dp"
                     android:gravity="end"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/applozic_group_icon"
+                    android:src="@drawable/ic_people_grey_600_24dp"
                     android:visibility="gone" />
 
                 <TextView
@@ -93,7 +93,7 @@
             android:id="@+id/imageCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/cancel_icon"
+            android:background="@drawable/ic_close_grey_600_24dp"
             android:visibility="gone" />
     </FrameLayout>
 

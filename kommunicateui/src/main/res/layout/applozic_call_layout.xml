@@ -30,7 +30,7 @@
             android:layout_marginLeft="10dp"
             android:background="@android:color/transparent"
             android:layout_marginStart="10dp"
-            android:src="@drawable/applozic_ic_action_call" />
+            android:src="@drawable/ic_call_white_24dp" />
 
 
         <TextView

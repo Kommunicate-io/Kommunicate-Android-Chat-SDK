@@ -19,7 +19,7 @@
         android:background="@color/apploizc_transparent_color"
         android:drawablePadding="6dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/applozic_ic_action_attachment"
+        android:src="@drawable/ic_attachment_grey_600_24dp"
         android:visibility="gone" />
 
     <TextView
@@ -46,7 +46,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/mobicom_ic_delete_white_18dp" />
+        android:src="@drawable/ic_delete_white_24dp" />
 
     <TextView
         android:id="@+id/mobicom_attachment_file_size"

@@ -34,7 +34,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:background="@drawable/input"
+            android:background="@drawable/bubble_chat_input"
             android:ems="10"
             android:focusable="true"
             android:hint="@string/Add_caption"

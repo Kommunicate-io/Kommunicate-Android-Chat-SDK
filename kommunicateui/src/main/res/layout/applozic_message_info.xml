@@ -79,7 +79,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:src="@drawable/applozic_ic_action_attachment"
+                    android:src="@drawable/ic_attachment_grey_600_24dp"
                     android:visibility="visible" />
 
                 <TextView

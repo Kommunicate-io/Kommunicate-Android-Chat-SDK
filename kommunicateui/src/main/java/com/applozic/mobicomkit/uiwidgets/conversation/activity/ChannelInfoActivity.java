@@ -207,7 +207,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 return baseContactService.downloadContactImage(getApplicationContext(), (Contact) data);
             }
         };
-        contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+        contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
         contactImageLoader.addImageCache(this.getSupportFragmentManager(), 0.1f);
         contactImageLoader.setImageFadeIn(false);
         channelImageLoader = new ImageLoader(getApplicationContext(), getListPreferredItemHeight()) {
@@ -217,14 +217,14 @@ public class ChannelInfoActivity extends AppCompatActivity {
             }
         };
 
-        channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+        channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
         channelImageLoader.addImageCache(this.getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
 
         if (channelImage != null && !channel.isBroadcastMessage()) {
             channelImageLoader.loadImage(channel, channelImage);
         } else {
-            channelImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+            channelImage.setImageResource(R.drawable.ic_volume_up_white_24dp);
         }
 
         channelUserMapperList = ChannelService.getInstance(this).getListOfUsersFromChannelUserMapper(channel.getKey());
@@ -287,9 +287,9 @@ public class ChannelInfoActivity extends AppCompatActivity {
             Channel newChannel = ChannelService.getInstance(this).getChannelByChannelKey(channel.getKey());
             if (newChannel != null && TextUtils.isEmpty(newChannel.getImageUrl())) {
                 if (!channel.isBroadcastMessage()) {
-                    channelImage.setImageResource(R.drawable.applozic_group_icon);
+                    channelImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
                 } else {
-                    channelImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+                    channelImage.setImageResource(R.drawable.ic_volume_up_white_24dp);
                 }
             }
         }

@@ -90,6 +90,7 @@
   "forwardOption": false,
   "recordButton": false,
   "disableGlobalStoragePermission": true,
+  "legacyWidgetInputLayout": false,
   "messageTemplate": {
     "isEnabled": false,
     "borderColor": "#5c5aa7",

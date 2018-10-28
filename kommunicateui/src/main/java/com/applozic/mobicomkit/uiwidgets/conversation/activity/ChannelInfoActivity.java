@@ -36,12 +36,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,6 +84,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by sunil on 7/3/16.
  */
+
 public class ChannelInfoActivity extends AppCompatActivity {
 
     public static final String GROUP_UPDTAE_INFO = "GROUP_UPDTAE_INFO";
@@ -223,7 +222,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
         }
 
         channelUserMapperList = ChannelService.getInstance(this).getListOfUsersFromChannelUserMapper(channel.getKey());
-
         contactsAdapter = new ContactsAdapter(this, channelUserMapperList);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -236,7 +234,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
             }
-
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -274,7 +271,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
         }
         BroadcastService.currentInfoId = null;
         contactImageLoader.setPauseWork(false);
-
     }
 
     @Override
@@ -330,7 +326,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
         if (channel == null) {
             return true;
         }
-
         ChannelUserMapper channelUserMapper = channelUserMapperList.get(position);
         switch (item.getItemId()) {
             case 0:
@@ -362,9 +357,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 return super.onContextItemSelected(item);
         }
         return true;
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -372,7 +365,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
         if (channel == null) {
             return true;
         }
-
         ChannelUserMapper loggedInUserMapper = ChannelService.getInstance(this).getChannelUserMapperByUserId(channel.getKey(), MobiComUserPreference.getInstance(ChannelInfoActivity.this).getUserId());
         if (alCustomizationSettings.isHideGroupAddMembersButton() || loggedInUserMapper != null && ChannelUserMapper.UserRole.MEMBER.getValue().equals(loggedInUserMapper.getRole()) || (!ChannelUtils.isAdminUserId(userPreference.getUserId(), channel) && loggedInUserMapper != null && Integer.valueOf(0).equals(loggedInUserMapper.getRole()))) {
             menu.removeItem(R.id.add_member_to_channel);
@@ -418,7 +410,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
         boolean isUserPresent = false;
         if (channel != null) {
@@ -435,7 +426,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
                     addMemberIntent.putExtra(ContactSelectionActivity.CHANNEL_OBJECT, channel);
                     startActivityForResult(addMemberIntent, REQUEST_CODE_FOR_CONTACT);
                 }
-
             } else {
                 Toast.makeText(this, getString(R.string.channel_add_alert), Toast.LENGTH_SHORT).show();
             }
@@ -452,7 +442,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
         }
         return false;
     }
-
 
     public void processLoadRegisteredUsers() {
         final ProgressDialog progressDialog = ProgressDialog.show(ChannelInfoActivity.this, "",
@@ -483,26 +472,19 @@ public class ChannelInfoActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCompletion() {
-
-            }
+            public void onCompletion() { }
         };
         RegisteredUsersAsyncTask usersAsyncTask = new RegisteredUsersAsyncTask(ChannelInfoActivity.this, usersAsyncTaskTaskListener, alCustomizationSettings.getTotalRegisteredUserToFetch(), userPreference.getRegisteredUsersLastFetchTime(), null, null, true);
         usersAsyncTask.execute((Void) null);
-
     }
 
     private int getListPreferredItemHeight() {
         final TypedValue typedValue = new TypedValue();
-
-        getTheme().resolveAttribute(
-                android.R.attr.listPreferredItemHeight, typedValue, true);
+        getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, typedValue, true);
         final DisplayMetrics metrics = new DisplayMetrics();
-
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         return (int) typedValue.getDimension(metrics);
     }
-
 
     public void updateChannelList() {
         if (contactsAdapter != null && channel != null) {
@@ -524,13 +506,11 @@ public class ChannelInfoActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         new ChannelMember(channelUserMapper, channel, ChannelInfoActivity.this).execute();
-
                     }
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
+            public void onClick(DialogInterface dialogInterface, int i) { }
         });
         String name = "";
         String channelName = "";
@@ -540,7 +520,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
             name = contact.getDisplayName();
             channelName = channel.getName();
         }
-
         alertDialog.setMessage(getString(R.string.dialog_remove_group_user).replace(getString(R.string.user_name_info), name).replace(getString(R.string.group_name_info), channelName));
         alertDialog.setCancelable(true);
         alertDialog.create().show();
@@ -552,13 +531,11 @@ public class ChannelInfoActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         new ChannelMemberAdd(channel, userId, ChannelInfoActivity.this).execute();
-
                     }
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
+            public void onClick(DialogInterface dialogInterface, int i) { }
         });
         String name = "";
         String channelName = "";
@@ -603,8 +580,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
+            public void onClick(DialogInterface dialogInterface, int i) { }
         });
         if (channel.getType() != null) {
             alertDialog.setMessage(getString(R.string.delete_channel_messages_and_channel_info).replace(getString(R.string.group_name_info), channel.getName()).replace(getString(R.string.groupType_info), Channel.GroupType.BROADCAST.getValue().equals(channel.getType()) ? getString(R.string.broadcast_string) : getString(R.string.group_string)));
@@ -626,6 +602,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
     }
 
     private class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyViewHolder> {
+
         Context context;
         private LayoutInflater mInflater;
         List<ChannelUserMapper> channelUserMapperList;
@@ -645,7 +622,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.contact_users_layout, parent, false);
-
             return new MyViewHolder(itemView);
         }
 
@@ -655,12 +631,10 @@ public class ChannelInfoActivity extends AppCompatActivity {
             char firstLetter;
             ChannelUserMapper channelUserMapper = channelUserMapperList.get(position);
             Contact contact = baseContactService.getContactById(channelUserMapper.getUserKey());
-
             GradientDrawable bgShapeAdminText = (GradientDrawable) holder.adminTextView.getBackground();
             bgShapeAdminText.setColor(Color.parseColor(alCustomizationSettings.getAdminBackgroundColor()));
             bgShapeAdminText.setStroke(2, Color.parseColor(alCustomizationSettings.getAdminBorderColor()));
             holder.adminTextView.setTextColor(Color.parseColor(alCustomizationSettings.getAdminTextColor()));
-
             if (userPreference.getUserId().equals(contact.getUserId())) {
                 holder.displayName.setText(getString(R.string.you_string));
             } else {
@@ -686,7 +660,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 holder.lastSeenAtTextView.setVisibility(View.GONE);
                 holder.lastSeenAtTextView.setText("");
             }
-
             if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {
                 contactNumber = contact.getDisplayName().toUpperCase();
                 firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
@@ -717,6 +690,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
+
             public TextView displayName, alphabeticImage, adminTextView, lastSeenAtTextView;
             CircleImageView circleImageView;
 
@@ -752,6 +726,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
     }
 
     public class ChannelMember extends AsyncTask<Void, Integer, Long> {
+
         String responseForRemove;
         private ChannelUserMapper channelUserMapper;
         private ChannelService channelService;
@@ -803,6 +778,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
     }
 
     private class ContactViewHolder {
+
         public TextView displayName, alphabeticImage, adminTextView, lastSeenAtTextView;
         public CircleImageView circleImageView;
 
@@ -810,6 +786,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
     }
 
     public class ChannelMemberAdd extends AsyncTask<Void, Integer, Long> {
+
         ApiResponse apiResponse;
         String responseForDeleteGroup;
         String userId;
@@ -835,11 +812,9 @@ public class ChannelInfoActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             if (!TextUtils.isEmpty(userId)) {
-                progressDialog = ProgressDialog.show(context, "",
-                        context.getString(R.string.adding_channel_user), true);
+                progressDialog = ProgressDialog.show(context, "", context.getString(R.string.adding_channel_user), true);
             } else {
-                progressDialog = ProgressDialog.show(context, "",
-                        context.getString(R.string.deleting_channel_user), true);
+                progressDialog = ProgressDialog.show(context, "", context.getString(R.string.deleting_channel_user), true);
             }
         }
 
@@ -902,6 +877,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
     }
 
     public class ChannelAsync extends AsyncTask<Void, Integer, Long> {
+
         GroupInfoUpdate groupInfoUpdate;
         String responseForExit;
         String responseForChannelUpdate;
@@ -927,12 +903,10 @@ public class ChannelInfoActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             if (groupInfoUpdate != null) {
-                progressDialog = ProgressDialog.show(context, "",
-                        context.getString(R.string.channel_update), true);
+                progressDialog = ProgressDialog.show(context, "", context.getString(R.string.channel_update), true);
             }
             if (channel != null) {
-                progressDialog = ProgressDialog.show(context, "",
-                        context.getString(R.string.channel_member_exit), true);
+                progressDialog = ProgressDialog.show(context, "", context.getString(R.string.channel_member_exit), true);
             }
         }
 
@@ -1014,6 +988,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
     }
 
     public class ChannelUserRoleAsyncTask extends AsyncTask<Void, Integer, Long> {
+
         private ChannelService channelService;
         private ProgressDialog progressDialog;
         private Context context;
@@ -1063,6 +1038,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                         channelUserMapperList.add(index, channelUserMapper);
                         contactsAdapter.notifyDataSetChanged();
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }

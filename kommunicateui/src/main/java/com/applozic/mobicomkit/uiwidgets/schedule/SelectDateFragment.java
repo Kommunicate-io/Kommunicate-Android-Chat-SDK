@@ -11,14 +11,13 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
     private View scheduledDateView;
     private ScheduledTimeHolder scheduledTimeHolder;
     private String[] monthNames = {"Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
     private TextView selectedDate;
 
-    public SelectDateFragment() {
-
-    }
+    public SelectDateFragment() { }
 
     public void setScheduledDateView(View scheduledDateView) {
         this.scheduledDateView = scheduledDateView;
@@ -31,8 +30,7 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Calendar calendar = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this,
-                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
         if (scheduledTimeHolder.getTimestamp() != null) {
             String scheduledDate = scheduledTimeHolder.getDate();

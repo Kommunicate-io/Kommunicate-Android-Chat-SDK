@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -77,7 +76,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         if (model != null && model.getHotelRoomDetail() != null) {
             View itemView = LayoutInflater.from(context).inflate(R.layout.al_hotel_details_layout, parent, false);
             return new HotelDetailHolder(itemView);
@@ -94,7 +92,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             View itemView = LayoutInflater.from(context).inflate(R.layout.al_rich_message_item, parent, false);
             return new MyViewHolder(itemView);
         }
-
         View itemView = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, parent, false);
         return new SingleTextViewHolder(itemView);
     }
@@ -134,7 +131,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         } else if (model.getTemplateId() == 2) {
             return payloadList.size();
         }
-
         return 0;
     }
 
@@ -155,14 +151,13 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
         public MyViewHolder(View itemView) {
             super(itemView);
-
-            roomRootLayout = (LinearLayout) itemView.findViewById(R.id.roomRootLayout);
-            productNameSingleLine = (TextView) itemView.findViewById(R.id.productNameSingleLine);
-            productImage = (ImageView) itemView.findViewById(R.id.productImage);
-            productRating = (TextView) itemView.findViewById(R.id.productRating);
-            productLocation = (TextView) itemView.findViewById(R.id.productLocation);
-            productPrice = (TextView) itemView.findViewById(R.id.productPrice);
-            productDescription = (TextView) itemView.findViewById(R.id.productDescription);
+            roomRootLayout = itemView.findViewById(R.id.roomRootLayout);
+            productNameSingleLine = itemView.findViewById(R.id.productNameSingleLine);
+            productImage = itemView.findViewById(R.id.productImage);
+            productRating = itemView.findViewById(R.id.productRating);
+            productLocation = itemView.findViewById(R.id.productLocation);
+            productPrice = itemView.findViewById(R.id.productPrice);
+            productDescription = itemView.findViewById(R.id.productDescription);
             productName = itemView.findViewById(R.id.productName);
             productImageOverlay = itemView.findViewById(R.id.productImageOverlay);
             productNameSplitLayout = itemView.findViewById(R.id.productNameSplitLayout);
@@ -188,7 +183,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
         public HotelDetailHolder(View itemView) {
             super(itemView);
-
             productImage = itemView.findViewById(R.id.productImage);
             roomTypeTv = itemView.findViewById(R.id.roomTypeTv);
             noOfGuestTv = itemView.findViewById(R.id.noOfGuestsTv);
@@ -240,7 +234,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
         public GuestCountHolder(View itemView) {
             super(itemView);
-
             adultCountTv = itemView.findViewById(R.id.adultCountTv);
             childCountTv = itemView.findViewById(R.id.childCountTv);
             adultCountIncrementBt = itemView.findViewById(R.id.adultCountIncrementBt);
@@ -263,10 +256,8 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
         public SingleTextViewHolder(View itemView) {
             super(itemView);
-
             singleTextItem = itemView.findViewById(R.id.singleTextItem);
             rootLayout = itemView.findViewById(R.id.rootLayout);
-
             singleTextItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -396,8 +387,8 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
     //templateId = 2
     private void bindHotelView(MyViewHolder viewHolder, int position) {
-
         if (hotelList != null) {
+
             final AlHotelBookingModel hotel = hotelList.get(position);
 
             if (!TextUtils.isEmpty(hotel.getHotelName())) {
@@ -438,6 +429,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                     listener.onAction(context, AlRichMessage.SEND_HOTEL_DETAILS, null, hotel);
                 }
             });
+
         } else if (payloadList != null) {
             final ALRichMessageModel.ALPayloadModel payload = payloadList.get(position);
 
@@ -531,23 +523,14 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                     e.printStackTrace();
                 }
             }
-
         }
     }
 
     private void bindSingleTextItem(SingleTextViewHolder holder, final int position) {
         if (model.getTemplateId() == 3) {
-            if (payloadList.get(position).getName() != null) {
-                holder.singleTextItem.setText(payloadList.get(position).getName().trim());
-            } else {
-                holder.singleTextItem.setText("");
-            }
+            holder.singleTextItem.setText(payloadList.get(position).getName() != null ? payloadList.get(position).getName().trim() : "");
         } else {
-            if (payloadList.get(position).getTitle() != null) {
-                holder.singleTextItem.setText(payloadList.get(position).getTitle().trim());
-            } else {
-                holder.singleTextItem.setText("");
-            }
+            holder.singleTextItem.setText(payloadList.get(position).getTitle() != null ? payloadList.get(position).getTitle().trim() : "");
         }
     }
 
@@ -569,12 +552,9 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             }
 
             holder.noOfGuestTv.setText(String.valueOf(hotel.getNoOfGuest()));
-
             String text = "(1 Room for " + String.valueOf(hotel.getNoOfNights()) + " Nights)";
             holder.totalPriceHeaderTv.setText(text);
-
             holder.priceTv.setText(context.getString(R.string.rupee_symbol) + " " + String.valueOf(hotel.getPrice().getRoomPrice()));
-
             holder.totalPriceTv.setText(context.getString(R.string.rupee_symbol) + " " + String.valueOf(hotel.getPrice().getRoomPrice() * hotel.getNoOfNights()));
 
             holder.bookAction.setOnClickListener(new View.OnClickListener() {
@@ -590,15 +570,12 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
     private void bindBookingDetailHolder(final BookingDetailsHolder holder, final int position) {
         final ALBookingDetailsModel detailsModel = new ALBookingDetailsModel();
         detailsModel.setSessionId(model.getSessionId());
-
         final ALBookingDetailsModel.ALBookingDetails bookingDetails = detailsModel.getPersonInfo();
-
         holder.titleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 bookingDetails.setTitle(titleList.get(position));
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 bookingDetails.setTitle("Title *");
@@ -608,7 +585,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         holder.submitAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (TextUtils.isEmpty(holder.firstNameEt.getText().toString().trim())
                         || TextUtils.isEmpty(holder.lastNameEt.getText().toString().trim())
                         || TextUtils.isEmpty(holder.emailIdEt.getText().toString().trim())

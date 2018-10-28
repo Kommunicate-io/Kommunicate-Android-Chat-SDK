@@ -8,6 +8,5 @@ import com.applozic.mobicomkit.api.conversation.Message;
 public interface MessageCommunicator {
 
     void updateLatestMessage(Message message, String formattedContactNumber);
-
     void removeConversation(Message message, String formattedContactNumber);
 }

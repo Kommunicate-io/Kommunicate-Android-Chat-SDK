@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public class ALRichMessageModel extends JsonMarker {
+
     private Short contentType;
     private String hotelList;
     private String payload;
@@ -167,6 +168,7 @@ public class ALRichMessageModel extends JsonMarker {
     }
 
     public class ALPayloadModel extends JsonMarker {
+
         private String title;
         private String type;
         private String url;
@@ -342,6 +344,7 @@ public class ALRichMessageModel extends JsonMarker {
     }
 
     public class AlFormDataModel extends JsonMarker {
+
         private String key;
         private String txnid;
         private String amount;
@@ -435,6 +438,7 @@ public class ALRichMessageModel extends JsonMarker {
     }
 
     public class AlActionModel extends JsonMarker {
+
         private Object action;
         private String type;
         private String name;

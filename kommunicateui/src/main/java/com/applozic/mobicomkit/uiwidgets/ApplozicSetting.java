@@ -67,8 +67,10 @@ public class ApplozicSetting {
     private static final String USER_PROFILE_FRAGMENT = "PROFILE_LOGOUT_BUTTON";
     private static final String MESSAGE_SEARCH_OPTION = "MESSAGE_SEARCH_OPTION";
     private static final String ACTIVITY_CALLBACK = "ACTIVITY_CALLBACK_";
+
     public static ApplozicSetting applozicSetting;
     public SharedPreferences sharedPreferences;
+
     private Context context;
 
     private ApplozicSetting(Context context) {
@@ -80,7 +82,6 @@ public class ApplozicSetting {
         if (applozicSetting == null) {
             applozicSetting = new ApplozicSetting(context.getApplicationContext());
         }
-
         return applozicSetting;
     }
 
@@ -418,7 +419,6 @@ public class ApplozicSetting {
 
     }
 
-
     //===== END ========================================
 
     //Default value is 5.
@@ -664,7 +664,6 @@ public class ApplozicSetting {
     }
 
     public enum RequestCode {
-
         MESSAGE_TAP(Integer.valueOf("1905")),
         PROFILE_VIEW(Integer.valueOf("1903")),
         USER_BLOCK(Integer.valueOf("1904")),
@@ -682,5 +681,4 @@ public class ApplozicSetting {
             return value;
         }
     }
-
 }

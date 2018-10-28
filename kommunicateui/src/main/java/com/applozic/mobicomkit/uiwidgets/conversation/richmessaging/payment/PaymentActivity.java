@@ -14,6 +14,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,7 +33,6 @@ public class PaymentActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         webView = findViewById(R.id.paymentWebView);
 
         String formDataJson = getIntent().getStringExtra("formData");
@@ -40,14 +40,10 @@ public class PaymentActivity extends AppCompatActivity {
 
         if (formDataJson != null) {
             setWebViewClient();
-
             txnData = new HashMap<>();
-
             try {
                 JSONObject jsonObject = new JSONObject(formDataJson);
-
                 Iterator<String> iter = jsonObject.keys();
-
                 while (iter.hasNext()) {
                     String key = iter.next();
                     if (jsonObject.getString(key) != null) {
@@ -63,10 +59,8 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
 
-    public void webViewClientPost(WebView webView, String url,
-                                  Collection<Map.Entry<String, String>> postData) {
+    public void webViewClientPost(WebView webView, String url, Collection<Map.Entry<String, String>> postData) {
         StringBuilder sb = new StringBuilder();
-
         sb.append("<html><head></head>");
         sb.append("<body onload='form1.submit()'>");
         sb.append(String.format("<form id='form1' action='%s' method='%s'>", url, "post"));
@@ -75,17 +69,14 @@ public class PaymentActivity extends AppCompatActivity {
             sb.append(String.format("<bubble_chat_input name='%s' type='hidden' value='%s' />", item.getKey(), item.getValue()));
         }
         sb.append("</form></body></html>");
-
         webView.loadData(sb.toString(), "text/html", "utf-8");
     }
 
     @Override
     public void onBackPressed() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(PaymentActivity.this);
-
         alertDialog.setTitle("Warning");
         alertDialog.setMessage("Do you want to cancel this transaction?");
-
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 finish();
@@ -105,10 +96,8 @@ public class PaymentActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return super.shouldOverrideUrlLoading(view, url);
             }
-
             @Override
             public void onPageFinished(WebView view, String url) {
-                //finish();
                 if (!txnData.isEmpty() && txnData.containsKey("surl") && url.equals(txnData.get("surl"))) {
                     finish();
                 } else if (!txnData.isEmpty() && txnData.containsKey("furl") && url.equals(txnData.get("furl"))) {
@@ -117,7 +106,6 @@ public class PaymentActivity extends AppCompatActivity {
                 super.onPageFinished(view, url);
             }
         });
-
         webView.setVisibility(View.VISIBLE);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);

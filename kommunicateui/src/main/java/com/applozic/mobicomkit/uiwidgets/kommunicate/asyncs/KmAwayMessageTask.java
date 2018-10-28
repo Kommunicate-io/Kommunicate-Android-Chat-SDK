@@ -42,7 +42,6 @@ public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-
         KmAwayMessageResponse response = null;
 
         if (s != null) {
@@ -53,7 +52,7 @@ public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
             }
 
             if (response != null) {
-                  if ("SUCCESS".equals(response.getCode()) && !response.getData().getMessageList().isEmpty()) {
+                if ("SUCCESS".equals(response.getCode()) && !response.getData().getMessageList().isEmpty()) {
                     handler.onSuccess(context.get(), response.getData().getMessageList().get(0));
                 } else {
                     handler.onFailure(context.get(), exception, s);

@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public class AlHotelBookingModel extends JsonMarker {
+
     private String HotelName;
     private String HotelCode;
     private float StarRating;
@@ -209,6 +210,7 @@ public class AlHotelBookingModel extends JsonMarker {
     }
 
     public class AlHotelPriceModel extends JsonMarker {
+
         private String CurrencyCode;
         private float RoomPrice;
         private float Tax;
@@ -346,7 +348,8 @@ public class AlHotelBookingModel extends JsonMarker {
         }
     }
 
-    public class RoomDetailModel extends JsonMarker{
+    public class RoomDetailModel extends JsonMarker {
+
         private String HotelCode;
         private List<AlHotelBookingModel> HotelRoomsDetails;
 

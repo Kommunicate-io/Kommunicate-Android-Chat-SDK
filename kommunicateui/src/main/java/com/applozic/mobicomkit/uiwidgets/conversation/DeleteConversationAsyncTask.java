@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 
-import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -26,7 +25,6 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
     private Channel channel;
     private Integer conversationId;
 
-
     public DeleteConversationAsyncTask(MobiComConversationService conversationService, Message message, Contact contact) {
         this.message = message;
         this.contact = contact;
@@ -40,15 +38,13 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
         this.conversationId = conversationId;
         this.conversationService = conversationService;
         this.isThreaddelete = true;
-
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         if (isThreaddelete) {
-            progressDialog = ProgressDialog.show(context, "",
-                    context.getString(R.string.delete_thread_text), true);
+            progressDialog = ProgressDialog.show(context, "", context.getString(R.string.delete_thread_text), true);
         }
     }
 
@@ -59,7 +55,6 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
         } else {
             conversationService.deleteMessage(message, contact);
         }
-
         return null;
     }
 
@@ -70,5 +65,4 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
             progressDialog.dismiss();
         }
     }
-
 }

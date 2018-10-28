@@ -32,7 +32,6 @@ public class KmClientService extends MobiComKitClientService {
         if (groupId != null && !groupId.equals(0)) {
             urlBuilder.append(groupId);
         }
-
         return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
     }
 }

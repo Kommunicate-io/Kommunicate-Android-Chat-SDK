@@ -101,7 +101,7 @@ public class MessageInfoFragment extends Fragment {
         deliveredListView.setLayoutManager(mLayoutManagerForDev);
         deliveredListView.setClickable(true);
 
-        ImageView locationImageView = (ImageView) view.findViewById(R.id.static_mapview);
+        ImageView locationImageView = view.findViewById(R.id.static_mapview);
         final RelativeLayout mainContactShareLayout = view.findViewById(R.id.contact_share_layout);
 
         RelativeLayout chatLocation = view.findViewById(R.id.chat_location);
@@ -173,13 +173,11 @@ public class MessageInfoFragment extends Fragment {
         final TypedValue typedValue = new TypedValue();
         getActivity().getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, typedValue, true);
         final DisplayMetrics metrics = new DisplayMetrics();
-
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         return (int) typedValue.getDimension(metrics);
     }
 
     private void setupAttachmentView(Message message, RelativeLayout defaultRelativeLayout) {
-
         FileMeta fileMeta = message.getFileMetas();
         ImageView attachmentInconView = defaultRelativeLayout.findViewById(R.id.applozic_message_info_attachment_icon);
         TextView attachmentFilename = defaultRelativeLayout.findViewById(R.id.applozic_message_info_attachment_filename);
@@ -278,7 +276,6 @@ public class MessageInfoFragment extends Fragment {
         protected void onPostExecute(Long aLong) {
             super.onPostExecute(aLong);
             //Populating view....
-
             if (!MessageInfoFragment.this.isVisible()) {
                 return;
             }
@@ -290,7 +287,6 @@ public class MessageInfoFragment extends Fragment {
                 ContactsAdapter readAdapter = new ContactsAdapter(messageInfoResponse.getReadByUserList());
                 readListView.setAdapter(readAdapter);
             }
-
             if (messageInfoResponse.getDeliverdToUserList() != null) {
                 ContactsAdapter deliveredAdapter = new ContactsAdapter(messageInfoResponse.getDeliverdToUserList());
                 deliveredListView.setAdapter(deliveredAdapter);
@@ -310,9 +306,7 @@ public class MessageInfoFragment extends Fragment {
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.contact_users_layout, parent, false);
-
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_users_layout, parent, false);
             return new MyViewHolder(itemView);
         }
 
@@ -329,8 +323,7 @@ public class MessageInfoFragment extends Fragment {
                 holder.lastSeenAtTextView.setVisibility(View.VISIBLE);
                 holder.lastSeenAtTextView.setText(String.valueOf(KmDateUtils.getDateAndTimeInDefaultFormat(getContext(), timeStamp)));
             } else {
-                holder.lastSeenAtTextView.setVisibility(View.GONE);
-                holder.lastSeenAtTextView.setText("");
+                holder.lastSeenAtTextView.setVisibility(View.GONE);holder.lastSeenAtTextView.setText("");
             }
 
             if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {
@@ -366,6 +359,7 @@ public class MessageInfoFragment extends Fragment {
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
+
             public TextView displayName, alphabeticImage, adminTextView, lastSeenAtTextView;
             CircleImageView circleImageView;
 

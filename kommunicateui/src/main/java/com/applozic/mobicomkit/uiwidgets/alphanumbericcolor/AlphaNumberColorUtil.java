@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * Created by devashish on 23/1/15.
  */
+
 public class AlphaNumberColorUtil {
 
     public static Map<Character, Integer> alphabetBackgroundColorMap = new HashMap<Character, Integer>();
@@ -51,7 +52,6 @@ public class AlphaNumberColorUtil {
         alphabetBackgroundColorMap.put('Y', R.color.alphabet_y);
         alphabetBackgroundColorMap.put('Z', R.color.alphabet_z);
 
-
         alphabetTextColorMap.put(null, R.color.text_non_alpha);
         alphabetTextColorMap.put('A', R.color.alphabet_text_a);
         alphabetTextColorMap.put('B', R.color.alphabet_text_b);
@@ -80,5 +80,4 @@ public class AlphaNumberColorUtil {
         alphabetTextColorMap.put('Y', R.color.alphabet_text_y);
         alphabetTextColorMap.put('Z', R.color.alphabet_text_z);
     }
-
 }

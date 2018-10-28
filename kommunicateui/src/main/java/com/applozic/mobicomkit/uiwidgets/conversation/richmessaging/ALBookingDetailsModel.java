@@ -7,6 +7,7 @@ import com.applozic.mobicommons.json.JsonMarker;
  */
 
 public class ALBookingDetailsModel extends JsonMarker {
+
     private String sessionId;
     private ALBookingDetails personInfo;
 
@@ -30,6 +31,7 @@ public class ALBookingDetailsModel extends JsonMarker {
     }
 
     public class ALBookingDetails extends JsonMarker {
+
         private String Title;
         private String Age;
         private String FirstName;

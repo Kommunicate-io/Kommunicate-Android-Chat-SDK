@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * Created by sunil on 10/10/16.
  */
+
 public class AlCustomizationSettings extends JsonMarker {
 
     private String customMessageBackgroundColor = "#e6e5ec";
@@ -131,7 +132,6 @@ public class AlCustomizationSettings extends JsonMarker {
         return customMessageBackgroundColor;
     }
 
-
     public String getSentMessageBackgroundColor() {
         return sentMessageBackgroundColor;
     }
@@ -159,7 +159,6 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isImageCompression() {
         return imageCompression;
     }
-
 
     public boolean isInviteFriendsInContactActivity() {
         return inviteFriendsInContactActivity;
@@ -253,7 +252,6 @@ public class AlCustomizationSettings extends JsonMarker {
         return hideGroupRemoveMemberOption;
     }
 
-
     public String getEditTextBackgroundColorOrDrawable() {
         return editTextBackgroundColorOrDrawable;
     }
@@ -314,11 +312,9 @@ public class AlCustomizationSettings extends JsonMarker {
         return messageSearchOption;
     }
 
-
     public int getTotalRegisteredUserToFetch() {
         return totalRegisteredUserToFetch;
     }
-
 
     public int getMaxAttachmentAllowed() {
         return maxAttachmentAllowed;
@@ -380,7 +376,6 @@ public class AlCustomizationSettings extends JsonMarker {
         this.attachmentOptions = attachmentOptions;
     }
 
-
     public boolean isHideAttachmentButton() {
         return hideAttachmentButton;
     }
@@ -404,7 +399,6 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isGroupUsersOnlineStatus() {
         return groupUsersOnlineStatus;
     }
-
 
     public boolean isRefreshOption() {
         return refreshOption;

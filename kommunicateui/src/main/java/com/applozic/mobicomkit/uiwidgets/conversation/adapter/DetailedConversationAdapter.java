@@ -262,8 +262,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         try {
             if (type == 2) {
                 MyViewHolder2 myViewHolder2 = (MyViewHolder2) holder;
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd, yyyy");
-                SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat("EEEE");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(context.getString(R.string.DATE_MEDIUM_FORMAT), Locale.getDefault());
+                SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat(context.getString(R.string.DATE_DAY_FORMAT), Locale.getDefault());
                 Date date = new Date(message.getCreatedAtTime());
 
                 myViewHolder2.dateView.setTextColor(Color.parseColor(alCustomizationSettings.getConversationDateTextColor().trim()));

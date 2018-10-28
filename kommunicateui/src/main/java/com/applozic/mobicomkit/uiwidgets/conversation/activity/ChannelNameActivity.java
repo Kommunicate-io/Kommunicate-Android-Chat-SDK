@@ -58,6 +58,7 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -214,7 +215,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                     applozicGroupProfileIcon.setImageURI(imageChangeUri);
                 } else {
                     imageChangeUri = result.getUri();
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
                     String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
                     applozicGroupProfileIcon.setImageDrawable(null); // <--- added to force redraw of ImageView
                     applozicGroupProfileIcon.setImageURI(imageChangeUri);
@@ -261,7 +262,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
 
     @Override
     public Uri getCurrentImageUri() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
         profilePhotoFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
         imageChangeUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", profilePhotoFile);

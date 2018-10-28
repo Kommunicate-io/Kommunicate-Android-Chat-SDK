@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -76,7 +77,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
     FileClientService fileClientService;
     private EditText channelName;
     private Button ok, cancel;
-    private ImageView selectImageProfileIcon;
+    private FloatingActionButton selectImageProfileIcon;
     private ImageView applozicGroupProfileIcon;
     private LinearLayout layout;
     private Uri imageChangeUri;
@@ -95,7 +96,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
         layout = (LinearLayout) findViewById(R.id.footerAd);
         applozicPermissions = new ApplozicPermissions(this, layout);
         mActionBar.setTitle(getString(R.string.update_channel_title_name));
-        selectImageProfileIcon = (CircleImageView) findViewById(R.id.applozic_group_profile_camera);
+        selectImageProfileIcon = findViewById(R.id.applozic_group_profile_camera);
         applozicGroupProfileIcon = (ImageView) findViewById(R.id.applozic_group_profile);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         fileClientService = new FileClientService(this);
@@ -111,8 +112,8 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 getWindow().setStatusBarColor(Color.parseColor(alCustomizationSettings.getThemeColorPrimaryDark()));
             }
         }
-        int drawableResourceId = getResources().getIdentifier(alCustomizationSettings.getAttachCameraIconName(), "drawable", getPackageName());
-        selectImageProfileIcon.setImageResource(drawableResourceId);
+        //int drawableResourceId = getResources().getIdentifier(alCustomizationSettings.getAttachCameraIconName(), "drawable", getPackageName());
+        //selectImageProfileIcon.setImageResource(drawableResourceId);
 
         if (getIntent().getExtras() != null) {
             String groupInfoJson = getIntent().getExtras().getString(ChannelInfoActivity.GROUP_UPDTAE_INFO);
@@ -127,7 +128,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 applozicGroupProfileIcon.setImageURI(uri);
             }
         } else {
-            applozicGroupProfileIcon.setImageResource(R.drawable.ic_people_grey_600_24dp);
+            applozicGroupProfileIcon.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
 
         }
         channelName = (EditText) findViewById(R.id.newChannelName);
@@ -379,11 +380,10 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 if (imageView != null) {
                     imageChangeUri = null;
                     imageView.setImageDrawable(null); // <--- added to force redraw of ImageView
-                    imageView.setImageResource(R.drawable.ic_people_grey_600_24dp);
+                    imageView.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
                 }
             }
         }
 
     }
-
 }

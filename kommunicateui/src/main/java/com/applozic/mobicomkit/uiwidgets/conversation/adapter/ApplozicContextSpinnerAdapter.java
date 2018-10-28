@@ -51,34 +51,28 @@ public class ApplozicContextSpinnerAdapter extends BaseAdapter {
         productImageLoader.setImageFadeIn(false);
     }
 
-
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
 
-
     public View getCustomView(int position, View convertView, ViewGroup parent) {
-
         Conversation conversation = (Conversation) getItem(position);
         ApplozicProductViewHolder viewHolder;
-
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.applozic_context_based_layout, parent, false);
             viewHolder = new ApplozicProductViewHolder();
-            viewHolder.productImage = (ImageView) convertView.findViewById(R.id.productImage);
-            viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.title);
-            viewHolder.subTitleTextView = (TextView) convertView.findViewById(R.id.subTitle);
-            viewHolder.key1TextView = (TextView) convertView.findViewById(R.id.qtyTitleTextView);
-            viewHolder.value1TextView = (TextView) convertView.findViewById(R.id.qtyValueTextView);
-            viewHolder.key2TextView = (TextView) convertView.findViewById(R.id.priceTitleTextView);
-            viewHolder.value2TextView = (TextView) convertView.findViewById(R.id.priceValueTextview);
+            viewHolder.productImage = convertView.findViewById(R.id.productImage);
+            viewHolder.titleTextView = convertView.findViewById(R.id.title);
+            viewHolder.subTitleTextView = convertView.findViewById(R.id.subTitle);
+            viewHolder.key1TextView = convertView.findViewById(R.id.qtyTitleTextView);
+            viewHolder.value1TextView = convertView.findViewById(R.id.qtyValueTextView);
+            viewHolder.key2TextView = convertView.findViewById(R.id.priceTitleTextView);
+            viewHolder.value2TextView = convertView.findViewById(R.id.priceValueTextview);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ApplozicProductViewHolder) convertView
-                    .getTag();
+            viewHolder = (ApplozicProductViewHolder) convertView.getTag();
         }
-
         try {
             if (conversation != null) {
                 String topicId = conversation.getTopicId();
@@ -106,7 +100,6 @@ public class ApplozicContextSpinnerAdapter extends BaseAdapter {
                     if (!TextUtils.isEmpty(topicDetail.getValue2())) {
                         viewHolder.value2TextView.setText(":" + topicDetail.getValue2());
                     }
-
                 } else {
                     viewHolder.productImage.setVisibility(View.GONE);
                     viewHolder.titleTextView.setVisibility(View.GONE);
@@ -117,14 +110,10 @@ public class ApplozicContextSpinnerAdapter extends BaseAdapter {
                     viewHolder.value2TextView.setVisibility(View.GONE);
                 }
             }
-
         } catch (Exception e) {
-
         }
         return convertView;
-
     }
-
 
     @Override
     public int getCount() {
@@ -152,14 +141,11 @@ public class ApplozicContextSpinnerAdapter extends BaseAdapter {
         return getCustomView(position, convertView, parent);
     }
 
-
     private static class ApplozicProductViewHolder {
+
         TextView titleTextView, subTitleTextView, key1TextView, value1TextView, key2TextView, value2TextView;
         ImageView productImage;
 
-        ApplozicProductViewHolder() {
-
-        }
-
+        private ApplozicProductViewHolder() { }
     }
 }

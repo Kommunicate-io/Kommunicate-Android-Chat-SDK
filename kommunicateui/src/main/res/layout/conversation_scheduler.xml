@@ -1,101 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/conversation_scheduler"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/material_default_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/schedule_header"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:background="@color/mobitexter_main_color"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/material_default_padding"
+        android:text="@string/scheduleDialogHeader"
+        android:textColor="@color/material_white_1000"
+        android:textSize="@dimen/material_typography_textsize_title"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <TextView
-            android:id="@+id/schedule_header"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="15dp"
-            android:background="@color/mobitexter_main_color"
-            android:gravity="center_horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="@string/scheduleDialogHeader"
-            android:textColor="@color/white"
-            android:textSize="18dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/selectionRequest"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/material_drawer_list_item_size"
+        android:text="@string/selectionRequestText"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/schedule_header"/>
 
-        <TextView
-            android:id="@+id/selectionRequest"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/schedule_header"
-            android:text="@string/selectionRequestText"
-            android:textSize="15dp" />
+    <TextView
+        android:id="@+id/scheduledDateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|top"
+        android:layout_marginTop="@dimen/material_default_padding"
+        android:focusableInTouchMode="false"
+        android:text="@string/scheduledDateText"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectionRequest"/>
 
-        <TextView
-            android:id="@+id/scheduledDateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/selectionRequest"
-            android:layout_gravity="start|top"
-            android:focusableInTouchMode="false"
-            android:paddingBottom="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="20px"
-            android:paddingEnd="20dp"
-            android:text="@string/scheduledDateText"
-            android:textSize="15dp" />
+    <TextView
+        android:id="@+id/scheduledDate"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:text="@string/defaultDate"
+        android:textColor="@color/holo_blue"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/scheduledDateText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/scheduledDateText"
+        app:layout_constraintTop_toTopOf="@+id/scheduledDateText"/>
 
-        <TextView
-            android:id="@+id/scheduledDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/scheduledDateText"
-            android:layout_gravity="center_horizontal|top"
-            android:layout_toRightOf="@+id/scheduledDateText"
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp"
-            android:text="@string/defaultDate"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/holo_blue"
-            android:layout_toEndOf="@+id/scheduledDateText"
-            android:textSize="15dp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/scheduledTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/material_default_padding"
+        android:text="@string/scheduledTimeText"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scheduledDateText"/>
 
-        <TextView
-            android:id="@+id/scheduledTimeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/scheduledDateText"
-            android:layout_below="@+id/scheduledDateText"
-            android:layout_gravity="start|center_vertical"
-            android:paddingBottom="15dp"
-            android:layout_alignStart="@+id/scheduledDateText"
-            android:paddingEnd="20dp"
-            android:paddingRight="20dp"
-            android:text="@string/scheduledTimeText"
-            android:textSize="15dp" />
+    <TextView
+        android:id="@+id/scheduledTime"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        android:text="@string/defaultTime"
+        android:textColor="@color/holo_blue"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/scheduledTimeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/scheduledTimeText"
+        app:layout_constraintTop_toTopOf="@+id/scheduledTimeText"/>
 
-        <TextView
-            android:id="@+id/scheduledTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/scheduledDateText"
-            android:layout_gravity="center"
-            android:layout_toRightOf="@+id/scheduledDateText"
-            android:paddingBottom="15dp"
-            android:text="@string/defaultTime"
-            android:layout_toEndOf="@+id/scheduledDateText"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/holo_blue"
-            android:textSize="15dp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

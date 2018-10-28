@@ -5,12 +5,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +28,7 @@ import com.applozic.mobicomkit.api.attachment.AttachmentViewProperties;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -46,79 +47,56 @@ public class ApplozicDocumentView {
 
     private static final String TAG = "ApplozicDocumentView";
     RelativeLayout mainLayout;
-    RelativeLayout downloadInProgressLayout;
-    RelativeLayout downloadedLayout;
-    RelativeLayout previewLayout;
-    RelativeLayout retryLayout;
-    TextView sizeTextView;
-    TextView fileText;
+    View dividerView;
+    TextView infoTextView, nameTextView, audioTextView;
+    ImageView icon, cancelIcon;
+    ProgressBar progressBar;
     Message message;
     Context context;
     AttachmentViewProperties attachmentViewProperties;
-    ProgressBar progressBar;
-    ImageView uploadDownloadImage;
     SeekBar audioseekbar;
     Uri uri;
     String filePath, mimeType = null;
-    ImageView docIcon;
-    TextView audio_duration_textView;
     String audio_duration;
     private AttachmentTask mDownloadThread;
     private boolean mCacheFlag = false;
-    private KmStoragePermissionListener kmStoragePermissionListener;
+    private boolean isPreview, isRetry, isDownloadProgress, isDownloaded;
     private Handler mHandler = new Handler();
-
+    private AlCustomizationSettings alCustomizationSettings;
+    private KmStoragePermissionListener kmStoragePermissionListener;
 
     public ApplozicDocumentView(Context context, KmStoragePermissionListener kmStoragePermissionListener) {
         this.context = context;
         this.kmStoragePermissionListener = kmStoragePermissionListener;
     }
 
-    public void inflateViewWithMessage(View rootview, Message message) {
+    public void inflateViewWithMessage(View rootview, Message message, AlCustomizationSettings alCustomizationSettings) {
         this.message = message;
-        mainLayout = (RelativeLayout) rootview.findViewById(R.id.attachment_doc_relative_layout);
-        downloadInProgressLayout = (RelativeLayout) rootview.findViewById(R.id.applozic_doc_download_progress_rl);
-        downloadedLayout = (RelativeLayout) rootview.findViewById(R.id.applozic_doc_downloaded);
-        previewLayout = (RelativeLayout) rootview.findViewById(R.id.download_doc_relative_layout);
-        retryLayout = (RelativeLayout) rootview.findViewById(R.id.retry_doc_relative_layout);
-        progressBar = (ProgressBar) rootview.findViewById(R.id.applozic_doc_download_progress);
-        sizeTextView = (TextView) rootview.findViewById(R.id.applozic_doc_file_size);
-        fileText = (TextView) rootview.findViewById(R.id.applozic_doc_file_name);
-        uploadDownloadImage = (ImageView) rootview.findViewById(R.id.applozic_download_image);
-        docIcon = (ImageView) rootview.findViewById(R.id.doc_icon);
-        ImageView cancelIcon = (ImageView) rootview.findViewById(R.id.download_calcle_icon);
-        audioseekbar = (SeekBar) rootview.findViewById(R.id.applozic_audio_seekbar);
-        audio_duration_textView = (TextView) rootview.findViewById(R.id.audio_duration_textView);
-
-        //progressBar.setVisibility(GONE);
-        //previewLayout.setVisibility(GONE);
-        //sizeTextView.setVisibility(GONE);
-        //downloadInProgressLayout.setVisibility(GONE);
-        //retryLayout.setVisibility(GONE);
-        //downloadedLayout.setVisibility(GONE);
-        //previewLayout.setVisibility(GONE);
-        //fileText.setVisibility(GONE);
-        //uploadDownloadImage.setVisibility(GONE);
-        //docIcon.setVisibility(GONE);
-        //cancelIcon.setVisibility(GONE);
-        //audioseekbar.setVisibility(GONE);
-        //audio_duration_textView.setVisibility(GONE);
-
+        this.alCustomizationSettings = alCustomizationSettings;
+        mainLayout = rootview.findViewById(R.id.attachmentLayout);
+        dividerView = rootview.findViewById(R.id.attachmentDivider);
+        infoTextView = rootview.findViewById(R.id.attachmentInfo);
+        nameTextView = rootview.findViewById(R.id.attachmentName);
+        icon = rootview.findViewById(R.id.attachmentIcon);
+        cancelIcon = rootview.findViewById(R.id.attachmentCancelIcon);
+        audioTextView = rootview.findViewById(R.id.audio_duration_textView);
+        progressBar = rootview.findViewById(R.id.applozic_doc_download_progress);
+        audioseekbar = rootview.findViewById(R.id.applozic_audio_seekbar);
         if (!message.hasAttachment()) {
             return;
         }
-
-        progressBar.getIndeterminateDrawable().setColorFilter(message.isTypeOutbox() ? context.getResources().getColor(R.color.applozic_green_color) : context.getResources().getColor(R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY);
-        cancelIcon.setColorFilter(message.isTypeOutbox() ? R.color.white : R.color.black, android.graphics.PorterDuff.Mode.MULTIPLY);
+        setBooleanViews(true, false, false, false);
+        setColorResources(message, alCustomizationSettings);
         if (message.getFileMetas() != null) {
             if (message.getFileMetas().getContentType().contains("audio")) {
                 setAudioIcons();
                 updateApplozicSeekBar();
             } else {
-                audio_duration_textView.setVisibility(GONE);
+                audioTextView.setVisibility(GONE);
                 audioseekbar.setVisibility(GONE);
-                fileText.setVisibility(View.VISIBLE);
-                fileText.setText(message.getFileMetas().getName());
+                setViewsVisibility(View.VISIBLE);
+                infoTextView.setVisibility(View.GONE);
+                nameTextView.setText(message.getFileMetas().getName());
             }
         } else if (message.getFilePaths() != null) {
             filePath = message.getFilePaths().get(0);
@@ -127,19 +105,13 @@ public class ApplozicDocumentView {
                 setAudioIcons();
                 updateApplozicSeekBar();
             } else {
-                audio_duration_textView.setVisibility(GONE);
+                audioTextView.setVisibility(GONE);
                 audioseekbar.setVisibility(GONE);
-                fileText.setVisibility(View.VISIBLE);
-                fileText.setText(new File(filePath).getName());
-                docIcon.setImageResource(R.drawable.ic_description_white_24dp);
+                setViewsVisibility(View.VISIBLE);
+                nameTextView.setText(new File(filePath).getName());
+                infoTextView.setVisibility(View.GONE);
+                icon.setImageResource(R.drawable.ic_description_white_24dp);
             }
-        }
-
-        fileText.setTextColor(ContextCompat.getColor(context, R.color.message_text_color));
-        audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? 0xFFFFFFFF : 0xFFFFB242, PorterDuff.Mode.MULTIPLY);
-        cancelIcon.setVisibility(message.isTypeOutbox() ? GONE : View.VISIBLE);
-        if (message.isTypeOutbox()) {
-            docIcon.setColorFilter(0xffffffff);
         }
 
         setupAttachmentView();
@@ -159,14 +131,18 @@ public class ApplozicDocumentView {
                 if (mimeType != null) {
                     if (mimeType.contains("audio")) {
                         setAudioIcons();
-                        fileText.setVisibility(GONE);
-                        audio_duration_textView.setVisibility(View.VISIBLE);
+                        nameTextView.setVisibility(View.GONE);
+                        infoTextView.setVisibility(View.GONE);
+                        audioTextView.setVisibility(View.VISIBLE);
                         audioseekbar.setVisibility(View.VISIBLE);
+                        icon.setVisibility(View.VISIBLE);
                     } else {
-                        fileText.setVisibility(View.VISIBLE);
-                        audio_duration_textView.setVisibility(GONE);
+                        nameTextView.setVisibility(View.VISIBLE);
+                        audioTextView.setVisibility(GONE);
                         audioseekbar.setVisibility(GONE);
-                        docIcon.setImageResource(R.drawable.ic_description_white_24dp);
+                        infoTextView.setVisibility(View.GONE);
+                        icon.setVisibility(View.VISIBLE);
+                        icon.setImageResource(R.drawable.ic_description_white_24dp);
                     }
                 }
             }
@@ -175,19 +151,20 @@ public class ApplozicDocumentView {
         }
 
         if (message.getFileMetas() != null && message.getFilePaths() == null) {
-            sizeTextView.setText(message.getFileMetas().getSizeInReadableFormat());
+            infoTextView.setVisibility(View.VISIBLE);
+            infoTextView.setText(message.getFileMetas().getSizeInReadableFormat());
             if (!(message.getFileMetas().getContentType().contains("audio"))) {
-                fileText.setText(message.getFileMetas().getName());
+                nameTextView.setText(message.getFileMetas().getName());
                 audioseekbar.setVisibility(GONE);
-                audio_duration_textView.setVisibility(GONE);
+                audioTextView.setVisibility(GONE);
             } else {
-                fileText.setVisibility(GONE);
+                nameTextView.setVisibility(GONE);
                 if (message.isAttachmentDownloaded()) {
-                    ApplozicAudioManager.getInstance(context).updateAudioDuration(audio_duration_textView, filePath);
-                    audio_duration_textView.setVisibility(View.VISIBLE);
+                    ApplozicAudioManager.getInstance(context).updateAudioDuration(audioTextView, filePath);
+                    audioTextView.setVisibility(View.VISIBLE);
                 } else {
-                    audio_duration_textView.setVisibility(View.VISIBLE);
-                    audio_duration_textView.setText("00:00");
+                    audioTextView.setVisibility(View.VISIBLE);
+                    audioTextView.setText("00:00");
                 }
                 setAudioIcons();
                 audioseekbar.setVisibility(View.VISIBLE);
@@ -198,21 +175,21 @@ public class ApplozicDocumentView {
                 mimeType = FileUtils.getMimeType(filePath);
                 if (mimeType != null && !(mimeType.contains("audio"))) {
                     String fileName = new File(filePath).getName();
-                    fileText.setText(fileName);
+                    nameTextView.setText(fileName);
                     audioseekbar.setVisibility(GONE);
-                    audio_duration_textView.setVisibility(GONE);
-                    docIcon.setVisibility(View.VISIBLE);
-                    docIcon.setImageResource(R.drawable.ic_description_white_24dp);
+                    audioTextView.setVisibility(GONE);
+                    icon.setVisibility(View.VISIBLE);
+                    //icon.setImageResource(R.drawable.ic_description_white_24dp);
                 } else {
                     if (message.isAttachmentDownloaded()) {
-                        ApplozicAudioManager.getInstance(context).updateAudioDuration(audio_duration_textView, filePath);
-                        audio_duration_textView.setVisibility(View.VISIBLE);
+                        ApplozicAudioManager.getInstance(context).updateAudioDuration(audioTextView, filePath);
+                        audioTextView.setVisibility(View.VISIBLE);
                     } else {
-                        audio_duration_textView.setVisibility(View.VISIBLE);
-                        audio_duration_textView.setText("00:00");
+                        audioTextView.setVisibility(View.VISIBLE);
+                        audioTextView.setText("00:00");
                     }
-                    fileText.setVisibility(GONE);
-                    docIcon.setVisibility(GONE);
+                    nameTextView.setVisibility(GONE);
+                    //icon.setVisibility(GONE);
                     audioseekbar.setVisibility(View.VISIBLE);
                     setAudioIcons();
                 }
@@ -220,18 +197,53 @@ public class ApplozicDocumentView {
         }
     }
 
+    private void setViewsVisibility(int visibility) {
+        icon.setVisibility(visibility);
+        dividerView.setVisibility(visibility);
+        nameTextView.setVisibility(visibility);
+    }
+
+    public void setBooleanViews(boolean preview, boolean downloadProgres, boolean downloaded, boolean retry) {
+        isPreview = preview;
+        isDownloadProgress = downloadProgres;
+        isDownloaded = downloaded;
+        isRetry = retry;
+    }
+
+    private void setColorResources(Message message, AlCustomizationSettings alCustomizationSettings) {
+        progressBar.getIndeterminateDrawable().setColorFilter(context.getResources().getColor(R.color.applozic_green_color), PorterDuff.Mode.MULTIPLY);
+        cancelIcon.setColorFilter(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) :
+                Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()), PorterDuff.Mode.MULTIPLY);
+        icon.setColorFilter(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) :
+                Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()), PorterDuff.Mode.MULTIPLY);
+        dividerView.setBackgroundColor(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) :
+                Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+        nameTextView.setTextColor(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) :
+                Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+        infoTextView.setTextColor(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) :
+                Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+        audioTextView.setTextColor(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) :
+                Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+        audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? 0xFFFFFFFF : 0xFFFFB242, PorterDuff.Mode.MULTIPLY);
+    }
+
     private void showRetry() {
+        setBooleanViews(false, false, false, true);
         if (isDownloadRequire()) {
             showPreview();
         } else {
             mainLayout.setVisibility(View.VISIBLE);
-            retryLayout.setVisibility(View.VISIBLE);
-
-            uploadDownloadImage.setImageResource(R.drawable.ic_outline_unarchive_white_24dp);
-            downloadInProgressLayout.setVisibility(GONE);
-            downloadedLayout.setVisibility(GONE);
-            previewLayout.setVisibility(GONE);
+            setViewsVisibility(View.VISIBLE);
+            icon.setImageResource(R.drawable.ic_outline_unarchive_white_24dp);
+            infoTextView.setVisibility(View.VISIBLE);
+            infoTextView.setText(R.string.attachment_retry);
+            showProgress(View.GONE);
         }
+    }
+
+    private void showProgress(int visibility) {
+        progressBar.setVisibility(visibility);
+        cancelIcon.setVisibility(message.isTypeOutbox() ? GONE : visibility);
     }
 
     private void showUploadingProgress() {
@@ -253,34 +265,31 @@ public class ApplozicDocumentView {
     }
 
     public void showPreview() {
+        setBooleanViews(true, false, false, false);
         mainLayout.setVisibility(View.VISIBLE);
-        previewLayout.setVisibility(View.VISIBLE);
-        uploadDownloadImage.setImageResource(R.drawable.ic_outline_archive_white_24dp);
-        downloadInProgressLayout.setVisibility(GONE);
-        downloadedLayout.setVisibility(GONE);
-        retryLayout.setVisibility(GONE);
+        setViewsVisibility(View.VISIBLE);
+        cancelIcon.setVisibility(View.GONE);
+        infoTextView.setVisibility(View.GONE);
+        icon.setImageResource(R.drawable.ic_outline_archive_white_24dp);
+        showProgress(View.GONE);
     }
 
     public void showDownloadInProgress() {
+        setBooleanViews(false, true, false, false);
         Utils.printLog(context, TAG, "showDownloadInProgress :: ");
         mainLayout.setVisibility(View.VISIBLE);
-        downloadInProgressLayout.setVisibility(View.VISIBLE);
-        previewLayout.setVisibility(GONE);
-        downloadedLayout.setVisibility(GONE);
-        retryLayout.setVisibility(GONE);
+        showProgress(View.VISIBLE);
     }
 
     public void showDownloaded() {
+        setBooleanViews(false, false, true, false);
         Utils.printLog(context, TAG, "showDownloaded :: ");
         mainLayout.setVisibility(View.VISIBLE);
-        downloadedLayout.setVisibility(View.VISIBLE);
-        previewLayout.setVisibility(GONE);
-        downloadInProgressLayout.setVisibility(GONE);
-        retryLayout.setVisibility(GONE);
+        showProgress(View.GONE);
     }
 
     public void registerEvents() {
-        previewLayout.setOnClickListener(new View.OnClickListener() {
+        mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (kmStoragePermissionListener.isPermissionGranted()) {
@@ -315,51 +324,49 @@ public class ApplozicDocumentView {
                         }
                     });
                 }
-            }
-        });
-
-        downloadedLayout.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                if (kmStoragePermissionListener.isPermissionGranted()) {
-                    playAudio();
-                } else {
-                    kmStoragePermissionListener.checkPermission(new KmStoragePermission() {
-                        @Override
-                        public void onAction(boolean didGrant) {
-                            if (didGrant) {
-                                playAudio();
-                            }
-                        }
-                    });
+                if (isDownloaded) {
+                    Toast.makeText(context, "CLICK: is Downloaded " + isDownloaded, Toast.LENGTH_LONG).show();
+                    downloadedClickListener();
+                } else if (isDownloadProgress) {
+                    Toast.makeText(context, "CLICK: is isDownloadProgress " + isDownloadProgress, Toast.LENGTH_LONG).show();
+                    cancelDownload();
+                } else if (isPreview) {
+                    Toast.makeText(context, "CLICK: is isPreview " + isPreview, Toast.LENGTH_LONG).show();
+                    previewClickListener();
+                } else if (isRetry) {
+                    Toast.makeText(context, "CLICK: is isRetry " + isRetry, Toast.LENGTH_LONG).show();
+                    retryClickListener();
                 }
-            }
-
-        });
-
-        downloadInProgressLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancelDownload();
-            }
-        });
-
-        retryLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                message.setCanceled(false);
-                MessageDatabaseService messageDatabaseService = new MessageDatabaseService(context);
-                messageDatabaseService.updateCanceledFlag(message.getMessageId(), 0);
-                Intent intent = new Intent(context, MessageIntentService.class);
-                intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(message, Message.class));
-                MessageIntentService.enqueueWork(context, intent, null);
-                showDownloadInProgress();
-
             }
         });
     }
 
-    public void playAudio() {
+    private void retryClickListener() {
+        message.setCanceled(false);
+        MessageDatabaseService messageDatabaseService = new MessageDatabaseService(context);
+        messageDatabaseService.updateCanceledFlag(message.getMessageId(), 0);
+        Intent intent = new Intent(context, MessageIntentService.class);
+        intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(message, Message.class));
+        MessageIntentService.enqueueWork(context, intent, null);
+        showDownloadInProgress();
+    }
+
+    private void downloadedClickListener() {
+        if (kmStoragePermissionListener.isPermissionGranted()) {
+            playAudio();
+        } else {
+            kmStoragePermissionListener.checkPermission(new KmStoragePermission() {
+                @Override
+                public void onAction(boolean didGrant) {
+                    if (didGrant) {
+                        playAudio();
+                    }
+                }
+            });
+        }
+    }
+
+    private void playAudio() {
         final String mimeType = FileUtils.getMimeType(message.getFileMetas().getName());
         if (Utils.hasNougat()) {
             uri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
@@ -384,14 +391,32 @@ public class ApplozicDocumentView {
         }
     }
 
+    private void previewClickListener() {
+        if (!AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
+            // Starts downloading this View, using the current cache setting
+            mDownloadThread = AttachmentManager.startDownload(attachmentViewProperties, mCacheFlag);
+            // After successfully downloading the image, this marks that it's available.
+            showDownloadInProgress();
+        }
+        if (mDownloadThread == null) {
+            mDownloadThread = AttachmentManager.getBGThreadForAttachment(message.getKeyString());
+            if (mDownloadThread != null) {
+                mDownloadThread.setAttachementViewNew(attachmentViewProperties);
+            }
+        }
+    }
+
     public void setAudioIcons() {
         int state = ApplozicAudioManager.getInstance(context).getAudioState(message.getKeyString());
         Utils.printLog(context, "state:", String.valueOf(state));
-        docIcon.setVisibility(View.VISIBLE);
+        icon.setVisibility(View.VISIBLE);
+        icon.setImageResource(R.drawable.ic_description_white_24dp);
+        dividerView.setVisibility(View.VISIBLE);
+        infoTextView.setVisibility(View.GONE);
         if (state == 1) {
-            docIcon.setImageResource(R.drawable.ic_pause_white_24dp);
+            icon.setImageResource(R.drawable.ic_pause_white_24dp);
         } else {
-            docIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+            icon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
         }
     }
 
@@ -411,12 +436,8 @@ public class ApplozicDocumentView {
             return;
         }
         AttachmentManager.removeDownload(mDownloadThread, true);
-        getDownloadProgressLayout().setVisibility(GONE);
+        showProgress(View.GONE);
         showPreview();
-    }
-
-    public View getDownloadProgressLayout() {
-        return downloadInProgressLayout;
     }
 
     public void updateApplozicSeekBar() {

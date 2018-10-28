@@ -36,5 +36,8 @@ dependencies {
     //compile project(':mobicomkit')  // Note: use this for customization
     api 'com.applozic.communication.message:mobicomkit:5.11'
     //Note: use this in case customization is not required
+    implementation ('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
+        transitive = true;
+    }
 }
 

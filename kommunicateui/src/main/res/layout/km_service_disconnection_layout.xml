@@ -1,52 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/serviceDisconnectionLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:visibility="gone">
+    android:visibility="gone"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/material_default_padding"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/material_default_padding"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45"/>
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="99dp"
-        android:src="@drawable/ic_sentiment_neutral_grey_600_24dp" />
+        android:layout_marginBottom="@dimen/material_half_padding"
+        android:contentDescription="@string/image_description_default"
+        android:scaleType="center"
+        android:src="@drawable/ic_sentiment_satisfied_grey_600_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineTop"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"/>
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="28dp"
-        android:fontFamily="sans-serif-medium"
-        android:letterSpacing="0.06"
         android:text="@string/snap_text"
-        android:textColor="#3f3f40"
-        android:textSize="20sp" />
-
-    <View
-        android:layout_width="50dp"
-        android:layout_height="4dp"
-        android:background="#ccc8c8"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="7dp" />
+        android:textColor="@color/material_grey_800"
+        android:textSize="@dimen/material_typography_textsize_display1"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineTop"/>
 
     <TextView
+        android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="39dp"
-        android:layout_marginStart="39dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="sans-serif"
-        android:letterSpacing="0.06"
-        android:lineSpacingExtra="7sp"
-        android:minLines="3"
-        android:text="@string/account_disconnection_message"
+        android:layout_marginTop="@dimen/material_half_padding"
         android:gravity="center"
-        android:textColor="#737376"
-        android:textSize="14sp"
-        android:textStyle="normal" />
-</LinearLayout>
+        android:text="@string/account_disconnection_message"
+        android:textColor="@color/material_grey_600"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@+id/title"/>
+
+</android.support.constraint.ConstraintLayout>

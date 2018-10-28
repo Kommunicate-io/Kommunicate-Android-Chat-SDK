@@ -25,7 +25,7 @@
         android:text=""
         android:textColor="#646262"
         android:textSize="14sp"
-        android:textStyle="normal" />
+        android:textStyle="normal"/>
 
     <TextView
         android:id="@+id/actionYes"
@@ -41,7 +41,7 @@
         android:paddingEnd="18dp"
         android:paddingRight="18dp"
         android:paddingBottom="7dp"
-        android:text="" />
+        android:text=""/>
 
     <TextView
         android:id="@+id/actionNo"
@@ -59,5 +59,6 @@
         android:paddingEnd="19dp"
         android:paddingRight="19dp"
         android:paddingBottom="7dp"
-        android:text="" />
+        android:text=""/>
+
 </LinearLayout>

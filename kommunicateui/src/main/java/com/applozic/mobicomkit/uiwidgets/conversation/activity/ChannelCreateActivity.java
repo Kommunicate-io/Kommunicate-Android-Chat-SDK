@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -84,7 +85,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
     private CircleImageView circleImageView;
     private View focus;
     private ActionBar mActionBar;
-    private ImageView uploadImageButton;
+    private FloatingActionButton uploadImageButton;
     private Uri imageChangeUri;
     private String groupIconImageLink;
     private int groupType;
@@ -96,7 +97,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.channel_create_activty_layout);
+        setContentView(R.layout.channel_create_activity_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
@@ -123,7 +124,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
         applozicPermissions = new ApplozicPermissions(this, layout);
         channelName = (EditText) findViewById(R.id.channelName);
         circleImageView = (CircleImageView) findViewById(R.id.channelIcon);
-        uploadImageButton = (CircleImageView) findViewById(R.id.applozic_channel_profile_camera);
+        uploadImageButton = findViewById(R.id.applozic_channel_profile_camera);
         uploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -301,7 +302,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
             imageChangeUri = null;
             groupIconImageLink = null;
             circleImageView.setImageDrawable(null); // <--- added to force redraw of ImageView
-            circleImageView.setImageResource(R.drawable.ic_people_grey_600_24dp);
+            circleImageView.setImageResource(R.drawable.ic_people_grey_600_24dp_v);
         } catch (Exception e) {
             e.printStackTrace();
         }

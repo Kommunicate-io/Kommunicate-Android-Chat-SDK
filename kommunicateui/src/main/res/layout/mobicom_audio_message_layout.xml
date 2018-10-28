@@ -1,86 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/cardview_default_radius"
-    app:cardElevation="@dimen/cardview_default_elevation"
-    app:cardPreventCornerOverlap="false"
-    app:cardUseCompatPadding="true"
-    app:contentPadding="@dimen/material_default_padding"
-    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragment">
+    android:padding="@dimen/material_default_padding">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/audio_mic_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/apploizc_transparent_color"
+        android:contentDescription="@string/image_description_default"
+        android:scaleType="centerCrop"
+        android:src="@drawable/applozic_audio_normal"
+        app:layout_constraintBottom_toTopOf="@+id/txtcount"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/audio_mic_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@color/apploizc_transparent_color"
-            android:contentDescription="@string/image_description_default"
-            android:scaleType="centerCrop"
-            android:src="@drawable/applozic_audio_normal"
-            app:layout_constraintBottom_toTopOf="@+id/txtcount"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:id="@+id/txtcount"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/material_half_padding"
+        android:paddingLeft="@dimen/material_default_padding"
+        android:paddingRight="@dimen/material_default_padding"
+        android:textAlignment="center"
+        android:textColor="@color/material_grey_800"
+        android:textSize="@dimen/material_typography_textsize_display1"
+        app:layout_constraintBottom_toTopOf="@+id/audio_recording_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="00:00:00" />
 
-        <TextView
-            android:id="@+id/txtcount"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/material_half_padding"
-            android:paddingLeft="@dimen/material_default_padding"
-            android:paddingRight="@dimen/material_default_padding"
-            android:textAlignment="center"
-            android:textColor="@color/material_grey_800"
-            android:textSize="@dimen/material_typography_textsize_display1"
-            app:layout_constraintBottom_toTopOf="@+id/audio_recording_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="00:00:00"/>
+    <TextView
+        android:id="@+id/audio_recording_text"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:text="@string/start_text"
+        android:textColor="@color/material_grey_600"
+        android:textSize="@dimen/material_typography_textsize_subheading"
+        app:layout_constraintBottom_toTopOf="@+id/actions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/audio_recording_text"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_gravity="center"
-            android:text="@string/start_text"
-            android:textColor="@color/material_grey_600"
-            android:textSize="@dimen/material_typography_textsize_subheading"
-            app:layout_constraintBottom_toTopOf="@+id/audio_cancel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+    <LinearLayout
+        android:id="@+id/actions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/audio_send"
-            android:layout_width="0dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:text="@string/send_text"
             android:textColor="@color/material_grey_800"
-            android:textSize="@dimen/material_typography_textsize_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/audio_cancel"/>
+            android:textSize="@dimen/material_typography_textsize_button" />
 
         <Button
             android:id="@+id/audio_cancel"
-            android:layout_width="0dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:text="@string/cancel_text"
             android:textColor="@color/material_grey_800"
-            android:textSize="@dimen/material_typography_textsize_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/audio_send"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:textSize="@dimen/material_typography_textsize_button" />
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</android.support.constraint.ConstraintLayout>

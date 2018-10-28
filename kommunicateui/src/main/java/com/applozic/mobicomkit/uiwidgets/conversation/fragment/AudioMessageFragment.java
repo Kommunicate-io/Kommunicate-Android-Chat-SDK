@@ -67,31 +67,14 @@ public class AudioMessageFragment extends DialogFragment {
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    if (isRecordring) {
-                        AudioMessageFragment.this.stopRecording();
-                        cancel.setVisibility(View.VISIBLE);
-                        send.setVisibility(View.VISIBLE);
-                    } else {
-                        cancel.setVisibility(View.GONE);
-                        send.setVisibility(View.GONE);
-                        if (audioRecorder == null) {
-                            prepareMediaRecorder();
-                        }
-                        audioRecordingText.setText(getResources().getString(R.string.stop));
-                        audioRecorder.prepare();
-                        audioRecorder.start();
-                        isRecordring = true;
-                        record.setImageResource(R.drawable.applozic_audio_mic_inverted);
-                        t.cancel();
-                        t.start();
-                        cnt = 0;
-                    }
-                } catch (IllegalStateException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                startOrStopRecording();
+            }
+        });
+
+        audioRecordingText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startOrStopRecording();
             }
         });
 
@@ -142,6 +125,34 @@ public class AudioMessageFragment extends DialogFragment {
             public void onFinish() { }
         };
         return v;
+    }
+
+    private void startOrStopRecording() {
+        try {
+            if (isRecordring) {
+                AudioMessageFragment.this.stopRecording();
+                cancel.setVisibility(View.VISIBLE);
+                send.setVisibility(View.VISIBLE);
+            } else {
+                cancel.setVisibility(View.GONE);
+                send.setVisibility(View.GONE);
+                if (audioRecorder == null) {
+                    prepareMediaRecorder();
+                }
+                audioRecordingText.setText(getResources().getString(R.string.stop));
+                audioRecorder.prepare();
+                audioRecorder.start();
+                isRecordring = true;
+                record.setImageResource(R.drawable.applozic_audio_mic_inverted);
+                t.cancel();
+                t.start();
+                cnt = 0;
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stopRecording() {

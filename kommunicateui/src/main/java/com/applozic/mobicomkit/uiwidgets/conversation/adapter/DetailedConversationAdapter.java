@@ -185,7 +185,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 return contactService.downloadContactImage(context, (Contact) data);
             }
         };
-        contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_180_holo_light);
+        contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
         contactImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         contactImageLoader.setImageFadeIn(false);
 
@@ -210,7 +210,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_c);
         readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_c);
         pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
-        scheduledIcon = context.getResources().getDrawable(R.drawable.applozic_ic_action_message_schedule);
+        scheduledIcon = context.getResources().getDrawable(R.drawable.ic_schedule_grey_600_24dp);
         final String alphabet = context.getString(R.string.alphabet);
         mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
@@ -295,13 +295,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (VideoCallNotificationHelper.isMissedCall(message)) {
-                        myViewHolder5.imageView.setImageResource(R.drawable.ic_communication_call_missed);
+                        myViewHolder5.imageView.setImageResource(R.drawable.ic_call_missed_red_700_24dp);
                     }
 
                     if (VideoCallNotificationHelper.isAudioCall(message)) {
-                        myViewHolder5.imageView.setImageResource(R.drawable.applozic_ic_action_call);
+                        myViewHolder5.imageView.setImageResource(R.drawable.ic_call_white_24dp);
                     } else {
-                        myViewHolder5.imageView.setImageResource(R.drawable.ic_videocam_white_24px);
+                        myViewHolder5.imageView.setImageResource(R.drawable.ic_videocam_white_24dp);
                     }
                     if (message.getMetadata() != null) {
                         if (message.getMetadata().get(VideoCallNotificationHelper.MSG_TYPE).equals(VideoCallNotificationHelper.CALL_END)) {
@@ -404,7 +404,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 FileMeta fileMeta = msg.getFileMetas();
                                 myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
                                 if (fileMeta.getContentType().contains("image")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_image_camera_alt);
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_photo_camera_grey_600_24dp);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.photo_string));
                                     } else {
@@ -414,7 +414,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                                     imageThumbnailLoader.loadImage(msg, myHolder.imageViewPhoto);
                                 } else if (fileMeta.getContentType().contains("video")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_action_video);
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_videocam_white_24dp);
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                                         if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
                                             myHolder.imageViewForAttachmentType.setScaleX(-1);
@@ -436,7 +436,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                         }
                                     }
                                 } else if (fileMeta.getContentType().contains("audio")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_music_note);
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_music_note_white_24dp);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.audio_string));
                                     } else {
@@ -449,18 +449,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     try {
                                         VCFContactData data = parser.parseCVFContactData(msg.getFilePaths().get(0));
                                         if (data != null) {
-                                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_person_white);
+                                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
                                             myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
                                             myHolder.replyMessageTextView.append(" " + data.getName());
                                         }
                                     } catch (Exception e) {
-                                        myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_person_white);
+                                        myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_person_white_24dp);
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
                                     }
                                     myHolder.imageViewPhoto.setVisibility(View.GONE);
                                     myHolder.imageViewRLayout.setVisibility(View.GONE);
                                 } else {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_action_attachment);
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_attachment_grey_600_24dp);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.attachment_string));
                                     } else {
@@ -476,7 +476,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                                 myHolder.replyMessageTextView.setText(context.getString(R.string.al_location_string));
                                 myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
-                                myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_location_on_white_24dp);
+                                myHolder.imageViewForAttachmentType.setImageResource(R.drawable.ic_location_on_grey_600_24dp);
                                 loadImage.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
                                 loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage()), myHolder.imageViewPhoto);
                             } else {
@@ -583,11 +583,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         if ((!message.isCall()) || message.isDummyEmptyMessage()) {
                             myHolder.sentOrReceived.setVisibility(View.GONE);
                         } else if (message.isCall()) {
-                            myHolder.sentOrReceived.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+                            myHolder.sentOrReceived.setImageResource(R.drawable.ic_call_white_24dp);
                         } else if (getItemViewType(position) == 0) {
-                            myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
+                            myHolder.sentOrReceived.setImageResource(R.drawable.ic_forward_black_24dp);
                         } else {
-                            myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_reply);
+                            myHolder.sentOrReceived.setImageResource(R.drawable.ic_reply_white_24dp);
                         }
 
                         if (message.isCall()) {

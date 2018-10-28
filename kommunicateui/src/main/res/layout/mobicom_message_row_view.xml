@@ -71,7 +71,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/material_half_padding"
-                    android:src="@drawable/applozic_ic_action_attachment"
+                    android:src="@drawable/ic_attachment_grey_600_24dp"
                     android:tint="@color/material_grey_500"
                     android:visibility="gone"/>
 

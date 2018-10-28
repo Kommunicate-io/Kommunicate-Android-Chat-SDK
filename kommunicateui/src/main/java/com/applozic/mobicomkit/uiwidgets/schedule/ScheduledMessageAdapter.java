@@ -46,7 +46,7 @@ public class ScheduledMessageAdapter extends ArrayAdapter<Message> {
                 return loadContactPhoto((Uri) data, getImageSize());
             }
         };
-        mImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_180_holo_light);
+        mImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
         mImageLoader.setImageFadeIn(false);
     }
 

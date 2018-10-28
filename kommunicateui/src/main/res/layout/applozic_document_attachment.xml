@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/circle_arrow_down_download" />
+                android:src="@drawable/ic_outline_archive_white_24dp"/>
 
             <TextView
                 android:id="@+id/applozic_doc_file_size"
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/circle_arrow_upload" />
+                android:src="@drawable/ic_outline_unarchive_white_24dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/applozic_ic_action_cancel" />
+                android:src="@drawable/ic_close_grey_600_24dp" />
 
         </RelativeLayout>
 
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_documentreceive" />
+                android:src="@drawable/ic_description_white_24dp" />
         </RelativeLayout>
 
 

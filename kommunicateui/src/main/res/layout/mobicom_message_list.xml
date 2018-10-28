@@ -66,7 +66,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="15dp"
             android:background="@drawable/circle"
-            android:src="@drawable/applozic_ic_action_add"
+            android:src="@drawable/ic_add_white_24dp"
             android:visibility="gone"/>
 
         <Button
@@ -136,7 +136,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/applozic_ic_action_cancel"/>
+            android:src="@drawable/ic_close_grey_600_24dp"/>
 
     </RelativeLayout>
 
@@ -323,7 +323,7 @@
                         android:paddingEnd="20dp"
                         android:paddingRight="20dp"
                         android:scaleType="center"
-                        android:src="@drawable/applozic_ic_action_attachment"
+                        android:src="@drawable/ic_attachment_grey_600_24dp"
                         android:visibility="gone"/>
 
                     <ImageButton
@@ -339,7 +339,7 @@
                         android:paddingEnd="20dp"
                         android:paddingRight="20dp"
                         android:scaleType="center"
-                        android:src="@drawable/applozic_ic_action_attachment"
+                        android:src="@drawable/ic_attachment_grey_600_24dp"
                         android:visibility="gone"/>
 
                     <ImageButton
@@ -358,7 +358,7 @@
                         android:gravity="right"
                         android:padding="8dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/send"
+                        android:src="@drawable/ic_send_white_24dp"
                         android:visibility="visible"/>
 
                     <EditText
@@ -394,15 +394,15 @@
                         android:layout_height="16.3dp"
                         android:layout_marginLeft="29dp"
                         android:background="@color/apploizc_transparent_color"
-                        android:src="@drawable/camera"/>
+                        android:src="@drawable/ic_photo_camera_grey_600_24dp"/>
 
                     <ImageButton
                         android:id="@+id/file_as_attachment_btn"
-                        android:layout_width="16dp"
-                        android:layout_height="18.3dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:background="@color/apploizc_transparent_color"
-                        android:src="@drawable/attachment"/>
+                        android:src="@drawable/ic_attach_file_grey_600_24dp"/>
 
                     <ImageButton
                         android:id="@+id/location_btn"
@@ -410,7 +410,7 @@
                         android:layout_height="19.2dp"
                         android:layout_marginLeft="29dp"
                         android:background="@color/apploizc_transparent_color"
-                        android:src="@drawable/locaiton"/>
+                        android:src="@drawable/ic_location_on_grey_600_24dp"/>
 
                 </LinearLayout>
 
@@ -449,7 +449,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginTop="1dp"
-                        android:src="@drawable/slide_arrow_left"/>
+                        android:src="@drawable/ic_keyboard_arrow_left_grey_600_24dp"/>
 
                     <TextView
                         android:id="@+id/slide_to_cancel_text_view"
@@ -480,7 +480,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start|center"
                         android:layout_marginTop="1dp"
-                        android:src="@drawable/applozic_audio_record"/>
+                        android:src="@drawable/ic_mic_white_24dp"/>
 
                     <TextView
                         android:id="@+id/recording_time_text_view"
@@ -511,7 +511,7 @@
                         android:clickable="true"
                         android:gravity="center"
                         android:scaleType="center"
-                        android:src="@drawable/applozic_mic_pressed"
+                        android:src="@drawable/ic_mic_white_24dp"
                         android:visibility="gone"/>
 
                     <EditText

@@ -38,7 +38,7 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_toRightOf="@+id/alphabeticImage"
-            android:src="@drawable/applozic_group_icon"
+            android:src="@drawable/ic_people_grey_600_24dp"
             android:layout_toEndOf="@+id/alphabeticImage"
             android:visibility="visible" />
 

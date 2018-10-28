@@ -127,7 +127,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 applozicGroupProfileIcon.setImageURI(uri);
             }
         } else {
-            applozicGroupProfileIcon.setImageResource(R.drawable.applozic_group_icon);
+            applozicGroupProfileIcon.setImageResource(R.drawable.ic_people_grey_600_24dp);
 
         }
         channelName = (EditText) findViewById(R.id.newChannelName);
@@ -379,7 +379,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 if (imageView != null) {
                     imageChangeUri = null;
                     imageView.setImageDrawable(null); // <--- added to force redraw of ImageView
-                    imageView.setImageResource(R.drawable.applozic_group_icon);
+                    imageView.setImageResource(R.drawable.ic_people_grey_600_24dp);
                 }
             }
         }

@@ -5,7 +5,7 @@
     <item
         android:id="@+id/menu_search"
         android:actionViewClass="android.support.v7.widget.SearchView"
-        android:icon="@drawable/applozic_ic_action_search"
+        android:icon="@drawable/ic_search_white_24dp"
         android:iconifiedByDefault="true"
         android:orderInCategory="1"
         android:showAsAction="always"
@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/conversations"
-        android:icon="@drawable/applozic_ic_action_chat"
+        android:icon="@drawable/ic_chat_white_24dp"
         android:orderInCategory="2"
         android:showAsAction="ifRoom"
         android:title="@string/conversation"
@@ -27,7 +27,7 @@
 
     <item
         android:id="@+id/start_new"
-        android:icon="@drawable/applozic_ic_action_add"
+        android:icon="@drawable/ic_add_white_24dp"
         android:orderInCategory="3"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/start_New"
@@ -36,7 +36,7 @@
 
     <item
         android:id="@+id/dial"
-        android:icon="@drawable/applozic_ic_action_call"
+        android:icon="@drawable/ic_call_white_24dp"
         android:orderInCategory="4"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/dial"
@@ -45,7 +45,7 @@
 
     <item
         android:id="@+id/refresh"
-        android:icon="@drawable/applozic_ic_action_time"
+        android:icon="@drawable/ic_schedule_grey_600_24dp"
         android:orderInCategory="5"
         android:showAsAction="collapseActionView"
         android:title="@string/refresh"
@@ -54,7 +54,7 @@
 
     <item
         android:id="@+id/deleteConversation"
-        android:icon="@drawable/applozic_ic_action_edit"
+        android:icon="@drawable/ic_edit_white_24dp"
         android:orderInCategory="6"
         android:showAsAction="collapseActionView"
         android:title="@string/delete_conversation"
@@ -64,7 +64,7 @@
     <item
         android:id="@+id/shareOptions"
         android:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        android:icon="@drawable/mobicom_social_share"
+        android:icon="@drawable/ic_share_white_24dp"
         android:orderInCategory="10"
         android:showAsAction="collapseActionView"
         android:title="@string/shareOptions"
@@ -73,7 +73,7 @@
 
     <item
         android:id="@+id/video_call"
-        android:icon="@drawable/ic_videocam_white_24px"
+        android:icon="@drawable/ic_videocam_white_24dp"
         android:orderInCategory="3"
         android:padding="8dp"
         android:title="@string/video_string"
@@ -127,7 +127,7 @@
 
     <item
         android:id="@+id/logout"
-        android:icon="@drawable/applozic_ic_action_time"
+        android:icon="@drawable/ic_schedule_grey_600_24dp"
         android:orderInCategory="11"
         android:showAsAction="collapseActionView"
         android:title="@string/logout"

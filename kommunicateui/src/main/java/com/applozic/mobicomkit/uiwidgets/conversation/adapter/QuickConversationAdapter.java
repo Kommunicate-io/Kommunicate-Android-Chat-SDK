@@ -174,11 +174,11 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                                 + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
                     }
                     myholder.smReceivers.setText(contactInfo);
-                    contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                    contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
                     processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                 } else if (message.getGroupId() != null) {
                     if (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                        contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                        contactImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
                         Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
                         if (withUserContact != null) {
                             myholder.smReceivers.setText(withUserContact.getDisplayName());
@@ -186,26 +186,26 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         }
                     } else {
                         if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
-                            myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
+                            myholder.contactImage.setImageResource(R.drawable.ic_person_grey_600_24dp);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
-                            myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
+                            myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
                         }
 
                         myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
                         myholder.alphabeticTextView.setVisibility(View.GONE);
-                        myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
+                        myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
                         myholder.contactImage.setVisibility(View.VISIBLE);
 
                         if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
                             channelImageLoader.loadImage(channel, myholder.contactImage);
                         } else if (channel != null && channel.isBroadcastMessage()) {
-                            myholder.contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+                            myholder.contactImage.setImageResource(R.drawable.ic_volume_up_white_24dp);
                         } else if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_person_grey_600_24dp);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
                         }
                     }
                 }
@@ -231,11 +231,11 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     String filePath = message.getFileMetas() == null && message.getFilePaths() != null ? message.getFilePaths().get(0).substring(message.getFilePaths().get(0).lastIndexOf("/") + 1) :
                             message.getFileMetas() != null ? message.getFileMetas().getName() : "";
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                    myholder.attachmentIcon.setImageResource(R.drawable.applozic_ic_action_attachment);
+                    myholder.attachmentIcon.setImageResource(R.drawable.ic_attachment_grey_600_24dp);
                     myholder.messageTextView.setText(filePath);
                 } else if (myholder.attachmentIcon != null && message.getContentType() == Message.ContentType.LOCATION.getValue()) {
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                    myholder.attachmentIcon.setImageResource(R.drawable.mobicom_notification_location_icon);
+                    myholder.attachmentIcon.setImageResource(R.drawable.ic_location_on_grey_600_24dp);
                     myholder.messageTextView.setText(context.getString(R.string.Location));
                 } else if (message.getContentType() == Message.ContentType.PRICE.getValue()) {
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, ConversationUIService.FINAL_PRICE_TEXT + message.getMessage(), emojiconHandler));
@@ -248,12 +248,12 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                 if (myholder.sentOrReceived != null) {
                     if (message.isCall()) {
-                        myholder.sentOrReceived.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+                        myholder.sentOrReceived.setImageResource(R.drawable.ic_call_white_24dp);
                         myholder.messageTextView.setTextColor(context.getResources().getColor(message.isIncomingCall() ? R.color.incoming_call : R.color.outgoing_call));
                     } else if (getItemViewType(position) == 0) {
-                        myholder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
+                        myholder.sentOrReceived.setImageResource(R.drawable.ic_forward_black_24dp);
                     } else {
-                        myholder.sentOrReceived.setImageResource(R.drawable.mobicom_social_reply);
+                        myholder.sentOrReceived.setImageResource(R.drawable.ic_reply_white_24dp);
                     }
                 }
                 if (myholder.createdAtTime != null) {
@@ -355,7 +355,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     public void createVideoCallView(Message message, ImageView attachmentIcon, TextView messageTextView) {
         if (message.getMetadata() == null || message.getMetadata().isEmpty()) {
             if (attachmentIcon != null) {
-                attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
+                attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24dp);
                 attachmentIcon.setColorFilter(R.color.applozic_green_color);
                 return;
             }
@@ -368,11 +368,11 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         if (attachmentIcon != null) {
             attachmentIcon.setVisibility(View.VISIBLE);
             if (VideoCallNotificationHelper.isMissedCall(message)) {
-                attachmentIcon.setImageResource(R.drawable.ic_communication_call_missed);
+                attachmentIcon.setImageResource(R.drawable.ic_call_missed_red_700_24dp);
             } else if (VideoCallNotificationHelper.isAudioCall(message)) {
-                attachmentIcon.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+                attachmentIcon.setImageResource(R.drawable.ic_call_white_24dp);
             } else {
-                attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
+                attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24dp);
                 attachmentIcon.setColorFilter(R.color.applozic_green_color);
             }
         }

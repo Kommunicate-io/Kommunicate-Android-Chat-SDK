@@ -131,7 +131,7 @@ public class ApplozicDocumentView {
                 audioseekbar.setVisibility(GONE);
                 fileText.setVisibility(View.VISIBLE);
                 fileText.setText(new File(filePath).getName());
-                docIcon.setImageResource(R.drawable.ic_documentreceive);
+                docIcon.setImageResource(R.drawable.ic_description_white_24dp);
             }
         }
 
@@ -166,7 +166,7 @@ public class ApplozicDocumentView {
                         fileText.setVisibility(View.VISIBLE);
                         audio_duration_textView.setVisibility(GONE);
                         audioseekbar.setVisibility(GONE);
-                        docIcon.setImageResource(R.drawable.ic_documentreceive);
+                        docIcon.setImageResource(R.drawable.ic_description_white_24dp);
                     }
                 }
             }
@@ -202,7 +202,7 @@ public class ApplozicDocumentView {
                     audioseekbar.setVisibility(GONE);
                     audio_duration_textView.setVisibility(GONE);
                     docIcon.setVisibility(View.VISIBLE);
-                    docIcon.setImageResource(R.drawable.ic_documentreceive);
+                    docIcon.setImageResource(R.drawable.ic_description_white_24dp);
                 } else {
                     if (message.isAttachmentDownloaded()) {
                         ApplozicAudioManager.getInstance(context).updateAudioDuration(audio_duration_textView, filePath);
@@ -227,7 +227,7 @@ public class ApplozicDocumentView {
             mainLayout.setVisibility(View.VISIBLE);
             retryLayout.setVisibility(View.VISIBLE);
 
-            uploadDownloadImage.setImageResource(R.drawable.circle_arrow_upload);
+            uploadDownloadImage.setImageResource(R.drawable.ic_outline_unarchive_white_24dp);
             downloadInProgressLayout.setVisibility(GONE);
             downloadedLayout.setVisibility(GONE);
             previewLayout.setVisibility(GONE);
@@ -255,7 +255,7 @@ public class ApplozicDocumentView {
     public void showPreview() {
         mainLayout.setVisibility(View.VISIBLE);
         previewLayout.setVisibility(View.VISIBLE);
-        uploadDownloadImage.setImageResource(R.drawable.circle_arrow_down_download);
+        uploadDownloadImage.setImageResource(R.drawable.ic_outline_archive_white_24dp);
         downloadInProgressLayout.setVisibility(GONE);
         downloadedLayout.setVisibility(GONE);
         retryLayout.setVisibility(GONE);
@@ -389,9 +389,9 @@ public class ApplozicDocumentView {
         Utils.printLog(context, "state:", String.valueOf(state));
         docIcon.setVisibility(View.VISIBLE);
         if (state == 1) {
-            docIcon.setImageResource(R.drawable.ic_pause_circle_outline);
+            docIcon.setImageResource(R.drawable.ic_pause_white_24dp);
         } else {
-            docIcon.setImageResource(R.drawable.ic_play_circle_outline);
+            docIcon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
         }
     }
 

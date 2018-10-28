@@ -38,6 +38,7 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
+import com.applozic.mobicomkit.uiwidgets.KmDateUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
@@ -326,8 +327,7 @@ public class MessageInfoFragment extends Fragment {
                     (messageInfo.getDeliveredAtTime() == null ? 0 : messageInfo.getDeliveredAtTime());
             if (timeStamp != 0) {
                 holder.lastSeenAtTextView.setVisibility(View.VISIBLE);
-                holder.lastSeenAtTextView.setText(String.valueOf(DateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
-
+                holder.lastSeenAtTextView.setText(String.valueOf(KmDateUtils.getDateAndTimeInDefaultFormat(getContext(), timeStamp)));
             } else {
                 holder.lastSeenAtTextView.setVisibility(View.GONE);
                 holder.lastSeenAtTextView.setText("");

@@ -232,4 +232,13 @@
     <string name="prechat_screen_toast_error_message">Either contact number or emailId is required.</string>
     <string name="invalid_contact_number">Please enter a valid contact number</string>
     <string name="invalid_email_id">Please enter a valid emailId</string>
+
+    <string name="TIME_FORMAT">hh:mm a</string>
+    <string name="TIME_24H_FORMAT">HH:mm</string>
+    <string name="DATE_SHORT_FORMAT">dd MMM</string>
+    <string name="DATE_LONG_FORMAT">dd MMM yyyy</string>
+    <string name="DATE_FULL_FORMAT">EEE, MMM dd,yyyy</string>
+    <string name="DATE_TIME_FULL_FORMAT">EEE, MMM dd, yyyy hh:mm aa</string>
+    <string name="DATE_TIME_24H_FULL_FORMAT">EEE, MMM dd, yyyy HH:mm</string>
+
 </resources>

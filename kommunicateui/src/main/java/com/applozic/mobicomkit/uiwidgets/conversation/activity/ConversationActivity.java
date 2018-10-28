@@ -108,6 +108,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 
@@ -509,7 +510,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         }
                     } else {
                         imageUri = result.getUri();
-                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                        String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
                         String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
                         profilePhotoFile = FileClientService.getFilePath(imageFileName, this, "image/jpeg");
                         if (imageUri != null && profilefragment != null) {
@@ -1080,7 +1081,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void imageCapture() {
         try {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
             String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
 
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
@@ -1132,7 +1133,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         try {
             Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
             String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
 
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "video/mp4");
@@ -1176,7 +1177,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     public Uri getCurrentImageUri() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat(getString(R.string.DATE_SAVE_FILE_FORMAT), Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
         profilePhotoFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
         imageUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", profilePhotoFile);

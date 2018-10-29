@@ -326,8 +326,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 return false;
             }
             @Override
-            public void checkPermission(KmStoragePermission storagePermission) {
-            }
+            public void checkPermission(KmStoragePermission storagePermission) { }
         });
         restrictedWords = FileUtils.loadRestrictedWordsFile(getContext());
         conversationUIService = new ConversationUIService(getActivity());

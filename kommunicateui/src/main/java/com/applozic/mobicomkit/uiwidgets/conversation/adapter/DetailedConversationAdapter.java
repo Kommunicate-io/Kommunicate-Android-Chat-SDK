@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -23,6 +22,7 @@ import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -142,6 +142,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private ContextMenuClickListener contextMenuClickListener;
     private ALRichMessageListener listener;
     private KmStoragePermissionListener storagePermissionListener;
+    private boolean dataInsideBubbleChat;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -220,6 +221,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         deviceTimeOffset = MobiComUserPreference.getInstance(context).getDeviceTimeOffset();
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        dataInsideBubbleChat = alCustomizationSettings.isUserAndDateInsideBubbleChat();
         if (layoutInflater == null) {
             return null;
         }
@@ -236,10 +238,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             View v5 = layoutInflater.inflate(R.layout.applozic_call_layout, parent, false);
             return new MyViewHolder5(v5);
         } else if (viewType == 0) {
-            View v0 = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
+            View v0 = layoutInflater.inflate(dataInsideBubbleChat ? R.layout.mobicom_received_message_list_view_data_inside_bubble
+                    : R.layout.mobicom_received_message_list_view, parent, false);
             return new MyViewHolder(v0);
         }
-        view = layoutInflater.inflate(R.layout.mobicom_sent_message_list_view, parent, false);
+        view = layoutInflater.inflate(dataInsideBubbleChat ? R.layout.mobicom_sent_message_list_view_data_inside_bubble
+                : R.layout.mobicom_sent_message_list_view, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -498,9 +502,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (message.isTypeOutbox()) {
-                        myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getSentMessageCreatedAtTimeColor()));
+                        myHolder.createdAtTime.setTextColor(Color.parseColor(dataInsideBubbleChat ? alCustomizationSettings.getSentMessageCreatedAtTimeInsideBubbleColor()
+                                : alCustomizationSettings.getSentMessageCreatedAtTimeColor()));
                     } else {
-                        myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
+                        myHolder.createdAtTime.setTextColor(Color.parseColor(dataInsideBubbleChat ? alCustomizationSettings.getReceivedMessageCreatedAtTimeInsideBubbleColor()
+                                : alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
                     }
 
                     myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
@@ -882,6 +888,17 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         // characters beyond the starting point
                         highlightedName.setSpan(highlightTextSpan, startIndex, startIndex + searchString.toString().length(), 0);
                         myHolder.messageTextView.setText(highlightedName);
+                    }
+
+                    if (message.isTypeOutbox()) {
+                        myHolder.messageTextView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (myHolder.messageTextView.getLineCount() == 1) {
+                                    myHolder.messageTextView.setGravity(Gravity.RIGHT);
+                                }
+                            }
+                        });
                     }
                 }
             }

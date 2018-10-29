@@ -113,6 +113,11 @@ public class AlCustomizationSettings extends JsonMarker {
 
     private boolean legacyWidgetInputLayout = true;
 
+    private String sentMessageCreatedAtTimeInsideBubbleColor = "#ede6e6";
+    private String receivedMessageCreatedAtTimeInsideBubbleColor = "#8a8686";
+
+    private boolean userAndDateInsideBubbleChat = true;
+
     private Map<String, Boolean> attachmentOptions;
 
     public boolean isBroadcastOption() {
@@ -597,6 +602,30 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setAttachmentIconsColor(String attachmentIconsColor) {
         this.attachmentIconsColor = attachmentIconsColor;
+    }
+
+    public boolean isUserAndDateInsideBubbleChat() {
+        return userAndDateInsideBubbleChat;
+    }
+
+    public void setUserAndDateInsideBubbleChat(boolean userAndDateInsideBubbleChat) {
+        this.userAndDateInsideBubbleChat = userAndDateInsideBubbleChat;
+    }
+
+    public String getSentMessageCreatedAtTimeInsideBubbleColor() {
+        return sentMessageCreatedAtTimeInsideBubbleColor;
+    }
+
+    public void setSentMessageCreatedAtTimeInsideBubbleColor(String sentMessageCreatedAtTimeInsideBubbleColor) {
+        this.sentMessageCreatedAtTimeInsideBubbleColor = sentMessageCreatedAtTimeInsideBubbleColor;
+    }
+
+    public String getReceivedMessageCreatedAtTimeInsideBubbleColor() {
+        return receivedMessageCreatedAtTimeInsideBubbleColor;
+    }
+
+    public void setReceivedMessageCreatedAtTimeInsideBubbleColor(String receivedMessageCreatedAtTimeInsideBubbleColor) {
+        this.receivedMessageCreatedAtTimeInsideBubbleColor = receivedMessageCreatedAtTimeInsideBubbleColor;
     }
 
     @Override

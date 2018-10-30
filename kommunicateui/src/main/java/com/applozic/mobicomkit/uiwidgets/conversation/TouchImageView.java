@@ -20,6 +20,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.AppCompatImageView;
@@ -1212,7 +1213,11 @@ public class TouchImageView extends AppCompatImageView {
     }
 
     private void compatPostOnAnimation(Runnable runnable) {
-        postOnAnimation(runnable);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            postOnAnimation(runnable);
+        } else {
+            postDelayed(runnable, 1000 / 60);
+        }
     }
 
     private class ZoomVariables {

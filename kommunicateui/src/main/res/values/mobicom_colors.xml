@@ -49,7 +49,7 @@
     <color name="apploizc_lite_gray_color">@color/material_grey_600</color>
     <color name="apploizc_custom_channel_message_text_color">#cccccc</color>
 
-    <color name="sent_icon_color">@color/material_grey_600</color>
+    <color name="sent_icon_color">@color/material_grey_500</color>
     <color name="read_icon_color">@color/applozic_theme_color_primary</color>
 
     <color name="message_status_icon_colors">@color/applozic_theme_color_primary</color>

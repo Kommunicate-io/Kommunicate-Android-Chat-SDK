@@ -205,8 +205,9 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:contentDescription="@string/image_description_default"
-                            android:src="@drawable/ic_done_all_grey_600_24dp"
+                            android:src="@drawable/ic_done_all_grey_600_18dp"
                             android:tint="@color/sent_message_bg_color"/>
                     </RelativeLayout>
 
@@ -271,8 +272,9 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
                             android:contentDescription="@string/image_description_default"
-                            android:src="@drawable/ic_done_all_grey_600_24dp"/>
+                            android:src="@drawable/ic_done_all_grey_600_18dp"/>
 
                     </RelativeLayout>
 

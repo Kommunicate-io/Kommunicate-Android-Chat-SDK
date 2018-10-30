@@ -13,7 +13,9 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -142,7 +144,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private ContextMenuClickListener contextMenuClickListener;
     private ALRichMessageListener listener;
     private KmStoragePermissionListener storagePermissionListener;
+
     private boolean dataInsideBubbleChat;
+    private boolean statusIconsCircular;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -207,11 +211,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         };
         imageThumbnailLoader.setImageFadeIn(false);
         imageThumbnailLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
-        sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon_c);
-        deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_c);
-        readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_c);
-        pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
-        scheduledIcon = context.getResources().getDrawable(R.drawable.ic_schedule_grey_600_24dp);
+
         final String alphabet = context.getString(R.string.alphabet);
         mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
@@ -244,7 +244,28 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
         view = layoutInflater.inflate(dataInsideBubbleChat ? R.layout.mobicom_sent_message_list_view_data_inside_bubble
                 : R.layout.mobicom_sent_message_list_view, parent, false);
+        setStatusIcons();
         return new MyViewHolder(view);
+    }
+
+    private void setStatusIcons() {
+        statusIconsCircular = alCustomizationSettings.isStatusIconsCircular();
+        sentIcon = context.getResources().getDrawable(statusIconsCircular ? R.drawable.km_sent_icon_c : R.drawable.ic_done_grey_600_18dp);
+        deliveredIcon = context.getResources().getDrawable(statusIconsCircular ? R.drawable.km_delivered_icon_c : R.drawable.ic_done_all_grey_600_18dp);
+        readIcon = context.getResources().getDrawable(statusIconsCircular ? R.drawable.km_read_icon_c : R.drawable.ic_done_all_grey_600_18dp);
+        pendingIcon = context.getResources().getDrawable(statusIconsCircular ? R.drawable.km_pending_icon_c : R.drawable.ic_access_time_grey_600_18dp);
+        scheduledIcon = context.getResources().getDrawable(R.drawable.ic_access_time_grey_600_18dp);
+        setColorStatusIcons();
+    }
+
+    private void setColorStatusIcons() {
+        if (!statusIconsCircular) {
+            DrawableCompat.setTint(sentIcon, ContextCompat.getColor(context, R.color.sent_icon_color));
+            DrawableCompat.setTint(deliveredIcon, ContextCompat.getColor(context, R.color.sent_icon_color));
+            DrawableCompat.setTint(readIcon, ContextCompat.getColor(context, R.color.read_icon_color));
+            DrawableCompat.setTint(pendingIcon, ContextCompat.getColor(context, R.color.sent_icon_color));
+            DrawableCompat.setTint(scheduledIcon, ContextCompat.getColor(context, R.color.sent_icon_color));
+        }
     }
 
     @Override
@@ -553,9 +574,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (message.isCall() || message.isDummyEmptyMessage()) {
-                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                        myHolder.statusImage.setImageDrawable(null);
                     } else if (!message.isSentToServer() && message.isTypeOutbox()) {
-                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(message.getScheduledAt() != null ? scheduledIcon : pendingIcon, null, null, null);
+                        myHolder.statusImage.setImageDrawable(message.getScheduledAt() != null ? scheduledIcon : pendingIcon);
                     } else if (message.getKeyString() != null && message.isTypeOutbox() && message.isSentToServer()) {
                         Drawable statusIcon;
                         if (message.isDeliveredAndRead()) {
@@ -564,7 +585,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             statusIcon = (message.getDelivered() || (contact != null && new Support(context).isSupportNumber(contact.getFormattedContactNumber())) ?
                                     deliveredIcon : (message.getScheduledAt() != null ? scheduledIcon : sentIcon));
                         }
-                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
+                        myHolder.statusImage.setImageDrawable(statusIcon);
                     }
 
                     if (contactDisplayName != null && myHolder.contactImage != null && alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
@@ -873,6 +894,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (message.isTypeOutbox()) {
+                        myHolder.backgroundStatusIcon.setVisibility(statusIconsCircular ? View.VISIBLE : View.INVISIBLE);
                         myHolder.messageTextView.post(new Runnable() {
                             @Override
                             public void run() {
@@ -1297,11 +1319,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         TextView replyNameTextView;
         Button addContactButton;
         int position;
-        TextView statusTextView;
+        ImageView statusImage;
         LinearLayout messageTextInsideLayout;
         LinearLayout richMessageLayout;
         RecyclerView richMessageContainer;
         ConstraintLayout messageRootLayout;
+        View backgroundStatusIcon;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1335,7 +1358,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             replyMessageTextView = customView.findViewById(R.id.messageTextView);
             imageViewPhoto = customView.findViewById(R.id.imageViewForPhoto);
             replyNameTextView = customView.findViewById(R.id.replyNameTextView);
-            statusTextView = customView.findViewById(R.id.statusImage);
+            statusImage = customView.findViewById(R.id.statusImage);
+            backgroundStatusIcon = customView.findViewById(R.id.backgroundStatusIcon);
             messageTextInsideLayout = customView.findViewById(R.id.messageTextInsideLayout);
             richMessageLayout = customView.findViewById(R.id.alRichMessageView);
             richMessageContainer = customView.findViewById(R.id.alRichMessageContainer);

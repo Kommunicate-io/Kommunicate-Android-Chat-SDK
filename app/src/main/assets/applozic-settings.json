@@ -95,6 +95,7 @@
   "recordButton": false,
   "disableGlobalStoragePermission": true,
   "legacyWidgetInputLayout": true,
+  "statusIconsCircular": true,
   "messageTemplate": {
     "isEnabled": false,
     "borderColor": "#5c5aa7",

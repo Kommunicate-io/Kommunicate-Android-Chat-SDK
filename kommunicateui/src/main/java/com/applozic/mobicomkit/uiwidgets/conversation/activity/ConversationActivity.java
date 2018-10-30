@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -105,6 +106,7 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -1050,11 +1052,18 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            } else {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 ClipData clip = ClipData.newUri(getContentResolver(), "a Photo", capturedImageUri);
                 cameraIntent.setClipData(clip);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                for (ResolveInfo resolveInfo : resInfoList) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    grantUriPermission(packageName, capturedImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    grantUriPermission(packageName, capturedImageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
             }
             if (cameraIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
                 if (mediaFile != null) {
@@ -1083,15 +1092,21 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "video/mp4");
             videoFileUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", mediaFile);
             videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoFileUri);
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 videoIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 videoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            } else {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 ClipData clip = ClipData.newUri(getContentResolver(), "a Video", videoFileUri);
                 videoIntent.setClipData(clip);
                 videoIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 videoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(videoIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                for (ResolveInfo resolveInfo : resInfoList) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    grantUriPermission(packageName, videoFileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    grantUriPermission(packageName, videoFileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
             }
             if (videoIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
                 if (mediaFile != null) {

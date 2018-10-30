@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +23,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.RemoveInterfaceLi
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+
+import java.util.List;
 
 /**
  * Created by sunil on 25/5/16.
@@ -113,11 +117,19 @@ public class PictureUploadPopUpFragment extends DialogFragment {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            } else {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 ClipData clip = ClipData.newUri(getActivity().getContentResolver(), "a Photo", capturedImageUri);
                 cameraIntent.setClipData(clip);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            } else {
+                List<ResolveInfo> resInfoList = getActivity().getPackageManager().queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                for (ResolveInfo resolveInfo : resInfoList) {
+                    String packageName = resolveInfo.activityInfo.packageName;
+                    getActivity().grantUriPermission(packageName, capturedImageUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    getActivity().grantUriPermission(packageName, capturedImageUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
             }
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageUri);
             getActivity().startActivityForResult(cameraIntent, ProfileFragment.REQUEST_CODE_TAKE_PHOTO);

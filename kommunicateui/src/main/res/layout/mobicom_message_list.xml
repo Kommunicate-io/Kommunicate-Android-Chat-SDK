@@ -39,7 +39,7 @@
         </FrameLayout>
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,9 +50,9 @@
             <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swipe_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@+id/content_layout"
+                app:layout_constraintBottom_toTopOf="@+id/attachment_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -122,17 +122,27 @@
                 android:textSize="@dimen/material_typography_textsize_body"
                 android:visibility="gone"/>
 
+            <include
+                android:id="@+id/attachment_layout"
+                layout="@layout/widget_attachment_layout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent=".4"
+                app:layout_constraintStart_toStartOf="parent"/>
+
             <LinearLayout
                 android:id="@+id/content_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/material_grey_200"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <include layout="@layout/widget_attachment_layout"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/attachment_layout">
 
                 <include layout="@layout/widget_extended_sending_option_layout"/>
 
@@ -233,11 +243,11 @@
         <include
             android:id="@+id/widget_input"
             layout="@layout/widget_input_layout"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:visibility="gone"/>
-        
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <LinearLayout
             android:id="@+id/user_not_able_to_chat_layout"
             android:layout_width="match_parent"

@@ -3,7 +3,7 @@
     <!-- Default -->
     <dimen name="material_default_padding">16dip</dimen>
     <dimen name="material_half_padding">8dip</dimen>
-    <dimen name="material_min_padding">3dip</dimen>
+    <dimen name="material_quart_padding">4dip</dimen>
     <dimen name="material_default_elevation">4dip</dimen>
     <dimen name="material_touchable_minheight">48dip</dimen>
     <!-- Typography -->

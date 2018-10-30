@@ -67,7 +67,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivit
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -332,10 +331,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         marginLeft = !isNotFirstMessageByUser(message, index) ? 0
                                 : (int) (context.getResources().getDimension(R.dimen.material_drawer_bottom_navigation_height));
                         marginTop = (int) (context.getResources().getDimension(isNotFirstMessageByUser(message, index)
-                                ? R.dimen.material_min_padding : R.dimen.material_half_padding));
+                                ? R.dimen.min_padding_between_bubble : R.dimen.padding_between_bubble));
                     } else {
                         marginTop = (int) (context.getResources().getDimension(index != 0 && !messageList.get(index - 1).isTypeOutbox()
-                                ? R.dimen.material_half_padding : R.dimen.material_min_padding));
+                                ? R.dimen.padding_between_bubble : R.dimen.min_padding_between_bubble));
                     }
                     ((RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams()).setMargins(marginLeft, marginTop, 0, 0);
 
@@ -877,9 +876,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myHolder.messageTextView.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (myHolder.messageTextView.getLineCount() == 1) {
-                                    myHolder.messageTextView.setGravity(Gravity.RIGHT);
-                                }
+                                myHolder.messageTextView.setGravity(myHolder.messageTextView.getLineCount() == 1 ? Gravity.RIGHT : Gravity.LEFT);
                             }
                         });
                     }

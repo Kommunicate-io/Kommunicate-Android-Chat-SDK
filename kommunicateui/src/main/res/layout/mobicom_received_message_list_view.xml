@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/material_lists_height_row"/>
+        app:layout_constraintGuide_end="@dimen/material_drawer_size_avatar"/>
 
     <include
         android:id="@+id/profile_image_layout"
@@ -37,8 +37,8 @@
         android:id="@+id/name_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/material_default_padding"
-        android:layout_marginStart="@dimen/material_default_padding"
+        android:layout_marginLeft="@dimen/material_half_padding"
+        android:layout_marginStart="@dimen/material_half_padding"
         android:gravity="top"
         android:textSize="@dimen/material_typography_textsize_body"
         android:visibility="gone"
@@ -51,11 +51,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="3dip"
-        android:layout_marginLeft="@dimen/material_default_padding"
+        android:layout_marginLeft="@dimen/material_half_padding"
         android:layout_marginRight="3dip"
-        android:layout_marginStart="@dimen/material_default_padding"
+        android:layout_marginStart="@dimen/material_half_padding"
         android:minHeight="@dimen/material_chips_height"
-        android:minWidth="@dimen/material_chips_height"
+        android:minWidth="@dimen/min_width_bubble"
         android:orientation="vertical"
         app:cardCornerRadius="6dp"
         app:cardElevation="@dimen/cardview_default_elevation"
@@ -75,7 +75,7 @@
             android:layout_gravity="center"
             android:background="@drawable/applozic_received_message"
             android:minHeight="@dimen/material_chips_height"
-            android:minWidth="@dimen/material_chips_height"
+            android:minWidth="@dimen/min_width_bubble"
             android:orientation="vertical">
 
             <include layout="@layout/reply_message_layout"/>
@@ -89,10 +89,10 @@
                 android:drawableStart="@drawable/ic_attachment_grey_600_24dp"
                 android:drawableTint="@color/material_grey_600"
                 android:gravity="center_vertical"
-                android:paddingBottom="@dimen/material_half_padding"
-                android:paddingLeft="@dimen/material_default_padding"
-                android:paddingRight="@dimen/material_default_padding"
-                android:paddingTop="@dimen/material_half_padding"
+                android:paddingBottom="@dimen/material_quart_padding"
+                android:paddingLeft="@dimen/material_half_padding"
+                android:paddingRight="@dimen/material_half_padding"
+                android:paddingTop="@dimen/material_quart_padding"
                 android:textColor="@color/received_message_bg_color"
                 android:textSize="@dimen/material_typography_textsize_body"
                 android:visibility="gone"/>
@@ -113,10 +113,10 @@
                 android:layout_height="wrap_content"
                 android:autoLink="all"
                 android:gravity="center_vertical"
-                android:paddingBottom="@dimen/material_half_padding"
-                android:paddingLeft="@dimen/material_default_padding"
-                android:paddingRight="@dimen/material_default_padding"
-                android:paddingTop="@dimen/material_half_padding"
+                android:paddingBottom="@dimen/material_quart_padding"
+                android:paddingLeft="@dimen/material_half_padding"
+                android:paddingRight="@dimen/material_half_padding"
+                android:paddingTop="@dimen/material_quart_padding"
                 android:textColor="@color/received_text_color"
                 android:textIsSelectable="true"
                 android:textSize="@dimen/material_typography_textsize_body"

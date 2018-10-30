@@ -113,6 +113,8 @@ public class AlCustomizationSettings extends JsonMarker {
 
     private boolean legacyWidgetInputLayout = true;
 
+    private boolean statusIconsCircular = true;
+
     private String sentMessageCreatedAtTimeInsideBubbleColor = "#ede6e6";
     private String receivedMessageCreatedAtTimeInsideBubbleColor = "#8a8686";
 
@@ -594,6 +596,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setLegacyWidgetInputLayout(boolean legacyWidgetInputLayout) {
         this.legacyWidgetInputLayout = legacyWidgetInputLayout;
+    }
+
+    public boolean isStatusIconsCircular() {
+        return statusIconsCircular;
+    }
+
+    public void setStatusIconsCircular(boolean statusIconsCircular) {
+        this.statusIconsCircular = statusIconsCircular;
     }
 
     public String getAttachmentIconsColor() {

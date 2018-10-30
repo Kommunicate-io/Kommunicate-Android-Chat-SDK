@@ -31,7 +31,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -303,6 +305,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private View widgetInputLayout;
     private View widgetInputLegacyLayout;
     private boolean isLegacyWidgetInputLayout = true;
+    private boolean statusIconsCircular;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -447,12 +450,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         spinnerLayout.setVisibility(View.GONE);
         emptyTextView = list.findViewById(R.id.noConversations);
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
-
-        sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
-        deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
-        readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
-        pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
-
+        statusIconsCircular = alCustomizationSettings.isStatusIconsCircular();
+        sentIcon = getResources().getDrawable(statusIconsCircular ? R.drawable.km_sent_icon_c : R.drawable.ic_done_grey_600_18dp);
+        deliveredIcon = getResources().getDrawable(statusIconsCircular ? R.drawable.km_delivered_icon_c : R.drawable.ic_done_all_grey_600_18dp);
+        readIcon = getResources().getDrawable(statusIconsCircular ? R.drawable.km_read_icon_c : R.drawable.ic_done_all_grey_600_18dp);
+        pendingIcon = getResources().getDrawable(statusIconsCircular ? R.drawable.km_pending_icon_c : R.drawable.ic_access_time_grey_600_18dp);
+        setColorStatusIcons();
         awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
         awayMessageTv = list.findViewById(R.id.awayMessageTV);
 
@@ -861,6 +864,15 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
         }
         return list;
+    }
+
+    private void setColorStatusIcons() {
+        if (!statusIconsCircular) {
+            DrawableCompat.setTint(sentIcon, ContextCompat.getColor(getContext(), R.color.sent_icon_color));
+            DrawableCompat.setTint(deliveredIcon, ContextCompat.getColor(getContext(), R.color.sent_icon_color));
+            DrawableCompat.setTint(readIcon, ContextCompat.getColor(getContext(), R.color.read_icon_color));
+            DrawableCompat.setTint(pendingIcon, ContextCompat.getColor(getContext(), R.color.sent_icon_color));
+        }
     }
 
     public void handleSendAndRecordButtonView(boolean isSendButtonVisible) {
@@ -1706,8 +1718,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         View view = recyclerView.getChildAt(index -
                                 linearLayoutManager.findFirstVisibleItemPosition());
                         if (view != null && !message.isCustom() && !message.isChannelCustomMessage()) {
-                            TextView statusImage = view.findViewById(R.id.statusImage);
-                            statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            ImageView statusImage = view.findViewById(R.id.statusImage);
+                            statusImage.setImageDrawable(statusIcon);
                         }
                     }
                 } catch (Exception ex) {
@@ -1740,8 +1752,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                 statusIcon = readIcon;
                                 messageList.get(index).setStatus(Message.Status.DELIVERED_AND_READ.getValue());
                             }
-                            TextView statusImage = view.findViewById(R.id.statusImage);
-                            statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            ImageView statusImage = view.findViewById(R.id.statusImage);
+                            statusImage.setImageDrawable(statusIcon);
                         }
                     } else if (!message.isVideoNotificationMessage() && !message.isHidden()) {
                         messageList.add(message);
@@ -2201,9 +2213,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                 applozicDocRelativeLayout.setVisibility(VISIBLE);
                             }
                         }
-                        TextView statusTextView = view.findViewById(R.id.statusImage);
-                        if (statusTextView != null && messageListItem.getKeyString() != null && messageListItem.isTypeOutbox() && !messageListItem.isCall() && !messageListItem.getDelivered() && !messageListItem.isCustom() && !messageListItem.isChannelCustomMessage() && messageListItem.getScheduledAt() == null) {
-                            statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, support.isSupportNumber(getCurrentUserId()) ? deliveredIcon : sentIcon, null);
+                        ImageView statusImage = view.findViewById(R.id.statusImage);
+                        if (statusImage != null && messageListItem.getKeyString() != null && messageListItem.isTypeOutbox() && !messageListItem.isCall() && !messageListItem.getDelivered() && !messageListItem.isCustom() && !messageListItem.isChannelCustomMessage() && messageListItem.getScheduledAt() == null) {
+                            statusImage.setImageDrawable(support.isSupportNumber(getCurrentUserId()) ? deliveredIcon : sentIcon);
                         }
                     }
                 }

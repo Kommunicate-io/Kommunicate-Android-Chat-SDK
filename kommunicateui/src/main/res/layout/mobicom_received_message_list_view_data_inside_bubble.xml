@@ -5,7 +5,6 @@
     android:id="@+id/messageLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/material_half_padding"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
 
     <android.support.constraint.Guideline
@@ -42,6 +41,7 @@
         android:layout_marginLeft="@dimen/material_default_padding"
         android:layout_marginEnd="3dip"
         android:layout_marginRight="3dip"
+        android:layout_marginTop="-2dip"
         android:minWidth="@dimen/material_chips_height"
         android:minHeight="@dimen/material_chips_height"
         android:orientation="vertical"
@@ -68,14 +68,15 @@
 
             <TextView
                 android:id="@+id/name_textView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/material_default_padding"
                 android:layout_marginLeft="@dimen/material_default_padding"
+                android:paddingRight="@dimen/material_default_padding"
                 android:layout_marginTop="@dimen/material_half_padding"
                 android:gravity="top"
                 android:textSize="@dimen/material_typography_textsize_body"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:text="Cati Rísquez"/>
 
             <include layout="@layout/reply_message_layout"/>

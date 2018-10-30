@@ -67,6 +67,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivit
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -324,15 +325,19 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     Contact contactDisplayName = null;
                     int index = messageList.indexOf(message);
                     boolean hideRecursiveImages = false;
-
-                    if (!message.isTypeOutbox() && index != 0 && !messageList.get(index - 1).isTypeOutbox()
-                            && messageList.get(index - 1).getContentType() != 10
-                            && messageList.get(index - 1).getContentType() != 103
-                            && messageList.get(index - 1).getTo() != null
-                            && message.getTo() != null
-                            && messageList.get(index - 1).getTo().equals(message.getTo())) {
-                        hideRecursiveImages = true;
+                    int marginTop;
+                    int marginLeft = 0;
+                    if (!message.isTypeOutbox()) {
+                        hideRecursiveImages = isNotFirstMessageByUser(message, index);
+                        marginLeft = !isNotFirstMessageByUser(message, index) ? 0
+                                : (int) (context.getResources().getDimension(R.dimen.material_drawer_bottom_navigation_height));
+                        marginTop = (int) (context.getResources().getDimension(isNotFirstMessageByUser(message, index)
+                                ? R.dimen.material_min_padding : R.dimen.material_half_padding));
+                    } else {
+                        marginTop = (int) (context.getResources().getDimension(index != 0 && !messageList.get(index - 1).isTypeOutbox()
+                                ? R.dimen.material_half_padding : R.dimen.material_min_padding));
                     }
+                    ((RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams()).setMargins(marginLeft, marginTop, 0, 0);
 
                     if (message.getGroupId() == null) {
                         List<String> items = Arrays.asList(message.getContactIds().split("\\s*,\\s*"));
@@ -749,38 +754,16 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 return;
                             }
                             if (message.isAttachmentDownloaded()) {
-                                if (storagePermissionListener.isPermissionGranted()) {
-                                    showFullView(message);
-                                } else {
-                                    storagePermissionListener.checkPermission(new KmStoragePermission() {
-                                        @Override
-                                        public void onAction(boolean didGrant) {
-                                            if (didGrant) {
-                                                showFullView(message);
-                                            }
-                                        }
-                                    });
-                                }
+                                checkPermissionToShowFullView(message);
                             } else {
-                                if (storagePermissionListener.isPermissionGranted()) {
-                                    showPreview(myHolder, message);
-                                } else {
-                                    storagePermissionListener.checkPermission(new KmStoragePermission() {
-                                        @Override
-                                        public void onAction(boolean didGrant) {
-                                            if (didGrant) {
-                                                showPreview(myHolder, message);
-                                            }
-                                        }
-                                    });
-                                }
+                                checkPermissionToShowPreview(myHolder, message);
                             }
                         }
                     });
                     myHolder.attachmentView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showFullView(message);
+                            checkPermissionToShowFullView(message);
                         }
                     });
                     if (message.getScheduledAt() != null) {
@@ -905,6 +888,45 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void checkPermissionToShowPreview(final MyViewHolder myHolder, final Message message) {
+        if (storagePermissionListener.isPermissionGranted()) {
+            showPreview(myHolder, message);
+        } else {
+            storagePermissionListener.checkPermission(new KmStoragePermission() {
+                @Override
+                public void onAction(boolean didGrant) {
+                    if (didGrant) {
+                        showPreview(myHolder, message);
+                    }
+                }
+            });
+        }
+    }
+
+    private void checkPermissionToShowFullView(final Message message) {
+        if (storagePermissionListener.isPermissionGranted()) {
+            showFullView(message);
+        } else {
+            storagePermissionListener.checkPermission(new KmStoragePermission() {
+                @Override
+                public void onAction(boolean didGrant) {
+                    if (didGrant) {
+                        showFullView(message);
+                    }
+                }
+            });
+        }
+    }
+
+    private boolean isNotFirstMessageByUser(Message message, int index) {
+        return index != 0 && !messageList.get(index - 1).isTypeOutbox()
+                && messageList.get(index - 1).getContentType() != 10
+                && messageList.get(index - 1).getContentType() != 103
+                && messageList.get(index - 1).getTo() != null
+                && message.getTo() != null
+                && messageList.get(index - 1).getTo().equals(message.getTo());
     }
 
     private void showPreview(MyViewHolder myHolder, Message message) {
@@ -1282,6 +1304,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         LinearLayout messageTextInsideLayout;
         LinearLayout richMessageLayout;
         RecyclerView richMessageContainer;
+        ConstraintLayout messageRootLayout;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1325,6 +1348,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             shareContactNo = mainContactShareLayout.findViewById(R.id.contact_share_tv_no);
             shareEmailContact = mainContactShareLayout.findViewById(R.id.contact_share_emailId);
             addContactButton = mainContactShareLayout.findViewById(R.id.contact_share_add_btn);
+
+            messageRootLayout = customView.findViewById(R.id.messageLayout);
 
             customView.setOnCreateContextMenuListener(this);
 

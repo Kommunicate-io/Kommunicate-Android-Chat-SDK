@@ -13,4 +13,7 @@
      limitations under the License.
 -->
 <resources>
+    <dimen name="min_padding_between_bubble">2dip</dimen>
+    <dimen name="padding_between_bubble">7dip</dimen>
+    <dimen name="min_width_bubble">120dip</dimen>
 </resources>

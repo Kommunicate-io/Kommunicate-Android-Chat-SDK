@@ -23,7 +23,7 @@
   "channelCustomMessageTextColor": "#666666",
   "sentMessageBorderColor": "#5c5aa7",
   "receivedMessageBorderColor": "#e6e5ec",
-  "userAndDateInsideBubbleChat": "true",
+  "userAndDateInsideBubbleChat": true,
   "sentMessageCreatedAtTimeInsideBubbleColor": "#ebebeb",
   "receivedMessageCreatedAtTimeInsideBubbleColor": "#9E9E9E",
   "channelCustomMessageBorderColor": "#cccccc",
@@ -94,7 +94,7 @@
   "forwardOption": false,
   "recordButton": false,
   "disableGlobalStoragePermission": true,
-  "legacyWidgetInputLayout": false,
+  "legacyWidgetInputLayout": true,
   "messageTemplate": {
     "isEnabled": false,
     "borderColor": "#5c5aa7",

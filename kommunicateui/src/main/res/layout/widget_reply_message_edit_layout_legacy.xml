@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:visibility="visible"
+    android:visibility="gone"
     app:cardBackgroundColor="@color/material_grey_50"
     app:cardCornerRadius="6dp"
     app:cardElevation="1dp"
@@ -23,7 +23,7 @@
             android:layout_width="5dp"
             android:layout_height="0dp"
             android:background="@color/material_grey_500"
-            app:layout_constraintBottom_toBottomOf="@+id/messageTextViewWidget"
+            app:layout_constraintBottom_toBottomOf="@+id/messageTextViewWidgetLegacy"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -36,8 +36,8 @@
             android:paddingTop="@dimen/material_default_padding"
             android:textColor="@color/material_grey_700"
             android:textSize="@dimen/material_typography_textsize_subheading"
-            app:layout_constraintEnd_toStartOf="@+id/imageViewForPhotoWidget"
-            app:layout_constraintStart_toStartOf="@+id/colorView"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewForPhotoWidgetLegacy"
+            app:layout_constraintStart_toStartOf="@+id/colorViewLegacy"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Cati Rísquez"/>
 
@@ -52,9 +52,9 @@
             android:paddingRight="@dimen/material_default_padding"
             android:textColor="@color/material_grey_600"
             android:textSize="@dimen/material_typography_textsize_caption"
-            app:layout_constraintEnd_toStartOf="@+id/imageViewForPhotoWidget"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewForPhotoWidgetLegacy"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/replyNameTextViewWidget"
+            app:layout_constraintTop_toBottomOf="@+id/replyNameTextViewWidgetLegacy"
             tools:text="ConstraintLayout allows you to create large and complex layouts with a flat view hierarchy (no nested view groups). It's similar to RelativeLayout in that.. "/>
 
         <ImageView
@@ -64,10 +64,10 @@
             android:contentDescription="@string/image_description_default"
             android:scaleType="centerCrop"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/messageTextViewWidget"
+            app:layout_constraintBottom_toBottomOf="@+id/messageTextViewWidgetLegacy"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/replyNameTextViewWidget"
+            app:layout_constraintTop_toTopOf="@+id/replyNameTextViewWidgetLegacy"
             app:layout_constraintVertical_bias="0.0"
             tools:layout_constraintBottom_creator="1"
             tools:layout_constraintTop_creator="1"

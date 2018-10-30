@@ -290,11 +290,13 @@ public class ApplozicDocumentView {
             @Override
             public void onClick(View v) {
                 if (kmStoragePermissionListener.isPermissionGranted()) {
-                    if (!AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
+                    if (AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
                         // Starts downloading this View, using the current cache setting
                         mDownloadThread = AttachmentManager.startDownload(attachmentViewProperties, mCacheFlag);
                         // After successfully downloading the image, this marks that it's available.
                         showDownloadInProgress();
+                    } else if (message.isAttachmentDownloaded()) {
+                        showDownloaded();
                     }
                     if (mDownloadThread == null) {
                         mDownloadThread = AttachmentManager.getBGThreadForAttachment(message.getKeyString());
@@ -410,6 +412,7 @@ public class ApplozicDocumentView {
             icon.setImageResource(R.drawable.ic_pause_white_24dp);
         } else {
             icon.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+            isDownloaded = true;
         }
     }
 

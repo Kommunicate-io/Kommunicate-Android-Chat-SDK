@@ -113,12 +113,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
     public void processAttachmentIconsClick() {
         super.processAttachmentIconsClick();
-        optionsAttachmentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickOptionsAttachment();
-            }
-        });
     }
 
     private void clickOptionsAttachment() {
@@ -183,6 +177,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
         if (inputMethodManager.isActive()) {
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+
         MultimediaOptionsGridView itemClickHandler = new MultimediaOptionsGridView(getActivity(), multimediaPopupGrid);
         itemClickHandler.setMultimediaClickListener(attachmentKey);
     }

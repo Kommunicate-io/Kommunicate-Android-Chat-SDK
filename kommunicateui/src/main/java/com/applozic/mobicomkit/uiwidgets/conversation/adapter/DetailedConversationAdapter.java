@@ -898,7 +898,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myHolder.messageTextView.post(new Runnable() {
                             @Override
                             public void run() {
-                                myHolder.messageTextView.setGravity(myHolder.messageTextView.getLineCount() == 1 ? Gravity.RIGHT : Gravity.LEFT);
+                                myHolder.messageTextView.setGravity(message.hasAttachment() && myHolder.messageTextView.getLineCount() == 1 ? Gravity.RIGHT : Gravity.LEFT);
                             }
                         });
                     }

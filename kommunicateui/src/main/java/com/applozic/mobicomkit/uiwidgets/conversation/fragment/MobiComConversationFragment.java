@@ -2,8 +2,6 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.animation.Animator;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -16,7 +14,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
@@ -59,7 +56,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -174,8 +170,6 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
 
-import io.codetail.animation.ViewAnimationUtils;
-
 import static android.view.View.VISIBLE;
 import static java.util.Collections.disjoint;
 
@@ -286,7 +280,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private RecyclerView messageTemplateView;
     private ImageView audioRecordIconImageView;
     private ImageView cameraButton, locationBtn;
-    protected ImageView optionsAttachmentButton;
+    protected ImageView fileAttachmentButton;
     WeakReference<ImageButton> recordButtonWeakReference;
     RecyclerView recyclerView;
     RecyclerViewPositionHelper recyclerViewPositionHelper;
@@ -382,7 +376,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         contentLayout = list.findViewById(R.id.content_layout);
         mainEditTextLinearLayout = list.findViewById(isLegacyWidgetInputLayout ? R.id.main_edit_text_constraint_layout_legacy : R.id.main_edit_text_constraint_layout);
         individualMessageSendLayout = list.findViewById(isLegacyWidgetInputLayout ? R.id.individual_message_send_layout_legacy : R.id.individual_message_send_layout);
-        optionsAttachmentButton = list.findViewById(isLegacyWidgetInputLayout ? R.id.options_attachment_btn_legacy : R.id.options_attachment_btn);
+        fileAttachmentButton = list.findViewById(isLegacyWidgetInputLayout ? R.id.file_attachment_btn_legacy : R.id.file_attachment_btn);
         cameraButton = list.findViewById(isLegacyWidgetInputLayout ? R.id.camera_btn_legacy : R.id.camera_btn);
         messageEditText = list.findViewById(isLegacyWidgetInputLayout ? R.id.conversation_message_legacy : R.id.conversation_message);
         sendButton = list.findViewById(isLegacyWidgetInputLayout ? R.id.conversation_send_legacy : R.id.conversation_send);
@@ -3403,6 +3397,27 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onClick(View v) {
                 openCamera();
+            }
+        });
+        fileAttachmentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() != null) {
+                    if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
+                        ((ConversationActivity) getActivity()).isAttachment(true);
+                        ((ConversationActivity) getActivity()).processAttachment();
+                    } else {
+                        ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
+                            @Override
+                            public void onAction(boolean didGrant) {
+                                if (didGrant) {
+                                    ((ConversationActivity) getActivity()).isAttachment(true);
+                                    ((ConversationActivity) getActivity()).processAttachment();
+                                }
+                            }
+                        });
+                    }
+                }
             }
         });
 

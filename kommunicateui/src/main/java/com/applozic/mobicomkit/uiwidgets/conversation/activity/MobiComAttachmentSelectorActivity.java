@@ -33,6 +33,7 @@ import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -242,11 +243,18 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                     }
                     String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                     fileName = FileUtils.getFileName(this, selectedFileUri);
+
                     String fileFormat = FileUtils.getFileFormat(fileName);
+                    String fileNameToWrite;
                     if (TextUtils.isEmpty(fileFormat)) {
-                        return;
+                        String format = FileUtils.getFileFormat(FileUtils.getFile(this, selectedFileUri).getAbsolutePath());
+                        if (TextUtils.isEmpty(format)) {
+                            return;
+                        }
+                        fileNameToWrite = timeStamp + "." + format;
+                    } else {
+                        fileNameToWrite = timeStamp + "." + fileFormat;
                     }
-                    String fileNameToWrite = timeStamp + "." + fileFormat;
                     File mediaFile = FileClientService.getFilePath(fileNameToWrite, getApplicationContext(), mimeType);
                     new FileTaskAsync(mediaFile, selectedFileUri, this).execute((Void) null);
                 } catch (Exception e) {
@@ -293,7 +301,9 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            fileClientService.writeFile(uri, file);
+            if (fileClientService != null) {
+                fileClientService.writeFile(uri, file);
+            }
             return true;
         }
 

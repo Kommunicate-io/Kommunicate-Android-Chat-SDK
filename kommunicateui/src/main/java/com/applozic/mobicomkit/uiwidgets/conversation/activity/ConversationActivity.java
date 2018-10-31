@@ -310,7 +310,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 return true;
             }
             Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
-            if (takeOrder) {
+            if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
                 Intent upIntent = NavUtils.getParentActivityIntent(this);
                 if (upIntent != null && isTaskRoot()) {
                     TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
@@ -322,6 +322,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
             Utils.toggleSoftKeyBoard(this, true);
             return true;
+        } else {
+            super.onSupportNavigateUp();
         }
         return false;
     }
@@ -824,12 +826,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             conversationFragment.handleAttachmentToggle();
             return;
         }
-        if (takeOrder) {
+
+        if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
             Intent upIntent = NavUtils.getParentActivityIntent(this);
             if (upIntent != null && isTaskRoot()) {
                 TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
             }
             ConversationActivity.this.finish();
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }

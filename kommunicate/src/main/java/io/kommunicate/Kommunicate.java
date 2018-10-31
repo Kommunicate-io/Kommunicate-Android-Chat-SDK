@@ -1,18 +1,25 @@
 package io.kommunicate;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.text.TextUtils;
 
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-import com.applozic.mobicomkit.uiwidgets.LeadCollectionActivity;
+
+import io.kommunicate.activities.LeadCollectionActivity;
+
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import java.security.SecureRandom;
@@ -31,7 +38,9 @@ import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
+import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmFaqTaskListener;
+import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
 
@@ -70,6 +79,95 @@ public class Kommunicate {
     public static void openConversation(Context context, boolean prechatLeadCollection) {
         Intent intent = new Intent(context, (prechatLeadCollection && !KMUser.isLoggedIn(context)) ? LeadCollectionActivity.class : KMConversationActivity.class);
         context.startActivity(intent);
+    }
+
+    public static void launchPrechatWithResult(Context context, final KmPrechatCallback callback) throws KmException {
+        if (!(context instanceof Activity)) {
+            throw new KmException("This method needs Activity context");
+        }
+
+        ResultReceiver resultReceiver = new ResultReceiver(null) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                if (LeadCollectionActivity.PRECHAT_RESULT_CODE == resultCode) {
+                    KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(LeadCollectionActivity.KM_USER_DATA), KMUser.class);
+                    if (callback != null) {
+                        callback.onReceive(user);
+                    }
+                }
+            }
+        };
+
+        Intent intent = new Intent(context, LeadCollectionActivity.class);
+        intent.putExtra(LeadCollectionActivity.PRECHAT_RESULT_RECEIVER, resultReceiver);
+        context.startActivity(intent);
+    }
+
+    public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, boolean isUnique, final List<String> agents, final List<String> bots, final KmCallback callback) {
+        if (callback == null) {
+            return;
+        }
+        if (!(context instanceof Activity)) {
+            callback.onFailure("This method needs Activity context");
+        }
+
+        final KMStartChatHandler startChatHandler = new KMStartChatHandler() {
+            @Override
+            public void onSuccess(Channel channel, Context context) {
+                callback.onSuccess(channel);
+                openParticularConversation(context, channel.getKey());
+            }
+
+            @Override
+            public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+                callback.onFailure(channelFeedApiResponse);
+            }
+        };
+
+        if (isLoggedIn(context)) {
+            try {
+                if (isUnique) {
+                    startOrGetConversation(context, groupName, agents, bots, startChatHandler);
+                } else {
+                    startNewConversation(context, groupName, agents, bots, false, startChatHandler);
+                }
+            } catch (KmException e) {
+                callback.onFailure(e);
+            }
+        } else {
+
+            final KMLoginHandler loginHandler = new KMLoginHandler() {
+                @Override
+                public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                    try {
+                        startOrGetConversation(context, groupName, agents, bots, startChatHandler);
+                    } catch (KmException e) {
+                        e.printStackTrace();
+                        callback.onFailure(e);
+                    }
+                }
+
+                @Override
+                public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                    callback.onFailure(registrationResponse);
+                }
+            };
+
+            if (withPreChat) {
+                try {
+                    launchPrechatWithResult(context, new KmPrechatCallback() {
+                        @Override
+                        public void onReceive(KMUser user) {
+                            login(context, user, loginHandler);
+                        }
+                    });
+                } catch (KmException e) {
+                    callback.onFailure(e);
+                }
+            } else {
+                login(context, kmUser, loginHandler);
+            }
+        }
     }
 
     public static void setNotificationSoundPath(Context context, String path) {

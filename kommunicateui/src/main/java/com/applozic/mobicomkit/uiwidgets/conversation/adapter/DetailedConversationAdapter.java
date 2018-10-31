@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
@@ -80,6 +81,11 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -638,8 +644,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         });
                     }
 
-                    loadContactImage(message.isTypeOutbox() ? senderContact : receiverContact, contactDisplayName, message, myHolder.contactImage, myHolder.alphabeticTextView, myHolder.onlineTextView, hideRecursiveImages);
-
+                    if (!message.isTypeOutbox()) {
+                        loadProfileImage(receiverContact != null ? receiverContact : contactDisplayName, myHolder.contactImage, myHolder.alphabeticTextView, hideRecursiveImages);
+                    }
                     ApplozicDocumentView audioView = new ApplozicDocumentView(this.context, storagePermissionListener);
                     audioView.inflateViewWithMessage(myHolder.view, message);
                     audioView.hideView(true);
@@ -758,7 +765,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                     if (message.isCanceled()) {
                         myHolder.attachmentRetry.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         myHolder.attachmentRetry.setVisibility(View.GONE);
                     }
                     myHolder.attachmentRetry.setOnClickListener(new View.OnClickListener() {
@@ -1087,70 +1094,73 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     }
 
-    private void loadContactImage(Contact contact, Contact contactDisplayName, Message message, ImageView contactImage, TextView alphabeticTextView, TextView onlineTextView, boolean hide) {
+    private void loadImage(final CircleImageView imageView, final TextView textImage, String imageUrl, int placeholderImage) {
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder(placeholderImage)
+                .error(placeholderImage);
 
-        if (hide) {
-            contactImage.setVisibility(GONE);
-            alphabeticTextView.setVisibility(GONE);
+
+        Glide.with(context).load(imageUrl).apply(options).listener(new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                if (textImage != null) {
+                    textImage.setVisibility(View.GONE);
+                }
+                imageView.setVisibility(View.VISIBLE);
+                return false;
+            }
+        }).into(imageView);
+    }
+
+    public void loadProfileImage(Contact contact, CircleImageView imageView, TextView textView, boolean hideRecursiveImages) {
+        if (hideRecursiveImages) {
+            imageView.setVisibility(GONE);
+            textView.setVisibility(GONE);
         } else {
-            if (alphabeticTextView != null) {
-                String contactNumber = "";
-                char firstLetter = 0;
-                if (contact != null) {
-                    contactNumber = contact.getDisplayName().toUpperCase();
-                    firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
-                } else if (channel != null && contactDisplayName != null) {
-                    firstLetter = contactDisplayName.getDisplayName().toUpperCase().charAt(0);
-                    contactNumber = contactDisplayName.getDisplayName().toUpperCase();
-                }
+            if (contact != null) {
+                loadContactImage(imageView, textView, contact);
+            }
+        }
+    }
 
-                if (firstLetter != '+') {
-                    alphabeticTextView.setText(String.valueOf(firstLetter));
-                } else if (!TextUtils.isEmpty(contactNumber) && contactNumber.length() >= 2) {
-                    alphabeticTextView.setText(String.valueOf(contactNumber.charAt(1)));
-                }
+    public void loadContactImage(CircleImageView imageView, TextView textView, Contact contact) {
+        try {
+            textView.setVisibility(View.VISIBLE);
+            imageView.setVisibility(View.GONE);
+            String contactNumber = "";
+            char firstLetter = 0;
+            contactNumber = contact.getDisplayName().toUpperCase();
+            firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
 
-                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-                GradientDrawable bgShape = (GradientDrawable) alphabeticTextView.getBackground();
-                bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+            if (firstLetter != '+') {
+                textView.setText(String.valueOf(firstLetter));
+            } else if (contactNumber.length() >= 2) {
+                textView.setText(String.valueOf(contactNumber.charAt(1)));
             }
 
-            if (contact != null && contact.isDrawableResources() && contactImage != null) {
+            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+            GradientDrawable bgShape = (GradientDrawable) textView.getBackground();
+            bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+
+            if (contact.isDrawableResources()) {
+                textView.setVisibility(View.GONE);
+                imageView.setVisibility(View.VISIBLE);
                 int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
-                contactImage.setImageResource(drawableResourceId);
-                contactImage.setVisibility(View.VISIBLE);
-                alphabeticTextView.setVisibility(View.GONE);
-            } else if (contact != null && contactImage != null) {
-                if (TextUtils.isEmpty(contact.getImageURL())) {
-                    contactImage.setVisibility(View.GONE);
-                    alphabeticTextView.setVisibility(View.VISIBLE);
-                } else {
-                    contactImage.setVisibility(View.VISIBLE);
-                    contactImageLoader.loadImage(contact, contactImage, alphabeticTextView);
-                }
+                imageView.setImageResource(drawableResourceId);
+            } else if (contact.getImageURL() != null) {
+                loadImage(imageView, textView, contact.getImageURL(), 0);
+            } else {
+                textView.setVisibility(View.VISIBLE);
+                imageView.setVisibility(View.GONE);
             }
-
-            if (contactDisplayName != null && contactDisplayName.isDrawableResources() && contactImage != null) {
-                int drawableResourceId = context.getResources().getIdentifier(contactDisplayName.getrDrawableName(), "drawable", context.getPackageName());
-                contactImage.setImageResource(drawableResourceId);
-                contactImage.setVisibility(View.VISIBLE);
-                alphabeticTextView.setVisibility(View.GONE);
-            } else if (contactDisplayName != null && contactImage != null) {
-                if (alCustomizationSettings.isGroupUsersOnlineStatus() && onlineTextView != null) {
-                    if (contactDisplayName.isConnected()) {
-                        onlineTextView.setVisibility(View.VISIBLE);
-                    } else {
-                        onlineTextView.setVisibility(View.GONE);
-                    }
-                }
-                if (TextUtils.isEmpty(contactDisplayName.getImageURL())) {
-                    contactImage.setVisibility(View.GONE);
-                    alphabeticTextView.setVisibility(View.VISIBLE);
-                } else {
-                    contactImage.setVisibility(View.VISIBLE);
-                    contactImageLoader.loadImage(contactDisplayName, contactImage, alphabeticTextView);
-                }
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -66,7 +66,7 @@
                         android:textColorHint="@color/material_grey_500"
                         android:textSize="@dimen/material_typography_textsize_subheading"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/options_attachment_btn"
+                        app:layout_constraintEnd_toStartOf="@+id/file_attachment_btn"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -81,11 +81,11 @@
                         android:src="@drawable/ic_photo_camera_grey_600_24dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/options_attachment_btn"
+                        app:layout_constraintStart_toEndOf="@+id/file_attachment_btn"
                         app:layout_constraintTop_toTopOf="parent"/>
 
                     <ImageView
-                        android:id="@+id/options_attachment_btn"
+                        android:id="@+id/file_attachment_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_alignBottom="@+id/conversation_message"

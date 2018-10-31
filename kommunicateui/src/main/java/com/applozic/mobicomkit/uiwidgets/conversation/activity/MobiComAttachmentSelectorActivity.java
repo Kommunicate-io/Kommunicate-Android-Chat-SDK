@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -104,6 +105,10 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
      * views initialisation.
      */
     private void initViews() {
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        toolbar.setTitle(getString(R.string.title_attachment_selector_activity));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         sendAttachment = findViewById(R.id.mobicom_attachment_send_btn);
         cancelAttachment = findViewById(R.id.mobicom_attachment_cancel_btn);
         galleryImagesGridView = findViewById(R.id.mobicom_attachment_grid_View);

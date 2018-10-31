@@ -199,6 +199,7 @@
     <string name="logging_out_wait">Logging out, please wait&#8230;</string>
     <string name="start_chat_wait">Creating conversation, please wait&#8230;</string>
     <string name="start_chat_unable">Unable to create conversation :</string>
+    <string name="title_attachment_selector_activity">Attachments</string>
 
     <string name="JUST_NOW">Just now</string>
     <string name="YESTERDAY">Yesterday</string>

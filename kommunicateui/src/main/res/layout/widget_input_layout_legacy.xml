@@ -93,7 +93,7 @@
                     android:src="@drawable/ic_photo_camera_grey_600_24dp"/>
 
                 <ImageView
-                    android:id="@+id/options_attachment_btn_legacy"
+                    android:id="@+id/file_attachment_btn_legacy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/material_half_padding"

@@ -1,16 +1,12 @@
 package com.applozic.mobicomkit.uiwidgets.attachmentview;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
@@ -241,6 +237,7 @@ public class ApplozicDocumentView {
     private void showProgress(int visibility) {
         progressBar.setVisibility(visibility);
         cancelIcon.setVisibility(message.isTypeOutbox() ? GONE : visibility);
+        icon.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
     }
 
     private void showUploadingProgress() {
@@ -289,40 +286,6 @@ public class ApplozicDocumentView {
         mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (kmStoragePermissionListener.isPermissionGranted()) {
-                    if (AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
-                        // Starts downloading this View, using the current cache setting
-                        mDownloadThread = AttachmentManager.startDownload(attachmentViewProperties, mCacheFlag);
-                        // After successfully downloading the image, this marks that it's available.
-                        showDownloadInProgress();
-                    } else if (message.isAttachmentDownloaded()) {
-                        showDownloaded();
-                    }
-                    if (mDownloadThread == null) {
-                        mDownloadThread = AttachmentManager.getBGThreadForAttachment(message.getKeyString());
-                        if (mDownloadThread != null)
-                            mDownloadThread.setAttachementViewNew(attachmentViewProperties);
-                    }
-                } else {
-                    kmStoragePermissionListener.checkPermission(new KmStoragePermission() {
-                        @Override
-                        public void onAction(boolean didGrant) {
-                            if (didGrant) {
-                                if (!AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
-                                    // Starts downloading this View, using the current cache setting
-                                    mDownloadThread = AttachmentManager.startDownload(attachmentViewProperties, mCacheFlag);
-                                    // After successfully downloading the image, this marks that it's available.
-                                    showDownloadInProgress();
-                                }
-                                if (mDownloadThread == null) {
-                                    mDownloadThread = AttachmentManager.getBGThreadForAttachment(message.getKeyString());
-                                    if (mDownloadThread != null)
-                                        mDownloadThread.setAttachementViewNew(attachmentViewProperties);
-                                }
-                            }
-                        }
-                    });
-                }
                 if (isDownloaded) {
                     downloadedClickListener();
                 } else if (isDownloadProgress) {
@@ -387,6 +350,21 @@ public class ApplozicDocumentView {
     }
 
     private void previewClickListener() {
+        if (kmStoragePermissionListener.isPermissionGranted()) {
+            checkIfShowDownloaded();
+        } else {
+            kmStoragePermissionListener.checkPermission(new KmStoragePermission() {
+                @Override
+                public void onAction(boolean didGrant) {
+                    if (didGrant) {
+                        checkIfShowDownloaded();
+                    }
+                }
+            });
+        }
+    }
+
+    private void checkIfShowDownloaded() {
         if (!AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
             // Starts downloading this View, using the current cache setting
             mDownloadThread = AttachmentManager.startDownload(attachmentViewProperties, mCacheFlag);

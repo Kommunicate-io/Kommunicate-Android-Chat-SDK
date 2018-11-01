@@ -116,6 +116,7 @@
         android:id="@+id/backgroundStatusIcon"
         android:layout_width="12dp"
         android:layout_height="12dp"
+        android:layout_marginTop="2dp"
         android:background="@drawable/km_status_icon_background"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -138,5 +139,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="@dimen/material_drawer_size_avatar"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStartAttachment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/padding_left_message_sent_attachment"/>
 
 </android.support.constraint.ConstraintLayout>

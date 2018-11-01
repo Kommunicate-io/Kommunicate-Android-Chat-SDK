@@ -16,4 +16,6 @@
     <dimen name="min_padding_between_bubble">2dip</dimen>
     <dimen name="padding_between_bubble">7dip</dimen>
     <dimen name="min_width_bubble">120dip</dimen>
+    <dimen name="min_width_bubble_outside">90dip</dimen>
+    <dimen name="padding_left_message_sent_attachment">100dp</dimen>
 </resources>

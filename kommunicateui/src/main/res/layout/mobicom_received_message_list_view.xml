@@ -55,7 +55,7 @@
         android:layout_marginRight="3dip"
         android:layout_marginStart="@dimen/material_half_padding"
         android:minHeight="@dimen/material_chips_height"
-        android:minWidth="@dimen/min_width_bubble"
+        android:minWidth="@dimen/min_width_bubble_outside"
         android:orientation="vertical"
         app:cardCornerRadius="6dp"
         app:cardElevation="@dimen/cardview_default_elevation"
@@ -75,7 +75,7 @@
             android:layout_gravity="center"
             android:background="@drawable/applozic_received_message"
             android:minHeight="@dimen/material_chips_height"
-            android:minWidth="@dimen/min_width_bubble"
+            android:minWidth="@dimen/min_width_bubble_outside"
             android:orientation="vertical">
 
             <include layout="@layout/reply_message_layout"/>

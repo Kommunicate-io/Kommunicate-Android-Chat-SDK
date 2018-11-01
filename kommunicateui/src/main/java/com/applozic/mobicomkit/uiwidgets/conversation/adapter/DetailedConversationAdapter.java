@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -358,7 +359,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 ? R.dimen.padding_between_bubble : R.dimen.min_padding_between_bubble));
                     }
                     ((RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams()).setMargins(marginLeft, marginTop, 0, 0);
-
+                    if (message.isTypeOutbox()) {
+                        ConstraintSet constraintSet = new ConstraintSet();
+                        constraintSet.clone(myHolder.messageRootLayout);
+                        constraintSet.connect(R.id.cardView, ConstraintSet.START, !message.hasAttachment() && !message.isLocationMessage() ?
+                                R.id.guidelineStart : R.id.guidelineStartAttachment, ConstraintSet.END,0);
+                        constraintSet.applyTo(myHolder.messageRootLayout);
+                    }
                     if (message.getGroupId() == null) {
                         List<String> items = Arrays.asList(message.getContactIds().split("\\s*,\\s*"));
                         List<String> userIds = null;

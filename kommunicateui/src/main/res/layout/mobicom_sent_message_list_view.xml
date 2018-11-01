@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="3dip"
         android:layout_marginRight="3dip"
-        android:minWidth="@dimen/min_width_bubble"
+        android:minWidth="@dimen/min_width_bubble_outside"
         android:minHeight="@dimen/material_chips_height"
         android:orientation="vertical"
         app:cardCornerRadius="6dp"
@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toStartOf="@+id/statusImage"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@id/guidelineStart"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="right"
             android:background="@drawable/applozic_sent_message"
-            android:minWidth="@dimen/min_width_bubble"
+            android:minWidth="@dimen/min_width_bubble_outside"
             android:minHeight="@dimen/material_chips_height"
             android:orientation="vertical">
 
@@ -91,10 +91,11 @@
 
     <View
         android:id="@+id/backgroundStatusIcon"
-        android:layout_width="17dp"
-        android:layout_height="17dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:background="@drawable/km_status_icon_background"
         android:visibility="invisible"
+        android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -103,7 +104,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
-        android:padding="1dp"
+        android:padding="0.5dp"
         app:layout_constraintBottom_toBottomOf="@+id/backgroundStatusIcon"
         app:layout_constraintEnd_toEndOf="@+id/backgroundStatusIcon"
         app:layout_constraintStart_toStartOf="@+id/backgroundStatusIcon"
@@ -138,5 +139,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_begin="@dimen/material_drawer_size_avatar"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineStartAttachment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/padding_left_message_sent_attachment"/>
 
 </android.support.constraint.ConstraintLayout>

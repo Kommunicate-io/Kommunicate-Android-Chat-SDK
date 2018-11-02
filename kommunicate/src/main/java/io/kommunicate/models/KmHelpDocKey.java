@@ -7,6 +7,7 @@ import java.util.List;
  */
 
 public class KmHelpDocKey {
+
     private String code;
     private List<Message> message;
 
@@ -27,6 +28,7 @@ public class KmHelpDocKey {
     }
 
     public class Message {
+
         private int id;
         private long customerId;
         private int type;

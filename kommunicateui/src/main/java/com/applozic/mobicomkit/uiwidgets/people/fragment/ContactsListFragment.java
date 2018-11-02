@@ -1,7 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.people.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -153,7 +152,7 @@ public class ContactsListFragment extends ListFragment implements SearchListFrag
         };
 
         // Set a placeholder loading image for the image loader
-        mImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+        mImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
 
         // Add a cache to the image loader
         mImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
@@ -162,8 +161,7 @@ public class ContactsListFragment extends ListFragment implements SearchListFrag
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the list fragment layout
         View view = inflater.inflate(R.layout.contact_list_fragment, container, false);
         resultTextView = (TextView) view.findViewById(R.id.result);
@@ -171,11 +169,9 @@ public class ContactsListFragment extends ListFragment implements SearchListFrag
         return view;
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         // Set up ListView, assign adapter and set some listeners. The adapter was previously
         // created in onCreate().
         resultTextView.setText(this.getResources().getString(R.string.zero_friends_on_phone));
@@ -201,8 +197,7 @@ public class ContactsListFragment extends ListFragment implements SearchListFrag
             }
 
             @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-            }
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) { }
         });
 
         // If there's a previously selected search item from a saved state then don't bother
@@ -215,26 +210,23 @@ public class ContactsListFragment extends ListFragment implements SearchListFrag
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
             // Assign callback listener which the holding activity must implement. This is used
             // so that when a contact item is interacted with (selected by the user) the holding
             // activity will be notified and can take further action such as populating the contact
             // detail pane (if in multi-pane layout) or starting a new activity with the contact
             // details (single pane layout).
-            mOnContactSelectedListener = (OnContactsInteractionListener) activity;
+            mOnContactSelectedListener = (OnContactsInteractionListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnContactsInteractionListener");
+            throw new ClassCastException(context.toString() + " must implement OnContactsInteractionListener");
         }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
         // In the case onPause() is called during a fling the image loader is
         // un-paused to let any remaining background work complete.
         mImageLoader.setPauseWork(false);
@@ -724,3 +716,4 @@ public class ContactsListFragment extends ListFragment implements SearchListFrag
         }
     }
 }
+

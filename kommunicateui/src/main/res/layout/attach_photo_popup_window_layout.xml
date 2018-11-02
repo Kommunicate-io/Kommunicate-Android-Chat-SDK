@@ -1,81 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:background="@color/applozic_theme_color_primary"
+    android:paddingBottom="@dimen/material_default_padding"
+    android:paddingEnd="@dimen/material_touchable_minheight"
+    android:paddingLeft="@dimen/material_default_padding"
+    android:paddingRight="@dimen/material_touchable_minheight"
+    android:paddingStart="@dimen/material_default_padding"
+    android:paddingTop="@dimen/material_default_padding"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.fragment.PictureUploadPopUpFragment">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/upload_gallery_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/applozic_theme_color_primary"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        app:layout_constraintBottom_toTopOf="@+id/upload_camera_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <ImageView
+            android:id="@+id/upload_gallery_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/applozic_ic_image_photo_album" />
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/image_description_default"
+            android:src="@drawable/ic_photo_white_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/upload_gallery_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/upload_gallery_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/material_default_padding"
+            android:layout_marginStart="@dimen/material_default_padding"
             android:text="@string/gallery"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_title"
+            app:layout_constraintBottom_toBottomOf="@+id/upload_gallery_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/upload_gallery_icon"
+            app:layout_constraintTop_toTopOf="@+id/upload_gallery_icon"/>
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/upload_camera_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@color/applozic_theme_color_primary"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_marginTop="@dimen/material_default_padding"
+        app:layout_constraintBottom_toTopOf="@+id/upload_remove_image_layout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upload_gallery_layout"
+        app:layout_constraintVertical_chainStyle="packed">
 
         <ImageView
+            android:id="@+id/upload_camera_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/applozic_ic_image_camera_alt" />
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/image_description_default"
+            android:src="@drawable/ic_photo_camera_grey_600_24dp"
+            android:tint="@color/material_white_1000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/upload_camera_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/upload_camera_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/material_default_padding"
+            android:layout_marginStart="@dimen/material_default_padding"
             android:text="@string/camera_option"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_title"
+            app:layout_constraintBottom_toBottomOf="@+id/upload_camera_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/upload_camera_icon"
+            app:layout_constraintTop_toTopOf="@+id/upload_camera_icon"/>
 
+    </android.support.constraint.ConstraintLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/upload_remove_image_layout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:background="@color/applozic_theme_color_primary"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_marginTop="@dimen/material_default_padding"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upload_camera_layout">
 
         <ImageView
+            android:id="@+id/upload_remove_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/applozic_ic_action_highlight_remove" />
+            android:layout_gravity="center_vertical"
+            android:contentDescription="@string/image_description_default"
+            android:src="@drawable/ic_close_grey_600_24dp"
+            android:tint="@color/material_white_1000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toStartOf="@+id/upload_remove_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
+            android:id="@+id/upload_remove_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/material_default_padding"
+            android:layout_marginStart="@dimen/material_default_padding"
             android:text="@string/remove_image"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textColor="@color/material_white_1000"
+            android:textSize="@dimen/material_typography_textsize_title"
+            app:layout_constraintBottom_toBottomOf="@+id/upload_remove_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/upload_remove_icon"
+            app:layout_constraintTop_toTopOf="@+id/upload_remove_icon"/>
 
-    </LinearLayout>
-</LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

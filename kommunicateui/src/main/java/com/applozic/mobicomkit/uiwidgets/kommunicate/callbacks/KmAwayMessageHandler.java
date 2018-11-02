@@ -9,7 +9,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageRespons
  */
 
 public interface KmAwayMessageHandler {
-    void onSuccess(Context context, KmAwayMessageResponse.KmMessageResponse response);
 
+    void onSuccess(Context context, KmAwayMessageResponse.KmMessageResponse response);
     void onFailure(Context context, Exception e, String response);
 }

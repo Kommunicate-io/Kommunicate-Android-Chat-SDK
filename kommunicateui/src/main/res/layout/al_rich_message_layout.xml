@@ -3,7 +3,6 @@
     android:id="@+id/alRichMessageView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/messageTextLayout"
     android:layout_marginTop="5dp"
     android:orientation="vertical"
     android:visibility="gone">
@@ -15,11 +14,11 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginBottom="15dp"/>
 
-    <include layout="@layout/al_faq_layout" />
+    <include layout="@layout/al_faq_layout"/>
 
-    <include layout="@layout/al_faq_reply_layout" />
+    <include layout="@layout/al_faq_reply_layout"/>
 
     <LinearLayout
         android:id="@+id/alListMessageLayout"
@@ -36,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/headerText"
@@ -55,18 +54,18 @@
             android:text=""
             android:textColor="@color/km_list_item_main_header_text_color"
             android:textSize="14sp"
-            android:textStyle="normal" />
+            android:textStyle="normal"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/alListItemRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/km_list_item_divider_color" />
+            android:background="@color/km_list_item_divider_color"/>
 
         <TextView
             android:id="@+id/actionButton"
@@ -78,13 +77,15 @@
             android:drawableStart="@drawable/quetion_help"
             android:drawableLeft="@drawable/quetion_help"
             android:drawablePadding="4dp"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:letterSpacing="0.07"
             android:maxLines="1"
-            android:ellipsize="end"
             android:text=""
             android:textColor="@color/km_list_item_action_color"
             android:textSize="15sp"
-            android:textStyle="normal" />
+            android:textStyle="normal"/>
+
     </LinearLayout>
+
 </LinearLayout>

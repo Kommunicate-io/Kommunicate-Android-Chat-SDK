@@ -7,6 +7,7 @@ import com.applozic.mobicomkit.exception.ApplozicException;
  */
 
 public class KmException extends ApplozicException {
+
     public KmException(String message) {
         super(message);
     }

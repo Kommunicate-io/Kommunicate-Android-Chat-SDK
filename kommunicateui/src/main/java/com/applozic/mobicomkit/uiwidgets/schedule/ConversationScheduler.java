@@ -5,11 +5,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -23,14 +23,14 @@ import com.applozic.mobicommons.commons.core.utils.DateUtils;
  * Time: 1:28 AM
  * To change this template use File | Settings | File Templates.
  */
+
 public class ConversationScheduler extends DialogFragment {
     private ScheduledTimeHolder scheduledTimeHolder;
-    private LinearLayout conversationScheduler;
+    private ConstraintLayout conversationScheduler;
     private Button scheduleOption;
     private String[] monthNames = {"Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
     public ConversationScheduler() {
-
     }
 
     public void setScheduleOption(Button scheduleOption) {
@@ -47,7 +47,7 @@ public class ConversationScheduler extends DialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View conversationSchedulerLayout = inflater.inflate(R.layout.conversation_scheduler, null, false);
-        conversationScheduler = (LinearLayout) conversationSchedulerLayout.findViewById(R.id.conversation_scheduler);
+        conversationScheduler = conversationSchedulerLayout.findViewById(R.id.conversation_scheduler);
 
         final TextView scheduledDate = (TextView) conversationScheduler.findViewById(R.id.scheduledDate);
         final TextView scheduledTime = (TextView) conversationScheduler.findViewById(R.id.scheduledTime);
@@ -57,37 +57,29 @@ public class ConversationScheduler extends DialogFragment {
             scheduledTime.setText(scheduledTimeHolder.getTime());
         }
 
-
         scheduledDate.setOnClickListener(new View.OnClickListener() {
-
-                                             @Override
-                                             public void onClick(View v) {
-
-                                                 SelectDateFragment dateFragment = new SelectDateFragment();
-                                                 dateFragment.setScheduledDateView(conversationScheduler);
-                                                 dateFragment.setScheduledTimeHolder(scheduledTimeHolder);
-                                                 dateFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
-                                                 resetColor(scheduledDate, scheduledTime);
-                                             }
-                                         }
-        );
+            @Override
+            public void onClick(View v) {
+                SelectDateFragment dateFragment = new SelectDateFragment();
+                dateFragment.setScheduledDateView(conversationScheduler);
+                dateFragment.setScheduledTimeHolder(scheduledTimeHolder);
+                dateFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
+                resetColor(scheduledDate, scheduledTime);
+            }
+        });
 
         scheduledTime.setOnClickListener(new View.OnClickListener() {
-
-                                             @Override
-                                             public void onClick(View v) {
-
-                                                 SelectTimeFragment timeFragment = new SelectTimeFragment();
-                                                 timeFragment.setScheduledTimeView(conversationScheduler);
-                                                 timeFragment.setScheduledTimeHolder(scheduledTimeHolder);
-                                                 timeFragment.show(getActivity().getSupportFragmentManager(), "TimePicker");
-                                                 resetColor(scheduledDate, scheduledTime);
-                                             }
-                                         }
-        );
+            @Override
+            public void onClick(View v) {
+                SelectTimeFragment timeFragment = new SelectTimeFragment();
+                timeFragment.setScheduledTimeView(conversationScheduler);
+                timeFragment.setScheduledTimeHolder(scheduledTimeHolder);
+                timeFragment.show(getActivity().getSupportFragmentManager(), "TimePicker");
+                resetColor(scheduledDate, scheduledTime);
+            }
+        });
 
         builder.setView(conversationSchedulerLayout)
-
                 .setPositiveButton(R.string.ScheduleText, null)
                 .setNegativeButton(R.string.negetiveButtonText, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -119,8 +111,7 @@ public class ConversationScheduler extends DialogFragment {
     }
 
     public void resetColor(TextView scheduledDate, TextView scheduledTime) {
-        scheduledDate.setTextColor(getResources().getColor(R.color.holo_blue));
-        scheduledTime.setTextColor(getResources().getColor(R.color.holo_blue));
+        scheduledDate.setTextColor(getResources().getColor(R.color.material_light_blue_400));
+        scheduledTime.setTextColor(getResources().getColor(R.color.material_light_blue_400));
     }
-
 }

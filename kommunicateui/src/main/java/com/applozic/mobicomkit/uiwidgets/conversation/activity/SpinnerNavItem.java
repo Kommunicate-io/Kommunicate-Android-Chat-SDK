@@ -5,6 +5,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 /**
  * Created by devashish on 23/2/14.
  */
+
 public class SpinnerNavItem {
 
     private String type;

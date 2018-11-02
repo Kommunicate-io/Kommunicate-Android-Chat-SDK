@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -60,6 +61,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by adarsh on 4/7/15.
  */
+
 public class QuickConversationAdapter extends RecyclerView.Adapter implements Filterable {
 
     private static Map<Short, Integer> messageTypeColorMap = new HashMap<Short, Integer>();
@@ -142,7 +144,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == 2) {
             FooterViewHolder myHolder = (FooterViewHolder) holder;
-            //myHolder.loadMoreProgressBar.setVisibility(View.GONE);
             myHolder.infoBroadCast.setVisibility(View.GONE);
         } else {
             Myholder myholder = (Myholder) holder;
@@ -151,9 +152,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             if (message != null) {
                 List<String> items = null;
                 List<String> userIds = null;
-
                 final Channel channel = ChannelDatabaseService.getInstance(context).getChannelByChannelKey(message.getGroupId());
-
                 if (channel == null && message.getGroupId() == null) {
                     items = Arrays.asList(message.getTo().split("\\s*,\\s*"));
                     if (!TextUtils.isEmpty(message.getContactIds())) {
@@ -174,11 +173,11 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                                 + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
                     }
                     myholder.smReceivers.setText(contactInfo);
-                    contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                    contactImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
                     processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                 } else if (message.getGroupId() != null) {
                     if (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                        contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                        contactImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
                         Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
                         if (withUserContact != null) {
                             myholder.smReceivers.setText(withUserContact.getDisplayName());
@@ -186,26 +185,26 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         }
                     } else {
                         if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
-                            myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
+                            myholder.contactImage.setImageResource(R.drawable.ic_account_circle_grey_600_24dp);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
-                            myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
+                            myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
                         }
 
                         myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
                         myholder.alphabeticTextView.setVisibility(View.GONE);
-                        myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
+                        myholder.contactImage.setImageResource(R.drawable.ic_people_grey_600_24dp);
                         myholder.contactImage.setVisibility(View.VISIBLE);
 
                         if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
                             channelImageLoader.loadImage(channel, myholder.contactImage);
                         } else if (channel != null && channel.isBroadcastMessage()) {
-                            myholder.contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+                            myholder.contactImage.setImageResource(R.drawable.ic_volume_up_white_24dp);
                         } else if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+                            channelImageLoader.setLoadingImage(R.drawable.ic_people_grey_600_24dp);
                         }
                     }
                 }
@@ -224,6 +223,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 if (myholder.attachmentIcon != null) {
                     myholder.attachmentIcon.setVisibility(View.GONE);
                 }
+
                 if (message.isVideoCallMessage()) {
                     createVideoCallView(message, myholder.attachmentIcon, myholder.messageTextView);
                 } else if (message.hasAttachment() && myholder.attachmentIcon != null && !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
@@ -231,11 +231,11 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     String filePath = message.getFileMetas() == null && message.getFilePaths() != null ? message.getFilePaths().get(0).substring(message.getFilePaths().get(0).lastIndexOf("/") + 1) :
                             message.getFileMetas() != null ? message.getFileMetas().getName() : "";
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                    myholder.attachmentIcon.setImageResource(R.drawable.applozic_ic_action_attachment);
+                    myholder.attachmentIcon.setImageResource(R.drawable.ic_attachment_grey_600_24dp);
                     myholder.messageTextView.setText(filePath);
                 } else if (myholder.attachmentIcon != null && message.getContentType() == Message.ContentType.LOCATION.getValue()) {
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                    myholder.attachmentIcon.setImageResource(R.drawable.mobicom_notification_location_icon);
+                    myholder.attachmentIcon.setImageResource(R.drawable.ic_location_on_grey_600_24dp);
                     myholder.messageTextView.setText(context.getString(R.string.Location));
                 } else if (message.getContentType() == Message.ContentType.PRICE.getValue()) {
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, ConversationUIService.FINAL_PRICE_TEXT + message.getMessage(), emojiconHandler));
@@ -248,17 +248,19 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                 if (myholder.sentOrReceived != null) {
                     if (message.isCall()) {
-                        myholder.sentOrReceived.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+                        myholder.sentOrReceived.setImageResource(R.drawable.ic_call_white_24dp);
                         myholder.messageTextView.setTextColor(context.getResources().getColor(message.isIncomingCall() ? R.color.incoming_call : R.color.outgoing_call));
                     } else if (getItemViewType(position) == 0) {
-                        myholder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
+                        myholder.sentOrReceived.setImageResource(R.drawable.ic_forward_black_24dp);
                     } else {
-                        myholder.sentOrReceived.setImageResource(R.drawable.mobicom_social_reply);
+                        myholder.sentOrReceived.setImageResource(R.drawable.ic_reply_white_24dp);
                     }
                 }
+
                 if (myholder.createdAtTime != null) {
                     myholder.createdAtTime.setText(DateUtils.getFormattedDateAndTime(context, message.getCreatedAtTime(), R.string.JUST_NOW, R.plurals.MINUTES, R.plurals.HOURS));
                 }
+
                 int messageUnReadCount = 0;
                 if (message.getGroupId() == null && contactReceiver != null && !TextUtils.isEmpty(contactReceiver.getContactIds())) {
                     messageUnReadCount = messageDatabaseService.getUnreadMessageCountForContact(contactReceiver.getContactIds());
@@ -266,6 +268,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 } else if (channel != null && channel.getKey() != null && channel.getKey() != 0) {
                     messageUnReadCount = messageDatabaseService.getUnreadMessageCountForChannel(channel.getKey());
                 }
+
                 if (messageUnReadCount > 0) {
                     myholder.unReadCountTextView.setVisibility(View.VISIBLE);
                     myholder.unReadCountTextView.setText(String.valueOf(messageUnReadCount));
@@ -275,14 +278,10 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                 int startIndex = indexOfSearchQuery(message.getMessage());
                 if (startIndex != -1) {
-
                     final SpannableString highlightedName = new SpannableString(message.getMessage());
-
                     // Sets the span to start at the starting point of the match and end at "length"
                     // characters beyond the starting point
-                    highlightedName.setSpan(highlightTextSpan, startIndex,
-                            startIndex + searchString.toString().length(), 0);
-
+                    highlightedName.setSpan(highlightTextSpan, startIndex, startIndex + searchString.toString().length(), 0);
                     myholder.messageTextView.setText(highlightedName);
                 }
             }
@@ -309,8 +308,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
     private int indexOfSearchQuery(String message) {
         if (!TextUtils.isEmpty(searchString)) {
-            return message.toLowerCase(Locale.getDefault()).indexOf(
-                    searchString.toString().toLowerCase(Locale.getDefault()));
+            return message.toLowerCase(Locale.getDefault()).indexOf(searchString.toString().toLowerCase(Locale.getDefault()));
         }
         return -1;
     }
@@ -320,7 +318,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-
                 final FilterResults oReturn = new FilterResults();
                 final List<Message> results = new ArrayList<Message>();
                 if (originalList == null)
@@ -329,8 +326,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     searchString = constraint.toString();
                     if (originalList != null && originalList.size() > 0) {
                         for (final Message message : originalList) {
-                            if (message.getMessage().toLowerCase()
-                                    .contains(constraint.toString())) {
+                            if (message.getMessage().toLowerCase().contains(constraint.toString())) {
                                 results.add(message);
                             }
                         }
@@ -344,8 +340,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
             @SuppressWarnings("unchecked")
             @Override
-            protected void publishResults(CharSequence constraint,
-                                          FilterResults results) {
+            protected void publishResults(CharSequence constraint, FilterResults results) {
                 messageList = (ArrayList<Message>) results.values;
                 notifyDataSetChanged();
             }
@@ -355,24 +350,22 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     public void createVideoCallView(Message message, ImageView attachmentIcon, TextView messageTextView) {
         if (message.getMetadata() == null || message.getMetadata().isEmpty()) {
             if (attachmentIcon != null) {
-                attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
+                attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24dp);
                 attachmentIcon.setColorFilter(R.color.applozic_green_color);
                 return;
             }
         }
-
         if (messageTextView != null) {
             messageTextView.setText(VideoCallNotificationHelper.getStatus(message.getMetadata()));
         }
-
         if (attachmentIcon != null) {
             attachmentIcon.setVisibility(View.VISIBLE);
             if (VideoCallNotificationHelper.isMissedCall(message)) {
-                attachmentIcon.setImageResource(R.drawable.ic_communication_call_missed);
+                attachmentIcon.setImageResource(R.drawable.ic_call_missed_red_700_24dp);
             } else if (VideoCallNotificationHelper.isAudioCall(message)) {
-                attachmentIcon.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+                attachmentIcon.setImageResource(R.drawable.ic_call_white_24dp);
             } else {
-                attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
+                attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24dp);
                 attachmentIcon.setColorFilter(R.color.applozic_green_color);
             }
         }
@@ -384,7 +377,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             char firstLetter = 0;
             contactNumber = contact.getDisplayName().toUpperCase();
             firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
-
             if (contact != null) {
                 if (firstLetter != '+') {
                     alphabeticTextView.setText(String.valueOf(firstLetter));
@@ -408,7 +400,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             textView.setVisibility(contact != null && contact.isOnline() ? View.VISIBLE : View.GONE);
             offlineTv.setVisibility(contact != null && contact.isOnline() ? View.GONE : View.VISIBLE);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -425,34 +417,30 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         final ImageView attachmentIcon;
         TextView unReadCountTextView;
         TextView smTime;
-        RelativeLayout rootView, profileImageRelativeLayout;
+        ConstraintLayout rootView;
+        ConstraintLayout profileImageLayout;
 
         public Myholder(View itemView) {
             super(itemView);
-
-            smReceivers = (TextView) itemView.findViewById(R.id.smReceivers);
-            createdAtTime = (TextView) itemView.findViewById(R.id.createdAtTime);
-            messageTextView = (TextView) itemView.findViewById(R.id.message);
-            //ImageView contactImage = (ImageView) customView.findViewById(R.id.contactImage);
-            contactImage = (CircleImageView) itemView.findViewById(R.id.contactImage);
-            alphabeticTextView = (TextView) itemView.findViewById(R.id.alphabeticImage);
-            onlineTextView = (TextView) itemView.findViewById(R.id.onlineTextView);
-            //sentOrReceived = (ImageView) itemView.findViewById(R.id.sentOrReceivedIcon);
-            attachedFile = (TextView) itemView.findViewById(R.id.attached_file);
-            attachmentIcon = (ImageView) itemView.findViewById(R.id.attachmentIcon);
-            unReadCountTextView = (TextView) itemView.findViewById(R.id.unreadSmsCount);
-            smTime = (TextView) itemView.findViewById(R.id.smTime);
-            profileImageRelativeLayout = itemView.findViewById(R.id.profile_image_relative_layout);
+            smReceivers = itemView.findViewById(R.id.smReceivers);
+            createdAtTime = itemView.findViewById(R.id.createdAtTime);
+            messageTextView = itemView.findViewById(R.id.message);
+            contactImage = itemView.findViewById(R.id.contactImage);
+            alphabeticTextView = itemView.findViewById(R.id.alphabeticImage);
+            onlineTextView = itemView.findViewById(R.id.onlineTextView);
+            attachedFile = itemView.findViewById(R.id.attached_file);
+            attachmentIcon = itemView.findViewById(R.id.attachmentIcon);
+            unReadCountTextView = itemView.findViewById(R.id.unreadSmsCount);
+            smTime = itemView.findViewById(R.id.smTime);
+            profileImageLayout = itemView.findViewById(R.id.profile_image_layout);
             rootView = itemView.findViewById(R.id.rootView);
             offlineTextView = itemView.findViewById(R.id.offlineTextView);
-
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View v) {
-
             int itemPosition = this.getLayoutPosition();
             if (itemPosition != -1 && !messageList.isEmpty()) {
                 Message message = getItem(itemPosition);
@@ -468,15 +456,12 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             int position = this.getLayoutPosition();
-
             if (messageList.size() <= position) {
                 return;
             }
             Message message = messageList.get(position);
             menu.setHeaderTitle(R.string.conversation_options);
-
             String[] menuItems = context.getResources().getStringArray(R.array.conversation_options_menu);
-
             boolean isUserPresentInGroup = false;
             boolean isChannelDeleted = false;
             boolean isSupportGroup = false;
@@ -491,23 +476,20 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             }
 
             for (int i = 0; i < menuItems.length; i++) {
-
-                if ((message.getGroupId() == null || (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()))) && (menuItems[i].equals(context.getResources().getString(R.string.delete_group)) ||
+                if ((message.getGroupId() == null || (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())))
+                        && (menuItems[i].equals(context.getResources().getString(R.string.delete_group)) ||
                         menuItems[i].equals(context.getResources().getString(R.string.exit_group)))) {
                     continue;
                 }
-
                 if (menuItems[i].equals(context.getResources().getString(R.string.exit_group)) && (isChannelDeleted || !isUserPresentInGroup || isSupportGroup)) {
                     continue;
                 }
-
                 if (menuItems[i].equals(context.getResources().getString(R.string.delete_group)) && (isUserPresentInGroup || !isChannelDeleted || isSupportGroup)) {
                     continue;
                 }
                 if (menuItems[i].equals(context.getResources().getString(R.string.delete_conversation_context)) && !alCustomizationSettings.isDeleteOption()) {
                     continue;
                 }
-
                 MenuItem item = menu.add(Menu.NONE, i, i, menuItems[i]);
                 item.setOnMenuItemClickListener(onEditMenu);
             }
@@ -517,7 +499,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Message message = messageList.get(getLayoutPosition());
-
                 Channel channel = null;
                 Contact contact = null;
                 if (message.getGroupId() != null) {
@@ -525,7 +506,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 } else {
                     contact = contactService.getContactById(message.getContactIds());
                 }
-
                 switch (item.getItemId()) {
                     case 0:
                         if (channel != null && channel.isDeleted()) {
@@ -541,7 +521,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         conversationUIService.channelLeaveProcess(channel);
                         break;
                     default:
-                        //return onMenuItemClick(item);
                 }
                 return true;
             }
@@ -549,13 +528,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     }
 
     public class FooterViewHolder extends RecyclerView.ViewHolder {
+
         TextView infoBroadCast;
         ProgressBar loadMoreProgressBar;
 
         public FooterViewHolder(View itemView) {
             super(itemView);
-            infoBroadCast = (TextView) itemView.findViewById(R.id.info_broadcast);
-            loadMoreProgressBar = (ProgressBar) itemView.findViewById(R.id.load_more_progressbar);
+            infoBroadCast = itemView.findViewById(R.id.info_broadcast);
+            loadMoreProgressBar = itemView.findViewById(R.id.load_more_progressbar);
         }
     }
 }

@@ -12,13 +12,13 @@ import java.util.List;
 
 import io.kommunicate.KmHelper;
 import io.kommunicate.Kommunicate;
-
+import io.kommunicate.app.BuildConfig;
 
 /**
  * Created by ashish on 23/01/18.
  */
 
-public class KommunicateApplication extends MultiDexApplication implements KmActionCallback{
+public class KommunicateApplication extends MultiDexApplication implements KmActionCallback {
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -39,7 +39,7 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
                 //Kommunicate.startOrGetConversation(context, "testClientGroupId", "reytum@live.com", null, "My Group");
                 //Kommunicate.setStartNewChat(context, "vipin+testkm01012018@applozic.com", "Hotel-Booking-Assistant"); //pass null if you want to use default bot
                 List<String> agents = new ArrayList<>();
-                agents.add("reytum@live.com");
+                agents.add(BuildConfig.KOMMUNICATE_AGENT);
                 List<String> bots = new ArrayList<>();
                 //Kommunicate.setStartNewChat(context, "reytum@live.com", "Hotel-Booking-Assistant");
                 try {

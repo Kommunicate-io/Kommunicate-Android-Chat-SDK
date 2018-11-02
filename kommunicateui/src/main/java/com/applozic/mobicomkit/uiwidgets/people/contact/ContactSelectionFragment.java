@@ -1,6 +1,5 @@
 package com.applozic.mobicomkit.uiwidgets.people.contact;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -70,7 +69,6 @@ import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.channel.ChannelMetadata;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.util.ArrayList;
@@ -90,8 +88,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
     public static final String CHECK_BOX = "CHECK_BOX";
     public static final String IMAGE_LINK = "IMAGE_LINK";
     public static final String GROUP_TYPE = "GROUP_TYPE";
-    private static final String STATE_PREVIOUSLY_SELECTED_KEY =
-            "SELECTED_ITEM";
+    private static final String STATE_PREVIOUSLY_SELECTED_KEY = "SELECTED_ITEM";
     public static boolean isSearching = false;
     ContactDatabase contactDatabase;
     boolean disableCheckBox;
@@ -157,7 +154,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             }
         };
         // Set a placeholder loading image for the image loader
-        mImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+        mImageLoader.setLoadingImage(R.drawable.ic_account_circle_grey_600_24dp);
         // Add a cache to the image loader
         mImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
         mImageLoader.setImageFadeIn(false);
@@ -174,11 +171,8 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                             getLoaderManager().initLoader(ContactsQuery.QUERY_ID, null, ContactSelectionFragment.this);
                         }
                     }
-
                     @Override
-                    public void onFailure(String response, Context context) {
-
-                    }
+                    public void onFailure(String response, Context context) { }
                 };
                 ApplozicGetMemberFromContactGroupTask applozicGetMemberFromContactGroupTask = new ApplozicGetMemberFromContactGroupTask(getActivity(), contactsGroupId, String.valueOf(Channel.GroupType.CONTACT_GROUP.getValue()), eventMemberListener);        // pass GroupId whose contact Members you want to show, contactGroupType
                 applozicGetMemberFromContactGroupTask.execute();
@@ -218,7 +212,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
         final Cursor cursor = mAdapter.getCursor();
         cursor.moveToPosition(position);
         Contact contact = contactDatabase.getContact(cursor, "_id");
@@ -233,7 +226,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
         }
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -250,7 +242,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                     mImageLoader.setPauseWork(false);
                 }
             }
-
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemsCount) {
                 if ((alCustomizationSettings.isRegisteredUserContactListCall() || ApplozicSetting.getInstance(getActivity()).isRegisteredUsersContactCall()) && Utils.isInternetAvailable(getActivity().getApplicationContext()) && TextUtils.isEmpty(userPreference.getContactsGroupId()) && userPreference.getContactGroupIdList() == null) {
@@ -258,12 +249,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                     if (totalItemsCount < previousTotalItemCount) {
                         currentPage = startingPageIndex;
                         previousTotalItemCount = totalItemsCount;
-                        if (totalItemsCount == 0) {
-                            loading = true;
-                        } else {
-                            loading = false;
-
-                        }
+                        loading = totalItemsCount == 0;
                     }
 
                     if (loading && (totalItemsCount > previousTotalItemCount)) {
@@ -331,10 +317,9 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                         }
 
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }
-
             }
 
             @Override
@@ -349,32 +334,23 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             }
 
             @Override
-            public void onCompletion() {
-
-            }
+            public void onCompletion() { }
         };
         RegisteredUsersAsyncTask usersAsyncTask = new RegisteredUsersAsyncTask(getActivity(), usersAsyncTaskTaskListener, alCustomizationSettings.getTotalRegisteredUserToFetch(), userPreference.getRegisteredUsersLastFetchTime(), null, null, true);
         usersAsyncTask.execute((Void) null);
-
     }
 
     private int getListPreferredItemHeight() {
         final TypedValue typedValue = new TypedValue();
-
         // Resolve list item preferred height theme attribute into typedValue
-        getActivity().getTheme().resolveAttribute(
-                android.R.attr.listPreferredItemHeight, typedValue, true);
-
+        getActivity().getTheme().resolveAttribute(android.R.attr.listPreferredItemHeight, typedValue, true);
         // Create a new DisplayMetrics object
         final DisplayMetrics metrics = new DisplayMetrics();
-
         // Populate the DisplayMetrics
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
         // Return theme value based on DisplayMetrics
         return (int) typedValue.getDimension(metrics);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -483,12 +459,10 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             return true;
         }
         return false;
-
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
         Loader<Cursor> loader = contactDatabase.getSearchCursorLoader(mSearchTerm, groupContacts);
         return loader;
     }
@@ -503,7 +477,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
         if (loader.getId() == ContactsQuery.QUERY_ID) {
             // When the loader is being reset, clear the cursor from the adapter. This allows the
             // cursor resources to be freed.
@@ -517,9 +490,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
         // the search filter, and restarts the loader to do a new query
         // using the new search string.
         String newFilter = !TextUtils.isEmpty(newText) ? newText : null;
-
         // Don't do anything if the filter is empty
-
         // Updates current filter to new filter
         mSearchTerm = newFilter;
         mAdapter.indexOfSearchQuery(newFilter);
@@ -528,7 +499,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
         return true;
     }
 
-
     /**
      * This interface defines constants for the Cursor and CursorLoader, based on constants defined
      * in the {@link android.provider.ContactsContract.Contacts} class.
@@ -536,11 +506,9 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
     public interface ContactsQuery {
         // An identifier for the loader
         int QUERY_ID = 1;
-
     }
 
     private class ContactsAdapter extends CursorAdapter implements SectionIndexer {
-
 
         private Context context;
         private LayoutInflater mInflater; // Stores the layout inflater
@@ -594,18 +562,15 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            final View itemLayout =
-                    mInflater.inflate(R.layout.contact_select_list_item, parent, false);
-
+            final View itemLayout = mInflater.inflate(R.layout.contact_select_list_item, parent, false);
             final ContactViewHolder holder = new ContactViewHolder();
-
-            holder.textView1 = (TextView) itemLayout.findViewById(R.id.applozic_group_member_info);
-            holder.textView2 = (TextView) itemLayout.findViewById(R.id.displayName);
-            holder.contactNumberTextView = (TextView) itemLayout.findViewById(R.id.contactNumberTextView);
-            holder.checkBox = (AppCompatCheckBox) itemLayout.findViewById(R.id.checkbox);
+            holder.textView1 = itemLayout.findViewById(R.id.applozic_group_member_info);
+            holder.textView2 = itemLayout.findViewById(R.id.displayName);
+            holder.contactNumberTextView = itemLayout.findViewById(R.id.contactNumberTextView);
+            holder.checkBox = itemLayout.findViewById(R.id.checkbox);
             holder.checkBox.setVisibility(View.VISIBLE);
-            holder.alphabeticImage = (TextView) itemLayout.findViewById(R.id.alphabeticImage);
-            holder.circleImageView = (CircleImageView) itemLayout.findViewById(R.id.contactImage);
+            holder.alphabeticImage = itemLayout.findViewById(R.id.alphabeticImage);
+            holder.circleImageView = itemLayout.findViewById(R.id.contactImage);
             itemLayout.setTag(holder);
             return itemLayout;
         }
@@ -630,13 +595,13 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                 } else {
                     holder.textView1.setVisibility(View.GONE);
                     holder.contactNumberTextView.setVisibility(View.VISIBLE);
-                    holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.black));
+                    holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.material_black_1000));
                 }
                 holder.checkBox.setVisibility(View.GONE);
             } else {
                 holder.checkBox.setVisibility(View.VISIBLE);
                 holder.contactNumberTextView.setVisibility(View.VISIBLE);
-                holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.black));
+                holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.material_black_1000));
             }
 
             if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {
@@ -682,8 +647,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
             holder.checkBox.setChecked(userIdList.contains(contact.getContactIds()));
 
-
-            ///////////////////////
             final int startIndex = indexOfSearchQuery(contact.getDisplayName());
 
             if (startIndex == -1) {
@@ -704,9 +667,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
                 // Binds the SpannableString to the display name View object
                 holder.textView2.setText(highlightedName);
-
             }
-
         }
 
         /**
@@ -761,7 +722,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             }
             return mAlphabetIndexer.getSectionForPosition(i);
         }
-
     }
 
     private class ContactViewHolder {
@@ -771,7 +731,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
         CircleImageView circleImageView;
         TextView textView2;
     }
-
 
     private final class RefreshContactsScreenBroadcast extends BroadcastReceiver {
         @Override
@@ -784,7 +743,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                                     AppContactFragment.ContactsQuery.QUERY_ID, null, ContactSelectionFragment.this);
                         }
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 }
             }
@@ -797,7 +756,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
         if (refreshContactsScreenBroadcast != null) {
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(refreshContactsScreenBroadcast, new IntentFilter(BroadcastService.INTENT_ACTIONS.UPDATE_USER_DETAIL.toString()));
         }
-
     }
 
     @Override
@@ -807,5 +765,4 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(refreshContactsScreenBroadcast);
         }
     }
-
 }

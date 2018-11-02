@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-
     <string name="app_name">Applozic</string>
     <string name="conversations">Conversations</string>
     <string name="channel_create_title">New group</string>
@@ -62,7 +61,6 @@
 
     <string name="applozic_select_photo">Select a photo</string>
     <string name="attachment_retry">Retry</string>
-
 
     <string name="verification_success">Your phone number got verified successfully</string>
     <string name="launch_mobitexter_app">LAUNCH_MOBITEXTER</string>
@@ -197,10 +195,11 @@
     <string name="km_not_sent">Not sent</string>
     <string name="default_start_new_conversation">Start new conversation</string>
     <string name="start_conversation">Start conversation</string>
-
-    <string name="DATE_SAVE_FILE_FORMAT">yyyyMMdd_HHmmss</string>
-    <string name="DATE_MEDIUM_FORMAT">"MMM dd, yyyy"</string>
-    <string name="DATE_DAY_FORMAT">EEEE</string>-->
+    <string name="subtitle_user_support">Customer Support</string>
+    <string name="logging_out_wait">Logging out, please wait&#8230;</string>
+    <string name="start_chat_wait">Creating conversation, please wait&#8230;</string>
+    <string name="start_chat_unable">Unable to create conversation :</string>
+    <string name="title_attachment_selector_activity">Attachments</string>
 
     <string name="JUST_NOW">Just now</string>
     <string name="YESTERDAY">Yesterday</string>
@@ -232,4 +231,16 @@
     <string name="prechat_screen_toast_error_message">Either contact number or emailId is required.</string>
     <string name="invalid_contact_number">Please enter a valid contact number</string>
     <string name="invalid_email_id">Please enter a valid emailId</string>
+
+    <string name="TIME_FORMAT">hh:mm a</string>
+    <string name="TIME_24H_FORMAT">HH:mm</string>
+    <string name="DATE_SHORT_FORMAT">dd MMM</string>
+    <string name="DATE_LONG_FORMAT">dd MMM yyyy</string>
+    <string name="DATE_MEDIUM_FORMAT">"MMM dd, yyyy"</string>
+    <string name="DATE_FULL_FORMAT">EEE, MMM dd,yyyy</string>
+    <string name="DATE_TIME_FULL_FORMAT">EEE, MMM dd, yyyy hh:mm aa</string>
+    <string name="DATE_TIME_24H_FULL_FORMAT">EEE, MMM dd, yyyy HH:mm</string>
+    <string name="DATE_SAVE_FILE_FORMAT">yyyyMMdd_HHmmss</string>
+    <string name="DATE_DAY_FORMAT">EEEE</string>
+
 </resources>

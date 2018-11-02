@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/messageLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/material_drawer_size_avatar"/>
+
+    <include
+        android:id="@+id/profile_image_layout"
+        layout="@layout/widget_user_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/material_default_padding"
+        android:layout_marginLeft="@dimen/material_default_padding"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/onlineTextView"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/online_circle"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image_layout"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image_layout"/>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/material_half_padding"
+        android:layout_marginLeft="@dimen/material_half_padding"
+        android:layout_marginTop="-2dip"
+        android:layout_marginEnd="3dip"
+        android:layout_marginRight="3dip"
+        android:minWidth="@dimen/min_width_bubble"
+        android:minHeight="@dimen/material_chips_height"
+        android:orientation="vertical"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@id/guidelineEnd"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@id/profile_image_layout"
+        app:layout_constraintTop_toTopOf="@id/profile_image_layout">
+
+        <LinearLayout
+            android:id="@+id/messageTextInsideLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/applozic_received_message"
+            android:minWidth="@dimen/min_width_bubble"
+            android:minHeight="@dimen/material_chips_height"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/material_half_padding"
+                android:layout_marginLeft="@dimen/material_half_padding"
+                android:layout_marginTop="@dimen/material_quart_padding"
+                android:gravity="top"
+                android:paddingRight="@dimen/material_half_padding"
+                android:textSize="@dimen/material_typography_textsize_body"
+                android:visibility="visible"
+                tools:text="Cati Rísquez"/>
+
+            <include layout="@layout/reply_message_layout"/>
+
+            <TextView
+                android:id="@+id/attached_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_attachment_grey_600_24dp"
+                android:drawableLeft="@drawable/ic_attachment_grey_600_24dp"
+                android:drawablePadding="@dimen/material_half_padding"
+                android:drawableTint="@color/material_grey_600"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/material_half_padding"
+                android:paddingTop="@dimen/material_quart_padding"
+                android:paddingRight="@dimen/material_half_padding"
+                android:paddingBottom="@dimen/material_quart_padding"
+                android:textColor="@color/received_message_bg_color"
+                android:textSize="@dimen/material_typography_textsize_body"
+                android:visibility="gone"/>
+
+            <include layout="@layout/mobicom_attachment_preview_layout"/>
+
+            <include layout="@layout/mobicom_contact_share_layout"/>
+
+            <include layout="@layout/mobicom_chat_location_view"/>
+
+            <include layout="@layout/applozic_document_attachment"/>
+
+            <include layout="@layout/al_rich_message_layout"/>
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="all"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/material_half_padding"
+                android:paddingTop="@dimen/material_quart_padding"
+                android:paddingRight="@dimen/material_half_padding"
+                android:textColor="@color/received_text_color"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/material_typography_textsize_body"
+                tools:text="Material design guidelines mention that cards can be constructed using blocks of content"/>
+
+            <TextView
+                android:id="@+id/selfDestruct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/material_half_padding"
+                android:paddingTop="@dimen/material_quart_padding"
+                android:paddingRight="@dimen/material_half_padding"
+                android:text="@string/self_destruct"
+                android:textColor="@color/material_grey_600"
+                android:textSize="@dimen/material_typography_textsize_caption"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/createdAtTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:paddingLeft="@dimen/material_half_padding"
+                android:paddingTop="@dimen/material_quart_padding"
+                android:paddingRight="@dimen/material_half_padding"
+                android:paddingBottom="@dimen/material_quart_padding"
+                android:textColor="@color/material_grey_500"
+                android:textSize="10sp"
+                tools:text="12:34 PM"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>

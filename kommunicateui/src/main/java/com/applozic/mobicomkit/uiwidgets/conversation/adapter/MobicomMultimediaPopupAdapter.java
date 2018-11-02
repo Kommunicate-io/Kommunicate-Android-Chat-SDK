@@ -17,7 +17,9 @@ import java.util.List;
 /**
  * Created by reytum on 18/3/16.
  */
+
 public class MobicomMultimediaPopupAdapter extends BaseAdapter {
+
     Context context;
     List<String> multimediaIcons;
     List<String> multimediaText;
@@ -52,15 +54,13 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(R.layout.mobicom_individual_multimedia_option_item, null);
-
-        TextView icon = (TextView) convertView.findViewById(R.id.mobicom_multimedia_icon);
+        TextView icon = convertView.findViewById(R.id.mobicom_multimedia_icon);
         Typeface iconTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
         icon.setTypeface(iconTypeface);
-        TextView text = (TextView) convertView.findViewById(R.id.mobicom_multimedia_text);
-        icon.setTextColor(Color.parseColor(alCustomizationSettings.getAttachmentIconsBackgroundColor()));
+        TextView text = convertView.findViewById(R.id.mobicom_multimedia_text);
+        icon.setTextColor(Color.parseColor(alCustomizationSettings.getAttachmentIconsColor()));
         icon.setText(multimediaIcons.get(position));
         text.setText(multimediaText.get(position));
         return convertView;
     }
-
 }

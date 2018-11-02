@@ -8,8 +8,15 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "KOMMUNICATE_AGENT", '"reytum@live.com"'
+        buildConfigField "String", "KOMMUNICATE_APP_ID", '"22823b4a764f9944ad7913ddb3e43cae1"'  //prod
+        buildConfigField "String", "KOMMUNICATE_APP_PRE_VIPIN_ID", '"3c951e76437b755ce5ee8ad8a06703505"'  //test encv key vipin
+        buildConfigField "String", "KOMMUNICATE_APP_PRE_DEVRAJ_ID", '"2187926e69fe6dabd86b89c6269838bab"'  //test key devraj
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -28,13 +35,13 @@ allprojects {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    api project(':kommunicate')
     //implementation 'io.kommunicate:kommunicate:1.6.3'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:multidex:1.0.3'
-    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    testImplementation 'junit:junit:4.12'
+    api project(':kommunicate')
 }
 
 apply plugin: 'com.google.gms.google-services'

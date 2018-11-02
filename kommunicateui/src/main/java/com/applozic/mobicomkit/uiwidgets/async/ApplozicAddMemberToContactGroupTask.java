@@ -12,6 +12,7 @@ import java.util.List;
  */
 
 public class ApplozicAddMemberToContactGroupTask extends AsyncTask<Object, Object, Boolean> {
+
     String contactGroupId;
     Context context;
     List<String> groupMemberList;
@@ -19,7 +20,6 @@ public class ApplozicAddMemberToContactGroupTask extends AsyncTask<Object, Objec
     GroupMemberListener groupMemberListener;
     private Exception exception;
     private String groupType;
-
 
     public ApplozicAddMemberToContactGroupTask(Context context, String contactGroupId, String groupType, List<String> groupMemberList, GroupMemberListener groupMemberListener) {
         this.context = context;
@@ -56,8 +56,8 @@ public class ApplozicAddMemberToContactGroupTask extends AsyncTask<Object, Objec
     }
 
     public interface GroupMemberListener {
-        void onSuccess(boolean response, Context context);
 
+        void onSuccess(boolean response, Context context);
         void onFailure(boolean response, Exception e, Context context);
     }
 }

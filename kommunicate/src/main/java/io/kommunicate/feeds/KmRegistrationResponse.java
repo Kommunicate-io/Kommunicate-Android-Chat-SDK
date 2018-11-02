@@ -1,4 +1,3 @@
-
 package io.kommunicate.feeds;
 
 import com.google.gson.annotations.Expose;
@@ -28,5 +27,4 @@ public class KmRegistrationResponse {
     public void setResult(Result result) {
         this.result = result;
     }
-
 }

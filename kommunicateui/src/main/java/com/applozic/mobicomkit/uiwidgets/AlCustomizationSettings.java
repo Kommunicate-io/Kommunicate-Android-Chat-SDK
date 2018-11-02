@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * Created by sunil on 10/10/16.
  */
+
 public class AlCustomizationSettings extends JsonMarker {
 
     private String customMessageBackgroundColor = "#e6e5ec";
@@ -15,6 +16,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String receivedMessageBackgroundColor = "#e6e5ec";
     private String sendButtonBackgroundColor = "#5c5aa7";
     private String attachmentIconsBackgroundColor = "#FF03A9F4";
+    private String attachmentIconsColor = "#FF5c5aa7";
     private String chatBackgroundColorOrDrawable;
     private String editTextBackgroundColorOrDrawable;
     private String editTextLayoutBackgroundColorOrDrawable;
@@ -109,6 +111,15 @@ public class AlCustomizationSettings extends JsonMarker {
 
     private boolean launchChatFromProfilePicOrName = false;
 
+    private boolean legacyWidgetInputLayout = true;
+
+    private boolean statusIconsCircular = true;
+
+    private String sentMessageCreatedAtTimeInsideBubbleColor = "#ede6e6";
+    private String receivedMessageCreatedAtTimeInsideBubbleColor = "#8a8686";
+
+    private boolean userAndDateInsideBubbleChat = true;
+
     private Map<String, Boolean> attachmentOptions;
 
     public boolean isBroadcastOption() {
@@ -130,7 +141,6 @@ public class AlCustomizationSettings extends JsonMarker {
     public String getCustomMessageBackgroundColor() {
         return customMessageBackgroundColor;
     }
-
 
     public String getSentMessageBackgroundColor() {
         return sentMessageBackgroundColor;
@@ -159,7 +169,6 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isImageCompression() {
         return imageCompression;
     }
-
 
     public boolean isInviteFriendsInContactActivity() {
         return inviteFriendsInContactActivity;
@@ -253,7 +262,6 @@ public class AlCustomizationSettings extends JsonMarker {
         return hideGroupRemoveMemberOption;
     }
 
-
     public String getEditTextBackgroundColorOrDrawable() {
         return editTextBackgroundColorOrDrawable;
     }
@@ -314,11 +322,9 @@ public class AlCustomizationSettings extends JsonMarker {
         return messageSearchOption;
     }
 
-
     public int getTotalRegisteredUserToFetch() {
         return totalRegisteredUserToFetch;
     }
-
 
     public int getMaxAttachmentAllowed() {
         return maxAttachmentAllowed;
@@ -380,7 +386,6 @@ public class AlCustomizationSettings extends JsonMarker {
         this.attachmentOptions = attachmentOptions;
     }
 
-
     public boolean isHideAttachmentButton() {
         return hideAttachmentButton;
     }
@@ -404,7 +409,6 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isGroupUsersOnlineStatus() {
         return groupUsersOnlineStatus;
     }
-
 
     public boolean isRefreshOption() {
         return refreshOption;
@@ -522,6 +526,14 @@ public class AlCustomizationSettings extends JsonMarker {
         this.messageTemplate = messageTemplate;
     }
 
+    public void setSentMessageTextColor(String sentMessageTextColor) {
+        this.sentMessageTextColor = sentMessageTextColor;
+    }
+
+    public void setReceivedMessageTextColor(String receivedMessageTextColor) {
+        this.receivedMessageTextColor = receivedMessageTextColor;
+    }
+
     public MobicomMessageTemplate getMessageTemplate() {
         return messageTemplate;
     }
@@ -576,6 +588,54 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isGlobalStoragePermissionDisabled() {
         return disableGlobalStoragePermission;
+    }
+
+    public boolean isLegacyWidgetInputLayout() {
+        return legacyWidgetInputLayout;
+    }
+
+    public void setLegacyWidgetInputLayout(boolean legacyWidgetInputLayout) {
+        this.legacyWidgetInputLayout = legacyWidgetInputLayout;
+    }
+
+    public boolean isStatusIconsCircular() {
+        return statusIconsCircular;
+    }
+
+    public void setStatusIconsCircular(boolean statusIconsCircular) {
+        this.statusIconsCircular = statusIconsCircular;
+    }
+
+    public String getAttachmentIconsColor() {
+        return attachmentIconsColor;
+    }
+
+    public void setAttachmentIconsColor(String attachmentIconsColor) {
+        this.attachmentIconsColor = attachmentIconsColor;
+    }
+
+    public boolean isUserAndDateInsideBubbleChat() {
+        return userAndDateInsideBubbleChat;
+    }
+
+    public void setUserAndDateInsideBubbleChat(boolean userAndDateInsideBubbleChat) {
+        this.userAndDateInsideBubbleChat = userAndDateInsideBubbleChat;
+    }
+
+    public String getSentMessageCreatedAtTimeInsideBubbleColor() {
+        return sentMessageCreatedAtTimeInsideBubbleColor;
+    }
+
+    public void setSentMessageCreatedAtTimeInsideBubbleColor(String sentMessageCreatedAtTimeInsideBubbleColor) {
+        this.sentMessageCreatedAtTimeInsideBubbleColor = sentMessageCreatedAtTimeInsideBubbleColor;
+    }
+
+    public String getReceivedMessageCreatedAtTimeInsideBubbleColor() {
+        return receivedMessageCreatedAtTimeInsideBubbleColor;
+    }
+
+    public void setReceivedMessageCreatedAtTimeInsideBubbleColor(String receivedMessageCreatedAtTimeInsideBubbleColor) {
+        this.receivedMessageCreatedAtTimeInsideBubbleColor = receivedMessageCreatedAtTimeInsideBubbleColor;
     }
 
     @Override

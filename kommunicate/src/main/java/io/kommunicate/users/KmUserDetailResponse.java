@@ -12,6 +12,7 @@ import java.util.List;
  */
 
 public class KmUserDetailResponse extends JsonMarker implements Serializable {
+
     private List<UserDetail> users;
     private List<Channel> groups;
     private List<String> devices;

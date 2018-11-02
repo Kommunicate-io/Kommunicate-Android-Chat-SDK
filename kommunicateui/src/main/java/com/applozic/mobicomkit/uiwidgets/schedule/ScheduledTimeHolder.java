@@ -9,9 +9,7 @@ public class ScheduledTimeHolder {
     String time = null;
     Long timestamp = null;
 
-    public ScheduledTimeHolder() {
-
-    }
+    public ScheduledTimeHolder() { }
 
     public String getDate() {
         return date;
@@ -30,7 +28,7 @@ public class ScheduledTimeHolder {
     }
 
     public Long getTimestamp() {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"); //TODO Add Date to mobicom_strings.xml
         if (this.getDate() == null || this.getTime() == null) {
             return timestamp;
         }

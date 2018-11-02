@@ -3,13 +3,9 @@
     android:shape="rectangle">
 
     <!-- view background color -->
-    <solid android:color="@color/default_start_new_button_color" />
-
-    <!-- view border color and width -->
-
-    <!-- If you want to add some padding -->
+    <solid android:color="@color/default_start_new_button_color"/>
 
     <!-- Here is the corner radius -->
-    <corners
-        android:radius="26dp" />
+    <corners android:radius="26dp"/>
+
 </shape>

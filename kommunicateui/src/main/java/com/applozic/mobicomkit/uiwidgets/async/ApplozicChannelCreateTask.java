@@ -14,7 +14,9 @@ import java.util.List;
 /**
  * Created by sunil on 17/5/16.
  */
+
 public class ApplozicChannelCreateTask extends AsyncTask<Void, Void, Boolean> {
+
     Context context;
     String groupName;
     List<String> groupMemberList;
@@ -81,18 +83,16 @@ public class ApplozicChannelCreateTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean resultBoolean) {
         super.onPostExecute(resultBoolean);
-
         if (resultBoolean && channel != null && channelCreateListener != null) {
             channelCreateListener.onSuccess(channel, context);
         } else if (!resultBoolean && channelCreateListener != null) {
             channelCreateListener.onFailure(exception, context);
         }
-
     }
 
     public interface ChannelCreateListener {
-        void onSuccess(Channel channel, Context context);
 
+        void onSuccess(Channel channel, Context context);
         void onFailure(Exception e, Context context);
     }
 }

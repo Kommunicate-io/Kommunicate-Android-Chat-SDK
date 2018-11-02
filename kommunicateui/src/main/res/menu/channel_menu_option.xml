@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mobitexter="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/edit_channel_name"
-        android:icon="@drawable/applozic_ic_mode_edit_white"
+        android:icon="@drawable/ic_edit_white_24dp"
         android:orderInCategory="1"
-        android:showAsAction="ifRoom"
         android:title="@string/edit_group_name"
-        mobitexter:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/add_member_to_channel"
-        android:icon="@drawable/applozic_ic_person_add_white"
+        android:icon="@drawable/ic_person_add_white_24dp"
         android:orderInCategory="2"
-        android:showAsAction="ifRoom"
         android:title="@string/add_member"
-        mobitexter:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"/>
+
 </menu>

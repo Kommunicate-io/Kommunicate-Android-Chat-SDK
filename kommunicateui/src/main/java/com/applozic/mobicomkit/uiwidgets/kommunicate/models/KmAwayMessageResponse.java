@@ -12,7 +12,6 @@ public class KmAwayMessageResponse extends JsonMarker {
     private String code;
     private KmDataResposne data;
 
-
     public String getCode() {
         return code;
     }
@@ -30,6 +29,7 @@ public class KmAwayMessageResponse extends JsonMarker {
     }
 
     public class KmDataResposne extends JsonMarker {
+
         private boolean collectEmail;
         private List<KmMessageResponse> messageList;
 

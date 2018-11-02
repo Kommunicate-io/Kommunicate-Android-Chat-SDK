@@ -1,4 +1,3 @@
-
 package io.kommunicate.feeds;
 
 import com.google.gson.annotations.Expose;
@@ -283,5 +282,4 @@ public class Application {
     public void setInterestedIncareProgram(Boolean interestedIncareProgram) {
         this.interestedIncareProgram = interestedIncareProgram;
     }
-
 }

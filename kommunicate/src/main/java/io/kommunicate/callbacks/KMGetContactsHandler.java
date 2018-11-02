@@ -13,6 +13,5 @@ import io.kommunicate.users.KmContact;
 public interface KMGetContactsHandler {
 
     void onSuccess(List<KmContact> contactList);
-
     void onFailure(List<ErrorResponseFeed> errorResponseFeeds, Exception exception);
 }

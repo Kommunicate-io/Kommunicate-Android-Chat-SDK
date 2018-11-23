@@ -169,7 +169,8 @@
     <string name="stop">STOP</string>
     <string name="profile_status">Profile Status</string>
     <string name="no_status">No Status</string>
-    <string name="online">online</string>
+    <string name="online">Online</string>
+    <string name="offline">Offline</string>
     <string name="notifications">Notifications</string>
     <string name="push_notifications">Push Notifications</string>
     <string name="sales_manager">Sales Manager</string>

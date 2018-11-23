@@ -103,7 +103,7 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
-    public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, boolean isUnique, final List<String> agents, final List<String> bots, final KmCallback callback) {
+    public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, final boolean isUnique, final List<String> agents, final List<String> bots, final KmCallback callback) {
         if (callback == null) {
             return;
         }
@@ -140,7 +140,11 @@ public class Kommunicate {
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                     try {
-                        startOrGetConversation(context, groupName, agents, bots, startChatHandler);
+                        if (isUnique) {
+                            startOrGetConversation(context, groupName, agents, bots, startChatHandler);
+                        } else {
+                            startNewConversation(context, groupName, agents, bots, false, startChatHandler);
+                        }
                     } catch (KmException e) {
                         e.printStackTrace();
                         callback.onFailure(e);

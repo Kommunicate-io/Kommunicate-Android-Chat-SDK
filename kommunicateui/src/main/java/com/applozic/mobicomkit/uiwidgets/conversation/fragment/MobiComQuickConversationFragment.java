@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -148,12 +149,13 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-    /*    DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext());
-        recyclerView.addItemDecoration(dividerItemDecoration);*/
         recyclerView.setAdapter(recyclerAdapter);
-        //recyclerView.addItemDecoration(new FooterItemDecoration(getContext(), recyclerView, R.layout.mobicom_message_list_header_footer));
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(false);
+        RelativeLayout toolbarCustomLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
+        if (toolbarCustomLayout != null) {
+            toolbarCustomLayout.setVisibility(View.GONE);
+        }
         fabButton = (ImageButton) list.findViewById(R.id.fab_start_new);
         loading = true;
         LinearLayout individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
@@ -178,19 +180,11 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         individualMessageSendLayout.setVisibility(View.GONE);
         extendedSendingOptionLayout.setVisibility(View.GONE);
 
-        //setLoadingProgressBar();
-
-        //View spinnerLayout = inflater.inflate(R.layout.mobicom_message_list_header_footer, null);
-        //progressBar = (ProgressBar) spinnerLayout.findViewById(R.id.load_more_progressbar);
-        //recyclerView.addFooterView(spinnerLayout);
-        //linearLayoutManager.addView(spinnerLayout);
-
         View view = recyclerView.getChildAt(messageList.size());
         if (view != null) {
             progressBar = view.findViewById(R.id.load_more_progressbar);
         }
 
-        //spinner = (ProgressBar) spinnerLayout.findViewById(R.id.spinner);
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
 

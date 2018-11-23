@@ -2767,7 +2767,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public Contact getSupportGroupContact(Channel channel) {
         List<ChannelUserMapper> userMapperList = ChannelService.getInstance(getContext()).getListOfUsersFromChannelUserMapper(channel.getKey());
-        Utils.printLog(getContext(), "RoleTest", "User Role : " + MobiComUserPreference.getInstance(getContext()).getUserRoleType());
 
         if (User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             Map<String, String> metadataMap = channel.getMetadata();

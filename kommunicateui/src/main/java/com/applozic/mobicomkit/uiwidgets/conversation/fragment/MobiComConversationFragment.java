@@ -2167,6 +2167,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         } else {
             messageToSend.setContentType(messageContentType);
         }
+
+        if (messageContentType == Message.ContentType.LOCATION.getValue()) {
+            messageToSend.setContentType(Message.ContentType.LOCATION.getValue());
+            messageToSend.setFilePaths(null);
+        }
         if (messageMetaData == null) {
             messageMetaData = new HashMap<>();
         }

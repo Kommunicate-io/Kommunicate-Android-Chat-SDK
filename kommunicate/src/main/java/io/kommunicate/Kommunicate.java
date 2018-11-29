@@ -34,6 +34,7 @@ import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.async.GetUserListAsyncTask;
 import io.kommunicate.async.KMFaqTask;
 import io.kommunicate.async.KMHelpDocsKeyTask;
+import io.kommunicate.async.KmUserLoginTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
@@ -60,7 +61,7 @@ public class Kommunicate {
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler) {
-        Applozic.loginUser(context, kmUser, handler);
+        new KmUserLoginTask(kmUser, false, handler, context).execute();
     }
 
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {

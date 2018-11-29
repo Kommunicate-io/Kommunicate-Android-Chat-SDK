@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,6 +16,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.lists.AlRich
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,24 +53,35 @@ public class AlRichMessage {
         LinearLayout faqReplyLayout = containerView.findViewById(R.id.alFaqReplyLayout);
         LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
         RecyclerView recyclerView = containerView.findViewById(R.id.alRichMessageContainer);
+        KmCustomLayoutManager quickRepliesRecycler = containerView.findViewById(R.id.alQuickReplyRecycler);
 
         if (model.getTemplateId() == 7) {
             listItemlayout.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
             faqLayout.setVisibility(View.GONE);
             faqReplyLayout.setVisibility(View.GONE);
+            quickRepliesRecycler.setVisibility(View.GONE);
             setupListItemView(listItemlayout, model);
         } else if (model.getTemplateId() == 8) {
             faqLayout.setVisibility(View.VISIBLE);
             faqReplyLayout.setVisibility(View.VISIBLE);
             listItemlayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
+            quickRepliesRecycler.setVisibility(View.GONE);
             setupFaqItemView(faqLayout, faqReplyLayout, model);
+        } else if (model.getTemplateId() == 3 || model.getTemplateId() == 6) {
+            listItemlayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            faqLayout.setVisibility(View.GONE);
+            faqReplyLayout.setVisibility(View.GONE);
+            quickRepliesRecycler.setVisibility(View.VISIBLE);
+            setUpGridView(quickRepliesRecycler, model);
         } else {
             listItemlayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             faqLayout.setVisibility(View.GONE);
             faqReplyLayout.setVisibility(View.GONE);
+            quickRepliesRecycler.setVisibility(View.GONE);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
             recyclerView.setLayoutManager(layoutManager);
@@ -210,6 +224,53 @@ public class AlRichMessage {
                         actionText.setVisibility(View.GONE);
                     }
                 }
+            }
+        }
+    }
+
+    private void setUpGridView(KmCustomLayoutManager flowLayout, final ALRichMessageModel model) {
+
+        final List<ALRichMessageModel.ALPayloadModel> payloadList = Arrays.asList((ALRichMessageModel.ALPayloadModel[])
+                GsonUtils.getObjectFromJson(model.getPayload(), ALRichMessageModel.ALPayloadModel[].class));
+
+        if (model.getTemplateId() == 3 || model.getTemplateId() == 6) {
+            flowLayout.removeAllViews();
+            for (final ALRichMessageModel.ALPayloadModel payloadModel : payloadList) {
+                View view = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, null);
+                TextView itemTextView = view.findViewById(R.id.singleTextItem);
+
+                if (model.getTemplateId() == 3) {
+                    if (!TextUtils.isEmpty(payloadModel.getName())) {
+                        itemTextView.setText(payloadModel.getName().trim());
+                    } else {
+                        itemTextView.setText("");
+                    }
+                } else {
+                    if (payloadModel.getTitle() != null) {
+                        itemTextView.setText(payloadModel.getTitle().trim());
+                    } else {
+                        itemTextView.setText("");
+                    }
+                }
+
+                itemTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (model.getTemplateId() == 6) {
+                            if (context.getApplicationContext() instanceof ALRichMessageListener) {
+                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, payloadModel.getMessage().trim());
+                            }
+                            listener.onAction(context, AlRichMessage.SEND_HOTEL_RATING, null, payloadModel.getMessage().trim());
+                        } else {
+                            if (context.getApplicationContext() instanceof ALRichMessageListener) {
+                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, model);
+                            }
+                            listener.onAction(context, AlRichMessage.MAKE_PAYMENT, null, model);
+                        }
+                    }
+                });
+
+                flowLayout.addView(view);
             }
         }
     }

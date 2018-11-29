@@ -1994,9 +1994,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         builder.setPositiveButton(R.string.invite, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 Intent share = new Intent(Intent.ACTION_SEND);
-               /* String textToShare = getActivity().getResources().getString(R.string.invite_message);
-                share.setAction(Intent.ACTION_SEND)
-                        .setType("text/plain").putExtra(Intent.EXTRA_TEXT, textToShare);*/
                 startActivity(Intent.createChooser(share, "Share Via"));
                 sendType.setSelection(0);
             }
@@ -2038,10 +2035,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (index != -1) {
                     recyclerView.requestFocusFromTouch();
                     linearLayoutManager.setStackFromEnd(true);
-                    //recyclerView.smoothScrollBy(0, height / 2 - itemHeight / 2);
-                    //recyclerView.getLayoutManager().smoothScrollToPosition(recyclerView, new RecyclerView.State(), index);
                     linearLayoutManager.scrollToPositionWithOffset(index, height / 2 - itemHeight / 2);
-                    //((ListView) listView).setSelectionFromTop(index + 1, height / 2 - itemHeight / 2);
                     recyclerView.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -2073,7 +2067,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void sendForwardMessage(Message messageToForward) {
-        //reset Messages Fields...
         MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(getActivity());
 
         if (channel != null) {
@@ -2817,8 +2810,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             getUserDetail(getContext(), contact.getUserId(), new KmUserDetailsCallback() {
                 @Override
                 public void hasFinished(Contact contact) {
-                    channel.setImageUrl(contact.getImageURL());
-                    channel.setName(contact.getDisplayName());
+                    if (!TextUtils.isEmpty(contact.getImageURL())) {
+                        channel.setImageUrl(contact.getImageURL());
+                    }
+                    if (!TextUtils.isEmpty(contact.getDisplayName())) {
+                        channel.setName(contact.getDisplayName());
+                    }
                     ChannelService.getInstance(getContext()).updateChannel(channel);
                     updateSupportGroupTitle(contact);
                 }
@@ -3200,7 +3197,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 Map<String, String> messageArray = (Map<String, String>) GsonUtils.getObjectFromJson(lastMessage.getMetadata().get(MobiComKitConstants.TEMPLATE_MESSAGE_LIST), Map.class);
                 templateAdapter.setMessageList(messageArray);
                 templateAdapter.notifyDataSetChanged();
-                //createMessageTemplate(Arrays.asList(messageArray));
             } else {
                 String type = getMessageType(lastMessage);
                 if ("audio".equals(type)) {
@@ -3510,8 +3506,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     if (!message.isRead() && !message.isTempDateType() && !message.isCustom()) {
                         message.setRead(Boolean.TRUE);
                         messageDatabaseService.updateMessageReadFlag(message.getMessageId(), true);
-                    } else {
-                        break;
                     }
                 }
             }

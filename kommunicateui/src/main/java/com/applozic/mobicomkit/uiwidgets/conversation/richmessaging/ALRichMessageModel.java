@@ -166,7 +166,7 @@ public class ALRichMessageModel extends JsonMarker {
         }
     }
 
-    public class ALPayloadModel extends JsonMarker {
+    public static class ALPayloadModel extends JsonMarker {
         private String title;
         private String type;
         private String url;

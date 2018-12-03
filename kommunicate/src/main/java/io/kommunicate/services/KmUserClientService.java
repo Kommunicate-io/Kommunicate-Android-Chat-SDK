@@ -57,6 +57,7 @@ public class KmUserClientService extends UserClientService {
     private static final String USER_PASSWORD_RESET = "/users/password-reset";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String CREATE_CONVERSATION_URL = "/create";
+    private static final String GET_AGENT_LIST_URL = "/users/chat/plugin/settings";
     public HttpRequestUtils httpRequestUtils;
     private static String TAG = "KmUserClientService";
 
@@ -83,6 +84,10 @@ public class KmUserClientService extends UserClientService {
 
     private String getCreateConversationUrl() {
         return getConversationUrl() + CREATE_CONVERSATION_URL;
+    }
+
+    private String getAgentListUrl() {
+        return getKmBaseUrl() + GET_AGENT_LIST_URL;
     }
 
     private String getApplicationListUrl() {
@@ -261,6 +266,19 @@ public class KmUserClientService extends UserClientService {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public String getAgentList(String appKey) throws KmException {
+        try {
+            if (TextUtils.isEmpty(appKey)) {
+                return null;
+            }
+
+            String url = getAgentListUrl() + "?appId=" + appKey;
+            return httpRequestUtils.getResponse(url, "application/json", "application/json");
+        } catch (Exception e) {
+            throw new KmException(e.getMessage());
         }
     }
 

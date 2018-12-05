@@ -91,6 +91,7 @@ import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.api.notification.MuteUserNotificationAsync;
 import com.applozic.mobicomkit.api.people.UserIntentService;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
+import com.applozic.mobicomkit.channel.database.ChannelDatabaseService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
@@ -2775,8 +2776,30 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            } else if (channel != null) {
+                if (!TextUtils.isEmpty(channel.getImageUrl())) {
+                    try {
+                        if (getContext() != null) {
+                            RequestOptions options = new RequestOptions()
+                                    .centerCrop()
+                                    .placeholder(R.drawable.applozic_ic_contact_picture_holo_light)
+                                    .error(R.drawable.applozic_ic_contact_picture_holo_light);
+
+
+                            Glide.with(getContext()).load(channel.getImageUrl()).apply(options).into(toolbarImageView);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-            toolbarTitleText.setText(contact.getDisplayName());
+
+            if (!TextUtils.isEmpty(contact.getDisplayName())) {
+                toolbarTitleText.setText(contact.getDisplayName());
+            } else if (channel != null) {
+                toolbarTitleText.setText(channel.getName());
+            }
+
             switchContactStatus(contact);
         }
     }
@@ -2797,13 +2820,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (metadataMap.containsKey("KM_CONVERSATION_TITLE")) {
                     conversationTitle = metadataMap.get("KM_CONVERSATION_TITLE");
                 }
-                for (ChannelUserMapper userMapper : userMapperList) {
-                    if (conversationTitle != null && conversationTitle.equals(userMapper.getUserKey())) {
-                        return appContactService.getContactById(conversationTitle);
-                    }
+
+                if (!TextUtils.isEmpty(conversationTitle) && ChannelDatabaseService.getInstance(getContext()).isChannelUserPresent(channel.getKey(), conversationTitle)) {
+                    return appContactService.getContactById(conversationTitle);
                 }
                 return appContactService.getContactById(conversationAssigne);
-
             }
         } else {
             for (ChannelUserMapper userMapper : userMapperList) {
@@ -2909,7 +2930,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 }
             }
 
-            if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+            if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
                 processSupportGroupDetails(channel);
             } else {
                 updateChannelTitle();

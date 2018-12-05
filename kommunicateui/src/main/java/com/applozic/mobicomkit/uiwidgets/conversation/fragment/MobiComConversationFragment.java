@@ -168,6 +168,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -670,8 +671,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 } catch (Exception e) {
 
                 }
-                //sendButton.setVisibility((s == null || s.toString().trim().length() == 0) && TextUtils.isEmpty(filePath) ? View.GONE : View.VISIBLE);
-                //attachButton.setVisibility(s == null || s.toString().trim().length() == 0 ? View.VISIBLE : View.GONE);
+                //sendButton.setVisibility((s == null || s.toString().trim().length() == 0) && TextUtils.isEmpty(filePath) ? View.View.GONE : View.VISIBLE);
+                //attachButton.setVisibility(s == null || s.toString().trim().length() == 0 ? View.VISIBLE : View.View.GONE);
             }
         });
 
@@ -1622,7 +1623,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     }
 
-
     protected void processUpdateLastSeenStatus(final Contact withUserContact) {
         if (withUserContact == null) {
             return;
@@ -1671,6 +1671,24 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
 
         });
+    }
+
+    public String getLastSeenAtTime(long timeStamp) {
+        Date date = new Date(timeStamp);
+        Date newDate = new Date();
+        long currentTime = newDate.getTime() - date.getTime();
+
+        if (getContext() != null) {
+            if (TimeUnit.MILLISECONDS.toMinutes(currentTime) <= 59) {
+                return getContext().getResources().getQuantityString(R.plurals.MINUTES_AGO, (int) TimeUnit.MILLISECONDS.toMinutes(currentTime), TimeUnit.MILLISECONDS.toMinutes(currentTime));
+            } else if (TimeUnit.MILLISECONDS.toHours(currentTime) <= 48) {
+                return getContext().getResources().getQuantityString(R.plurals.HOURS_AGO, (int) TimeUnit.MILLISECONDS.toHours(currentTime), TimeUnit.MILLISECONDS.toHours(currentTime));
+            } else {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yyyy");
+                return "on " + simpleDateFormat.format(date);
+            }
+        }
+        return "";
     }
 
     public void updateChannelSubTitle() {
@@ -2825,10 +2843,29 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void switchContactStatus(Contact contact) {
         if (toolbarSubtitleText != null) {
+            if (User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
+                toolbarSubtitleText.setText(R.string.online);
+                if (toolbarOnlineTv != null && toolbarOfflineTv != null) {
+                    toolbarOnlineTv.setVisibility(VISIBLE);
+                    toolbarOfflineTv.setVisibility(View.GONE);
+                }
+                return;
+            }
             if (contact.isConnected()) {
                 toolbarSubtitleText.setText(R.string.online);
             } else {
-                toolbarSubtitleText.setText(R.string.offline);
+                if (User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
+                    if (contact.getLastSeenAt() > 0) {
+                        if (getActivity() != null) {
+                            toolbarSubtitleText.setVisibility(VISIBLE);
+                            toolbarSubtitleText.setText(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + getLastSeenAtTime(contact.getLastSeenAt()));
+                        }
+                    } else {
+                        toolbarSubtitleText.setVisibility(View.GONE);
+                    }
+                } else {
+                    toolbarSubtitleText.setText(R.string.offline);
+                }
             }
         }
 

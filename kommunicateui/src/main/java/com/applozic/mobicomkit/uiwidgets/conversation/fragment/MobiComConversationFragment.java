@@ -2805,28 +2805,27 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public Contact getSupportGroupContact(Channel channel) {
-        List<ChannelUserMapper> userMapperList = ChannelService.getInstance(getContext()).getListOfUsersFromChannelUserMapper(channel.getKey());
-
         if (User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             Map<String, String> metadataMap = channel.getMetadata();
             if (metadataMap != null) {
-                String conversationAssigne = null;
+                String conversationAssignee = null;
                 String conversationTitle = null;
 
-                if (metadataMap.containsKey("CONVERSATION_ASSIGNEE")) {
-                    conversationAssigne = metadataMap.get("CONVERSATION_ASSIGNEE");
+                if (metadataMap.containsKey(KommunicateUI.CONVERSATION_ASSIGNEE)) {
+                    conversationAssignee = metadataMap.get(KommunicateUI.CONVERSATION_ASSIGNEE);
                 }
 
-                if (metadataMap.containsKey("KM_CONVERSATION_TITLE")) {
-                    conversationTitle = metadataMap.get("KM_CONVERSATION_TITLE");
+                if (metadataMap.containsKey(KommunicateUI.KM_CONVERSATION_TITLE)) {
+                    conversationTitle = metadataMap.get(KommunicateUI.KM_CONVERSATION_TITLE);
                 }
 
                 if (!TextUtils.isEmpty(conversationTitle) && ChannelDatabaseService.getInstance(getContext()).isChannelUserPresent(channel.getKey(), conversationTitle)) {
                     return appContactService.getContactById(conversationTitle);
                 }
-                return appContactService.getContactById(conversationAssigne);
+                return appContactService.getContactById(conversationAssignee);
             }
         } else {
+            List<ChannelUserMapper> userMapperList = ChannelService.getInstance(getContext()).getListOfUsersFromChannelUserMapper(channel.getKey());
             for (ChannelUserMapper userMapper : userMapperList) {
                 Contact tempContact = appContactService.getContactById(userMapper.getUserKey());
                 if (User.RoleType.USER_ROLE.getValue().equals(tempContact.getRoleType())) {

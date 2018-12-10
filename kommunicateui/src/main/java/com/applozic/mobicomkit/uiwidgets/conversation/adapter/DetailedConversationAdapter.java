@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
@@ -900,7 +901,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 myHolder.mapImageView.setVisibility(View.GONE);
                                 myHolder.attachedFile.setVisibility(View.GONE);
                                 myHolder.preview.setVisibility(View.VISIBLE);
-                                myHolder.messageTextView.setText(message.getMessage());
+                                setMessageText(myHolder.messageTextView, message);
                                 loadImage.setImageFadeIn(false);
                                 loadImage.loadImage(message.getFileMetas().getBlobKeyString(), myHolder.preview);
                                 myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
@@ -933,7 +934,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.preview.setImageResource(R.drawable.applozic_video_default_thumbnail);
                         } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
                             myHolder.mapImageView.setVisibility(View.GONE);
-                            myHolder.messageTextView.setText(message.getMessage());
+                            setMessageText(myHolder.messageTextView, message);
                         } else {
                             myHolder.mapImageView.setVisibility(View.GONE);
                             myHolder.chatLocation.setVisibility(View.GONE);
@@ -970,10 +971,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     myHolder.messageTextLayout.setVisibility(View.VISIBLE);
 
-                    if (message.getMetadata() != null && "300".equals(message.getMetadata().get("contentType"))) {
+                    if (isEmailTypeMessage(message) || (message.getMetadata() != null && "300".equals(message.getMetadata().get("contentType")))) {
                         myHolder.richMessageLayout.setVisibility(View.VISIBLE);
 
-                        if (!TextUtils.isEmpty(message.getMessage())) {
+                        if (!TextUtils.isEmpty(message.getMessage()) && !isEmailTypeMessage(message)) {
                             myHolder.messageTextLayout.setVisibility(View.VISIBLE);
                         } else {
                             myHolder.messageTextLayout.setVisibility(GONE);
@@ -1203,6 +1204,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             }
 
         });
+    }
+
+    public void setMessageText(TextView messageTextView, Message message) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            messageTextView.setText(Html.fromHtml(message.getMessage(), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            messageTextView.setText(Html.fromHtml(message.getMessage()));
+        }
+
     }
 
     private void showPreview(Message message, ImageView preview, LinearLayout attachmentDownloadLayout) {
@@ -1596,6 +1606,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             durationTextView = (TextView) itemView.findViewById(R.id.applozic_call_duration);
             imageView = (ImageView) itemView.findViewById(R.id.applozic_call_image_type);
         }
+    }
+
+    public static boolean isEmailTypeMessage(Message message) {
+        return Message.ContentType.TEXT_HTML.getValue().equals(message.getContentType()) && message.getSource() == 7;
     }
 }
 

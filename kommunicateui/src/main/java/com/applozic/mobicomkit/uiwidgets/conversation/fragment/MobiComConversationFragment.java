@@ -100,6 +100,7 @@ import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioRecordManager;
@@ -301,6 +302,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     TextView toolbarSubtitleText;
     TextView toolbarOnlineTv;
     TextView toolbarOfflineTv;
+    TextView toolbarAlphabeticImage;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -376,6 +378,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             toolbarTitleText = customToolbarLayout.findViewById(R.id.toolbar_title);
             toolbarOnlineTv = customToolbarLayout.findViewById(R.id.onlineTextView);
             toolbarOfflineTv = customToolbarLayout.findViewById(R.id.offlineTextView);
+            toolbarAlphabeticImage = customToolbarLayout.findViewById(R.id.toolbarAlphabeticImage);
         }
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
@@ -1674,24 +1677,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-    public String getLastSeenAtTime(long timeStamp) {
-        Date date = new Date(timeStamp);
-        Date newDate = new Date();
-        long currentTime = newDate.getTime() - date.getTime();
-
-        if (getContext() != null) {
-            if (TimeUnit.MILLISECONDS.toMinutes(currentTime) <= 59) {
-                return getContext().getResources().getQuantityString(R.plurals.MINUTES_AGO, (int) TimeUnit.MILLISECONDS.toMinutes(currentTime), TimeUnit.MILLISECONDS.toMinutes(currentTime));
-            } else if (TimeUnit.MILLISECONDS.toHours(currentTime) <= 48) {
-                return getContext().getResources().getQuantityString(R.plurals.HOURS_AGO, (int) TimeUnit.MILLISECONDS.toHours(currentTime), TimeUnit.MILLISECONDS.toHours(currentTime));
-            } else {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yyyy");
-                return "on " + simpleDateFormat.format(date);
-            }
-        }
-        return "";
-    }
-
     public void updateChannelSubTitle() {
         channelUserMapperList = ChannelService.getInstance(getActivity()).getListOfUsersFromChannelUserMapper(channel.getKey());
         if (channelUserMapperList != null && channelUserMapperList.size() > 0) {
@@ -2763,6 +2748,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void updateSupportGroupTitle(Contact contact) {
         if (contact != null) {
             if (!TextUtils.isEmpty(contact.getImageURL())) {
+                toolbarAlphabeticImage.setVisibility(View.GONE);
+                toolbarImageView.setVisibility(VISIBLE);
                 try {
                     if (getContext() != null) {
                         RequestOptions options = new RequestOptions()
@@ -2776,21 +2763,25 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (channel != null) {
-                if (!TextUtils.isEmpty(channel.getImageUrl())) {
-                    try {
-                        if (getContext() != null) {
-                            RequestOptions options = new RequestOptions()
-                                    .centerCrop()
-                                    .placeholder(R.drawable.applozic_ic_contact_picture_holo_light)
-                                    .error(R.drawable.applozic_ic_contact_picture_holo_light);
+            } else {
+                toolbarAlphabeticImage.setVisibility(VISIBLE);
+                toolbarImageView.setVisibility(View.GONE);
 
+                String contactNumber = "";
+                char firstLetter = 0;
+                contactNumber = contact.getDisplayName().toUpperCase();
+                firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
 
-                            Glide.with(getContext()).load(channel.getImageUrl()).apply(options).into(toolbarImageView);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                if (firstLetter != '+') {
+                    toolbarAlphabeticImage.setText(String.valueOf(firstLetter));
+                } else if (contactNumber.length() >= 2) {
+                    toolbarAlphabeticImage.setText(String.valueOf(contactNumber.charAt(1)));
+                }
+
+                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+                GradientDrawable bgShape = (GradientDrawable) toolbarAlphabeticImage.getBackground();
+                if (getContext() != null) {
+                    bgShape.setColor(getContext().getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
                 }
             }
 
@@ -2878,7 +2869,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     if (contact.getLastSeenAt() > 0) {
                         if (getActivity() != null) {
                             toolbarSubtitleText.setVisibility(VISIBLE);
-                            toolbarSubtitleText.setText(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + getLastSeenAtTime(contact.getLastSeenAt()));
+                            toolbarSubtitleText.setText(getActivity().getString(R.string.subtitle_last_seen_at_time) + " " + DateUtils.getDateAndTimeForLastSeen(getContext(), contact.getLastSeenAt(), R.string.JUST_NOW, R.plurals.MINUTES_AGO, R.plurals.HOURS_AGO, R.string.YESTERDAY));
                         }
                     } else {
                         toolbarSubtitleText.setVisibility(View.GONE);

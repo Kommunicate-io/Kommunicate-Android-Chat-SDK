@@ -8,21 +8,38 @@
     android:background="?attr/selectableItemBackgroundBorderless"
     android:visibility="visible">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/conversation_contact_photo"
-        android:layout_width="35.0dip"
-        android:layout_height="35.0dip"
+    <FrameLayout
+        android:id="@+id/profile_image_layout"
+        android:layout_width="wrap_content"
         android:layout_centerVertical="true"
-        android:src="@drawable/applozic_ic_contact_picture_holo_light"
-        android:visibility="visible" />
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/conversation_contact_photo"
+            android:layout_width="35.0dip"
+            android:layout_height="35.0dip"
+            android:src="@drawable/applozic_ic_contact_picture_holo_light"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/toolbarAlphabeticImage"
+            android:layout_width="35.0dip"
+            android:layout_height="35.0dip"
+            android:background="@drawable/mobiframework_circular_text_view"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:visibility="visible" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/onlineTextView"
         android:layout_width="8dp"
         android:layout_height="8dp"
-        android:layout_alignEnd="@+id/conversation_contact_photo"
-        android:layout_alignRight="@+id/conversation_contact_photo"
-        android:layout_alignBottom="@+id/conversation_contact_photo"
+        android:layout_alignEnd="@+id/profile_image_layout"
+        android:layout_alignRight="@+id/profile_image_layout"
+        android:layout_alignBottom="@+id/profile_image_layout"
         android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
@@ -36,9 +53,9 @@
         android:id="@+id/offlineTextView"
         android:layout_width="9dp"
         android:layout_height="9dp"
-        android:layout_alignEnd="@+id/conversation_contact_photo"
-        android:layout_alignRight="@+id/conversation_contact_photo"
-        android:layout_alignBottom="@+id/conversation_contact_photo"
+        android:layout_alignEnd="@+id/profile_image_layout"
+        android:layout_alignRight="@+id/profile_image_layout"
+        android:layout_alignBottom="@+id/profile_image_layout"
         android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
@@ -54,8 +71,8 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="9dp"
         android:layout_marginLeft="9dp"
-        android:layout_toEndOf="@+id/conversation_contact_photo"
-        android:layout_toRightOf="@+id/conversation_contact_photo"
+        android:layout_toEndOf="@+id/profile_image_layout"
+        android:layout_toRightOf="@+id/profile_image_layout"
         android:gravity="center_vertical"
         android:orientation="vertical">
 

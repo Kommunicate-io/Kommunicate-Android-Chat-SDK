@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -504,7 +503,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             if (payload.getActions() != null && !payload.getActions().isEmpty()) {
                 try {
                     List<ALRichMessageModel.AlActionModel> actionsList = payload.getActions();
-                    //final List<ALRichMessageModel.AlActionModel> actionsList = Arrays.asList((ALRichMessageModel.AlActionModel[]) GsonUtils.getObjectFromJson(payload.getActions(), ALRichMessageModel.AlActionModel[].class));
                     for (int i = 0; i < actionsList.size(); i++) {
                         if (i == 0) {
                             viewHolder.bookAction1.setVisibility(View.VISIBLE);
@@ -531,7 +529,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                     e.printStackTrace();
                 }
             }
-
         }
     }
 

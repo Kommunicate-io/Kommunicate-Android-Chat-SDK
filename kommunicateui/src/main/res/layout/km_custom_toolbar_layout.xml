@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/custom_toolbar_root_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="?actionBarSize"
+    android:layout_marginEnd="70dp"
+    android:layout_marginRight="70dp"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:visibility="visible">
+
+    <FrameLayout
+        android:id="@+id/profile_image_layout"
+        android:layout_width="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/conversation_contact_photo"
+            android:layout_width="35.0dip"
+            android:layout_height="35.0dip"
+            android:src="@drawable/applozic_ic_contact_picture_holo_light"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/toolbarAlphabeticImage"
+            android:layout_width="35.0dip"
+            android:layout_height="35.0dip"
+            android:background="@drawable/mobiframework_circular_text_view"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:visibility="visible" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/onlineTextView"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_alignEnd="@+id/profile_image_layout"
+        android:layout_alignRight="@+id/profile_image_layout"
+        android:layout_alignBottom="@+id/profile_image_layout"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/toolbar_online_circle"
+        android:textColor="#05bf50"
+        android:textSize="7sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/offlineTextView"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
+        android:layout_alignEnd="@+id/profile_image_layout"
+        android:layout_alignRight="@+id/profile_image_layout"
+        android:layout_alignBottom="@+id/profile_image_layout"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/toolbar_offline_circle"
+        android:textColor="#949896"
+        android:textSize="7sp"
+        android:textStyle="bold"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginLeft="9dp"
+        android:layout_toEndOf="@+id/profile_image_layout"
+        android:layout_toRightOf="@+id/profile_image_layout"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="12sp"
+            android:maxLines="1"
+            android:text="Title"
+            android:textColor="#f7ffffff"
+            android:textSize="16sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/toolbar_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-light"
+            android:lineSpacingExtra="16sp"
+            android:maxLines="1"
+            android:text="Subtitle"
+            android:textColor="#f1ffffff"
+            android:textSize="12sp"
+            android:textStyle="normal" />
+    </LinearLayout>
+</RelativeLayout>

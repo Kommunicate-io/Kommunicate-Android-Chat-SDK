@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
@@ -139,6 +140,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private ContextMenuClickListener contextMenuClickListener;
     private ALRichMessageListener listener;
     private KmStoragePermissionListener storagePermissionListener;
+    private String geoApiKey;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -179,6 +181,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this.imageCache = ImageCache.getInstance(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         this.senderContact = contactService.getContactById(MobiComUserPreference.getInstance(context).getUserId());
         this.messageList = messageList;
+        geoApiKey = Utils.getMetaDataValue(context.getApplicationContext(), ConversationActivity.GOOGLE_API_KEY_META_DATA);
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
             protected Bitmap processBitmap(Object data) {
@@ -478,7 +481,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
                                 myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_location_on_white_24dp);
                                 loadImage.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
-                                loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage()), myHolder.imageViewPhoto);
+                                loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage(), geoApiKey), myHolder.imageViewPhoto);
                             } else {
                                 myHolder.imageViewForAttachmentType.setVisibility(View.GONE);
                                 myHolder.imageViewRLayout.setVisibility(View.GONE);
@@ -900,7 +903,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 myHolder.mapImageView.setVisibility(View.GONE);
                                 myHolder.attachedFile.setVisibility(View.GONE);
                                 myHolder.preview.setVisibility(View.VISIBLE);
-                                myHolder.messageTextView.setText(message.getMessage());
+                                setMessageText(myHolder.messageTextView, message);
                                 loadImage.setImageFadeIn(false);
                                 loadImage.loadImage(message.getFileMetas().getBlobKeyString(), myHolder.preview);
                                 myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
@@ -912,7 +915,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             loadImage.setImageFadeIn(false);
                             myHolder.mapImageView.setVisibility(View.VISIBLE);
                             loadImage.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
-                            loadImage.loadImage(LocationUtils.loadStaticMap(message.getMessage()), myHolder.mapImageView);
+                            loadImage.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), myHolder.mapImageView);
                             myHolder.messageTextView.setVisibility(View.GONE);
                             myHolder.preview.setVisibility(View.GONE);
 
@@ -933,7 +936,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.preview.setImageResource(R.drawable.applozic_video_default_thumbnail);
                         } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
                             myHolder.mapImageView.setVisibility(View.GONE);
-                            myHolder.messageTextView.setText(message.getMessage());
+                            setMessageText(myHolder.messageTextView, message);
                         } else {
                             myHolder.mapImageView.setVisibility(View.GONE);
                             myHolder.chatLocation.setVisibility(View.GONE);
@@ -1203,6 +1206,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             }
 
         });
+    }
+
+    public void setMessageText(TextView messageTextView, Message message) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            messageTextView.setText(Html.fromHtml(message.getMessage(), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            messageTextView.setText(Html.fromHtml(message.getMessage()));
+        }
     }
 
     private void showPreview(Message message, ImageView preview, LinearLayout attachmentDownloadLayout) {

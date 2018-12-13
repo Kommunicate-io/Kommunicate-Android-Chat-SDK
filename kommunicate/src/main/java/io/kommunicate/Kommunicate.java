@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
@@ -34,6 +35,8 @@ import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.async.GetUserListAsyncTask;
 import io.kommunicate.async.KMFaqTask;
 import io.kommunicate.async.KMHelpDocsKeyTask;
+import io.kommunicate.async.KmGetAgentListTask;
+import io.kommunicate.async.KmUserLoginTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
@@ -42,6 +45,7 @@ import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
+import io.kommunicate.models.KmAgentModel;
 import io.kommunicate.users.KMUser;
 
 /**
@@ -60,7 +64,7 @@ public class Kommunicate {
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler) {
-        Applozic.loginUser(context, kmUser, handler);
+        new KmUserLoginTask(kmUser, false, handler, context).execute();
     }
 
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {
@@ -103,7 +107,7 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
-    public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, boolean isUnique, final List<String> agents, final List<String> bots, final KmCallback callback) {
+    public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, final boolean isUnique, final List<String> agents, final List<String> bots, final KmCallback callback) {
         if (callback == null) {
             return;
         }
@@ -140,7 +144,11 @@ public class Kommunicate {
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                     try {
-                        startOrGetConversation(context, groupName, agents, bots, startChatHandler);
+                        if (isUnique) {
+                            startOrGetConversation(context, groupName, agents, bots, startChatHandler);
+                        } else {
+                            startNewConversation(context, groupName, agents, bots, false, startChatHandler);
+                        }
                     } catch (KmException e) {
                         e.printStackTrace();
                         callback.onFailure(e);
@@ -195,7 +203,36 @@ public class Kommunicate {
         startNewConversation(context, groupName, agentIds, botIds, isUniqueChat, handler);
     }
 
-    public static void startNewConversation(Context context, String groupName, List<String> agentIds, List<String> botIds, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
+    public static void startNewConversation(final Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final boolean isUniqueChat, final KMStartChatHandler handler) throws KmException {
+        if (agentIds == null || agentIds.isEmpty()) {
+            KmCallback callback = new KmCallback() {
+                @Override
+                public void onSuccess(Object message) {
+                    KmAgentModel.KmResponse agent = (KmAgentModel.KmResponse) message;
+                    if (agent != null) {
+                        List<String> agents = new ArrayList<>();
+                        agents.add(agent.getAgentId());
+                        try {
+                            createConversation(context, groupName, agents, botIds, isUniqueChat, handler);
+                        } catch (KmException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Object error) {
+
+                }
+            };
+
+            new KmGetAgentListTask(context, MobiComKitClientService.getApplicationKey(context), callback).execute();
+        } else {
+            createConversation(context, groupName, agentIds, botIds, isUniqueChat, handler);
+        }
+    }
+
+    private static void createConversation(Context context, String groupName, List<String> agentIds, List<String> botIds, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
         List<KMGroupInfo.GroupUser> users = new ArrayList<>();
 
         KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(groupName) ? "Kommunicate Support" : groupName, new ArrayList<String>());

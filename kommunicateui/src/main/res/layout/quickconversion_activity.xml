@@ -12,9 +12,15 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:subtitleTextAppearance="@style/ToolbarSubtitle"
-        app:titleTextAppearance="@style/ToolbarTitle" />
+        app:titleTextAppearance="@style/ToolbarTitle">
+
+        <include layout="@layout/km_custom_toolbar_layout" />
+    </android.support.v7.widget.Toolbar>
 
     <include layout="@layout/km_service_disconnection_layout" />
 
@@ -32,5 +38,4 @@
         android:layout_gravity="top"
         android:orientation="vertical"
         android:visibility="gone" />
-
 </LinearLayout>

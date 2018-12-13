@@ -2,8 +2,12 @@ package io.kommunicate.async;
 
 import android.content.Context;
 
+import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.account.user.UserLoginTask;
+import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
@@ -24,22 +28,30 @@ public class KmUserLoginTask extends UserLoginTask {
     private RegistrationResponse response;
     private KmUserClientService userClientService;
     private KmUserService userService;
+    private boolean isAgent;
 
 
-    public KmUserLoginTask(KMUser user, AlLoginHandler listener, Context context) {
+    public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context) {
         super(user, listener, context);
         this.user = user;
         this.context = new WeakReference<Context>(context);
         handler = listener;
         userClientService = new KmUserClientService(this.context.get());
         userService = new KmUserService(this.context.get());
+        this.isAgent = isAgent;
     }
 
     @Override
     protected Boolean doInBackground(Void... params) {
         try {
-            userClientService.clearDataAndPreference();
-            response = userClientService.loginKmUser(user);
+            if (isAgent) {
+                userClientService.clearDataAndPreference();
+                response = userClientService.loginKmUser(user);
+            } else {
+                new UserClientService(context.get()).clearDataAndPreference();
+                response = new RegisterUserClientService(context.get()).createAccount(user);
+                UserService.getInstance(context.get()).processPackageDetail();
+            }
         } catch (Exception e) {
             e.printStackTrace();
             this.e = e;
@@ -51,6 +63,7 @@ public class KmUserLoginTask extends UserLoginTask {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result && handler != null) {
+            MobiComUserPreference.getInstance(context.get()).setUserRoleType(response.getRoleType());
             handler.onSuccess(response, context.get());
         } else if (handler != null && e != null) {
             handler.onFailure(response, e);

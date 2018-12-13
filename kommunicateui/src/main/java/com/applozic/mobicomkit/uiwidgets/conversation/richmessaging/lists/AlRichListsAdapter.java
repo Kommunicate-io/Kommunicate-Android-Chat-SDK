@@ -68,7 +68,7 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return elementList.size();
+        return elementList != null ? elementList.size() : 0;
     }
 
     private class AlListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

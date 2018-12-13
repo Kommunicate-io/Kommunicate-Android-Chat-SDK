@@ -120,6 +120,10 @@ public class KmUserService {
         return userClientService.getDashboardFaq(appKey, articleId);
     }
 
+    public synchronized String getAgentList(String appKey) throws Exception {
+        return userClientService.getAgentList(appKey);
+    }
+
     public synchronized KmContact processUser(UserDetail userDetail) {
         KmContact contact = new KmContact();
         contact.setUserId(userDetail.getUserId());

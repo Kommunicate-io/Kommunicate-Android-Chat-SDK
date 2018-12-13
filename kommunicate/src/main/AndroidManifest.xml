@@ -170,7 +170,11 @@
                 android:resource="@xml/searchable_contacts" />
         </activity>
 
-        <activity android:name="com.applozic.mobicomkit.uiwidgets.LeadCollectionActivity"/>
+        <activity
+            android:name="io.kommunicate.activities.LeadCollectionActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/ApplozicTheme"
+            tools:node="merge" />
 
         <activity
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity"

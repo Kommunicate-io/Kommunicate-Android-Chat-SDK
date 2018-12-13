@@ -41,6 +41,7 @@ import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -66,6 +67,7 @@ public class MessageInfoFragment extends Fragment {
     private ImageLoader locationImageLoader;
     private RecyclerView readListView;
     private RecyclerView deliveredListView;
+    private String geoApiKey;
 
     public MessageInfoFragment() {
     }
@@ -74,6 +76,7 @@ public class MessageInfoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        geoApiKey = Utils.getMetaDataValue(getContext().getApplicationContext(), ConversationActivity.GOOGLE_API_KEY_META_DATA);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,7 +135,7 @@ public class MessageInfoFragment extends Fragment {
             chatLocation.setVisibility(View.VISIBLE);
             locationImageLoader.setImageFadeIn(false);
             locationImageLoader.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
-            locationImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage()), locationImageView);
+            locationImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), locationImageView);
             textView.setVisibility(View.GONE);
         } else {
             chatLocation.setVisibility(View.GONE);
@@ -394,7 +397,7 @@ public class MessageInfoFragment extends Fragment {
                 holder.circleImageView.setImageResource(drawableResourceId);
                 holder.alphabeticImage.setVisibility(View.GONE);
                 holder.circleImageView.setVisibility(View.VISIBLE);
-            } else if(!TextUtils.isEmpty(contact.getImageURL())){
+            } else if (!TextUtils.isEmpty(contact.getImageURL())) {
                 holder.alphabeticImage.setVisibility(View.GONE);
                 holder.circleImageView.setVisibility(View.VISIBLE);
                 Glide.with(getContext()).load(contact.getImageURL()).into(holder.circleImageView);

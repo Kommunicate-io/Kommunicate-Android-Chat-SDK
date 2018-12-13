@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/messageTextLayout"
-    android:layout_marginTop="5dp"
     android:orientation="vertical"
     android:visibility="gone">
 
@@ -15,6 +14,14 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginBottom="15dp" />
+
+    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmCustomLayoutManager
+        android:id="@+id/alQuickReplyRecycler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
         android:layout_marginBottom="15dp" />
 
     <include layout="@layout/al_faq_layout" />
@@ -78,10 +85,10 @@
             android:drawableStart="@drawable/quetion_help"
             android:drawableLeft="@drawable/quetion_help"
             android:drawablePadding="4dp"
+            android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:letterSpacing="0.07"
             android:maxLines="1"
-            android:ellipsize="end"
             android:text=""
             android:textColor="@color/km_list_item_action_color"
             android:textSize="15sp"

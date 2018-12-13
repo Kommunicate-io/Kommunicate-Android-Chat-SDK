@@ -170,8 +170,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
-import java.util.concurrent.TimeUnit;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.view.View.VISIBLE;
@@ -303,6 +301,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     TextView toolbarOnlineTv;
     TextView toolbarOfflineTv;
     TextView toolbarAlphabeticImage;
+    private String geoApiKey;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -316,6 +315,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String jsonString = FileUtils.loadSettingsJsonFile(getActivity().getApplicationContext());
+        geoApiKey = Utils.getMetaDataValue(getContext().getApplicationContext(), ConversationActivity.GOOGLE_API_KEY_META_DATA);
         if (!TextUtils.isEmpty(jsonString)) {
             alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
         } else {
@@ -3772,7 +3772,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_location_on_white_24dp);
                         imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(getActivity(), R.color.apploizc_lite_gray_color));
                         messageImageLoader.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
-                        messageImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage()), galleryImageView);
+                        messageImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), galleryImageView);
                     } else {
                         imageViewForAttachmentType.setVisibility(View.GONE);
                         imageViewRLayout.setVisibility(View.GONE);

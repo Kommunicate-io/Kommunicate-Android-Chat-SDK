@@ -170,6 +170,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.view.View.VISIBLE;
@@ -302,6 +303,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     TextView toolbarOfflineTv;
     TextView toolbarAlphabeticImage;
     private String geoApiKey;
+    private FrameLayout emailReplyReminderLayout;
+    public static final String KM_CONVERSATION_SUBJECT = "KM_CONVERSATION_SUBJECT";
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -393,6 +396,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         cameraButton = list.findViewById(R.id.camera_btn);
         locationButton = list.findViewById(R.id.location_btn);
         fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
+        emailReplyReminderLayout = list.findViewById(R.id.emailReplyReminderView);
         processAttachmentIconsClick();
         Configuration config = getResources().getConfiguration();
         recordButtonWeakReference = new WeakReference<ImageButton>(recordButton);
@@ -2732,6 +2736,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 ChannelService.isUpdateTitle = false;
             }
         }
+
+        if (isEmailConversation(channel)) {
+            emailReplyReminderLayout.setVisibility(VISIBLE);
+        }
     }
 
     private void hideSendMessageLayout(boolean hide) {
@@ -4042,5 +4050,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public interface KmUserDetailsCallback {
         void hasFinished(Contact contact);
+    }
+
+    public static boolean isEmailConversation(Channel channel) {
+        return channel != null && channel.getMetadata() != null && channel.getMetadata().containsKey(KM_CONVERSATION_SUBJECT);
     }
 }

@@ -56,6 +56,21 @@
         android:paddingTop="6dp"
         android:paddingRight="6dp">
 
+        <TextView
+            android:id="@+id/via_email_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:drawableStart="@drawable/forward"
+            android:drawableLeft="@drawable/forward"
+            android:drawablePadding="7dp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.04"
+            android:text="@string/via_email_text"
+            android:textColor="@color/km_via_email_text_color"
+            android:textSize="13sp"
+            android:textStyle="italic" />
+
         <LinearLayout
             android:id="@+id/nameTextLayout"
             android:layout_width="wrap_content"
@@ -121,6 +136,18 @@
                 android:textColor="#646262"
                 android:textDirection="locale"
                 android:textSize="14sp" />
+
+            <FrameLayout
+                android:id="@+id/emailLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <WebView
+                    android:id="@+id/emailWebView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
         </LinearLayout>
 
         <TextView

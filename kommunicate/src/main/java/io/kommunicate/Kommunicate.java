@@ -13,6 +13,7 @@ import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
+import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
 import io.kommunicate.activities.LeadCollectionActivity;
@@ -73,6 +74,14 @@ public class Kommunicate {
 
     public static void logout(Context context, KMLogoutHandler logoutHandler) {
         Applozic.logoutUser(context, logoutHandler);
+    }
+
+    public static void setDeviceToken(Context context, String deviceToken) {
+        Applozic.getInstance(context).setDeviceRegistrationId(deviceToken);
+    }
+
+    public static String getDeviceToken(Context context) {
+        return Applozic.getInstance(context).getDeviceRegistrationId();
     }
 
     public static void openConversation(Context context) {
@@ -139,7 +148,6 @@ public class Kommunicate {
                 callback.onFailure(e);
             }
         } else {
-
             final KMLoginHandler loginHandler = new KMLoginHandler() {
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse, Context context) {
@@ -333,7 +341,15 @@ public class Kommunicate {
     }
 
     public static void registerForPushNotification(Context context, KmPushNotificationHandler listener) {
-        registerForPushNotification(context, Applozic.getInstance(context).getDeviceRegistrationId(), listener);
+        registerForPushNotification(context, Kommunicate.getDeviceToken(context), listener);
+    }
+
+    public static boolean isKmNotification(Context context, Map<String, String> data) {
+        if (MobiComPushReceiver.isMobiComPushNotification(data)) {
+            MobiComPushReceiver.processMessageAsync(context, data);
+            return true;
+        }
+        return false;
     }
 
     public static void startOrGetConversation(Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final KMStartChatHandler handler) throws KmException {
@@ -361,7 +377,7 @@ public class Kommunicate {
         new AlGroupInformationAsyncTask(context, clientGroupId, groupMemberListener).execute();
     }
 
-    public static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
+    private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
 
         if (agentIds == null || agentIds.isEmpty()) {
             throw new KmException("Please add at-least one Agent");

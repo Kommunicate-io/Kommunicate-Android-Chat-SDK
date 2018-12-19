@@ -158,7 +158,7 @@ public class KmChatBuilder {
         return this;
     }
 
-    public void launchChat(KmCallback callback) throws KmException {
+    public void launchChat(KmCallback callback) {
         KmConversationHelper.launchChat(this, callback);
     }
 }

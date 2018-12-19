@@ -76,9 +76,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
     public ImageLoader contactImageLoader, channelImageLoader;
     public String searchString = null;
-    TextView messageTextView;
-    ImageView attachmentIcon;
-    TextView alphabeticTextView;
     CircleImageView contactImage;
     private Context context;
     private MessageDatabaseService messageDatabaseService;
@@ -185,7 +182,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                         }
                     } else {
-                        if (channel != null && Short.valueOf("10").equals(channel.getType())) {
+                        if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
                             channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
                             myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
                         } else {
@@ -200,12 +197,18 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                         if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
                             channelImageLoader.loadImage(channel, myholder.contactImage);
+                            myholder.alphabeticTextView.setVisibility(View.GONE);
+                            myholder.contactImage.setVisibility(View.VISIBLE);
                         } else if (channel != null && channel.isBroadcastMessage()) {
                             myholder.contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
-                        } else if (channel != null && Short.valueOf("10").equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                            myholder.alphabeticTextView.setVisibility(View.GONE);
+                            contactImage.setVisibility(View.VISIBLE);
+                        } else if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                            loadAlphabeticImage(channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
                         } else {
                             channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+                            myholder.alphabeticTextView.setVisibility(View.GONE);
+                            myholder.contactImage.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -419,6 +422,22 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             offlineTv.setVisibility(contact != null && contact.isOnline() ? View.GONE : View.VISIBLE);
         } catch (Exception e) {
 
+        }
+    }
+
+    private void loadAlphabeticImage(String name, TextView alphabeticTextView, CircleImageView contactImage) {
+        if (!TextUtils.isEmpty(name)) {
+            char firstLetter = 0;
+            firstLetter = name.toUpperCase().charAt(0);
+
+            alphabeticTextView.setText(String.valueOf(firstLetter));
+
+            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+            GradientDrawable bgShape = (GradientDrawable) alphabeticTextView.getBackground();
+            bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+
+            alphabeticTextView.setVisibility(View.VISIBLE);
+            contactImage.setVisibility(View.GONE);
         }
     }
 

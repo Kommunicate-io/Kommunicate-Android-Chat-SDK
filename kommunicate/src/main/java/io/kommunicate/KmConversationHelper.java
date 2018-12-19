@@ -79,13 +79,19 @@ public class KmConversationHelper {
         context.startActivity(intent);
     }
 
-    public static void launchChat(final KmChatBuilder launchChat, final KmCallback callback) throws KmException {
+    public static void launchChat(final KmChatBuilder launchChat, final KmCallback callback) {
         if (launchChat == null) {
-            throw new KmException("Chat Builder cannot be null");
+            if (callback != null) {
+                callback.onFailure("Chat Builder cannot be null");
+            }
+            return;
         }
 
         if (launchChat.getContext() == null) {
-            throw new KmException("Context cannot be null");
+            if (callback != null) {
+                callback.onFailure("Context cannot be null");
+            }
+            return;
         }
 
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
@@ -108,6 +114,9 @@ public class KmConversationHelper {
                 callback.onFailure(e);
             }
         } else {
+            if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
+                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId());
+            }
             if (launchChat.isWithPreChat()) {
                 try {
                     Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {

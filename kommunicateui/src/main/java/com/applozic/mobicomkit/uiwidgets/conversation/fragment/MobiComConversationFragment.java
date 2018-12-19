@@ -2753,52 +2753,71 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     }
 
-    public void updateSupportGroupTitle(Contact contact) {
+    public void updateSupportGroupTitle(Contact contact, Channel channel) {
+        String imageUrl = "";
+        String name = "";
+
         if (contact != null) {
-            if (!TextUtils.isEmpty(contact.getImageURL())) {
-                toolbarAlphabeticImage.setVisibility(View.GONE);
-                toolbarImageView.setVisibility(VISIBLE);
-                try {
-                    if (getContext() != null) {
-                        RequestOptions options = new RequestOptions()
-                                .centerCrop()
-                                .placeholder(R.drawable.applozic_ic_contact_picture_holo_light)
-                                .error(R.drawable.applozic_ic_contact_picture_holo_light);
+            name = contact.getDisplayName();
+            imageUrl = contact.getImageURL();
+        } else if (channel != null) {
+            name = channel.getName();
+            imageUrl = channel.getImageUrl();
+        }
 
-
-                        Glide.with(getContext()).load(contact.getImageURL()).apply(options).into(toolbarImageView);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                toolbarAlphabeticImage.setVisibility(VISIBLE);
-                toolbarImageView.setVisibility(View.GONE);
-
-                String contactNumber = "";
-                char firstLetter = 0;
-                contactNumber = contact.getDisplayName().toUpperCase();
-                firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
-
-                if (firstLetter != '+') {
-                    toolbarAlphabeticImage.setText(String.valueOf(firstLetter));
-                } else if (contactNumber.length() >= 2) {
-                    toolbarAlphabeticImage.setText(String.valueOf(contactNumber.charAt(1)));
-                }
-
-                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-                GradientDrawable bgShape = (GradientDrawable) toolbarAlphabeticImage.getBackground();
+        if (!TextUtils.isEmpty(imageUrl)) {
+            toolbarAlphabeticImage.setVisibility(View.GONE);
+            toolbarImageView.setVisibility(VISIBLE);
+            try {
                 if (getContext() != null) {
-                    bgShape.setColor(getContext().getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+                    RequestOptions options = new RequestOptions()
+                            .centerCrop()
+                            .placeholder(R.drawable.applozic_ic_contact_picture_holo_light)
+                            .error(R.drawable.applozic_ic_contact_picture_holo_light);
+
+
+                    Glide.with(getContext()).load(imageUrl).apply(options).into(toolbarImageView);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            toolbarAlphabeticImage.setVisibility(VISIBLE);
+            toolbarImageView.setVisibility(View.GONE);
+
+            String contactNumber = "";
+            char firstLetter = 0;
+            contactNumber = name.toUpperCase();
+            firstLetter = name.toUpperCase().charAt(0);
+
+            if (firstLetter != '+') {
+                toolbarAlphabeticImage.setText(String.valueOf(firstLetter));
+            } else if (contactNumber.length() >= 2) {
+                toolbarAlphabeticImage.setText(String.valueOf(contactNumber.charAt(1)));
             }
 
-            if (!TextUtils.isEmpty(contact.getDisplayName())) {
-                toolbarTitleText.setText(contact.getDisplayName());
-            } else if (channel != null) {
-                toolbarTitleText.setText(channel.getName());
+            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+            GradientDrawable bgShape = (GradientDrawable) toolbarAlphabeticImage.getBackground();
+            if (getContext() != null) {
+                bgShape.setColor(getContext().getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
             }
+        }
 
+        if (!TextUtils.isEmpty(name)) {
+            toolbarTitleText.setText(name);
+        }
+
+        if (toolbarOnlineTv != null) {
+            toolbarOnlineTv.setVisibility(View.GONE);
+        }
+        if (toolbarOfflineTv != null) {
+            toolbarOfflineTv.setVisibility(View.VISIBLE);
+        }
+        if (toolbarSubtitleText != null) {
+            toolbarSubtitleText.setVisibility(View.GONE);
+        }
+
+        if (contact != null) {
             switchContactStatus(contact);
         }
     }
@@ -2840,21 +2859,15 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void processSupportGroupDetails(final Channel channel) {
+        updateSupportGroupTitle(null, channel);
         Contact contact = getSupportGroupContact(channel);
-        updateSupportGroupTitle(contact);
 
         if (contact != null) {
             getUserDetail(getContext(), contact.getUserId(), new KmUserDetailsCallback() {
                 @Override
                 public void hasFinished(Contact contact) {
-                    if (!TextUtils.isEmpty(contact.getImageURL())) {
-                        channel.setImageUrl(contact.getImageURL());
-                    }
-                    if (!TextUtils.isEmpty(contact.getDisplayName())) {
-                        channel.setName(contact.getDisplayName());
-                    }
                     ChannelService.getInstance(getContext()).updateChannel(channel);
-                    updateSupportGroupTitle(contact);
+                    updateSupportGroupTitle(contact, channel);
                 }
             });
         }
@@ -2872,6 +2885,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
             if (contact.isConnected()) {
                 toolbarSubtitleText.setText(R.string.online);
+                toolbarSubtitleText.setVisibility(VISIBLE);
             } else {
                 if (User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
                     if (contact.getLastSeenAt() > 0) {

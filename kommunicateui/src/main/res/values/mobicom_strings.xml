@@ -130,6 +130,7 @@
     <string name="subtitle_last_seen_at_time">Last seen</string>
     <string name="is_typing">is typing…</string>
     <string name="user_online">Online</string>
+    <string name="typing">Typing…</string>
     <string name="removing_channel_user">Removing…</string>
     <string name="adding_channel_user">Adding…</string>
     <string name="deleting_channel_user">Deleting…</string>

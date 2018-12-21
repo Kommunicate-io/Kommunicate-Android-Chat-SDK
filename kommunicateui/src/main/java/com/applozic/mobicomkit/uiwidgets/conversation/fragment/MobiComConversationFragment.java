@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
@@ -304,6 +305,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     TextView toolbarAlphabeticImage;
     private String geoApiKey;
     private FrameLayout emailReplyReminderLayout;
+    private Contact conversationAssignee;
     public static final String KM_CONVERSATION_SUBJECT = "KM_CONVERSATION_SUBJECT";
 
     public static int dp(float value) {
@@ -2481,6 +2483,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             }
                             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                                 ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
+                            } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                                if (toolbarSubtitleText != null && getContext() != null) {
+                                    toolbarSubtitleText.setText(getContext().getString(R.string.typing));
+                                    toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+                                }
                             } else {
                                 ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(displayNameContact.getDisplayName() + " " + getActivity().getString(R.string.is_typing));
                             }
@@ -2495,7 +2502,18 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
                                 return;
                             }
-                            updateChannelSubTitle();
+                            if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                                if (toolbarSubtitleText != null) {
+                                    toolbarSubtitleText.setVisibility(View.GONE);
+                                }
+                                if (conversationAssignee != null) {
+                                    switchContactStatus(conversationAssignee);
+                                } else {
+                                    processSupportGroupDetails(channel);
+                                }
+                            } else {
+                                updateChannelSubTitle();
+                            }
                         }
                     } else {
                         updateLastSeenStatus();
@@ -2758,6 +2776,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         String name = "";
 
         if (contact != null) {
+
             name = contact.getDisplayName();
             imageUrl = contact.getImageURL();
         } else if (channel != null) {
@@ -2861,11 +2880,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void processSupportGroupDetails(final Channel channel) {
         updateSupportGroupTitle(null, channel);
         Contact contact = getSupportGroupContact(channel);
+        conversationAssignee = contact;
 
         if (contact != null) {
             getUserDetail(getContext(), contact.getUserId(), new KmUserDetailsCallback() {
                 @Override
                 public void hasFinished(Contact contact) {
+                    conversationAssignee = contact;
                     ChannelService.getInstance(getContext()).updateChannel(channel);
                     updateSupportGroupTitle(contact, channel);
                 }
@@ -2875,8 +2896,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void switchContactStatus(Contact contact) {
         if (toolbarSubtitleText != null) {
+            toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             if (User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
                 toolbarSubtitleText.setText(R.string.online);
+                toolbarSubtitleText.setVisibility(VISIBLE);
                 if (toolbarOnlineTv != null && toolbarOfflineTv != null) {
                     toolbarOnlineTv.setVisibility(VISIBLE);
                     toolbarOfflineTv.setVisibility(View.GONE);

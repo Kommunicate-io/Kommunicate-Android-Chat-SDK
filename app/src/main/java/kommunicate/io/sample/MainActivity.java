@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Kommunicate.init(this, KmHelper.APP_KEY);
+        Kommunicate.init(this, KmHelper.APP_ID);
 
         layout = (LinearLayout) findViewById(R.id.footerSnack);
         mUserId = (EditText) findViewById(R.id.userId_editText);
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
         final KMUser user = new KMUser();
         user.setUserId(userId);
-        user.setApplicationId(KmHelper.APP_KEY);
+        user.setApplicationId(KmHelper.APP_ID);
 
         if (!TextUtils.isEmpty(password)) {
             user.setPassword(password);

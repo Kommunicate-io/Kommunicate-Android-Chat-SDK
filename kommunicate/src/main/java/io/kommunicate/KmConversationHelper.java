@@ -26,7 +26,7 @@ import io.kommunicate.users.KMUser;
 
 public class KmConversationHelper {
 
-    private static void openConversation(final Context context, final boolean skipChatList, final Integer chatId) throws KmException {
+    public static void openConversation(final Context context, final boolean skipChatList, final Integer chatId, final KmCallback callback) throws KmException {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
         }
@@ -43,40 +43,43 @@ public class KmConversationHelper {
                                     @Override
                                     public void onSuccess(Channel channel, Context context) {
                                         if (channel != null) {
-                                            openParticularConversation(context, skipChatList, chatId);
+                                            openParticularConversation(context, skipChatList, channel.getKey(), callback);
                                         } else {
-                                            Kommunicate.openConversation(context);
+                                            Kommunicate.openConversation(context, callback);
                                         }
                                     }
 
                                     @Override
                                     public void onFailure(Channel channel, Exception e, Context context) {
-                                        Kommunicate.openConversation(context);
+                                        Kommunicate.openConversation(context, callback);
                                     }
                                 };
 
                                 new AlGroupInformationAsyncTask(context, message.getGroupId(), memberListener).execute();
                             } else {
-                                Kommunicate.openConversation(context);
+                                Kommunicate.openConversation(context, callback);
                             }
                         } else {
-                            Kommunicate.openConversation(context);
+                            Kommunicate.openConversation(context, callback);
                         }
                     } else {
-                        Kommunicate.openConversation(context);
+                        Kommunicate.openConversation(context, callback);
                     }
                 }
             });
         } else {
-            openParticularConversation(context, skipChatList, chatId);
+            openParticularConversation(context, skipChatList, chatId, callback);
         }
     }
 
-    private static void openParticularConversation(Context context, boolean skipChatList, Integer chatId) {
+    private static void openParticularConversation(Context context, boolean skipChatList, Integer chatId, KmCallback callback) {
         Intent intent = new Intent(context, KMConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, chatId);
         intent.putExtra(ConversationUIService.TAKE_ORDER, skipChatList);
         context.startActivity(intent);
+        if (callback != null) {
+            callback.onSuccess("Successfully launched chat with ChatId : " + chatId);
+        }
     }
 
     public static void launchChat(final KmChatBuilder launchChat, final KmCallback callback) {
@@ -170,7 +173,7 @@ public class KmConversationHelper {
                     callback.onSuccess(channel);
                 }
                 try {
-                    openConversation(context, isSkipChatList, channel.getKey());
+                    openConversation(context, isSkipChatList, channel.getKey(), callback);
                 } catch (KmException e) {
                     if (callback != null) {
                         e.getMessage();

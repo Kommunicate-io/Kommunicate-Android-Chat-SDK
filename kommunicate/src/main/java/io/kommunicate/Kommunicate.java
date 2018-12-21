@@ -89,6 +89,14 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
+    public static void openConversation(Context context, KmCallback callback) {
+        Intent intent = new Intent(context, KMConversationActivity.class);
+        context.startActivity(intent);
+        if (callback != null) {
+            callback.onSuccess("Successfully launched chat list");
+        }
+    }
+
     public static void openConversation(Context context, boolean prechatLeadCollection) {
         Intent intent = new Intent(context, (prechatLeadCollection && !KMUser.isLoggedIn(context)) ? LeadCollectionActivity.class : KMConversationActivity.class);
         context.startActivity(intent);
@@ -190,6 +198,7 @@ public class Kommunicate {
         Applozic.getInstance(context).setCustomNotificationSound(path);
     }
 
+    @Deprecated
     public static void openParticularConversation(Context context, Integer groupId) {
         Intent intent = new Intent(context, KMConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, groupId);

@@ -108,6 +108,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean disableGlobalStoragePermission = false;
 
     private boolean launchChatFromProfilePicOrName = false;
+    private Map<String, Boolean> filterGallery;
 
     private Map<String, Boolean> attachmentOptions;
 
@@ -576,6 +577,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isGlobalStoragePermissionDisabled() {
         return disableGlobalStoragePermission;
+    }
+
+    public Map<String, Boolean> getFilterGallery() {
+        return filterGallery;
+    }
+
+    public void setFilterGallery(Map<String, Boolean> filterGallery) {
+        this.filterGallery = filterGallery;
     }
 
     @Override

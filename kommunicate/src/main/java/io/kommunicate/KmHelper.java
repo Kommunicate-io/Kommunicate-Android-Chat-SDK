@@ -27,11 +27,7 @@ import io.kommunicate.users.KMUser;
 
 public class KmHelper {
 
-    //public static final String APP_KEY = "kommunicate-support";
-    public static final String APP_KEY = "22823b4a764f9944ad7913ddb3e43cae1"; //prod
-    //public static final String APP_KEY = "3c951e76437b755ce5ee8ad8a06703505"; //test encv key vipin
-    //public static final String APP_KEY = "2187926e69fe6dabd86b89c6269838bab"; //test key devraj
-    //public static final String APP_KEY = "applozic-sample-app";
+    public static final String APP_ID = "<Your-App-Id>";
 
     public static void performLogout(Context context, final Object object) {
         final ProgressDialog dialog = new ProgressDialog(context);
@@ -88,19 +84,19 @@ public class KmHelper {
         }
     }
 
-    public static void setStartNewChat(Context context, final List<String> agentIds, List<String> botIds) {
+    public static void setStartNewChat(Context context, final List<String> agentIds, List<String> botIds, boolean isUnique) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage("Creating conversation, please wait...");
         dialog.setCancelable(false);
         dialog.show();
 
         try {
-            Kommunicate.startNewConversation(context, null, agentIds, botIds, false, new KMStartChatHandler() {
+            Kommunicate.startConversation(context, null, agentIds, botIds, isUnique, new KMStartChatHandler() {
                 @Override
                 public void onSuccess(Channel channel, Context context) {
                     dialog.dismiss();
                     if (channel != null) {
-                        Kommunicate.openParticularConversation(context, channel.getKey());
+                        Kommunicate.openConversation(context, channel.getKey(), null);
                     }
                 }
 
@@ -148,7 +144,7 @@ public class KmHelper {
                         dialog.dismiss();
                     }
                     Kommunicate.openConversation(context);
-                    if(context instanceof Activity){
+                    if (context instanceof Activity) {
                         ((Activity) context).finish();
                     }
                 }

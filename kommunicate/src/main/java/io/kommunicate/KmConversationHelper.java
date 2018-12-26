@@ -99,20 +99,12 @@ public class KmConversationHelper {
 
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
             try {
-                if (launchChat.isSingleChat()) {
-                    Kommunicate.startOrGetConversation(launchChat.getContext(),
-                            launchChat.getChatName(),
-                            launchChat.getAgentIds(),
-                            launchChat.getBotIds(),
-                            getStartChatHandler(launchChat.isSkipChatList(), callback));
-                } else {
-                    Kommunicate.startNewConversation(launchChat.getContext(),
-                            launchChat.getChatName(),
-                            launchChat.getAgentIds(),
-                            launchChat.getBotIds(),
-                            false,
-                            getStartChatHandler(launchChat.isSkipChatList(), callback));
-                }
+                Kommunicate.startConversation(launchChat.getContext(),
+                        launchChat.getChatName(),
+                        launchChat.getAgentIds(),
+                        launchChat.getBotIds(),
+                        launchChat.isSingleChat(),
+                        getStartChatHandler(launchChat.isSkipChatList(), callback));
             } catch (KmException e) {
                 callback.onFailure(e);
             }
@@ -201,11 +193,7 @@ public class KmConversationHelper {
                 }
 
                 try {
-                    if (launchChat.isSingleChat()) {
-                        Kommunicate.startOrGetConversation(context, launchChat.getChatName(), launchChat.getAgentIds(), launchChat.getBotIds(), startChatHandler);
-                    } else {
-                        Kommunicate.startNewConversation(context, launchChat.getChatName(), launchChat.getAgentIds(), launchChat.getBotIds(), false, startChatHandler);
-                    }
+                    Kommunicate.startConversation(context, launchChat.getChatName(), launchChat.getAgentIds(), launchChat.getBotIds(), launchChat.isSingleChat(), startChatHandler);
                 } catch (KmException e) {
                     e.printStackTrace();
                     callback.onFailure(e);

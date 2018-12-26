@@ -18,7 +18,7 @@ import io.kommunicate.Kommunicate;
  * Created by ashish on 23/01/18.
  */
 
-public class KommunicateApplication extends MultiDexApplication implements KmActionCallback{
+public class KommunicateApplication extends MultiDexApplication implements KmActionCallback {
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -32,23 +32,35 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
     }
 
     @Override
-    public void onReceive(Context context, final Object object, String action) {
+    public void onReceive(final Context context, final Object object, String action) {
 
         switch (action) {
             case Kommunicate.START_NEW_CHAT:
                 //Kommunicate.startOrGetConversation(context, "testClientGroupId", "reytum@live.com", null, "My Group");
                 //Kommunicate.setStartNewChat(context, "vipin+testkm01012018@applozic.com", "Hotel-Booking-Assistant"); //pass null if you want to use default bot
                 List<String> agents = new ArrayList<>();
-                agents.add("reytum@live.com");
+                //agents.add("reytum@live.com");
+                //agents.add("reytum@live.com");
                 List<String> bots = new ArrayList<>();
                 //Kommunicate.setStartNewChat(context, "reytum@live.com", "Hotel-Booking-Assistant");
                 try {
-                    KmHelper.setStartNewChat(context, agents, bots);
+                    KmHelper.setStartNewChat(context, agents, bots, true);
                     //Kommunicate.startNewConversation(context, null, agents, bots,false, null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 //KmHelper.setStartNewUniqueChat(context, agents, bots);
+                /*new KmChatBuilder(this).setApplicationId(KmHelper.APP_KEY).setChatName("Builder Chat").setSingleChat(false).launchChat(new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        Utils.printLog(context, "ChatTest", "Success : " + message);
+                    }
+
+                    @Override
+                    public void onFailure(Object error) {
+                        Utils.printLog(context, "ChatTest", "Failure : " + error);
+                    }
+                });*/
                 break;
 
             case Kommunicate.LOGOUT_CALL:

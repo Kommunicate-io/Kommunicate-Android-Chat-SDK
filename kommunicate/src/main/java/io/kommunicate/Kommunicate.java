@@ -85,10 +85,21 @@ public class Kommunicate {
     }
 
     public static void openConversation(Context context) {
-        Intent intent = new Intent(context, KMConversationActivity.class);
-        context.startActivity(intent);
+        openConversation(context, null, null);
     }
 
+    public static void openConversation(Context context, Integer chatId, KmCallback callback) {
+        try {
+            KmConversationHelper.openConversation(context, true, chatId, callback);
+        } catch (KmException e) {
+            e.printStackTrace();
+            if (callback != null) {
+                callback.onFailure(e.getMessage());
+            }
+        }
+    }
+
+    @Deprecated
     public static void openConversation(Context context, KmCallback callback) {
         Intent intent = new Intent(context, KMConversationActivity.class);
         context.startActivity(intent);
@@ -97,6 +108,7 @@ public class Kommunicate {
         }
     }
 
+    @Deprecated
     public static void openConversation(Context context, boolean prechatLeadCollection) {
         Intent intent = new Intent(context, (prechatLeadCollection && !KMUser.isLoggedIn(context)) ? LeadCollectionActivity.class : KMConversationActivity.class);
         context.startActivity(intent);
@@ -147,11 +159,7 @@ public class Kommunicate {
 
         if (isLoggedIn(context)) {
             try {
-                if (isUnique) {
-                    startOrGetConversation(context, groupName, agents, bots, startChatHandler);
-                } else {
-                    startNewConversation(context, groupName, agents, bots, false, startChatHandler);
-                }
+                startConversation(context, groupName, agents, bots, isUnique, startChatHandler);
             } catch (KmException e) {
                 callback.onFailure(e);
             }
@@ -160,11 +168,7 @@ public class Kommunicate {
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                     try {
-                        if (isUnique) {
-                            startOrGetConversation(context, groupName, agents, bots, startChatHandler);
-                        } else {
-                            startNewConversation(context, groupName, agents, bots, false, startChatHandler);
-                        }
+                        startConversation(context, groupName, agents, bots, isUnique, startChatHandler);
                     } catch (KmException e) {
                         e.printStackTrace();
                         callback.onFailure(e);
@@ -206,6 +210,7 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
+    @Deprecated
     public static void startNewConversation(Context context, String groupName, String agentId, String botId, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
         ArrayList<String> agentIds = null;
         ArrayList<String> botIds = null;
@@ -217,10 +222,10 @@ public class Kommunicate {
             botIds = new ArrayList<>();
             botIds.add(botId);
         }
-        startNewConversation(context, groupName, agentIds, botIds, isUniqueChat, handler);
+        startConversation(context, groupName, agentIds, botIds, isUniqueChat, handler);
     }
 
-    public static void startNewConversation(final Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final boolean isUniqueChat, final KMStartChatHandler handler) throws KmException {
+    public static void startConversation(final Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final boolean isUniqueChat, final KMStartChatHandler handler) throws KmException {
         if (agentIds == null || agentIds.isEmpty()) {
             KmCallback callback = new KmCallback() {
                 @Override
@@ -230,7 +235,11 @@ public class Kommunicate {
                         List<String> agents = new ArrayList<>();
                         agents.add(agent.getAgentId());
                         try {
-                            createConversation(context, groupName, agents, botIds, isUniqueChat, handler);
+                            if (isUniqueChat) {
+                                startOrGetConversation(context, groupName, agents, botIds, handler);
+                            } else {
+                                createConversation(context, groupName, agents, botIds, false, handler);
+                            }
                         } catch (KmException e) {
                             e.printStackTrace();
                         }
@@ -239,16 +248,23 @@ public class Kommunicate {
 
                 @Override
                 public void onFailure(Object error) {
-
+                    if (handler != null) {
+                        handler.onFailure(null, context);
+                    }
                 }
             };
 
             new KmGetAgentListTask(context, MobiComKitClientService.getApplicationKey(context), callback).execute();
         } else {
-            createConversation(context, groupName, agentIds, botIds, isUniqueChat, handler);
+            if (isUniqueChat) {
+                startOrGetConversation(context, groupName, agentIds, botIds, handler);
+            } else {
+                createConversation(context, groupName, agentIds, botIds, false, handler);
+            }
         }
     }
 
+    @Deprecated
     private static void createConversation(Context context, String groupName, List<String> agentIds, List<String> botIds, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
         List<KMGroupInfo.GroupUser> users = new ArrayList<>();
 
@@ -361,6 +377,7 @@ public class Kommunicate {
         return false;
     }
 
+    @Deprecated
     public static void startOrGetConversation(Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final KMStartChatHandler handler) throws KmException {
 
         final String clientGroupId = getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agentIds, botIds);
@@ -376,7 +393,7 @@ public class Kommunicate {
             @Override
             public void onFailure(Channel channel, Exception e, Context context) {
                 try {
-                    startNewConversation(context, groupName, agentIds, botIds, true, handler);
+                    startConversation(context, groupName, agentIds, botIds, true, handler);
                 } catch (KmException e1) {
                     handler.onFailure(null, context);
                 }

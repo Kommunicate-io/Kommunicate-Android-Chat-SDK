@@ -84,19 +84,19 @@ public class KmHelper {
         }
     }
 
-    public static void setStartNewChat(Context context, final List<String> agentIds, List<String> botIds) {
+    public static void setStartNewChat(Context context, final List<String> agentIds, List<String> botIds, boolean isUnique) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage("Creating conversation, please wait...");
         dialog.setCancelable(false);
         dialog.show();
 
         try {
-            Kommunicate.startNewConversation(context, null, agentIds, botIds, false, new KMStartChatHandler() {
+            Kommunicate.startConversation(context, null, agentIds, botIds, isUnique, new KMStartChatHandler() {
                 @Override
                 public void onSuccess(Channel channel, Context context) {
                     dialog.dismiss();
                     if (channel != null) {
-                        Kommunicate.openParticularConversation(context, channel.getKey());
+                        Kommunicate.openConversation(context, channel.getKey(), null);
                     }
                 }
 

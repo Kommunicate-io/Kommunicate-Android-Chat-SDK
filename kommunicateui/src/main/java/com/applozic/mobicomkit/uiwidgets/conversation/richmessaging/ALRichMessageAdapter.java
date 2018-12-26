@@ -271,12 +271,12 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     if (model != null && model.getTemplateId() == 6) {
                         if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                            ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, payloadList.get(getLayoutPosition()).getMessage().trim());
+                            ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, (payloadList != null && !payloadList.isEmpty()) ? payloadList.get(getLayoutPosition()) : model);
                         }
                         listener.onAction(context, AlRichMessage.SEND_HOTEL_RATING, null, payloadList.get(getLayoutPosition()).getMessage().trim());
                     } else {
                         if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                            ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, model);
+                            ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, (payloadList != null && !payloadList.isEmpty()) ? payloadList.get(getLayoutPosition()) : model);
                         }
                         listener.onAction(context, AlRichMessage.MAKE_PAYMENT, null, model);
                     }

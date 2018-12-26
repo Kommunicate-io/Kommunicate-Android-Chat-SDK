@@ -21,7 +21,13 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import io.kommunicate.KmConversationHelper;
+import io.kommunicate.KmException;
 import io.kommunicate.KmHelper;
+import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.utils.KMPermissionUtils;
 import io.kommunicate.users.KMUser;
@@ -170,9 +176,12 @@ public class MainActivity extends AppCompatActivity {
         Kommunicate.login(MainActivity.this, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
-                ApplozicClient.getInstance(context).hideActionMessages(true);
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
+                if (KMUser.RoleType.USER_ROLE.getValue().equals(registrationResponse.getRoleType())) {
+                    ApplozicClient.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
+                } else {
+                    Map<String, String> metadata = new HashMap<>();
+                    metadata.put("skipBot", "true");
+                    ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
 
                 Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
@@ -187,8 +196,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                Kommunicate.openConversation(context);
-                finish();
+                try {
+                    KmConversationHelper.openConversation(context, true, null, new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+
+                        }
+                    });
+                } catch (KmException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

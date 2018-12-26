@@ -130,6 +130,7 @@
     <string name="subtitle_last_seen_at_time">Last seen</string>
     <string name="is_typing">is typing…</string>
     <string name="user_online">Online</string>
+    <string name="typing">Typing…</string>
     <string name="removing_channel_user">Removing…</string>
     <string name="adding_channel_user">Adding…</string>
     <string name="deleting_channel_user">Deleting…</string>
@@ -197,6 +198,7 @@
     <string name="km_not_sent">Not sent</string>
     <string name="default_start_new_conversation">Start new conversation</string>
     <string name="start_conversation">Start conversation</string>
+    <string name="info_file_attachment_mime_type_not_supported">Can\'t send this type of files!</string>
 
     <string name="DATE_SAVE_FILE_FORMAT">yyyyMMdd_HHmmss</string>
     <string name="DATE_MEDIUM_FORMAT">"MMM dd, yyyy"</string>
@@ -232,4 +234,6 @@
     <string name="prechat_screen_toast_error_message">Either contact number or emailId is required.</string>
     <string name="invalid_contact_number">Please enter a valid contact number</string>
     <string name="invalid_email_id">Please enter a valid emailId</string>
+    <string name="via_email_text">via email</string>
+    <string name="email_reply_reminder_message">Your message will also be sent as an email reply</string>
 </resources>

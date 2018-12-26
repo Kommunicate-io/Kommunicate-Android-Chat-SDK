@@ -14,6 +14,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
@@ -170,6 +171,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.view.View.VISIBLE;
@@ -302,6 +304,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     TextView toolbarOfflineTv;
     TextView toolbarAlphabeticImage;
     private String geoApiKey;
+    private FrameLayout emailReplyReminderLayout;
+    private Contact conversationAssignee;
+    public static final int TYPING_STOP_TIME = 30;
+    public static final String KM_CONVERSATION_SUBJECT = "KM_CONVERSATION_SUBJECT";
+    public Map<String, CountDownTimer> typingTimerMap;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -393,6 +400,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         cameraButton = list.findViewById(R.id.camera_btn);
         locationButton = list.findViewById(R.id.location_btn);
         fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
+        emailReplyReminderLayout = list.findViewById(R.id.emailReplyReminderView);
         processAttachmentIconsClick();
         Configuration config = getResources().getConfiguration();
         recordButtonWeakReference = new WeakReference<ImageButton>(recordButton);
@@ -1253,6 +1261,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void addMessage(final Message message) {
         hideAwayMessage(message);
+
+        if (message.getGroupId() != null) {
+            if (channel != null && channel.getKey().equals(message.getGroupId())) {
+                if (message.getTo() != null) {
+                    updateTypingStatus(message.getTo(), false);
+                }
+            }
+        } else if (contact != null && contact.getContactIds().equals(message.getTo())) {
+            updateTypingStatus(message.getTo(), false);
+        }
+
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -2460,46 +2479,81 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void updateUserTypingStatus(final String typingUserId, final String isTypingStatus) {
+        updateTypingStatus(typingUserId, "1".equals(isTypingStatus));
+    }
+
+    public void updateTypingStatus(final String typingUserId, final boolean start) {
         if (contact != null) {
             if (contact.isBlocked() || contact.isBlockedBy()) {
                 return;
             }
         }
-        this.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (isTypingStatus.equals("1")) {
-                    if (channel != null) {
-                        if (!MobiComUserPreference.getInstance(getActivity()).getUserId().equals(typingUserId)) {
-                            Contact displayNameContact = appContactService.getContactById(typingUserId);
-                            if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
-                                return;
-                            }
-                            if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                                ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
-                            } else {
-                                ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(displayNameContact.getDisplayName() + " " + getActivity().getString(R.string.is_typing));
-                            }
-                        }
-                    } else {
-                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
-                    }
-                } else {
-                    if (channel != null) {
-                        if (!MobiComUserPreference.getInstance(getActivity()).getUserId().equals(typingUserId)) {
-                            Contact displayNameContact = appContactService.getContactById(typingUserId);
-                            if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
-                                return;
-                            }
-                            updateChannelSubTitle();
-                        }
-                    } else {
-                        updateLastSeenStatus();
-                    }
 
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (start) {
+                        CountDownTimer timer = getCountDownTimer(typingUserId);
+                        if (timer != null) {
+                            timer.start();
+                        }
+
+                        if (channel != null) {
+                            if (!MobiComUserPreference.getInstance(getActivity()).getUserId().equals(typingUserId)) {
+                                Contact displayNameContact = appContactService.getContactById(typingUserId);
+                                if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
+                                    return;
+                                }
+                                if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                                    ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
+                                } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                                    if (toolbarSubtitleText != null && getContext() != null) {
+                                        toolbarSubtitleText.setText(getContext().getString(R.string.typing));
+                                        toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+                                    }
+                                } else {
+                                    ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(displayNameContact.getDisplayName() + " " + getActivity().getString(R.string.is_typing));
+                                }
+                            }
+                        } else {
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
+                        }
+                    } else {
+                        if (typingTimerMap != null) {
+                            CountDownTimer timer = typingTimerMap.get(typingUserId);
+                            if (timer != null) {
+                                typingTimerMap.remove(typingUserId);
+                                timer.cancel();
+                            }
+                        }
+
+                        if (channel != null) {
+                            if (!MobiComUserPreference.getInstance(getActivity()).getUserId().equals(typingUserId)) {
+                                Contact displayNameContact = appContactService.getContactById(typingUserId);
+                                if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
+                                    return;
+                                }
+                                if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                                    if (toolbarSubtitleText != null) {
+                                        toolbarSubtitleText.setVisibility(View.GONE);
+                                    }
+                                    if (conversationAssignee != null) {
+                                        switchContactStatus(conversationAssignee);
+                                    } else {
+                                        processSupportGroupDetails(channel);
+                                    }
+                                } else {
+                                    updateChannelSubTitle();
+                                }
+                            }
+                        } else {
+                            updateLastSeenStatus();
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 //    public void onEmojiconClicked(Emojicon emojicon) {
@@ -2563,6 +2617,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
         if (recyclerDetailConversationAdapter != null) {
             recyclerDetailConversationAdapter.contactImageLoader.setPauseWork(false);
+        }
+
+        if (typingTimerMap != null) {
+            typingTimerMap.clear();
         }
     }
 
@@ -2732,6 +2790,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 ChannelService.isUpdateTitle = false;
             }
         }
+
+        if (isEmailConversation(channel)) {
+            emailReplyReminderLayout.setVisibility(VISIBLE);
+        }
     }
 
     private void hideSendMessageLayout(boolean hide) {
@@ -2745,52 +2807,72 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     }
 
-    public void updateSupportGroupTitle(Contact contact) {
+    public void updateSupportGroupTitle(Contact contact, Channel channel) {
+        String imageUrl = "";
+        String name = "";
+
         if (contact != null) {
-            if (!TextUtils.isEmpty(contact.getImageURL())) {
-                toolbarAlphabeticImage.setVisibility(View.GONE);
-                toolbarImageView.setVisibility(VISIBLE);
-                try {
-                    if (getContext() != null) {
-                        RequestOptions options = new RequestOptions()
-                                .centerCrop()
-                                .placeholder(R.drawable.applozic_ic_contact_picture_holo_light)
-                                .error(R.drawable.applozic_ic_contact_picture_holo_light);
 
+            name = contact.getDisplayName();
+            imageUrl = contact.getImageURL();
+        } else if (channel != null) {
+            name = channel.getName();
+            imageUrl = channel.getImageUrl();
+        }
 
-                        Glide.with(getContext()).load(contact.getImageURL()).apply(options).into(toolbarImageView);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                toolbarAlphabeticImage.setVisibility(VISIBLE);
-                toolbarImageView.setVisibility(View.GONE);
-
-                String contactNumber = "";
-                char firstLetter = 0;
-                contactNumber = contact.getDisplayName().toUpperCase();
-                firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
-
-                if (firstLetter != '+') {
-                    toolbarAlphabeticImage.setText(String.valueOf(firstLetter));
-                } else if (contactNumber.length() >= 2) {
-                    toolbarAlphabeticImage.setText(String.valueOf(contactNumber.charAt(1)));
-                }
-
-                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-                GradientDrawable bgShape = (GradientDrawable) toolbarAlphabeticImage.getBackground();
+        if (!TextUtils.isEmpty(imageUrl)) {
+            toolbarAlphabeticImage.setVisibility(View.GONE);
+            toolbarImageView.setVisibility(VISIBLE);
+            try {
                 if (getContext() != null) {
-                    bgShape.setColor(getContext().getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+                    RequestOptions options = new RequestOptions()
+                            .centerCrop()
+                            .placeholder(R.drawable.applozic_ic_contact_picture_holo_light)
+                            .error(R.drawable.applozic_ic_contact_picture_holo_light);
+
+
+                    Glide.with(getContext()).load(imageUrl).apply(options).into(toolbarImageView);
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            toolbarAlphabeticImage.setVisibility(VISIBLE);
+            toolbarImageView.setVisibility(View.GONE);
+
+            String contactNumber = "";
+            char firstLetter = 0;
+            contactNumber = name.toUpperCase();
+            firstLetter = name.toUpperCase().charAt(0);
+
+            if (firstLetter != '+') {
+                toolbarAlphabeticImage.setText(String.valueOf(firstLetter));
+            } else if (contactNumber.length() >= 2) {
+                toolbarAlphabeticImage.setText(String.valueOf(contactNumber.charAt(1)));
             }
 
-            if (!TextUtils.isEmpty(contact.getDisplayName())) {
-                toolbarTitleText.setText(contact.getDisplayName());
-            } else if (channel != null) {
-                toolbarTitleText.setText(channel.getName());
+            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+            GradientDrawable bgShape = (GradientDrawable) toolbarAlphabeticImage.getBackground();
+            if (getContext() != null) {
+                bgShape.setColor(getContext().getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
             }
+        }
 
+        if (!TextUtils.isEmpty(name)) {
+            toolbarTitleText.setText(name);
+        }
+
+        if (toolbarOnlineTv != null) {
+            toolbarOnlineTv.setVisibility(View.GONE);
+        }
+        if (toolbarOfflineTv != null) {
+            toolbarOfflineTv.setVisibility(View.VISIBLE);
+        }
+        if (toolbarSubtitleText != null) {
+            toolbarSubtitleText.setVisibility(View.GONE);
+        }
+
+        if (contact != null) {
             switchContactStatus(contact);
         }
     }
@@ -2832,21 +2914,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void processSupportGroupDetails(final Channel channel) {
+        updateSupportGroupTitle(null, channel);
         Contact contact = getSupportGroupContact(channel);
-        updateSupportGroupTitle(contact);
+        conversationAssignee = contact;
 
         if (contact != null) {
             getUserDetail(getContext(), contact.getUserId(), new KmUserDetailsCallback() {
                 @Override
                 public void hasFinished(Contact contact) {
-                    if (!TextUtils.isEmpty(contact.getImageURL())) {
-                        channel.setImageUrl(contact.getImageURL());
-                    }
-                    if (!TextUtils.isEmpty(contact.getDisplayName())) {
-                        channel.setName(contact.getDisplayName());
-                    }
+                    conversationAssignee = contact;
                     ChannelService.getInstance(getContext()).updateChannel(channel);
-                    updateSupportGroupTitle(contact);
+                    updateSupportGroupTitle(contact, channel);
                 }
             });
         }
@@ -2854,8 +2932,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void switchContactStatus(Contact contact) {
         if (toolbarSubtitleText != null) {
+            toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             if (User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
                 toolbarSubtitleText.setText(R.string.online);
+                toolbarSubtitleText.setVisibility(VISIBLE);
                 if (toolbarOnlineTv != null && toolbarOfflineTv != null) {
                     toolbarOnlineTv.setVisibility(VISIBLE);
                     toolbarOfflineTv.setVisibility(View.GONE);
@@ -2864,6 +2944,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
             if (contact.isConnected()) {
                 toolbarSubtitleText.setText(R.string.online);
+                toolbarSubtitleText.setVisibility(VISIBLE);
             } else {
                 if (User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
                     if (contact.getLastSeenAt() > 0) {
@@ -4042,5 +4123,37 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public interface KmUserDetailsCallback {
         void hasFinished(Contact contact);
+    }
+
+    public static boolean isEmailConversation(Channel channel) {
+        return channel != null && channel.getMetadata() != null && channel.getMetadata().containsKey(KM_CONVERSATION_SUBJECT);
+    }
+
+    public CountDownTimer getCountDownTimer(final String userId) {
+
+        if (typingTimerMap == null) {
+            typingTimerMap = new HashMap<>();
+        }
+
+        if (typingTimerMap.containsKey(userId)) {
+            return typingTimerMap.get(userId);
+        }
+
+        CountDownTimer timer = new CountDownTimer(TYPING_STOP_TIME * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+
+            @Override
+            public void onFinish() {
+                if (typingTimerMap != null) {
+                    typingTimerMap.remove(userId);
+                }
+                updateTypingStatus(userId, false);
+            }
+        };
+
+        typingTimerMap.put(userId, timer);
+        return timer;
     }
 }

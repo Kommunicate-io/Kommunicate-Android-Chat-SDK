@@ -77,6 +77,13 @@
   "enableAwayMessage": true,
   "awayMessageTextColor": "#A9A4A4",
   "hideGroupSubtitle": false,
+  "filterGallery": {
+    "ALL_FILES": true,
+    "IMAGE_VIDEO": false,
+    "IMAGE_ONLY": false,
+    "AUDIO_ONLY": false,
+    "VIDEO_ONLY": false
+  },
   "attachmentOptions": {
     ":location": true,
     ":camera": true,

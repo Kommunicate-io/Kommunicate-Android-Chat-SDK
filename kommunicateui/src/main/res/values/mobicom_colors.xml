@@ -56,6 +56,7 @@
     <color name="km_header_text_background">#e6e5ec</color>
     <color name="km_list_item_action_color">#504db0</color>
     <color name="km_list_item_main_header_text_color">#686464</color>
+    <color name="km_via_email_text_color">#414243</color>
 
     <color name="applozic_theme_color_app">#ff0099cc</color>
     <color name="applozic_theme_color_control_activated">#ff0099cc</color>

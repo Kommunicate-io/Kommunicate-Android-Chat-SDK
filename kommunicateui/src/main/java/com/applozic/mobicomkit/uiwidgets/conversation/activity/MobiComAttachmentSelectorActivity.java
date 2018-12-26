@@ -81,6 +81,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             alCustomizationSettings = new AlCustomizationSettings();
         }
 
+        choosenOption = getFilterOptions();
         fileClientService = new FileClientService(this);
         userPreferences = MobiComUserPreference.getInstance(this);
         Intent intent = getIntent();

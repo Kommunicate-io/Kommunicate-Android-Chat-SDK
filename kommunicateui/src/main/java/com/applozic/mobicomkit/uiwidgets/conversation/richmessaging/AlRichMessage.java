@@ -71,7 +71,7 @@ public class AlRichMessage {
             setupFaqItemView(faqLayout, faqReplyLayout, model);
         } else if (model.getTemplateId() == 3 || model.getTemplateId() == 6) {
             listItemlayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
             faqLayout.setVisibility(View.GONE);
             faqReplyLayout.setVisibility(View.GONE);
             quickRepliesRecycler.setVisibility(View.VISIBLE);

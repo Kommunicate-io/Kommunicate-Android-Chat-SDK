@@ -85,7 +85,7 @@
             android:gravity="center_vertical"
             android:lineSpacingExtra="12sp"
             android:maxLines="1"
-            android:text="Title"
+            android:text="Support Group"
             android:textColor="#f7ffffff"
             android:textSize="16sp"
             android:textStyle="normal" />
@@ -98,7 +98,7 @@
             android:fontFamily="sans-serif-light"
             android:lineSpacingExtra="16sp"
             android:maxLines="1"
-            android:text="Subtitle"
+            android:text="Offline"
             android:textColor="#f1ffffff"
             android:textSize="12sp"
             android:textStyle="normal" />

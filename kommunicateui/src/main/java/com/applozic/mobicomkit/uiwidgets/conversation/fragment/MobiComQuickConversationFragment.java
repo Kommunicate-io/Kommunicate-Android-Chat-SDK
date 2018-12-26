@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
@@ -162,7 +163,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
 
         startNewConv = list.findViewById(R.id.start_new_conversation);
-        if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation()) {
+        if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             startNewConv.setVisibility(View.VISIBLE);
         }
 

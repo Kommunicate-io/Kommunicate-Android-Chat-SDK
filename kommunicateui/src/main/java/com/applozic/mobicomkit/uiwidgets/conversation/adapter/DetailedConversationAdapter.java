@@ -27,10 +27,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.AlphabetIndexer;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -502,9 +504,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     if (TextUtils.isEmpty(message.getMessage())) {
                         myHolder.messageTextView.setVisibility(View.GONE);
+                    } else {
+                        myHolder.messageTextView.setVisibility((message.getContentType() == Message.ContentType.LOCATION.getValue() || isEmailTypeMessage(message)) ? View.GONE : View.VISIBLE);
                     }
 
-                    myHolder.messageTextView.setVisibility(View.GONE);
                     myHolder.mapImageView.setVisibility(GONE);
 
                     if (channel != null) {
@@ -558,8 +561,24 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
                     }
 
+                    if (isEmailTypeMessage(message)) {
+                        if (myHolder.viaEmailView != null) {
+                            myHolder.viaEmailView.setVisibility(View.VISIBLE);
+                        }
+                        if (myHolder.emailLayout != null) {
+                            myHolder.emailLayout.setVisibility(View.VISIBLE);
+                        }
+                        loadHtml(myHolder.emailLayout, message);
+                    } else {
+                        if (myHolder.viaEmailView != null) {
+                            myHolder.viaEmailView.setVisibility(GONE);
+                        }
+                        if (myHolder.emailLayout != null) {
+                            myHolder.emailLayout.setVisibility(View.GONE);
+                        }
+                    }
+
                     myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
-                    //myHolder.preview.setVisibility(message.hasAttachment() ? View.VISIBLE : View.GONE);
                     myHolder.attachmentView.setVisibility(View.GONE);
 
                     if (message.isTypeOutbox() && !message.isCanceled()) {
@@ -885,13 +904,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
                     }
 
-                    String mimeType = "";
-                    if (TextUtils.isEmpty(message.getMessage())) {
-                        myHolder.messageTextView.setVisibility(message.hasAttachment() ? View.GONE : View.GONE);
-                    } else {
-                        myHolder.messageTextView.setVisibility(message.getContentType() == Message.ContentType.LOCATION.getValue() ? View.GONE : View.VISIBLE);
-                    }
-
                     if (myHolder.messageTextView != null) {
                         myHolder.messageTextView.setTextColor(message.isTypeOutbox() ?
                                 Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
@@ -953,7 +965,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                             if (bgShape != null) {
                                 bgShape.setColor(message.isTypeOutbox() ?
-                                        Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                                        Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : (isEmailTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
                                 bgShape.setStroke(3, message.isTypeOutbox() ?
                                         Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
                             }
@@ -1012,6 +1024,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadHtml(FrameLayout emailLayout, Message message) {
+        WebView webView = emailLayout.findViewById(R.id.emailWebView);
+        webView.loadDataWithBaseURL(null, message.getMessage(), "text/html", "charset=UTF-8", null);
+    }
+
+    public static boolean isEmailTypeMessage(Message message) {
+        return Message.ContentType.TEXT_HTML.getValue().equals(message.getContentType()) && message.getSource() == 7;
     }
 
     private void setupContactShareView(final Message message, MyViewHolder myViewHolder) {
@@ -1418,6 +1439,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         LinearLayout messageTextInsideLayout;
         LinearLayout richMessageLayout;
         RelativeLayout messageRootLayout;
+        FrameLayout emailLayout;
+        TextView viaEmailView;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1459,6 +1482,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             messageTextInsideLayout = customView.findViewById(R.id.messageTextInsideLayout);
             richMessageLayout = (LinearLayout) customView.findViewById(R.id.alRichMessageView);
             messageRootLayout = (RelativeLayout) customView.findViewById(R.id.messageLayout);
+            emailLayout = customView.findViewById(R.id.emailLayout);
+            viaEmailView = customView.findViewById(R.id.via_email_text_view);
 
             shareContactImage = (ImageView) mainContactShareLayout.findViewById(R.id.contact_share_image);
             shareContactName = (TextView) mainContactShareLayout.findViewById(R.id.contact_share_tv_name);

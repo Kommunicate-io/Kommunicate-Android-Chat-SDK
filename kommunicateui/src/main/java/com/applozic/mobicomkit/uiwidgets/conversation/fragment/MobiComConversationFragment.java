@@ -306,7 +306,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private String geoApiKey;
     private FrameLayout emailReplyReminderLayout;
     private Contact conversationAssignee;
+    public static final int TYPING_STOP_TIME = 30;
     public static final String KM_CONVERSATION_SUBJECT = "KM_CONVERSATION_SUBJECT";
+    public Map<String, CountDownTimer> typingTimerMap;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -1259,6 +1261,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void addMessage(final Message message) {
         hideAwayMessage(message);
+
+        if (message.getGroupId() != null) {
+            if (channel != null && channel.getKey().equals(message.getGroupId())) {
+                if (message.getTo() != null) {
+                    updateTypingStatus(message.getTo(), false);
+                }
+            }
+        } else if (contact != null && contact.getContactIds().equals(message.getTo())) {
+            updateTypingStatus(message.getTo(), false);
+        }
+
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -2466,62 +2479,81 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void updateUserTypingStatus(final String typingUserId, final String isTypingStatus) {
+        updateTypingStatus(typingUserId, "1".equals(isTypingStatus));
+    }
+
+    public void updateTypingStatus(final String typingUserId, final boolean start) {
         if (contact != null) {
             if (contact.isBlocked() || contact.isBlockedBy()) {
                 return;
             }
         }
-        this.getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (isTypingStatus.equals("1")) {
-                    if (channel != null) {
-                        if (!MobiComUserPreference.getInstance(getActivity()).getUserId().equals(typingUserId)) {
-                            Contact displayNameContact = appContactService.getContactById(typingUserId);
-                            if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
-                                return;
-                            }
-                            if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                                ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
-                            } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                                if (toolbarSubtitleText != null && getContext() != null) {
-                                    toolbarSubtitleText.setText(getContext().getString(R.string.typing));
-                                    toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
-                                }
-                            } else {
-                                ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(displayNameContact.getDisplayName() + " " + getActivity().getString(R.string.is_typing));
-                            }
-                        }
-                    } else {
-                        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
-                    }
-                } else {
-                    if (channel != null) {
-                        if (!MobiComUserPreference.getInstance(getActivity()).getUserId().equals(typingUserId)) {
-                            Contact displayNameContact = appContactService.getContactById(typingUserId);
-                            if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
-                                return;
-                            }
-                            if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                                if (toolbarSubtitleText != null) {
-                                    toolbarSubtitleText.setVisibility(View.GONE);
-                                }
-                                if (conversationAssignee != null) {
-                                    switchContactStatus(conversationAssignee);
-                                } else {
-                                    processSupportGroupDetails(channel);
-                                }
-                            } else {
-                                updateChannelSubTitle();
-                            }
-                        }
-                    } else {
-                        updateLastSeenStatus();
-                    }
 
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (start) {
+                        CountDownTimer timer = getCountDownTimer(typingUserId);
+                        if (timer != null) {
+                            timer.start();
+                        }
+
+                        if (channel != null) {
+                            if (!MobiComUserPreference.getInstance(getActivity()).getUserId().equals(typingUserId)) {
+                                Contact displayNameContact = appContactService.getContactById(typingUserId);
+                                if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
+                                    return;
+                                }
+                                if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                                    ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
+                                } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                                    if (toolbarSubtitleText != null && getContext() != null) {
+                                        toolbarSubtitleText.setText(getContext().getString(R.string.typing));
+                                        toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
+                                    }
+                                } else {
+                                    ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(displayNameContact.getDisplayName() + " " + getActivity().getString(R.string.is_typing));
+                                }
+                            }
+                        } else {
+                            ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(getActivity().getString(R.string.is_typing));
+                        }
+                    } else {
+                        if (typingTimerMap != null) {
+                            CountDownTimer timer = typingTimerMap.get(typingUserId);
+                            if (timer != null) {
+                                typingTimerMap.remove(typingUserId);
+                                timer.cancel();
+                            }
+                        }
+
+                        if (channel != null) {
+                            if (!MobiComUserPreference.getInstance(getActivity()).getUserId().equals(typingUserId)) {
+                                Contact displayNameContact = appContactService.getContactById(typingUserId);
+                                if (displayNameContact.isBlocked() || displayNameContact.isBlockedBy()) {
+                                    return;
+                                }
+                                if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                                    if (toolbarSubtitleText != null) {
+                                        toolbarSubtitleText.setVisibility(View.GONE);
+                                    }
+                                    if (conversationAssignee != null) {
+                                        switchContactStatus(conversationAssignee);
+                                    } else {
+                                        processSupportGroupDetails(channel);
+                                    }
+                                } else {
+                                    updateChannelSubTitle();
+                                }
+                            }
+                        } else {
+                            updateLastSeenStatus();
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
 //    public void onEmojiconClicked(Emojicon emojicon) {
@@ -2585,6 +2617,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
         if (recyclerDetailConversationAdapter != null) {
             recyclerDetailConversationAdapter.contactImageLoader.setPauseWork(false);
+        }
+
+        if (typingTimerMap != null) {
+            typingTimerMap.clear();
         }
     }
 
@@ -4091,5 +4127,33 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public static boolean isEmailConversation(Channel channel) {
         return channel != null && channel.getMetadata() != null && channel.getMetadata().containsKey(KM_CONVERSATION_SUBJECT);
+    }
+
+    public CountDownTimer getCountDownTimer(final String userId) {
+
+        if (typingTimerMap == null) {
+            typingTimerMap = new HashMap<>();
+        }
+
+        if (typingTimerMap.containsKey(userId)) {
+            return typingTimerMap.get(userId);
+        }
+
+        CountDownTimer timer = new CountDownTimer(TYPING_STOP_TIME * 1000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+
+            @Override
+            public void onFinish() {
+                if (typingTimerMap != null) {
+                    typingTimerMap.remove(userId);
+                }
+                updateTypingStatus(userId, false);
+            }
+        };
+
+        typingTimerMap.put(userId, timer);
+        return timer;
     }
 }

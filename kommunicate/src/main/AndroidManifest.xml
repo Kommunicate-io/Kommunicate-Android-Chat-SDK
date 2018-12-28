@@ -2,23 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.kommunicate">
 
+    <!--Permissions to be used when using these features-->
     <uses-permission
-        android:name="android.permission.INTERNET"
+        android:name="android.permission.CAMERA"
         tools:node="merge" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:node="merge" />
     <uses-permission
-        android:name="android.permission.READ_CONTACTS"
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="merge" />
+
+    <!--Mandatory permissions-->
     <uses-permission
         android:name="android.permission.VIBRATE"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.READ_PHONE_STATE"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.CALL_PHONE"
         tools:node="merge" />
     <uses-permission
         android:name="android.permission.ACCESS_COARSE_LOCATION"
@@ -27,22 +24,13 @@
         android:name="android.permission.ACCESS_FINE_LOCATION"
         tools:node="merge" />
     <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:node="merge" />
+    <uses-permission
         android:name="android.permission.ACCESS_NETWORK_STATE"
         tools:node="merge" />
     <uses-permission
         android:name="android.permission.RECEIVE_BOOT_COMPLETED"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.RECORD_AUDIO"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.CAMERA"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.GET_ACCOUNTS"
         tools:node="merge" />
 
     <application
@@ -150,20 +138,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="io.kommunicate.activities.KMConversationActivity" />
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-                <data android:mimeType="audio/*" />
-                <data android:mimeType="video/*" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
 
             <meta-data
                 android:name="android.app.searchable"

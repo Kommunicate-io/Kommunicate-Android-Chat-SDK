@@ -333,11 +333,19 @@ public class KmUserClientService extends UserClientService {
         }
 
         final KmRegistrationResponse kmRegistrationResponse = gson.fromJson(response, KmRegistrationResponse.class);
-        final RegistrationResponse registrationResponse = kmRegistrationResponse.getResult().getApplozicUser();
+        RegistrationResponse registrationResponse = null;
+        if (kmRegistrationResponse != null && kmRegistrationResponse.getResult() != null) {
+            registrationResponse = kmRegistrationResponse.getResult().getApplozicUser();
+        }
+
+        if (registrationResponse == null) {
+            RegistrationResponse invalidResponse = new RegistrationResponse();
+            invalidResponse.setMessage("Invalid response");
+            return invalidResponse;
+        }
 
         if (registrationResponse.isPasswordInvalid()) {
             throw new UnAuthoriseException("Invalid uername/password");
-
         }
         Utils.printLog(context, "Registration response ", "is " + registrationResponse);
         if (registrationResponse.getNotificationResponse() != null) {

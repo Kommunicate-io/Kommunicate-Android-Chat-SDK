@@ -2,10 +2,8 @@ package kommunicate.io.sample;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -19,7 +17,7 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +27,6 @@ import io.kommunicate.KmException;
 import io.kommunicate.KmHelper;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
-import io.kommunicate.utils.KMPermissionUtils;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
@@ -41,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
     AppCompatButton loginButton;
     LinearLayout layout;
     boolean exit = false;
-    private static final int REQUEST_CONTACTS = 1;
-    private static String[] PERMISSIONS_CONTACT = {android.Manifest.permission.READ_CONTACTS,
-            android.Manifest.permission.WRITE_CONTACTS};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,60 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        if (Utils.hasMarshmallow()) {
-            showRunTimePermission();
-        }
     }
-
-
-    public void showRunTimePermission() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestContactsPermissions();
-        }
-    }
-
-    private void requestContactsPermissions() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                android.Manifest.permission.READ_CONTACTS)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this,
-                android.Manifest.permission.WRITE_CONTACTS)) {
-
-            Snackbar.make(layout, R.string.contact_permission,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ActivityCompat
-                                    .requestPermissions(MainActivity.this, PERMISSIONS_CONTACT,
-                                            REQUEST_CONTACTS);
-                        }
-                    }).show();
-        } else {
-            ActivityCompat.requestPermissions(this, PERMISSIONS_CONTACT, REQUEST_CONTACTS);
-        }
-
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-        if (requestCode == REQUEST_CONTACTS) {
-            if (KMPermissionUtils.verifyPermissions(grantResults)) {
-                showSnackBar(R.string.contact_permission_granted);
-            } else {
-                showSnackBar(R.string.contact_permission_granted);
-            }
-
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
-
 
     public void showSnackBar(int resId) {
         Snackbar.make(layout, resId,
@@ -221,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
+                Toast.makeText(MainActivity.this, "Login Error : " + (registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception), Toast.LENGTH_SHORT).show();
             }
         });
     }

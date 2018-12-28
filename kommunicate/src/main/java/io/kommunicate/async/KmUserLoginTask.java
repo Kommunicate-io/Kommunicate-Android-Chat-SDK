@@ -62,11 +62,18 @@ public class KmUserLoginTask extends UserLoginTask {
 
     @Override
     protected void onPostExecute(Boolean result) {
-        if (result && handler != null) {
-            MobiComUserPreference.getInstance(context.get()).setUserRoleType(response.getRoleType());
-            handler.onSuccess(response, context.get());
-        } else if (handler != null && e != null) {
-            handler.onFailure(response, e);
+        if (response != null) {
+            if (handler != null) {
+                if (response.isRegistrationSuccess()) {
+                    handler.onSuccess(response, context.get());
+                } else {
+                    handler.onFailure(response, e);
+                }
+            }
+        } else {
+            if (handler != null) {
+                handler.onFailure(null, e);
+            }
         }
     }
 }

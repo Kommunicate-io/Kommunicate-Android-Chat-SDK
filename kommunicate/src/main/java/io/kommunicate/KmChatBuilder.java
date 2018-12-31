@@ -158,6 +158,10 @@ public class KmChatBuilder {
         return this;
     }
 
+    public void createChat(KmCallback callback) {
+        KmConversationHelper.createChat(this, callback);
+    }
+
     public void launchChat(KmCallback callback) {
         KmConversationHelper.launchChat(this, callback);
     }

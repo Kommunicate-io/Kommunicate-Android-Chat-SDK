@@ -393,7 +393,7 @@ public class Kommunicate {
             @Override
             public void onFailure(Channel channel, Exception e, Context context) {
                 try {
-                    startConversation(context, groupName, agentIds, botIds, true, handler);
+                    createConversation(context, groupName, agentIds, botIds, true, handler);
                 } catch (KmException e1) {
                     handler.onFailure(null, context);
                 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.conversation.ApplozicConversation;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -104,24 +105,34 @@ public class KmConversationHelper {
                         launchChat.getAgentIds(),
                         launchChat.getBotIds(),
                         launchChat.isSingleChat(),
-                        getStartChatHandler(launchChat.isSkipChatList(), callback));
+                        getStartChatHandler(launchChat.isSkipChatList(), true, callback));
             } catch (KmException e) {
-                callback.onFailure(e);
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
             }
         } else {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
                 Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId());
+            } else {
+                if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
+                    if (callback != null) {
+                        callback.onFailure("Application ID cannot be empty");
+                    }
+                }
             }
             if (launchChat.isWithPreChat()) {
                 try {
                     Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {
                         @Override
                         public void onReceive(KMUser user) {
-                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), callback), callback));
+                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, callback), callback));
                         }
                     });
                 } catch (KmException e) {
-                    callback.onFailure(e);
+                    if (callback != null) {
+                        callback.onFailure(e);
+                    }
                 }
             } else {
                 KMUser kmUser;
@@ -134,7 +145,74 @@ public class KmConversationHelper {
                     kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), callback), callback));
+                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, callback), callback));
+            }
+        }
+    }
+
+    public static void createChat(final KmChatBuilder launchChat, final KmCallback callback) {
+        if (launchChat == null) {
+            if (callback != null) {
+                callback.onFailure("Chat Builder cannot be null");
+            }
+            return;
+        }
+
+        if (launchChat.getContext() == null) {
+            if (callback != null) {
+                callback.onFailure("Context cannot be null");
+            }
+            return;
+        }
+
+        if (Kommunicate.isLoggedIn(launchChat.getContext())) {
+            try {
+                Kommunicate.startConversation(launchChat.getContext(),
+                        launchChat.getChatName(),
+                        launchChat.getAgentIds(),
+                        launchChat.getBotIds(),
+                        launchChat.isSingleChat(),
+                        getStartChatHandler(launchChat.isSkipChatList(), false, callback));
+            } catch (KmException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+        } else {
+            if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
+                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId());
+            } else {
+                if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
+                    if (callback != null) {
+                        callback.onFailure("Application ID cannot be empty");
+                    }
+                }
+            }
+            if (launchChat.isWithPreChat()) {
+                try {
+                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {
+                        @Override
+                        public void onReceive(KMUser user) {
+                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, callback), callback));
+                        }
+                    });
+                } catch (KmException e) {
+                    if (callback != null) {
+                        callback.onFailure(e);
+                    }
+                }
+            } else {
+                KMUser kmUser;
+
+                if (launchChat.getKmUser() != null) {
+                    kmUser = launchChat.getKmUser();
+                } else if (!TextUtils.isEmpty(launchChat.getUserId())) {
+                    kmUser = getKmUser(launchChat);
+                } else {
+                    kmUser = Kommunicate.getVisitor();
+                }
+
+                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, callback), callback));
             }
         }
     }
@@ -157,15 +235,18 @@ public class KmConversationHelper {
         return user;
     }
 
-    private static KMStartChatHandler getStartChatHandler(final boolean isSkipChatList, final KmCallback callback) {
+    private static KMStartChatHandler getStartChatHandler(final boolean isSkipChatList, final boolean launchChat, final KmCallback callback) {
         return new KMStartChatHandler() {
             @Override
             public void onSuccess(Channel channel, Context context) {
-                if (callback != null) {
-                    callback.onSuccess(channel);
-                }
                 try {
-                    openConversation(context, isSkipChatList, channel.getKey(), callback);
+                    if (callback != null) {
+                        if (launchChat) {
+                            openConversation(context, isSkipChatList, channel.getKey(), callback);
+                        } else {
+                            callback.onSuccess(channel.getKey());
+                        }
+                    }
                 } catch (KmException e) {
                     if (callback != null) {
                         e.getMessage();

@@ -2812,7 +2812,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         String name = "";
 
         if (contact != null) {
-
             name = contact.getDisplayName();
             imageUrl = contact.getImageURL();
         } else if (channel != null) {
@@ -2956,6 +2955,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         toolbarSubtitleText.setVisibility(View.GONE);
                     }
                 } else {
+                    toolbarSubtitleText.setVisibility(View.VISIBLE);
                     toolbarSubtitleText.setText(R.string.offline);
                 }
             }

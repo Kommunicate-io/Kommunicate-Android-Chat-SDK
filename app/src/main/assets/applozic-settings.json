@@ -65,6 +65,7 @@
   "hideAttachmentButton": false,
   "groupUsersOnlineStatus": false,
   "launchChatFromProfilePicOrName": false,
+  "enableShareConversation": true,
   "refreshOption": false,
   "deleteOption": false,
   "blockOption": true,

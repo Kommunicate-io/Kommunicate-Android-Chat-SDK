@@ -129,6 +129,7 @@ import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageResponse;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
@@ -1340,6 +1341,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (channel != null) {
             menu.findItem(R.id.dial).setVisible(false);
             menu.findItem(R.id.video_call).setVisible(false);
+            menu.findItem(R.id.share_conversation).setVisible(Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableShareConversation());
 
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                 String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
@@ -1436,6 +1438,15 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (id == R.id.deleteConversation) {
             deleteConversationThread();
             return true;
+        }
+
+        if (id == R.id.share_conversation) {
+            if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, new KmClientService(getContext()).getConversationShareUrl() + channel.getKey());
+                startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+            }
         }
 
         if (id == R.id.video_call) {
@@ -2841,6 +2852,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             String contactNumber = "";
             char firstLetter = 0;
+
+            if (name == null) {
+                return;
+            }
             contactNumber = name.toUpperCase();
             firstLetter = name.toUpperCase().charAt(0);
 
@@ -2891,10 +2906,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     conversationTitle = metadataMap.get(KommunicateUI.KM_CONVERSATION_TITLE);
                 }
 
-                if (!TextUtils.isEmpty(conversationTitle) && ChannelDatabaseService.getInstance(getContext()).isChannelUserPresent(channel.getKey(), conversationTitle)) {
-                    return appContactService.getContactById(conversationTitle);
+                if (!TextUtils.isEmpty(conversationAssignee) && ChannelDatabaseService.getInstance(getContext()).isChannelUserPresent(channel.getKey(), conversationAssignee)) {
+                    return appContactService.getContactById(conversationAssignee);
                 }
-                return appContactService.getContactById(conversationAssignee);
+                return appContactService.getContactById(conversationTitle);
             }
         } else {
             List<ChannelUserMapper> userMapperList = ChannelService.getInstance(getContext()).getListOfUsersFromChannelUserMapper(channel.getKey());
@@ -4012,6 +4027,23 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             case AlRichMessage.FAQ_ACTIONS:
                 sendMessage((String) object);
                 break;
+
+            case AlRichMessage.WEB_LINK:
+                if (object instanceof ALRichMessageModel.AlAction) {
+                    openWebLink(((ALRichMessageModel.AlAction) object).getUrl());
+                } else if (object instanceof ALRichMessageModel.ALPayloadModel) {
+                    openWebLink(((ALRichMessageModel.ALPayloadModel) object).getUrl());
+                }
+                break;
+        }
+    }
+
+    public void openWebLink(String url) {
+        if (getActivity() != null) {
+            Intent intent = new Intent(getActivity(), PaymentActivity.class);
+            intent.putExtra(AlRichMessage.WEB_LINK, true);
+            intent.putExtra(AlRichMessage.LINK_URL, url);
+            getActivity().startActivity(intent);
         }
     }
 
@@ -4078,26 +4110,40 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
         intent.putExtra("formData", model.getFormData());
         intent.putExtra("formAction", model.getFormAction());
-        getContext().startActivity(intent);
+        if (getActivity() != null) {
+            getActivity().startActivity(intent);
+        }
     }
 
     public void sendFaqMessage(ALRichMessageModel.AlElementModel model) {
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("KM_FAQ_ID", String.valueOf(model.getArticleId()));
-        metadata.put("source", model.getSource());
-        sendMessage(model.getTitle(), metadata, Message.ContentType.DEFAULT.getValue());
+
+        if (model.getAction() != null && AlRichMessage.WEB_LINK.equals(model.getAction().getType())) {
+            Intent intent = new Intent(getActivity(), PaymentActivity.class);
+            intent.putExtra(AlRichMessage.WEB_LINK, true);
+            intent.putExtra(AlRichMessage.LINK_URL, model.getAction().getUrl());
+            if (getActivity() != null) {
+                getActivity().startActivity(intent);
+            }
+        } else {
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("KM_FAQ_ID", String.valueOf(model.getArticleId()));
+            metadata.put("source", model.getSource());
+            sendMessage(model.getTitle(), metadata, Message.ContentType.DEFAULT.getValue());
+        }
     }
 
-    public class KMUserDetailTask extends AsyncTask<Void, Void, Boolean> {
+    public static class KMUserDetailTask extends AsyncTask<Void, Void, Boolean> {
 
         WeakReference<Context> context;
         String userId;
         KmUserDetailsCallback callback;
+        AppContactService appContactService;
 
         public KMUserDetailTask(Context context, String userId, KmUserDetailsCallback callback) {
             this.context = new WeakReference<>(context);
             this.userId = userId;
             this.callback = callback;
+            appContactService = new AppContactService(this.context.get());
         }
 
         @Override

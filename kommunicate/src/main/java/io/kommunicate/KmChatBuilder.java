@@ -2,12 +2,14 @@ package io.kommunicate;
 
 import android.content.Context;
 
+import com.applozic.mobicommons.json.JsonMarker;
+
 import java.util.List;
 
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.users.KMUser;
 
-public class KmChatBuilder {
+public class KmChatBuilder extends JsonMarker {
     private Context context;
     private boolean isSingleChat = true;
     private boolean withPreChat = false;

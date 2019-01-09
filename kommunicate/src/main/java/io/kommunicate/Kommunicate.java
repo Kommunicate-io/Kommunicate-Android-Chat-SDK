@@ -14,6 +14,7 @@ import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
+import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
 import io.kommunicate.activities.LeadCollectionActivity;
@@ -21,6 +22,7 @@ import io.kommunicate.activities.LeadCollectionActivity;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 
@@ -59,6 +61,7 @@ public class Kommunicate {
     public static final String START_NEW_CHAT = "startNewChat";
     public static final String LOGOUT_CALL = "logoutCall";
     public static final String PRECHAT_LOGIN_CALL = "prechatLogin";
+    private static final String TAG = "KommunicateTag";
 
     public static void init(Context context, String applicationKey) {
         Applozic.init(context, applicationKey);
@@ -136,6 +139,7 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
+    @Deprecated
     public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, final boolean isUnique, final List<String> agents, final List<String> bots, final KmCallback callback) {
         if (callback == null) {
             return;
@@ -313,6 +317,8 @@ public class Kommunicate {
         metadata.put("HIDE", "true");
 
         channelInfo.setMetadata(metadata);
+
+        Utils.printLog(context, TAG, "ChannelInfo : " + GsonUtils.getJsonFromObject(channelInfo, ChannelInfo.class));
 
         if (handler == null) {
             handler = new KMStartChatHandler() {

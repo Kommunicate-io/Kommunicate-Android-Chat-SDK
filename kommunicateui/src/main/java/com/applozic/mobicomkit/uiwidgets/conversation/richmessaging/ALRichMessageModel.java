@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import com.applozic.mobicommons.json.JsonMarker;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -124,6 +125,7 @@ public class ALRichMessageModel extends JsonMarker {
         private long articleId;
         private String source;
         private String imgSrc;
+        private AlActionModel action;
 
         public String getTitle() {
             return title;
@@ -163,6 +165,26 @@ public class ALRichMessageModel extends JsonMarker {
 
         public void setImgSrc(String imgSrc) {
             this.imgSrc = imgSrc;
+        }
+
+        public AlActionModel getAction() {
+            return action;
+        }
+
+        public void setAction(AlActionModel action) {
+            this.action = action;
+        }
+
+        @Override
+        public String toString() {
+            return "AlElementModel{" +
+                    "title='" + title + '\'' +
+                    ", description='" + description + '\'' +
+                    ", articleId=" + articleId +
+                    ", source='" + source + '\'' +
+                    ", imgSrc='" + imgSrc + '\'' +
+                    ", action=" + action +
+                    '}';
         }
     }
 
@@ -339,6 +361,31 @@ public class ALRichMessageModel extends JsonMarker {
         public void setElements(List<AlElementModel> elements) {
             this.elements = elements;
         }
+
+        @Override
+        public String toString() {
+            return "ALPayloadModel{" +
+                    "title='" + title + '\'' +
+                    ", type='" + type + '\'' +
+                    ", url='" + url + '\'' +
+                    ", name='" + name + '\'' +
+                    ", handlerId='" + handlerId + '\'' +
+                    ", formAction='" + formAction + '\'' +
+                    ", message='" + message + '\'' +
+                    ", headerText='" + headerText + '\'' +
+                    ", headerImgSrc='" + headerImgSrc + '\'' +
+                    ", headerImageUrl='" + headerImageUrl + '\'' +
+                    ", subtitle='" + subtitle + '\'' +
+                    ", description='" + description + '\'' +
+                    ", elements=" + elements +
+                    ", actions=" + actions +
+                    ", rating='" + rating + '\'' +
+                    ", overlayText='" + overlayText + '\'' +
+                    ", buttonLabel='" + buttonLabel + '\'' +
+                    ", buttons=" + Arrays.toString(buttons) +
+                    ", formData=" + formData +
+                    '}';
+        }
     }
 
     public class AlFormDataModel extends JsonMarker {
@@ -432,20 +479,33 @@ public class ALRichMessageModel extends JsonMarker {
         public void setHASH(String HASH) {
             this.HASH = HASH;
         }
+
+        @Override
+        public String toString() {
+            return "AlFormDataModel{" +
+                    "key='" + key + '\'' +
+                    ", txnid='" + txnid + '\'' +
+                    ", amount='" + amount + '\'' +
+                    ", productinfo='" + productinfo + '\'' +
+                    ", firstname='" + firstname + '\'' +
+                    ", email='" + email + '\'' +
+                    ", phone='" + phone + '\'' +
+                    ", furl='" + furl + '\'' +
+                    ", surl='" + surl + '\'' +
+                    ", HASH='" + HASH + '\'' +
+                    '}';
+        }
     }
 
     public class AlActionModel extends JsonMarker {
-        private Object action;
+        private AlAction action;
         private String type;
         private String name;
         private String data;
+        private String url;
 
         public Object getAction() {
             return action;
-        }
-
-        public void setAction(Object action) {
-            this.action = action;
         }
 
         public String getName() {
@@ -470,6 +530,54 @@ public class ALRichMessageModel extends JsonMarker {
 
         public void setType(String type) {
             this.type = type;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        @Override
+        public String toString() {
+            return "AlActionModel{" +
+                    "action=" + action +
+                    ", type='" + type + '\'' +
+                    ", name='" + name + '\'' +
+                    ", data='" + data + '\'' +
+                    ", url='" + url + '\'' +
+                    '}';
+        }
+    }
+
+    public static class AlAction extends JsonMarker {
+        private String url;
+        private String type;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return "AlAction{" +
+                    "url='" + url + '\'' +
+                    ", type='" + type + '\'' +
+                    '}';
         }
     }
 

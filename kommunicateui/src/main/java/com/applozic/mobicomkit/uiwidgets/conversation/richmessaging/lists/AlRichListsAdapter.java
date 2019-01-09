@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageModel;
@@ -23,12 +24,14 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
 
     private Context context;
     private List<ALRichMessageModel.AlElementModel> elementList;
-    ALRichMessageListener messageListener;
+    private ALRichMessageListener messageListener;
+    private Message message;
 
-    public AlRichListsAdapter(Context context, List<ALRichMessageModel.AlElementModel> elementList, ALRichMessageListener messageListener) {
+    public AlRichListsAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, ALRichMessageListener messageListener) {
         this.context = context;
         this.elementList = elementList;
         this.messageListener = messageListener;
+        this.message = message;
     }
 
     @NonNull
@@ -94,9 +97,9 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
             int itemPosition = this.getLayoutPosition();
             if (itemPosition != -1 && elementList != null && !elementList.isEmpty()) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, AlRichMessage.LIST_ITEM_CLICK, null, elementList.get(itemPosition));
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, AlRichMessage.TEMPLATE_ID + 7, message, elementList.get(itemPosition));
                 } else if (messageListener != null) {
-                    messageListener.onAction(context, AlRichMessage.LIST_ITEM_CLICK, null, elementList.get(itemPosition));
+                    messageListener.onAction(context, AlRichMessage.LIST_ITEM_CLICK, message, elementList.get(itemPosition));
                 }
             }
         }

@@ -27,7 +27,6 @@ public class KmAgentModel extends JsonMarker {
         private String userName;
         private String agentId;
         private String agentName;
-        private String widgetTheme;
 
         public String getUserName() {
             return userName;
@@ -51,14 +50,6 @@ public class KmAgentModel extends JsonMarker {
 
         public void setAgentName(String agentName) {
             this.agentName = agentName;
-        }
-
-        public String getWidgetTheme() {
-            return widgetTheme;
-        }
-
-        public void setWidgetTheme(String widgetTheme) {
-            this.widgetTheme = widgetTheme;
         }
     }
 }

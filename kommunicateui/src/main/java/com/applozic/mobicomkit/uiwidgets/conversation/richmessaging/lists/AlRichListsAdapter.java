@@ -19,6 +19,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessag
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+import java.util.Map;
 
 public class AlRichListsAdapter extends RecyclerView.Adapter {
 
@@ -26,12 +27,14 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
     private List<ALRichMessageModel.AlElementModel> elementList;
     private ALRichMessageListener messageListener;
     private Message message;
+    private Map<String, String> replyMetadata;
 
-    public AlRichListsAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, ALRichMessageListener messageListener) {
+    public AlRichListsAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, String> replyMetadata, ALRichMessageListener messageListener) {
         this.context = context;
         this.elementList = elementList;
         this.messageListener = messageListener;
         this.message = message;
+        this.replyMetadata = replyMetadata;
     }
 
     @NonNull
@@ -97,9 +100,9 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
             int itemPosition = this.getLayoutPosition();
             if (itemPosition != -1 && elementList != null && !elementList.isEmpty()) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, AlRichMessage.TEMPLATE_ID + 7, message, elementList.get(itemPosition));
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, AlRichMessage.TEMPLATE_ID + 7, message, elementList.get(itemPosition), replyMetadata);
                 } else if (messageListener != null) {
-                    messageListener.onAction(context, AlRichMessage.LIST_ITEM_CLICK, message, elementList.get(itemPosition));
+                    messageListener.onAction(context, AlRichMessage.LIST_ITEM_CLICK, message, elementList.get(itemPosition), replyMetadata);
                 }
             }
         }

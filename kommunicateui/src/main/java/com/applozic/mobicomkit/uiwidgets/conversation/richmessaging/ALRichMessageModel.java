@@ -4,6 +4,7 @@ import com.applozic.mobicommons.json.JsonMarker;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ashish on 28/02/18.
@@ -206,6 +207,7 @@ public class ALRichMessageModel extends JsonMarker {
         private String rating;
         private String overlayText;
         private String buttonLabel;
+        private Map<String, String> replyMetadata;
         private AlActionModel[] buttons;
         private AlFormDataModel formData;
 
@@ -279,6 +281,14 @@ public class ALRichMessageModel extends JsonMarker {
 
         public void setHeaderImageUrl(String headerImageUrl) {
             this.headerImageUrl = headerImageUrl;
+        }
+
+        public Map<String, String> getReplyMetadata() {
+            return replyMetadata;
+        }
+
+        public void setReplyMetadata(Map<String, String> replyMetadata) {
+            this.replyMetadata = replyMetadata;
         }
 
         public String getSubtitle() {

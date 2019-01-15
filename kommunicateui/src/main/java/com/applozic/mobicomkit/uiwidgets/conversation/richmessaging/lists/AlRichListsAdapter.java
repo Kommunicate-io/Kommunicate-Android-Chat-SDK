@@ -27,9 +27,9 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
     private List<ALRichMessageModel.AlElementModel> elementList;
     private ALRichMessageListener messageListener;
     private Message message;
-    private Map<String, String> replyMetadata;
+    private Map<String, Object> replyMetadata;
 
-    public AlRichListsAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, String> replyMetadata, ALRichMessageListener messageListener) {
+    public AlRichListsAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, Object> replyMetadata, ALRichMessageListener messageListener) {
         this.context = context;
         this.elementList = elementList;
         this.messageListener = messageListener;

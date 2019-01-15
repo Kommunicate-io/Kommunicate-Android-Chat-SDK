@@ -120,10 +120,10 @@ public class ALRichMessageModel extends JsonMarker {
         this.formData = formData;
     }
 
-    public class AlElementModel extends JsonMarker {
+    public class AlElementModel<T> extends JsonMarker {
         private String title;
         private String description;
-        private long articleId;
+        private T articleId;
         private String source;
         private String imgSrc;
         private AlActionModel action;
@@ -144,11 +144,11 @@ public class ALRichMessageModel extends JsonMarker {
             this.description = description;
         }
 
-        public long getArticleId() {
+        public T getArticleId() {
             return articleId;
         }
 
-        public void setArticleId(long articleId) {
+        public void setArticleId(T articleId) {
             this.articleId = articleId;
         }
 
@@ -207,7 +207,7 @@ public class ALRichMessageModel extends JsonMarker {
         private String rating;
         private String overlayText;
         private String buttonLabel;
-        private Map<String, String> replyMetadata;
+        private Map<String, Object> replyMetadata;
         private AlActionModel[] buttons;
         private AlFormDataModel formData;
 
@@ -283,11 +283,11 @@ public class ALRichMessageModel extends JsonMarker {
             this.headerImageUrl = headerImageUrl;
         }
 
-        public Map<String, String> getReplyMetadata() {
+        public Map<String, Object> getReplyMetadata() {
             return replyMetadata;
         }
 
-        public void setReplyMetadata(Map<String, String> replyMetadata) {
+        public void setReplyMetadata(Map<String, Object> replyMetadata) {
             this.replyMetadata = replyMetadata;
         }
 

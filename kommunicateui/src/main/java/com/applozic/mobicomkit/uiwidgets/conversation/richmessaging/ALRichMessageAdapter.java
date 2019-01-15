@@ -628,7 +628,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         });
     }
 
-    private View.OnClickListener getActionClickListener(final ALRichMessageModel.AlActionModel action, final Map<String, String> replyMetadata) {
+    private View.OnClickListener getActionClickListener(final ALRichMessageModel.AlActionModel action, final Map<String, Object> replyMetadata) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

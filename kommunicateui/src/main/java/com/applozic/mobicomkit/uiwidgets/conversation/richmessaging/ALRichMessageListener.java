@@ -11,5 +11,5 @@ import java.util.Map;
  */
 
 public interface ALRichMessageListener {
-    void onAction(Context context, String action, Message message, Object object, Map<String, String> replyMetadata);
+    void onAction(Context context, String action, Message message, Object object, Map<String, Object> replyMetadata);
 }

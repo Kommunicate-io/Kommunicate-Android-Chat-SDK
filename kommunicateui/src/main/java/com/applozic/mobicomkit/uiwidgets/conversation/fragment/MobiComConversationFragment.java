@@ -3993,27 +3993,27 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     @Override
-    public void onAction(Context context, String action, Message message, Object object, Map<String, String> replyMetadata) {
+    public void onAction(Context context, String action, Message message, Object object, Map<String, Object> replyMetadata) {
         switch (action) {
             case AlRichMessage.SEND_GUEST_LIST:
                 List<ALGuestCountModel> guestCountModels = (List<ALGuestCountModel>) object;
-                sendGuestListMessage(guestCountModels, replyMetadata);
+                sendGuestListMessage(guestCountModels, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.SEND_HOTEL_RATING:
-                sendMessage((String) object, replyMetadata);
+                sendMessage((String) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.SEND_HOTEL_DETAILS:
-                sendHotelDetailMessage((AlHotelBookingModel) object, replyMetadata);
+                sendHotelDetailMessage((AlHotelBookingModel) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.SEND_ROOM_DETAILS_MESSAGE:
-                sendRoomDetailsMessage((AlHotelBookingModel) object, replyMetadata);
+                sendRoomDetailsMessage((AlHotelBookingModel) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.SEND_BOOKING_DETAILS:
-                sendBookingDetailsMessage((ALBookingDetailsModel) object, replyMetadata);
+                sendBookingDetailsMessage((ALBookingDetailsModel) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.MAKE_PAYMENT:
@@ -4021,11 +4021,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 break;
 
             case AlRichMessage.LIST_ITEM_CLICK:
-                sendFaqMessage((ALRichMessageModel.AlElementModel) object, replyMetadata);
+                sendFaqMessage((ALRichMessageModel.AlElementModel) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.FAQ_ACTIONS:
-                sendMessage((String) object, replyMetadata);
+                sendMessage((String) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.WEB_LINK:
@@ -4036,6 +4036,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 }
                 break;
         }
+    }
+
+    public Map<String, String> getStringMap(Map<String, Object> objectMap) {
+        if (objectMap == null) {
+            return null;
+        }
+        Map<String, String> newMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
+            newMap.put(entry.getKey(), entry.getValue() instanceof String ? (String) entry.getValue() : entry.getValue().toString());
+        }
+        return newMap;
     }
 
     public void sendMessage(String message, Map<String, String> replyMetadata) {

@@ -403,9 +403,9 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             final AlHotelBookingModel hotel = hotelList.get(position);
 
             if (!TextUtils.isEmpty(hotel.getHotelName())) {
-                viewHolder.productNameSingleLine.setText(hotel.getHotelName() + " (" + hotel.getStarRating() + "/5)");
+                viewHolder.productNameSingleLine.setText(AlRichMessage.getHtmlText(hotel.getHotelName() + " (" + hotel.getStarRating() + "/5)"));
             } else {
-                viewHolder.productNameSingleLine.setText("Name Unavailable (" + hotel.getStarRating() + "/5)");
+                viewHolder.productNameSingleLine.setText(AlRichMessage.getHtmlText("Name Unavailable (" + hotel.getStarRating() + "/5)"));
             }
 
             viewHolder.productPrice.setText(context.getString(R.string.rupee_symbol) + " " + hotel.getPrice().getRoomPrice());
@@ -417,13 +417,13 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             }
 
             if (!TextUtils.isEmpty(hotel.getHotelAddress())) {
-                viewHolder.productLocation.setText(hotel.getHotelAddress());
+                viewHolder.productLocation.setText(AlRichMessage.getHtmlText(hotel.getHotelAddress()));
             } else {
                 viewHolder.productLocation.setText("Address unavailable");
             }
 
             if (!TextUtils.isEmpty(hotel.getHotelDescription())) {
-                viewHolder.productDescription.setText(hotel.getHotelDescription());
+                viewHolder.productDescription.setText(AlRichMessage.getHtmlText(hotel.getHotelDescription()));
             } else {
                 viewHolder.productDescription.setText("Description unavailable");
             }
@@ -484,14 +484,14 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
             if (!TextUtils.isEmpty(payload.getSubtitle())) {
                 viewHolder.productLocation.setVisibility(View.VISIBLE);
-                viewHolder.productLocation.setText(payload.getSubtitle());
+                viewHolder.productLocation.setText(AlRichMessage.getHtmlText(payload.getSubtitle()));
             } else {
                 viewHolder.productLocation.setVisibility(View.GONE);
             }
 
             if (!TextUtils.isEmpty(payload.getDescription())) {
                 viewHolder.productDescription.setVisibility(View.VISIBLE);
-                viewHolder.productDescription.setText(payload.getDescription());
+                viewHolder.productDescription.setText(AlRichMessage.getHtmlText(payload.getDescription()));
             } else {
                 viewHolder.productDescription.setVisibility(View.GONE);
             }
@@ -557,7 +557,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
         if (hotel != null) {
             if (!TextUtils.isEmpty(hotel.getRoomTypeName())) {
-                holder.roomTypeTv.setText(hotel.getRoomTypeName());
+                holder.roomTypeTv.setText(AlRichMessage.getHtmlText(hotel.getRoomTypeName()));
             } else {
                 holder.roomTypeTv.setText("Room name unavailable");
             }

@@ -52,14 +52,14 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
     public void bindView(AlListItemViewHolder holder, ALRichMessageModel.AlElementModel element) {
         if (!TextUtils.isEmpty(element.getTitle())) {
             holder.headerTv.setVisibility(View.VISIBLE);
-            holder.headerTv.setText(element.getTitle().trim());
+            holder.headerTv.setText(AlRichMessage.getHtmlText(element.getTitle().trim()));
         } else {
             holder.headerTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(element.getDescription().trim())) {
             holder.detailsTv.setVisibility(View.VISIBLE);
-            holder.detailsTv.setText(element.getDescription());
+            holder.detailsTv.setText(AlRichMessage.getHtmlText(element.getDescription()));
         } else {
             holder.detailsTv.setVisibility(View.GONE);
         }

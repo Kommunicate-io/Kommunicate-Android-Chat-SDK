@@ -1,8 +1,11 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,14 +110,14 @@ public class AlRichMessage {
                 if (payload != null) {
                     if (!TextUtils.isEmpty(payload.getTitle())) {
                         titleText.setVisibility(View.VISIBLE);
-                        titleText.setText(payload.getTitle());
+                        titleText.setText(getHtmlText(payload.getTitle()));
                     } else {
                         titleText.setVisibility(View.GONE);
                     }
 
                     if (!TextUtils.isEmpty(payload.getDescription())) {
                         descriptionText.setVisibility(View.VISIBLE);
-                        descriptionText.setText(payload.getDescription());
+                        descriptionText.setText(getHtmlText(payload.getDescription()));
                     } else {
                         descriptionText.setVisibility(View.GONE);
                     }
@@ -210,7 +213,7 @@ public class AlRichMessage {
 
                     if (!TextUtils.isEmpty(payload.getHeaderText())) {
                         headerText.setVisibility(View.VISIBLE);
-                        headerText.setText(payload.getHeaderText());
+                        headerText.setText(getHtmlText(payload.getHeaderText()));
                     } else {
                         headerText.setVisibility(View.GONE);
                     }
@@ -305,6 +308,14 @@ public class AlRichMessage {
 
                 flowLayout.addView(view);
             }
+        }
+    }
+
+    public static Spanned getHtmlText(String message) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT);
+        } else {
+            return Html.fromHtml(message);
         }
     }
 }

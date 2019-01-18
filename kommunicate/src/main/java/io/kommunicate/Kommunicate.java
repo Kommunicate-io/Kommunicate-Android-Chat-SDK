@@ -13,6 +13,7 @@ import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
@@ -451,6 +452,7 @@ public class Kommunicate {
     public static KMUser getVisitor() {
         KMUser user = new KMUser();
         user.setUserId(generateUserId());
+        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
         return user;
     }
 

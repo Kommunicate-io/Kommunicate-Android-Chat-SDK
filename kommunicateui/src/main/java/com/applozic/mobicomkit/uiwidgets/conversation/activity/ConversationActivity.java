@@ -79,6 +79,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConve
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
@@ -372,7 +373,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         inviteMessage = Utils.getMetaDataValue(getApplicationContext(), SHARE_TEXT);
         retry = 0;
 
-        if (isServiceDisconnected()) {
+        if (KmUtils.isServiceDisconnected(this, alCustomizationSettings != null && alCustomizationSettings.isAgentApp(), customToolbarLayout)) {
             serviceDisconnectionLayout.setVisibility(View.VISIBLE);
         } else {
             if (savedInstanceState != null) {
@@ -457,7 +458,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         try {
-            if (isServiceDisconnected()) {
+            if (KmUtils.isServiceDisconnected(this, alCustomizationSettings != null && alCustomizationSettings.isAgentApp(), customToolbarLayout)) {
                 serviceDisconnectionLayout.setVisibility(View.VISIBLE);
             } else {
                 if (intent.getExtras() != null) {
@@ -1219,17 +1220,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     }
 
-    public boolean isServiceDisconnected() {
-        boolean isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-        boolean disconnect = alCustomizationSettings != null && !alCustomizationSettings.isAgentApp()
-                && MobiComUserPreference.getInstance(this).getPricingPackage() == PackageType.STARTUP.getValue()
-                && !isDebuggable;
-        if (customToolbarLayout != null) {
-            customToolbarLayout.setVisibility(disconnect ? View.GONE : View.VISIBLE);
-        }
-        return disconnect;
-    }
-
     @Override
     public Uri getCurrentImageUri() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -1363,26 +1353,4 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
         }
     }
-
-    public enum PackageType {
-        STARTUP(101),
-        PER_AGENT_MONTHLY(102),
-        PER_AGENT_YEARLY(103),
-        GROWTH_MONTHLY(104),
-        ENTERPRISE_MONTHLY(105),
-        ENTERPRISE_YEARLY(106),
-        EARLY_BIRD_MONTHLY(107),
-        EARLY_BIRD_YEARLY(108);
-
-        private int value;
-
-        PackageType(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-    }
-
 }

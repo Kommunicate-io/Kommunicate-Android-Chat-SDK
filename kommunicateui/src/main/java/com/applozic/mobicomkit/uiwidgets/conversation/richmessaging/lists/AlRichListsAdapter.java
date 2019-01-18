@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageModel;
@@ -18,17 +19,22 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessag
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+import java.util.Map;
 
 public class AlRichListsAdapter extends RecyclerView.Adapter {
 
     private Context context;
     private List<ALRichMessageModel.AlElementModel> elementList;
-    ALRichMessageListener messageListener;
+    private ALRichMessageListener messageListener;
+    private Message message;
+    private Map<String, Object> replyMetadata;
 
-    public AlRichListsAdapter(Context context, List<ALRichMessageModel.AlElementModel> elementList, ALRichMessageListener messageListener) {
+    public AlRichListsAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, Object> replyMetadata, ALRichMessageListener messageListener) {
         this.context = context;
         this.elementList = elementList;
         this.messageListener = messageListener;
+        this.message = message;
+        this.replyMetadata = replyMetadata;
     }
 
     @NonNull
@@ -46,14 +52,14 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
     public void bindView(AlListItemViewHolder holder, ALRichMessageModel.AlElementModel element) {
         if (!TextUtils.isEmpty(element.getTitle())) {
             holder.headerTv.setVisibility(View.VISIBLE);
-            holder.headerTv.setText(element.getTitle().trim());
+            holder.headerTv.setText(AlRichMessage.getHtmlText(element.getTitle().trim()));
         } else {
             holder.headerTv.setVisibility(View.GONE);
         }
 
         if (!TextUtils.isEmpty(element.getDescription().trim())) {
             holder.detailsTv.setVisibility(View.VISIBLE);
-            holder.detailsTv.setText(element.getDescription());
+            holder.detailsTv.setText(AlRichMessage.getHtmlText(element.getDescription()));
         } else {
             holder.detailsTv.setVisibility(View.GONE);
         }
@@ -94,9 +100,9 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
             int itemPosition = this.getLayoutPosition();
             if (itemPosition != -1 && elementList != null && !elementList.isEmpty()) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, AlRichMessage.LIST_ITEM_CLICK, null, elementList.get(itemPosition));
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, AlRichMessage.TEMPLATE_ID + 7, message, elementList.get(itemPosition), replyMetadata);
                 } else if (messageListener != null) {
-                    messageListener.onAction(context, AlRichMessage.LIST_ITEM_CLICK, null, elementList.get(itemPosition));
+                    messageListener.onAction(context, AlRichMessage.LIST_ITEM_CLICK, message, elementList.get(itemPosition), replyMetadata);
                 }
             }
         }

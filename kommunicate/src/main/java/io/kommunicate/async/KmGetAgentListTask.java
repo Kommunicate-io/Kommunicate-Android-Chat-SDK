@@ -13,17 +13,15 @@ import io.kommunicate.services.KmUserService;
 
 public class KmGetAgentListTask extends AsyncTask<Void, Void, KmAgentModel> {
 
-    private WeakReference<Context> context;
     private String appKey;
     private KmUserService userService;
     private Exception exception;
     private KmCallback callback;
 
     public KmGetAgentListTask(Context context, String appKey, KmCallback callback) {
-        this.context = new WeakReference<>(context);
         this.appKey = appKey;
         this.callback = callback;
-        userService = new KmUserService(this.context.get());
+        userService = new KmUserService(new WeakReference<>(context).get());
     }
 
     @Override
@@ -31,6 +29,7 @@ public class KmGetAgentListTask extends AsyncTask<Void, Void, KmAgentModel> {
         try {
             return (KmAgentModel) GsonUtils.getObjectFromJson(userService.getAgentList(appKey), KmAgentModel.class);
         } catch (Exception e) {
+            e.printStackTrace();
             exception = e;
         }
         return null;

@@ -37,6 +37,10 @@
     <string name="snap_text">Oh Snap!</string>
     <string name="account_disconnection_message">We’re sorry but messaging is not \navailable at the moment.\nPlease contact support for more details</string>
     <string name="powered_by_applozic_message">We are powered by Kommunicate</string>
+    <string name="share_using">Share using</string>
+    <string name="warning">Warning</string>
+    <string name="cancel_transaction">Do you want to cancel this transaction?</string>
+    <string name="go_back">Are you sure you want to exit this page?</string>
 
     <!--
          Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by

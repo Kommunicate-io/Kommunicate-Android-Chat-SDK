@@ -6,9 +6,21 @@
     android:orientation="vertical"
     tools:context="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity">
 
-    <WebView
-        android:id="@+id/paymentWebView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
+        <ProgressBar
+            android:id="@+id/loadingProgress"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <WebView
+            android:id="@+id/paymentWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+    </FrameLayout>
 </LinearLayout>

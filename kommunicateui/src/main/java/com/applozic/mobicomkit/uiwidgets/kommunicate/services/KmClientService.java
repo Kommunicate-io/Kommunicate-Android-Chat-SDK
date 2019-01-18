@@ -13,10 +13,25 @@ import com.applozic.mobicomkit.api.MobiComKitClientService;
 public class KmClientService extends MobiComKitClientService {
 
     private HttpRequestUtils httpRequestUtils;
+    public static final String CONVERSATION_SHARE_URL = "https://dashboard.kommunicate.io/conversations/";
+    public static final String CONVERSATION_SHARE_TEST_URL = "https://dashboard-test.kommunicate.io/conversations/";
+    public static final String CONVERSATION_SHARE_CA_URL = "https://dashboard-ca.kommunicate.io/conversations/";
+    public static final String KM_BASE_URL = "https://api.kommunicate.io";
+    public static final String KM_TEST_URL = "https://api-test.kommunicate.io";
+    public static final String KM_CA_URL = "https://api-ca.kommunicate.io";
 
     public KmClientService(Context context) {
         super(context);
         httpRequestUtils = new HttpRequestUtils(context);
+    }
+
+    public String getConversationShareUrl() {
+        if (KM_TEST_URL.equals(getKmBaseUrl())) {
+            return CONVERSATION_SHARE_TEST_URL;
+        } else if (KM_CA_URL.equals(getKmBaseUrl())) {
+            return CONVERSATION_SHARE_CA_URL;
+        }
+        return CONVERSATION_SHARE_URL;
     }
 
     private String getAwayMessageUrl() {

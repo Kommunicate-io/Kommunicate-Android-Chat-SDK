@@ -132,4 +132,12 @@
         android:showAsAction="collapseActionView"
         android:title="@string/logout"
         android:visible="false" />
+
+    <item
+        android:id="@+id/share_conversation"
+        android:orderInCategory="12"
+        android:showAsAction="never"
+        android:title="@string/shareOptions"
+        android:visible="false"
+        mobicomkit:showAsAction="never" />
 </menu>

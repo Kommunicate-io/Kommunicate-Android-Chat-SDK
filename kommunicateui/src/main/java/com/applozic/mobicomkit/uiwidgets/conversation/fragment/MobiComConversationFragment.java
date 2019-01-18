@@ -129,6 +129,7 @@ import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageResponse;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
@@ -1343,6 +1344,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (channel != null) {
             menu.findItem(R.id.dial).setVisible(false);
             menu.findItem(R.id.video_call).setVisible(false);
+            menu.findItem(R.id.share_conversation).setVisible(Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableShareConversation());
 
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                 String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
@@ -1439,6 +1441,15 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (id == R.id.deleteConversation) {
             deleteConversationThread();
             return true;
+        }
+
+        if (id == R.id.share_conversation) {
+            if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, new KmClientService(getContext()).getConversationShareUrl() + channel.getKey());
+                startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_using)));
+            }
         }
 
         if (id == R.id.video_call) {
@@ -2844,6 +2855,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             String contactNumber = "";
             char firstLetter = 0;
+
+            if (name == null) {
+                return;
+            }
             contactNumber = name.toUpperCase();
             firstLetter = name.toUpperCase().charAt(0);
 
@@ -3949,27 +3964,27 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     @Override
-    public void onAction(Context context, String action, Message message, Object object) {
+    public void onAction(Context context, String action, Message message, Object object, Map<String, Object> replyMetadata) {
         switch (action) {
             case AlRichMessage.SEND_GUEST_LIST:
                 List<ALGuestCountModel> guestCountModels = (List<ALGuestCountModel>) object;
-                sendGuestListMessage(guestCountModels);
+                sendGuestListMessage(guestCountModels, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.SEND_HOTEL_RATING:
-                sendMessage((String) object);
+                sendMessage((String) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.SEND_HOTEL_DETAILS:
-                sendHotelDetailMessage((AlHotelBookingModel) object);
+                sendHotelDetailMessage((AlHotelBookingModel) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.SEND_ROOM_DETAILS_MESSAGE:
-                sendRoomDetailsMessage((AlHotelBookingModel) object);
+                sendRoomDetailsMessage((AlHotelBookingModel) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.SEND_BOOKING_DETAILS:
-                sendBookingDetailsMessage((ALBookingDetailsModel) object);
+                sendBookingDetailsMessage((ALBookingDetailsModel) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.MAKE_PAYMENT:
@@ -3977,16 +3992,48 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 break;
 
             case AlRichMessage.LIST_ITEM_CLICK:
-                sendFaqMessage((ALRichMessageModel.AlElementModel) object);
+                sendFaqMessage((ALRichMessageModel.AlElementModel) object, getStringMap(replyMetadata));
                 break;
 
             case AlRichMessage.FAQ_ACTIONS:
-                sendMessage((String) object);
+                sendMessage((String) object, getStringMap(replyMetadata));
+                break;
+
+            case AlRichMessage.WEB_LINK:
+                if (object instanceof ALRichMessageModel.AlAction) {
+                    openWebLink(((ALRichMessageModel.AlAction) object).getUrl());
+                } else if (object instanceof ALRichMessageModel.ALPayloadModel) {
+                    openWebLink(((ALRichMessageModel.ALPayloadModel) object).getUrl());
+                }
                 break;
         }
     }
 
-    public void sendGuestListMessage(List<ALGuestCountModel> guestList) {
+    public Map<String, String> getStringMap(Map<String, Object> objectMap) {
+        if (objectMap == null) {
+            return null;
+        }
+        Map<String, String> newMap = new HashMap<>();
+        for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
+            newMap.put(entry.getKey(), entry.getValue() instanceof String ? (String) entry.getValue() : entry.getValue().toString());
+        }
+        return newMap;
+    }
+
+    public void sendMessage(String message, Map<String, String> replyMetadata) {
+        sendMessage(message, replyMetadata, null, null, Message.ContentType.DEFAULT.getValue());
+    }
+
+    public void openWebLink(String url) {
+        if (getActivity() != null) {
+            Intent intent = new Intent(getActivity(), PaymentActivity.class);
+            intent.putExtra(AlRichMessage.WEB_LINK, true);
+            intent.putExtra(AlRichMessage.LINK_URL, url);
+            getActivity().startActivity(intent);
+        }
+    }
+
+    public void sendGuestListMessage(List<ALGuestCountModel> guestList, Map<String, String> replyMetadata) {
 
         Map<String, String> metadata = new HashMap<>();
         metadata.put("guestTypeId", "ADULTS");
@@ -4006,10 +4053,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             message.append(", ");
         }
 
+        if (replyMetadata != null) {
+            metadata.putAll(replyMetadata);
+        }
+
         sendMessage(message.toString(), metadata, Message.ContentType.DEFAULT.getValue());
     }
 
-    public void sendHotelDetailMessage(AlHotelBookingModel hotel) {
+    public void sendHotelDetailMessage(AlHotelBookingModel hotel, Map<String, String> replyMetadata) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("hotelSelected", "true");
         metadata.put("resultIndex", String.valueOf(hotel.getResultIndex()));
@@ -4018,10 +4069,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         String message = "Get room detail of " + hotel.getHotelName();
 
+        if (replyMetadata != null) {
+            metadata.putAll(replyMetadata);
+        }
+
         sendMessage(message, metadata, Message.ContentType.DEFAULT.getValue());
     }
 
-    public void sendRoomDetailsMessage(AlHotelBookingModel hotel) {
+    public void sendRoomDetailsMessage(AlHotelBookingModel hotel, Map<String, String> replyMetadata) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("HotelResultIndex", String.valueOf(hotel.getHotelResultIndex()));
         metadata.put("NoOfRooms", String.valueOf(hotel.getNoOfRooms()));
@@ -4030,17 +4085,25 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         metadata.put("sessionId", hotel.getSessionId());
         metadata.put("skipBot", "true");
 
+        if (replyMetadata != null) {
+            metadata.putAll(replyMetadata);
+        }
+
         String message = "Book Hotel " + hotel.getHotelName() + ", Room " + hotel.getRoomTypeName();
 
         sendMessage(message, metadata, Message.ContentType.DEFAULT.getValue());
     }
 
-    public void sendBookingDetailsMessage(ALBookingDetailsModel model) {
+    public void sendBookingDetailsMessage(ALBookingDetailsModel model, Map<String, String> replyMetadata) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("guestDetail", "true");
         metadata.put("personInfo", GsonUtils.getJsonFromObject(model.getPersonInfo(), ALBookingDetailsModel.ALBookingDetails.class));
         metadata.put("sessionId", model.getSessionId());
         metadata.put("skipBot", "true");
+
+        if (replyMetadata != null) {
+            metadata.putAll(replyMetadata);
+        }
 
         sendMessage("Your details have been submitted", metadata, Message.ContentType.DEFAULT.getValue());
     }
@@ -4049,26 +4112,43 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         Intent intent = new Intent(getActivity(), PaymentActivity.class);
         intent.putExtra("formData", model.getFormData());
         intent.putExtra("formAction", model.getFormAction());
-        getContext().startActivity(intent);
+        if (getActivity() != null) {
+            getActivity().startActivity(intent);
+        }
     }
 
-    public void sendFaqMessage(ALRichMessageModel.AlElementModel model) {
-        Map<String, String> metadata = new HashMap<>();
-        metadata.put("KM_FAQ_ID", String.valueOf(model.getArticleId()));
-        metadata.put("source", model.getSource());
-        sendMessage(model.getTitle(), metadata, Message.ContentType.DEFAULT.getValue());
+    public void sendFaqMessage(ALRichMessageModel.AlElementModel model, Map<String, String> replyMetadata) {
+
+        if (model.getAction() != null && AlRichMessage.WEB_LINK.equals(model.getAction().getType())) {
+            Intent intent = new Intent(getActivity(), PaymentActivity.class);
+            intent.putExtra(AlRichMessage.WEB_LINK, true);
+            intent.putExtra(AlRichMessage.LINK_URL, model.getAction().getUrl());
+            if (getActivity() != null) {
+                getActivity().startActivity(intent);
+            }
+        } else {
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("KM_FAQ_ID", String.valueOf(model.getArticleId()));
+            metadata.put("source", model.getSource());
+            if (replyMetadata != null) {
+                metadata.putAll(replyMetadata);
+            }
+            sendMessage(model.getTitle(), metadata, Message.ContentType.DEFAULT.getValue());
+        }
     }
 
-    public class KMUserDetailTask extends AsyncTask<Void, Void, Boolean> {
+    public static class KMUserDetailTask extends AsyncTask<Void, Void, Boolean> {
 
         WeakReference<Context> context;
         String userId;
         KmUserDetailsCallback callback;
+        AppContactService appContactService;
 
         public KMUserDetailTask(Context context, String userId, KmUserDetailsCallback callback) {
             this.context = new WeakReference<>(context);
             this.userId = userId;
             this.callback = callback;
+            appContactService = new AppContactService(this.context.get());
         }
 
         @Override

@@ -12,7 +12,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_without_shape"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_with_shape"
         android:supportsRtl="true"
         android:theme="@style/ApplozicTheme">
         <activity
@@ -53,7 +52,11 @@
 
         <!--<meta-data
             android:name="com.applozic.server.url"
-            android:value="https://chat.kommunicate.io" />-->
+            android:value="https://apps-test.applozic.com" />
+
+        <meta-data
+            android:name="io.kommunicate.server.url"
+            android:value="https://api-test.kommunicate.io" />-->
 
     </application>
 

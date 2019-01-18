@@ -2,6 +2,7 @@ package io.kommunicate.async;
 
 import android.content.Context;
 
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -65,6 +66,7 @@ public class KmUserLoginTask extends UserLoginTask {
         if (response != null) {
             if (handler != null) {
                 if (response.isRegistrationSuccess()) {
+                    ApplozicClient.getInstance(context.get()).hideActionMessages(!isAgent);
                     handler.onSuccess(response, context.get());
                 } else {
                     handler.onFailure(response, e);

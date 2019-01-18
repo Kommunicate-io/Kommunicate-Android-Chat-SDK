@@ -1,8 +1,11 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +35,10 @@ public class AlRichMessage {
     public static final String SEND_ROOM_DETAILS_MESSAGE = "sendRoomDetailsMessage";
     public static final String SEND_BOOKING_DETAILS = "sendBookingDetails";
     public static final String MAKE_PAYMENT = "makePayment";
+    public static final String WEB_LINK = "link";
     public static final String LIST_ITEM_CLICK = "listItemClick";
+    public static final String TEMPLATE_ID = "templateId_";
+    public static final String LINK_URL = "linkUrl";
 
     private Context context;
     private Message message;
@@ -104,14 +110,14 @@ public class AlRichMessage {
                 if (payload != null) {
                     if (!TextUtils.isEmpty(payload.getTitle())) {
                         titleText.setVisibility(View.VISIBLE);
-                        titleText.setText(payload.getTitle());
+                        titleText.setText(getHtmlText(payload.getTitle()));
                     } else {
                         titleText.setVisibility(View.GONE);
                     }
 
                     if (!TextUtils.isEmpty(payload.getDescription())) {
                         descriptionText.setVisibility(View.VISIBLE);
-                        descriptionText.setText(payload.getDescription());
+                        descriptionText.setText(getHtmlText(payload.getDescription()));
                     } else {
                         descriptionText.setVisibility(View.GONE);
                     }
@@ -131,7 +137,7 @@ public class AlRichMessage {
                             if (!TextUtils.isEmpty(actionModel[0].getName())) {
                                 actionYes.setVisibility(View.VISIBLE);
                                 actionYes.setText(actionModel[0].getName());
-                                setClickListener(actionYes, actionModel[0]);
+                                setClickListener(actionYes, model, actionModel[0], payload);
                             } else {
                                 actionYes.setVisibility(View.GONE);
                             }
@@ -141,7 +147,7 @@ public class AlRichMessage {
                             if (!TextUtils.isEmpty(actionModel[1].getName())) {
                                 actionNo.setVisibility(View.VISIBLE);
                                 actionNo.setText(actionModel[1].getName());
-                                setClickListener(actionNo, actionModel[1]);
+                                setClickListener(actionNo, model, actionModel[1], payload);
                             } else {
                                 actionNo.setVisibility(View.GONE);
                             }
@@ -154,30 +160,38 @@ public class AlRichMessage {
         }
     }
 
-    private void setClickListener(View view, final ALRichMessageModel.AlActionModel actionModel) {
+    private void setClickListener(View view, final ALRichMessageModel model, final ALRichMessageModel.AlActionModel actionModel, final ALRichMessageModel.ALPayloadModel payloadModel) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, FAQ_ACTIONS, message, actionModel.getName());
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, actionModel, payloadModel != null ? payloadModel.getReplyMetadata() : null);
                 } else {
                     if (listener != null) {
-                        listener.onAction(context, FAQ_ACTIONS, message, actionModel.getName());
+                        if (WEB_LINK.equals(actionModel.getType())) {
+                            listener.onAction(context, WEB_LINK, message, actionModel, payloadModel != null ? payloadModel.getReplyMetadata() : null);
+                        } else {
+                            listener.onAction(context, FAQ_ACTIONS, message, actionModel.getName(), payloadModel != null ? payloadModel.getReplyMetadata() : null);
+                        }
                     }
                 }
             }
         });
     }
 
-    private void setListActionListener(View view, final ALRichMessageModel.AlActionModel actionModel) {
+    private void setListActionListener(View view, final ALRichMessageModel model, final ALRichMessageModel.AlActionModel actionModel, final ALRichMessageModel.ALPayloadModel payloadModel) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, FAQ_ACTIONS, message, actionModel.getName());
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, actionModel, payloadModel != null ? payloadModel.getReplyMetadata() : null);
                 } else {
                     if (listener != null) {
-                        listener.onAction(context, FAQ_ACTIONS, message, actionModel.getName());
+                        if (actionModel.getAction() != null && WEB_LINK.equals(((ALRichMessageModel.AlAction) actionModel.getAction()).getType())) {
+                            listener.onAction(context, WEB_LINK, message, actionModel.getAction(), payloadModel != null ? payloadModel.getReplyMetadata() : null);
+                        } else {
+                            listener.onAction(context, FAQ_ACTIONS, message, actionModel.getName(), payloadModel != null ? payloadModel.getReplyMetadata() : null);
+                        }
                     }
                 }
             }
@@ -189,18 +203,17 @@ public class AlRichMessage {
             if (model.getPayload() != null) {
                 TextView headerText = listItemLayout.findViewById(R.id.headerText);
                 ImageView headerImage = listItemLayout.findViewById(R.id.headerImage);
-                final TextView actionText = listItemLayout.findViewById(R.id.actionButton);
                 ALRichMessageModel.ALPayloadModel payload = (ALRichMessageModel.ALPayloadModel) GsonUtils.getObjectFromJson(model.getPayload(), ALRichMessageModel.ALPayloadModel.class);
                 if (payload != null) {
                     RecyclerView listRecycler = listItemLayout.findViewById(R.id.alListItemRecycler);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                     listRecycler.setLayoutManager(layoutManager);
-                    AlRichListsAdapter adapter = new AlRichListsAdapter(context, payload.getElements(), listener);
+                    AlRichListsAdapter adapter = new AlRichListsAdapter(context, message, payload.getElements(), payload.getReplyMetadata(), listener);
                     listRecycler.setAdapter(adapter);
 
                     if (!TextUtils.isEmpty(payload.getHeaderText())) {
                         headerText.setVisibility(View.VISIBLE);
-                        headerText.setText(payload.getHeaderText());
+                        headerText.setText(getHtmlText(payload.getHeaderText()));
                     } else {
                         headerText.setVisibility(View.GONE);
                     }
@@ -213,15 +226,32 @@ public class AlRichMessage {
                     }
 
                     if (payload.getButtons() != null) {
-                        actionText.setVisibility(View.VISIBLE);
                         final ALRichMessageModel.AlActionModel[] action = payload.getButtons();
 
                         if (action[0] != null) {
-                            actionText.setText(action[0].getName());
-                            setListActionListener(actionText, action[0]);
+                            final TextView actionText1 = listItemLayout.findViewById(R.id.actionButton1);
+                            actionText1.setVisibility(View.VISIBLE);
+                            actionText1.setText(action[0].getName());
+                            setListActionListener(actionText1, model, action[0], payload);
                         }
-                    } else {
-                        actionText.setVisibility(View.GONE);
+
+                        if (action.length > 1 && action[1] != null) {
+                            final TextView actionText2 = listItemLayout.findViewById(R.id.actionButton2);
+                            View actionDivider2 = listItemLayout.findViewById(R.id.actionDivider2);
+                            actionDivider2.setVisibility(View.VISIBLE);
+                            actionText2.setVisibility(View.VISIBLE);
+                            actionText2.setText(action[1].getName());
+                            setListActionListener(actionText2, model, action[1], payload);
+                        }
+
+                        if (action.length > 2 && action[2] != null) {
+                            final TextView actionText3 = listItemLayout.findViewById(R.id.actionButton3);
+                            View actionDivider3 = listItemLayout.findViewById(R.id.actionDivider3);
+                            actionDivider3.setVisibility(View.VISIBLE);
+                            actionText3.setVisibility(View.VISIBLE);
+                            actionText3.setText(action[2].getName());
+                            setListActionListener(actionText3, model, action[2], payload);
+                        }
                     }
                 }
             }
@@ -258,20 +288,34 @@ public class AlRichMessage {
                     public void onClick(View v) {
                         if (model.getTemplateId() == 6) {
                             if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, payloadModel.getMessage().trim());
+                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, payloadModel, payloadModel.getReplyMetadata());
+                            } else {
+                                listener.onAction(context, AlRichMessage.SEND_HOTEL_RATING, message, payloadModel.getMessage().trim(), payloadModel.getReplyMetadata());
                             }
-                            listener.onAction(context, AlRichMessage.SEND_HOTEL_RATING, null, payloadModel.getMessage().trim());
                         } else {
                             if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, model);
+                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, payloadModel, payloadModel.getReplyMetadata());
+                            } else {
+                                if (!TextUtils.isEmpty(model.getFormData()) && !TextUtils.isEmpty(model.getFormAction())) {
+                                    listener.onAction(context, AlRichMessage.MAKE_PAYMENT, message, model, payloadModel != null ? payloadModel.getReplyMetadata() : null);
+                                } else {
+                                    listener.onAction(context, AlRichMessage.WEB_LINK, message, payloadModel, payloadModel.getReplyMetadata());
+                                }
                             }
-                            listener.onAction(context, AlRichMessage.MAKE_PAYMENT, null, model);
                         }
                     }
                 });
 
                 flowLayout.addView(view);
             }
+        }
+    }
+
+    public static Spanned getHtmlText(String message) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT);
+        } else {
+            return Html.fromHtml(message);
         }
     }
 }

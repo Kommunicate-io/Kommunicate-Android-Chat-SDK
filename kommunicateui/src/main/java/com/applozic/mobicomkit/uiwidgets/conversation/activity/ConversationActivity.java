@@ -55,7 +55,6 @@ import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -68,11 +67,9 @@ import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.channel.database.ChannelDatabaseService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.async.AlGetMembersFromContactGroupListTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobiComKitBroadcastReceiver;
@@ -80,9 +77,9 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragm
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
@@ -109,7 +106,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -175,6 +171,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private SearchListFragment searchListFragment;
     private LinearLayout serviceDisconnectionLayout;
     private KmStoragePermission alStoragePermission;
+    private RelativeLayout customToolbarLayout;
 
     public ConversationActivity() {
 
@@ -322,6 +319,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
             Utils.toggleSoftKeyBoard(this, true);
             return true;
+        } else if (serviceDisconnectionLayout != null && serviceDisconnectionLayout.getVisibility() == View.VISIBLE) {
+            ConversationActivity.this.finish();
         } else {
             super.onSupportNavigateUp();
         }
@@ -345,6 +344,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         setContentView(R.layout.quickconversion_activity);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        customToolbarLayout = myToolbar.findViewById(R.id.custom_toolbar_root_layout);
         setSupportActionBar(myToolbar);
         baseContactService = new AppContactService(this);
         conversationUIService = new ConversationUIService(this);
@@ -373,7 +373,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         inviteMessage = Utils.getMetaDataValue(getApplicationContext(), SHARE_TEXT);
         retry = 0;
 
-        if (isServiceDisconnected()) {
+        if (KmUtils.isServiceDisconnected(this, alCustomizationSettings != null && alCustomizationSettings.isAgentApp(), customToolbarLayout)) {
             serviceDisconnectionLayout.setVisibility(View.VISIBLE);
         } else {
             if (savedInstanceState != null) {
@@ -458,7 +458,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         try {
-            if (isServiceDisconnected()) {
+            if (KmUtils.isServiceDisconnected(this, alCustomizationSettings != null && alCustomizationSettings.isAgentApp(), customToolbarLayout)) {
                 serviceDisconnectionLayout.setVisibility(View.VISIBLE);
             } else {
                 if (intent.getExtras() != null) {
@@ -1220,10 +1220,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     }
 
-    public boolean isServiceDisconnected() {
-        return false;
-    }
-
     @Override
     public Uri getCurrentImageUri() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -1357,5 +1353,4 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
         }
     }
-
 }

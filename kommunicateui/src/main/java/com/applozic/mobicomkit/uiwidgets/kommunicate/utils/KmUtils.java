@@ -15,7 +15,7 @@ public class KmUtils {
                 && MobiComUserPreference.getInstance(context).getPricingPackage() == PackageType.STARTUP.getValue()
                 && !isDebuggable;
         if (customToolbarLayout != null) {
-            customToolbarLayout.setVisibility(disconnect ? View.GONE : View.VISIBLE);
+            customToolbarLayout.setVisibility(View.GONE);
         }
         return disconnect;
     }

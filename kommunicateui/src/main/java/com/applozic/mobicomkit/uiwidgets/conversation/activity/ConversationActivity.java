@@ -457,6 +457,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             return;
         }
 
+        if(customToolbarLayout != null){
+            customToolbarLayout.setVisibility(View.GONE);
+        }
+
         try {
             if (KmUtils.isServiceDisconnected(this, alCustomizationSettings != null && alCustomizationSettings.isAgentApp(), customToolbarLayout)) {
                 serviceDisconnectionLayout.setVisibility(View.VISIBLE);

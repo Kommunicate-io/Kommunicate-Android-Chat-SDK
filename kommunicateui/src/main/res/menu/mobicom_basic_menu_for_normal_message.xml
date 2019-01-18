@@ -137,7 +137,7 @@
         android:id="@+id/share_conversation"
         android:orderInCategory="12"
         android:showAsAction="never"
-        android:title="Share"
+        android:title="@string/shareOptions"
         android:visible="false"
         mobicomkit:showAsAction="never" />
 </menu>

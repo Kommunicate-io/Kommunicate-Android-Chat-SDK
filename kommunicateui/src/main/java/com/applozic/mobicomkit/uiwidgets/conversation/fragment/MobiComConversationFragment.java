@@ -130,6 +130,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageResponse;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
@@ -310,6 +311,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public static final int TYPING_STOP_TIME = 30;
     public static final String KM_CONVERSATION_SUBJECT = "KM_CONVERSATION_SUBJECT";
     public Map<String, CountDownTimer> typingTimerMap;
+    public int loggedInUserRole;
 
     public static int dp(float value) {
         return (int) Math.ceil(1 * value);
@@ -371,6 +373,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         //listView.setDivider(null);
         messageList = new ArrayList<Message>();
         multimediaPopupGrid = (GridView) list.findViewById(R.id.mobicom_multimedia_options1);
+        loggedInUserRole = MobiComUserPreference.getInstance(getContext()).getUserRoleType();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -2891,45 +2894,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public Contact getSupportGroupContact(Channel channel) {
-        if (User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
-            Map<String, String> metadataMap = channel.getMetadata();
-            if (metadataMap != null) {
-                String conversationAssignee = null;
-                String conversationTitle = null;
-
-                if (metadataMap.containsKey(KommunicateUI.CONVERSATION_ASSIGNEE)) {
-                    conversationAssignee = metadataMap.get(KommunicateUI.CONVERSATION_ASSIGNEE);
-                }
-
-                if (metadataMap.containsKey(KommunicateUI.KM_CONVERSATION_TITLE)) {
-                    conversationTitle = metadataMap.get(KommunicateUI.KM_CONVERSATION_TITLE);
-                }
-
-                if (!TextUtils.isEmpty(conversationAssignee) && ChannelDatabaseService.getInstance(getContext()).isChannelUserPresent(channel.getKey(), conversationAssignee)) {
-                    return appContactService.getContactById(conversationAssignee);
-                }
-                return appContactService.getContactById(conversationTitle);
-            }
-        } else {
-            List<ChannelUserMapper> userMapperList = ChannelService.getInstance(getContext()).getListOfUsersFromChannelUserMapper(channel.getKey());
-            for (ChannelUserMapper userMapper : userMapperList) {
-                Contact tempContact = appContactService.getContactById(userMapper.getUserKey());
-                if (User.RoleType.USER_ROLE.getValue().equals(tempContact.getRoleType())) {
-                    return tempContact;
-                }
-            }
-        }
-        return null;
-    }
-
     public void getUserDetail(Context context, String userId, KmUserDetailsCallback callback) {
         new KMUserDetailTask(context, userId, callback).execute();
     }
 
     public void processSupportGroupDetails(final Channel channel) {
-        updateSupportGroupTitle(null, channel);
-        Contact contact = getSupportGroupContact(channel);
+        Contact contact = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
+        updateSupportGroupTitle(contact, channel);
         conversationAssignee = contact;
 
         if (contact != null) {

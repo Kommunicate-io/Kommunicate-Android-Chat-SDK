@@ -39,6 +39,7 @@ import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
@@ -47,6 +48,7 @@ import com.applozic.mobicommons.emoticon.EmoticonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.contact.Contact;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,6 +91,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private AlCustomizationSettings alCustomizationSettings;
     private View view;
     private ConversationUIService conversationUIService;
+    private int loggedInUserRoleType;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -101,6 +104,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.messageList = messageList;
         conversationUIService = new ConversationUIService((FragmentActivity) context);
+        loggedInUserRoleType = MobiComUserPreference.getInstance(context).getUserRoleType();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
             protected Bitmap processBitmap(Object data) {
@@ -181,16 +185,21 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             myholder.smReceivers.setText(withUserContact.getDisplayName());
                             processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                         }
-                    } else {
-                        if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
-                            myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
+                    } else if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                        channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                        myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
+                        Contact supportGroupContact = KmService.getSupportGroupContact(context, channel, contactService, loggedInUserRoleType);
+                        if (supportGroupContact != null) {
+                            myholder.smReceivers.setText(supportGroupContact.getDisplayName());
+                            loadSupportGroupImage(supportGroupContact.getImageURL(), supportGroupContact.getDisplayName(), myholder.alphabeticTextView, myholder.contactImage);
                         } else {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
-                            myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
+                            myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
+                            loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
                         }
+                    } else {
+                        channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+                        myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
 
-                        myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
                         myholder.alphabeticTextView.setVisibility(View.GONE);
                         myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
                         myholder.contactImage.setVisibility(View.VISIBLE);
@@ -203,8 +212,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             myholder.contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
                             myholder.alphabeticTextView.setVisibility(View.GONE);
                             contactImage.setVisibility(View.VISIBLE);
-                        } else if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                            loadAlphabeticImage(channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
                         } else {
                             channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
                             myholder.alphabeticTextView.setVisibility(View.GONE);
@@ -425,10 +432,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         }
     }
 
-    private void loadAlphabeticImage(String name, TextView alphabeticTextView, CircleImageView contactImage) {
-        if (!TextUtils.isEmpty(name)) {
+    private void loadSupportGroupImage(String imageUrl, String displayName, TextView alphabeticTextView, CircleImageView contactImage) {
+        if (!TextUtils.isEmpty(imageUrl)) {
+            alphabeticTextView.setVisibility(View.GONE);
+            contactImage.setVisibility(View.VISIBLE);
+            Glide.with(context).load(imageUrl).into(contactImage);
+        } else if (!TextUtils.isEmpty(displayName)) {
             char firstLetter = 0;
-            firstLetter = name.toUpperCase().charAt(0);
+            firstLetter = displayName.toUpperCase().charAt(0);
 
             alphabeticTextView.setText(String.valueOf(firstLetter));
 

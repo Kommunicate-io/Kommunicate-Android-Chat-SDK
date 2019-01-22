@@ -2792,10 +2792,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 }
             }
 
-            if (channel.getType() != null && !Channel.GroupType.OPEN.getValue().equals(channel.getType())) {
+            if (channel.getType() != null && (!Channel.GroupType.OPEN.getValue().equals(channel.getType()) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
                 boolean present = ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey());
                 hideSendMessageLayout(channel.isDeleted() || !present);
-
             } else {
                 hideSendMessageLayout(channel.isDeleted());
             }
@@ -2975,8 +2974,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 if ((!ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey())
                         && userNotAbleToChatLayout != null
-                        && !Channel.GroupType.OPEN.getValue().equals(channel.getType()))) {
-
+                        && (!Channel.GroupType.OPEN.getValue().equals(channel.getType())) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
                     individualMessageSendLayout.setVisibility(View.GONE);
                     userNotAbleToChatLayout.setVisibility(VISIBLE);
                     if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())

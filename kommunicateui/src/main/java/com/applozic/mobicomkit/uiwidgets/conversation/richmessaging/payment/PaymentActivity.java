@@ -1,7 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment;
 
 import android.content.DialogInterface;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,7 +34,7 @@ public class PaymentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment);
+        setContentView(R.layout.km_activity_payment);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

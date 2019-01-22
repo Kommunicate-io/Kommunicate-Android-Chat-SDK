@@ -25,7 +25,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.applozic.mobicomkit.uiwidgets.R.layout.activity_lead_collection);
+        setContentView(com.applozic.mobicomkit.uiwidgets.R.layout.activity_km_lead_collection);
 
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(PRECHAT_RESULT_RECEIVER);

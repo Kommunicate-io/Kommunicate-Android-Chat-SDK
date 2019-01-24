@@ -1,15 +1,11 @@
 package com.applozic.mobicomkit.uiwidgets.attachmentview;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -90,24 +86,13 @@ public class ApplozicDocumentView {
         audioseekbar = (SeekBar) rootview.findViewById(R.id.applozic_audio_seekbar);
         audio_duration_textView = (TextView) rootview.findViewById(R.id.audio_duration_textView);
 
-        //progressBar.setVisibility(GONE);
-        //previewLayout.setVisibility(GONE);
-        //sizeTextView.setVisibility(GONE);
-        //downloadInProgressLayout.setVisibility(GONE);
-        //retryLayout.setVisibility(GONE);
-        //downloadedLayout.setVisibility(GONE);
-        //previewLayout.setVisibility(GONE);
-        //fileText.setVisibility(GONE);
-        //uploadDownloadImage.setVisibility(GONE);
-        //docIcon.setVisibility(GONE);
-        //cancelIcon.setVisibility(GONE);
-        //audioseekbar.setVisibility(GONE);
-        //audio_duration_textView.setVisibility(GONE);
-
         if (!message.hasAttachment()) {
             return;
         }
 
+        if (audio_duration_textView != null) {
+            audio_duration_textView.setTextColor(context.getResources().getColor(message.isTypeOutbox() ? R.color.white : R.color.black));
+        }
         progressBar.getIndeterminateDrawable().setColorFilter(message.isTypeOutbox() ? context.getResources().getColor(R.color.applozic_green_color) : context.getResources().getColor(R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY);
         cancelIcon.setColorFilter(message.isTypeOutbox() ? R.color.white : R.color.black, android.graphics.PorterDuff.Mode.MULTIPLY);
         if (message.getFileMetas() != null) {

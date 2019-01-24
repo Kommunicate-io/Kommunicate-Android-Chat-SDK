@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.utils;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -18,6 +19,15 @@ public class KmUtils {
             customToolbarLayout.setVisibility(View.GONE);
         }
         return disconnect;
+    }
+
+    public static void setBackground(Context context, View view, int resId) {
+        final int sdk = android.os.Build.VERSION.SDK_INT;
+        if (sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackgroundDrawable(ContextCompat.getDrawable(context, resId));
+        } else {
+            view.setBackground(ContextCompat.getDrawable(context, resId));
+        }
     }
 
     public enum PackageType {

@@ -11,11 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="20dp"
         android:layout_marginStart="60dp"
+        android:layout_marginLeft="100dp"
         android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:thumbTint="@color/apploizc_lite_gray_color"
         android:visibility="gone" />
 
@@ -23,8 +23,8 @@
         android:id="@+id/download_doc_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:orientation="horizontal">
 
@@ -32,8 +32,8 @@
             android:id="@+id/download_doc_relative_layout"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:gravity="center_vertical"
-            android:background="@color/applozic_theme_color_primary">
+            android:background="@color/applozic_theme_color_primary"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/applozic_download_image"
@@ -59,8 +59,8 @@
             android:id="@+id/retry_doc_relative_layout"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:gravity="center_vertical"
-            android:background="@color/applozic_theme_color_primary">
+            android:background="@color/applozic_theme_color_primary"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/applozic_retry__image"
@@ -128,6 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text=""
+            android:textColor="@color/white"
             android:visibility="gone" />
 
         <TextView
@@ -135,8 +136,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:maxLines="3"
             android:text=" "
             android:textColor="@color/white"

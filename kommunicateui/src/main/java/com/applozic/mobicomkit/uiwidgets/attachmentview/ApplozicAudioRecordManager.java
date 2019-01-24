@@ -1,14 +1,25 @@
 package com.applozic.mobicomkit.uiwidgets.attachmentview;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
+import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Rahul-PC on 17-07-2017.
@@ -21,11 +32,14 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
     ConversationUIService conversationUIService;
     private MediaRecorder audioRecorder;
     private String outputFile = null;
-    private boolean isRecordring;
+    private boolean isRecording;
+    public static final String AUDIO_TAG = "AUD_";
+    public static final String FILE_FORMAT = ".m4a";
+    private static final String TAG = "AudioRecordManager";
 
 
     public ApplozicAudioRecordManager(FragmentActivity context) {
-        this.conversationUIService  = new ConversationUIService(context);
+        this.conversationUIService = new ConversationUIService(context);
         this.context = context;
     }
 
@@ -41,60 +55,88 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
         this.timeStamp = timeStamp;
     }
 
+    public void prepareDefaultFileData() {
+        if (TextUtils.isEmpty(timeStamp)) {
+            timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        }
+
+        if (TextUtils.isEmpty(audioFileName)) {
+            audioFileName = AUDIO_TAG + timeStamp + FILE_FORMAT;
+        }
+
+        if (TextUtils.isEmpty(outputFile)) {
+            outputFile = FileClientService.getFilePath(audioFileName, context.getApplicationContext(), "audio/m4a").getAbsolutePath();
+        }
+    }
+
     public void recordAudio() {
-        try {
-
-            if (isRecordring) {
-                ApplozicAudioRecordManager.this.stopRecording();
-
-            } else {
-                if (audioRecorder == null) {
-                    prepareMediaRecorder();
+        if (((KmStoragePermissionListener) context).isPermissionGranted()) {
+            startRecording();
+        } else {
+            ((KmStoragePermissionListener) context).checkPermission(new KmStoragePermission() {
+                @Override
+                public void onAction(boolean didGrant) {
+                    if (didGrant) {
+                        startRecording();
+                    }
                 }
-                audioRecorder.prepare();
-                audioRecorder.start();
-                isRecordring = true;
-            }
+            });
+        }
+    }
 
-        } catch (Exception e){
+    private void startRecording() {
+        try {
+            if (PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+                prepareDefaultFileData();
+                if (isRecording) {
+                    stopRecording();
+                } else {
+                    if (audioRecorder == null) {
+                        prepareMediaRecorder();
+                    }
+                    audioRecorder.prepare();
+                    audioRecorder.start();
+                    isRecording = true;
+                }
+            } else {
+                requestAudioPermission();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void cancelAudio() {
-        if (isRecordring) {
+    public boolean cancelAudio() {
+        if (isRecording) {
             ApplozicAudioRecordManager.this.stopRecording();
         }
 
-        if(outputFile != null){
+        if (outputFile != null) {
             File file = new File(outputFile);
-            if (file != null && file.exists()) {
-                Utils.printLog(context, "AudioFRG:", "File deleted...");
-                file.delete();
+            if (file.exists()) {
+                boolean deleted = file.delete();
+                if (deleted) {
+                    Utils.printLog(context, TAG, "File deleted...");
+                }
+                return deleted;
             }
         }
-
+        return false;
     }
 
     public void sendAudio() {
-
-        //IF recording is running stoped it ...
-        if (isRecordring) {
+        if (isRecording) {
             stopRecording();
         }
 
-        //FILE CHECK ....
-
-        if(outputFile != null){
+        if (outputFile != null) {
             if (!(new File(outputFile).exists())) {
-                Toast.makeText(context, R.string.tap_on_mic_button_to_record_audio, Toast.LENGTH_SHORT).show();
+                KmToast.makeText(context, context.getString(R.string.km_audio_record_toast_message), Toast.LENGTH_SHORT).show();
                 return;
             }
             conversationUIService.sendAudioMessage(outputFile);
         }
-
     }
-
 
     public void stopRecording() {
 
@@ -102,16 +144,13 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
             try {
                 audioRecorder.stop();
             } catch (RuntimeException stopException) {
-                Utils.printLog(context, "AudioMsgFrag:", "Runtime exception.This is thrown intentionally if stop is called just after start");
+                Utils.printLog(context, TAG, "Runtime exception.This is thrown intentionally if stop is called just after start");
             } finally {
                 audioRecorder.release();
                 audioRecorder = null;
-                isRecordring = false;
-
+                isRecording = false;
             }
-
         }
-
     }
 
     public MediaRecorder prepareMediaRecorder() {
@@ -139,5 +178,13 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
     @Override
     public void onError(MediaRecorder mr, int what, int extra) {
 
+    }
+
+    private void requestAudioPermission() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.RECORD_AUDIO},
+                    10);
+        }
     }
 }

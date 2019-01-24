@@ -220,4 +220,6 @@
     <string name="profile_contact_number">Contact Number</string>
     <string name="user_name">User Name</string>
     <string name="rupee_symbol">\u20B9</string>
+    <string name="km_audio_record_toast_message">Press and hold  [img src=noun_mic_1057615_copy/]  to send a voice clip</string>
+    <string name="km_recording_text">Recording</string>
 </resources>

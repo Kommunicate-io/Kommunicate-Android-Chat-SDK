@@ -89,7 +89,7 @@
     ":location": true,
     ":camera": true,
     ":file": true,
-    ":emoticons": true
+    ":audio": true
   },
   "editTextHintText:": "Type your message...",
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",

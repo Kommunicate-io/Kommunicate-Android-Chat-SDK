@@ -2463,6 +2463,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
             return;
         }
+
         ((ConversationActivity) getActivity()).setChildFragmentLayoutBGToTransparent();
         if (contact != null || channel != null) {
             BroadcastService.currentUserId = contact != null ? contact.getContactIds() : String.valueOf(channel.getKey());
@@ -2661,7 +2662,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 @Override
                 public void hasFinished(Contact contact) {
                     conversationAssignee = contact;
-                    ChannelService.getInstance(getContext()).updateChannel(channel);
                     updateSupportGroupTitle(contact, channel);
                 }
             });

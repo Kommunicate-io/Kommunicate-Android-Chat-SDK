@@ -251,7 +251,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, ConversationUIService.FINAL_PRICE_TEXT + message.getMessage(), emojiconHandler));
                 } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
                     myholder.messageTextView.setText(Html.fromHtml(message.getMessage()));
-                    if (DetailedConversationAdapter.isEmailTypeMessage(message) && message.getSource() == 7) {
+                    if (DetailedConversationAdapter.isEmailTypeMessage(message)) {
                         if (myholder.attachmentIcon != null) {
                             myholder.attachmentIcon.setVisibility(View.VISIBLE);
                             myholder.attachmentIcon.setImageResource(R.drawable.email);

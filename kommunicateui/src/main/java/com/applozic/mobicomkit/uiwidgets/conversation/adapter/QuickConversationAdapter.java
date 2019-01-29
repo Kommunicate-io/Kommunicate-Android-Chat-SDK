@@ -251,7 +251,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, ConversationUIService.FINAL_PRICE_TEXT + message.getMessage(), emojiconHandler));
                 } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
                     myholder.messageTextView.setText(Html.fromHtml(message.getMessage()));
-                    if (DetailedConversationAdapter.isEmailTypeMessage(message)) {
+                    if (DetailedConversationAdapter.isEmailTypeMessage(message) && message.getSource() == 7) {
                         if (myholder.attachmentIcon != null) {
                             myholder.attachmentIcon.setVisibility(View.VISIBLE);
                             myholder.attachmentIcon.setImageResource(R.drawable.email);
@@ -282,7 +282,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 int messageUnReadCount = 0;
                 if (message.getGroupId() == null && contactReceiver != null && !TextUtils.isEmpty(contactReceiver.getContactIds())) {
                     messageUnReadCount = messageDatabaseService.getUnreadMessageCountForContact(contactReceiver.getContactIds());
-
                 } else if (channel != null && channel.getKey() != null && channel.getKey() != 0) {
                     messageUnReadCount = messageDatabaseService.getUnreadMessageCountForChannel(channel.getKey());
                 }

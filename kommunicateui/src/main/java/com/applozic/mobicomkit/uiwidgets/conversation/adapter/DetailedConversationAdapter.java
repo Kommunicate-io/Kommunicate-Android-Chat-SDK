@@ -994,7 +994,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.messageTextLayout.setVisibility(GONE);
                         }
 
-                        new AlRichMessage(context, myHolder.richMessageLayout, message, listener).createRichMessage();
+                        new AlRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
                     } else {
                         myHolder.richMessageLayout.setVisibility(View.GONE);
                     }
@@ -1032,7 +1032,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     public static boolean isEmailTypeMessage(Message message) {
-        return Message.ContentType.TEXT_HTML.getValue().equals(message.getContentType()) && message.getSource() == 7;
+        return Message.ContentType.TEXT_HTML.getValue().equals(message.getContentType());
     }
 
     private void setupContactShareView(final Message message, MyViewHolder myViewHolder) {

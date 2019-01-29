@@ -104,6 +104,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
 import com.applozic.mobicomkit.uiwidgets.conversation.UIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPositionHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.ApplozicContextSpinnerAdapter;
@@ -3749,6 +3750,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 sendMessage((String) object, getStringMap(replyMetadata));
                 break;
 
+            case AlRichMessage.TEMPLATE_ID + 9:
+                loadImageOnFullScreen(context, action, (ALRichMessageModel.ALPayloadModel) object);
+                break;
+
             case AlRichMessage.WEB_LINK:
                 if (object instanceof ALRichMessageModel.AlAction) {
                     openWebLink(((ALRichMessageModel.AlAction) object).getUrl());
@@ -3865,6 +3870,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (getActivity() != null) {
             getActivity().startActivity(intent);
         }
+    }
+
+    public void loadImageOnFullScreen(Context context, String action, ALRichMessageModel.ALPayloadModel payloadModel) {
+        Intent intent = new Intent(context, FullScreenImageActivity.class);
+        intent.putExtra(action, GsonUtils.getJsonFromObject(payloadModel, ALRichMessageModel.ALPayloadModel.class));
+        ((MobiComKitActivityInterface) context).startActivityForResult(intent, MobiComKitActivityInterface.REQUEST_CODE_FULL_SCREEN_ACTION);
     }
 
     public void sendFaqMessage(ALRichMessageModel.AlElementModel model, Map<String, String> replyMetadata) {

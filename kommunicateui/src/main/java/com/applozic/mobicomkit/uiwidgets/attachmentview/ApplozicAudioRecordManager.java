@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.attachment.FileClientService;
@@ -27,14 +26,13 @@ import java.util.Date;
 
 public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener, MediaRecorder.OnErrorListener {
 
-    FragmentActivity context;
-    String audioFileName, timeStamp;
-    ConversationUIService conversationUIService;
+    private FragmentActivity context;
+    private ConversationUIService conversationUIService;
     private MediaRecorder audioRecorder;
     private String outputFile = null;
     private boolean isRecording;
-    public static final String AUDIO_TAG = "AUD_";
-    public static final String FILE_FORMAT = ".m4a";
+    private static final String AUDIO_TAG = "AUD_";
+    private static final String FILE_FORMAT = ".m4a";
     private static final String TAG = "AudioRecordManager";
 
 
@@ -47,26 +45,13 @@ public class ApplozicAudioRecordManager implements MediaRecorder.OnInfoListener,
         this.outputFile = outputFile;
     }
 
-    public void setAudioFileName(String audioFileName) {
-        this.audioFileName = audioFileName;
-    }
-
-    public void setTimeStamp(String timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
     public void prepareDefaultFileData() {
-        if (TextUtils.isEmpty(timeStamp)) {
-            timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        }
+        String audioFileName = AUDIO_TAG + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + FILE_FORMAT;
+        setOutputFile(FileClientService.getFilePath(audioFileName, context.getApplicationContext(), "audio/m4a").getAbsolutePath());
+    }
 
-        if (TextUtils.isEmpty(audioFileName)) {
-            audioFileName = AUDIO_TAG + timeStamp + FILE_FORMAT;
-        }
-
-        if (TextUtils.isEmpty(outputFile)) {
-            outputFile = FileClientService.getFilePath(audioFileName, context.getApplicationContext(), "audio/m4a").getAbsolutePath();
-        }
+    public String getOutputFileName() {
+        return outputFile;
     }
 
     public void recordAudio() {

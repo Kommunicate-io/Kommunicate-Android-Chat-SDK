@@ -3983,15 +3983,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onRecordStart() {
         vibrate();
-        isRecording = true;
-        if (recordButton != null && getContext() != null) {
-            KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_pressed_background);
-        }
+        toggleRecordViews(false);
         if (applozicAudioRecordManager != null) {
             applozicAudioRecordManager.recordAudio();
-        }
-        if (messageEditText != null) {
-            messageEditText.setVisibility(View.GONE);
         }
     }
 
@@ -4008,13 +4002,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onRecordFinish(long recordTime) {
-        isRecording = false;
-        if (recordButton != null && getContext() != null) {
-            KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_background);
-        }
-        if (messageEditText != null) {
-            messageEditText.setVisibility(View.VISIBLE);
-        }
+        toggleRecordViews(true);
         if (applozicAudioRecordManager != null) {
             applozicAudioRecordManager.sendAudio();
         }
@@ -4022,18 +4010,23 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onLessThanSecond() {
-        isRecording = false;
-        if (recordButton != null && getContext() != null) {
-            KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_background);
-        }
-        if (messageEditText != null) {
-            messageEditText.setVisibility(View.VISIBLE);
-        }
+        toggleRecordViews(true);
         if (getContext() != null) {
             KmToast.makeText(getContext(), getContext().getString(R.string.km_audio_record_toast_message), Toast.LENGTH_SHORT).show();
         }
         if (applozicAudioRecordManager != null) {
             applozicAudioRecordManager.cancelAudio();
+        }
+    }
+
+    public void toggleRecordViews(boolean stopRecording) {
+        isRecording = !stopRecording;
+        if (recordButton != null && getContext() != null) {
+            KmUtils.setBackground(getContext(), recordButton, stopRecording ? R.drawable.km_audio_button_background : R.drawable.km_audio_button_pressed_background);
+        }
+
+        if (messageEditText != null) {
+            messageEditText.setVisibility(stopRecording ? View.VISIBLE : View.GONE);
         }
     }
 

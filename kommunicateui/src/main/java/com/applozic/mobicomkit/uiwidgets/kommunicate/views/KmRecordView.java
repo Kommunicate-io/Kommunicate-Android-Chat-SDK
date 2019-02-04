@@ -124,7 +124,7 @@ public class KmRecordView extends FrameLayout {
         animationHelper = new KmAnimationHelper(context, basketImg, smallBlinkingDot);
     }
 
-    private void hideViews(boolean hideSmallMic) {
+    public void hideViews(boolean hideSmallMic) {
         slideToCancelLayout.setVisibility(GONE);
         counterTime.setVisibility(GONE);
         recordingText.setVisibility(GONE);

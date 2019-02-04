@@ -562,8 +562,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (isHtmlTypeMessage(message)) {
-                        if (isEmailTypeMessage(message) && myHolder.viaEmailView != null) {
+                        if (isEmailTypeMessage(message)) {
                             myHolder.viaEmailView.setVisibility(View.VISIBLE);
+                        } else {
+                            myHolder.viaEmailView.setVisibility(View.GONE);
                         }
                         if (myHolder.emailLayout != null) {
                             myHolder.emailLayout.setVisibility(View.VISIBLE);

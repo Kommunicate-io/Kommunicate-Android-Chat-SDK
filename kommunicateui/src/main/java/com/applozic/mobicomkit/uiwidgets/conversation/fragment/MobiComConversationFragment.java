@@ -294,6 +294,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public static final String AUDIO_RECORD_OPTION = ":audio";
     KmRecordView recordView;
     FrameLayout recordLayout;
+    boolean isRecording = false;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -2365,6 +2366,16 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onPause() {
         super.onPause();
+        if (isRecording) {
+            onLessThanSecond();
+            if (recordButton != null) {
+                recordButton.stopScale();
+            }
+            if (recordView != null) {
+                recordView.hideViews(true);
+            }
+            onAnimationEnd();
+        }
         if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
             ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
@@ -3972,6 +3983,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onRecordStart() {
         vibrate();
+        isRecording = true;
         if (recordButton != null && getContext() != null) {
             KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_pressed_background);
         }
@@ -3985,6 +3997,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onRecordCancel() {
+        isRecording = false;
         if (recordButton != null && getContext() != null) {
             KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_background);
         }
@@ -3995,6 +4008,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onRecordFinish(long recordTime) {
+        isRecording = false;
         if (recordButton != null && getContext() != null) {
             KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_background);
         }
@@ -4008,6 +4022,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onLessThanSecond() {
+        isRecording = false;
         if (recordButton != null && getContext() != null) {
             KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_background);
         }

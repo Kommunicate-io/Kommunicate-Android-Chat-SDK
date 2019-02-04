@@ -3432,7 +3432,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public boolean onItemClick(int position, MenuItem item) {
-        if (messageList.size() <= position) {
+        if (messageList.size() <= position || position == -1) {
             return true;
         }
         Message message = messageList.get(position);

@@ -202,6 +202,7 @@ public class ALRichMessageModel extends JsonMarker {
         private String headerImageUrl;
         private String subtitle;
         private String description;
+        private String caption;
         private List<AlElementModel> elements;
         private List<AlActionModel> actions;
         private String rating;
@@ -370,6 +371,14 @@ public class ALRichMessageModel extends JsonMarker {
 
         public void setElements(List<AlElementModel> elements) {
             this.elements = elements;
+        }
+
+        public String getCaption() {
+            return caption;
+        }
+
+        public void setCaption(String caption) {
+            this.caption = caption;
         }
 
         @Override

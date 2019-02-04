@@ -416,6 +416,10 @@ public class Kommunicate {
             throw new KmException("Please add at-least one Agent");
         }
 
+        if (TextUtils.isEmpty(userId)) {
+            throw new KmException("UserId cannot be null");
+        }
+
         Collections.sort(agentIds);
 
         List<String> tempList = new ArrayList<>(agentIds);
@@ -435,6 +439,9 @@ public class Kommunicate {
 
         while (iterator.hasNext()) {
             String temp = iterator.next();
+            if (temp == null) {
+                continue;
+            }
             sb.append(temp);
 
             if (!temp.equals(tempList.get(tempList.size() - 1))) {

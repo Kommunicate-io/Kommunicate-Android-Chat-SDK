@@ -505,7 +505,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     if (TextUtils.isEmpty(message.getMessage())) {
                         myHolder.messageTextView.setVisibility(View.GONE);
                     } else {
-                        myHolder.messageTextView.setVisibility((message.getContentType() == Message.ContentType.LOCATION.getValue() || isEmailTypeMessage(message)) ? View.GONE : View.VISIBLE);
+                        myHolder.messageTextView.setVisibility((message.getContentType() == Message.ContentType.LOCATION.getValue() || isHtmlTypeMessage(message)) ? View.GONE : View.VISIBLE);
                     }
 
                     myHolder.mapImageView.setVisibility(GONE);
@@ -561,9 +561,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
                     }
 
-                    if (isEmailTypeMessage(message)) {
-                        if (myHolder.viaEmailView != null) {
-                            myHolder.viaEmailView.setVisibility(View.VISIBLE);
+                    if (isHtmlTypeMessage(message)) {
+                        if(myHolder.viaEmailView != null){
+                            myHolder.viaEmailView.setVisibility(isEmailTypeMessage(message) ? View.VISIBLE : GONE);
                         }
                         if (myHolder.emailLayout != null) {
                             myHolder.emailLayout.setVisibility(View.VISIBLE);
@@ -965,7 +965,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                             if (bgShape != null) {
                                 bgShape.setColor(message.isTypeOutbox() ?
-                                        Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : (isEmailTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
+                                        Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : (isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
                                 bgShape.setStroke(3, message.isTypeOutbox() ?
                                         Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
                             }
@@ -994,7 +994,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.messageTextLayout.setVisibility(GONE);
                         }
 
-                        new AlRichMessage(context, myHolder.richMessageLayout, message, listener).createRichMessage();
+                        new AlRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
                     } else {
                         myHolder.richMessageLayout.setVisibility(View.GONE);
                     }
@@ -1032,7 +1032,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     public static boolean isEmailTypeMessage(Message message) {
-        return Message.ContentType.TEXT_HTML.getValue().equals(message.getContentType()) && message.getSource() == 7;
+        return isHtmlTypeMessage(message) && message.getSource() == 7;
+    }
+
+    public static boolean isHtmlTypeMessage(Message message) {
+        return Message.ContentType.TEXT_HTML.getValue().equals(message.getContentType());
     }
 
     private void setupContactShareView(final Message message, MyViewHolder myViewHolder) {

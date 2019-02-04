@@ -11,7 +11,7 @@
     <color name="edittext_hint_color">#bdbdbd</color>
 
     <color name="sent_message_text_color">#ffffffff</color>
-    <color name="message_text_color">#ff000000</color>
+    <color name="message_text_color">#ffffff</color>
     <color name="sent_message_bg_color">#ff33B5E5</color>
     <!--<color name="received_message_bg_color">#ffffffff</color>-->
     <color name="received_message_bg_color">#ffffffff</color>
@@ -84,5 +84,7 @@
     <color name="apploizc_custom_channel_message_text_color">#cccccc</color>
     <color name="apploizc_reply_sent_message_bg_color">#C0C0C0</color>
     <color name="apploizc_reply_received_message_bg_color">#F5F5F5</color>
+    <color name="km_custom_toast_background_color">#636262</color>
+    <color name="km_audio_button_background_color">#d8d8d8</color>
 
 </resources>

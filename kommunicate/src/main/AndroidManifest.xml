@@ -12,6 +12,9 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="merge" />
+    <uses-permission
+        android:name="android.permission.RECORD_AUDIO"
+        tools:node="merge" />
 
     <!--Mandatory permissions-->
     <uses-permission
@@ -224,5 +227,9 @@
         <meta-data
             android:name="com.package.name"
             android:value="${applicationId}" />
+
+        <meta-data
+            android:name="main_folder_name"
+            android:value="@string/app_name"/>
     </application>
 </manifest>

@@ -1,0 +1,13 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <corners android:radius="0dp" />
+    <solid android:color="@color/km_audio_button_background_color" />
+    <padding
+        android:bottom="7dp"
+        android:left="11dp"
+        android:right="11dp"
+        android:top="7dp" />
+    <size
+        android:width="50dp"
+        android:height="50dp" />
+</shape>

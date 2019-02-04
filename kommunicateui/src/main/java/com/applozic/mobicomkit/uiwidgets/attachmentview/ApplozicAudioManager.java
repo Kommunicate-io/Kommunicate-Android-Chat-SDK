@@ -4,8 +4,6 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,8 +14,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import static android.content.Context.TELEPHONY_SERVICE;
 
 /**
  * Created by Rahul-PC on 28-02-2017.
@@ -33,7 +29,6 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
     String TAG = "ApplozicAudioManager";
     String audio_duration;
     int hours, minute, second, duration;
-    PhoneStateListener mPhoneStateListener;
 
     private ApplozicAudioManager(Context context) {
         this.context = context;
@@ -44,15 +39,10 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
     }
 
     public static ApplozicAudioManager getInstance(Context context) {
-        try {
-            if (myObj == null) {
-                myObj = new ApplozicAudioManager(context.getApplicationContext());
-            }
-            return myObj;
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (myObj == null) {
+            myObj = new ApplozicAudioManager(context.getApplicationContext());
         }
-        return null;
+        return myObj;
     }
 
     void play(final Uri uri, final ApplozicDocumentView view) {
@@ -110,6 +100,7 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
                 updateAudioDuration(view.audio_duration_textView, uri.getPath());
             }
         });
+
         currentView.audioseekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -184,17 +175,19 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
     }
 
     public void audiostop() {
-        MediaPlayer temp;
-        Iterator it = pool.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            {
-                temp = (MediaPlayer) pair.getValue();
-                temp.stop();
-                temp.release();
+        if (pool != null) {
+            MediaPlayer temp;
+            Iterator it = pool.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+                {
+                    temp = (MediaPlayer) pair.getValue();
+                    temp.stop();
+                    temp.release();
+                }
             }
+            pool.clear();
         }
-        pool.clear();
     }
 
     public String refreshAudioDuration(String filePath) {

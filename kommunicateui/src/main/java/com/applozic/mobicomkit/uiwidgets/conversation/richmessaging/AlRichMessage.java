@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.lists.AlRichListsAdapter;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -44,12 +45,14 @@ public class AlRichMessage {
     private Message message;
     private ALRichMessageListener listener;
     private LinearLayout containerView;
+    private AlCustomizationSettings alCustomizationSettings;
 
-    public AlRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener) {
+    public AlRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         this.context = context;
         this.message = message;
         this.listener = listener;
         this.containerView = containerView;
+        this.alCustomizationSettings = alCustomizationSettings;
     }
 
     public void createRichMessage() {
@@ -75,6 +78,17 @@ public class AlRichMessage {
             recyclerView.setVisibility(View.GONE);
             quickRepliesRecycler.setVisibility(View.GONE);
             setupFaqItemView(faqLayout, faqReplyLayout, model);
+        } else if (model.getTemplateId() == 9) {
+            listItemlayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            faqLayout.setVisibility(View.GONE);
+            faqReplyLayout.setVisibility(View.GONE);
+            quickRepliesRecycler.setVisibility(View.GONE);
+
+            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(layoutManager);
+            AlImageAdapter imageAdapter = new AlImageAdapter(context, model, listener, message, alCustomizationSettings);
+            recyclerView.setAdapter(imageAdapter);
         } else if (model.getTemplateId() == 3 || model.getTemplateId() == 6) {
             listItemlayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);

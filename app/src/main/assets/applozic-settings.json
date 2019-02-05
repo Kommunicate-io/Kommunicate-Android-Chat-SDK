@@ -78,6 +78,18 @@
   "enableAwayMessage": true,
   "awayMessageTextColor": "#A9A4A4",
   "hideGroupSubtitle": false,
+  "sentMessageCornerRadii": [
+    10,
+    0,
+    10,
+    10
+  ],
+  "receivedMessageCornerRadii": [
+    0,
+    10,
+    10,
+    10
+  ],
   "filterGallery": {
     "ALL_FILES": true,
     "IMAGE_VIDEO": false,

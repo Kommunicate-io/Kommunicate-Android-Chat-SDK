@@ -143,9 +143,27 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private ALRichMessageListener listener;
     private KmStoragePermissionListener storagePermissionListener;
     private String geoApiKey;
+    private float[] sentMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
+    private float[] receivedMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
+
+        if (alCustomizationSettings.getSentMessageCornerRadii() != null) {
+            for (int i = 0; i < alCustomizationSettings.getSentMessageCornerRadii().length; i++) {
+                if (i < alCustomizationSettings.getSentMessageCornerRadii().length && i < 4) {
+                    sentMessageCornerRadii[i * 2] = sentMessageCornerRadii[(i * 2) + 1] = DimensionsUtils.convertDpToPixel(alCustomizationSettings.getSentMessageCornerRadii()[i]);
+                }
+            }
+        }
+
+        if (alCustomizationSettings.getReceivedMessageCornerRadii() != null) {
+            for (int i = 0; i < alCustomizationSettings.getReceivedMessageCornerRadii().length; i++) {
+                if (i < alCustomizationSettings.getReceivedMessageCornerRadii().length && i < 4) {
+                    receivedMessageCornerRadii[i * 2] = receivedMessageCornerRadii[(i * 2) + 1] = DimensionsUtils.convertDpToPixel(alCustomizationSettings.getReceivedMessageCornerRadii()[i]);
+                }
+            }
+        }
     }
 
     public void setContextMenuClickListener(ContextMenuClickListener contextMenuClickListener) {
@@ -562,7 +580,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (isHtmlTypeMessage(message)) {
-                        if(myHolder.viaEmailView != null){
+                        if (myHolder.viaEmailView != null) {
                             myHolder.viaEmailView.setVisibility(isEmailTypeMessage(message) ? View.VISIBLE : GONE);
                         }
                         if (myHolder.emailLayout != null) {
@@ -968,6 +986,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                         Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : (isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
                                 bgShape.setStroke(3, message.isTypeOutbox() ?
                                         Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                                if (alCustomizationSettings.getSentMessageCornerRadii() != null && message.isTypeOutbox()) {
+                                    bgShape.setCornerRadii(sentMessageCornerRadii);
+                                } else if (alCustomizationSettings.getReceivedMessageCornerRadii() != null) {
+                                    bgShape.setCornerRadii(receivedMessageCornerRadii);
+                                }
                             }
                         }
                     }

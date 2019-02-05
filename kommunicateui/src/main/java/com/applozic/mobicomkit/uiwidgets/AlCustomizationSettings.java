@@ -110,6 +110,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean launchChatFromProfilePicOrName = false;
     private Map<String, Boolean> filterGallery;
     private boolean enableShareConversation = false;
+    private float[] sentMessageCornerRadii;
+    private float[] receivedMessageCornerRadii;
 
     private Map<String, Boolean> attachmentOptions;
 
@@ -594,6 +596,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setEnableShareConversation(boolean enableShareConversation) {
         this.enableShareConversation = enableShareConversation;
+    }
+
+    public float[] getSentMessageCornerRadii() {
+        return sentMessageCornerRadii;
+    }
+
+    public float[] getReceivedMessageCornerRadii() {
+        return receivedMessageCornerRadii;
     }
 
     @Override

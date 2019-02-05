@@ -90,6 +90,14 @@
     10,
     10
   ],
+  "fontModel": {
+    "messageTextFont": "normal",
+    "messageDisplayNameFont": "fonts/AlexBrush-Regular.ttf",
+    "createdAtTimeFont": "",
+    "toolbarTitleFont": "normal",
+    "toolbarSubtitleFont": "fonts/AlexBrush-Regular.ttf",
+    "messageEditTextFont": "fonts/AlexBrush-Regular.ttf"
+  },
   "filterGallery": {
     "ALL_FILES": true,
     "IMAGE_VIDEO": false,

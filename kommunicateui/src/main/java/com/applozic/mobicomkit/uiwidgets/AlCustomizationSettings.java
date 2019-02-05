@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFontModel;
 import com.applozic.mobicommons.json.JsonMarker;
 
 import java.util.Map;
@@ -112,6 +113,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean enableShareConversation = false;
     private float[] sentMessageCornerRadii;
     private float[] receivedMessageCornerRadii;
+    private KmFontModel fontModel;
 
     private Map<String, Boolean> attachmentOptions;
 
@@ -604,6 +606,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public float[] getReceivedMessageCornerRadii() {
         return receivedMessageCornerRadii;
+    }
+
+    public String getLogoutPackageName() {
+        return logoutPackageName;
+    }
+
+    public KmFontModel getFontModel() {
+        return fontModel;
     }
 
     @Override

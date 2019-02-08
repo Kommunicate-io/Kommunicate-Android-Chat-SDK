@@ -87,10 +87,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         } else if (model != null && model.getTemplateId() == 1) {
             View itemView = LayoutInflater.from(context).inflate(R.layout.al_guest_details_layout, parent, false);
             return new GuestCountHolder(itemView);
-        } else if (hotelList != null) {
-            View itemView = LayoutInflater.from(context).inflate(R.layout.al_rich_message_item, parent, false);
-            return new MyViewHolder(itemView);
-        } else if (model != null && model.getTemplateId() == 2) {
+        } else if (model != null && (model.getTemplateId() == 2 || model.getTemplateId() == 10 || hotelList != null)) {
             View itemView = LayoutInflater.from(context).inflate(R.layout.al_rich_message_item, parent, false);
             return new MyViewHolder(itemView);
         }
@@ -116,6 +113,9 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         } else if (model != null && (model.getTemplateId() == 6 || model.getTemplateId() == 3)) {
             SingleTextViewHolder singleTextViewHolder = (SingleTextViewHolder) holder;
             bindSingleTextItem(singleTextViewHolder, position);
+        } else if (model != null && model.getTemplateId() == 10) {
+            MyViewHolder viewHolder = (MyViewHolder) holder;
+            bindGenericCards(viewHolder, position);
         }
     }
 
@@ -125,14 +125,12 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             return hotelList.size();
         } else if (model.getTemplateId() == 1) {
             return guestList.size();
-        } else if (model.getTemplateId() == 6 || model.getTemplateId() == 3) {
-            return payloadList.size();
+        } else if (model.getTemplateId() == 6 || model.getTemplateId() == 3 || model.getTemplateId() == 2 || model.getTemplateId() == 10) {
+            return payloadList != null ? payloadList.size() : 0;
         } else if (roomList != null) {
             return roomList.size();
         } else if (model.getTemplateId() == 5) {
             return 1;
-        } else if (model.getTemplateId() == 2) {
-            return payloadList.size();
         }
 
         return 0;
@@ -377,6 +375,102 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         }
     }
 
+    private void bindGenericCards(MyViewHolder viewHolder, int position) {
+        if (payloadList != null) {
+            final ALRichMessageModel.ALPayloadModel payloadModel = payloadList.get(position);
+
+            if (payloadModel.getHeader() != null && !TextUtils.isEmpty(payloadModel.getHeader().getImgSrc())) {
+                Glide.with(context).load(payloadModel.getHeader().getImgSrc()).into(viewHolder.productImage);
+                viewHolder.productImage.setVisibility(View.VISIBLE);
+                viewHolder.productImageOverlay.setVisibility(View.VISIBLE);
+                viewHolder.productPrice.setBackground(context.getResources().getDrawable(R.drawable.al_rich_messaging_price_border));
+            } else {
+                viewHolder.productImage.setVisibility(View.GONE);
+                viewHolder.productImageOverlay.setVisibility(GONE);
+                viewHolder.productPrice.setBackground(context.getResources().getDrawable(R.drawable.al_imageless_rich_message_price_border));
+            }
+
+            if (payloadModel.getHeader() != null && !TextUtils.isEmpty(payloadModel.getHeader().getOverlayText())) {
+                viewHolder.productPrice.setText(payloadModel.getHeader().getOverlayText());
+                viewHolder.productPrice.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.productPrice.setVisibility(View.GONE);
+            }
+
+            if (TextUtils.isEmpty(payloadModel.getTitleExt())) {
+                viewHolder.productNameSplitLayout.setVisibility(GONE);
+                if (!TextUtils.isEmpty(payloadModel.getTitle())) {
+                    viewHolder.productNameSingleLine.setVisibility(View.VISIBLE);
+                    viewHolder.productNameSingleLine.setText(payloadModel.getTitle());
+                } else {
+                    viewHolder.productNameSingleLine.setVisibility(View.GONE);
+                }
+            } else {
+                viewHolder.productNameSplitLayout.setVisibility(View.VISIBLE);
+                viewHolder.productNameSingleLine.setVisibility(View.GONE);
+                viewHolder.productName.setVisibility(View.VISIBLE);
+                viewHolder.productRating.setText(payloadModel.getTitleExt());
+
+                if (!TextUtils.isEmpty(payloadModel.getTitle())) {
+                    viewHolder.productName.setText(payloadModel.getTitle());
+                } else {
+                    viewHolder.productName.setText("");
+                }
+            }
+
+            if (!TextUtils.isEmpty(payloadModel.getSubtitle())) {
+                viewHolder.productLocation.setVisibility(View.VISIBLE);
+                viewHolder.productLocation.setText(AlRichMessage.getHtmlText(payloadModel.getSubtitle()));
+            } else {
+                viewHolder.productLocation.setVisibility(View.GONE);
+            }
+
+            if (!TextUtils.isEmpty(payloadModel.getDescription())) {
+                viewHolder.productDescription.setVisibility(View.VISIBLE);
+                viewHolder.productDescription.setText(AlRichMessage.getHtmlText(payloadModel.getDescription()));
+            } else {
+                viewHolder.productDescription.setVisibility(View.GONE);
+            }
+
+            viewHolder.bookAction1.setVisibility(View.GONE);
+            viewHolder.bookAction2.setVisibility(View.GONE);
+            viewHolder.bookAction3.setVisibility(View.GONE);
+            viewHolder.viewAction1.setVisibility(View.GONE);
+            viewHolder.viewAction2.setVisibility(View.GONE);
+            viewHolder.viewAction3.setVisibility(View.GONE);
+
+            if (payloadModel.getButtons() != null && !payloadModel.getButtons().isEmpty()) {
+                try {
+                    List<ALRichMessageModel.AlButtonModel> actionsList = payloadModel.getButtons();
+                    for (int i = 0; i < actionsList.size(); i++) {
+                        if (i == 0) {
+                            viewHolder.bookAction1.setVisibility(View.VISIBLE);
+                            viewHolder.viewAction1.setVisibility(View.VISIBLE);
+                            viewHolder.bookAction1.setText(actionsList.get(0).getName());
+                            viewHolder.bookAction1.setOnClickListener(getGenericCardClickListener(actionsList.get(0)));
+                        }
+
+                        if (i == 1) {
+                            viewHolder.bookAction2.setVisibility(View.VISIBLE);
+                            viewHolder.viewAction2.setVisibility(View.VISIBLE);
+                            viewHolder.bookAction2.setText(actionsList.get(1).getName());
+                            viewHolder.bookAction2.setOnClickListener(getGenericCardClickListener(actionsList.get(1)));
+                        }
+
+                        if (i == 2) {
+                            viewHolder.bookAction3.setVisibility(View.VISIBLE);
+                            viewHolder.viewAction3.setVisibility(View.VISIBLE);
+                            viewHolder.bookAction3.setText(actionsList.get(2).getName());
+                            viewHolder.bookAction3.setOnClickListener(getGenericCardClickListener(actionsList.get(2)));
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     //templateId = 2
     private void bindHotelView(MyViewHolder viewHolder, int position) {
 
@@ -486,7 +580,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
             if (payload.getActions() != null && !payload.getActions().isEmpty()) {
                 try {
-                    List<ALRichMessageModel.AlActionModel> actionsList = payload.getActions();
+                    List<ALRichMessageModel.AlButtonModel> actionsList = payload.getActions();
                     for (int i = 0; i < actionsList.size(); i++) {
                         if (i == 0) {
                             viewHolder.bookAction1.setVisibility(View.VISIBLE);
@@ -609,16 +703,47 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         });
     }
 
-    private View.OnClickListener getActionClickListener(final ALRichMessageModel.AlActionModel action, final Map<String, Object> replyMetadata) {
+    private View.OnClickListener getActionClickListener(final ALRichMessageModel.AlButtonModel buttonModel, final Map<String, Object> replyMetadata) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, AlRichMessage.TEMPLATE_ID + model.getTemplateId(), message, action, replyMetadata);
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, getActionType(buttonModel), message, buttonModel, replyMetadata);
                 } else if (listener != null) {
-                    listener.onAction(context, (String) action.getAction(), message, action.getData(), replyMetadata);
+                    listener.onAction(context, getActionType(buttonModel), message, buttonModel, replyMetadata);
                 }
             }
         };
+    }
+
+    private View.OnClickListener getGenericCardClickListener(final ALRichMessageModel.AlButtonModel action) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (context.getApplicationContext() instanceof ALRichMessageListener) {
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, getActionType(action), message, action, getReplyMetadata(action));
+                } else if (listener != null) {
+                    listener.onAction(context, getActionType(action), message, action, getReplyMetadata(action));
+                }
+            }
+        };
+    }
+
+    private Map<String, Object> getReplyMetadata(ALRichMessageModel.AlButtonModel alButtonModel) {
+        if (alButtonModel != null && alButtonModel.getAction() != null) {
+            if (alButtonModel.getAction().getPayload() != null) {
+                return alButtonModel.getAction().getPayload().getReplyMetadata();
+            }
+        }
+        return null;
+    }
+
+    private String getActionType(ALRichMessageModel.AlButtonModel alButtonModel) {
+        if (alButtonModel != null && alButtonModel.getAction() != null) {
+            if (!TextUtils.isEmpty(alButtonModel.getAction().getType())) {
+                return alButtonModel.getAction().getType();
+            }
+        }
+        return AlRichMessage.TEMPLATE_ID + model.getTemplateId();
     }
 }

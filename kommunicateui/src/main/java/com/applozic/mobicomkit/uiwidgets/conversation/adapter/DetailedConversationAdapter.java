@@ -56,6 +56,7 @@ import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicDocumentView;
@@ -143,9 +144,35 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private ALRichMessageListener listener;
     private KmStoragePermissionListener storagePermissionListener;
     private String geoApiKey;
+    private float[] sentMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
+    private float[] receivedMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
+    private KmFontManager fontManager;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
+        initRadius();
+    }
+
+    public void setFontManager(KmFontManager fontManager) {
+        this.fontManager = fontManager;
+    }
+
+    public void initRadius() {
+        if (alCustomizationSettings.getSentMessageCornerRadii() != null) {
+            for (int i = 0; i < alCustomizationSettings.getSentMessageCornerRadii().length; i++) {
+                if (i < alCustomizationSettings.getSentMessageCornerRadii().length && i < 4) {
+                    sentMessageCornerRadii[i * 2] = sentMessageCornerRadii[(i * 2) + 1] = DimensionsUtils.convertDpToPixel(alCustomizationSettings.getSentMessageCornerRadii()[i]);
+                }
+            }
+        }
+
+        if (alCustomizationSettings.getReceivedMessageCornerRadii() != null) {
+            for (int i = 0; i < alCustomizationSettings.getReceivedMessageCornerRadii().length; i++) {
+                if (i < alCustomizationSettings.getReceivedMessageCornerRadii().length && i < 4) {
+                    receivedMessageCornerRadii[i * 2] = receivedMessageCornerRadii[(i * 2) + 1] = DimensionsUtils.convertDpToPixel(alCustomizationSettings.getReceivedMessageCornerRadii()[i]);
+                }
+            }
+        }
     }
 
     public void setContextMenuClickListener(ContextMenuClickListener contextMenuClickListener) {
@@ -562,7 +589,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (isHtmlTypeMessage(message)) {
-                        if(myHolder.viaEmailView != null){
+                        if (myHolder.viaEmailView != null) {
                             myHolder.viaEmailView.setVisibility(isEmailTypeMessage(message) ? View.VISIBLE : GONE);
                         }
                         if (myHolder.emailLayout != null) {
@@ -968,6 +995,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                         Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : (isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
                                 bgShape.setStroke(3, message.isTypeOutbox() ?
                                         Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                                if (alCustomizationSettings.getSentMessageCornerRadii() != null && message.isTypeOutbox()) {
+                                    bgShape.setCornerRadii(sentMessageCornerRadii);
+                                } else if (alCustomizationSettings.getReceivedMessageCornerRadii() != null) {
+                                    bgShape.setCornerRadii(receivedMessageCornerRadii);
+                                }
                             }
                         }
                     }
@@ -1524,6 +1556,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         return false;
                     }
                 });
+            }
+
+            if (fontManager != null) {
+                if (fontManager.getMessageTextFont() != null && messageTextView != null) {
+                    messageTextView.setTypeface(fontManager.getMessageTextFont());
+                }
+                if (fontManager.getMessageDisplayNameFont() != null && nameTextView != null) {
+                    nameTextView.setTypeface(fontManager.getMessageDisplayNameFont());
+                }
+                if (fontManager.getCreatedAtTimeFont() != null && createdAtTime != null) {
+                    createdAtTime.setTypeface(fontManager.getCreatedAtTimeFont());
+                }
             }
         }
 

@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFontModel;
 import com.applozic.mobicommons.json.JsonMarker;
 
 import java.util.Map;
@@ -110,6 +111,9 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean launchChatFromProfilePicOrName = false;
     private Map<String, Boolean> filterGallery;
     private boolean enableShareConversation = false;
+    private float[] sentMessageCornerRadii;
+    private float[] receivedMessageCornerRadii;
+    private KmFontModel fontModel;
 
     private Map<String, Boolean> attachmentOptions;
 
@@ -594,6 +598,22 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setEnableShareConversation(boolean enableShareConversation) {
         this.enableShareConversation = enableShareConversation;
+    }
+
+    public float[] getSentMessageCornerRadii() {
+        return sentMessageCornerRadii;
+    }
+
+    public float[] getReceivedMessageCornerRadii() {
+        return receivedMessageCornerRadii;
+    }
+
+    public String getLogoutPackageName() {
+        return logoutPackageName;
+    }
+
+    public KmFontModel getFontModel() {
+        return fontModel;
     }
 
     @Override

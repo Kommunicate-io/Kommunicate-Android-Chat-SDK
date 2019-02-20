@@ -80,23 +80,23 @@
   "hideGroupSubtitle": false,
   "sentMessageCornerRadii": [
     10,
-    0,
+    10,
     10,
     10
   ],
   "receivedMessageCornerRadii": [
-    0,
+    10,
     10,
     10,
     10
   ],
   "fontModel": {
-    "messageTextFont": "normal",
-    "messageDisplayNameFont": "fonts/AlexBrush-Regular.ttf",
+    "messageTextFont": "",
+    "messageDisplayNameFont": "",
     "createdAtTimeFont": "",
-    "toolbarTitleFont": "normal",
-    "toolbarSubtitleFont": "fonts/AlexBrush-Regular.ttf",
-    "messageEditTextFont": "fonts/AlexBrush-Regular.ttf"
+    "toolbarTitleFont": "",
+    "toolbarSubtitleFont": "",
+    "messageEditTextFont": ""
   },
   "filterGallery": {
     "ALL_FILES": true,

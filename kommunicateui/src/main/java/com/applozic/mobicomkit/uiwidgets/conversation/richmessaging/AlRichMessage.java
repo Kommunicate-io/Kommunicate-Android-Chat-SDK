@@ -29,17 +29,23 @@ import java.util.Map;
  */
 
 public class AlRichMessage {
-    public static final String FAQ_ACTIONS = "alFaqActions";
     public static final String SEND_GUEST_LIST = "sendGuestList";
     public static final String SEND_HOTEL_RATING = "sendHotelRating";
     public static final String SEND_HOTEL_DETAILS = "sendHotelDetails";
     public static final String SEND_ROOM_DETAILS_MESSAGE = "sendRoomDetailsMessage";
     public static final String SEND_BOOKING_DETAILS = "sendBookingDetails";
     public static final String MAKE_PAYMENT = "makePayment";
-    public static final String WEB_LINK = "link";
-    public static final String LIST_ITEM_CLICK = "listItemClick";
     public static final String TEMPLATE_ID = "templateId_";
     public static final String LINK_URL = "linkUrl";
+    public static final String WEB_LINK = "link";
+    public static final String QUICK_REPLY = "quickReply";
+    public static final String QUICK_REPLY_OLD = "quick_reply";
+    public static final String SUBMIT_BUTTON = "submit";
+    public static final String KM_FAQ_ID = "KM_FAQ_ID";
+    public static final String KM_SOURCE = "source";
+    public static final String KM_FORM_DATA = "formData";
+    public static final String KM_FORM_ACTION = "formAction";
+
 
     private Context context;
     private Message message;
@@ -136,7 +142,7 @@ public class AlRichMessage {
                         descriptionText.setVisibility(View.GONE);
                     }
 
-                    ALRichMessageModel.AlActionModel[] actionModel = payload.getButtons();
+                    List<ALRichMessageModel.AlButtonModel> actionModel = payload.getButtons();
                     if (actionModel != null) {
                         faqReplyLayout.setVisibility(View.VISIBLE);
 
@@ -147,21 +153,21 @@ public class AlRichMessage {
                             buttonLabel.setVisibility(View.GONE);
                         }
 
-                        if (actionModel.length > 0 && actionModel[0] != null) {
-                            if (!TextUtils.isEmpty(actionModel[0].getName())) {
+                        if (actionModel.size() > 0 && actionModel.get(0) != null) {
+                            if (!TextUtils.isEmpty(actionModel.get(0).getName())) {
                                 actionYes.setVisibility(View.VISIBLE);
-                                actionYes.setText(actionModel[0].getName());
-                                setClickListener(actionYes, model, actionModel[0], payload);
+                                actionYes.setText(actionModel.get(0).getName());
+                                setActionListener(actionYes, model, actionModel.get(0), payload);
                             } else {
                                 actionYes.setVisibility(View.GONE);
                             }
                         }
 
-                        if (actionModel.length > 1 && actionModel[1] != null) {
-                            if (!TextUtils.isEmpty(actionModel[1].getName())) {
+                        if (actionModel.size() > 1 && actionModel.get(1) != null) {
+                            if (!TextUtils.isEmpty(actionModel.get(1).getName())) {
                                 actionNo.setVisibility(View.VISIBLE);
-                                actionNo.setText(actionModel[1].getName());
-                                setClickListener(actionNo, model, actionModel[1], payload);
+                                actionNo.setText(actionModel.get(1).getName());
+                                setActionListener(actionNo, model, actionModel.get(1), payload);
                             } else {
                                 actionNo.setVisibility(View.GONE);
                             }
@@ -174,42 +180,31 @@ public class AlRichMessage {
         }
     }
 
-    private void setClickListener(View view, final ALRichMessageModel model, final ALRichMessageModel.AlActionModel actionModel, final ALRichMessageModel.ALPayloadModel payloadModel) {
+    private void setActionListener(View view, final ALRichMessageModel model, final ALRichMessageModel.AlButtonModel buttonModel, final ALRichMessageModel.ALPayloadModel payloadModel) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, actionModel, payloadModel != null ? payloadModel.getReplyMetadata() : null);
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, getActionType(model, buttonModel), message, buttonModel, payloadModel != null ? payloadModel.getReplyMetadata() : null);
                 } else {
                     if (listener != null) {
-                        if (WEB_LINK.equals(actionModel.getType())) {
-                            listener.onAction(context, WEB_LINK, message, actionModel, payloadModel != null ? payloadModel.getReplyMetadata() : null);
-                        } else {
-                            listener.onAction(context, FAQ_ACTIONS, message, actionModel.getName(), payloadModel != null ? payloadModel.getReplyMetadata() : null);
-                        }
+                        listener.onAction(context, getActionType(model, buttonModel), message, buttonModel, payloadModel != null ? payloadModel.getReplyMetadata() : null);
                     }
                 }
             }
         });
     }
 
-    private void setListActionListener(View view, final ALRichMessageModel model, final ALRichMessageModel.AlActionModel actionModel, final ALRichMessageModel.ALPayloadModel payloadModel) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, actionModel, payloadModel != null ? payloadModel.getReplyMetadata() : null);
-                } else {
-                    if (listener != null) {
-                        if (actionModel.getAction() != null && WEB_LINK.equals(((ALRichMessageModel.AlAction) actionModel.getAction()).getType())) {
-                            listener.onAction(context, WEB_LINK, message, actionModel.getAction(), payloadModel != null ? payloadModel.getReplyMetadata() : null);
-                        } else {
-                            listener.onAction(context, FAQ_ACTIONS, message, actionModel.getName(), payloadModel != null ? payloadModel.getReplyMetadata() : null);
-                        }
-                    }
-                }
+    private String getActionType(ALRichMessageModel model, ALRichMessageModel.AlButtonModel buttonModel) {
+        if (buttonModel != null) {
+            if (!TextUtils.isEmpty(buttonModel.getType())) {
+                return buttonModel.getType();
             }
-        });
+            if (buttonModel.getAction() != null && !TextUtils.isEmpty(buttonModel.getAction().getType())) {
+                return buttonModel.getAction().getType();
+            }
+        }
+        return TEMPLATE_ID + model.getTemplateId();
     }
 
     private void setupListItemView(LinearLayout listItemLayout, ALRichMessageModel model) {
@@ -240,31 +235,31 @@ public class AlRichMessage {
                     }
 
                     if (payload.getButtons() != null) {
-                        final ALRichMessageModel.AlActionModel[] action = payload.getButtons();
+                        final List<ALRichMessageModel.AlButtonModel> action = payload.getButtons();
 
-                        if (action[0] != null) {
+                        if (action.get(0) != null) {
                             final TextView actionText1 = listItemLayout.findViewById(R.id.actionButton1);
                             actionText1.setVisibility(View.VISIBLE);
-                            actionText1.setText(action[0].getName());
-                            setListActionListener(actionText1, model, action[0], payload);
+                            actionText1.setText(action.get(0).getName());
+                            setActionListener(actionText1, model, action.get(0), payload);
                         }
 
-                        if (action.length > 1 && action[1] != null) {
+                        if (action.size() > 1 && action.get(1) != null) {
                             final TextView actionText2 = listItemLayout.findViewById(R.id.actionButton2);
                             View actionDivider2 = listItemLayout.findViewById(R.id.actionDivider2);
                             actionDivider2.setVisibility(View.VISIBLE);
                             actionText2.setVisibility(View.VISIBLE);
-                            actionText2.setText(action[1].getName());
-                            setListActionListener(actionText2, model, action[1], payload);
+                            actionText2.setText(action.get(1).getName());
+                            setActionListener(actionText2, model, action.get(1), payload);
                         }
 
-                        if (action.length > 2 && action[2] != null) {
+                        if (action.size() > 2 && action.get(2) != null) {
                             final TextView actionText3 = listItemLayout.findViewById(R.id.actionButton3);
                             View actionDivider3 = listItemLayout.findViewById(R.id.actionDivider3);
                             actionDivider3.setVisibility(View.VISIBLE);
                             actionText3.setVisibility(View.VISIBLE);
-                            actionText3.setText(action[2].getName());
-                            setListActionListener(actionText3, model, action[2], payload);
+                            actionText3.setText(action.get(2).getName());
+                            setActionListener(actionText3, model, action.get(2), payload);
                         }
                     }
                 }

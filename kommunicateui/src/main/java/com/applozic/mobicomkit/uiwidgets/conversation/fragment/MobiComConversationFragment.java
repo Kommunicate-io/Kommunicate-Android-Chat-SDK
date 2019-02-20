@@ -3762,15 +3762,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 break;
 
             case AlRichMessage.MAKE_PAYMENT:
-                makePaymentForBooking((ALRichMessageModel) object);
+            case AlRichMessage.SUBMIT_BUTTON:
+                handleSubmitButton(object);
                 break;
 
-            case AlRichMessage.LIST_ITEM_CLICK:
-                sendFaqMessage((ALRichMessageModel.AlElementModel) object, getStringMap(replyMetadata));
-                break;
-
-            case AlRichMessage.FAQ_ACTIONS:
-                sendMessage((String) object, getStringMap(replyMetadata));
+            case AlRichMessage.QUICK_REPLY_OLD:
+            case AlRichMessage.QUICK_REPLY:
+                handleQuickReplies(object, replyMetadata);
                 break;
 
             case AlRichMessage.TEMPLATE_ID + 9:
@@ -3778,12 +3776,71 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 break;
 
             case AlRichMessage.WEB_LINK:
-                if (object instanceof ALRichMessageModel.AlAction) {
-                    openWebLink(((ALRichMessageModel.AlAction) object).getUrl());
-                } else if (object instanceof ALRichMessageModel.ALPayloadModel) {
-                    openWebLink(((ALRichMessageModel.ALPayloadModel) object).getUrl());
-                }
+                handleWebLinks(object);
                 break;
+        }
+    }
+
+    public void handleWebLinks(Object object) {
+        ALRichMessageModel.AlAction alAction = null;
+
+        if (object instanceof ALRichMessageModel.AlButtonModel) {
+            alAction = ((ALRichMessageModel.AlButtonModel) object).getAction();
+        } else if (object instanceof ALRichMessageModel.AlElementModel) {
+            alAction = ((ALRichMessageModel.AlElementModel) object).getAction();
+        } else if (object instanceof ALRichMessageModel.AlAction) {
+            alAction = (ALRichMessageModel.AlAction) object;
+        }
+
+        if (alAction != null) {
+            if (!TextUtils.isEmpty(alAction.getUrl())) {
+                openWebLink(alAction.getUrl());
+            } else if (alAction.getPayload() != null && !TextUtils.isEmpty(alAction.getPayload().getUrl())) {
+                openWebLink(alAction.getPayload().getUrl());
+            }
+        }
+
+        if (object instanceof ALRichMessageModel.ALPayloadModel) {
+            ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) object;
+            if (!TextUtils.isEmpty(payloadModel.getUrl())) {
+                openWebLink(payloadModel.getUrl());
+            }
+        }
+    }
+
+    public void handleQuickReplies(Object object, Map<String, Object> replyMetadata) {
+        String message = null;
+        if (object instanceof ALRichMessageModel.AlButtonModel) {
+            message = ((ALRichMessageModel.AlButtonModel) object).getName();
+        } else if (object instanceof ALRichMessageModel.AlAction) {
+            message = ((ALRichMessageModel.AlAction) object).getText();
+        } else if (object instanceof ALRichMessageModel.AlElementModel) {
+            ALRichMessageModel.AlElementModel elementModel = (ALRichMessageModel.AlElementModel) object;
+            message = elementModel.getTitle();
+            if (replyMetadata == null) {
+                replyMetadata = new HashMap<>();
+            }
+            if (elementModel.getArticleId() != null) {
+                replyMetadata.put(AlRichMessage.KM_FAQ_ID, elementModel.getArticleId());
+            }
+            if (!TextUtils.isEmpty(elementModel.getSource())) {
+                replyMetadata.put(AlRichMessage.KM_SOURCE, elementModel.getSource());
+            }
+        }
+
+        sendMessage(message, getStringMap(replyMetadata));
+    }
+
+    public void handleSubmitButton(Object object) {
+        if (object instanceof ALRichMessageModel.AlButtonModel) {
+            ALRichMessageModel.AlButtonModel buttonModel = (ALRichMessageModel.AlButtonModel) object;
+            if (buttonModel.getAction() != null && buttonModel.getAction().getPayload() != null) {
+                openWebLink(GsonUtils.getJsonFromObject(buttonModel.getAction().getPayload().getFormData(), ALRichMessageModel.AlFormDataModel.class)
+                        , buttonModel.getAction().getPayload().getFormAction());
+            }
+        } else if (object instanceof ALRichMessageModel) {
+            ALRichMessageModel model = (ALRichMessageModel) object;
+            openWebLink(model.getFormData(), model.getFormAction());
         }
     }
 
@@ -3807,6 +3864,19 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             Intent intent = new Intent(getActivity(), PaymentActivity.class);
             intent.putExtra(AlRichMessage.WEB_LINK, true);
             intent.putExtra(AlRichMessage.LINK_URL, url);
+            getActivity().startActivity(intent);
+        }
+    }
+
+    public void openWebLink(String formData, String formAction) {
+        Intent intent = new Intent(getActivity(), PaymentActivity.class);
+        if (!TextUtils.isEmpty(formData)) {
+            intent.putExtra(AlRichMessage.KM_FORM_DATA, formData);
+        }
+        if (!TextUtils.isEmpty(formAction)) {
+            intent.putExtra(AlRichMessage.KM_FORM_ACTION, formAction);
+        }
+        if (getActivity() != null) {
             getActivity().startActivity(intent);
         }
     }
@@ -3886,39 +3956,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendMessage("Your details have been submitted", metadata, Message.ContentType.DEFAULT.getValue());
     }
 
-    public void makePaymentForBooking(ALRichMessageModel model) {
-        Intent intent = new Intent(getActivity(), PaymentActivity.class);
-        intent.putExtra("formData", model.getFormData());
-        intent.putExtra("formAction", model.getFormAction());
-        if (getActivity() != null) {
-            getActivity().startActivity(intent);
-        }
-    }
-
     public void loadImageOnFullScreen(Context context, String action, ALRichMessageModel.ALPayloadModel payloadModel) {
         Intent intent = new Intent(context, FullScreenImageActivity.class);
         intent.putExtra(action, GsonUtils.getJsonFromObject(payloadModel, ALRichMessageModel.ALPayloadModel.class));
         ((MobiComKitActivityInterface) context).startActivityForResult(intent, MobiComKitActivityInterface.REQUEST_CODE_FULL_SCREEN_ACTION);
-    }
-
-    public void sendFaqMessage(ALRichMessageModel.AlElementModel model, Map<String, String> replyMetadata) {
-
-        if (model.getAction() != null && AlRichMessage.WEB_LINK.equals(model.getAction().getType())) {
-            Intent intent = new Intent(getActivity(), PaymentActivity.class);
-            intent.putExtra(AlRichMessage.WEB_LINK, true);
-            intent.putExtra(AlRichMessage.LINK_URL, model.getAction().getUrl());
-            if (getActivity() != null) {
-                getActivity().startActivity(intent);
-            }
-        } else {
-            Map<String, String> metadata = new HashMap<>();
-            metadata.put("KM_FAQ_ID", String.valueOf(model.getArticleId()));
-            metadata.put("source", model.getSource());
-            if (replyMetadata != null) {
-                metadata.putAll(replyMetadata);
-            }
-            sendMessage(model.getTitle(), metadata, Message.ContentType.DEFAULT.getValue());
-        }
     }
 
     public static class KMUserDetailTask extends AsyncTask<Void, Void, Boolean> {
@@ -3958,6 +3999,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public interface KmUserDetailsCallback {
         void hasFinished(Contact contact);
+
     }
 
     public static boolean isEmailConversation(Channel channel) {

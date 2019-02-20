@@ -100,11 +100,33 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
             int itemPosition = this.getLayoutPosition();
             if (itemPosition != -1 && elementList != null && !elementList.isEmpty()) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, AlRichMessage.TEMPLATE_ID + 7, message, elementList.get(itemPosition), replyMetadata);
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, getAction(elementList.get(itemPosition)), message, elementList.get(itemPosition), getReplyMetadata(elementList.get(itemPosition)));
                 } else if (messageListener != null) {
-                    messageListener.onAction(context, AlRichMessage.LIST_ITEM_CLICK, message, elementList.get(itemPosition), replyMetadata);
+                    messageListener.onAction(context, getAction(elementList.get(itemPosition)), message, elementList.get(itemPosition), getReplyMetadata(elementList.get(itemPosition)));
                 }
             }
+        }
+
+        private Map<String, Object> getReplyMetadata(ALRichMessageModel.AlElementModel elementModel) {
+            if (elementModel != null) {
+                if (elementModel.getAction() != null && elementModel.getAction().getPayload() != null && elementModel.getAction().getPayload().getReplyMetadata() != null) {
+                    return elementModel.getAction().getPayload().getReplyMetadata();
+                }
+            }
+            return replyMetadata;
+        }
+
+        private String getAction(ALRichMessageModel.AlElementModel elementModel) {
+            if (elementModel != null) {
+                if (elementModel.getAction() != null) {
+                    if (!TextUtils.isEmpty(elementModel.getAction().getType())) {
+                        return elementModel.getAction().getType();
+                    } else if (elementModel.getAction().getPayload() != null && !TextUtils.isEmpty(elementModel.getAction().getPayload().getType())) {
+                        return elementModel.getAction().getPayload().getType();
+                    }
+                }
+            }
+            return AlRichMessage.TEMPLATE_ID + 7;
         }
     }
 }

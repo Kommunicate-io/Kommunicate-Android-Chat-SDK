@@ -24,7 +24,7 @@ import java.util.Map;
 
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
-import io.kommunicate.KmHelper;
+import io.kommunicate.app.BuildConfig;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
@@ -38,13 +38,14 @@ public class MainActivity extends AppCompatActivity {
     AppCompatButton loginButton;
     LinearLayout layout;
     boolean exit = false;
+    public static final String APP_ID = BuildConfig.APP_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Kommunicate.init(this, KmHelper.APP_ID);
+        Kommunicate.init(this, APP_ID);
 
         layout = (LinearLayout) findViewById(R.id.footerSnack);
         mUserId = (EditText) findViewById(R.id.userId_editText);
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
         final KMUser user = new KMUser();
         user.setUserId(userId);
-        user.setApplicationId(KmHelper.APP_ID);
+        user.setApplicationId(APP_ID);
 
         if (!TextUtils.isEmpty(password)) {
             user.setPassword(password);

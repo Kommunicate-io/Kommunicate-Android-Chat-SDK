@@ -41,6 +41,7 @@
     <string name="warning">Warning</string>
     <string name="cancel_transaction">Do you want to cancel this transaction?</string>
     <string name="go_back">Are you sure you want to exit this page?</string>
+    <string name="unable_to_create_conversation">Unable to create conversation</string>
 
     <!--
          Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by

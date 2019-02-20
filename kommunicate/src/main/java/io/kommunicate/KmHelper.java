@@ -10,14 +10,12 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.List;
 
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
-import io.kommunicate.callbacks.KMStartChatHandler;
+import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
 
@@ -25,9 +23,8 @@ import io.kommunicate.users.KMUser;
  * Created by ashish on 01/06/18.
  */
 
-public class KmHelper {
 
-    public static final String APP_ID = "<Your-App-Id>";
+public class KmHelper {
 
     public static void performLogout(Context context, final Object object) {
         final ProgressDialog dialog = new ProgressDialog(context);
@@ -57,56 +54,52 @@ public class KmHelper {
         });
     }
 
-    public static void setStartNewUniqueChat(Context context, final List<String> agentIds, List<String> botIds) {
+    public static void setStartNewUniqueChat(final Context context, final List<String> agentIds, List<String> botIds) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage("Creating conversation, please wait...");
         dialog.setCancelable(false);
         dialog.show();
 
         try {
-            Kommunicate.startOrGetConversation(context, null, agentIds, botIds, new KMStartChatHandler() {
+            new KmChatBuilder(context).setAgentIds(agentIds).setBotIds(botIds).launchChat(new KmCallback() {
                 @Override
-                public void onSuccess(Channel channel, Context context) {
+                public void onSuccess(Object message) {
                     dialog.dismiss();
-                    Kommunicate.openParticularConversation(context, channel.getKey());
                 }
 
                 @Override
-                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+                public void onFailure(Object error) {
                     dialog.dismiss();
-                    Toast.makeText(context, "Unable to create conversation : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.unable_to_create_conversation) + " : " + error, Toast.LENGTH_SHORT).show();
                 }
             });
-        } catch (KmException e) {
+        } catch (Exception e) {
             dialog.dismiss();
             Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
 
-    public static void setStartNewChat(Context context, final List<String> agentIds, List<String> botIds, boolean isUnique) {
+    public static void setStartNewChat(final Context context, final List<String> agentIds, List<String> botIds, boolean isUnique) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage("Creating conversation, please wait...");
         dialog.setCancelable(false);
         dialog.show();
 
         try {
-            Kommunicate.startConversation(context, null, agentIds, botIds, isUnique, new KMStartChatHandler() {
+            new KmChatBuilder(context).setAgentIds(agentIds).setBotIds(botIds).setSingleChat(isUnique).launchChat(new KmCallback() {
                 @Override
-                public void onSuccess(Channel channel, Context context) {
+                public void onSuccess(Object message) {
                     dialog.dismiss();
-                    if (channel != null) {
-                        Kommunicate.openConversation(context, channel.getKey(), null);
-                    }
                 }
 
                 @Override
-                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+                public void onFailure(Object error) {
                     dialog.dismiss();
-                    Toast.makeText(context, "Unable to create conversation : " + channelFeedApiResponse, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.unable_to_create_conversation) + " : " + error, Toast.LENGTH_SHORT).show();
                 }
             });
-        } catch (KmException e) {
+        } catch (Exception e) {
             dialog.dismiss();
             e.printStackTrace();
         }

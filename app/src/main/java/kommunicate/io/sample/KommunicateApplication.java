@@ -36,31 +36,11 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
 
         switch (action) {
             case Kommunicate.START_NEW_CHAT:
-                //Kommunicate.startOrGetConversation(context, "testClientGroupId", "reytum@live.com", null, "My Group");
-                //Kommunicate.setStartNewChat(context, "vipin+testkm01012018@applozic.com", "Hotel-Booking-Assistant"); //pass null if you want to use default bot
-                List<String> agents = new ArrayList<>();
-                //agents.add("reytum@live.com");
-                //agents.add("reytum@live.com");
-                List<String> bots = new ArrayList<>();
-                //Kommunicate.setStartNewChat(context, "reytum@live.com", "Hotel-Booking-Assistant");
                 try {
-                    KmHelper.setStartNewChat(context, agents, bots, true);
-                    //Kommunicate.startNewConversation(context, null, agents, bots,false, null);
+                    KmHelper.setStartNewChat(context, null, null, false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                //KmHelper.setStartNewUniqueChat(context, agents, bots);
-                /*new KmChatBuilder(this).setApplicationId(KmHelper.APP_KEY).setChatName("Builder Chat").setSingleChat(false).launchChat(new KmCallback() {
-                    @Override
-                    public void onSuccess(Object message) {
-                        Utils.printLog(context, "ChatTest", "Success : " + message);
-                    }
-
-                    @Override
-                    public void onFailure(Object error) {
-                        Utils.printLog(context, "ChatTest", "Failure : " + error);
-                    }
-                });*/
                 break;
 
             case Kommunicate.LOGOUT_CALL:

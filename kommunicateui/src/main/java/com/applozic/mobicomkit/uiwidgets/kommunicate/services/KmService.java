@@ -52,9 +52,9 @@ public class KmService {
                 }
 
                 if (!TextUtils.isEmpty(conversationAssignee)) {
-                    return contactService.getContactById(conversationAssignee);
+                    return TextUtils.isEmpty(conversationAssignee) ? null : contactService.getContactById(conversationAssignee);
                 }
-                return contactService.getContactById(conversationTitle);
+                return TextUtils.isEmpty(conversationTitle) ? null : contactService.getContactById(conversationTitle);
             }
         } else {
             String userId = KmChannelService.getInstance(context).getUserInSupportGroup(channel.getKey());

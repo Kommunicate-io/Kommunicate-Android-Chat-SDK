@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.RegisteredUsersAsyncTask;
@@ -44,7 +45,6 @@ import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelDeleteTask;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelLeaveMember;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
@@ -109,6 +109,7 @@ public class ConversationUIService {
     private TopicDetail topicDetailsParcelable;
     private Contact contact;
     private NotificationManager notificationManager;
+    private boolean isActionMessageHidden;
 
     public ConversationUIService(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -116,6 +117,7 @@ public class ConversationUIService {
         this.userPreference = MobiComUserPreference.getInstance(fragmentActivity);
         this.notificationManager = (NotificationManager) fragmentActivity.getSystemService(Context.NOTIFICATION_SERVICE);
         this.fileClientService = new FileClientService(fragmentActivity);
+        isActionMessageHidden = ApplozicClient.getInstance(fragmentActivity).isActionMessagesHidden();
     }
 
     public MobiComQuickConversationFragment getQuickConversationFragment() {
@@ -411,7 +413,7 @@ public class ConversationUIService {
     }
 
     public void addMessage(Message message) {
-        if (message.isUpdateMessage()) {
+        if (message.isUpdateMessage() || !message.getHidden()) {
             if (!BroadcastService.isQuick()) {
                 return;
             }
@@ -443,15 +445,16 @@ public class ConversationUIService {
 
     public void syncMessages(Message message, String keyString) {
         if (!message.isHidden() && !message.isVideoNotificationMessage()) {
-
             if (BroadcastService.isIndividual()) {
                 ConversationFragment conversationFragment = getConversationFragment();
-                if (conversationFragment.isMsgForConversation(message) && !Message.GroupMessageMetaData.TRUE.getValue().equals(message.getMetaDataValueForKey(Message.GroupMessageMetaData.HIDE_KEY.getValue()))) {
+                if (conversationFragment != null && conversationFragment.isMsgForConversation(message)
+                        && !Message.GroupMessageMetaData.TRUE.getValue().equals(message.getMetaDataValueForKey(Message.GroupMessageMetaData.HIDE_KEY.getValue()))) {
                     conversationFragment.addMessage(message);
                 }
             }
 
-            if (!Message.MetaDataType.ARCHIVE.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))) {
+            if (!Message.MetaDataType.ARCHIVE.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))
+                    || !(isActionMessageHidden && message.isActionMessage())) {
                 updateLastMessage(message);
             }
         }
@@ -910,7 +913,7 @@ public class ConversationUIService {
                     ((MobiComKitActivityInterface) fragmentActivity).retry();
                     Intent intent = new Intent(fragmentActivity, ApplozicMqttIntentService.class);
                     intent.putExtra(ApplozicMqttIntentService.SUBSCRIBE, true);
-                    ApplozicMqttIntentService.enqueueWork(fragmentActivity,intent);
+                    ApplozicMqttIntentService.enqueueWork(fragmentActivity, intent);
 
                 }
             }
@@ -975,6 +978,4 @@ public class ConversationUIService {
         usersAsyncTask.execute((Void) null);
 
     }
-
-
 }

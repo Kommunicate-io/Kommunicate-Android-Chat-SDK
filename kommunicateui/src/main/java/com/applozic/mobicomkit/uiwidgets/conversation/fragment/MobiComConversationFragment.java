@@ -123,7 +123,6 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageResponse;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFontModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
@@ -386,7 +385,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         recordLayout = list.findViewById(R.id.kmRecordLayout);
 
-        if (alCustomizationSettings != null && alCustomizationSettings.getAttachmentOptions() != null && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) {
+        if (alCustomizationSettings != null
+                && alCustomizationSettings.getAttachmentOptions() != null
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) {
             recordLayout.setVisibility(VISIBLE);
         }
 
@@ -476,7 +478,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
         awayMessageTv = list.findViewById(R.id.awayMessageTV);
 
-        boolean isRecordOptionEnabled = alCustomizationSettings != null && alCustomizationSettings.getAttachmentOptions() != null && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION);
+        boolean isRecordOptionEnabled = alCustomizationSettings != null && alCustomizationSettings.getAttachmentOptions() != null
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION);
 
         recordButton.setVisibility(isRecordOptionEnabled ? View.VISIBLE : View.GONE);
         sendButton.setVisibility(isRecordOptionEnabled ? View.GONE : View.VISIBLE);
@@ -809,7 +813,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void handleSendAndRecordButtonView(boolean isSendButtonVisible) {
-        boolean showRecordButton = alCustomizationSettings != null && alCustomizationSettings.getAttachmentOptions() != null && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION);
+        boolean showRecordButton = alCustomizationSettings != null
+                && alCustomizationSettings.getAttachmentOptions() != null
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION);
         sendButton.setVisibility(showRecordButton ? isSendButtonVisible ? View.VISIBLE : View.GONE : View.VISIBLE);
         recordButton.setVisibility(showRecordButton ? isSendButtonVisible ? View.GONE : View.VISIBLE : View.GONE);
     }

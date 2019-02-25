@@ -19,6 +19,8 @@ public class KmClientService extends MobiComKitClientService {
     public static final String KM_BASE_URL = "https://api.kommunicate.io";
     public static final String KM_TEST_URL = "https://api-test.kommunicate.io";
     public static final String KM_CA_URL = "https://api-ca.kommunicate.io";
+    public static final String KM_HELPCENTER_URL = "https://helpcenter.kommunicate.io/?appId=";
+    public static final String KM_TEST_HELPCENTER_URL = "https://helpcenter-test.kommunicate.io/?appId=";
 
     public KmClientService(Context context) {
         super(context);
@@ -49,5 +51,15 @@ public class KmClientService extends MobiComKitClientService {
         }
 
         return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+    }
+
+    public String getHelpcenterUrl() {
+        String appId = MobiComKitClientService.getApplicationKey(context);
+        if (KM_BASE_URL.equals(getKmBaseUrl())) {
+            return KM_HELPCENTER_URL + appId;
+        } else if (KM_TEST_URL.equals(getKmBaseUrl())) {
+            return KM_TEST_HELPCENTER_URL + appId;
+        }
+        return null;
     }
 }

@@ -161,7 +161,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        openFaq(new KmClientService(getContext()).getHelpcenterUrl());
+                        openFaq(new KmClientService(getContext()).getHelpCenterUrl());
                     }
                 });
             }

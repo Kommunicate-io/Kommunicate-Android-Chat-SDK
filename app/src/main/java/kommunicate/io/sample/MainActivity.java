@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -17,7 +18,6 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout layout;
     boolean exit = false;
     public static final String APP_ID = BuildConfig.APP_ID;
+    private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,11 +99,40 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
                         progressDialog.dismiss();
-                        Toast.makeText(MainActivity.this, getString(R.string.some_error_occured) + " : " + (registrationResponse != null ? registrationResponse : exception != null ? exception.getMessage() : ""), Toast.LENGTH_SHORT).show();
+                        createLoginErrorDialog(registrationResponse, exception);
                     }
                 });
             }
         });
+    }
+
+    public String getInvalidAppIdError(RegistrationResponse registrationResponse) {
+        if (registrationResponse != null) {
+            if (registrationResponse.getMessage() != null && INVALID_APP_ID.equals(registrationResponse.getMessage())) {
+                return getString(R.string.inavild_app_id_error);
+            } else {
+                return registrationResponse.getMessage();
+            }
+        }
+        return "";
+    }
+
+    public void createLoginErrorDialog(RegistrationResponse registrationResponse, Exception exception) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setCancelable(true);
+        StringBuilder message = new StringBuilder(getString(R.string.some_error_occured));
+        if (registrationResponse != null) {
+            if (!TextUtils.isEmpty(getInvalidAppIdError(registrationResponse))) {
+                message.append(" : ");
+                message.append(getInvalidAppIdError(registrationResponse));
+            }
+        } else if (exception != null) {
+            message.append(" : ");
+            message.append(exception.getMessage());
+        }
+
+        dialogBuilder.setMessage(message.toString());
+        dialogBuilder.show();
     }
 
     public void showSnackBar(int resId) {
@@ -188,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                Toast.makeText(MainActivity.this, "Login Error : " + (registrationResponse != null ? GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class) : exception), Toast.LENGTH_SHORT).show();
+                createLoginErrorDialog(registrationResponse, exception);
             }
         });
     }

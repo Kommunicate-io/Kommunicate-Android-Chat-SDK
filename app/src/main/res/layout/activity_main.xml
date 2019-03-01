@@ -55,13 +55,33 @@
             android:id="@+id/btn_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
             android:layout_marginTop="24dp"
             android:padding="12dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:background="@color/applozic_theme_color_primary"
             android:text="@string/login_or_sign_up_info"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_login_as_visitor"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="12dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:background="@color/applozic_theme_color_primary"
+            android:text="@string/login_as_vistor"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:text="@string/login_as_visitor_info"/>
 
         <TextView android:id="@+id/link_login"
             android:layout_width="fill_parent"
@@ -76,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:padding="20px"
+            android:padding="20dp"
             android:text="@string/privacy_policy"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 

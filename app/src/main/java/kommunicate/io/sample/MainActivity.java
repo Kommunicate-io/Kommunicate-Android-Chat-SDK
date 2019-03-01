@@ -35,7 +35,7 @@ import io.kommunicate.callbacks.KMLoginHandler;
 public class MainActivity extends AppCompatActivity {
 
     EditText mUserId, mPassword;
-    AppCompatButton loginButton;
+    AppCompatButton loginButton, visitorButton;
     LinearLayout layout;
     boolean exit = false;
     public static final String APP_ID = BuildConfig.APP_ID;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         mUserId = (EditText) findViewById(R.id.userId_editText);
         mPassword = (EditText) findViewById(R.id.password_editText);
         loginButton = (AppCompatButton) findViewById(R.id.btn_signup);
+        visitorButton = findViewById(R.id.btn_login_as_visitor);
 
         TextView txtViewPrivacyPolicy = (TextView) findViewById(R.id.txtPrivacyPolicy);
         txtViewPrivacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
@@ -76,6 +77,30 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        visitorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+                progressDialog.setTitle("Logging in..");
+                progressDialog.setMessage("Please wait...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                Kommunicate.loginAsVisitor(MainActivity.this, new KMLoginHandler() {
+                    @Override
+                    public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                        progressDialog.dismiss();
+                        Kommunicate.openConversation(context, null);
+                    }
+
+                    @Override
+                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                        progressDialog.dismiss();
+                        Toast.makeText(MainActivity.this, getString(R.string.some_error_occured) + " : " + (registrationResponse != null ? registrationResponse : exception != null ? exception.getMessage() : ""), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

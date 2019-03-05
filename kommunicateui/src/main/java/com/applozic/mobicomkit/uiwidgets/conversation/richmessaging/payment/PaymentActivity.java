@@ -110,12 +110,12 @@ public class PaymentActivity extends AppCompatActivity {
             alertDialog.setTitle(getString(R.string.warning));
             alertDialog.setMessage(getString(isPaymentRequest ? R.string.cancel_transaction : R.string.go_back));
 
-            alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            alertDialog.setPositiveButton(getString(R.string.yes_alert), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
                 }
             });
-            alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            alertDialog.setNegativeButton(getString(R.string.no_alert), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
                 }

@@ -103,7 +103,6 @@ public class Kommunicate {
         }
     }
 
-    @Deprecated
     public static void openConversation(Context context, KmCallback callback) {
         Intent intent = new Intent(context, KMConversationActivity.class);
         context.startActivity(intent);

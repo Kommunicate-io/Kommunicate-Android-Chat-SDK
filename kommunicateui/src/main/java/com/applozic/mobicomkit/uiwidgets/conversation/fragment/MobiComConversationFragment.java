@@ -3363,11 +3363,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
 
             for (Message message : nextMessageList) {
+                if (initial && !messageList.contains(message)) {
+                    messageList.add(message);
+                }
                 selfDestructMessage(message);
             }
 
             if (initial) {
-                messageList.addAll(nextMessageList);
                 recyclerDetailConversationAdapter.searchString = searchString;
                 emptyTextView.setVisibility(messageList.isEmpty() ? VISIBLE : View.GONE);
 

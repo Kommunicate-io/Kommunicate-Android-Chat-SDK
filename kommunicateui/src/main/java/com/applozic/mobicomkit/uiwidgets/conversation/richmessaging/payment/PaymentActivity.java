@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +30,7 @@ public class PaymentActivity extends AppCompatActivity {
     Toolbar toolbar;
     private Map<String, String> txnData;
     private boolean isLinkType = false;
+    private boolean isPaymentRequest = false;
     private ProgressBar loadingProgressBar;
 
     @Override
@@ -47,32 +49,14 @@ public class PaymentActivity extends AppCompatActivity {
         txnData = new HashMap<>();
         setWebViewClient();
 
-        if (isLinkType) {
+        String helpCenterUrl = getIntent().getStringExtra(KommunicateUI.KM_HELPCENTER_URL);
+
+        if (!TextUtils.isEmpty(helpCenterUrl)) {
+            loadUrl(helpCenterUrl);
+        } else if (isLinkType) {
             String linkUrl = getIntent().getStringExtra(AlRichMessage.LINK_URL);
             if (!TextUtils.isEmpty(linkUrl)) {
-                webView.getSettings().setJavaScriptEnabled(true);
-                webView.getSettings().setLoadWithOverviewMode(true);
-                webView.getSettings().setUseWideViewPort(true);
-                webView.setWebViewClient(new WebViewClient() {
-
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        if (loadingProgressBar != null) {
-                            loadingProgressBar.setVisibility(View.VISIBLE);
-                        }
-                        view.loadUrl(url);
-                        return true;
-                    }
-
-                    @Override
-                    public void onPageFinished(WebView view, final String url) {
-                        webView.setVisibility(View.VISIBLE);
-                        if (loadingProgressBar != null) {
-                            loadingProgressBar.setVisibility(View.GONE);
-                        }
-                    }
-                });
-                webView.loadUrl(linkUrl.startsWith("http") ? linkUrl : "http://" + linkUrl);
+                loadUrl(linkUrl.startsWith("http") ? linkUrl : "http://" + linkUrl);
             }
         } else {
             String formDataJson = getIntent().getStringExtra("formData");
@@ -93,6 +77,7 @@ public class PaymentActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                isPaymentRequest = true;
                 webViewClientPost(webView, baseUrl, txnData.entrySet());
             }
         }
@@ -116,22 +101,55 @@ public class PaymentActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(PaymentActivity.this);
 
-        alertDialog.setTitle(getString(R.string.warning));
-        alertDialog.setMessage(getString(isLinkType ? R.string.go_back : R.string.cancel_transaction));
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(PaymentActivity.this);
 
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        alertDialog.show();
+            alertDialog.setTitle(getString(R.string.warning));
+            alertDialog.setMessage(getString(isPaymentRequest ? R.string.cancel_transaction : R.string.go_back));
+
+            alertDialog.setPositiveButton(getString(R.string.yes_alert), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            alertDialog.setNegativeButton(getString(R.string.no_alert), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            alertDialog.show();
+        }
+    }
+
+    public void loadUrl(String url) {
+        if (!TextUtils.isEmpty(url)) {
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setLoadWithOverviewMode(true);
+            webView.getSettings().setUseWideViewPort(true);
+            webView.setWebViewClient(new WebViewClient() {
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    if (loadingProgressBar != null) {
+                        loadingProgressBar.setVisibility(View.VISIBLE);
+                    }
+                    view.loadUrl(url);
+                    return true;
+                }
+
+                @Override
+                public void onPageFinished(WebView view, final String url) {
+                    webView.setVisibility(View.VISIBLE);
+                    if (loadingProgressBar != null) {
+                        loadingProgressBar.setVisibility(View.GONE);
+                    }
+                }
+            });
+            webView.loadUrl(url);
+        }
     }
 
     public void setWebViewClient() {

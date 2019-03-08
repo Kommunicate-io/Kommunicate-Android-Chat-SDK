@@ -5,6 +5,10 @@ import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.HttpRequestUtils;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
+import com.applozic.mobicomkit.uiwidgets.R;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by ashish on 03/04/18.
@@ -13,12 +17,10 @@ import com.applozic.mobicomkit.api.MobiComKitClientService;
 public class KmClientService extends MobiComKitClientService {
 
     private HttpRequestUtils httpRequestUtils;
-    public static final String CONVERSATION_SHARE_URL = "https://dashboard.kommunicate.io/conversations/";
-    public static final String CONVERSATION_SHARE_TEST_URL = "https://dashboard-test.kommunicate.io/conversations/";
-    public static final String CONVERSATION_SHARE_CA_URL = "https://dashboard-ca.kommunicate.io/conversations/";
-    public static final String KM_BASE_URL = "https://api.kommunicate.io";
-    public static final String KM_TEST_URL = "https://api-test.kommunicate.io";
-    public static final String KM_CA_URL = "https://api-ca.kommunicate.io";
+    public static final String CONVERSATION_SHARE_ENDPOINT = "/conversations/";
+    public static final String HELCENTER_APPID_ENDPOINT = "/?appId=";
+    public static final String KM_DASHBOARD = "km_dashboard_url";
+    public static final String KM_HELPCENTER = "km_helpcenter_url";
 
     public KmClientService(Context context) {
         super(context);
@@ -26,12 +28,7 @@ public class KmClientService extends MobiComKitClientService {
     }
 
     public String getConversationShareUrl() {
-        if (KM_TEST_URL.equals(getKmBaseUrl())) {
-            return CONVERSATION_SHARE_TEST_URL;
-        } else if (KM_CA_URL.equals(getKmBaseUrl())) {
-            return CONVERSATION_SHARE_CA_URL;
-        }
-        return CONVERSATION_SHARE_URL;
+        return getKmMappedUrl(KM_DASHBOARD) + CONVERSATION_SHARE_ENDPOINT;
     }
 
     private String getAwayMessageUrl() {
@@ -49,5 +46,24 @@ public class KmClientService extends MobiComKitClientService {
         }
 
         return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+    }
+
+    public String getHelpCenterUrl() {
+        return getKmMappedUrl(KM_HELPCENTER) + HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context);
+    }
+
+    public String getKmMappedUrl(String urlMapper) {
+        if (TextUtils.isEmpty(urlMapper) || TextUtils.isEmpty(getKmBaseUrl())) {
+            return null;
+        }
+        List<String> baseUrlList = Arrays.asList(context.getResources().getStringArray(R.array.km_base_url));
+
+        if (baseUrlList.size() == 0) {
+            return null;
+        }
+
+        return context.getResources()
+                .getStringArray(context.getResources()
+                        .getIdentifier(urlMapper, "array", context.getPackageName()))[baseUrlList.indexOf(getKmBaseUrl())];
     }
 }

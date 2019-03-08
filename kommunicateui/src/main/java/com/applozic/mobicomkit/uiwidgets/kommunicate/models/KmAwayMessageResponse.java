@@ -30,16 +30,7 @@ public class KmAwayMessageResponse extends JsonMarker {
     }
 
     public class KmDataResposne extends JsonMarker {
-        private boolean collectEmail;
         private List<KmMessageResponse> messageList;
-
-        public boolean isCollectEmail() {
-            return collectEmail;
-        }
-
-        public void setCollectEmail(boolean collectEmail) {
-            this.collectEmail = collectEmail;
-        }
 
         public List<KmMessageResponse> getMessageList() {
             return messageList;

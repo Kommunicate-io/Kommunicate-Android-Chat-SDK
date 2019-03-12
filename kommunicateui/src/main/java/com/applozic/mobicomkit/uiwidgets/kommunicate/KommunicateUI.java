@@ -14,6 +14,7 @@ public class KommunicateUI {
 
     public static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
     public static final String KM_CONVERSATION_TITLE = "KM_CONVERSATION_TITLE";
+    public static final String KM_HELPCENTER_URL = "KM_HELPCENTER_URL";
 
     public static void getAwayMessage(Context context, String appKey, Integer groupId, KmAwayMessageHandler handler) {
         new KmAwayMessageTask(context, appKey, groupId, handler).execute();

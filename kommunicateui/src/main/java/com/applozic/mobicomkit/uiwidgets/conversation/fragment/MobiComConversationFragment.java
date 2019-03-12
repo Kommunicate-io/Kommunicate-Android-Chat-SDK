@@ -363,6 +363,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
 
+        RelativeLayout faqButtonLayout = toolbar.findViewById(R.id.faqButtonLayout);
+        if (faqButtonLayout != null) {
+            faqButtonLayout.setVisibility(View.GONE);
+        }
+
         if (customToolbarLayout != null) {
             customToolbarLayout.setVisibility(View.GONE);
             toolbarImageView = customToolbarLayout.findViewById(R.id.conversation_contact_photo);
@@ -3358,11 +3363,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
 
             for (Message message : nextMessageList) {
+                if (initial && !messageList.contains(message)) {
+                    messageList.add(message);
+                }
                 selfDestructMessage(message);
             }
 
             if (initial) {
-                messageList.addAll(nextMessageList);
                 recyclerDetailConversationAdapter.searchString = searchString;
                 emptyTextView.setVisibility(messageList.isEmpty() ? VISIBLE : View.GONE);
 

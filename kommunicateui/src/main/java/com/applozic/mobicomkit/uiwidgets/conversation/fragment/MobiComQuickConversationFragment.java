@@ -45,6 +45,10 @@ import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPositionHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -96,6 +100,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     boolean isAlreadyLoading = false;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     Button startNewConv;
+    RelativeLayout faqButtonLayout;
 
 
     public RecyclerView getRecyclerView() {
@@ -145,6 +150,24 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         }
         recyclerAdapter = new QuickConversationAdapter(getContext(), messageList, null);
         recyclerAdapter.setAlCustomizationSettings(alCustomizationSettings);
+
+        faqButtonLayout = getActivity().findViewById(R.id.faqButtonLayout);
+
+        if (alCustomizationSettings.isFaqOptionEnabled() || KmSettings.getInstance(getContext()).isFaqOptionEnabled()) {
+            faqButtonLayout.setVisibility(View.VISIBLE);
+            TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
+
+            if (textView != null) {
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openFaq(new KmClientService(getContext()).getHelpCenterUrl());
+                    }
+                });
+            }
+        } else {
+            faqButtonLayout.setVisibility(View.GONE);
+        }
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -212,6 +235,12 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 ((MobiComKitActivityInterface) getActivity()).startContactActivityForResult();
             }
         };
+    }
+
+    public void openFaq(String url) {
+        Intent faqIntent = new Intent(getActivity(), PaymentActivity.class);
+        faqIntent.putExtra(KommunicateUI.KM_HELPCENTER_URL, url);
+        startActivity(faqIntent);
     }
 
     @Override

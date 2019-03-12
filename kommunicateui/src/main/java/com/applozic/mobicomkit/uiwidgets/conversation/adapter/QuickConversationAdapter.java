@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AlphabetIndexer;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -78,15 +77,12 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
     public ImageLoader contactImageLoader, channelImageLoader;
     public String searchString = null;
-    CircleImageView contactImage;
     private Context context;
     private MessageDatabaseService messageDatabaseService;
     private List<Message> messageList;
     private BaseContactService contactService;
     private EmojiconHandler emojiconHandler;
-    private long deviceTimeOffset = 0;
     private List<Message> originalList;
-    private AlphabetIndexer mAlphabetIndexer;
     private TextAppearanceSpan highlightTextSpan;
     private AlCustomizationSettings alCustomizationSettings;
     private View view;
@@ -122,7 +118,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         channelImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
         final String alphabet = context.getString(R.string.alphabet);
-        mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
     }
 
@@ -133,7 +128,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             View v2 = inflater.inflate(R.layout.mobicom_message_list_header_footer, parent, false);
             return new FooterViewHolder(v2);
         } else {
-            deviceTimeOffset = MobiComUserPreference.getInstance(context).getDeviceTimeOffset();
             view = inflater.inflate(R.layout.mobicom_message_row_view, parent, false);
             return new Myholder(view);
         }
@@ -211,7 +205,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         } else if (channel != null && channel.isBroadcastMessage()) {
                             myholder.contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
                             myholder.alphabeticTextView.setVisibility(View.GONE);
-                            contactImage.setVisibility(View.VISIBLE);
+                            myholder.contactImage.setVisibility(View.VISIBLE);
                         } else {
                             channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
                             myholder.alphabeticTextView.setVisibility(View.GONE);

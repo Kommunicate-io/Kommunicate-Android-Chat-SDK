@@ -102,7 +102,7 @@ public class AlRichMessage {
             faqReplyLayout.setVisibility(View.GONE);
             quickRepliesRecycler.setVisibility(View.VISIBLE);
             setUpGridView(quickRepliesRecycler, model);
-        } else {
+        } else if (model.getTemplateId() > 0) {
             listItemlayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             faqLayout.setVisibility(View.GONE);
@@ -113,6 +113,8 @@ public class AlRichMessage {
             recyclerView.setLayoutManager(layoutManager);
             ALRichMessageAdapter adapter = new ALRichMessageAdapter(context, model, listener, message);
             recyclerView.setAdapter(adapter);
+        } else {
+            containerView.setVisibility(View.GONE);
         }
     }
 

@@ -127,6 +127,7 @@
     <string name="quick_conversation_loading">loading conversation…</string>
     <string name="alert_for_empty_message">Do you want to send a message without text?</string>
     <string name="yes_alert">Yes</string>
+    <string name="no_alert">No</string>
     <string name="subtitle_last_seen_at_time">Last seen</string>
     <string name="is_typing">is typing…</string>
     <string name="user_online">Online</string>

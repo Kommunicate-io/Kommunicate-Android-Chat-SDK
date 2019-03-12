@@ -11,6 +11,7 @@
     <string name="user_is_already_exists">User already exists in group</string>
     <string name="delete_conversation_failed">Delete failed</string>
     <string name="menu_search">Search</string>
+    <string name="faq_option">FAQ</string>
     <string name="menu_add_contact">Create a new contact</string>
     <string name="menu_edit_contact">Edit Contact</string>
     <string name="no_contacts">No Contacts Found</string>

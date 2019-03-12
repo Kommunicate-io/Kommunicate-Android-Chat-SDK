@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   //Note: Adding any new url array , Follow the same order.
+    <string-array name="km_base_url">
+        <item>https://api.kommunicate.io</item>
+        <item>https://api-test.kommunicate.io</item>
+        <item>https://api-ca.kommunicate.io</item>
+    </string-array>
+
+    <string-array name="km_dashboard_url">
+        <item>https://dashboard.kommunicate.io</item>
+        <item>https://dashboard-test.kommunicate.io</item>
+        <item>https://dashboard-ca.kommunicate.io</item>
+    </string-array>
+
+    <string-array name="km_helpcenter_url">
+        <item>https://helpcenter.kommunicate.io</item>
+        <item>https://helpcenter-test.kommunicate.io</item>
+        <item>https://helpcenter-ca.kommunicate.io</item>
+    </string-array>
+</resources>

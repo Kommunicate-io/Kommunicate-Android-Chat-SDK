@@ -114,6 +114,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private float[] sentMessageCornerRadii;
     private float[] receivedMessageCornerRadii;
     private KmFontModel fontModel;
+    private boolean isFaqOptionEnabled = false;
 
     private Map<String, Boolean> attachmentOptions;
 
@@ -614,6 +615,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public KmFontModel getFontModel() {
         return fontModel;
+    }
+
+    public boolean isFaqOptionEnabled() {
+        return isFaqOptionEnabled;
     }
 
     @Override

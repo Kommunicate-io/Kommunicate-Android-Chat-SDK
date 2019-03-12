@@ -1064,11 +1064,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     public static boolean isEmailTypeMessage(Message message) {
-        return isHtmlTypeMessage(message) && message.getSource() == 7;
+        return message.getSource() == 7;
     }
 
     public static boolean isHtmlTypeMessage(Message message) {
-        return Message.ContentType.TEXT_HTML.getValue().equals(message.getContentType());
+        return Message.ContentType.TEXT_HTML.getValue().equals(message.getContentType()) || isEmailTypeMessage(message);
     }
 
     private void setupContactShareView(final Message message, MyViewHolder myViewHolder) {

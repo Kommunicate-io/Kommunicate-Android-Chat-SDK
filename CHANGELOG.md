@@ -3,8 +3,14 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 1.8.3
 
-Kommunicate Android SDK 1.8.3
+### Bug fixes and improvement
+
+* Update glide to version 4.9.0.
+* Fixed issue for group name was not showing  in chat list for  public,private and broadcast groups.
+
+## Kommunicate Android SDK 1.8.3
 
 ### Features
 
@@ -23,9 +29,7 @@ buildConfigField "String", "APP_ID", '"<Your-APP_ID>"'
 * Fixed 'email/html type message not getting displayed to the sender'
 * Fixed 'carousels displaying even incase of invalid JSON'
 
-
-
-Kommunicate Android SDK 1.8.2
+## Kommunicate Android SDK 1.8.2
 
 ### New Features
 
@@ -68,7 +72,7 @@ Below are the TextViews which support changing the fonts. Add the below property
 * Fixed the conversation name not being displayed if CONVERSATION_ASIGNEE is missing in the conversation(In case of older conversations)
 * Fixed issue related to external audio is being stopped when user navigates back from the chat thread.
 
-Kommunicate Android SDK 1.8.0
+## Kommunicate Android SDK 1.8.0
 
 ###  Features
 
@@ -76,14 +80,14 @@ Kommunicate Android SDK 1.8.0
 * Full HTML support for ContentType 3 messages.
 * Image type rich messages added.
 
-###  Bug fixes
+### Bug fixes
 
 * Fixed issue related to unread count not resetting after opening the conversation.
 * Fixed NPE in createSingleChat and ContactActivity for users that are not logged in
 * Fixed few other crashes.
 
 
-Kommunicate Android SDK 1.7.2
+## Kommunicate Android SDK 1.7.2
 
 ### New Features
 
@@ -92,19 +96,18 @@ Kommunicate Android SDK 1.7.2
 * Conversation assignee name and image in conversation list
 * Reply metadata feature in Rich messages
 
-# Bug Fixes
+### Bug Fixes
 
 * Html formatting issue in rich messages
 * Rich message Custom Click fixed
 * Group title was being displayed for a brief time after opening a conversation - fixed
 
 
-Kommunicate Android SDK 1.7.1
+## Kommunicate Android SDK 1.7.1
 
 ### Bug Fixes
 * Fixed issue related to creating new conversation
 * Fixed issue related to online/offline status not visible to users in some cases
-
 
 
 ### New Features
@@ -126,7 +129,7 @@ Kommunicate Android SDK 1.7.1
 * The Web links/Quick replies click was not being received outside the SDK - Fixed
 
 
-Kommunicate Android SDK 1.6.3
+## Kommunicate Android SDK 1.6.3
 
 ### Fixes/Improvements
 
@@ -136,7 +139,7 @@ Kommunicate Android SDK 1.6.3
 * Fixed issue in which some attachments were not getting loaded from storage
 
 
-Kommunicate Android SDK Version 1.6.1
+## Kommunicate Android SDK Version 1.6.1
 
 ### Features
 
@@ -146,7 +149,7 @@ Kommunicate Android SDK Version 1.6.1
 * Custom sound can be set for notifications
 
 
-Kommunicate Android SDK 1.5
+## Kommunicate Android SDK 1.5
 
 ### Features
 

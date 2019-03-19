@@ -171,15 +171,15 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.smReceivers.setText(contactInfo);
                     contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
                     processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
-                } else if (message.getGroupId() != null) {
-                    if (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                } else if (message.getGroupId() != null && channel != null) {
+                    if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                         contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
                         Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
                         if (withUserContact != null) {
                             myholder.smReceivers.setText(withUserContact.getDisplayName());
                             processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                         }
-                    } else if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                    } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
                         channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
                         myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
                         Contact supportGroupContact = KmService.getSupportGroupContact(context, channel, contactService, loggedInUserRoleType);
@@ -191,6 +191,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
                         }
                     } else {
+                        myholder.smReceivers.setText(channel.getName() != null ? channel.getName(): "");
                         channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
                         myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
 

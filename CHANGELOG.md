@@ -3,7 +3,7 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## Kommunicate Android SDK 1.8.3
+## Kommunicate Android SDK 1.8.4
 
 ### Bug fixes and improvement
 

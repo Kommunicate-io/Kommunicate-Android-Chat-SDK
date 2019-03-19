@@ -125,6 +125,7 @@
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
+            android:launchMode="singleTop"
             android:parentActivityName="io.kommunicate.activities.KMConversationActivity"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />

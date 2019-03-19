@@ -58,7 +58,6 @@
             android:ellipsize="end"
             android:layout_weight="10"
             android:singleLine="true"
-            android:text="James Drake"
             android:textAlignment="gravity"
             android:textColor="#565658"
             android:letterSpacing="0.06"

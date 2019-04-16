@@ -119,6 +119,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlHotelBooki
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
@@ -382,6 +383,22 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             toolbarOnlineTv = customToolbarLayout.findViewById(R.id.onlineTextView);
             toolbarOfflineTv = customToolbarLayout.findViewById(R.id.offlineTextView);
             toolbarAlphabeticImage = customToolbarLayout.findViewById(R.id.toolbarAlphabeticImage);
+
+            TextView faqOption = customToolbarLayout.findViewById(R.id.kmFaqOption);
+
+            if (KmSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(2)) {
+                faqOption.setVisibility(View.VISIBLE);
+                if (faqOption != null) {
+                    faqOption.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ConversationActivity.openFaq(getActivity(), new KmClientService(getContext()).getHelpCenterUrl());
+                        }
+                    });
+                }
+            } else {
+                faqOption.setVisibility(View.GONE);
+            }
         }
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);

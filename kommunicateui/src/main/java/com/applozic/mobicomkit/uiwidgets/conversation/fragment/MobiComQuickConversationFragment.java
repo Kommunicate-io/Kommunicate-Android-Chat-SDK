@@ -42,12 +42,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPositionHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
@@ -153,7 +152,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
         faqButtonLayout = getActivity().findViewById(R.id.faqButtonLayout);
 
-        if (alCustomizationSettings.isFaqOptionEnabled() || KmSettings.getInstance(getContext()).isFaqOptionEnabled()) {
+        if (alCustomizationSettings.isFaqOptionEnabled() || KmSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(1)) {
             faqButtonLayout.setVisibility(View.VISIBLE);
             TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
 
@@ -161,7 +160,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        openFaq(new KmClientService(getContext()).getHelpCenterUrl());
+                        ConversationActivity.openFaq(getActivity(), new KmClientService(getContext()).getHelpCenterUrl());
                     }
                 });
             }
@@ -235,12 +234,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 ((MobiComKitActivityInterface) getActivity()).startContactActivityForResult();
             }
         };
-    }
-
-    public void openFaq(String url) {
-        Intent faqIntent = new Intent(getActivity(), PaymentActivity.class);
-        faqIntent.putExtra(KommunicateUI.KM_HELPCENTER_URL, url);
-        startActivity(faqIntent);
     }
 
     @Override

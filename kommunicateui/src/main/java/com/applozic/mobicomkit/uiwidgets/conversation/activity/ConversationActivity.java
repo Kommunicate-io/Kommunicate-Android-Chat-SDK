@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
@@ -8,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
@@ -77,8 +77,10 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragm
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
@@ -457,7 +459,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             return;
         }
 
-        if(customToolbarLayout != null){
+        if (customToolbarLayout != null) {
             customToolbarLayout.setVisibility(View.GONE);
         }
 
@@ -1356,5 +1358,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 }
             }
         }
+    }
+
+    public static void openFaq(Activity activity, String url) {
+        Intent faqIntent = new Intent(activity, PaymentActivity.class);
+        faqIntent.putExtra(KommunicateUI.KM_HELPCENTER_URL, url);
+        activity.startActivity(faqIntent);
     }
 }

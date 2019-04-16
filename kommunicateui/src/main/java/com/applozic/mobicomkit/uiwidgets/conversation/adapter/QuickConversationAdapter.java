@@ -549,7 +549,13 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Message message = messageList.get(getLayoutPosition());
+                int position = getLayoutPosition();
+
+                if (messageList.size() <= position || position == -1) {
+                    return true;
+                }
+
+                Message message = messageList.get(position);
 
                 Channel channel = null;
                 Contact contact = null;

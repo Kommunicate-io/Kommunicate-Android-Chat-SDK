@@ -78,7 +78,10 @@
   "enableAwayMessage": true,
   "awayMessageTextColor": "#A9A4A4",
   "hideGroupSubtitle": false,
-  "isFaqOptionEnabled": true,
+  "enableFaqOption": [
+    true,
+    false
+  ],
   "sentMessageCornerRadii": [
     10,
     10,

@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -315,6 +316,13 @@ public class Kommunicate {
         metadata.put("GROUP_USER_ROLE_UPDATED_MESSAGE", "");
         metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
         metadata.put("HIDE", "true");
+
+        if (!TextUtils.isEmpty(ApplozicClient.getInstance(context).getMessageMetaData())) {
+            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(context).getMessageMetaData(), Map.class);
+            if (defaultMetadata != null) {
+                metadata.putAll(defaultMetadata);
+            }
+        }
 
         channelInfo.setMetadata(metadata);
 

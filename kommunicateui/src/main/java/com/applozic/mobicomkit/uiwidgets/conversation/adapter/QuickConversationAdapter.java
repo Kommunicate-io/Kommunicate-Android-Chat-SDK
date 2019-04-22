@@ -88,6 +88,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private View view;
     private ConversationUIService conversationUIService;
     private int loggedInUserRoleType;
+    private String loggedInUserId;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -101,6 +102,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         this.messageList = messageList;
         conversationUIService = new ConversationUIService((FragmentActivity) context);
         loggedInUserRoleType = MobiComUserPreference.getInstance(context).getUserRoleType();
+        loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
             protected Bitmap processBitmap(Object data) {
@@ -187,7 +189,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             myholder.smReceivers.setText(supportGroupContact.getDisplayName());
                             loadSupportGroupImage(supportGroupContact.getImageURL(), supportGroupContact.getDisplayName(), myholder.alphabeticTextView, myholder.contactImage);
                         } else {
-                            myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
+                            myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
                             loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
                         }
                     } else {
@@ -197,6 +199,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         myholder.alphabeticTextView.setVisibility(View.GONE);
                         myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
                         myholder.contactImage.setVisibility(View.VISIBLE);
+                        myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
 
                         if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
                             channelImageLoader.loadImage(channel, myholder.contactImage);

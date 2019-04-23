@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.conversation.ApplozicConversation;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -271,6 +272,10 @@ public class KmConversationHelper {
                 String deviceToken = launchChat.getDeviceToken() != null ? launchChat.getDeviceToken() : Kommunicate.getDeviceToken(context);
                 if (!TextUtils.isEmpty(deviceToken)) {
                     Kommunicate.registerForPushNotification(context, deviceToken, null);
+                }
+
+                if (launchChat.getMetadata() != null) {
+                    ApplozicClient.getInstance(context).setMessageMetaData(launchChat.getMetadata());
                 }
 
                 try {

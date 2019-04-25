@@ -487,26 +487,26 @@
                     android:src="@drawable/noun_mic_1057615"
                     android:visibility="visible" />
             </FrameLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/user_not_able_to_chat_layout"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_gravity="bottom"
+                android:minHeight="50dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/user_not_able_to_chat_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/user_not_in_this_group_text"
+                    android:textSize="18sp" />
+            </LinearLayout>
         </FrameLayout>
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/user_not_able_to_chat_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:minHeight="50dp"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/user_not_able_to_chat_textView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/user_not_in_this_group_text"
-            android:textSize="18sp" />
     </LinearLayout>
 
     <FrameLayout

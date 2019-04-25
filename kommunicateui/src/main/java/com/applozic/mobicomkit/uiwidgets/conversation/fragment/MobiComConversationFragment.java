@@ -1318,6 +1318,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (userNotAbleToChatLayout != null) {
             if (contact != null && contact.isDeleted()) {
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
+                recordButton.setVisibility(View.GONE);
                 individualMessageSendLayout.setVisibility(View.GONE);
             } else {
                 userNotAbleToChatLayout.setVisibility(View.GONE);
@@ -1489,6 +1490,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (userNotAbleToChatLayout != null && individualMessageSendLayout != null) {
                     userNotAbleToChatLayout.setVisibility(withUserContact.isDeleted() ? VISIBLE : View.GONE);
                     individualMessageSendLayout.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
+                    if (recordButton != null) {
+                        recordButton.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
+                    }
                     bottomlayoutTextView.setText(R.string.user_has_been_deleted_text);
                 }
 
@@ -2670,9 +2674,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (hide) {
             individualMessageSendLayout.setVisibility(View.GONE);
             userNotAbleToChatLayout.setVisibility(VISIBLE);
+            recordButton.setVisibility(View.GONE);
         } else {
             userNotAbleToChatLayout.setVisibility(View.GONE);
-
+            recordButton.setVisibility(View.VISIBLE);
         }
 
     }
@@ -2825,6 +2830,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 channel.setDeletedAtTime(channelInfo.getDeletedAtTime());
                 individualMessageSendLayout.setVisibility(View.GONE);
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
+                recordButton.setVisibility(View.GONE);
                 userNotAbleToChatTextView.setText(ApplozicService.getContext(getContext()).getString(R.string.group_has_been_deleted_text));
                 if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                         && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
@@ -2837,6 +2843,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         && (!Channel.GroupType.OPEN.getValue().equals(channel.getType())) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
                     individualMessageSendLayout.setVisibility(View.GONE);
                     userNotAbleToChatLayout.setVisibility(VISIBLE);
+                    recordButton.setVisibility(View.GONE);
                     if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                             && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
                         templateAdapter.setMessageList(new HashMap<String, String>());

@@ -2010,31 +2010,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             messageToSend.setContentType(Message.ContentType.LOCATION.getValue());
             messageToSend.setFilePaths(null);
         }
-        if (messageMetaData == null) {
-            messageMetaData = new HashMap<>();
-        }
+
         messageToSend.setFileMetaKeyStrings(fileMetaKeyStrings);
         messageToSend.setFileMetas(fileMetas);
-        if (!TextUtils.isEmpty(ApplozicClient.getInstance(getActivity()).getMessageMetaData())) {
-            Type mapType = new TypeToken<Map<String, String>>() {
-            }.getType();
-            Map<String, String> messageMetaDataMap = null;
-            try {
-                messageMetaDataMap = new Gson().fromJson(ApplozicClient.getInstance(getActivity()).getMessageMetaData(), mapType);
-                if (messageMetaDataMap != null && !messageMetaDataMap.isEmpty()) {
-                    messageMetaData.putAll(messageMetaDataMap);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
-        if (this.messageMetaData != null && !this.messageMetaData.isEmpty()) {
-            messageMetaData.putAll(this.messageMetaData);
-        }
-
-        messageToSend.setMetadata(messageMetaData);
-
+        messageToSend.setMetadata(getMessageMetadata(messageMetaData));
 
         conversationService.sendMessage(messageToSend, messageIntentClass);
         if (replayRelativeLayout != null) {
@@ -2049,6 +2029,67 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
         this.messageMetaData = null;
         filePath = null;
+    }
+
+    private Map<String, String> getMessageMetadata(Map<String, String> newMetadata) {
+        Map<String, String> mergedMetaData = new HashMap<>();
+        Map<String, String> existingMetadata = null;
+
+        if (!TextUtils.isEmpty(ApplozicClient.getInstance(getActivity()).getMessageMetaData())) {
+            Type mapType = new TypeToken<Map<String, String>>() {
+            }.getType();
+            try {
+                existingMetadata = new Gson().fromJson(ApplozicClient.getInstance(getActivity()).getMessageMetaData(), mapType);
+                if (existingMetadata != null && !existingMetadata.isEmpty()) {
+                    mergedMetaData.putAll(existingMetadata);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (newMetadata != null && !newMetadata.isEmpty()) {
+            if (existingMetadata != null && !existingMetadata.isEmpty()) {
+                for (String key : existingMetadata.keySet()) {
+                    if (newMetadata.containsKey(key)) {
+                        try {
+                            Map<String, String> existingMetadataValueMap = getDataMap(existingMetadata.get(key));
+
+                            if (existingMetadataValueMap != null) {
+                                Map<String, String> newMetadataValueMap = getDataMap(newMetadata.get(key));
+                                if (newMetadataValueMap != null) {
+                                    newMetadataValueMap.putAll(existingMetadataValueMap);
+                                    mergedMetaData.put(key, GsonUtils.getJsonFromObject(newMetadataValueMap, Map.class));
+                                    newMetadata.remove(key);
+                                    existingMetadataValueMap.clear();
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            mergedMetaData.putAll(newMetadata);
+        }
+
+        if (this.messageMetaData != null && !this.messageMetaData.isEmpty()) {
+            mergedMetaData.putAll(this.messageMetaData);
+        }
+
+        return mergedMetaData;
+    }
+
+    private Map<String, String> getDataMap(String data) {
+        if (!TextUtils.isEmpty(data)) {
+            try {
+                return (Map<String, String>) GsonUtils.getObjectFromJson(data, Map.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
     }
 
     public void sendProductMessage(final String messageToSend, final FileMeta fileMeta, final Contact contact, final short messageContentType) {

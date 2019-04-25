@@ -2062,10 +2062,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             if (existingMetadataValueMap != null) {
                                 Map<String, String> newMetadataValueMap = getDataMap(newMetadata.get(key));
                                 if (newMetadataValueMap != null) {
-                                    newMetadataValueMap.putAll(existingMetadataValueMap);
-                                    mergedMetaData.put(key, GsonUtils.getJsonFromObject(newMetadataValueMap, Map.class));
+                                    existingMetadataValueMap.putAll(newMetadataValueMap);
+                                    mergedMetaData.put(key, GsonUtils.getJsonFromObject(existingMetadataValueMap, Map.class));
                                     newMetadata.remove(key);
-                                    existingMetadataValueMap.clear();
                                 }
                             }
                         } catch (Exception e) {

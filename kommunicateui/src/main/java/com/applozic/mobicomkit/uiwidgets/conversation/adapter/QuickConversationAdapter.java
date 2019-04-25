@@ -119,7 +119,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         };
         channelImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
-        final String alphabet = context.getString(R.string.alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
     }
 
@@ -139,7 +138,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == 2) {
             FooterViewHolder myHolder = (FooterViewHolder) holder;
-            //myHolder.loadMoreProgressBar.setVisibility(View.GONE);
             myHolder.infoBroadCast.setVisibility(View.GONE);
         } else {
             Myholder myholder = (Myholder) holder;

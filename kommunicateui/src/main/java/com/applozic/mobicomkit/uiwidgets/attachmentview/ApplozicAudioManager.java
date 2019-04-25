@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicommons.ApplozicService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,22 +22,20 @@ import java.util.Map;
 
 public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeListener {
     private static ApplozicAudioManager myObj;
-    public ApplozicDocumentView currentView;
-    Map<String, MediaPlayer> pool = new HashMap<>();
-    Context context;
-    AudioManager audioManager;
-    int maxsize = 5;
-    String TAG = "ApplozicAudioManager";
-    String audio_duration;
-    int hours, minute, second, duration;
+    private static final int MAX_SIZE = 5;
+    private ApplozicDocumentView currentView;
+    private Map<String, MediaPlayer> pool = new HashMap<>();
+    private Context context;
+    private AudioManager audioManager;
+    private int minute, second;
 
     private ApplozicAudioManager(Context context) {
-        this.context = context;
+        this.context = ApplozicService.getContext(context);
     }
 
     public static ApplozicAudioManager getInstance(Context context) {
         if (myObj == null) {
-            myObj = new ApplozicAudioManager(context.getApplicationContext());
+            myObj = new ApplozicAudioManager(ApplozicService.getContext(context));
         }
         return myObj;
     }
@@ -46,6 +45,7 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
         if (audioManager != null) {
             audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
         }
+
         final String key = view.message.getKeyString();
         MediaPlayer mp = pool.get(key);
         if (mp != null) {
@@ -60,7 +60,7 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
             }
         } else {
             mp = new MediaPlayer();
-            if (pool.size() >= maxsize) {
+            if (pool.size() >= MAX_SIZE) {
                 Map.Entry<String, MediaPlayer> entry = pool.entrySet().iterator().next();
                 String first = entry.getKey();
                 pool.remove(first);
@@ -71,7 +71,7 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
         mp.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                Toast.makeText(context, R.string.unable_to_play_requested_audio_file, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, context.getString(R.string.unable_to_play_requested_audio_file), Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -195,17 +195,15 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
         try {
             mediaPlayer.setDataSource(filePath);
             mediaPlayer.prepare();
-            duration = mediaPlayer.getDuration();
+            int duration = mediaPlayer.getDuration();
             duration = duration / 1000;
-            hours = duration / 3600;
             minute = duration / 60;
             second = (duration % 60) + 1;
             mediaPlayer.release();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        audio_duration = String.format("%02d:%02d", minute, second);
-        return audio_duration;
+        return String.format("%02d:%02d", minute, second);
     }
 
     public void updateAudioDuration(final TextView durationTextView, String filePath) {

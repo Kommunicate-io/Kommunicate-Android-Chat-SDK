@@ -14,7 +14,6 @@ import com.applozic.mobicomkit.listners.AlLoginHandler;
 import java.lang.ref.WeakReference;
 
 import io.kommunicate.services.KmUserClientService;
-import io.kommunicate.services.KmUserService;
 import io.kommunicate.users.KMUser;
 
 /**
@@ -28,7 +27,6 @@ public class KmUserLoginTask extends UserLoginTask {
     private WeakReference<Context> context;
     private RegistrationResponse response;
     private KmUserClientService userClientService;
-    private KmUserService userService;
     private boolean isAgent;
 
 
@@ -38,7 +36,6 @@ public class KmUserLoginTask extends UserLoginTask {
         this.context = new WeakReference<Context>(context);
         handler = listener;
         userClientService = new KmUserClientService(this.context.get());
-        userService = new KmUserService(this.context.get());
         this.isAgent = isAgent;
     }
 

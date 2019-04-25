@@ -24,6 +24,9 @@ public class UIService {
     }*/
 
     public static Fragment getFragmentByTag(FragmentActivity activity, String tag) {
+        if (activity == null) {
+            return null;
+        }
         FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
 
         if (supportFragmentManager.getBackStackEntryCount() == 0) {

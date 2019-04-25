@@ -1363,8 +1363,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     public static void openFaq(Activity activity, String url) {
-        Intent faqIntent = new Intent(activity, PaymentActivity.class);
-        faqIntent.putExtra(KommunicateUI.KM_HELPCENTER_URL, url);
-        activity.startActivity(faqIntent);
+        if (activity != null) {
+            Intent faqIntent = new Intent(activity, PaymentActivity.class);
+            faqIntent.putExtra(KommunicateUI.KM_HELPCENTER_URL, url);
+            activity.startActivity(faqIntent);
+        }
     }
 }

@@ -593,7 +593,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
                     }
-
                 } catch (Exception e) {
 
                 }
@@ -837,8 +836,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 && alCustomizationSettings.getAttachmentOptions() != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION);
-        sendButton.setVisibility(showRecordButton ? isSendButtonVisible ? View.VISIBLE : View.GONE : View.VISIBLE);
-        recordButton.setVisibility(showRecordButton ? isSendButtonVisible ? View.GONE : View.VISIBLE : View.GONE);
+        sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
+        recordButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.GONE : View.VISIBLE) : View.GONE);
     }
 
     @SuppressLint("MissingPermission")
@@ -894,7 +893,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             boolean disjointResult = (restrictedWords == null) || disjoint(restrictedWords, userInputList);
 
             if (disjointResult) {
-
                 sendMessage(messageEditText.getText().toString().trim());
                 messageEditText.setText("");
                 scheduleOption.setText(R.string.ScheduleText);
@@ -902,7 +900,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     showScheduleMessageToast();
                 }
                 scheduledTimeHolder.resetScheduledTimeHolder();
-
             } else {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
                         setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
@@ -2676,7 +2673,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             recordButton.setVisibility(View.GONE);
         } else {
             userNotAbleToChatLayout.setVisibility(View.GONE);
-            recordButton.setVisibility(View.VISIBLE);
         }
 
     }
@@ -2842,7 +2838,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         && (!Channel.GroupType.OPEN.getValue().equals(channel.getType())) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
                     individualMessageSendLayout.setVisibility(View.GONE);
                     userNotAbleToChatLayout.setVisibility(VISIBLE);
-                    recordButton.setVisibility(View.GONE);
+                  recordButton.setVisibility(View.GONE);
                     if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                             && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
                         templateAdapter.setMessageList(new HashMap<String, String>());

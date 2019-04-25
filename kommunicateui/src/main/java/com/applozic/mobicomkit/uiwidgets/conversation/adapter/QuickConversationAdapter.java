@@ -88,6 +88,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private View view;
     private ConversationUIService conversationUIService;
     private int loggedInUserRoleType;
+    private String loggedInUserId;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -101,6 +102,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         this.messageList = messageList;
         conversationUIService = new ConversationUIService((FragmentActivity) context);
         loggedInUserRoleType = MobiComUserPreference.getInstance(context).getUserRoleType();
+        loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
             protected Bitmap processBitmap(Object data) {
@@ -117,7 +119,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         };
         channelImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
-        final String alphabet = context.getString(R.string.alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
     }
 
@@ -137,7 +138,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == 2) {
             FooterViewHolder myHolder = (FooterViewHolder) holder;
-            //myHolder.loadMoreProgressBar.setVisibility(View.GONE);
             myHolder.infoBroadCast.setVisibility(View.GONE);
         } else {
             Myholder myholder = (Myholder) holder;
@@ -187,7 +187,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             myholder.smReceivers.setText(supportGroupContact.getDisplayName());
                             loadSupportGroupImage(supportGroupContact.getImageURL(), supportGroupContact.getDisplayName(), myholder.alphabeticTextView, myholder.contactImage);
                         } else {
-                            myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
+                            myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
                             loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
                         }
                     } else {
@@ -198,6 +198,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         myholder.alphabeticTextView.setVisibility(View.GONE);
                         myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
                         myholder.contactImage.setVisibility(View.VISIBLE);
+                        myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
 
                         if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
                             channelImageLoader.loadImage(channel, myholder.contactImage);
@@ -550,7 +551,13 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Message message = messageList.get(getLayoutPosition());
+                int position = getLayoutPosition();
+
+                if (messageList.size() <= position || position == -1) {
+                    return true;
+                }
+
+                Message message = messageList.get(position);
 
                 Channel channel = null;
                 Contact contact = null;

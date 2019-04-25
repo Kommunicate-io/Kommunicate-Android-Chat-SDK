@@ -5,6 +5,7 @@ import android.content.Context;
 import com.applozic.mobicommons.json.JsonMarker;
 
 import java.util.List;
+import java.util.Map;
 
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.users.KMUser;
@@ -25,6 +26,7 @@ public class KmChatBuilder extends JsonMarker {
     private String chatId;
     private String chatName;
     private String deviceToken;
+    private Map<String, String> metadata;
 
     public KmChatBuilder(Context context) {
         this.context = context;
@@ -157,6 +159,15 @@ public class KmChatBuilder extends JsonMarker {
 
     public KmChatBuilder setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+        return this;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public KmChatBuilder setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
         return this;
     }
 

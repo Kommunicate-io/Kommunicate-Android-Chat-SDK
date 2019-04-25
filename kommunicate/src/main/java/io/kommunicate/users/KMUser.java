@@ -19,6 +19,14 @@ public class KMUser extends User {
         return MobiComUserPreference.getInstance(context).isLoggedIn();
     }
 
+    public KMUser() {
+        setSkipDeletedGroups(true);
+    }
+
+    public KMUser(boolean skipDeletedGroups) {
+        setSkipDeletedGroups(skipDeletedGroups);
+    }
+
     public static KMUser getLoggedInUser(Context context) {
         KMUser user = new KMUser();
         user.setRoleType(MobiComUserPreference.getInstance(context).getUserRoleType());

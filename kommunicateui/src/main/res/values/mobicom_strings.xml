@@ -167,7 +167,7 @@
     <string name="channel_edit_alert">Unable to change the group name because you are not a participant</string>
     <string name="admin_text">Group admin</string>
     <string name="user_not_in_this_group_text">You are no longer a participant of this group</string>
-    <string name="group_has_been_deleted_text">This group has been deleted</string>
+    <string name="group_has_been_deleted_text">This conversation has been deleted</string>
     <string name="update_channel_title_name">Enter group name</string>
     <string name="new_channel_name_hint">Group name…</string>
     <string name="user_block_info">Block [name]? A blocked user will no longer be able to send you messages</string>

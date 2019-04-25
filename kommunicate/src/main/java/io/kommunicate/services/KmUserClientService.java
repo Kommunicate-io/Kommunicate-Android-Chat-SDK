@@ -6,6 +6,7 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.HttpRequestUtils;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -372,6 +373,7 @@ public class KmUserClientService extends UserClientService {
         mobiComUserPreference.setPricingPackage(registrationResponse.getPricingPackage());
         mobiComUserPreference.setAuthenticationType(String.valueOf(user.getAuthenticationTypeId()));
         mobiComUserPreference.setUserRoleType(registrationResponse.getRoleType());
+        ApplozicClient.getInstance(context).skipDeletedGroups(user.isSkipDeletedGroups());
 
         if (user.getUserTypeId() != null) {
             mobiComUserPreference.setUserTypeId(String.valueOf(user.getUserTypeId()));
@@ -379,6 +381,7 @@ public class KmUserClientService extends UserClientService {
         if (!TextUtils.isEmpty(user.getNotificationSoundFilePath())) {
             Applozic.getInstance(context).setCustomNotificationSound(user.getNotificationSoundFilePath());
         }
+
         Contact contact = new Contact();
         contact.setUserId(user.getUserId());
         contact.setFullName(registrationResponse.getDisplayName());

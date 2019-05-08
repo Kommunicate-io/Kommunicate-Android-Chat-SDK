@@ -20,13 +20,15 @@ public class ApplozicChannelRemoveMemberTask extends AsyncTask<Void, Void, Boole
     ChannelService channelService;
     Exception exception;
     String removeResponse;
+    int index;
 
-    public ApplozicChannelRemoveMemberTask(Context context, Integer channelKey, String userId, ChannelRemoveMemberListener channelRemoveMemberListener) {
+    public ApplozicChannelRemoveMemberTask(Context context, Integer channelKey, String userId, int index, ChannelRemoveMemberListener channelRemoveMemberListener) {
         this.channelKey = channelKey;
         this.userId = userId;
         this.channelRemoveMemberListener = channelRemoveMemberListener;
         this.context = context;
         this.channelService = ChannelService.getInstance(context);
+        this.index = index;
     }
 
     @Override
@@ -53,14 +55,14 @@ public class ApplozicChannelRemoveMemberTask extends AsyncTask<Void, Void, Boole
         super.onPostExecute(resultBoolean);
 
         if (resultBoolean && channelRemoveMemberListener != null) {
-            channelRemoveMemberListener.onSuccess(removeResponse, context);
+            channelRemoveMemberListener.onSuccess(removeResponse, index, context);
         } else if (!resultBoolean && exception != null && channelRemoveMemberListener != null) {
             channelRemoveMemberListener.onFailure(removeResponse, exception, context);
         }
     }
 
     public interface ChannelRemoveMemberListener {
-        void onSuccess(String response, Context context);
+        void onSuccess(String response, int index, Context context);
 
         void onFailure(String response, Exception e, Context context);
     }

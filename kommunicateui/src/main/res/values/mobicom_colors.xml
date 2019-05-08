@@ -58,6 +58,7 @@
     <color name="km_list_item_main_header_text_color">#686464</color>
     <color name="km_via_email_text_color">#414243</color>
     <color name="km_faq_button_background_color">#24ffffff</color>
+    <color name="km_take_over_from_bot_button_background_color">#5553b7</color>
 
     <color name="applozic_theme_color_app">#ff0099cc</color>
     <color name="applozic_theme_color_control_activated">#ff0099cc</color>
@@ -87,5 +88,5 @@
     <color name="apploizc_reply_received_message_bg_color">#F5F5F5</color>
     <color name="km_custom_toast_background_color">#636262</color>
     <color name="km_audio_button_background_color">#d8d8d8</color>
-
+    <color name="km_take_over_from_bot_layout_background_color">#f2f0f0</color>
 </resources>

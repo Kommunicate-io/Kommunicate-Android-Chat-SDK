@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -89,17 +90,22 @@ import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
+import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ApiResponse;
+import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
+import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
+import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioRecordManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.DeleteConversationAsyncTask;
+import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
 import com.applozic.mobicomkit.uiwidgets.conversation.UIService;
@@ -124,6 +130,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageResponse;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmChannelService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
@@ -296,6 +303,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     FrameLayout recordLayout;
     boolean isRecording = false;
     private KmFontManager fontManager;
+    private RelativeLayout takeOverFromBotLayout;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -524,6 +532,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         userNotAbleToChatLayout = (LinearLayout) list.findViewById(R.id.user_not_able_to_chat_layout);
         userNotAbleToChatTextView = (TextView) userNotAbleToChatLayout.findViewById(R.id.user_not_able_to_chat_textView);
         userNotAbleToChatTextView.setTextColor(Color.parseColor(alCustomizationSettings.getUserNotAbleToChatTextColor()));
+        takeOverFromBotLayout = list.findViewById(R.id.kmTakeOverFromBotLayout);
 
         if (channel != null && channel.isDeleted()) {
             userNotAbleToChatTextView.setText(R.string.group_has_been_deleted_text);
@@ -553,7 +562,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendType.setAdapter(sendTypeAdapter);
 
         scheduleOption.setOnClickListener(new View.OnClickListener() {
-
                                               @Override
                                               public void onClick(View v) {
                                                   ConversationScheduler conversationScheduler = new ConversationScheduler();
@@ -2666,6 +2674,43 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
+    public void showTakeOverFromBotLayout(boolean show, final String botName) {
+        if (takeOverFromBotLayout != null) {
+            if (show) {
+                takeOverFromBotLayout.setVisibility(VISIBLE);
+                TextView takeOverFromBotButton = takeOverFromBotLayout.findViewById(R.id.kmTakeOverFromBotButton);
+                TextView takeOverFromBotName = takeOverFromBotLayout.findViewById(R.id.kmAssignedBotNameTv);
+
+                if (takeOverFromBotName != null) {
+                    takeOverFromBotName.setText(botName);
+                }
+                takeOverFromBotButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new KmCustomDialog().showDialog(getActivity(), botName, new KmCustomDialog.KmDialogClickListener() {
+                            @Override
+                            public void onClickNegativeButton(Dialog dialog) {
+                                if (dialog != null) {
+                                    dialog.dismiss();
+                                }
+                            }
+
+                            @Override
+                            public void onClickPositiveButton(Dialog dialog) {
+                                if (dialog != null) {
+                                    dialog.dismiss();
+                                }
+                                processTakeOverFromBot(getContext(), channel, botName);
+                            }
+                        });
+                    }
+                });
+            } else {
+                takeOverFromBotLayout.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private void hideSendMessageLayout(boolean hide) {
         if (hide) {
             individualMessageSendLayout.setVisibility(View.GONE);
@@ -2756,6 +2801,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void processSupportGroupDetails(final Channel channel) {
         Contact contact = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
+
+        if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
+            Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
+            if (assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType())) {
+                showTakeOverFromBotLayout(true, assigneeContact.getDisplayName());
+            }
+        }
+
         updateSupportGroupTitle(contact, channel);
         conversationAssignee = contact;
 
@@ -3489,8 +3542,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     Message message = messageList.get(i);
                     if (!message.isRead() && !message.isTempDateType() && !message.isCustom()) {
-                        message.setRead(Boolean.TRUE);
-                        messageDatabaseService.updateMessageReadFlag(message.getMessageId(), true);
+                        if (message.getMessageId() != null) {
+                            message.setRead(Boolean.TRUE);
+                            messageDatabaseService.updateMessageReadFlag(message.getMessageId(), true);
+                        }
                     }
                 }
             }
@@ -4195,5 +4250,63 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             messageEditText.setVisibility(View.VISIBLE);
             messageEditText.requestFocus();
         }
+    }
+
+    public void processTakeOverFromBot(Context context, final Channel channel, String botName) {
+        if (context == null || channel == null) {
+            return;
+        }
+
+        final String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
+
+        Set<String> botIds = KmChannelService.getInstance(context).getListOfUsersByRole(channel.getKey(), 2);
+        if (botIds != null) {
+            botIds.remove("bot");
+        }
+
+        KmService.removeMembersFromChannel(context, channel.getKey(), botIds, new ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener() {
+            @Override
+            public void onSuccess(String response, int index, Context context) {
+                GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(channel);
+                Map<String, String> metadata = channel.getMetadata();
+                if (metadata == null) {
+                    metadata = new HashMap<>();
+                }
+                metadata.put("CONVERSATION_ASSIGNEE", loggedInUserId);
+                groupInfoUpdate.setMetadata(metadata);
+                KmService.updateChannel(context, groupInfoUpdate, new AlChannelUpdateTask.AlChannelUpdateListener() {
+                    @Override
+                    public void onSuccess(Context context) {
+                        Message message = new Message();
+
+                        message.setMessage("Assigned to " + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
+
+                        Map<String, String> metadata = new HashMap<>();
+                        metadata.put("skipBot", "true");
+                        metadata.put("KM_ASSIGN", MobiComUserPreference.getInstance(context).getUserId());
+                        metadata.put("NO_ALERT", "true");
+                        metadata.put("BADGE_COUNT", "false");
+                        metadata.put("category", "ARCHIVE");
+
+                        message.setMetadata(metadata);
+                        message.setContentType(Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue());
+                        message.setGroupId(channel.getKey());
+                        new MobiComConversationService(context).sendMessage(message);
+
+                        showTakeOverFromBotLayout(false, "");
+                    }
+
+                    @Override
+                    public void onFailure(Context context) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String response, Exception e, Context context) {
+                Utils.printLog(context, "RemoveTest", "Failed to remove members : " + response + ", Exc : " + e);
+            }
+        });
     }
 }

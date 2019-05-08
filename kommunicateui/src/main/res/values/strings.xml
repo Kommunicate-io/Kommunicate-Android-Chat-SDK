@@ -224,4 +224,7 @@
     <string name="rupee_symbol">\u20B9</string>
     <string name="km_audio_record_toast_message">Press and hold  [img src=noun_mic_1057615_copy/]  to send a voice clip</string>
     <string name="km_recording_text">Recording</string>
+    <string name="km_active_bots_text">Active bot:</string>
+    <string name="km_default_assigned_bot_name">Support Bot</string>
+    <string name="km_take_over_from_bot_button_text">Take over from bot</string>
 </resources>

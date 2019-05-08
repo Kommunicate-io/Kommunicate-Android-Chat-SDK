@@ -5,16 +5,15 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.MobiComKitClientService;
+import com.applozic.mobicommons.ApplozicService;
 
 public class KmSettings {
 
     private static KmSettings kmSettings;
-    private Context context;
     private static SharedPreferences sharedPreferences;
     private static final String ENABLE_FAQ_OPTION = "ENABLE_FAQ_OPTION";
 
     private KmSettings(Context context) {
-        this.context = context;
         if (!TextUtils.isEmpty(MobiComKitClientService.getApplicationKey(context))) {
             sharedPreferences = context.getSharedPreferences(MobiComKitClientService.getApplicationKey(context), Context.MODE_PRIVATE);
         }
@@ -22,7 +21,7 @@ public class KmSettings {
 
     public static KmSettings getInstance(Context context) {
         if (kmSettings == null) {
-            kmSettings = new KmSettings(context.getApplicationContext());
+            kmSettings = new KmSettings(ApplozicService.getContext(context));
         } else {
             if (!TextUtils.isEmpty(MobiComKitClientService.getApplicationKey(context))) {
                 sharedPreferences = context.getSharedPreferences(MobiComKitClientService.getApplicationKey(context), Context.MODE_PRIVATE);

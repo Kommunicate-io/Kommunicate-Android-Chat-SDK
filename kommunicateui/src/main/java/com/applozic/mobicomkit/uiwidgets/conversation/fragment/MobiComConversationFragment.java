@@ -2674,20 +2674,23 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void showTakeOverFromBotLayout(boolean show, final String botName) {
+    public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {
         if (takeOverFromBotLayout != null) {
             if (show) {
+                if (assigneeBot == null) {
+                    return;
+                }
                 takeOverFromBotLayout.setVisibility(VISIBLE);
                 TextView takeOverFromBotButton = takeOverFromBotLayout.findViewById(R.id.kmTakeOverFromBotButton);
                 TextView takeOverFromBotName = takeOverFromBotLayout.findViewById(R.id.kmAssignedBotNameTv);
 
                 if (takeOverFromBotName != null) {
-                    takeOverFromBotName.setText(botName);
+                    takeOverFromBotName.setText(assigneeBot.getDisplayName());
                 }
                 takeOverFromBotButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new KmCustomDialog().showDialog(getActivity(), botName, new KmCustomDialog.KmDialogClickListener() {
+                        new KmCustomDialog().showDialog(getActivity(), assigneeBot.getDisplayName(), new KmCustomDialog.KmDialogClickListener() {
                             @Override
                             public void onClickNegativeButton(Dialog dialog) {
                                 if (dialog != null) {
@@ -2700,7 +2703,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                 if (dialog != null) {
                                     dialog.dismiss();
                                 }
-                                processTakeOverFromBot(getContext(), channel, botName);
+                                if (ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), assigneeBot.getUserId())) {
+                                    processTakeOverFromBot(getContext(), channel, assigneeBot.getDisplayName());
+                                } else {
+                                    takeOverFromBotLayout.setVisibility(View.GONE);
+                                }
                             }
                         });
                     }
@@ -2805,7 +2812,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
             if (assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType())) {
-                showTakeOverFromBotLayout(true, assigneeContact.getDisplayName());
+                showTakeOverFromBotLayout(true, assigneeContact);
             }
         }
 
@@ -2891,7 +2898,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         && (!Channel.GroupType.OPEN.getValue().equals(channel.getType())) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
                     individualMessageSendLayout.setVisibility(View.GONE);
                     userNotAbleToChatLayout.setVisibility(VISIBLE);
-                  recordButton.setVisibility(View.GONE);
+                    recordButton.setVisibility(View.GONE);
                     if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                             && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
                         templateAdapter.setMessageList(new HashMap<String, String>());
@@ -4293,7 +4300,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         message.setGroupId(channel.getKey());
                         new MobiComConversationService(context).sendMessage(message);
 
-                        showTakeOverFromBotLayout(false, "");
+                        showTakeOverFromBotLayout(false, null);
                     }
 
                     @Override

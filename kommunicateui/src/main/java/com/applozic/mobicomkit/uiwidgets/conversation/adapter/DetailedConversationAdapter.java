@@ -125,19 +125,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private Drawable readIcon;
     private Drawable scheduledIcon;
     private ImageLoader imageThumbnailLoader;
-    private TextView downloadSizeTextView;
     private EmojiconHandler emojiconHandler;
     private FileClientService fileClientService;
     private MessageDatabaseService messageDatabaseService;
     private BaseContactService contactService;
-    private Contact senderContact;
-    private long deviceTimeOffset = 0;
     private Class<?> messageIntentClass;
     private List<Message> messageList;
     private List<Message> originalList;
     private MobiComConversationService conversationService;
     private ImageCache imageCache;
-    private AlphabetIndexer mAlphabetIndexer; // Stores the AlphabetIndexer instance
     private TextAppearanceSpan highlightTextSpan;
     private View view;
     private ContextMenuClickListener contextMenuClickListener;
@@ -208,7 +204,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this.conversationService = new MobiComConversationService(context);
         this.contactService = new AppContactService(context);
         this.imageCache = ImageCache.getInstance(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
-        this.senderContact = contactService.getContactById(MobiComUserPreference.getInstance(context).getUserId());
         this.messageList = messageList;
         geoApiKey = Utils.getMetaDataValue(context.getApplicationContext(), ConversationActivity.GOOGLE_API_KEY_META_DATA);
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
@@ -244,13 +239,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
         scheduledIcon = context.getResources().getDrawable(R.drawable.applozic_ic_action_message_schedule);
         final String alphabet = context.getString(R.string.alphabet);
-        mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        deviceTimeOffset = MobiComUserPreference.getInstance(context).getDeviceTimeOffset();
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (layoutInflater == null) {

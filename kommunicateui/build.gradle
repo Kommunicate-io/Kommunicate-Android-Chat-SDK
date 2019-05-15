@@ -21,7 +21,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.applozic.communication.message:mobicomkit:5.44'
+    api 'com.applozic.communication.message:mobicomkit:5.46'
     api 'com.google.firebase:firebase-messaging:17.1.0'
     api 'com.google.android.gms:play-services-maps:15.0.1'
     api 'com.google.android.gms:play-services-location:15.0.1'

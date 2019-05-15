@@ -1032,7 +1032,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.messageTextLayout.setVisibility(GONE);
                         }
 
-                        new AlRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
+                        try {
+                            new AlRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            myHolder.richMessageLayout.setVisibility(View.GONE);
+                        }
                     } else {
                         myHolder.richMessageLayout.setVisibility(View.GONE);
                     }

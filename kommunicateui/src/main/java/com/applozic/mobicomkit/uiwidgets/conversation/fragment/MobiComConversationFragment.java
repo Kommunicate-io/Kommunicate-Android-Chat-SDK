@@ -141,6 +141,7 @@ import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -644,17 +645,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         });
 
-        messageEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    Utils.toggleSoftKeyBoard(getActivity(), true);
-                    return true;
-                }
-                return false;
-            }
-        });
-
         sendButton.setOnClickListener(new View.OnClickListener() {
                                           @Override
                                           public void onClick(View view) {
@@ -1093,6 +1083,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void addMessage(final Message message) {
         hideAwayMessage(message);
+
+        if (ApplozicService.getContext(getContext()) instanceof KmOnMessageListener) {
+            ((KmOnMessageListener) ApplozicService.getContext(getContext())).onNewMessage(message, channel, contact);
+        }
 
         if (message.getGroupId() != null) {
             if (channel != null && channel.getKey().equals(message.getGroupId())) {

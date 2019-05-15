@@ -667,6 +667,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     previewThumbnail.recycle();
                 }
                 attachmentLayout.setVisibility(View.GONE);
+
+                if (messageEditText != null && TextUtils.isEmpty(messageEditText.getText().toString().trim()) && recordButton != null && sendButton != null) {
+                    handleSendAndRecordButtonView(false);
+                }
             }
         });
 

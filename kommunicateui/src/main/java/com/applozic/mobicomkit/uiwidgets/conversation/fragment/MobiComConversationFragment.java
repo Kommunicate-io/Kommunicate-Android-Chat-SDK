@@ -839,6 +839,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 && alCustomizationSettings.getAttachmentOptions() != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION);
+
         sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
         recordButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.GONE : View.VISIBLE) : View.GONE);
     }
@@ -1322,7 +1323,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (userNotAbleToChatLayout != null) {
             if (contact != null && contact.isDeleted()) {
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
-                recordButton.setVisibility(View.GONE);
+                handleSendAndRecordButtonView(true);
                 individualMessageSendLayout.setVisibility(View.GONE);
             } else {
                 userNotAbleToChatLayout.setVisibility(View.GONE);
@@ -1494,8 +1495,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (userNotAbleToChatLayout != null && individualMessageSendLayout != null) {
                     userNotAbleToChatLayout.setVisibility(withUserContact.isDeleted() ? VISIBLE : View.GONE);
                     individualMessageSendLayout.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
-                    if (recordButton != null) {
-                        recordButton.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
+                    if (withUserContact.isDeleted()) {
+                        handleSendAndRecordButtonView(withUserContact.isDeleted());
                     }
                     bottomlayoutTextView.setText(R.string.user_has_been_deleted_text);
                 }
@@ -2721,7 +2722,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (hide) {
             individualMessageSendLayout.setVisibility(View.GONE);
             userNotAbleToChatLayout.setVisibility(VISIBLE);
-            recordButton.setVisibility(View.GONE);
+            handleSendAndRecordButtonView(true);
         } else {
             userNotAbleToChatLayout.setVisibility(View.GONE);
         }
@@ -2884,7 +2885,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 channel.setDeletedAtTime(channelInfo.getDeletedAtTime());
                 individualMessageSendLayout.setVisibility(View.GONE);
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
-                recordButton.setVisibility(View.GONE);
+                handleSendAndRecordButtonView(true);
                 userNotAbleToChatTextView.setText(ApplozicService.getContext(getContext()).getString(R.string.group_has_been_deleted_text));
                 if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                         && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
@@ -2897,7 +2898,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         && (!Channel.GroupType.OPEN.getValue().equals(channel.getType())) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
                     individualMessageSendLayout.setVisibility(View.GONE);
                     userNotAbleToChatLayout.setVisibility(VISIBLE);
-                    recordButton.setVisibility(View.GONE);
+                    handleSendAndRecordButtonView(true);
                     if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                             && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
                         templateAdapter.setMessageList(new HashMap<String, String>());
@@ -3338,12 +3339,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public class DownloadConversation extends AsyncTask<Void, Integer, Long> {
 
-        //private AbsListView view;
         private RecyclerView recyclerView;
-        //private QuickConversationAdapter recyclerAdapter;
         private int firstVisibleItem;
-        private int amountVisible;
-        private int totalItems;
         private boolean initial;
         private Contact contact;
         private Channel channel;
@@ -3355,8 +3352,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             this.recyclerView = recyclerView;
             this.initial = initial;
             this.firstVisibleItem = firstVisibleItem;
-            this.amountVisible = amountVisible;
-            this.totalItems = totalItems;
             this.contact = contact;
             this.channel = channel;
             this.conversationId = conversationId;

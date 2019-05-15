@@ -96,6 +96,7 @@ import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
+import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
@@ -355,7 +356,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                              Bundle savedInstanceState) {
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new KmLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerViewPositionHelper = new RecyclerViewPositionHelper(recyclerView, linearLayoutManager);

@@ -100,14 +100,10 @@ public class ConversationUIService {
     public static final String CONVERSATION_ID = "CONVERSATION_ID";
     public static final String TOPIC_ID = "TOPIC_ID";
     private static final String TAG = "ConversationUIService";
-    private static final String APPLICATION_KEY_META_DATA = "com.applozic.application.key";
-    FileClientService fileClientService;
+    private FileClientService fileClientService;
     private FragmentActivity fragmentActivity;
     private BaseContactService baseContactService;
     private MobiComUserPreference userPreference;
-    private Conversation conversation;
-    private TopicDetail topicDetailsParcelable;
-    private Contact contact;
     private NotificationManager notificationManager;
     private boolean isActionMessageHidden;
 

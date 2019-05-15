@@ -5,10 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.people.channel.ChannelUserMapper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class KmChannelService {
 
@@ -22,7 +25,7 @@ public class KmChannelService {
 
     public static KmChannelService getInstance(Context context) {
         if (kmChannelService == null) {
-            kmChannelService = new KmChannelService(context.getApplicationContext());
+            kmChannelService = new KmChannelService(ApplozicService.getContext(context));
         }
         return kmChannelService;
     }
@@ -48,6 +51,42 @@ public class KmChannelService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Set<String> getListOfUsersByRole(Integer channelKey, int role) {
+        Cursor cursor = null;
+        try {
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+            String query = "select * from " + CHANNEL_USER_X + " where channelKey = " + String.valueOf(channelKey) + " and role = " + String.valueOf(role);
+            cursor = db.rawQuery(query, null);
+            return getListOfUserIds(cursor);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return null;
+    }
+
+    public static Set<String> getListOfUserIds(Cursor cursor) {
+        Set<String> userIdList = new HashSet<>();
+        try {
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+                do {
+                    userIdList.add(cursor.getString(cursor.getColumnIndex(MobiComDatabaseHelper.USERID)));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return userIdList;
     }
 
     public static List<ChannelUserMapper> getListOfUsers(Cursor cursor) {

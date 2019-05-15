@@ -237,4 +237,9 @@
     <string name="invalid_email_id">Please enter a valid emailId</string>
     <string name="via_email_text">via email</string>
     <string name="email_reply_reminder_message">Your message will also be sent as an email reply</string>
+    <string name="km_take_over_from_bot_dialog_title">Are you sure you want to take
+over from bot: %1$s?</string>
+    <string name="km_take_over_from_bot_dialog_message">The bot will be removed from this conversation and it will not reply to any further messages</string>
+    <string name="km_dialog_cancel_button">CANCEL</string>
+    <string name="km_dialog_positive_button_text">TAKE OVER FROM BOT</string>
 </resources>

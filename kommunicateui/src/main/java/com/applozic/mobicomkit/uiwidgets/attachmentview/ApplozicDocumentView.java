@@ -1,5 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.attachmentview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -370,13 +371,22 @@ public class ApplozicDocumentView {
     }
 
     public void setAudioIcons() {
-        int state = ApplozicAudioManager.getInstance(context).getAudioState(message.getKeyString());
-        Utils.printLog(context, "state:", String.valueOf(state));
-        docIcon.setVisibility(View.VISIBLE);
-        if (state == 1) {
-            docIcon.setImageResource(R.drawable.ic_pause_circle_outline);
-        } else {
-            docIcon.setImageResource(R.drawable.ic_play_circle_outline);
+        if (context instanceof Activity) {
+            ((Activity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (message != null && docIcon != null) {
+                        int state = ApplozicAudioManager.getInstance(context).getAudioState(message.getKeyString());
+                        Utils.printLog(context, "state:", String.valueOf(state));
+                        docIcon.setVisibility(View.VISIBLE);
+                        if (state == 1) {
+                            docIcon.setImageResource(R.drawable.ic_pause_circle_outline);
+                        } else {
+                            docIcon.setImageResource(R.drawable.ic_play_circle_outline);
+                        }
+                    }
+                }
+            });
         }
     }
 

@@ -262,6 +262,8 @@
             android:textSize="14sp"
             android:visibility="gone" />
 
+        <include layout="@layout/km_take_over_from_bot_layout" />
+
         <FrameLayout
             android:id="@+id/emailReplyReminderView"
             android:layout_width="match_parent"

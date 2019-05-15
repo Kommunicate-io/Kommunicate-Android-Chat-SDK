@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -89,17 +90,23 @@ import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
+import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ApiResponse;
+import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
+import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
+import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
+import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioRecordManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.DeleteConversationAsyncTask;
+import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
 import com.applozic.mobicomkit.uiwidgets.conversation.UIService;
@@ -124,6 +131,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageResponse;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmChannelService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
@@ -134,6 +142,7 @@ import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
 import com.applozic.mobicomkit.uiwidgets.schedule.ScheduledTimeHolder;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -296,6 +305,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     FrameLayout recordLayout;
     boolean isRecording = false;
     private KmFontManager fontManager;
+    private RelativeLayout takeOverFromBotLayout;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -346,7 +356,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                              Bundle savedInstanceState) {
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new KmLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerViewPositionHelper = new RecyclerViewPositionHelper(recyclerView, linearLayoutManager);
@@ -524,6 +534,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         userNotAbleToChatLayout = (LinearLayout) list.findViewById(R.id.user_not_able_to_chat_layout);
         userNotAbleToChatTextView = (TextView) userNotAbleToChatLayout.findViewById(R.id.user_not_able_to_chat_textView);
         userNotAbleToChatTextView.setTextColor(Color.parseColor(alCustomizationSettings.getUserNotAbleToChatTextColor()));
+        takeOverFromBotLayout = list.findViewById(R.id.kmTakeOverFromBotLayout);
 
         if (channel != null && channel.isDeleted()) {
             userNotAbleToChatTextView.setText(R.string.group_has_been_deleted_text);
@@ -553,7 +564,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendType.setAdapter(sendTypeAdapter);
 
         scheduleOption.setOnClickListener(new View.OnClickListener() {
-
                                               @Override
                                               public void onClick(View v) {
                                                   ConversationScheduler conversationScheduler = new ConversationScheduler();
@@ -636,17 +646,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         });
 
-        messageEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    Utils.toggleSoftKeyBoard(getActivity(), true);
-                    return true;
-                }
-                return false;
-            }
-        });
-
         sendButton.setOnClickListener(new View.OnClickListener() {
                                           @Override
                                           public void onClick(View view) {
@@ -668,6 +667,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     previewThumbnail.recycle();
                 }
                 attachmentLayout.setVisibility(View.GONE);
+
+                if (messageEditText != null && TextUtils.isEmpty(messageEditText.getText().toString().trim()) && recordButton != null && sendButton != null) {
+                    handleSendAndRecordButtonView(false);
+                }
             }
         });
 
@@ -836,6 +839,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 && alCustomizationSettings.getAttachmentOptions() != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION);
+
         sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
         recordButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.GONE : View.VISIBLE) : View.GONE);
     }
@@ -1086,6 +1090,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void addMessage(final Message message) {
         hideAwayMessage(message);
 
+        if (ApplozicService.getContext(getContext()) instanceof KmOnMessageListener) {
+            ((KmOnMessageListener) ApplozicService.getContext(getContext())).onNewMessage(message, channel, contact);
+        }
+
         if (message.getGroupId() != null) {
             if (channel != null && channel.getKey().equals(message.getGroupId())) {
                 if (message.getTo() != null) {
@@ -1315,7 +1323,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (userNotAbleToChatLayout != null) {
             if (contact != null && contact.isDeleted()) {
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
-                recordButton.setVisibility(View.GONE);
+                handleSendAndRecordButtonView(true);
                 individualMessageSendLayout.setVisibility(View.GONE);
             } else {
                 userNotAbleToChatLayout.setVisibility(View.GONE);
@@ -1487,8 +1495,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (userNotAbleToChatLayout != null && individualMessageSendLayout != null) {
                     userNotAbleToChatLayout.setVisibility(withUserContact.isDeleted() ? VISIBLE : View.GONE);
                     individualMessageSendLayout.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
-                    if (recordButton != null) {
-                        recordButton.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
+                    if (withUserContact.isDeleted()) {
+                        handleSendAndRecordButtonView(withUserContact.isDeleted());
                     }
                     bottomlayoutTextView.setText(R.string.user_has_been_deleted_text);
                 }
@@ -2666,11 +2674,55 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
+    public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {
+        if (takeOverFromBotLayout != null) {
+            if (show) {
+                if (assigneeBot == null) {
+                    return;
+                }
+                takeOverFromBotLayout.setVisibility(VISIBLE);
+                TextView takeOverFromBotButton = takeOverFromBotLayout.findViewById(R.id.kmTakeOverFromBotButton);
+                TextView takeOverFromBotName = takeOverFromBotLayout.findViewById(R.id.kmAssignedBotNameTv);
+
+                if (takeOverFromBotName != null) {
+                    takeOverFromBotName.setText(assigneeBot.getDisplayName());
+                }
+                takeOverFromBotButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new KmCustomDialog().showDialog(getActivity(), assigneeBot.getDisplayName(), new KmCustomDialog.KmDialogClickListener() {
+                            @Override
+                            public void onClickNegativeButton(Dialog dialog) {
+                                if (dialog != null) {
+                                    dialog.dismiss();
+                                }
+                            }
+
+                            @Override
+                            public void onClickPositiveButton(Dialog dialog) {
+                                if (dialog != null) {
+                                    dialog.dismiss();
+                                }
+                                if (ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), assigneeBot.getUserId())) {
+                                    processTakeOverFromBot(getContext(), channel, assigneeBot.getDisplayName());
+                                } else {
+                                    takeOverFromBotLayout.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+                });
+            } else {
+                takeOverFromBotLayout.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private void hideSendMessageLayout(boolean hide) {
         if (hide) {
             individualMessageSendLayout.setVisibility(View.GONE);
             userNotAbleToChatLayout.setVisibility(VISIBLE);
-            recordButton.setVisibility(View.GONE);
+            handleSendAndRecordButtonView(true);
         } else {
             userNotAbleToChatLayout.setVisibility(View.GONE);
         }
@@ -2756,6 +2808,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void processSupportGroupDetails(final Channel channel) {
         Contact contact = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
+
+        if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
+            Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
+            if (assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType())) {
+                showTakeOverFromBotLayout(true, assigneeContact);
+            }
+        }
+
         updateSupportGroupTitle(contact, channel);
         conversationAssignee = contact;
 
@@ -2825,7 +2885,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 channel.setDeletedAtTime(channelInfo.getDeletedAtTime());
                 individualMessageSendLayout.setVisibility(View.GONE);
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
-                recordButton.setVisibility(View.GONE);
+                handleSendAndRecordButtonView(true);
                 userNotAbleToChatTextView.setText(ApplozicService.getContext(getContext()).getString(R.string.group_has_been_deleted_text));
                 if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                         && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
@@ -2838,7 +2898,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         && (!Channel.GroupType.OPEN.getValue().equals(channel.getType())) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
                     individualMessageSendLayout.setVisibility(View.GONE);
                     userNotAbleToChatLayout.setVisibility(VISIBLE);
-                  recordButton.setVisibility(View.GONE);
+                    handleSendAndRecordButtonView(true);
                     if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
                             && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
                         templateAdapter.setMessageList(new HashMap<String, String>());
@@ -3279,12 +3339,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public class DownloadConversation extends AsyncTask<Void, Integer, Long> {
 
-        //private AbsListView view;
         private RecyclerView recyclerView;
-        //private QuickConversationAdapter recyclerAdapter;
         private int firstVisibleItem;
-        private int amountVisible;
-        private int totalItems;
         private boolean initial;
         private Contact contact;
         private Channel channel;
@@ -3296,8 +3352,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             this.recyclerView = recyclerView;
             this.initial = initial;
             this.firstVisibleItem = firstVisibleItem;
-            this.amountVisible = amountVisible;
-            this.totalItems = totalItems;
             this.contact = contact;
             this.channel = channel;
             this.conversationId = conversationId;
@@ -3489,8 +3543,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     Message message = messageList.get(i);
                     if (!message.isRead() && !message.isTempDateType() && !message.isCustom()) {
-                        message.setRead(Boolean.TRUE);
-                        messageDatabaseService.updateMessageReadFlag(message.getMessageId(), true);
+                        if (message.getMessageId() != null) {
+                            message.setRead(Boolean.TRUE);
+                            messageDatabaseService.updateMessageReadFlag(message.getMessageId(), true);
+                        }
                     }
                 }
             }
@@ -4195,5 +4251,63 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             messageEditText.setVisibility(View.VISIBLE);
             messageEditText.requestFocus();
         }
+    }
+
+    public void processTakeOverFromBot(Context context, final Channel channel, String botName) {
+        if (context == null || channel == null) {
+            return;
+        }
+
+        final String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
+
+        Set<String> botIds = KmChannelService.getInstance(context).getListOfUsersByRole(channel.getKey(), 2);
+        if (botIds != null) {
+            botIds.remove("bot");
+        }
+
+        KmService.removeMembersFromChannel(context, channel.getKey(), botIds, new ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener() {
+            @Override
+            public void onSuccess(String response, int index, Context context) {
+                GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(channel);
+                Map<String, String> metadata = channel.getMetadata();
+                if (metadata == null) {
+                    metadata = new HashMap<>();
+                }
+                metadata.put("CONVERSATION_ASSIGNEE", loggedInUserId);
+                groupInfoUpdate.setMetadata(metadata);
+                KmService.updateChannel(context, groupInfoUpdate, new AlChannelUpdateTask.AlChannelUpdateListener() {
+                    @Override
+                    public void onSuccess(Context context) {
+                        Message message = new Message();
+
+                        message.setMessage("Assigned to " + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
+
+                        Map<String, String> metadata = new HashMap<>();
+                        metadata.put("skipBot", "true");
+                        metadata.put("KM_ASSIGN", MobiComUserPreference.getInstance(context).getUserId());
+                        metadata.put("NO_ALERT", "true");
+                        metadata.put("BADGE_COUNT", "false");
+                        metadata.put("category", "ARCHIVE");
+
+                        message.setMetadata(metadata);
+                        message.setContentType(Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue());
+                        message.setGroupId(channel.getKey());
+                        new MobiComConversationService(context).sendMessage(message);
+
+                        showTakeOverFromBotLayout(false, null);
+                    }
+
+                    @Override
+                    public void onFailure(Context context) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String response, Exception e, Context context) {
+                Utils.printLog(context, "RemoveTest", "Failed to remove members : " + response + ", Exc : " + e);
+            }
+        });
     }
 }

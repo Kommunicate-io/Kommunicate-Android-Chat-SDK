@@ -39,7 +39,7 @@ dependencies {
     bintrayRepo = 'maven'
     bintrayName = 'kommunicate-chat-ui'
 
-    // Maven metadat
+    // Maven metadata
     publishedGroupId = 'io.kommunicate'
     libraryName = 'kommunicateui'
     // Save yourself a head ache, and set this equal to the name of the Android Studio library

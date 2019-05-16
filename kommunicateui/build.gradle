@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
-        versionName "1.8.5"
+        versionName "1.8.7"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -39,7 +39,7 @@ dependencies {
     bintrayRepo = 'maven'
     bintrayName = 'kommunicate-chat-ui'
 
-    // Maven metadata
+    // Maven metadat
     publishedGroupId = 'io.kommunicate'
     libraryName = 'kommunicateui'
     // Save yourself a head ache, and set this equal to the name of the Android Studio library
@@ -47,7 +47,7 @@ dependencies {
     artifact = 'kommunicateui'
 
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '1.8.5'
+    libraryVersion = '1.8.7'
     developerId = 'devashish'
     developerName = 'Applozic'
     developerEmail = 'devashish.mamgain@gmail.com'

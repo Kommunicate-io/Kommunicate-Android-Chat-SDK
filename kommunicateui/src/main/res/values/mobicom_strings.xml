@@ -200,6 +200,7 @@
     <string name="default_start_new_conversation">Start new conversation</string>
     <string name="start_conversation">Start conversation</string>
     <string name="info_file_attachment_mime_type_not_supported">Can\'t send this type of files!</string>
+    <string name="processing_take_over_from_bot">Taking over from bot</string>
 
     <string name="DATE_SAVE_FILE_FORMAT">yyyyMMdd_HHmmss</string>
     <string name="DATE_MEDIUM_FORMAT">"MMM dd, yyyy"</string>

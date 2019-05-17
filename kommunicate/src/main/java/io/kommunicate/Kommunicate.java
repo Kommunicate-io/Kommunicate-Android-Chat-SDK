@@ -141,7 +141,7 @@ public class Kommunicate {
     }
 
     @Deprecated
-    public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, final boolean isUnique, final List<String> agents, final List<String> bots, final KmCallback callback) {
+    public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, final boolean isUnique, final List<String> agents, final List<String> bots, final String clientConversationId, final KmCallback callback) {
         if (callback == null) {
             return;
         }
@@ -164,7 +164,7 @@ public class Kommunicate {
 
         if (isLoggedIn(context)) {
             try {
-                startConversation(context, groupName, agents, bots, isUnique, startChatHandler);
+                startConversation(context, groupName, agents, bots, clientConversationId, isUnique, startChatHandler);
             } catch (KmException e) {
                 callback.onFailure(e);
             }
@@ -173,7 +173,7 @@ public class Kommunicate {
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                     try {
-                        startConversation(context, groupName, agents, bots, isUnique, startChatHandler);
+                        startConversation(context, groupName, agents, bots, clientConversationId, isUnique, startChatHandler);
                     } catch (KmException e) {
                         e.printStackTrace();
                         callback.onFailure(e);
@@ -216,7 +216,7 @@ public class Kommunicate {
     }
 
     @Deprecated
-    public static void startNewConversation(Context context, String groupName, String agentId, String botId, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
+    public static void startNewConversation(Context context, String groupName, String agentId, String botId, String clientConversationId, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
         ArrayList<String> agentIds = null;
         ArrayList<String> botIds = null;
         if (agentId != null) {
@@ -227,10 +227,10 @@ public class Kommunicate {
             botIds = new ArrayList<>();
             botIds.add(botId);
         }
-        startConversation(context, groupName, agentIds, botIds, isUniqueChat, handler);
+        startConversation(context, groupName, agentIds, botIds, clientConversationId, isUniqueChat, handler);
     }
 
-    public static void startConversation(final Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final boolean isUniqueChat, final KMStartChatHandler handler) throws KmException {
+    public static void startConversation(final Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final String clientConversationId, final boolean isUniqueChat, final KMStartChatHandler handler) throws KmException {
         if (agentIds == null || agentIds.isEmpty()) {
             KmCallback callback = new KmCallback() {
                 @Override
@@ -240,10 +240,11 @@ public class Kommunicate {
                         List<String> agents = new ArrayList<>();
                         agents.add(agent.getAgentId());
                         try {
-                            if (isUniqueChat) {
-                                startOrGetConversation(context, groupName, agents, botIds, handler);
+                            final String clientChannelKey = !TextUtils.isEmpty(clientConversationId) ? clientConversationId : (isUniqueChat ? getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agents, botIds) : null);
+                            if (!TextUtils.isEmpty(clientChannelKey)) {
+                                startOrGetConversation(context, groupName, agents, botIds, clientChannelKey, handler);
                             } else {
-                                createConversation(context, groupName, agents, botIds, false, handler);
+                                createConversation(context, groupName, agents, botIds, null, false, handler);
                             }
                         } catch (KmException e) {
                             e.printStackTrace();
@@ -261,16 +262,17 @@ public class Kommunicate {
 
             new KmGetAgentListTask(context, MobiComKitClientService.getApplicationKey(context), callback).execute();
         } else {
-            if (isUniqueChat) {
-                startOrGetConversation(context, groupName, agentIds, botIds, handler);
+            final String clientChannelKey = !TextUtils.isEmpty(clientConversationId) ? clientConversationId : (isUniqueChat ? getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agentIds, botIds) : null);
+            if (!TextUtils.isEmpty(clientChannelKey)) {
+                startOrGetConversation(context, groupName, agentIds, botIds, clientChannelKey, handler);
             } else {
-                createConversation(context, groupName, agentIds, botIds, false, handler);
+                createConversation(context, groupName, agentIds, botIds, null, false, handler);
             }
         }
     }
 
     @Deprecated
-    private static void createConversation(Context context, String groupName, List<String> agentIds, List<String> botIds, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
+    private static void createConversation(Context context, String groupName, List<String> agentIds, List<String> botIds, String clientConversationId, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
         List<KMGroupInfo.GroupUser> users = new ArrayList<>();
 
         KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(groupName) ? "Kommunicate Support" : groupName, new ArrayList<String>());
@@ -300,7 +302,9 @@ public class Kommunicate {
             channelInfo.setAdmin(agentIds.get(0));
         }
 
-        if (isUniqueChat) {
+        if (!TextUtils.isEmpty(clientConversationId)) {
+            channelInfo.setClientGroupId(clientConversationId);
+        } else if (isUniqueChat) {
             channelInfo.setClientGroupId(getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agentIds, botIds));
         }
 
@@ -392,9 +396,7 @@ public class Kommunicate {
     }
 
     @Deprecated
-    public static void startOrGetConversation(Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final KMStartChatHandler handler) throws KmException {
-
-        final String clientGroupId = getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agentIds, botIds);
+    public static void startOrGetConversation(Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final String clientConversationId, final KMStartChatHandler handler) throws KmException {
 
         AlGroupInformationAsyncTask.GroupMemberListener groupMemberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
             @Override
@@ -407,14 +409,14 @@ public class Kommunicate {
             @Override
             public void onFailure(Channel channel, Exception e, Context context) {
                 try {
-                    createConversation(context, groupName, agentIds, botIds, true, handler);
+                    createConversation(context, groupName, agentIds, botIds, clientConversationId, true, handler);
                 } catch (KmException e1) {
                     handler.onFailure(null, context);
                 }
             }
         };
 
-        new AlGroupInformationAsyncTask(context, clientGroupId, groupMemberListener).execute();
+        new AlGroupInformationAsyncTask(context, clientConversationId, groupMemberListener).execute();
     }
 
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {

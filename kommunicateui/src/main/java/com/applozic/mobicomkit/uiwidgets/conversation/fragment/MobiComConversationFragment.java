@@ -799,7 +799,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         createTemplateMessages();
 
-        if (channel != null && alCustomizationSettings.isEnableAwayMessage()) {
+        if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableAwayMessage()) {
             KommunicateUI.getAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
                 public void onSuccess(Context context, KmAwayMessageResponse.KmMessageResponse response) {

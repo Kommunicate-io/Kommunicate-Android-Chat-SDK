@@ -2704,7 +2704,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                     dialog.dismiss();
                                 }
                                 if (ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), assigneeBot.getUserId())) {
-                                    processTakeOverFromBot(getContext(), channel, assigneeBot.getDisplayName());
+                                    processTakeOverFromBot(getContext(), channel);
                                 } else {
                                     takeOverFromBotLayout.setVisibility(View.GONE);
                                 }
@@ -2811,7 +2811,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
-            if (assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType())) {
+            if (assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !"bot".equals(assigneeContact.getUserId())) {
                 showTakeOverFromBotLayout(true, assigneeContact);
             }
         }
@@ -4253,7 +4253,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void processTakeOverFromBot(Context context, final Channel channel, String botName) {
+    public void processTakeOverFromBot(Context context, final Channel channel) {
         if (context == null || channel == null) {
             return;
         }
@@ -4264,6 +4264,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (botIds != null) {
             botIds.remove("bot");
         }
+
+        final ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage(ApplozicService.getContext(context).getString(R.string.processing_take_over_from_bot));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
         KmService.removeMembersFromChannel(context, channel.getKey(), botIds, new ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener() {
             @Override
@@ -4295,18 +4300,25 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         new MobiComConversationService(context).sendMessage(message);
 
                         showTakeOverFromBotLayout(false, null);
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
+                        }
                     }
 
                     @Override
                     public void onFailure(Context context) {
-
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
+                        }
                     }
                 });
             }
 
             @Override
             public void onFailure(String response, Exception e, Context context) {
-                Utils.printLog(context, "RemoveTest", "Failed to remove members : " + response + ", Exc : " + e);
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
             }
         });
     }

@@ -42,24 +42,27 @@
         android:textSize="14sp"
         android:textStyle="normal" />
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/kmButtonLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/kmDialogMessage"
         android:background="#f2f2f2"
-        android:orientation="horizontal"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/kmDialogNegativeText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="14dp"
             android:layout_marginLeft="14dp"
-            android:layout_weight="3"
             android:fontFamily="sans-serif"
+            android:paddingStart="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="15dp"
             android:text="@string/km_dialog_cancel_button"
             android:textColor="#98989f"
             android:textSize="16sp"
@@ -69,16 +72,21 @@
             android:id="@+id/kmDialogPositiveText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginEnd="18dp"
             android:layout_marginRight="18dp"
-            android:layout_weight="7"
             android:fontFamily="sans-serif"
-            android:gravity="end"
+            android:paddingStart="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="15dp"
             android:text="@string/km_dialog_positive_button_text"
             android:textColor="#5553b7"
             android:textSize="16sp"
             android:textStyle="normal" />
-    </LinearLayout>
+    </FrameLayout>
 </RelativeLayout>

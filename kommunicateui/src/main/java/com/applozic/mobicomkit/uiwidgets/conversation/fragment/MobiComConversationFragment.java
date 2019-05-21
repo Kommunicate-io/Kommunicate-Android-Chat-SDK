@@ -3969,12 +3969,25 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void handleQuickReplies(Object object, Map<String, Object> replyMetadata) {
         String message = null;
         if (object instanceof ALRichMessageModel.AlButtonModel) {
-            message = ((ALRichMessageModel.AlButtonModel) object).getName();
+            ALRichMessageModel.AlButtonModel buttonModel = (ALRichMessageModel.AlButtonModel) object;
+            if (buttonModel.getAction() != null) {
+                handleQuickReplies(buttonModel.getAction(), replyMetadata);
+            } else {
+                message = buttonModel.getName();
+            }
         } else if (object instanceof ALRichMessageModel.AlAction) {
-            message = ((ALRichMessageModel.AlAction) object).getText();
+            ALRichMessageModel.AlAction action = (ALRichMessageModel.AlAction) object;
+            if (action.getPayload() != null) {
+                if (!TextUtils.isEmpty(action.getPayload().getMessage())) {
+                    message = action.getPayload().getMessage();
+                } else if (!TextUtils.isEmpty(action.getPayload().getTitle())) {
+                    message = action.getPayload().getTitle();
+                }
+            } else {
+                message = action.getText();
+            }
         } else if (object instanceof ALRichMessageModel.AlElementModel) {
             ALRichMessageModel.AlElementModel elementModel = (ALRichMessageModel.AlElementModel) object;
-            message = elementModel.getTitle();
             if (replyMetadata == null) {
                 replyMetadata = new HashMap<>();
             }
@@ -3984,9 +3997,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             if (!TextUtils.isEmpty(elementModel.getSource())) {
                 replyMetadata.put(AlRichMessage.KM_SOURCE, elementModel.getSource());
             }
+
+            if (elementModel.getAction() != null) {
+                handleQuickReplies(elementModel.getAction(), replyMetadata);
+            } else {
+                message = elementModel.getTitle();
+            }
         }
 
-        sendMessage(message, getStringMap(replyMetadata));
+        if (!TextUtils.isEmpty(message)) {
+            sendMessage(message, getStringMap(replyMetadata));
+        }
     }
 
     public void handleSubmitButton(Object object) {

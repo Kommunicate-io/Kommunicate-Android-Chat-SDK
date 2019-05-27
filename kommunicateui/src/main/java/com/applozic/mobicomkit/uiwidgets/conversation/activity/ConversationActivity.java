@@ -81,6 +81,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.Paym
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs.KmAutoSuggestionsAsyncTask;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
@@ -109,6 +111,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -175,6 +178,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private LinearLayout serviceDisconnectionLayout;
     private KmStoragePermission alStoragePermission;
     private RelativeLayout customToolbarLayout;
+    public static List<KmAutoSuggestionModel> autoSuggestionList = new ArrayList<>();
 
     public ConversationActivity() {
 
@@ -449,6 +453,18 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(mobiComKitBroadcastReceiver, BroadcastService.getIntentFilter());
+
+        new KmAutoSuggestionsAsyncTask(this, new KmAutoSuggestionsAsyncTask.KmAutoSuggestionListener() {
+            @Override
+            public void onSuccess(List<KmAutoSuggestionModel> autoSuggestionList) {
+                ConversationActivity.autoSuggestionList.addAll(autoSuggestionList);
+            }
+
+            @Override
+            public void onFailure(String error) {
+                Utils.printLog(ConversationActivity.this, "ConversationActivity", "Error fetching auto suggestion list : " + error);
+            }
+        }).execute();
     }
 
     @Override

@@ -39,7 +39,6 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -126,11 +125,13 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlHotelBooki
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAwayMessageResponse;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmChannelService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
@@ -306,6 +307,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     boolean isRecording = false;
     private KmFontManager fontManager;
     private RelativeLayout takeOverFromBotLayout;
+    private RecyclerView kmAutoSuggestionRecycler;
+    private KmAutoSuggestionAdapter kmAutoSuggestionAdapter;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -523,6 +526,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendType = (Spinner) extendedSendingOptionLayout.findViewById(R.id.sendTypeSpinner);
         messageEditText = (EditText) individualMessageSendLayout.findViewById(R.id.conversation_message);
 
+        kmAutoSuggestionRecycler = list.findViewById(R.id.kmQuickRepliesRecycler);
+        KmLinearLayoutManager linearLayoutManager = new KmLinearLayoutManager(getContext());
+        kmAutoSuggestionRecycler.setLayoutManager(linearLayoutManager);
+        kmAutoSuggestionAdapter = new KmAutoSuggestionAdapter(getContext(), this);
+        kmAutoSuggestionRecycler.setAdapter(kmAutoSuggestionAdapter);
+
         if (fontManager != null && fontManager.getMessageEditTextFont() != null) {
             messageEditText.setTypeface(fontManager.getMessageEditTextFont());
         }
@@ -594,6 +603,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
                         intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+
+                        populateAutoSuggestion(true, s.toString().trim());
                     } else if (s.toString().trim().length() == 0 && typingStarted) {
                         typingStarted = false;
                         handleSendAndRecordButtonView(false);
@@ -602,6 +613,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
                         intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                         ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                        populateAutoSuggestion(false, s.toString().trim());
                     }
                 } catch (Exception e) {
 
@@ -802,7 +814,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableAwayMessage()) {
             KommunicateUI.getAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
-                public void onSuccess(Context context, KmAwayMessageResponse.KmMessageResponse response) {
+                public void onSuccess(Context context, KmApiResponse.KmMessageResponse response) {
                     showAwayMessage(true, response.getMessage());
                 }
 
@@ -919,6 +931,23 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
+    }
+
+    public void populateAutoSuggestion(boolean show, String typedText) {
+        if (kmAutoSuggestionRecycler != null) {
+            if (show && !TextUtils.isEmpty(typedText) && typedText.startsWith("/")) {
+                kmAutoSuggestionRecycler.setVisibility(VISIBLE);
+                if (kmAutoSuggestionAdapter != null) {
+                    kmAutoSuggestionAdapter.setQuickReplyList(ConversationActivity.autoSuggestionList);
+                    kmAutoSuggestionAdapter.notifyDataSetChanged();
+                }
+            } else {
+                kmAutoSuggestionRecycler.setVisibility(View.GONE);
+                if (messageEditText != null) {
+                    messageEditText.setText("");
+                }
+            }
+        }
     }
 
     public void showScheduleMessageToast() {
@@ -3936,6 +3965,15 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             case AlRichMessage.WEB_LINK:
                 handleWebLinks(object);
                 break;
+            case KmAutoSuggestionAdapter.KM_AUTO_SUGGESTION_ACTION:
+                try {
+                    KmAutoSuggestionModel autoSuggestionModel = (KmAutoSuggestionModel) object;
+                    sendMessage(autoSuggestionModel.getContent());
+                    populateAutoSuggestion(false, null);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -4314,7 +4352,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         metadata.put("NO_ALERT", "true");
                         metadata.put("BADGE_COUNT", "false");
                         metadata.put("category", "ARCHIVE");
-
                         message.setMetadata(metadata);
                         message.setContentType(Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue());
                         message.setGroupId(channel.getKey());

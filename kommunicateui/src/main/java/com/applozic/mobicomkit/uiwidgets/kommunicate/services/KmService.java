@@ -9,10 +9,16 @@ import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +45,17 @@ public class KmService {
         }
 
         return response;
+    }
+
+    public KmApiResponse<List<KmAutoSuggestionModel>> getKmAutoSuggestions() {
+        try {
+            Type listType = new TypeToken<KmApiResponse<List<KmAutoSuggestionModel>>>() {
+            }.getType();
+            return new Gson().fromJson(clientService.getKmAutoSuggestions(), listType);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static Contact getSupportGroupContact(Context context, Channel channel, BaseContactService contactService, int loggedInUserRoleType) {

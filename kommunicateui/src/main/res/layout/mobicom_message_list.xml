@@ -309,6 +309,11 @@
             android:textSize="10sp"
             android:visibility="gone" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/kmQuickRepliesRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -321,9 +326,10 @@
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/individual_message_send_layout"
                 android:layout_width="fill_parent"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:background="#f2f0f0"
+                android:minHeight="80dp"
                 android:orientation="horizontal"
                 android:visibility="visible">
 
@@ -339,8 +345,9 @@
                     <RelativeLayout
                         android:id="@+id/edit_text_linear_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="51dp"
-                        android:layout_gravity="top">
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:minHeight="51dp">
 
                         <ImageButton
                             android:id="@+id/emoticons_btn"

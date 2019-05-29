@@ -27,10 +27,6 @@ public class KMUser extends User {
         setSkipDeletedGroups(skipDeletedGroups);
     }
 
-    public static boolean isAgent(Context context){
-        return RoleType.AGENT.getValue().equals(MobiComUserPreference.getInstance(context).getUserRoleType());
-    }
-
     public static KMUser getLoggedInUser(Context context) {
         KMUser user = new KMUser();
         user.setRoleType(MobiComUserPreference.getInstance(context).getUserRoleType());

@@ -453,7 +453,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(mobiComKitBroadcastReceiver, BroadcastService.getIntentFilter());
 
-        new KmAutoSuggestionsAsyncTask(this, null).execute();
+        if (KmUtils.isAgent(this)) {
+            new KmAutoSuggestionsAsyncTask(this, null).execute();
+        }
     }
 
     @Override

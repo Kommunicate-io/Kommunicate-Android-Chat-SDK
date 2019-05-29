@@ -25,11 +25,11 @@ public class KmDatabaseHelper extends MobiComDatabaseHelper {
 
     private static final String CREATE_AUTO_SUGGESTION_TABLE = "create table " + AUTO_SUGGESTION_TABLE + "( "
             + ID + " integer, "
-            + CATEGORY + " varchar(100), "
+            + CATEGORY + " varchar(500), "
             + TYPE + " varchar(100), "
             + CONTENT + " varchar(2000), "
-            + NAME + " varchar(100), "
-            + USER_NAME + " varchar(100), "
+            + NAME + " varchar(500), "
+            + USER_NAME + " varchar(200), "
             + UPDATED_AT + " integer, "
             + CREATED_AT + " integer, "
             + DELETED + " integer default 0);";

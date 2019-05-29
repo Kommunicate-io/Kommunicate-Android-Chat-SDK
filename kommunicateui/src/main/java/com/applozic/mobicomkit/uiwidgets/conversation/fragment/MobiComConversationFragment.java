@@ -531,11 +531,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendType = (Spinner) extendedSendingOptionLayout.findViewById(R.id.sendTypeSpinner);
         messageEditText = (EditText) individualMessageSendLayout.findViewById(R.id.conversation_message);
 
-        kmAutoSuggestionRecycler = list.findViewById(R.id.kmAutoSuggestionRecycler);
-        kmAutoSuggestionRecycler.setmMaxHeight(240);
-        KmLinearLayoutManager linearLayoutManager = new KmLinearLayoutManager(getContext());
-        kmAutoSuggestionRecycler.setLayoutManager(linearLayoutManager);
-        kmAutoSuggestionDivider = list.findViewById(R.id.kmAutoSuggestionDivider);
+        if (KmUtils.isAgent(getContext())) {
+            kmAutoSuggestionRecycler = list.findViewById(R.id.kmAutoSuggestionRecycler);
+            kmAutoSuggestionRecycler.setmMaxHeight(240);
+            KmLinearLayoutManager linearLayoutManager = new KmLinearLayoutManager(getContext());
+            kmAutoSuggestionRecycler.setLayoutManager(linearLayoutManager);
+            kmAutoSuggestionDivider = list.findViewById(R.id.kmAutoSuggestionDivider);
+        }
 
         if (fontManager != null && fontManager.getMessageEditTextFont() != null) {
             messageEditText.setTypeface(fontManager.getMessageEditTextFont());
@@ -945,16 +947,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (kmAutoSuggestionRecycler != null) {
             if (show) {
                 if (!TextUtils.isEmpty(typedText.trim()) && typedText.startsWith("/") && !typedText.startsWith("/ ")) {
-                    kmAutoSuggestionRecycler.setVisibility(VISIBLE);
                     Bundle bundle = new Bundle();
                     bundle.putString(KmAutoSuggestionAdapter.KM_AUTO_SUGGESTION_TYPED_TEXT, typedText.substring(1));
                     if (kmAutoSuggestionAdapter != null) {
                         getLoaderManager().restartLoader(1, bundle, MobiComConversationFragment.this);
                     } else {
                         getLoaderManager().initLoader(1, bundle, this);
-                    }
-                    if (kmAutoSuggestionDivider != null) {
-                        kmAutoSuggestionDivider.setVisibility(VISIBLE);
                     }
                 } else {
                     kmAutoSuggestionRecycler.setVisibility(View.GONE);
@@ -4416,8 +4414,21 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             kmAutoSuggestionAdapter = new KmAutoSuggestionAdapter(getContext(), this);
             kmAutoSuggestionRecycler.setAdapter(kmAutoSuggestionAdapter);
         }
-        if (kmAutoSuggestionDivider != null) {
-            kmAutoSuggestionDivider.setVisibility(c.getCount() == 0 ? View.GONE : VISIBLE);
+
+        if (c.getCount() > 0) {
+            if (kmAutoSuggestionDivider != null) {
+                kmAutoSuggestionDivider.setVisibility(VISIBLE);
+            }
+            if (kmAutoSuggestionRecycler != null) {
+                kmAutoSuggestionRecycler.setVisibility(VISIBLE);
+            }
+        } else {
+            if (kmAutoSuggestionDivider != null) {
+                kmAutoSuggestionDivider.setVisibility(View.GONE);
+            }
+            if (kmAutoSuggestionRecycler != null) {
+                kmAutoSuggestionRecycler.setVisibility(View.GONE);
+            }
         }
         kmAutoSuggestionAdapter.swapCursor(c);
     }

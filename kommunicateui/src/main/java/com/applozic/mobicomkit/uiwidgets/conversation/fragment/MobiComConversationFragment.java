@@ -25,9 +25,11 @@ import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -130,6 +132,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmChannelService;
@@ -138,6 +141,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.schedule.ConversationScheduler;
@@ -193,7 +197,7 @@ import static java.util.Collections.disjoint;
  * reg
  * Created by devashish on 10/2/15.
  */
-abstract public class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, ALRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener {
+abstract public class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, ALRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "MobiComConversation";
     public FrameLayout emoticonsFrameLayout, contextFrameLayout;
@@ -307,8 +311,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     boolean isRecording = false;
     private KmFontManager fontManager;
     private RelativeLayout takeOverFromBotLayout;
-    private RecyclerView kmAutoSuggestionRecycler;
+    private KmRecyclerView kmAutoSuggestionRecycler;
     private KmAutoSuggestionAdapter kmAutoSuggestionAdapter;
+    private View kmAutoSuggestionDivider;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -526,11 +531,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendType = (Spinner) extendedSendingOptionLayout.findViewById(R.id.sendTypeSpinner);
         messageEditText = (EditText) individualMessageSendLayout.findViewById(R.id.conversation_message);
 
-        kmAutoSuggestionRecycler = list.findViewById(R.id.kmQuickRepliesRecycler);
+        kmAutoSuggestionRecycler = list.findViewById(R.id.kmAutoSuggestionRecycler);
+        kmAutoSuggestionRecycler.setmMaxHeight(240);
         KmLinearLayoutManager linearLayoutManager = new KmLinearLayoutManager(getContext());
         kmAutoSuggestionRecycler.setLayoutManager(linearLayoutManager);
-        kmAutoSuggestionAdapter = new KmAutoSuggestionAdapter(getContext(), this);
-        kmAutoSuggestionRecycler.setAdapter(kmAutoSuggestionAdapter);
+        kmAutoSuggestionDivider = list.findViewById(R.id.kmAutoSuggestionDivider);
 
         if (fontManager != null && fontManager.getMessageEditTextFont() != null) {
             messageEditText.setTypeface(fontManager.getMessageEditTextFont());
@@ -595,24 +600,27 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             public void afterTextChanged(Editable s) {
                 try {
-                    if (!TextUtils.isEmpty(s.toString()) && s.toString().trim().length() > 0 && !typingStarted) {
-                        typingStarted = true;
-                        handleSendAndRecordButtonView(true);
-                        Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
-                        intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
-                        intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
-                        intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
-                        ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
-
-                        populateAutoSuggestion(true, s.toString().trim());
-                    } else if (s.toString().trim().length() == 0 && typingStarted) {
-                        typingStarted = false;
-                        handleSendAndRecordButtonView(false);
-                        Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
-                        intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
-                        intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
-                        intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
-                        ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                    if (!TextUtils.isEmpty(s.toString()) && s.toString().trim().length() > 0) {
+                        if (!typingStarted) {
+                            typingStarted = true;
+                            handleSendAndRecordButtonView(true);
+                            Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
+                            intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
+                            intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
+                            intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
+                            ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                        }
+                        populateAutoSuggestion(true, s.toString());
+                    } else if (s.toString().trim().length() == 0) {
+                        if (typingStarted) {
+                            typingStarted = false;
+                            handleSendAndRecordButtonView(false);
+                            Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
+                            intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
+                            intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
+                            intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
+                            ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                        }
                         populateAutoSuggestion(false, s.toString().trim());
                     }
                 } catch (Exception e) {
@@ -935,16 +943,32 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void populateAutoSuggestion(boolean show, String typedText) {
         if (kmAutoSuggestionRecycler != null) {
-            if (show && !TextUtils.isEmpty(typedText) && typedText.startsWith("/")) {
-                kmAutoSuggestionRecycler.setVisibility(VISIBLE);
-                if (kmAutoSuggestionAdapter != null) {
-                    kmAutoSuggestionAdapter.setQuickReplyList(ConversationActivity.autoSuggestionList);
-                    kmAutoSuggestionAdapter.notifyDataSetChanged();
+            if (show) {
+                if (!TextUtils.isEmpty(typedText.trim()) && typedText.startsWith("/") && !typedText.startsWith("/ ")) {
+                    kmAutoSuggestionRecycler.setVisibility(VISIBLE);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(KmAutoSuggestionAdapter.KM_AUTO_SUGGESTION_TYPED_TEXT, typedText.substring(1));
+                    if (kmAutoSuggestionAdapter != null) {
+                        getLoaderManager().restartLoader(1, bundle, MobiComConversationFragment.this);
+                    } else {
+                        getLoaderManager().initLoader(1, bundle, this);
+                    }
+                    if (kmAutoSuggestionDivider != null) {
+                        kmAutoSuggestionDivider.setVisibility(VISIBLE);
+                    }
+                } else {
+                    kmAutoSuggestionRecycler.setVisibility(View.GONE);
+                    if (kmAutoSuggestionDivider != null) {
+                        kmAutoSuggestionDivider.setVisibility(View.GONE);
+                    }
                 }
             } else {
                 kmAutoSuggestionRecycler.setVisibility(View.GONE);
-                if (messageEditText != null) {
+                if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
                     messageEditText.setText("");
+                }
+                if (kmAutoSuggestionDivider != null) {
+                    kmAutoSuggestionDivider.setVisibility(View.GONE);
                 }
             }
         }
@@ -4379,5 +4403,27 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 }
             }
         });
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return KmAutoSuggestionDatabase.getInstance(ApplozicService.getContext(getContext())).getAutoSuggestionCursorLoader(args != null ? args.getString(KmAutoSuggestionAdapter.KM_AUTO_SUGGESTION_TYPED_TEXT) : "");
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Cursor c) {
+        if (kmAutoSuggestionAdapter == null) {
+            kmAutoSuggestionAdapter = new KmAutoSuggestionAdapter(getContext(), this);
+            kmAutoSuggestionRecycler.setAdapter(kmAutoSuggestionAdapter);
+        }
+        if (kmAutoSuggestionDivider != null) {
+            kmAutoSuggestionDivider.setVisibility(c.getCount() == 0 ? View.GONE : VISIBLE);
+        }
+        kmAutoSuggestionAdapter.swapCursor(c);
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+        kmAutoSuggestionAdapter.swapCursor(null);
     }
 }

@@ -178,7 +178,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private LinearLayout serviceDisconnectionLayout;
     private KmStoragePermission alStoragePermission;
     private RelativeLayout customToolbarLayout;
-    public static List<KmAutoSuggestionModel> autoSuggestionList = new ArrayList<>();
 
     public ConversationActivity() {
 
@@ -454,17 +453,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(mobiComKitBroadcastReceiver, BroadcastService.getIntentFilter());
 
-        new KmAutoSuggestionsAsyncTask(this, new KmAutoSuggestionsAsyncTask.KmAutoSuggestionListener() {
-            @Override
-            public void onSuccess(List<KmAutoSuggestionModel> autoSuggestionList) {
-                ConversationActivity.autoSuggestionList.addAll(autoSuggestionList);
-            }
-
-            @Override
-            public void onFailure(String error) {
-                Utils.printLog(ConversationActivity.this, "ConversationActivity", "Error fetching auto suggestion list : " + error);
-            }
-        }).execute();
+        new KmAutoSuggestionsAsyncTask(this, null).execute();
     }
 
     @Override

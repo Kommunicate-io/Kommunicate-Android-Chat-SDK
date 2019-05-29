@@ -9,6 +9,7 @@ import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicommons.ApplozicService;
@@ -30,11 +31,13 @@ public class KmService {
 
     private Context context;
     private KmClientService clientService;
+    private KmAutoSuggestionDatabase autoSuggestionDatabase;
 
 
     public KmService(Context context) {
         this.context = ApplozicService.getContext(context);
         clientService = new KmClientService(context);
+        autoSuggestionDatabase = KmAutoSuggestionDatabase.getInstance(this.context);
     }
 
     public String getAwayMessage(String appKey, Integer groupId) throws Exception {
@@ -51,7 +54,17 @@ public class KmService {
         try {
             Type listType = new TypeToken<KmApiResponse<List<KmAutoSuggestionModel>>>() {
             }.getType();
-            return new Gson().fromJson(clientService.getKmAutoSuggestions(), listType);
+
+            KmApiResponse<List<KmAutoSuggestionModel>> kmApiResponse = new Gson().fromJson(clientService.getKmAutoSuggestions(), listType);
+            if (kmApiResponse != null) {
+                List<KmAutoSuggestionModel> autoSuggestionList = kmApiResponse.getData();
+                if (autoSuggestionList != null && !autoSuggestionList.isEmpty() && autoSuggestionDatabase != null) {
+                    for (KmAutoSuggestionModel kmAutoSuggestion : autoSuggestionList) {
+                        autoSuggestionDatabase.upsertAutoSuggestion(kmAutoSuggestion);
+                    }
+                }
+            }
+            return kmApiResponse;
         } catch (Exception e) {
             e.printStackTrace();
         }

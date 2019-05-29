@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -11,24 +12,23 @@ import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmDatabaseHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
-
-import java.util.List;
 
 public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
 
     private Context context;
-    private List<KmAutoSuggestionModel> quickReplyList;
     private ALRichMessageListener listener;
     public static final String KM_AUTO_SUGGESTION_ACTION = "KM_AUTO_SUGGESTION_ACTION";
+    public static final String KM_AUTO_SUGGESTION_TYPED_TEXT = "TYPED_TEXT";
+    private Cursor mCursor;
+    private boolean mDataValid;
+    private int mRowIDColumn;
 
     public KmAutoSuggestionAdapter(Context context, ALRichMessageListener listener) {
         this.context = context;
         this.listener = listener;
-    }
-
-    public void setQuickReplyList(List<KmAutoSuggestionModel> quickReplyList) {
-        this.quickReplyList = quickReplyList;
     }
 
     @NonNull
@@ -40,9 +40,15 @@ public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        KmQuickReplyViewHolder mViewHolder = (KmQuickReplyViewHolder) holder;
+        if (!mDataValid) {
+            throw new IllegalStateException("Cannot bind viewholder when cursor is in invalid state.");
+        }
+        if (!mCursor.moveToPosition(position)) {
+            throw new IllegalStateException("Could not move cursor to position " + position + " when trying to bind viewholder");
+        }
 
-        KmAutoSuggestionModel quickReplyModel = quickReplyList != null ? quickReplyList.get(position) : null;
+        KmQuickReplyViewHolder mViewHolder = (KmQuickReplyViewHolder) holder;
+        KmAutoSuggestionModel quickReplyModel = KmAutoSuggestionDatabase.getAutoSuggestion(mCursor);
 
         if (quickReplyModel != null) {
             if (!TextUtils.isEmpty(quickReplyModel.getCategory())) {
@@ -63,7 +69,40 @@ public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return quickReplyList != null ? quickReplyList.size() : 0;
+        if (mDataValid) {
+            return mCursor.getCount();
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public long getItemId(int position) {
+        if (!mDataValid) {
+            throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
+        }
+        if (!mCursor.moveToPosition(position)) {
+            throw new IllegalStateException("Could not move cursor to position " + position + " when trying to get an item id");
+        }
+
+        return mCursor.getLong(mRowIDColumn);
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        if (newCursor == mCursor) {
+            return;
+        }
+        if (newCursor != null) {
+            mCursor = newCursor;
+            mRowIDColumn = mCursor.getColumnIndexOrThrow(KmDatabaseHelper.ID);
+            mDataValid = true;
+            notifyDataSetChanged();
+        } else {
+            notifyItemRangeRemoved(0, getItemCount());
+            mCursor = null;
+            mRowIDColumn = -1;
+            mDataValid = false;
+        }
     }
 
     private class KmQuickReplyViewHolder extends RecyclerView.ViewHolder {
@@ -81,9 +120,12 @@ public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        KmAutoSuggestionModel quickReplyModel = quickReplyList != null ? quickReplyList.get(getAdapterPosition()) : null;
-                        if (quickReplyModel != null) {
-                            listener.onAction(context, KM_AUTO_SUGGESTION_ACTION, null, quickReplyModel, null);
+                        if (mCursor != null) {
+                            mCursor.moveToPosition(getAdapterPosition());
+                            KmAutoSuggestionModel autoSuggestion = KmAutoSuggestionDatabase.getAutoSuggestion(mCursor);
+                            if (autoSuggestion != null) {
+                                listener.onAction(context, KM_AUTO_SUGGESTION_ACTION, null, autoSuggestion, null);
+                            }
                         }
                     }
                 }

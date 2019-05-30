@@ -612,7 +612,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                             ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
                         }
-                        populateAutoSuggestion(true, s.toString());
+                        populateAutoSuggestion(true, s.toString(), null);
                     } else if (s.toString().trim().length() == 0) {
                         if (typingStarted) {
                             typingStarted = false;
@@ -623,7 +623,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                             ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
                         }
-                        populateAutoSuggestion(false, s.toString().trim());
+                        populateAutoSuggestion(false, s.toString().trim(), null);
                     }
                 } catch (Exception e) {
 
@@ -943,7 +943,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     }
 
-    public void populateAutoSuggestion(boolean show, String typedText) {
+    public void populateAutoSuggestion(boolean show, String typedText, String message) {
         if (kmAutoSuggestionRecycler != null) {
             if (show) {
                 if (!TextUtils.isEmpty(typedText.trim()) && typedText.startsWith("/") && !typedText.startsWith("/ ")) {
@@ -955,14 +955,19 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         getLoaderManager().initLoader(1, bundle, this);
                     }
                 } else {
+                    getLoaderManager().destroyLoader(1);
                     kmAutoSuggestionRecycler.setVisibility(View.GONE);
                     if (kmAutoSuggestionDivider != null) {
                         kmAutoSuggestionDivider.setVisibility(View.GONE);
                     }
                 }
             } else {
+                getLoaderManager().destroyLoader(1);
                 kmAutoSuggestionRecycler.setVisibility(View.GONE);
-                if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
+                if (!TextUtils.isEmpty(message) && messageEditText != null) {
+                    messageEditText.setText(message);
+                    messageEditText.setSelection(message.length());
+                } else if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
                     messageEditText.setText("");
                 }
                 if (kmAutoSuggestionDivider != null) {
@@ -3990,8 +3995,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             case KmAutoSuggestionAdapter.KM_AUTO_SUGGESTION_ACTION:
                 try {
                     KmAutoSuggestionModel autoSuggestionModel = (KmAutoSuggestionModel) object;
-                    sendMessage(autoSuggestionModel.getContent());
-                    populateAutoSuggestion(false, null);
+                    populateAutoSuggestion(false, null, autoSuggestionModel.getContent());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

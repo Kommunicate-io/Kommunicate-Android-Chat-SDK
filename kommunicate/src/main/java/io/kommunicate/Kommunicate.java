@@ -17,6 +17,7 @@ import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
+import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
 import io.kommunicate.activities.LeadCollectionActivity;
@@ -24,6 +25,7 @@ import io.kommunicate.activities.LeadCollectionActivity;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
@@ -77,8 +79,21 @@ public class Kommunicate {
         login(context, getVisitor(), handler);
     }
 
-    public static void logout(Context context, KMLogoutHandler logoutHandler) {
-        Applozic.logoutUser(context, logoutHandler);
+    public static void logout(Context context, final KMLogoutHandler logoutHandler) {
+        KMLogoutHandler handler = new KMLogoutHandler() {
+            @Override
+            public void onSuccess(Context context) {
+                ApplozicService.getContext(context).deleteDatabase(MobiComDatabaseHelper.getInstance(context).getDatabaseName());
+                logoutHandler.onSuccess(context);
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                logoutHandler.onFailure(exception);
+            }
+        };
+
+        Applozic.logoutUser(context, handler);
     }
 
     public static void setDeviceToken(Context context, String deviceToken) {

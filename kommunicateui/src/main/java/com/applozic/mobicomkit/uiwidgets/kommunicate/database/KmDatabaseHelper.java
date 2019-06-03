@@ -11,6 +11,7 @@ import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DBUtils;
 
 public class KmDatabaseHelper extends MobiComDatabaseHelper {
+    private static final int DB_VERSION = 1;
     private static KmDatabaseHelper sInstance;
     public static final String AUTO_SUGGESTION_TABLE = "auto_suggestion";
     public static final String ID = "id";
@@ -38,8 +39,40 @@ public class KmDatabaseHelper extends MobiComDatabaseHelper {
         super(context, name, factory, version);
     }
 
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        if (!DBUtils.isTableExists(db, AUTO_SUGGESTION_TABLE)) {
+            db.execSQL(CREATE_AUTO_SUGGESTION_TABLE);
+        }
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (newVersion > oldVersion) {
+
+        }
+    }
+
+    @Override
+    public SQLiteDatabase getReadableDatabase() {
+        SQLiteDatabase database = super.getReadableDatabase();
+        database.enableWriteAheadLogging();
+        return database;
+    }
+
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
+        SQLiteDatabase database = super.getWritableDatabase();
+        database.enableWriteAheadLogging();
+        return database;
+    }
+
+    @Override
+    public synchronized void close() {
+    }
+
     private KmDatabaseHelper(Context context) {
-        this(context, !TextUtils.isEmpty(ALSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName()) ? ALSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName() : "MCK_" + MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context)), null, DB_VERSION);
+        this(context, "KM_" + (!TextUtils.isEmpty(ALSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName()) ? ALSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName() : MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context))), null, DB_VERSION);
     }
 
     public static KmDatabaseHelper getInstance(Context context) {
@@ -47,19 +80,5 @@ public class KmDatabaseHelper extends MobiComDatabaseHelper {
             sInstance = new KmDatabaseHelper(ApplozicService.getContext(context));
         }
         return sInstance;
-    }
-
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        if (!DBUtils.isTableExists(db, AUTO_SUGGESTION_TABLE)) {
-            db.execSQL(CREATE_AUTO_SUGGESTION_TABLE);
-        }
-    }
-
-    @Override
-    public int delDatabase() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from " + AUTO_SUGGESTION_TABLE);
-        return super.delDatabase();
     }
 }

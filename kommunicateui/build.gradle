@@ -5,7 +5,7 @@ android {
     buildToolsVersion '27.0.3'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
         versionName "1.8.7"
@@ -21,10 +21,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.applozic.communication.message:mobicomkit:5.46'
-    api 'com.google.firebase:firebase-messaging:17.1.0'
-    api 'com.google.android.gms:play-services-maps:15.0.1'
-    api 'com.google.android.gms:play-services-location:15.0.1'
+    api 'com.applozic.communication.message:mobicomkit:5.47'
+    api 'com.google.firebase:firebase-messaging:18.0.0'
+    api 'com.google.android.gms:play-services-maps:16.1.0'
+    api 'com.google.android.gms:play-services-location:16.0.0'
     api 'de.hdodenhof:circleimageview:2.2.0'
     api 'com.android.support:design:27.1.1'
     api 'com.theartofdev.edmodo:android-image-cropper:2.7.0'

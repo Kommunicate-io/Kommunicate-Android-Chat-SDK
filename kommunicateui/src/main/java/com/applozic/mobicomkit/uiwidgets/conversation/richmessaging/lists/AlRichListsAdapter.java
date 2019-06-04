@@ -57,7 +57,7 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
             holder.headerTv.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(element.getDescription().trim())) {
+        if (element.getDescription() != null && !TextUtils.isEmpty(element.getDescription().trim())) {
             holder.detailsTv.setVisibility(View.VISIBLE);
             holder.detailsTv.setText(AlRichMessage.getHtmlText(element.getDescription()));
         } else {

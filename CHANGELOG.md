@@ -3,6 +3,41 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 1.8.8
+* Option to pass clientConversationId when creating/launching a conversation.
+* Updated FCM and GMS libraries to latest versions:
+     ```groovy
+        api 'com.google.firebase:firebase-messaging:18.0.0'
+        api 'com.google.android.gms:play-services-maps:16.1.0'
+        api 'com.google.android.gms:play-services-location:16.0.0'
+     ```
+* The minimum SDK version is increased to 16 due to the above google library updates
+* Disabled away messages for normal groups
+* Fixed quick reply issue in carousels
+* Fixed logout issue for some cases
+* Fixed attachment screen opening multiple times incase of multiple clicks
+* Fixed Keyboard not dismissing in landscape mode on click of done button in message sender view.
+
+## Kommunicate Android SDK 1.8.7
+* New message received callback from the SDK.
+* Fixed conversation list layout issue for tablets
+* Other bug fixes and optimizations
+
+## Kommunicate Android SDK 1.8.5
+* FAQ option on both screens. Enable it using the below setting in `applozic-settings.json` file:
+```    
+"enableFaqOption": [
+    false,
+    false
+  ]
+```
+
+* The default message metadata will be set to the metadata of new conversation created
+* Message metadata merge. The replyMetadata will have priority over default metadata
+* Deleted groups won't display in the app
+* Fixed issue where public group and broadcast group names were not displaying in conversation list
+* Other bug fixes and optimisation
+
 ## Kommunicate Android SDK 1.8.4
 
 ### Bug fixes and improvement

@@ -9,10 +9,17 @@ import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,11 +31,13 @@ public class KmService {
 
     private Context context;
     private KmClientService clientService;
+    private KmAutoSuggestionDatabase autoSuggestionDatabase;
 
 
     public KmService(Context context) {
         this.context = ApplozicService.getContext(context);
         clientService = new KmClientService(context);
+        autoSuggestionDatabase = KmAutoSuggestionDatabase.getInstance(this.context);
     }
 
     public String getAwayMessage(String appKey, Integer groupId) throws Exception {
@@ -39,6 +48,27 @@ public class KmService {
         }
 
         return response;
+    }
+
+    public KmApiResponse<List<KmAutoSuggestionModel>> getKmAutoSuggestions() {
+        try {
+            Type listType = new TypeToken<KmApiResponse<List<KmAutoSuggestionModel>>>() {
+            }.getType();
+
+            KmApiResponse<List<KmAutoSuggestionModel>> kmApiResponse = new Gson().fromJson(clientService.getKmAutoSuggestions(), listType);
+            if (kmApiResponse != null) {
+                List<KmAutoSuggestionModel> autoSuggestionList = kmApiResponse.getData();
+                if (autoSuggestionList != null && !autoSuggestionList.isEmpty() && autoSuggestionDatabase != null) {
+                    for (KmAutoSuggestionModel kmAutoSuggestion : autoSuggestionList) {
+                        autoSuggestionDatabase.upsertAutoSuggestion(kmAutoSuggestion);
+                    }
+                }
+            }
+            return kmApiResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static Contact getSupportGroupContact(Context context, Channel channel, BaseContactService contactService, int loggedInUserRoleType) {

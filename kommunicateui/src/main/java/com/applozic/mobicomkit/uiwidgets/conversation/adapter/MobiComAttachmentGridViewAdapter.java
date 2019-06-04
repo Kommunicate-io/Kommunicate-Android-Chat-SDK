@@ -25,20 +25,20 @@ import java.util.ArrayList;
 
 public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
 
-    public static final int REQUEST_CODE = 100;
-    ImageButton deleteButton;
-    ImageView galleryImageView;
-    TextView fileSize;
-    ImageView attachmentImageView;
-    TextView fileName;
-    AlCustomizationSettings alCustomizationSettings;
-    boolean disableNewAttachment;
+    private static final int REQUEST_CODE = 100;
+    private ImageButton deleteButton;
+    private ImageView galleryImageView;
+    private TextView fileSize;
+    private ImageView attachmentImageView;
+    private TextView fileName;
+    private AlCustomizationSettings alCustomizationSettings;
+    private boolean disableNewAttachment;
     private Context context;
     private ArrayList<Uri> uris;
     private FileUtils.GalleryFilterOptions filterOptions;
 
 
-    public MobiComAttachmentGridViewAdapter(Context context, ArrayList<Uri> uris, AlCustomizationSettings alCustomizationSettings, boolean disableNewAttachment,  FileUtils.GalleryFilterOptions filterOptions) {
+    public MobiComAttachmentGridViewAdapter(Context context, ArrayList<Uri> uris, AlCustomizationSettings alCustomizationSettings, boolean disableNewAttachment, FileUtils.GalleryFilterOptions filterOptions) {
         this.context = context;
         this.alCustomizationSettings = alCustomizationSettings;
         this.uris = uris;
@@ -86,6 +86,13 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
                 if (getCount() > alCustomizationSettings.getMaxAttachmentAllowed()) {
                     Toast.makeText(context, R.string.mobicom_max_attachment_warning, Toast.LENGTH_LONG).show();
                     return;
+                }
+
+                try {
+                    ImageView galleryImageView = (ImageView) v;
+                    galleryImageView.setEnabled(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 Intent getContentIntent = FileUtils.createGetContentIntent(filterOptions, context.getPackageManager());
@@ -151,6 +158,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     private void setNewAttachmentView() {
         deleteButton.setVisibility(View.GONE);
         galleryImageView.setImageResource(R.drawable.applozic_ic_action_add);
+        galleryImageView.setEnabled(true);
         fileName.setVisibility(View.GONE);
         attachmentImageView.setVisibility(View.GONE);
         fileSize.setText(R.string.New_Attachment);

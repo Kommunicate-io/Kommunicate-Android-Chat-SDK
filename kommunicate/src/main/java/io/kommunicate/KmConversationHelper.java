@@ -105,6 +105,7 @@ public class KmConversationHelper {
                         launchChat.getChatName(),
                         launchChat.getAgentIds(),
                         launchChat.getBotIds(),
+                        launchChat.getClientConversationId(),
                         launchChat.isSingleChat(),
                         getStartChatHandler(launchChat.isSkipChatList(), true, callback));
             } catch (KmException e) {
@@ -172,6 +173,7 @@ public class KmConversationHelper {
                         launchChat.getChatName(),
                         launchChat.getAgentIds(),
                         launchChat.getBotIds(),
+                        launchChat.getClientConversationId(),
                         launchChat.isSingleChat(),
                         getStartChatHandler(launchChat.isSkipChatList(), false, callback));
             } catch (KmException e) {
@@ -279,7 +281,7 @@ public class KmConversationHelper {
                 }
 
                 try {
-                    Kommunicate.startConversation(context, launchChat.getChatName(), launchChat.getAgentIds(), launchChat.getBotIds(), launchChat.isSingleChat(), startChatHandler);
+                    Kommunicate.startConversation(context, launchChat.getChatName(), launchChat.getAgentIds(), launchChat.getBotIds(), launchChat.getClientConversationId(), launchChat.isSingleChat(), startChatHandler);
                 } catch (KmException e) {
                     e.printStackTrace();
                     callback.onFailure(e);

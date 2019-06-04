@@ -26,6 +26,7 @@ public class KmChatBuilder extends JsonMarker {
     private String chatId;
     private String chatName;
     private String deviceToken;
+    private String clientConversationId;
     private Map<String, String> metadata;
 
     public KmChatBuilder(Context context) {
@@ -168,6 +169,15 @@ public class KmChatBuilder extends JsonMarker {
 
     public KmChatBuilder setMetadata(Map<String, String> metadata) {
         this.metadata = metadata;
+        return this;
+    }
+
+    public String getClientConversationId() {
+        return clientConversationId;
+    }
+
+    public KmChatBuilder setClientConversationId(String clientConversationId) {
+        this.clientConversationId = clientConversationId;
         return this;
     }
 

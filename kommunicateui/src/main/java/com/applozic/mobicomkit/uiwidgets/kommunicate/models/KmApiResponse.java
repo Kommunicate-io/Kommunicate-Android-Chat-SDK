@@ -8,10 +8,10 @@ import java.util.List;
  * Created by ashish on 03/04/18.
  */
 
-public class KmAwayMessageResponse extends JsonMarker {
+public class KmApiResponse<T> extends JsonMarker {
     private String code;
-    private KmDataResposne data;
-
+    private T data;
+    public static final String KM_AUTO_SUGGESSTION_SUCCESS_RESPONSE = "GOT_ALL_SUGGESTIONS_BY_APPLICATION_ID";
 
     public String getCode() {
         return code;
@@ -21,15 +21,15 @@ public class KmAwayMessageResponse extends JsonMarker {
         this.code = code;
     }
 
-    public KmDataResposne getData() {
+    public T getData() {
         return data;
     }
 
-    public void setData(KmDataResposne data) {
+    public void setData(T data) {
         this.data = data;
     }
 
-    public class KmDataResposne extends JsonMarker {
+    public static class KmDataResposne extends JsonMarker {
         private List<KmMessageResponse> messageList;
 
         public List<KmMessageResponse> getMessageList() {
@@ -41,7 +41,7 @@ public class KmAwayMessageResponse extends JsonMarker {
         }
     }
 
-    public class KmMessageResponse extends JsonMarker {
+    public static class KmMessageResponse extends JsonMarker {
         private long id;
         private long customerId;
         private short eventId;

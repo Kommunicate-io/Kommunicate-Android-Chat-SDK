@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 
 public class KmUtils {
 
@@ -28,6 +29,10 @@ public class KmUtils {
         } else {
             view.setBackground(ContextCompat.getDrawable(context, resId));
         }
+    }
+
+    public static boolean isAgent(Context context){
+        return User.RoleType.AGENT.getValue().equals(MobiComUserPreference.getInstance(context).getUserRoleType());
     }
 
     public enum PackageType {

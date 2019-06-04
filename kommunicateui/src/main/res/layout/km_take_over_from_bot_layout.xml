@@ -14,7 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="9dp"
         android:layout_marginLeft="9dp"
-        android:background="@drawable/toolbar_online_circle"
+        android:background="@drawable/take_over_from_bot_online_circle"
         android:textColor="#57cc04" />
 
     <TextView

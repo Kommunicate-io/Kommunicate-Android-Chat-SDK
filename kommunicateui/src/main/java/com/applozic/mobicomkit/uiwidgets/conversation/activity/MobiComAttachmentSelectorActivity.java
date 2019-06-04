@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -242,6 +243,20 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        try {
+            if (imagesAdapter != null) {
+                View view = galleryImagesGridView.getChildAt(imagesAdapter.getCount() - 1);
+                if (view != null) {
+                    ImageView imageView = view.findViewById(R.id.galleryImageView);
+                    if (imageView != null) {
+                        imageView.setEnabled(true);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (resultCode == Activity.RESULT_OK) {
             Uri selectedFileUri = (intent == null ? null : intent.getData());
             Utils.printLog(MobiComAttachmentSelectorActivity.this, TAG, "selectedFileUri :: " + selectedFileUri);

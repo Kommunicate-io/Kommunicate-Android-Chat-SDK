@@ -198,10 +198,6 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
 
-        <service
-            android:name="org.eclipse.paho.android.service.MqttService"
-            tools:node="merge" />
-
         <receiver
             android:name="com.applozic.mobicomkit.broadcast.TimeChangeBroadcastReceiver"
             tools:node="merge">

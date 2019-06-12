@@ -267,7 +267,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     ImageView imageViewForAttachmentType;
     RelativeLayout imageViewRLayout;
     Map<String, String> messageMetaData = new HashMap<>();
-    FrameLayout audioRecordFrameLayout;
     ApplozicAudioRecordManager applozicAudioRecordManager;
     ImageView slideImageView;
     private EmojiconHandler emojiIconHandler;
@@ -453,7 +452,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
                 sendButton.setScaleX(-1);
                 mainEditTextLinearLayout.setBackgroundResource(R.drawable.applozic_chat_left_icon);
-                audioRecordFrameLayout.setBackgroundResource(R.drawable.applozic_chat_left_icon);
                 slideImageView.setImageResource(R.drawable.slide_arrow_right);
             }
         }

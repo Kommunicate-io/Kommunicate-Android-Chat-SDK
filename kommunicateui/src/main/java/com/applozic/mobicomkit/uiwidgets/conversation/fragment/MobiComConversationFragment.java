@@ -134,6 +134,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
@@ -719,6 +720,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (ApplozicService.getContext(getContext()) != null && ApplozicService.getContext(getContext()) instanceof KmToolbarClickListener) {
+                    ((KmToolbarClickListener) ApplozicService.getContext(getContext())).onClick(getActivity(), channel, contact);
+                }
 
                 if (channel != null) {
                     if (channel.isDeleted()) {

@@ -66,6 +66,8 @@ public class Kommunicate {
     public static final String LOGOUT_CALL = "logoutCall";
     public static final String PRECHAT_LOGIN_CALL = "prechatLogin";
     private static final String TAG = "KommunicateTag";
+    private static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
+    private static final String SKIP_ROUTING = "SKIP_ROUTING";
 
     public static void init(Context context, String applicationKey) {
         Applozic.init(context, applicationKey);
@@ -177,9 +179,18 @@ public class Kommunicate {
             }
         };
 
+        final KmChatBuilder chatBuilder = new KmChatBuilder(context);
+        chatBuilder.setChatName(groupName)
+                .setKmUser(kmUser)
+                .setWithPreChat(withPreChat)
+                .setSingleChat(isUnique)
+                .setAgentIds(agents)
+                .setBotIds(bots)
+                .setClientConversationId(clientConversationId);
+
         if (isLoggedIn(context)) {
             try {
-                startConversation(context, groupName, agents, bots, clientConversationId, isUnique, startChatHandler);
+                startConversation(chatBuilder, startChatHandler);
             } catch (KmException e) {
                 callback.onFailure(e);
             }
@@ -188,7 +199,7 @@ public class Kommunicate {
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                     try {
-                        startConversation(context, groupName, agents, bots, clientConversationId, isUnique, startChatHandler);
+                        startConversation(chatBuilder, startChatHandler);
                     } catch (KmException e) {
                         e.printStackTrace();
                         callback.onFailure(e);
@@ -230,23 +241,12 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
-    @Deprecated
-    public static void startNewConversation(Context context, String groupName, String agentId, String botId, String clientConversationId, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
-        ArrayList<String> agentIds = null;
-        ArrayList<String> botIds = null;
-        if (agentId != null) {
-            agentIds = new ArrayList<>();
-            agentIds.add(agentId);
+    public static void startConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
+        if (chatBuilder == null) {
+            throw new KmException("KmChatBuilder cannot be null");
         }
-        if (botId != null) {
-            botIds = new ArrayList<>();
-            botIds.add(botId);
-        }
-        startConversation(context, groupName, agentIds, botIds, clientConversationId, isUniqueChat, handler);
-    }
 
-    public static void startConversation(final Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final String clientConversationId, final boolean isUniqueChat, final KMStartChatHandler handler) throws KmException {
-        if (agentIds == null || agentIds.isEmpty()) {
+        if (chatBuilder.getAgentIds() == null || chatBuilder.getAgentIds().isEmpty()) {
             KmCallback callback = new KmCallback() {
                 @Override
                 public void onSuccess(Object message) {
@@ -254,12 +254,13 @@ public class Kommunicate {
                     if (agent != null) {
                         List<String> agents = new ArrayList<>();
                         agents.add(agent.getAgentId());
+                        chatBuilder.setAgentIds(agents);
                         try {
-                            final String clientChannelKey = !TextUtils.isEmpty(clientConversationId) ? clientConversationId : (isUniqueChat ? getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agents, botIds) : null);
+                            final String clientChannelKey = !TextUtils.isEmpty(chatBuilder.getClientConversationId()) ? chatBuilder.getClientConversationId() : (chatBuilder.isSingleChat() ? getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), agents, chatBuilder.getBotIds()) : null);
                             if (!TextUtils.isEmpty(clientChannelKey)) {
-                                startOrGetConversation(context, groupName, agents, botIds, clientChannelKey, handler);
+                                startOrGetConversation(chatBuilder, handler);
                             } else {
-                                createConversation(context, groupName, agents, botIds, null, false, handler);
+                                createConversation(chatBuilder, handler);
                             }
                         } catch (KmException e) {
                             e.printStackTrace();
@@ -270,40 +271,40 @@ public class Kommunicate {
                 @Override
                 public void onFailure(Object error) {
                     if (handler != null) {
-                        handler.onFailure(null, context);
+                        handler.onFailure(null, chatBuilder.getContext());
                     }
                 }
             };
 
-            new KmGetAgentListTask(context, MobiComKitClientService.getApplicationKey(context), callback).execute();
+            new KmGetAgentListTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).execute();
         } else {
-            final String clientChannelKey = !TextUtils.isEmpty(clientConversationId) ? clientConversationId : (isUniqueChat ? getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agentIds, botIds) : null);
+            final String clientChannelKey = !TextUtils.isEmpty(chatBuilder.getClientConversationId()) ? chatBuilder.getClientConversationId() : (chatBuilder.isSingleChat() ? getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), chatBuilder.getAgentIds(), chatBuilder.getBotIds()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
-                startOrGetConversation(context, groupName, agentIds, botIds, clientChannelKey, handler);
+                startOrGetConversation(chatBuilder, handler);
             } else {
-                createConversation(context, groupName, agentIds, botIds, null, false, handler);
+                createConversation(chatBuilder, handler);
             }
         }
     }
 
     @Deprecated
-    private static void createConversation(Context context, String groupName, List<String> agentIds, List<String> botIds, String clientConversationId, boolean isUniqueChat, KMStartChatHandler handler) throws KmException {
+    private static void createConversation(KmChatBuilder chatBuilder, KMStartChatHandler handler) throws KmException {
         List<KMGroupInfo.GroupUser> users = new ArrayList<>();
 
-        KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(groupName) ? "Kommunicate Support" : groupName, new ArrayList<String>());
+        KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(chatBuilder.getChatName()) ? "Kommunicate Support" : chatBuilder.getChatName(), new ArrayList<String>());
 
-        if (agentIds == null || agentIds.isEmpty()) {
+        if (chatBuilder.getAgentIds() == null || chatBuilder.getAgentIds().isEmpty()) {
             throw new KmException("Agent Id list cannot be null or empty");
         }
-        for (String agentId : agentIds) {
+        for (String agentId : chatBuilder.getAgentIds()) {
             users.add(channelInfo.new GroupUser().setUserId(agentId).setGroupRole(1));
         }
 
         users.add(channelInfo.new GroupUser().setUserId(KM_BOT).setGroupRole(2));
-        users.add(channelInfo.new GroupUser().setUserId(MobiComUserPreference.getInstance(context).getUserId()).setGroupRole(3));
+        users.add(channelInfo.new GroupUser().setUserId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId()).setGroupRole(3));
 
-        if (botIds != null) {
-            for (String botId : botIds) {
+        if (chatBuilder.getBotIds() != null) {
+            for (String botId : chatBuilder.getBotIds()) {
                 if (botId != null && !KM_BOT.equals(botId)) {
                     users.add(channelInfo.new GroupUser().setUserId(botId).setGroupRole(2));
                 }
@@ -313,14 +314,14 @@ public class Kommunicate {
         channelInfo.setType(10);
         channelInfo.setUsers(users);
 
-        if (!agentIds.isEmpty()) {
-            channelInfo.setAdmin(agentIds.get(0));
+        if (!chatBuilder.getAgentIds().isEmpty()) {
+            channelInfo.setAdmin(chatBuilder.getAgentIds().get(0));
         }
 
-        if (!TextUtils.isEmpty(clientConversationId)) {
-            channelInfo.setClientGroupId(clientConversationId);
-        } else if (isUniqueChat) {
-            channelInfo.setClientGroupId(getClientGroupId(MobiComUserPreference.getInstance(context).getUserId(), agentIds, botIds));
+        if (!TextUtils.isEmpty(chatBuilder.getClientConversationId())) {
+            channelInfo.setClientGroupId(chatBuilder.getClientConversationId());
+        } else if (chatBuilder.isSingleChat()) {
+            channelInfo.setClientGroupId(getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), chatBuilder.getAgentIds(), chatBuilder.getBotIds()));
         }
 
         Map<String, String> metadata = new HashMap<>();
@@ -336,8 +337,17 @@ public class Kommunicate {
         metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
         metadata.put("HIDE", "true");
 
-        if (!TextUtils.isEmpty(ApplozicClient.getInstance(context).getMessageMetaData())) {
-            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(context).getMessageMetaData(), Map.class);
+        if (!TextUtils.isEmpty(chatBuilder.getConversationAssignee())) {
+            metadata.put(CONVERSATION_ASSIGNEE, chatBuilder.getConversationAssignee());
+            metadata.put(SKIP_ROUTING, "true");
+        }
+
+        if (chatBuilder.isSkipRouting()) {
+            metadata.put(SKIP_ROUTING, String.valueOf(chatBuilder.isSkipRouting()));
+        }
+
+        if (!TextUtils.isEmpty(ApplozicClient.getInstance(chatBuilder.getContext()).getMessageMetaData())) {
+            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(chatBuilder.getContext()).getMessageMetaData(), Map.class);
             if (defaultMetadata != null) {
                 metadata.putAll(defaultMetadata);
             }
@@ -345,7 +355,7 @@ public class Kommunicate {
 
         channelInfo.setMetadata(metadata);
 
-        Utils.printLog(context, TAG, "ChannelInfo : " + GsonUtils.getJsonFromObject(channelInfo, ChannelInfo.class));
+        Utils.printLog(chatBuilder.getContext(), TAG, "ChannelInfo : " + GsonUtils.getJsonFromObject(channelInfo, ChannelInfo.class));
 
         if (handler == null) {
             handler = new KMStartChatHandler() {
@@ -361,7 +371,7 @@ public class Kommunicate {
             };
         }
 
-        new AlChannelCreateAsyncTask(context, channelInfo, handler).execute();
+        new AlChannelCreateAsyncTask(chatBuilder.getContext(), channelInfo, handler).execute();
     }
 
     public static void getAgents(Context context, int startIndex, int pageSize, KMGetContactsHandler handler) {
@@ -411,7 +421,7 @@ public class Kommunicate {
     }
 
     @Deprecated
-    public static void startOrGetConversation(Context context, final String groupName, final List<String> agentIds, final List<String> botIds, final String clientConversationId, final KMStartChatHandler handler) throws KmException {
+    public static void startOrGetConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
 
         AlGroupInformationAsyncTask.GroupMemberListener groupMemberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
             @Override
@@ -424,14 +434,14 @@ public class Kommunicate {
             @Override
             public void onFailure(Channel channel, Exception e, Context context) {
                 try {
-                    createConversation(context, groupName, agentIds, botIds, clientConversationId, true, handler);
+                    createConversation(chatBuilder, handler);
                 } catch (KmException e1) {
                     handler.onFailure(null, context);
                 }
             }
         };
 
-        new AlGroupInformationAsyncTask(context, clientConversationId, groupMemberListener).execute();
+        new AlGroupInformationAsyncTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), groupMemberListener).execute();
     }
 
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {

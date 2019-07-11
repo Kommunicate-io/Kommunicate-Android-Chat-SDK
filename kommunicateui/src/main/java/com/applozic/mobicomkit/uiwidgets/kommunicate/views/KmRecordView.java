@@ -10,7 +10,6 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -205,11 +204,7 @@ public class KmRecordView extends FrameLayout {
         if(context.getResources().getConfiguration().getLayoutDirection()==View.LAYOUT_DIRECTION_RTL) {
 
             if (!isSwiped && time >= 150) {
-                //  to see if the animation has been sucessfully cancelled
-                Log.d("Animation", "slide: "+slideToCancelLayout.getX()+" and time: "+counterTime.getX());
                 if (slideToCancelLayout.getX() != 0 && (slideToCancelLayout.getX()+slideToCancelLayout.getWidth()) >= counterTime.getX() - cancelBounds) {
-                    //if done too quick (cancel it)
-                    Log.d("Animation", "cancelled at: slide: "+slideToCancelLayout.getRight()+" and time: "+counterTime.getX());
                     if (isLessThanOneSecond(time)) {
                         hideViews(true);
                         animationHelper.clearAlphaAnimation(false);
@@ -230,16 +225,13 @@ public class KmRecordView extends FrameLayout {
                     if (recordListener != null)
                         recordListener.onRecordCancel();
                 } else {
-                    Log.d("Animation", "Initial x: "+initialX);
                     if (motionEvent.getRawX() > initialX) {
-                        Log.d("Animation",""+motionEvent.getRawX());
                         recordBtn.animate()
                                 .x(motionEvent.getRawX())
                                 .setDuration(0)
                                 .start();
                         if (difX == 0)
                             difX = (initialX - slideToCancelLayout.getX());
-                        Log.d("Animation", "diff x: "+difX);
                         slideToCancelLayout.animate()
                                 .x(motionEvent.getRawX() - difX)
                                 .setDuration(0)
@@ -273,7 +265,6 @@ public class KmRecordView extends FrameLayout {
                 } else {
                     // <
                     if (motionEvent.getRawX() < initialX) {
-                        Log.d("Animation", "" + motionEvent.getRawX());
                         recordBtn.animate()
                                 .x(motionEvent.getRawX())
                                 .setDuration(0)

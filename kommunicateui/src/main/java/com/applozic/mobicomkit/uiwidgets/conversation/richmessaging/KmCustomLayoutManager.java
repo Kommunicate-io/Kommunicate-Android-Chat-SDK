@@ -12,7 +12,6 @@ public class KmCustomLayoutManager extends ViewGroup {
 
     public KmCustomLayoutManager(Context context) {
         super(context);
-        Log.d("rtl", "const called");
     }
 
     public KmCustomLayoutManager(Context context, AttributeSet attrs) {
@@ -21,12 +20,10 @@ public class KmCustomLayoutManager extends ViewGroup {
 
     public KmCustomLayoutManager(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        Log.d("rtl", "const called");
     }
 
     public KmCustomLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        Log.d("rtl", "const called");
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
@@ -43,13 +40,10 @@ public class KmCustomLayoutManager extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.d("rtl", "padding left" + getPaddingStart() + "padding right" + getPaddingEnd());
-        Log.d("rtl", "margin left" + getPaddingStart() + "margin right" + getPaddingEnd());
         final int width = MeasureSpec.getSize(widthMeasureSpec) - (getPaddingStart() + getPaddingEnd());
         int height = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
         final int count = getChildCount();
         int line_height_space = 0;
-
 
         int xpos = getPaddingStart();
         int ypos = getPaddingTop();
@@ -141,8 +135,6 @@ public class KmCustomLayoutManager extends ViewGroup {
                         xpos = width;
                         ypos += line_height_space;
                     }
-                    Log.d("rtl", "width: "+width+"child w: "+childw);
-                    Log.d("rtl", (width - xpos)-childw+" "+ypos+" "+(width-xpos)+" "+(ypos+childh));
                     child.layout(xpos-childw, ypos, xpos, ypos + childh);
                     xpos -= childw - lp.horizontal_spacing;
                 }

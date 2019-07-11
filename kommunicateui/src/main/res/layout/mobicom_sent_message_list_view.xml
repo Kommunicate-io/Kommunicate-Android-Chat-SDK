@@ -102,7 +102,7 @@
                 android:id="@+id/createdAtTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|end|bottom"
+                android:layout_gravity="right|end|bottom"
                 android:layout_marginBottom="3dp"
                 android:fontFamily="sans-serif"
                 android:letterSpacing="0.01"

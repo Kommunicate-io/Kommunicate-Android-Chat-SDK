@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/km_custom_toast_background"
     android:orientation="vertical"
-    android:paddingLeft="12dp"
+    android:paddingStart="12dp"
     android:paddingTop="6dp"
-    android:paddingRight="12dp"
+    android:paddingEnd="12dp"
     android:paddingBottom="6dp">
 
     <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmTextViewWithImage

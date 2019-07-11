@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.views;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
@@ -9,6 +10,7 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -198,38 +200,93 @@ public class KmRecordView extends FrameLayout {
     protected void onActionMove(KmRecordButton recordBtn, MotionEvent motionEvent) {
         long time = System.currentTimeMillis() - startTime;
 
-        if (!isSwiped && time >= 150) {
-            if (slideToCancelLayout.getX() != 0 && slideToCancelLayout.getX() <= counterTime.getRight() + cancelBounds) {
-                if (isLessThanOneSecond(time)) {
-                    hideViews(true);
-                    animationHelper.clearAlphaAnimation(false);
-                    animationHelper.onAnimationEnd();
+
+
+        if(context.getResources().getConfiguration().getLayoutDirection()==View.LAYOUT_DIRECTION_RTL) {
+
+            if (!isSwiped && time >= 150) {
+                //  to see if the animation has been sucessfully cancelled
+                Log.d("Animation", "slide: "+slideToCancelLayout.getX()+" and time: "+counterTime.getX());
+                if (slideToCancelLayout.getX() != 0 && (slideToCancelLayout.getX()+slideToCancelLayout.getWidth()) >= counterTime.getX() - cancelBounds) {
+                    //if done too quick (cancel it)
+                    Log.d("Animation", "cancelled at: slide: "+slideToCancelLayout.getRight()+" and time: "+counterTime.getX());
+                    if (isLessThanOneSecond(time)) {
+                        hideViews(true);
+                        animationHelper.clearAlphaAnimation(false);
+                        animationHelper.onAnimationEnd();
+                    } else {
+                        //animate the basket
+                        hideViews(false);
+                        animationHelper.animateBasket(basketInitialY);
+                    }
+
+
+                    animationHelper.moveRecordButtonAndSlideToCancelBack(recordBtn, slideToCancelLayout, initialX, difX);
+
+                    counterTime.stop();
+                    isSwiped = true;
+
+                    animationHelper.setStartRecorded(false);
+                    if (recordListener != null)
+                        recordListener.onRecordCancel();
                 } else {
-                    hideViews(false);
-                    animationHelper.animateBasket(basketInitialY);
+                    Log.d("Animation", "Initial x: "+initialX);
+                    if (motionEvent.getRawX() > initialX) {
+                        Log.d("Animation",""+motionEvent.getRawX());
+                        recordBtn.animate()
+                                .x(motionEvent.getRawX())
+                                .setDuration(0)
+                                .start();
+                        if (difX == 0)
+                            difX = (initialX - slideToCancelLayout.getX());
+                        Log.d("Animation", "diff x: "+difX);
+                        slideToCancelLayout.animate()
+                                .x(motionEvent.getRawX() - difX)
+                                .setDuration(0)
+                                .start();
+                    }
                 }
+            }
 
-                animationHelper.moveRecordButtonAndSlideToCancelBack(recordBtn, slideToCancelLayout, initialX, difX);
+        } else {
 
-                counterTime.stop();
-                isSwiped = true;
+            if (!isSwiped && time >= 150) {
+                //  getX , getRight, +
+                if (slideToCancelLayout.getX() != 0 && slideToCancelLayout.getX() <= counterTime.getRight() + cancelBounds) {
+                    if (isLessThanOneSecond(time)) {
+                        hideViews(true);
+                        animationHelper.clearAlphaAnimation(false);
+                        animationHelper.onAnimationEnd();
+                    } else {
+                        hideViews(false);
+                        animationHelper.animateBasket(basketInitialY);
+                    }
 
-                animationHelper.setStartRecorded(false);
-                if (recordListener != null)
-                    recordListener.onRecordCancel();
-            } else {
-                if (motionEvent.getRawX() < initialX) {
-                    recordBtn.animate()
-                            .x(motionEvent.getRawX())
-                            .setDuration(0)
-                            .start();
-                    if (difX == 0)
-                        difX = (initialX - slideToCancelLayout.getX());
+                    animationHelper.moveRecordButtonAndSlideToCancelBack(recordBtn, slideToCancelLayout, initialX, difX);
 
-                    slideToCancelLayout.animate()
-                            .x(motionEvent.getRawX() - difX)
-                            .setDuration(0)
-                            .start();
+                    counterTime.stop();
+                    isSwiped = true;
+
+                    animationHelper.setStartRecorded(false);
+                    if (recordListener != null)
+                        recordListener.onRecordCancel();
+                } else {
+                    // <
+                    if (motionEvent.getRawX() < initialX) {
+                        Log.d("Animation", "" + motionEvent.getRawX());
+                        recordBtn.animate()
+                                .x(motionEvent.getRawX())
+                                .setDuration(0)
+                                .start();
+                        if (difX == 0)
+                            //no -
+                            difX = (initialX - slideToCancelLayout.getX());
+
+                        slideToCancelLayout.animate()
+                                .x(motionEvent.getRawX() - difX)
+                                .setDuration(0)
+                                .start();
+                    }
                 }
             }
         }

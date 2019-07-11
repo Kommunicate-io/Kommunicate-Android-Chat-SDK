@@ -4,8 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
     android:visibility="gone">
 
     <LinearLayout
@@ -25,11 +25,11 @@
                 android:id="@+id/replyNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
                 android:maxEms="14"
                 android:textDirection="locale"
                 android:textAlignment="gravity"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -55,8 +55,8 @@
                     android:maxEms="14"
                     android:textAlignment="gravity"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     android:maxLines="3" />
             </LinearLayout>
 

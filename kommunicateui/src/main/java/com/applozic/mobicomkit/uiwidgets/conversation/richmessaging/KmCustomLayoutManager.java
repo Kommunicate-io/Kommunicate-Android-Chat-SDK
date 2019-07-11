@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,18 +12,21 @@ public class KmCustomLayoutManager extends ViewGroup {
 
     public KmCustomLayoutManager(Context context) {
         super(context);
+        Log.d("rtl", "const called");
     }
 
     public KmCustomLayoutManager(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs);Log.d("rtl", "const called");
     }
 
     public KmCustomLayoutManager(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        Log.d("rtl", "const called");
     }
 
     public KmCustomLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        Log.d("rtl", "const called");
     }
 
     public static class LayoutParams extends ViewGroup.LayoutParams {
@@ -39,12 +43,15 @@ public class KmCustomLayoutManager extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        final int width = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() - getPaddingRight();
+        Log.d("rtl", "padding left" + getPaddingStart() + "padding right" + getPaddingEnd());
+        Log.d("rtl", "margin left" + getPaddingStart() + "margin right" + getPaddingEnd());
+        final int width = MeasureSpec.getSize(widthMeasureSpec) - (getPaddingStart() + getPaddingEnd());
         int height = MeasureSpec.getSize(heightMeasureSpec) - getPaddingTop() - getPaddingBottom();
         final int count = getChildCount();
         int line_height_space = 0;
 
-        int xpos = getPaddingLeft();
+
+        int xpos = getPaddingStart();
         int ypos = getPaddingTop();
 
         int childHeightMeasureSpec;
@@ -54,23 +61,42 @@ public class KmCustomLayoutManager extends ViewGroup {
             childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         }
 
-
-        for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
-            if (child.getVisibility() != GONE) {
-                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), childHeightMeasureSpec);
-                final int childw = child.getMeasuredWidth();
-                line_height_space = Math.max(line_height_space, child.getMeasuredHeight() + lp.vertical_spacing);
-
-                if (xpos + childw > width) {
-                    xpos = getPaddingLeft();
-                    ypos += line_height_space;
+        if(getContext().getResources().getConfiguration().getLayoutDirection()==LAYOUT_DIRECTION_RTL) {
+            xpos = width - getPaddingStart();
+            for (int i = 0; i < count; i++) {
+                final View child = getChildAt(i);
+                if (child.getVisibility() != GONE) {
+                    final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                    child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), childHeightMeasureSpec);
+                    final int childw = child.getMeasuredWidth();
+                    line_height_space = Math.max(line_height_space, child.getMeasuredHeight() + lp.vertical_spacing);
+                    if (childw > xpos) {
+                        xpos = getPaddingRight();
+                        ypos += line_height_space;
+                    }
+                    xpos = xpos - (childw + lp.horizontal_spacing);
                 }
-
-                xpos += childw + lp.horizontal_spacing;
             }
         }
+        else {
+            for (int i = 0; i < count; i++) {
+
+                final View child = getChildAt(i);
+
+                if (child.getVisibility() != GONE) {
+                    final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                    child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST), childHeightMeasureSpec);
+                    final int childw = child.getMeasuredWidth();
+                    line_height_space = Math.max(line_height_space, child.getMeasuredHeight() + lp.vertical_spacing);
+                    if (xpos + childw > width) {
+                        xpos = getPaddingStart();
+                        ypos += line_height_space;
+                    }
+                    xpos = xpos + (childw + lp.horizontal_spacing);
+                }
+            }
+        }
+
         this.line_height_space = line_height_space;
 
         if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED) {
@@ -100,17 +126,38 @@ public class KmCustomLayoutManager extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int count = getChildCount();
         final int width = r - l;
-        int xpos = getPaddingLeft();
+        int xpos = getPaddingStart();
         int ypos = getPaddingTop();
-
+        if(getContext().getResources().getConfiguration().getLayoutDirection()==LAYOUT_DIRECTION_RTL) {
+            xpos = width - getPaddingStart();
+            for (int i = 0; i < count; i++) {
+                final View child = getChildAt(i);
+                if (child.getVisibility() != GONE) {
+                    final int childw = child.getMeasuredWidth();
+                    final int childh = child.getMeasuredHeight();
+                    final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                    if (childw > xpos) {
+                        //start
+                        xpos = width;
+                        ypos += line_height_space;
+                    }
+                    Log.d("rtl", "width: "+width+"child w: "+childw);
+                    Log.d("rtl", (width - xpos)-childw+" "+ypos+" "+(width-xpos)+" "+(ypos+childh));
+                    child.layout(xpos-childw, ypos, xpos, ypos + childh);
+                    xpos -= childw - lp.horizontal_spacing;
+                }
+            }
+        }
+        else {
         for (int i = 0; i < count; i++) {
+
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
                 final int childw = child.getMeasuredWidth();
                 final int childh = child.getMeasuredHeight();
                 final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 if (xpos + childw > width) {
-                    xpos = getPaddingLeft();
+                    xpos = getPaddingStart();
                     ypos += line_height_space;
                 }
                 child.layout(xpos, ypos, xpos + childw, ypos + childh);
@@ -118,4 +165,5 @@ public class KmCustomLayoutManager extends ViewGroup {
             }
         }
     }
+}
 }

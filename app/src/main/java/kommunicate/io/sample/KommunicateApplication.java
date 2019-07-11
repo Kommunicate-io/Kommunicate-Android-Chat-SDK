@@ -37,7 +37,7 @@ public class KommunicateApplication extends MultiDexApplication implements KmAct
         switch (action) {
             case Kommunicate.START_NEW_CHAT:
                 try {
-                    KmHelper.setStartNewChat(context, null, null, false);
+                    KmHelper.setStartNewChat(context, null, null, true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -61,6 +61,8 @@ public class AlRichMessage {
         this.alCustomizationSettings = alCustomizationSettings;
     }
 
+
+
     public void createRichMessage() {
         ALRichMessageModel model = (ALRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), ALRichMessageModel.class);
 
@@ -69,6 +71,8 @@ public class AlRichMessage {
         LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
         RecyclerView recyclerView = containerView.findViewById(R.id.alRichMessageContainer);
         KmCustomLayoutManager quickRepliesRecycler = containerView.findViewById(R.id.alQuickReplyRecycler);
+
+
 
         if (model.getTemplateId() == 7) {
             listItemlayout.setVisibility(View.VISIBLE);

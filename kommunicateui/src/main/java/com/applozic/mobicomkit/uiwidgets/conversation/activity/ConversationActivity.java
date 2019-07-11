@@ -491,15 +491,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
     }
 
-    private void showActionBar() {
-        mActionBar.setDisplayShowTitleEnabled(true);
+    public void showActionBar(boolean show) {
+        mActionBar.setDisplayShowTitleEnabled(show);
     }
 
     @SuppressLint("NewApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        showActionBar();
+        showActionBar(true);
         //return false;
         getMenuInflater().inflate(R.menu.mobicom_basic_menu_for_normal_message, menu);
         MenuItem searchItem = menu.findItem(R.id.menu_search);

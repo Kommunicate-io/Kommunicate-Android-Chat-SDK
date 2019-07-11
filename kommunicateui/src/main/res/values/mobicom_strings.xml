@@ -8,7 +8,7 @@
     <string name="select_at_least">At least 1 contact must be selected</string>
     <string name="group_name_hint">Name of the group</string>
     <string name="empty_conversations">No conversations!</string>
-    <string name="enter_message_hint">Write a message…</string>
+    <string name="enter_message_hint">Write a message...</string>
     <string name="send_text">SEND</string>
     <string name="cancel_text">CANCEL</string>
     <string name="ok_text">OK</string>

@@ -85,8 +85,8 @@
                     android:id="@+id/applozic_profile_displayname_verticalline_rl"
                     android:layout_width="2dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
                     android:visibility="visible"
                     android:background="@color/applozic_profile_devider_color"/>
                 <View
@@ -225,13 +225,15 @@
                 android:id="@+id/applozic_profile_contact_section_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp">
+                android:paddingLeft="10dp"
+                android:paddingStart="10dp">
 
 
                 <RelativeLayout
                     android:id="@+id/applozic_profile_contact_verticalline_rl"
                     android:layout_width="2dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:layout_marginLeft="4dp"
                     android:background="@color/applozic_profile_devider_color"
                     android:visibility="visible" />
@@ -249,6 +251,7 @@
                     android:id="@+id/contact_edit_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:padding="10dp"
@@ -258,7 +261,9 @@
                     android:id="@+id/applozic_profile_contact_section_heading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
                     android:layout_marginLeft="20dp"
+
                     android:layout_marginTop="10dp"
                     android:text="@string/profile_contact_number"
                     android:textColor="@color/message_details_text_color"
@@ -270,6 +275,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/applozic_profile_contact_section_heading"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginStart="15dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="15dp"
                     android:text="@string/profile_contact"
@@ -358,6 +364,7 @@
                 android:id="@+id/applozic_datausage_section_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingStart="10dp"
                 android:paddingLeft="10dp"
                 android:visibility="gone">
 

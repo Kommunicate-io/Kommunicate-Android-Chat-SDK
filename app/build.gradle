@@ -10,7 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "APP_ID", '"<Your-APP_ID>"'
+        buildConfigField "String", "APP_ID", '<PASTE YOUR APP ID>'
     }
     buildTypes {
         release {

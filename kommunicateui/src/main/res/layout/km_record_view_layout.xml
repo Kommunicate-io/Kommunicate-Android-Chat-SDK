@@ -69,7 +69,9 @@
             android:id="@+id/arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/slide_arrow_left" />
+            android:rotationY="@integer/locale_mirror_flip"
+            android:src="@drawable/slide_arrow_left"
+            />
 
         <TextView
             android:id="@+id/slide_to_cancel"

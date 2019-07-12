@@ -39,6 +39,11 @@ public class KmChatBuilder extends JsonMarker {
         return context;
     }
 
+    public KmChatBuilder setContext(Context context) {
+        this.context = context;
+        return this;
+    }
+
     public boolean isSingleChat() {
         return isSingleChat;
     }

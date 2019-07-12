@@ -3,6 +3,7 @@ package io.kommunicate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.ResultReceiver;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.Applozic;
@@ -20,6 +21,7 @@ import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.List;
 
+import io.kommunicate.activities.LeadCollectionActivity;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmCallback;
@@ -102,7 +104,7 @@ public class KmConversationHelper {
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
             try {
                 Kommunicate.startConversation(launchChat,
-                        getStartChatHandler(launchChat.isSkipChatList(), true, callback));
+                        getStartChatHandler(launchChat.isSkipChatList(), true, null, callback));
             } catch (KmException e) {
                 if (callback != null) {
                     callback.onFailure(e);
@@ -122,8 +124,8 @@ public class KmConversationHelper {
                 try {
                     Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {
                         @Override
-                        public void onReceive(KMUser user) {
-                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, callback), callback));
+                        public void onReceive(KMUser user, ResultReceiver resultReceiver) {
+                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, resultReceiver, callback), callback));
                         }
                     });
                 } catch (KmException e) {
@@ -142,7 +144,7 @@ public class KmConversationHelper {
                     kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, callback), callback));
+                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, null, callback), callback));
             }
         }
     }
@@ -165,7 +167,7 @@ public class KmConversationHelper {
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
             try {
                 Kommunicate.startConversation(launchChat,
-                        getStartChatHandler(launchChat.isSkipChatList(), false, callback));
+                        getStartChatHandler(launchChat.isSkipChatList(), false, null, callback));
             } catch (KmException e) {
                 if (callback != null) {
                     callback.onFailure(e);
@@ -185,8 +187,8 @@ public class KmConversationHelper {
                 try {
                     Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {
                         @Override
-                        public void onReceive(KMUser user) {
-                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, callback), callback));
+                        public void onReceive(KMUser user, ResultReceiver resultReceiver) {
+                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, resultReceiver, callback), callback));
                         }
                     });
                 } catch (KmException e) {
@@ -205,7 +207,7 @@ public class KmConversationHelper {
                     kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, callback), callback));
+                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, null, callback), callback));
             }
         }
     }
@@ -228,11 +230,14 @@ public class KmConversationHelper {
         return user;
     }
 
-    private static KMStartChatHandler getStartChatHandler(final boolean isSkipChatList, final boolean launchChat, final KmCallback callback) {
+    private static KMStartChatHandler getStartChatHandler(final boolean isSkipChatList, final boolean launchChat, final ResultReceiver resultReceiver, final KmCallback callback) {
         return new KMStartChatHandler() {
             @Override
             public void onSuccess(Channel channel, Context context) {
                 try {
+                    if (resultReceiver != null) {
+                        resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                    }
                     if (callback != null) {
                         if (launchChat) {
                             openConversation(context, isSkipChatList, channel.getKey(), callback);
@@ -241,6 +246,9 @@ public class KmConversationHelper {
                         }
                     }
                 } catch (KmException e) {
+                    if (resultReceiver != null) {
+                        resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                    }
                     if (callback != null) {
                         e.getMessage();
                     }
@@ -249,6 +257,9 @@ public class KmConversationHelper {
 
             @Override
             public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+                if (resultReceiver != null) {
+                    resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                }
                 if (callback != null) {
                     callback.onFailure(channelFeedApiResponse);
                 }

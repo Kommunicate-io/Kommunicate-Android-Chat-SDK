@@ -77,6 +77,10 @@ public class Kommunicate {
         new KmUserLoginTask(kmUser, false, handler, context).execute();
     }
 
+    public static void login(Context context, KMUser kmUser, KMLoginHandler handler, ResultReceiver prechatReceiver) {
+        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
+    }
+
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {
         login(context, getVisitor(), handler);
     }
@@ -146,7 +150,7 @@ public class Kommunicate {
                 if (LeadCollectionActivity.PRECHAT_RESULT_CODE == resultCode) {
                     KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(LeadCollectionActivity.KM_USER_DATA), KMUser.class);
                     if (callback != null) {
-                        callback.onReceive(user);
+                        callback.onReceive(user, (ResultReceiver) resultData.getParcelable(LeadCollectionActivity.FINISH_ACTIVITY_RECEIVER));
                     }
                 }
             }
@@ -216,8 +220,8 @@ public class Kommunicate {
                 try {
                     launchPrechatWithResult(context, new KmPrechatCallback() {
                         @Override
-                        public void onReceive(KMUser user) {
-                            login(context, user, loginHandler);
+                        public void onReceive(KMUser user, ResultReceiver finishActivityReceiver) {
+                            login(context, user, loginHandler, finishActivityReceiver);
                         }
                     });
                 } catch (KmException e) {
@@ -258,6 +262,7 @@ public class Kommunicate {
                         try {
                             final String clientChannelKey = !TextUtils.isEmpty(chatBuilder.getClientConversationId()) ? chatBuilder.getClientConversationId() : (chatBuilder.isSingleChat() ? getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), agents, chatBuilder.getBotIds()) : null);
                             if (!TextUtils.isEmpty(clientChannelKey)) {
+                                chatBuilder.setClientConversationId(clientChannelKey);
                                 startOrGetConversation(chatBuilder, handler);
                             } else {
                                 createConversation(chatBuilder, handler);

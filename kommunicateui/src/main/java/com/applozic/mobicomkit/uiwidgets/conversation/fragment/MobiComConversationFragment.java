@@ -452,8 +452,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
                 sendButton.setScaleX(-1);
-                mainEditTextLinearLayout.setBackgroundResource(R.drawable.applozic_chat_left_icon);
-                slideImageView.setImageResource(R.drawable.slide_arrow_right);
             }
         }
 
@@ -2638,6 +2636,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
         }
+
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
             MobiComUserPreference.getInstance(getActivity()).setDeleteChannel(false);
             if (getActivity().getSupportFragmentManager() != null) {

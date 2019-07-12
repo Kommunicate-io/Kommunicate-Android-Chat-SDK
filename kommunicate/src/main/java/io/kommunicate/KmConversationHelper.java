@@ -15,11 +15,11 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.listners.MessageListHandler;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.List;
 
-import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmCallback;
@@ -75,7 +75,7 @@ public class KmConversationHelper {
     }
 
     private static void openParticularConversation(Context context, boolean skipChatList, Integer chatId, KmCallback callback) {
-        Intent intent = new Intent(context, KMConversationActivity.class);
+        Intent intent = new Intent(context, ConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, chatId);
         intent.putExtra(ConversationUIService.TAKE_ORDER, skipChatList);
         context.startActivity(intent);

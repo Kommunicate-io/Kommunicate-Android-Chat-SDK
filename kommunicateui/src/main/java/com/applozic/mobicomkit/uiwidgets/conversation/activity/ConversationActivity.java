@@ -312,14 +312,19 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 ConversationActivity.this.finish();
                 return true;
             }
-            Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
+            boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
             if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
-                if (upIntent != null && isTaskRoot()) {
-                    TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
+                try {
+                    String parentActivity = NavUtils.getParentActivityName(this);
+                    if (parentActivity != null) {
+                        Intent intent = new Intent(this, Class.forName(parentActivity));
+                        startActivity(intent);
+                    }
+                    ConversationActivity.this.finish();
+                    return true;
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-                ConversationActivity.this.finish();
-                return true;
             } else {
                 getSupportFragmentManager().popBackStack();
             }
@@ -853,7 +858,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else {
             super.onBackPressed();
         }
-
     }
 
     @Override

@@ -25,6 +25,7 @@ import io.kommunicate.activities.LeadCollectionActivity;
 import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -38,7 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.async.GetUserListAsyncTask;
 import io.kommunicate.async.KMFaqTask;
 import io.kommunicate.async.KMHelpDocsKeyTask;
@@ -122,7 +122,7 @@ public class Kommunicate {
     }
 
     public static void openConversation(Context context, KmCallback callback) {
-        Intent intent = new Intent(context, KMConversationActivity.class);
+        Intent intent = new Intent(context, ConversationActivity.class);
         context.startActivity(intent);
         if (callback != null) {
             callback.onSuccess("Successfully launched chat list");
@@ -131,7 +131,7 @@ public class Kommunicate {
 
     @Deprecated
     public static void openConversation(Context context, boolean prechatLeadCollection) {
-        Intent intent = new Intent(context, (prechatLeadCollection && !KMUser.isLoggedIn(context)) ? LeadCollectionActivity.class : KMConversationActivity.class);
+        Intent intent = new Intent(context, (prechatLeadCollection && !KMUser.isLoggedIn(context)) ? LeadCollectionActivity.class : ConversationActivity.class);
         context.startActivity(intent);
     }
 
@@ -235,7 +235,7 @@ public class Kommunicate {
 
     @Deprecated
     public static void openParticularConversation(Context context, Integer groupId) {
-        Intent intent = new Intent(context, KMConversationActivity.class);
+        Intent intent = new Intent(context, ConversationActivity.class);
         intent.putExtra(ConversationUIService.GROUP_ID, groupId);
         intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
         context.startActivity(intent);

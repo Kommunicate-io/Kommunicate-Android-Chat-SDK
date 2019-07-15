@@ -415,10 +415,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         mActionBar.setTitle(R.string.conversations);
 
-        if (alCustomizationSettings != null && !alCustomizationSettings.isAgentApp()) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setHomeButtonEnabled(true);
-        }
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setHomeButtonEnabled(true);
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)

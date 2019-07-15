@@ -2544,10 +2544,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
             onAnimationEnd();
         }
-        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
-            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
-        }
 
         BroadcastService.currentUserId = null;
         BroadcastService.currentConversationId = null;
@@ -2632,11 +2628,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onResume() {
         super.onResume();
-        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
-            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-        }
-
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
             MobiComUserPreference.getInstance(getActivity()).setDeleteChannel(false);
             if (getActivity().getSupportFragmentManager() != null) {

@@ -10,6 +10,7 @@ import java.util.Map;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.users.KMUser;
 
+@Deprecated
 public class KmChatBuilder extends JsonMarker {
     private Context context;
     private boolean isSingleChat = true;

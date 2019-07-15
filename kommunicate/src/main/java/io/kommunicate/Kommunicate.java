@@ -114,9 +114,9 @@ public class Kommunicate {
         openConversation(context, null, null);
     }
 
-    public static void openConversation(Context context, Integer chatId, KmCallback callback) {
+    public static void openConversation(Context context, Integer conversationId, KmCallback callback) {
         try {
-            KmConversationHelper.openConversation(context, true, chatId, callback);
+            KmConversationHelper.openConversation(context, true, conversationId, callback);
         } catch (KmException e) {
             e.printStackTrace();
             if (callback != null) {
@@ -245,6 +245,7 @@ public class Kommunicate {
         context.startActivity(intent);
     }
 
+    @Deprecated
     public static void startConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
         if (chatBuilder == null) {
             throw new KmException("KmChatBuilder cannot be null");
@@ -426,7 +427,7 @@ public class Kommunicate {
     }
 
     @Deprecated
-    public static void startOrGetConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
+    private static void startOrGetConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
 
         AlGroupInformationAsyncTask.GroupMemberListener groupMemberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
             @Override

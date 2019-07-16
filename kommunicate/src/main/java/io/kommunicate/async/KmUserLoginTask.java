@@ -1,6 +1,7 @@
 package io.kommunicate.async;
 
 import android.content.Context;
+import android.os.ResultReceiver;
 
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
@@ -13,6 +14,7 @@ import com.applozic.mobicomkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
 
+import io.kommunicate.activities.LeadCollectionActivity;
 import io.kommunicate.services.KmUserClientService;
 import io.kommunicate.users.KMUser;
 
@@ -28,6 +30,7 @@ public class KmUserLoginTask extends UserLoginTask {
     private RegistrationResponse response;
     private KmUserClientService userClientService;
     private boolean isAgent;
+    private ResultReceiver prechatReceiver;
 
 
     public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context) {
@@ -37,6 +40,16 @@ public class KmUserLoginTask extends UserLoginTask {
         handler = listener;
         userClientService = new KmUserClientService(this.context.get());
         this.isAgent = isAgent;
+    }
+
+    public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context, ResultReceiver prechatReceiver) {
+        super(user, listener, context);
+        this.user = user;
+        this.context = new WeakReference<Context>(context);
+        handler = listener;
+        userClientService = new KmUserClientService(this.context.get());
+        this.isAgent = isAgent;
+        this.prechatReceiver = prechatReceiver;
     }
 
     @Override
@@ -60,6 +73,9 @@ public class KmUserLoginTask extends UserLoginTask {
 
     @Override
     protected void onPostExecute(Boolean result) {
+        if (prechatReceiver != null) {
+            prechatReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+        }
         if (response != null) {
             if (handler != null) {
                 if (response.isRegistrationSuccess()) {

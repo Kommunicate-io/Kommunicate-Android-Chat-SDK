@@ -134,6 +134,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
@@ -267,7 +268,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     ImageView imageViewForAttachmentType;
     RelativeLayout imageViewRLayout;
     Map<String, String> messageMetaData = new HashMap<>();
-    FrameLayout audioRecordFrameLayout;
     ApplozicAudioRecordManager applozicAudioRecordManager;
     ImageView slideImageView;
     private EmojiconHandler emojiIconHandler;
@@ -718,6 +718,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (ApplozicService.getContext(getContext()) != null && ApplozicService.getContext(getContext()) instanceof KmToolbarClickListener) {
+                    ((KmToolbarClickListener) ApplozicService.getContext(getContext())).onClick(getActivity(), channel, contact);
+                }
 
                 if (channel != null) {
                     if (channel.isDeleted()) {
@@ -1517,8 +1521,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     intent.putExtra(UserIntentService.USER_ID, userId);
                     UserIntentService.enqueueWork(getActivity(), intent);
                 }
-            } else {
-                updateChannelSubTitle();
+            } else if (!Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                updateChannelSubTitle(channel);
             }
         }
 
@@ -1600,7 +1604,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-    public void updateChannelSubTitle() {
+    public void updateChannelSubTitle(Channel channel) {
         channelUserMapperList = ChannelService.getInstance(getActivity()).getListOfUsersFromChannelUserMapper(channel.getKey());
         if (channelUserMapperList != null && channelUserMapperList.size() > 0) {
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
@@ -2486,7 +2490,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                         processSupportGroupDetails(channel);
                                     }
                                 } else {
-                                    updateChannelSubTitle();
+                                    updateChannelSubTitle(channel);
                                 }
                             }
                         } else {
@@ -2540,10 +2544,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
             onAnimationEnd();
         }
-        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
-            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
-        }
 
         BroadcastService.currentUserId = null;
         BroadcastService.currentConversationId = null;
@@ -2570,6 +2570,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void updateTitle() {
         StringBuffer stringBufferTitle = new StringBuffer();
+        if (customToolbarLayout != null) {
+            customToolbarLayout.setVisibility(View.GONE);
+        }
         if (contact != null) {
             stringBufferTitle.append(contact.getDisplayName());
         } else if (channel != null) {
@@ -2578,6 +2581,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (!TextUtils.isEmpty(userId)) {
                     Contact withUserContact = appContactService.getContactById(userId);
                     stringBufferTitle.append(withUserContact.getDisplayName());
+                }
+            } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                processSupportGroupDetails(channel);
+                if (customToolbarLayout != null) {
+                    customToolbarLayout.setVisibility(VISIBLE);
                 }
             } else {
                 stringBufferTitle.append(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(getActivity()).getUserId()));
@@ -2628,10 +2636,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onResume() {
         super.onResume();
-        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
-            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-        }
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
             MobiComUserPreference.getInstance(getActivity()).setDeleteChannel(false);
             if (getActivity().getSupportFragmentManager() != null) {
@@ -2671,6 +2675,19 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             if (downloadConversation != null) {
                 downloadConversation.cancel(true);
+            }
+
+            if (channel != null) {
+                if (channel.getType() != null && (!Channel.GroupType.OPEN.getValue().equals(channel.getType()) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
+                    boolean present = ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey());
+                    hideSendMessageLayout(channel.isDeleted() || !present);
+                } else {
+                    hideSendMessageLayout(channel.isDeleted());
+                }
+                if (ChannelService.isUpdateTitle && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                    updateChannelSubTitle(channel);
+                    ChannelService.isUpdateTitle = false;
+                }
             }
 
             Thread thread = new Thread(new Runnable() {
@@ -2714,30 +2731,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
-        if (channel != null) {
-            if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                processSupportGroupDetails(channel);
-                if (customToolbarLayout != null) {
-                    customToolbarLayout.setVisibility(VISIBLE);
-                }
-            } else {
-                updateChannelTitle();
-                if (customToolbarLayout != null) {
-                    customToolbarLayout.setVisibility(View.GONE);
-                }
-            }
-
-            if (channel.getType() != null && (!Channel.GroupType.OPEN.getValue().equals(channel.getType()) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
-                boolean present = ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey());
-                hideSendMessageLayout(channel.isDeleted() || !present);
-            } else {
-                hideSendMessageLayout(channel.isDeleted());
-            }
-            if (ChannelService.isUpdateTitle) {
-                updateChannelSubTitle();
-                ChannelService.isUpdateTitle = false;
-            }
-        }
 
         if (isEmailConversation(channel)) {
             emailReplyReminderLayout.setVisibility(VISIBLE);
@@ -2980,16 +2973,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
                 processSupportGroupDetails(channel);
             } else {
-                updateChannelTitle();
-                updateChannelSubTitle();
+                updateChannelTitle(channelInfo);
+                updateChannelSubTitle(channelInfo);
             }
         }
     }
 
+    public void updateChannelTitle(Channel newChannel) {
+        if (customToolbarLayout != null) {
+            customToolbarLayout.setVisibility(Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) ? VISIBLE : View.GONE);
+        }
 
-    public void updateChannelTitle() {
-        if (!Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-            Channel newChannel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
+        if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+            processSupportGroupDetails(channel);
+        } else if (!Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
             if (newChannel != null && !TextUtils.isEmpty(channel.getName()) && !channel.getName().equals(newChannel.getName())) {
                 title = ChannelUtils.getChannelTitleName(newChannel, MobiComUserPreference.getInstance(getActivity()).getUserId());
                 channel = newChannel;
@@ -3003,8 +3000,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             if (channel != null) {
                 Channel newChannel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(newChannel.getName());
+                updateChannelSubTitle(newChannel);
             }
-            updateChannelSubTitle();
         } catch (Exception e) {
             e.printStackTrace();
         }

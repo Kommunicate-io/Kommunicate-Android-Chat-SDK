@@ -5,8 +5,9 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+
 import io.kommunicate.users.KMUser;
-import io.kommunicate.activities.KMConversationActivity;
 import io.kommunicate.app.R;
 
 public class SplashScreenActivity extends AppCompatActivity {
@@ -22,7 +23,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(SplashScreenActivity.this, KMUser.isLoggedIn(SplashScreenActivity.this) ? KMConversationActivity.class : MainActivity.class);
+                Intent intent = new Intent(SplashScreenActivity.this, KMUser.isLoggedIn(SplashScreenActivity.this) ? ConversationActivity.class : MainActivity.class);
                 SplashScreenActivity.this.startActivity(intent);
                 SplashScreenActivity.this.finish();
             }

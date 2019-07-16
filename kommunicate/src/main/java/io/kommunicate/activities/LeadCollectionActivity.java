@@ -1,5 +1,6 @@
 package io.kommunicate.activities;
 
+import android.app.ProgressDialog;
 import android.os.ResultReceiver;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.regex.Pattern;
 
+import io.kommunicate.R;
 import io.kommunicate.users.KMUser;
 
 public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
@@ -20,6 +22,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     public static final String PRECHAT_RESULT_RECEIVER = "kmPrechatReceiver";
     public static final int PRECHAT_RESULT_CODE = 100;
     public static final String KM_USER_DATA = "kmUserData";
+    public static final String FINISH_ACTIVITY_RECEIVER = "kmFinishActivityReceiver";
     private ResultReceiver prechatReceiver;
 
     @Override
@@ -80,11 +83,26 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             user.setContactNumber(phoneNumber);
         }
 
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setCancelable(false);
+        dialog.setMessage(getString(R.string.km_prechat_processing_wait_info));
+        dialog.show();
+
+        ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                if (resultCode == PRECHAT_RESULT_CODE) {
+                    dialog.dismiss();
+                    finish();
+                }
+            }
+        };
+
         Bundle bundle = new Bundle();
         bundle.putString(KM_USER_DATA, GsonUtils.getJsonFromObject(user, KMUser.class));
+        bundle.putParcelable(FINISH_ACTIVITY_RECEIVER, finishActivityReceiver);
         if (prechatReceiver != null) {
             prechatReceiver.send(PRECHAT_RESULT_CODE, bundle);
-            finish();
         }
     }
 

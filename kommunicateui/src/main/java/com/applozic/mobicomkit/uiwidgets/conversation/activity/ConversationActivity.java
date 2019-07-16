@@ -82,7 +82,6 @@ import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs.KmAutoSuggestionsAsyncTask;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
@@ -111,7 +110,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -312,14 +310,19 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 ConversationActivity.this.finish();
                 return true;
             }
-            Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
+            boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
             if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
-                if (upIntent != null && isTaskRoot()) {
-                    TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
+                try {
+                    String parentActivity = NavUtils.getParentActivityName(this);
+                    if (parentActivity != null) {
+                        Intent intent = new Intent(this, Class.forName(parentActivity));
+                        startActivity(intent);
+                    }
+                    ConversationActivity.this.finish();
+                    return true;
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-                ConversationActivity.this.finish();
-                return true;
             } else {
                 getSupportFragmentManager().popBackStack();
             }
@@ -412,10 +415,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         mActionBar.setTitle(R.string.conversations);
 
-        if (alCustomizationSettings != null && !alCustomizationSettings.isAgentApp()) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setHomeButtonEnabled(true);
-        }
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setHomeButtonEnabled(true);
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
@@ -853,7 +854,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else {
             super.onBackPressed();
         }
-
     }
 
     @Override

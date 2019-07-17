@@ -65,6 +65,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -1385,6 +1386,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             downloadConversation.cancel(true);
         }
 
+        setContact(contact);
+        setChannel(channel);
+        Applozic.subscribeToTyping(getContext(), channel, contact);
+
         BroadcastService.currentUserId = contact != null ? contact.getContactIds() : String.valueOf(channel.getKey());
         typingStarted = false;
         onSelected = false;
@@ -1424,8 +1429,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
 
         extendedSendingOptionLayout.setVisibility(VISIBLE);
-        setContact(contact);
-        setChannel(channel);
 
         unregisterForContextMenu(recyclerView);
         if (ApplozicClient.getInstance(getActivity()).isNotificationStacking()) {
@@ -1564,7 +1567,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             public void run() {
                 if (userNotAbleToChatLayout != null && individualMessageSendLayout != null) {
                     userNotAbleToChatLayout.setVisibility(withUserContact.isDeleted() ? VISIBLE : View.GONE);
-                    individualMessageSendLayout.setVisibility(withUserContact.isDeleted() ? View.GONE : VISIBLE);
+                    individualMessageSendLayout.setVisibility(withUserContact.
+                            isDeleted() ? View.GONE : VISIBLE);
                     if (withUserContact.isDeleted()) {
                         handleSendAndRecordButtonView(withUserContact.isDeleted());
                     }
@@ -2548,17 +2552,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         BroadcastService.currentUserId = null;
         BroadcastService.currentConversationId = null;
         if (typingStarted) {
-            Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
-            intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
-            intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
-            intent.putExtra(ApplozicMqttIntentService.TYPING, false);
-            ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+            if (contact != null || (channel != null && !Channel.GroupType.OPEN.getValue().equals(channel.getType()))) {
+                Applozic.publishTypingStatus(getContext(), channel, contact, false);
+            }
             typingStarted = false;
         }
-        Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
-        intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
-        intent.putExtra(ApplozicMqttIntentService.UN_SUBSCRIBE_TO_TYPING, true);
-        ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+        Applozic.unSubscribeToTyping(getContext(), channel, contact);
         if (recyclerDetailConversationAdapter != null) {
             recyclerDetailConversationAdapter.contactImageLoader.setPauseWork(false);
         }
@@ -2663,11 +2662,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     }
                 }
             }
-
-            Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
-            intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
-            intent.putExtra(ApplozicMqttIntentService.SUBSCRIBE_TO_TYPING, true);
-            ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
 
             if (downloadConversation != null) {
                 downloadConversation.cancel(true);

@@ -377,7 +377,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         ((ConversationActivity) getActivity()).setChildFragmentLayoutBGToTransparent();
         messageList = new ArrayList<Message>();
         multimediaPopupGrid = (GridView) list.findViewById(R.id.mobicom_multimedia_options1);
-        loggedInUserRole = MobiComUserPreference.getInstance(getContext()).getUserRoleType();
+        loggedInUserRole = MobiComUserPreference.getInstance(ApplozicService.getContext(getContext())).getUserRoleType();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -723,7 +723,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (ApplozicService.getContext(getContext()) != null && ApplozicService.getContext(getContext()) instanceof KmToolbarClickListener) {
                     ((KmToolbarClickListener) ApplozicService.getContext(getContext())).onClick(getActivity(), channel, contact);
                     return;
@@ -734,7 +733,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         return;
                     }
                     if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())
-                            && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
+                            && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(ApplozicService.getContext(getContext())).getUserRoleType())) {
                         return;
                     }
                     if (alCustomizationSettings.isGroupInfoScreenVisible() && !Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {

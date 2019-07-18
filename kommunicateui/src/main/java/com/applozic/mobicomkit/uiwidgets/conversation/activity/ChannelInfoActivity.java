@@ -105,8 +105,8 @@ public class ChannelInfoActivity extends AppCompatActivity {
     ConnectivityReceiver connectivityReceiver;
     private ActionBar mActionBar;
     private ImageLoader contactImageLoader, channelImageLoader;
-    private List<ChannelUserMapper> channelUserMapperList;
-    private Channel channel;
+    public List<ChannelUserMapper> channelUserMapperList;
+    public Channel channel;
     private ImageView channelImage;
     private TextView createdBy, groupParticipantsTexView;
     private Button exitChannelButton, deleteChannelButton;

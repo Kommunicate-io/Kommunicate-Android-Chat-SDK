@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.file.FileUtils;
 
 import java.util.HashMap;
@@ -69,19 +70,23 @@ public class ApplozicSetting {
     private static final String USER_PROFILE_FRAGMENT = "PROFILE_LOGOUT_BUTTON";
     private static final String MESSAGE_SEARCH_OPTION = "MESSAGE_SEARCH_OPTION";
     private static final String ACTIVITY_CALLBACK = "ACTIVITY_CALLBACK_";
+    private static final String DELETE_CONVERSATION_OPTION = "DELETE_CONVERSATION_OPTION";
     private static final String GALLERY_FILTER_OPTIONS = "GALLERY_FILTER_OPTIONS_";
+    private static final String HIDE_GROUP_SUBTITLE = "HIDE_GROUP_SUBTITLE";
     public static ApplozicSetting applozicSetting;
     public SharedPreferences sharedPreferences;
     private Context context;
 
+    private static final String SHOW_IMAGE_ON_TOOLBAR = "SHOW_IMAGE_ON_TOOLBAR";
+
     private ApplozicSetting(Context context) {
-        this.context = context;
-        sharedPreferences = context.getSharedPreferences(MobiComKitClientService.getApplicationKey(context), context.MODE_PRIVATE);
+        this.context = ApplozicService.getContext(context);
+        sharedPreferences = ApplozicService.getContext(context).getSharedPreferences(MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context)), Context.MODE_PRIVATE);
     }
 
     public static ApplozicSetting getInstance(Context context) {
         if (applozicSetting == null) {
-            applozicSetting = new ApplozicSetting(context.getApplicationContext());
+            applozicSetting = new ApplozicSetting(ApplozicService.getContext(context));
         }
 
         return applozicSetting;
@@ -662,6 +667,28 @@ public class ApplozicSetting {
         return sharedPreferences.getBoolean(MESSAGE_SEARCH_OPTION, false);
     }
 
+    public ApplozicSetting enableShowImageOnToolbar() {
+        sharedPreferences.edit().putBoolean(SHOW_IMAGE_ON_TOOLBAR, true).commit();
+        return this;
+    }
+
+    public ApplozicSetting disableShowImageOnToolbar() {
+        sharedPreferences.edit().putBoolean(SHOW_IMAGE_ON_TOOLBAR, false).commit();
+        return this;
+    }
+
+    public boolean isShowImageOnToolbar() {
+        return sharedPreferences.getBoolean(SHOW_IMAGE_ON_TOOLBAR, false);
+    }
+
+    public boolean isDeleteConversationOption() {
+        return sharedPreferences.getBoolean(DELETE_CONVERSATION_OPTION, false);
+    }
+
+    public void setDeleteConversationOption(boolean enable) {
+        sharedPreferences.edit().putBoolean(DELETE_CONVERSATION_OPTION, enable).commit();
+    }
+
     public ApplozicSetting setGalleryFilterOptions(Map<FileUtils.GalleryFilterOptions, Boolean> options) {
         for (Map.Entry<FileUtils.GalleryFilterOptions, Boolean> entry : options.entrySet()) {
             sharedPreferences.edit().putBoolean(GALLERY_FILTER_OPTIONS + entry.getKey().name(), entry.getValue()).commit();
@@ -676,6 +703,15 @@ public class ApplozicSetting {
             filterOptions.put(option.name(), value);
         }
         return filterOptions;
+    }
+
+    public boolean isGroupSubtitleHidden() {
+        return sharedPreferences.getBoolean(HIDE_GROUP_SUBTITLE, false);
+    }
+
+    public ApplozicSetting hideGroupSubtitle(boolean hide) {
+        sharedPreferences.edit().putBoolean(HIDE_GROUP_SUBTITLE, hide).commit();
+        return this;
     }
 
     public boolean clearAll() {

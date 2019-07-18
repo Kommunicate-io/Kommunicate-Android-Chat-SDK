@@ -47,6 +47,8 @@ public class KmConversationHelper {
     public static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
     public static final String CONVERSATION_TITLE = "CONVERSATION_TITLE";
     public static final String SKIP_ROUTING = "SKIP_ROUTING";
+    public static final String KM_ORIGINAL_TITLE = "KM_ORIGINAL_TITLE";
+    public static final String KM_CONVERSATION_TITLE = "KM_CONVERSATION_TITLE";
     public static final String KM_BOT = "bot";
     public static final String CONVERSATION_STATUS = "CONVERSATION_STATUS";
     private static final String TAG = "KmConversationHelper";
@@ -591,6 +593,16 @@ public class KmConversationHelper {
             metadata.put(SKIP_ROUTING, String.valueOf(conversationBuilder.isSkipConversationRoutingRules()));
         }
 
+        if (!TextUtils.isEmpty(conversationBuilder.getConversationTitle())) {
+            channelInfo.setGroupName(conversationBuilder.getConversationTitle());
+            metadata.put(KM_CONVERSATION_TITLE, conversationBuilder.getConversationTitle());
+            metadata.put(KmConversationHelper.KM_ORIGINAL_TITLE, "true");
+        }
+
+        if (conversationBuilder.isUseOriginalTitle()) {
+            metadata.put(KmConversationHelper.KM_ORIGINAL_TITLE, String.valueOf(conversationBuilder.isUseOriginalTitle()));
+        }
+
         if (conversationBuilder.getConversationMetadata() != null) {
             metadata.putAll(conversationBuilder.getConversationMetadata());
         }
@@ -713,6 +725,7 @@ public class KmConversationHelper {
                             channelMetadata.remove(CONVERSATION_ASSIGNEE);
                             channelMetadata.remove(SKIP_ROUTING);
                             channelMetadata.remove(CONVERSATION_TITLE);
+                            channelMetadata.remove(KM_CONVERSATION_TITLE);
                             channelMetadata.remove(CONVERSATION_STATUS);
 
                             callback.onSuccess(channelMetadata);

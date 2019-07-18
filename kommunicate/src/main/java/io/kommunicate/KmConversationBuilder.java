@@ -27,6 +27,7 @@ public class KmConversationBuilder extends JsonMarker {
     private boolean skipRouting;
     private String conversationAssignee;
     private String conversationTitle;
+    private boolean useOriginalTitle = false;
     private Map<String, String> messageMetadata;
     private Map<String, String> conversationMetadata;
 
@@ -168,6 +169,15 @@ public class KmConversationBuilder extends JsonMarker {
 
     public KmConversationBuilder setConversationAssignee(String conversationAssignee) {
         this.conversationAssignee = conversationAssignee;
+        return this;
+    }
+
+    public boolean isUseOriginalTitle() {
+        return useOriginalTitle;
+    }
+
+    public KmConversationBuilder setUseOriginalTitle(boolean useOriginalTitle) {
+        this.useOriginalTitle = useOriginalTitle;
         return this;
     }
 

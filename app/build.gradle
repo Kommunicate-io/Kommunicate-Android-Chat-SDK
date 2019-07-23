@@ -10,7 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "APP_ID", '"<Your-APP_ID>"'
+        buildConfigField "String", "APP_ID", '"<Your-APP-ID>"'
     }
     buildTypes {
         release {
@@ -32,7 +32,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     api project(':kommunicate')
-    //implementation 'io.kommunicate:kommunicate:1.8.8'
+    //implementation 'io.kommunicate:kommunicate:1.9.0'
     implementation 'com.android.support:multidex:1.0.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

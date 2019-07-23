@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicomkit.contact.AppContactService;
+import com.applozic.mobicommons.people.contact.Contact;
 
 /**
  * Created by ashish on 23/01/18.
@@ -29,12 +31,20 @@ public class KMUser extends User {
 
     public static KMUser getLoggedInUser(Context context) {
         KMUser user = new KMUser();
-        user.setRoleType(MobiComUserPreference.getInstance(context).getUserRoleType());
-        user.setUserId(MobiComUserPreference.getInstance(context).getUserId());
-        user.setDisplayName(MobiComUserPreference.getInstance(context).getDisplayName());
+        String userId = MobiComUserPreference.getInstance(context).getUserId();
+        user.setUserId(userId);
         user.setPassword(MobiComUserPreference.getInstance(context).getPassword());
-        user.setEmail(MobiComUserPreference.getInstance(context).getEmailIdValue());
-        user.setContactNumber(MobiComUserPreference.getInstance(context).getContactNumber());
+
+        Contact contact = new AppContactService(context).getContactById(userId);
+        if (contact != null) {
+            user.setRoleType(contact.getRoleType());
+            user.setUserId(contact.getUserId());
+            user.setDisplayName(contact.getDisplayName());
+            user.setPassword(MobiComUserPreference.getInstance(context).getPassword());
+            user.setEmail(contact.getEmailId());
+            user.setContactNumber(contact.getContactNumber());
+            user.setImageLink(contact.getImageURL());
+        }
 
         return user;
     }

@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
-        versionName "1.8.8"
+        versionName "1.9.0"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -21,7 +21,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.applozic.communication.message:mobicomkit:5.47'
+    api 'com.applozic.communication.message:mobicomkit:5.51'
     api 'com.google.firebase:firebase-messaging:18.0.0'
     api 'com.google.android.gms:play-services-maps:16.1.0'
     api 'com.google.android.gms:play-services-location:16.0.0'
@@ -47,7 +47,7 @@ dependencies {
     artifact = 'kommunicateui'
 
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '1.8.8'
+    libraryVersion = '1.9.0'
     developerId = 'devashish'
     developerName = 'Applozic'
     developerEmail = 'devashish.mamgain@gmail.com'

@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginStart="70dp"
         android:layout_marginLeft="70dp"
         android:elevation="1dp"
         android:gravity="end|center_vertical"
@@ -27,8 +28,8 @@
             android:minHeight="40dp"
             android:minWidth="94dp"
             android:orientation="vertical"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
             android:paddingTop="6dp">
 
             <include layout="@layout/reply_message_layout" />
@@ -74,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
-                android:layout_marginRight="3dp"
+                android:layout_marginEnd="3dp"
                 android:layout_marginStart="3dp"
                 android:layout_marginTop="2dp"
                 android:autoLink="all"
@@ -156,6 +157,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/messageTextLayout"
+        android:layout_marginEnd="21dp"
         android:layout_marginRight="21dp"
         android:layout_marginTop="4dp"
         android:orientation="horizontal"
@@ -176,6 +178,7 @@
             android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="14dp"
+            android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
             android:fontFamily="sans-serif"
             android:gravity="center"

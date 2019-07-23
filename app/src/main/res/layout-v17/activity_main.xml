@@ -35,7 +35,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
-                android:textDirection="@integer/locale_mirror_flip"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/black" />
         </android.support.design.widget.TextInputLayout>

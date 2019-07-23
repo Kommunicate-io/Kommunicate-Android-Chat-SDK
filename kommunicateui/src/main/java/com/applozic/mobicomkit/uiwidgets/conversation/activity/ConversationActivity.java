@@ -82,10 +82,10 @@ import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs.KmAutoSuggestionsAsyncTask;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
+import com.applozic.mobicomkit.uiwidgets.uilistener.CustomToolbarListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -111,7 +111,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -121,7 +120,7 @@ import java.util.Set;
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener {
+public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener, CustomToolbarListener {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
@@ -231,7 +230,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             txtView.setMaxLines(5);
             snackbar.show();
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
     }
@@ -312,14 +311,19 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 ConversationActivity.this.finish();
                 return true;
             }
-            Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
+            boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
             if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
-                if (upIntent != null && isTaskRoot()) {
-                    TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
+                try {
+                    String parentActivity = NavUtils.getParentActivityName(this);
+                    if (parentActivity != null) {
+                        Intent intent = new Intent(this, Class.forName(parentActivity));
+                        startActivity(intent);
+                    }
+                    ConversationActivity.this.finish();
+                    return true;
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-                ConversationActivity.this.finish();
-                return true;
             } else {
                 getSupportFragmentManager().popBackStack();
             }
@@ -412,10 +416,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         mActionBar.setTitle(R.string.conversations);
 
-        if (alCustomizationSettings != null && !alCustomizationSettings.isAgentApp()) {
-            mActionBar.setDisplayHomeAsUpEnabled(true);
-            mActionBar.setHomeButtonEnabled(true);
-        }
+        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setHomeButtonEnabled(true);
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
@@ -491,15 +493,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
     }
 
-    private void showActionBar() {
-        mActionBar.setDisplayShowTitleEnabled(true);
+    public void showActionBar(boolean show) {
+        mActionBar.setDisplayShowTitleEnabled(show);
     }
 
     @SuppressLint("NewApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        showActionBar();
+        showActionBar(true);
         //return false;
         getMenuInflater().inflate(R.menu.mobicom_basic_menu_for_normal_message, menu);
         MenuItem searchItem = menu.findItem(R.id.menu_search);
@@ -853,7 +855,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else {
             super.onBackPressed();
         }
-
     }
 
     @Override
@@ -1302,6 +1303,30 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (message != null && conversation != null) {
             conversation.onClickOnMessageReply(message);
         }
+    }
+
+    @Override
+    public void setToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    public void setToolbarSubtitle(String subtitle) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(subtitle);
+        }
+    }
+
+    @Override
+    public void setToolbarImage(Contact contact, Channel channel) {
+
+    }
+
+    @Override
+    public void hideSubtitleAndProfilePic() {
+
     }
 
     private class SyncMessagesAsyncTask extends AsyncTask<Boolean, Void, Void> {

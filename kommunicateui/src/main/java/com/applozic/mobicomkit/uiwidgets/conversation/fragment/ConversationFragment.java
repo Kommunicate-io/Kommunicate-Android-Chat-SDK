@@ -177,11 +177,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
         return (multimediaPopupGrid.getVisibility() == View.VISIBLE || emoticonsFrameLayout.getVisibility() == View.VISIBLE);
     }
 
-    public void updateTitle() {
-        //((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(ApplozicApplication.TITLE);
-        super.updateTitle();
-    }
-
     public void hideMultimediaOptionGrid() {
         if (multimediaPopupGrid.getVisibility() == View.VISIBLE) {
             multimediaPopupGrid.setVisibility(View.GONE);

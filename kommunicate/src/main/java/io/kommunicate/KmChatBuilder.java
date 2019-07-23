@@ -10,6 +10,7 @@ import java.util.Map;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.users.KMUser;
 
+@Deprecated
 public class KmChatBuilder extends JsonMarker {
     private Context context;
     private boolean isSingleChat = true;
@@ -27,6 +28,8 @@ public class KmChatBuilder extends JsonMarker {
     private String chatName;
     private String deviceToken;
     private String clientConversationId;
+    private boolean skipRouting;
+    private String conversationAssignee;
     private Map<String, String> metadata;
 
     public KmChatBuilder(Context context) {
@@ -35,6 +38,11 @@ public class KmChatBuilder extends JsonMarker {
 
     public Context getContext() {
         return context;
+    }
+
+    public KmChatBuilder setContext(Context context) {
+        this.context = context;
+        return this;
     }
 
     public boolean isSingleChat() {
@@ -113,6 +121,7 @@ public class KmChatBuilder extends JsonMarker {
         return agentIds;
     }
 
+    @Deprecated
     public KmChatBuilder setAgentIds(List<String> agentIds) {
         this.agentIds = agentIds;
         return this;
@@ -122,6 +131,7 @@ public class KmChatBuilder extends JsonMarker {
         return botIds;
     }
 
+    @Deprecated
     public KmChatBuilder setBotIds(List<String> botIds) {
         this.botIds = botIds;
         return this;
@@ -178,6 +188,24 @@ public class KmChatBuilder extends JsonMarker {
 
     public KmChatBuilder setClientConversationId(String clientConversationId) {
         this.clientConversationId = clientConversationId;
+        return this;
+    }
+
+    public boolean isSkipRouting() {
+        return skipRouting;
+    }
+
+    public KmChatBuilder setSkipRouting(boolean skipRouting) {
+        this.skipRouting = skipRouting;
+        return this;
+    }
+
+    public String getConversationAssignee() {
+        return conversationAssignee;
+    }
+
+    public KmChatBuilder setConversationAssignee(String conversationAssignee) {
+        this.conversationAssignee = conversationAssignee;
         return this;
     }
 

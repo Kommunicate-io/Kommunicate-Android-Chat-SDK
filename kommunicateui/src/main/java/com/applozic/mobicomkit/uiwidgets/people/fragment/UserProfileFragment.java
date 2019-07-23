@@ -131,10 +131,6 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
-            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
-        }
         if (contact != null) {
             BroadcastService.currentUserProfileUserId = contact.getUserId();
             refreshContactData();
@@ -144,10 +140,6 @@ public class UserProfileFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
-            ((ConversationActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            ((ConversationActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(false);
-        }
         BroadcastService.currentUserProfileUserId = null;
     }
 

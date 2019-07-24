@@ -3,6 +3,22 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 1.9.0
+**Features**
+1. KMConversationBuilder to create conversation seamlessly. All the methods or classes with chat text have been deprecated along with KmChatBuilder.
+2. Option to set conversation metadata, conversation assignee and skip conversation routing rules when creating a new conversation.
+3. Complete RTL support.
+4. Created a new custom dialog builder for kommunicate.
+5. New method to get details of login users.
+6. Method to get conversation metadata by conversation id.
+
+**Fixes**
+
+1. Typing indicator is not unsubscribing when switching the conversation from a notification.
+2. Conversation title is not changing when switching the conversation from a notification.
+3. Fixed minor UI issues with one-to-one chats and group chats.
+4. Fixed issue where prechat screen was dismissing for brief time before launching conversation
+
 ## Kommunicate Android SDK 1.8.8
 * Option to pass clientConversationId when creating/launching a conversation.
 * Updated FCM and GMS libraries to latest versions:

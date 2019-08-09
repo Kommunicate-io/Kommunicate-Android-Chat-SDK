@@ -315,6 +315,7 @@
                 android:visibility="gone" />
 
             <View
+                android:id="@+id/idMainDividerLine"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/applozic_theme_color_primary" />
@@ -505,6 +506,8 @@
                         android:visibility="visible" />
                 </FrameLayout>
 
+                <include layout="@layout/feedback_display_layout"/>
+
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/user_not_able_to_chat_layout"
                     android:layout_width="match_parent"
@@ -578,4 +581,10 @@
             android:paddingBottom="10dp"
             android:visibility="gone" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/idFrameLayoutFeedbackContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </RelativeLayout>

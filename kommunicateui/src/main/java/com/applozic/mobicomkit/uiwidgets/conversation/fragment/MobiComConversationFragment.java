@@ -337,6 +337,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     TextView textViewRestartConversation;
     ConstraintLayout constraintLayoutFeedbackTopLayout;
     View mainDivider;
+    FrameLayout frameLayoutProgressbar;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -404,6 +405,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(true);
+
+        frameLayoutProgressbar = list.findViewById(R.id.idProgressBarLayout);
 
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();
@@ -4139,9 +4142,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             individualMessageSendLayout.setVisibility(View.GONE);
             mainDivider.setVisibility(INVISIBLE);
 
+            frameLayoutProgressbar.setVisibility(VISIBLE);
+
             KommunicateUI.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+
+                    frameLayoutProgressbar.setVisibility(View.GONE);
+
                     if(response.getData() != null) { //i.e if feedback found
 
                         constraintLayoutFeedbackTopLayout.setVisibility(VISIBLE);
@@ -4740,11 +4748,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 Toast.makeText(getActivity(), "Error occurred. Feedback update failed.", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public void onRestartConversationPressed() {
-        setFeedbackDisplayLayout(false);
     }
 
     @Override

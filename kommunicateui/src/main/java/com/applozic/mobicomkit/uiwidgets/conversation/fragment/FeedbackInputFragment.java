@@ -32,7 +32,7 @@ public class FeedbackInputFragment extends Fragment {
     TextView textView2;
     TextView textView3;
     Button buttonSubmit;
-    TextView textViewRestartConversation;
+    Button closeButton;
 
     FeedbackFragmentListener feedbackFragmentListener;
     static final int RATINGBAD = 1;
@@ -75,7 +75,7 @@ public class FeedbackInputFragment extends Fragment {
         textView1 = view.findViewById(R.id.idText1);
         textView2 = view.findViewById(R.id.idText2);
         textView3 = view.findViewById(R.id.idText3);
-        textViewRestartConversation = view.findViewById(R.id.idTextViewRestart);
+        closeButton = view.findViewById(R.id.idCloseFeedbackFragment);
 
         button1.setScaleX(0.8f);
         button2.setScaleX(0.8f);
@@ -101,11 +101,10 @@ public class FeedbackInputFragment extends Fragment {
             }
         });
 
-        textViewRestartConversation.setOnClickListener(new View.OnClickListener() {
+        closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getFragmentManager().popBackStack();
-                feedbackFragmentListener.onRestartConversationPressed();
             }
         });
 
@@ -161,10 +160,10 @@ public class FeedbackInputFragment extends Fragment {
             button2.setBackground(getResources().getDrawable(R.drawable.ic_confused));
             button3.setBackground(getResources().getDrawable(R.drawable.ic_happy_grey));
             button1.setScaleX(0.8f);
-            button2.setScaleY(0.8f);
-            button3.setScaleX(1f);
-            button1.setScaleY(1f);
-            button2.setScaleX(0.8f);
+            button1.setScaleY(0.8f);
+            button2.setScaleX(1f);
+            button2.setScaleY(1f);
+            button3.setScaleX(0.8f);
             button3.setScaleY(0.8f);
             return;
         }
@@ -193,6 +192,5 @@ public class FeedbackInputFragment extends Fragment {
 
     public interface FeedbackFragmentListener {
         void onFeedbackSubmitButtonPressed(int rating, String feedback);
-        void onRestartConversationPressed();
     }
 }

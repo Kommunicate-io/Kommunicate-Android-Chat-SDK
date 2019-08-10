@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="13dp"
         android:visibility="gone">
 
         <ImageView
@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="27dp"
         android:text="@string/feedback_comment"
         android:textAlignment="center"
         android:textStyle="italic"
@@ -105,7 +105,6 @@
         android:id="@+id/idFeedbackFooterContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="23dp"
         android:background="#f0f0f0">
 
         <TextView

@@ -2826,10 +2826,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         String imageUrl = "";
         String name = "";
 
-        if (contact != null) {
-            name = contact.getDisplayName();
-            imageUrl = contact.getImageURL();
-        } else if (channel != null) {
+        if (channel != null) {
             name = channel.getName();
             imageUrl = channel.getImageUrl();
         }

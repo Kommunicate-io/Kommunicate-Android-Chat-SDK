@@ -1,4 +1,4 @@
-package io.kommunicate;
+package com.applozic.mobicomkit.uiwidgets.kommunicate.utils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -10,9 +10,14 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicommons.ApplozicService;
 
 import java.util.List;
 
+import io.kommunicate.KmChatBuilder;
+import io.kommunicate.KmConversationBuilder;
+import io.kommunicate.Kommunicate;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KmCallback;
@@ -28,7 +33,7 @@ public class KmHelper {
 
     public static void performLogout(Context context, final Object object) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Logging out, please wait...");
+        dialog.setMessage(ApplozicService.getContext(context).getString(R.string.logout_info_text));
         dialog.setCancelable(false);
         dialog.show();
         Kommunicate.logout(context, new KMLogoutHandler() {
@@ -70,7 +75,7 @@ public class KmHelper {
                 @Override
                 public void onFailure(Object error) {
                     dialog.dismiss();
-                    Toast.makeText(context, context.getString(R.string.unable_to_create_conversation) + " : " + error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(io.kommunicate.R.string.unable_to_create_conversation) + " : " + error, Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {
@@ -82,23 +87,26 @@ public class KmHelper {
 
     public static void setStartNewChat(final Context context, final List<String> agentIds, List<String> botIds, boolean isUnique) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Creating conversation, please wait...");
+        dialog.setMessage(ApplozicService.getContext(context).getString(R.string.create_conversation_info));
         dialog.setCancelable(false);
         dialog.show();
 
         try {
-            new KmChatBuilder(context).setAgentIds(agentIds).setBotIds(botIds).setSingleChat(isUnique).launchChat(new KmCallback() {
-                @Override
-                public void onSuccess(Object message) {
-                    dialog.dismiss();
-                }
+            new KmConversationBuilder(context).setAgentIds(agentIds)
+                    .setBotIds(botIds)
+                    .setSingleConversation(isUnique)
+                    .launchConversation(new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            dialog.dismiss();
+                        }
 
-                @Override
-                public void onFailure(Object error) {
-                    dialog.dismiss();
-                    Toast.makeText(context, context.getString(R.string.unable_to_create_conversation) + " : " + error, Toast.LENGTH_SHORT).show();
-                }
-            });
+                        @Override
+                        public void onFailure(Object error) {
+                            dialog.dismiss();
+                            Toast.makeText(context, context.getString(io.kommunicate.R.string.unable_to_create_conversation) + " : " + error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
         } catch (Exception e) {
             dialog.dismiss();
             e.printStackTrace();

@@ -1,8 +1,7 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks;
+package io.kommunicate.callbacks;
 
 import android.content.Context;
-
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmApiResponse;
 
 /**
  * Created by ashish on 03/04/18.

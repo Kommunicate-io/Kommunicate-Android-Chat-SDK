@@ -133,17 +133,23 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.Paym
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
+
+import io.kommunicate.Kommunicate;
+import io.kommunicate.async.KmUpdateConversationTask;
+import io.kommunicate.callbacks.KmAwayMessageHandler;
+
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmChannelService;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
+
+import io.kommunicate.callbacks.KmRemoveMemberCallback;
+import io.kommunicate.database.KmAutoSuggestionDatabase;
+import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmAutoSuggestionModel;
+import io.kommunicate.services.KmChannelService;
+import io.kommunicate.services.KmClientService;
+import io.kommunicate.services.KmService;
+import io.kommunicate.utils.KmUtils;
+
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
@@ -830,7 +836,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         createTemplateMessages();
 
         if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableAwayMessage()) {
-            KommunicateUI.getAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
+            Kommunicate.getAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse.KmMessageResponse response) {
                     showAwayMessage(true, response.getMessage());
@@ -4393,9 +4399,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        KmService.removeMembersFromChannel(context, channel.getKey(), botIds, new ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener() {
+        KmService.removeMembersFromConversation(context, channel.getKey(), botIds, new KmRemoveMemberCallback() {
             @Override
-            public void onSuccess(String response, int index, Context context) {
+            public void onSuccess(String response, int index) {
                 GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(channel);
                 Map<String, String> metadata = channel.getMetadata();
                 if (metadata == null) {
@@ -4403,7 +4409,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 }
                 metadata.put("CONVERSATION_ASSIGNEE", loggedInUserId);
                 groupInfoUpdate.setMetadata(metadata);
-                KmService.updateChannel(context, groupInfoUpdate, new AlChannelUpdateTask.AlChannelUpdateListener() {
+                KmService.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
                     @Override
                     public void onSuccess(Context context) {
                         Message message = new Message();
@@ -4437,7 +4443,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void onFailure(String response, Exception e, Context context) {
+            public void onFailure(String response, Exception e) {
                 if (progressDialog != null) {
                     progressDialog.dismiss();
                 }

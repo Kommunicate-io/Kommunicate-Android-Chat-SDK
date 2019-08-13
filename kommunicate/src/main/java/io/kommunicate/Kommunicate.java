@@ -20,12 +20,6 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
-import io.kommunicate.activities.LeadCollectionActivity;
-
-import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
-import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
-import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -42,18 +36,25 @@ import java.util.Map;
 import io.kommunicate.async.GetUserListAsyncTask;
 import io.kommunicate.async.KMFaqTask;
 import io.kommunicate.async.KMHelpDocsKeyTask;
+import io.kommunicate.async.KmAwayMessageTask;
+import io.kommunicate.async.KmConversationCreateTask;
+import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.async.KmGetAgentListTask;
 import io.kommunicate.async.KmUserLoginTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
+import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmFaqTaskListener;
+import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.models.KmAgentModel;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmConstants;
+import io.kommunicate.utils.KmUtils;
 
 /**
  * Created by ashish on 23/01/18.
@@ -62,9 +63,6 @@ import io.kommunicate.users.KMUser;
 public class Kommunicate {
 
     private static final String KM_BOT = "bot";
-    public static final String START_NEW_CHAT = "startNewChat";
-    public static final String LOGOUT_CALL = "logoutCall";
-    public static final String PRECHAT_LOGIN_CALL = "prechatLogin";
     private static final String TAG = "KommunicateTag";
     private static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
     private static final String SKIP_ROUTING = "SKIP_ROUTING";
@@ -126,17 +124,17 @@ public class Kommunicate {
     }
 
     public static void openConversation(Context context, KmCallback callback) {
-        Intent intent = new Intent(context, ConversationActivity.class);
-        context.startActivity(intent);
-        if (callback != null) {
-            callback.onSuccess("Successfully launched chat list");
+        try {
+            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
+            context.startActivity(intent);
+            if (callback != null) {
+                callback.onSuccess("Successfully launched chat list");
+            }
+        } catch (ClassNotFoundException e) {
+            if (callback != null) {
+                callback.onFailure(e.getMessage());
+            }
         }
-    }
-
-    @Deprecated
-    public static void openConversation(Context context, boolean prechatLeadCollection) {
-        Intent intent = new Intent(context, (prechatLeadCollection && !KMUser.isLoggedIn(context)) ? LeadCollectionActivity.class : ConversationActivity.class);
-        context.startActivity(intent);
     }
 
     public static void launchPrechatWithResult(Context context, final KmPrechatCallback callback) throws KmException {
@@ -147,18 +145,22 @@ public class Kommunicate {
         ResultReceiver resultReceiver = new ResultReceiver(null) {
             @Override
             protected void onReceiveResult(int resultCode, Bundle resultData) {
-                if (LeadCollectionActivity.PRECHAT_RESULT_CODE == resultCode) {
-                    KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(LeadCollectionActivity.KM_USER_DATA), KMUser.class);
+                if (KmConstants.PRECHAT_RESULT_CODE == resultCode) {
+                    KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(KmConstants.KM_USER_DATA), KMUser.class);
                     if (callback != null) {
-                        callback.onReceive(user, (ResultReceiver) resultData.getParcelable(LeadCollectionActivity.FINISH_ACTIVITY_RECEIVER));
+                        callback.onReceive(user, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
                     }
                 }
             }
         };
 
-        Intent intent = new Intent(context, LeadCollectionActivity.class);
-        intent.putExtra(LeadCollectionActivity.PRECHAT_RESULT_RECEIVER, resultReceiver);
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.PRECHAT_ACTIVITY_NAME));
+            intent.putExtra(KmConstants.PRECHAT_RESULT_RECEIVER, resultReceiver);
+            context.startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            throw new KmException(e.getMessage());
+        }
     }
 
     @Deprecated
@@ -239,10 +241,14 @@ public class Kommunicate {
 
     @Deprecated
     public static void openParticularConversation(Context context, Integer groupId) {
-        Intent intent = new Intent(context, ConversationActivity.class);
-        intent.putExtra(ConversationUIService.GROUP_ID, groupId);
-        intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
+            intent.putExtra(KmConstants.GROUP_ID, groupId);
+            intent.putExtra(KmConstants.TAKE_ORDER, true); //Skip chat list for showing on back press
+            context.startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Deprecated
@@ -377,7 +383,7 @@ public class Kommunicate {
             };
         }
 
-        new AlChannelCreateAsyncTask(chatBuilder.getContext(), channelInfo, handler).execute();
+        new KmConversationCreateTask(chatBuilder.getContext(), channelInfo, handler).execute();
     }
 
     public static void getAgents(Context context, int startIndex, int pageSize, KMGetContactsHandler handler) {
@@ -428,8 +434,7 @@ public class Kommunicate {
 
     @Deprecated
     private static void startOrGetConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
-
-        AlGroupInformationAsyncTask.GroupMemberListener groupMemberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
+        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
             @Override
             public void onSuccess(Channel channel, Context context) {
                 if (handler != null) {
@@ -438,7 +443,7 @@ public class Kommunicate {
             }
 
             @Override
-            public void onFailure(Channel channel, Exception e, Context context) {
+            public void onFailure(Exception e, Context context) {
                 try {
                     createConversation(chatBuilder, handler);
                 } catch (KmException e1) {
@@ -447,7 +452,7 @@ public class Kommunicate {
             }
         };
 
-        new AlGroupInformationAsyncTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), groupMemberListener).execute();
+        new KmConversationInfoTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), conversationInfoCallback).execute();
     }
 
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
@@ -512,5 +517,9 @@ public class Kommunicate {
             text.append(possible.charAt(random.nextInt(possible.length())));
         }
         return text.toString();
+    }
+
+    public static void getAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
+        new KmAwayMessageTask(context, groupId, handler).execute();
     }
 }

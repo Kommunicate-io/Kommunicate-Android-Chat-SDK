@@ -1,11 +1,13 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs;
+package io.kommunicate.async;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
+import io.kommunicate.callbacks.KmAwayMessageHandler;
+import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.services.KmService;
+
+import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -19,14 +21,12 @@ import java.lang.reflect.Type;
 public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
 
     private WeakReference<Context> context;
-    private String appKey;
     private Integer groupId;
     private KmAwayMessageHandler handler;
     private Exception exception;
 
-    public KmAwayMessageTask(Context context, String appKey, Integer groupId, KmAwayMessageHandler handler) {
+    public KmAwayMessageTask(Context context, Integer groupId, KmAwayMessageHandler handler) {
         this.context = new WeakReference<Context>(context);
-        this.appKey = appKey;
         this.groupId = groupId;
         this.handler = handler;
     }
@@ -34,7 +34,7 @@ public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
         try {
-            return new KmService(context.get()).getAwayMessage(appKey, groupId);
+            return new KmService(context.get()).getAwayMessage(MobiComKitClientService.getApplicationKey(context.get()), groupId);
         } catch (Exception e) {
             exception = e;
         }

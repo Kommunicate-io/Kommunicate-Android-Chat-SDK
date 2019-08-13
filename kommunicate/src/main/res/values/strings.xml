@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Kommunicate</string>
+    <string name="unable_to_create_conversation">Unable to create conversation</string>
+    <string name="km_prechat_processing_wait_info">Please wait, launching conversation..</string>
+    <string name="applozic_userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
 </resources>

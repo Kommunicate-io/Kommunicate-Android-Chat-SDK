@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.database;
+package io.kommunicate.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,11 +9,12 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicommons.ApplozicService;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.kommunicate.models.KmAutoSuggestionModel;
 
 public class KmAutoSuggestionDatabase {
     private Context context;

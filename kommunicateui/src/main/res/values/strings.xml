@@ -42,8 +42,6 @@
     <string name="warning">Warning</string>
     <string name="cancel_transaction">Do you want to cancel this transaction?</string>
     <string name="go_back">Are you sure you want to exit this page?</string>
-    <string name="unable_to_create_conversation">Unable to create conversation</string>
-
     <!--
          Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
          alphabet using ListView fast scroll.
@@ -115,6 +113,8 @@
     <string name="please_wait_creating_group_of_two">Please wait...</string>
     <string name="sort_contacts_by_lastSeenAt">Sort by lastSeen</string>
     <string name="sort_contacts_by_recent_chats">Sort by recent chats</string>
+    <string name="logout_info_text">"Logging out, please wait..."</string>
+    <string name="create_conversation_info">Creating conversation, please wait...</string>
     <string name="chats">Chats</string>
     <string name="refresh">Refresh</string>
     <string name="start_New">Start New</string>

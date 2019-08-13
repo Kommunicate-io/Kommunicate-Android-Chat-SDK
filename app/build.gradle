@@ -31,7 +31,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    api project(':kommunicate')
+    api project(':kommunicateui')
     //implementation 'io.kommunicate:kommunicate:1.9.0'
     implementation 'com.android.support:multidex:1.0.3'
     testImplementation 'junit:junit:4.12'

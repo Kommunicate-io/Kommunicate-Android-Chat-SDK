@@ -1,14 +1,15 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.services;
+package io.kommunicate.services;
 
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.HttpRequestUtils;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
-import com.applozic.mobicomkit.uiwidgets.R;
 
 import java.util.Arrays;
 import java.util.List;
+
+import io.kommunicate.R;
 
 /**
  * Created by ashish on 03/04/18.

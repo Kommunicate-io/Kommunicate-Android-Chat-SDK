@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.services;
+package io.kommunicate.services;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -6,12 +6,6 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
-import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
-import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -22,6 +16,14 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import io.kommunicate.async.KmConversationRemoveMemberTask;
+import io.kommunicate.async.KmUpdateConversationTask;
+import io.kommunicate.callbacks.KmRemoveMemberCallback;
+import io.kommunicate.database.KmAutoSuggestionDatabase;
+import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmAutoSuggestionModel;
+import io.kommunicate.utils.KmConstants;
 
 /**
  * Created by ashish on 03/04/18.
@@ -78,12 +80,12 @@ public class KmService {
                 String conversationAssignee = null;
                 String conversationTitle = null;
 
-                if (metadataMap.containsKey(KommunicateUI.CONVERSATION_ASSIGNEE)) {
-                    conversationAssignee = metadataMap.get(KommunicateUI.CONVERSATION_ASSIGNEE);
+                if (metadataMap.containsKey(KmConstants.CONVERSATION_ASSIGNEE)) {
+                    conversationAssignee = metadataMap.get(KmConstants.CONVERSATION_ASSIGNEE);
                 }
 
-                if (metadataMap.containsKey(KommunicateUI.KM_CONVERSATION_TITLE)) {
-                    conversationTitle = metadataMap.get(KommunicateUI.KM_CONVERSATION_TITLE);
+                if (metadataMap.containsKey(KmConstants.KM_CONVERSATION_TITLE)) {
+                    conversationTitle = metadataMap.get(KmConstants.KM_CONVERSATION_TITLE);
                 }
 
                 if (!TextUtils.isEmpty(conversationAssignee)) {
@@ -104,12 +106,12 @@ public class KmService {
             String conversationAssignee = null;
             String conversationTitle = null;
 
-            if (metadataMap.containsKey(KommunicateUI.CONVERSATION_ASSIGNEE)) {
-                conversationAssignee = metadataMap.get(KommunicateUI.CONVERSATION_ASSIGNEE);
+            if (metadataMap.containsKey(KmConstants.CONVERSATION_ASSIGNEE)) {
+                conversationAssignee = metadataMap.get(KmConstants.CONVERSATION_ASSIGNEE);
             }
 
-            if (metadataMap.containsKey(KommunicateUI.KM_CONVERSATION_TITLE)) {
-                conversationTitle = metadataMap.get(KommunicateUI.KM_CONVERSATION_TITLE);
+            if (metadataMap.containsKey(KmConstants.KM_CONVERSATION_TITLE)) {
+                conversationTitle = metadataMap.get(KmConstants.KM_CONVERSATION_TITLE);
             }
 
             if (!TextUtils.isEmpty(conversationAssignee)) {
@@ -120,32 +122,32 @@ public class KmService {
         return null;
     }
 
-    public static void removeMembersFromChannel(Context context, Integer channelKey, final Set<String> userIds, final ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener listener) {
+    public static void removeMembersFromConversation(final Context context, Integer channelKey, final Set<String> userIds, final KmRemoveMemberCallback listener) {
         if (userIds == null || channelKey == null) {
             return;
         }
 
         int i = 0;
         for (String userId : userIds) {
-            ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener recListener = new ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener() {
+            KmRemoveMemberCallback recListener = new KmRemoveMemberCallback() {
                 @Override
-                public void onSuccess(String response, int i, Context context) {
+                public void onSuccess(String response, int i) {
                     if (i == userIds.size() - 1) {
-                        listener.onSuccess(response, i, context);
+                        listener.onSuccess(response, i);
                     }
                 }
 
                 @Override
-                public void onFailure(String response, Exception e, Context context) {
-                    listener.onFailure(response, e, context);
+                public void onFailure(String response, Exception e) {
+                    listener.onFailure(response, e);
                 }
             };
-            new ApplozicChannelRemoveMemberTask(context, channelKey, userId, i, recListener).execute();
+            new KmConversationRemoveMemberTask(context, channelKey, userId, i, recListener).execute();
             i++;
         }
     }
 
-    public static void updateChannel(Context context, GroupInfoUpdate groupInfoUpdate, AlChannelUpdateTask.AlChannelUpdateListener listener) {
-        new AlChannelUpdateTask(context, groupInfoUpdate, listener).execute();
+    public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, KmUpdateConversationTask.KmConversationUpdateListener listener) {
+        new KmUpdateConversationTask(context, groupInfoUpdate, listener).execute();
     }
 }

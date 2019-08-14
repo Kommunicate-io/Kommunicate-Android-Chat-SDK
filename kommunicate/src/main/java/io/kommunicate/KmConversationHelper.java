@@ -105,7 +105,7 @@ public class KmConversationHelper {
         intent.putExtra(ConversationUIService.TAKE_ORDER, skipConversationList);
         context.startActivity(intent);
         if (callback != null) {
-            callback.onSuccess("Successfully launched conversation with Conversation Id : " + conversationId);
+            callback.onSuccess(conversationId);
         }
     }
 

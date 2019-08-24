@@ -978,8 +978,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
-        Log.d("TEEEEE", "Channel update");
-
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
         if(channel.getKmStatus()==Channel.CLOSED_CONVERSATIONS) {

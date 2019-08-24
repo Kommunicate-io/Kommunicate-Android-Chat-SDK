@@ -238,4 +238,10 @@
     <string name="restart_conversation_text">Restart conversation</string>
     <string name="todo">TODO</string>
     <string name="rating_text">You rated the conversation</string>
+    <string name="rating_good">Good</string>
+    <string name="add_a_comment">Add a comment...</string>
+    <string name="submit_your_rating">Submit your rating</string>
+    <string name="rating_average">Average</string>
+    <string name="rate_the_conversation">Rate the conversation</string>
+    <string name="rating_poor">Poor</string>
 </resources>

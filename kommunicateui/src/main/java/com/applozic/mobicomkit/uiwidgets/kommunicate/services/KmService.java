@@ -156,8 +156,7 @@ public class KmService {
      * @return the response object, response.getData() will return null in case of feedback not found
      */
     public synchronized String getConversationFeedback(String conversationId) {
-        String response = clientService.getConversationFeedback(conversationId);
-        return response;
+        return clientService.getConversationFeedback(conversationId);
     }
 
     /**

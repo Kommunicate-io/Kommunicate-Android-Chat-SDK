@@ -165,8 +165,7 @@ public class KmService {
      * @return string response of the post request
      */
     public synchronized String setConversationFeedback(KmFeedback kmFeedback) throws Exception {
-        String response = clientService.setConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments());
-        return response;
+        return clientService.setConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments());
     }
 
 }

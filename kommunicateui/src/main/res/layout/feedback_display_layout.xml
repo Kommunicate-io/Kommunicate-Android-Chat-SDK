@@ -96,7 +96,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="27dp"
-        android:text="@string/feedback_comment"
+        android:text=""
         android:textAlignment="center"
         android:textStyle="italic"
         android:visibility="gone" />

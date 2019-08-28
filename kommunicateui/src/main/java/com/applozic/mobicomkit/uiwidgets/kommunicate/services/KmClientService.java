@@ -8,6 +8,7 @@ import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -93,17 +94,22 @@ public class KmClientService extends MobiComKitClientService {
      * to set/post the feedback for a given conversation
      * @param conversationId the groupId of the conversation
      * @param rating the rating 0-5 given by the user
-     * @param feedbackComment the comment input given by the user
+     * @param feedbackComment the comment array of the inputs given by the user
      * @return the feedback response json string
      */
-    public String setConversationFeedback(int conversationId, int rating, String feedbackComment) throws Exception{
+    public String setConversationFeedback(int conversationId, int rating, String feedbackComment[]) throws Exception{
         JSONObject jsonObject = new JSONObject();
+        JSONArray feedbackJsonArray = new JSONArray();
+
+        for(String feedback : feedbackComment) {
+            feedbackJsonArray.put(feedback);
+        }
 
         try {
             jsonObject.put("groupId", conversationId);
             if(feedbackComment != null) {
-                if (!TextUtils.isEmpty(feedbackComment)) {
-                    jsonObject.put("comments", feedbackComment);
+                if (feedbackComment.length>0) {
+                    jsonObject.put("comments", feedbackJsonArray);
                 }
             }
             jsonObject.put("rating", rating);

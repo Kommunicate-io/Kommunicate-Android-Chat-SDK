@@ -14,6 +14,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionMode
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFeedback;
 import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
@@ -34,6 +35,8 @@ public class KmService {
     private Context context;
     private KmClientService clientService;
     private KmAutoSuggestionDatabase autoSuggestionDatabase;
+
+    public static final String TAG = "KmService";
 
     public KmService(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -156,7 +159,9 @@ public class KmService {
      * @return the response object, response.getData() will return null in case of feedback not found
      */
     public synchronized String getConversationFeedback(String conversationId) {
-        return clientService.getConversationFeedback(conversationId);
+        String response = clientService.getConversationFeedback(conversationId);
+        Utils.printLog(context, "KmService","Feedback get: "+response);
+        return response;
     }
 
     /**

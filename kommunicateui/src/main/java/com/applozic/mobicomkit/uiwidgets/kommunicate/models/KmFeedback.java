@@ -10,7 +10,8 @@ public class KmFeedback {
     public KmFeedback() {}
 
     private int groupId;
-    private String comments;
+    private int id;
+    private String comments[];
     private int rating;
     private Object type;
     private String created_at;
@@ -25,11 +26,11 @@ public class KmFeedback {
         this.groupId = groupId;
     }
 
-    public String getComments() {
+    public String[] getComments() {
         return comments;
     }
 
-    public void setComments(String comments) {
+    public void setComments(String comments[]) {
         this.comments = comments;
     }
 
@@ -71,5 +72,11 @@ public class KmFeedback {
 
     public void setDeleted_at(String deleted_at) {
         this.deleted_at = deleted_at;
+    }
+
+    public class UserInfo {
+        String name;
+        String email;
+        String userName;
     }
 }

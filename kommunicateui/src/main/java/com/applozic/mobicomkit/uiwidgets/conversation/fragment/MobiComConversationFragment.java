@@ -459,6 +459,18 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         imageViewFeedbackRating = feedbackDisplayLayout.findViewById(R.id.idRatingImage);
         constraintLayoutFeedbackTopLayout = feedbackDisplayLayout.findViewById(R.id.idFeedbackTopLayout);
 
+        Utils.printLog(getContext(), TAG, "onCreateView for "+TAG+" called.");
+
+        /**
+         * check if conversation is a resolved one, and display the respective feedback layouts
+         * also open the feedback input fragment if feedback isn't set
+         */
+        if(channel!=null && channel.getKmStatus()==Channel.CLOSED_CONVERSATIONS) {
+            Utils.printLog(getContext() ,TAG ,"Loading feedback for: "+channel.getKey());
+
+            setFeedbackDisplayLayout(true);
+        }
+
         textViewRestartConversation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -977,6 +989,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if(channel==null) {
             return;
         }
+
+        Utils.printLog(getContext(), TAG, "onChannelUpdated on "+TAG+" called.");
 
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
@@ -2814,19 +2828,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void onResume() {
         super.onResume();
 
+        Utils.printLog(getContext(), TAG, "onResume for "+TAG+" called.");
+
         AlEventManager.getInstance().registerUIListener(TAG, this);
-
-
-
-        /**
-         * check if conversation is a resolved one, and display the respective feedback layouts
-         * also open the feedback input fragment if feedback isn't set
-         */
-        if(channel!=null && channel.getKmStatus()==Channel.CLOSED_CONVERSATIONS) {
-            Utils.printLog(getContext() ,TAG ,"Loading feedback for: "+channel.getKey());
-
-            setFeedbackDisplayLayout(true);
-        }
 
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
             MobiComUserPreference.getInstance(getActivity()).setDeleteChannel(false);
@@ -4135,7 +4139,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         if(feedback.getComments() != null) {
             textViewfeedbackComment.setVisibility(VISIBLE);
-            textViewfeedbackComment.setText("\""+feedback.getComments()+"\"");
+            textViewfeedbackComment.setText("\""+feedback.getComments()[0]+"\"");
         }
     }
 
@@ -4700,7 +4704,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         final KmFeedback kmFeedback = new KmFeedback();
         kmFeedback.setGroupId(channel.getKey());
         if(!TextUtils.isEmpty(feedback)) {
-            kmFeedback.setComments(feedback);
+            String[] feedbackArray = new String[1];
+            feedbackArray[0] = feedback;
+            kmFeedback.setComments(feedbackArray);
         }
         kmFeedback.setRating(rating);
 

@@ -101,8 +101,10 @@ public class KmClientService extends MobiComKitClientService {
         JSONObject jsonObject = new JSONObject();
         JSONArray feedbackJsonArray = new JSONArray();
 
-        for(String feedback : feedbackComment) {
-            feedbackJsonArray.put(feedback);
+        if(feedbackComment != null) {
+            for (String feedback : feedbackComment) {
+                feedbackJsonArray.put(feedback);
+            }
         }
 
         try {

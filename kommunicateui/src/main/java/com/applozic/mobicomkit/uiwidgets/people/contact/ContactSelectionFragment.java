@@ -204,7 +204,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                 @Override
                 public void onFailure(Context context, String response, Exception e) {
                     progressBar.dismiss();
-                    Toast.makeText(getContext(), "Failed to load contacts : Response : " + response + "\nException : " + e, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.failed_load_contacts) + response + "\nException : " + e, Toast.LENGTH_SHORT).show();
                 }
             };
 

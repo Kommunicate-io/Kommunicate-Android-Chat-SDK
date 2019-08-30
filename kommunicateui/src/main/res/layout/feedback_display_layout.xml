@@ -30,7 +30,6 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/grey_rectangle"
-            android:contentDescription="@string/todo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/linearLayout4"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +47,6 @@
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/grey_rectangle"
-            android:contentDescription="@string/todo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/linearLayout4"
@@ -84,7 +82,7 @@
                 android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="5dp"
-                android:contentDescription="@string/todo" />
+                android:layout_marginStart="5dp" />
 
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
@@ -97,6 +95,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="27dp"
         android:text=""
+        android:layout_gravity="center"
         android:textAlignment="center"
         android:textStyle="italic"
         android:visibility="gone" />

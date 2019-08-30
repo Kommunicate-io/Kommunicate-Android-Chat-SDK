@@ -235,12 +235,18 @@
     <string name="have_other_queries">Have other queries?</string>
     <string name="resolved_info_text">This conversation has been marked as resolved.</string>
     <string name="restart_conversation_text">Restart conversation</string>
-    <string name="todo">TODO</string>
     <string name="rating_text">You rated the conversation</string>
     <string name="rating_good">Good</string>
-    <string name="add_a_comment">Add a comment...</string>
+    <string name="add_a_comment">Add a comment..</string>
     <string name="submit_your_rating">Submit your rating</string>
     <string name="rating_average">Average</string>
     <string name="rate_the_conversation">Rate the conversation</string>
     <string name="rating_poor">Poor</string>
+    <string name="feedback_update_failed">"Error occurred. Feedback update failed."</string>
+    <string name="mandatory_fields">"Mandatory fields required.."</string>
+    <string name="press_back_exit">"Press Back again to Exit."</string>
+    <string name="enter_user_id">"Enter UserId."</string>
+    <string name="unable_to_start_chat">"Unable to start chat : "</string>
+    <string name="failed_load_contacts">"Failed to load contacts : Response : "</string>
+    <string name="payment_successful">"Payment Successful.."</string>
 </resources>

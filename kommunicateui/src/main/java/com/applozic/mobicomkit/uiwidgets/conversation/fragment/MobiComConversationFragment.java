@@ -465,7 +465,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
          * check if conversation is a resolved one, and display the respective feedback layouts
          * also open the feedback input fragment if feedback isn't set
          */
-        if(channel!=null && channel.getKmStatus()==Channel.CLOSED_CONVERSATIONS) {
+        if(channel!=null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
             Utils.printLog(getContext() ,TAG ,"Loading feedback for: "+channel.getKey());
 
             setFeedbackDisplayLayout(true);
@@ -986,7 +986,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onChannelUpdated() {
-        if(channel==null) {
+        if(channel == null) {
             return;
         }
 
@@ -994,7 +994,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
-        if(channel.getKmStatus()==Channel.CLOSED_CONVERSATIONS) {
+        if(channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
             setFeedbackDisplayLayout(true);
         } else {
             //conversation is open
@@ -4172,7 +4172,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
-                    Utils.printLog(getContext(), "FeedbackTest" , "Feedback get failed: "+ e.toString());
+                    Utils.printLog(getContext(), TAG , "Feedback get failed: "+ e.toString());
                 }
             });
         } else {
@@ -4703,11 +4703,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void onFeedbackSubmitButtonPressed(int rating, String feedback) {
         final KmFeedback kmFeedback = new KmFeedback();
         kmFeedback.setGroupId(channel.getKey());
+
         if(!TextUtils.isEmpty(feedback)) {
             String[] feedbackArray = new String[1];
             feedbackArray[0] = feedback;
             kmFeedback.setComments(feedbackArray);
         }
+
         kmFeedback.setRating(rating);
 
         KommunicateUI.setConversationFeedback(getActivity(), kmFeedback, new KmFeedbackCallback() {
@@ -4718,7 +4720,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             @Override
             public void onFailure(Context context, Exception e, String response) {
-                Toast.makeText(getActivity(), "Error occurred. Feedback update failed.", Toast.LENGTH_SHORT).show();
+                Utils.printLog(context, TAG, "Feedback update failed: "+ e.toString());
+                Toast.makeText(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
             }
         });
     }

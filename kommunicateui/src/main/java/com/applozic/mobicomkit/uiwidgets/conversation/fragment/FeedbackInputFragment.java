@@ -3,7 +3,6 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -142,13 +141,8 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
      * @param feedbackRating the views to toggle
      */
     void toggleRatingButtonSelected(boolean select, FeedbackRatingGroup.FeedbackRating feedbackRating) {
-        //show the feedback comment input edit text, if not already visible
-        if(editTextFeedbackComment.getVisibility()==View.GONE) {
-            editTextFeedbackComment.setVisibility(View.VISIBLE);
-        }
-
         //set drawable
-        feedbackRatingGroup.setDrawableForValue(select, feedbackRating.ratingValue);
+        feedbackRatingGroup.setDrawableForRating(select, feedbackRating);
 
         //set visibility and size
         if(select) {
@@ -167,15 +161,16 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View view) {
         Integer buttonTag = (Integer) view.getTag();
+        setRatingLevel(buttonTag);
+
+        //show the feedback comment input edit text, if not already visible
+        if(editTextFeedbackComment.getVisibility()==View.GONE) {
+            editTextFeedbackComment.setVisibility(View.VISIBLE);
+        }
 
         for(FeedbackRatingGroup.FeedbackRating feedbackRating : feedbackRatingGroup.feedbackRating) {
             Integer iterationButtonTag = (Integer) feedbackRating.ratingButton.getTag();
-            if(iterationButtonTag.intValue() == buttonTag.intValue()) {
-                setRatingLevel(buttonTag);
-                toggleRatingButtonSelected(true, feedbackRating);
-            }
-            else
-                toggleRatingButtonSelected(false, feedbackRating);
+            toggleRatingButtonSelected(iterationButtonTag.intValue() == buttonTag.intValue(), feedbackRating);
         }
     }
 
@@ -188,8 +183,8 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         FeedbackRating[] feedbackRating;
         int noOfRatingElements;
 
-        public FeedbackRatingGroup(int noOfRatings, Drawable[] selectedDrawable, Drawable[] unSelectedDrawable) {
-            noOfRatingElements = noOfRatings;
+        public FeedbackRatingGroup(int noOfRatingElements, Drawable[] selectedDrawable, Drawable[] unSelectedDrawable) {
+            this.noOfRatingElements = noOfRatingElements;
             this.selectedDrawable = selectedDrawable;
             this.unSelectedDrawable = unSelectedDrawable;
             feedbackRating = new FeedbackRating[noOfRatingElements];
@@ -204,11 +199,11 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
             int ratingValue;
         }
 
-        void setDrawableForValue(boolean select, int value) {
+        void setDrawableForRating(boolean select, FeedbackRating feedbackRating) {
             if(select) {
-                feedbackRating[value - 1].ratingButton.setBackground(selectedDrawable[value - 1]);
+                feedbackRating.ratingButton.setBackground(selectedDrawable[feedbackRating.ratingValue - 1]);
             } else {
-                feedbackRating[value - 1].ratingButton.setBackground(unSelectedDrawable[value - 1]);
+                feedbackRating.ratingButton.setBackground(unSelectedDrawable[feedbackRating.ratingValue - 1]);
             }
         }
 
@@ -222,18 +217,21 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
          * @param textViewResId the id of the text view in the layout file
          */
         public void createViewForRatingValue(View rootView, int value, @IdRes int buttonResId, @IdRes int textViewResId) {
-            feedbackRating[value - 1] = new FeedbackRating();
+            FeedbackRating feedbackRatingObject = new FeedbackRating();
 
-            feedbackRating[value - 1].ratingButton = rootView.findViewById(buttonResId);
-            feedbackRating[value - 1].feedbackTextView = rootView.findViewById(textViewResId);
+            feedbackRatingObject.ratingButton = rootView.findViewById(buttonResId);
+            feedbackRatingObject.feedbackTextView = rootView.findViewById(textViewResId);
 
-            feedbackRating[value - 1].ratingButton.setTag(value);
-            feedbackRating[value - 1].ratingButton.setOnClickListener(FeedbackInputFragment.this);
-            feedbackRating[value - 1].ratingValue = value;
-            feedbackRating[value - 1].ratingButton.setScaleX(0.8f);
-            feedbackRating[value - 1].ratingButton.setScaleY(0.8f);
+            feedbackRatingObject.ratingButton.setTag(value);
+            feedbackRatingObject.ratingButton.setOnClickListener(FeedbackInputFragment.this);
+            feedbackRatingObject.ratingButton.setScaleX(0.8f);
+            feedbackRatingObject.ratingButton.setScaleY(0.8f);
 
-            feedbackRating[value - 1].feedbackTextView.setVisibility(View.GONE);
+            feedbackRatingObject.ratingValue = value;
+
+            feedbackRatingObject.feedbackTextView.setVisibility(View.GONE);
+
+            feedbackRating[value - 1] = feedbackRatingObject;
         }
     }
 

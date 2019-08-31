@@ -39,14 +39,14 @@ public class KmClientService extends MobiComKitClientService {
     }
 
     private String getFeedbackUrl() {
-        return getKmBaseUrl()+CONVERSATION_FEEDBACK_URL;
+        return getKmBaseUrl() + CONVERSATION_FEEDBACK_URL;
     }
 
     public String getConversationShareUrl() {
         return getKmMappedUrl(KM_DASHBOARD) + CONVERSATION_SHARE_ENDPOINT;
     }
 
-    private String getKmAotuSuggestionUrl() {
+    private String getKmAutoSuggestionUrl() {
         return getKmBaseUrl() + KM_AUTO_SUGGESTION_URL;
     }
 
@@ -68,7 +68,7 @@ public class KmClientService extends MobiComKitClientService {
     }
 
     public String getKmAutoSuggestions() {
-        return httpRequestUtils.getResponse(getKmAotuSuggestionUrl() + getApplicationKey(context) + KM_AUTO_SUGGESTION_ENDPOINT, "application/json", "application/json");
+        return httpRequestUtils.getResponse(getKmAutoSuggestionUrl() + getApplicationKey(context) + KM_AUTO_SUGGESTION_ENDPOINT, "application/json", "application/json");
     }
 
     public String getHelpCenterUrl() {
@@ -122,7 +122,7 @@ public class KmClientService extends MobiComKitClientService {
         try {
             String response = httpRequestUtils.postData(getFeedbackUrl(), "application/json", "application/json", jsonObject.toString());
 
-            Utils.printLog(context, TAG, "Post feedback response : "+response);
+            Utils.printLog(context, TAG, "Post feedback response : " + response);
 
             return response;
         } catch (Exception e) {
@@ -146,7 +146,7 @@ public class KmClientService extends MobiComKitClientService {
 
         String response = httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
 
-        Utils.printLog(context, TAG, "Get feedback response: "+ response);
+        Utils.printLog(context, TAG, "Get feedback response: " + response);
 
         return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
     }

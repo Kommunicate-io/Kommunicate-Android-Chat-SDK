@@ -30,7 +30,7 @@ public class KommunicateUI {
 
     /**
      * This method will get the conversation feedback using a async task for the given conversation id
-     * @param context the contet
+     * @param context the context
      * @param conversationId of which we need to get the feed back
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */

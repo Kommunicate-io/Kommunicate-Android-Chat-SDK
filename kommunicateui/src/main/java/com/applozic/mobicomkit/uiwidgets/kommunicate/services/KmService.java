@@ -155,17 +155,19 @@ public class KmService {
 
     /**
      * the wrapper method to get feedback for given conversation
+     *
      * @param conversationId the groupId of the conversation
      * @return the response object, response.getData() will return null in case of feedback not found
      */
     public synchronized String getConversationFeedback(String conversationId) {
         String response = clientService.getConversationFeedback(conversationId);
-        Utils.printLog(context, "KmService","Feedback get: "+response);
+        Utils.printLog(context, "KmService", "Feedback get: " + response);
         return response;
     }
 
     /**
      * the wrapper method tp set the feedback for the conversation at the server
+     *
      * @param kmFeedback the feedback object (has groupId, rating and comments data members)
      * @return string response of the post request
      */

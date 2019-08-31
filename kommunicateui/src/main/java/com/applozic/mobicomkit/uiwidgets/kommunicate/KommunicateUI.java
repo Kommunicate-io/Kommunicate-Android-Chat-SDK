@@ -30,8 +30,9 @@ public class KommunicateUI {
 
     /**
      * This method will get the conversation feedback using a async task for the given conversation id
-     * @param context the context
-     * @param conversationId of which we need to get the feed back
+     *
+     * @param context            the context
+     * @param conversationId     of which we need to get the feed back
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
     public static void getConversationFeedback(Context context, String conversationId, KmFeedbackCallback kmFeedbackCallback) {
@@ -41,8 +42,9 @@ public class KommunicateUI {
 
     /**
      * this method will set the conversation feedback using a async task from the given KmFeedback object
-     * @param context the context
-     * @param kmFeedback will have the feedback and the conversation id of the conversation
+     *
+     * @param context            the context
+     * @param kmFeedback         will have the feedback and the conversation id of the conversation
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure1
      */
     public static void setConversationFeedback(Context context, KmFeedback kmFeedback, KmFeedbackCallback kmFeedbackCallback) {

@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 
 /**
  * the feedback api async task
+ *
  * @author shubham
  * @date 25/July/2019
  */
@@ -38,12 +39,12 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
     protected String doInBackground(Void... voids) {
         try {
             if (kmFeedback == null) {
-                if(conversationId ==  null || TextUtils.isEmpty(conversationId)) {
+                if (conversationId == null || TextUtils.isEmpty(conversationId)) {
                     throw new Exception("KmFeedback and conversation id parameters null");
                 }
-                return  new KmService(contextWeakReference.get()).getConversationFeedback(conversationId);
+                return new KmService(contextWeakReference.get()).getConversationFeedback(conversationId);
             } else {
-                return  new KmService(contextWeakReference.get()).postConversationFeedback(kmFeedback);
+                return new KmService(contextWeakReference.get()).postConversationFeedback(kmFeedback);
             }
         } catch (Exception i) {
             e = i;
@@ -54,10 +55,10 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
-        if(e != null) {
+        if (e != null) {
             kmFeedbackCallback.onFailure(contextWeakReference.get(), e, response);
         } else {
-            if(response == null) {
+            if (response == null) {
                 kmFeedbackCallback.onFailure(contextWeakReference.get(), new Exception("Feedback Response string null."), null);
             } else {
                 try {

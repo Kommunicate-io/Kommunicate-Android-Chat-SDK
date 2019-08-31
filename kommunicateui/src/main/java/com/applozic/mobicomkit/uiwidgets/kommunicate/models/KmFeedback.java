@@ -2,12 +2,13 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.models;
 
 /**
  * model class for the feedback response
+ *
  * @author shubham
  * @date 25/July/2019
  */
 public class KmFeedback {
 
-    public KmFeedback() {}
+    public KmFeedback() { }
 
     private int groupId;
     private int id;
@@ -54,7 +55,9 @@ public class KmFeedback {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public String getUpdatedAt() {
         return updatedAt;

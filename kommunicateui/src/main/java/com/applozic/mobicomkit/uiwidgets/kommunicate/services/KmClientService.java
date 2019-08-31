@@ -92,16 +92,17 @@ public class KmClientService extends MobiComKitClientService {
 
     /**
      * to post the feedback for a given conversation
-     * @param conversationId the groupId of the conversation
-     * @param rating the rating 0-5 given by the user
+     *
+     * @param conversationId  the groupId of the conversation
+     * @param rating          the rating 0-5 given by the user
      * @param feedbackComment the comment array of the inputs given by the user
      * @return the feedback response json string
      */
-    public String postConversationFeedback(int conversationId, int rating, String feedbackComment[]) throws Exception{
+    public String postConversationFeedback(int conversationId, int rating, String feedbackComment[]) throws Exception {
         JSONObject jsonObject = new JSONObject();
         JSONArray feedbackJsonArray = new JSONArray();
 
-        if(feedbackComment != null) {
+        if (feedbackComment != null) {
             for (String feedback : feedbackComment) {
                 feedbackJsonArray.put(feedback);
             }
@@ -109,8 +110,8 @@ public class KmClientService extends MobiComKitClientService {
 
         try {
             jsonObject.put("groupId", conversationId);
-            if(feedbackComment != null) {
-                if (feedbackComment.length>0) {
+            if (feedbackComment != null) {
+                if (feedbackComment.length > 0) {
                     jsonObject.put("comments", feedbackJsonArray);
                 }
             }
@@ -131,15 +132,15 @@ public class KmClientService extends MobiComKitClientService {
     }
 
 
-
     /**
      * to get the feedback of given conversation
+     *
      * @param conversationId the groupId of the conversation to get the feedback of
      * @return the response (feedback json)
      */
     public String getConversationFeedback(String conversationId) {
         StringBuilder urlBuilder = new StringBuilder(getFeedbackUrl());
-        if(!TextUtils.isEmpty(conversationId)) {
+        if (!TextUtils.isEmpty(conversationId)) {
             urlBuilder.append("/");
             urlBuilder.append(conversationId);
         }

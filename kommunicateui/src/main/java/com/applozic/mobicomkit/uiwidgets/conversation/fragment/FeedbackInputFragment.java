@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 
 /**
  * fragment for the feedback input form
+ *
  * @author shubham
  * @date july 19
  */
@@ -45,7 +46,8 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
     //using IntDef to replace enum
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({RATING_POOR, RATING_AVERAGE, RATING_GOOD})
-    public @interface Rating {}
+    public @interface Rating {
+    }
 
     @Rating
     public int getRatingLevel() {
@@ -56,7 +58,8 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         this.ratingLevel = ratingLevel;
     }
 
-    @Rating private int ratingLevel;
+    @Rating
+    private int ratingLevel;
 
     public void setFeedbackFragmentListener(FeedbackFragmentListener feedbackFragmentListener) {
         this.feedbackFragmentListener = feedbackFragmentListener;
@@ -115,7 +118,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         buttonSubmitFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(ratingLevel == 0) {
+                if (ratingLevel == 0) {
                     setRatingLevel(RATING_AVERAGE);
                 }
                 String feedbackComment = editTextFeedbackComment.getText().toString().trim();
@@ -136,7 +139,8 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
 
     /**
      * toggle button as selected or deselected
-     * @param select true or false
+     *
+     * @param select         true or false
      * @param feedbackRating the views to toggle
      */
     void toggleRatingButtonSelected(boolean select, FeedbackRatingGroup.FeedbackRating feedbackRating) {
@@ -144,7 +148,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         feedbackRating.selectDrawable(select);
 
         //set visibility and size
-        if(select) {
+        if (select) {
             feedbackRating.ratingButton.setScaleX(1f);
             feedbackRating.ratingButton.setScaleY(1f);
             feedbackRating.feedbackTextView.setVisibility(View.VISIBLE);
@@ -162,11 +166,11 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         setRatingLevel(buttonTag);
 
         //show the feedback comment input edit text, if not already visible
-        if(editTextFeedbackComment.getVisibility() == View.GONE) {
+        if (editTextFeedbackComment.getVisibility() == View.GONE) {
             editTextFeedbackComment.setVisibility(View.VISIBLE);
         }
 
-        for(FeedbackRatingGroup.FeedbackRating feedbackRating : feedbackRatingGroup.feedbackRating) {
+        for (FeedbackRatingGroup.FeedbackRating feedbackRating : feedbackRatingGroup.feedbackRating) {
             Integer iterationButtonTag = (Integer) feedbackRating.ratingButton.getTag();
             toggleRatingButtonSelected(iterationButtonTag.intValue() == buttonTag.intValue(), feedbackRating);
         }
@@ -195,7 +199,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
             int ratingValue;
 
             void selectDrawable(boolean select) {
-                if(select) {
+                if (select) {
                     ratingButton.setBackground(drawables[ratingValue - 1][0]);
                 } else {
                     ratingButton.setBackground(drawables[ratingValue - 1][1]);
@@ -207,9 +211,10 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
          * this function will initialize a button and a text view with the properties provided and add it tp the
          * respective button and text view arrays
          * will also set a listener on it
-         * @param rootView the parent root view
-         * @param value the rating value (work as index to array)
-         * @param buttonResId the id of the button in the layout file
+         *
+         * @param rootView      the parent root view
+         * @param value         the rating value (work as index to array)
+         * @param buttonResId   the id of the button in the layout file
          * @param textViewResId the id of the text view in the layout file
          */
         public void createViewForRatingValue(View rootView, int value, @IdRes int buttonResId, @IdRes int textViewResId) {

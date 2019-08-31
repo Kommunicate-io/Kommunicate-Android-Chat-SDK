@@ -465,8 +465,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
          * check if conversation is a resolved one, and display the respective feedback layouts
          * also open the feedback input fragment if feedback isn't set
          */
-        if(channel!=null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
-            Utils.printLog(getContext() ,TAG ,"Loading feedback for: " + channel.getKey());
+        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
+            Utils.printLog(getContext(), TAG, "Loading feedback for: " + channel.getKey());
 
             setFeedbackDisplayLayout(true);
         }
@@ -940,53 +940,68 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     @Override
-    public void onMessageSent(Message message) { }
+    public void onMessageSent(Message message) {
+    }
 
     @Override
-    public void onMessageReceived(Message message) { }
+    public void onMessageReceived(Message message) {
+    }
 
     @Override
-    public void onLoadMore(boolean loadMore) { }
+    public void onLoadMore(boolean loadMore) {
+    }
 
     @Override
-    public void onMessageSync(Message message, String key) { }
+    public void onMessageSync(Message message, String key) {
+    }
 
     @Override
-    public void onMessageDeleted(String messageKey, String userId) { }
+    public void onMessageDeleted(String messageKey, String userId) {
+    }
 
     @Override
-    public void onMessageDelivered(Message message, String userId) { }
+    public void onMessageDelivered(Message message, String userId) {
+    }
 
     @Override
-    public void onAllMessagesDelivered(String userId) { }
+    public void onAllMessagesDelivered(String userId) {
+    }
 
     @Override
-    public void onAllMessagesRead(String userId) { }
+    public void onAllMessagesRead(String userId) {
+    }
 
     @Override
-    public void onConversationDeleted(String userId, Integer channelKey, String response) { }
+    public void onConversationDeleted(String userId, Integer channelKey, String response) {
+    }
 
     @Override
-    public void onUpdateTypingStatus(String userId, String isTyping) { }
+    public void onUpdateTypingStatus(String userId, String isTyping) {
+    }
 
     @Override
-    public void onUpdateLastSeen(String userId) { }
+    public void onUpdateLastSeen(String userId) {
+    }
 
     @Override
-    public void onMqttDisconnected() { }
+    public void onMqttDisconnected() {
+    }
 
     @Override
-    public void onMqttConnected() { }
+    public void onMqttConnected() {
+    }
 
     @Override
-    public void onUserOnline() { }
+    public void onUserOnline() {
+    }
 
     @Override
-    public void onUserOffline() { }
+    public void onUserOffline() {
+    }
 
     @Override
     public void onChannelUpdated() {
-        if(channel == null) {
+        if (channel == null) {
             return;
         }
 
@@ -994,12 +1009,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
-        if(channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
+        if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
             setFeedbackDisplayLayout(true);
         } else {
             //conversation is open
             //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
-            if(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1).getName().equals(feedBackFragment.getTag())) {
+            if (getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1).getName().equals(feedBackFragment.getTag())) {
                 getFragmentManager().popBackStack();
             }
             setFeedbackDisplayLayout(false);
@@ -1007,20 +1022,24 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     @Override
-    public void onConversationRead(String userId, boolean isGroup) { }
+    public void onConversationRead(String userId, boolean isGroup) {
+    }
 
     @Override
-    public void onUserDetailUpdated(String userId) { }
+    public void onUserDetailUpdated(String userId) {
+    }
 
     @Override
-    public void onMessageMetadataUpdated(String keyString) { }
+    public void onMessageMetadataUpdated(String keyString) {
+    }
 
     @Override
-    public void onUserMute(boolean mute, String userId) { }
+    public void onUserMute(boolean mute, String userId) {
+    }
 
     public void openFeedbackFragment() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if(fragmentManager.findFragmentByTag(FeedbackInputFragment.getTAG()) == null) {
+        if (fragmentManager.findFragmentByTag(FeedbackInputFragment.getTAG()) == null) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, feedBackFragment, FeedbackInputFragment.getTAG());
             fragmentTransaction.addToBackStack(FeedbackInputFragment.getTAG());
@@ -4118,10 +4137,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     /**
      * set the feedback data and show the respective feedback layout views and viewgroups
-     * @param context the context
+     *
+     * @param context  the context
      * @param feedback the feedback object
      */
-    public void showFeedback(Context context,KmFeedback feedback) {
+    public void showFeedback(Context context, KmFeedback feedback) {
         constraintLayoutFeedbackTopLayout.setVisibility(VISIBLE);
 
         int rating = feedback.getRating();
@@ -4137,7 +4157,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 break;
         }
 
-        if(feedback.getComments() != null) {
+        if (feedback.getComments() != null) {
             textViewfeedbackComment.setVisibility(VISIBLE);
             textViewfeedbackComment.setText("\"" + feedback.getComments()[0] + "\"");
         }
@@ -4145,10 +4165,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     /**
      * displays/hides the feedback display layout, along with the feedback received from the server
+     *
      * @param display true to display/ false to not
      */
     public void setFeedbackDisplayLayout(boolean display) {
-        if(display) {
+        if (display) {
             feedbackDisplayLayout.setVisibility(VISIBLE);
             individualMessageSendLayout.setVisibility(View.GONE);
             mainDivider.setVisibility(INVISIBLE);
@@ -4161,7 +4182,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                     frameLayoutProgressbar.setVisibility(View.GONE);
 
-                    if(response.getData() != null) { //i.e if feedback found
+                    if (response.getData() != null) { //i.e if feedback found
                         showFeedback(context, response.getData());
                     } else {
                         //if feedback not found (null)
@@ -4172,7 +4193,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
-                    Utils.printLog(getContext(), TAG , "Feedback get failed: " + e.toString());
+                    Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
                 }
             });
         } else {
@@ -4696,7 +4717,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     /**
      * set the feed back of the given conversation when the submit button on feedback fragment is pressed
-     * @param rating the rating
+     *
+     * @param rating   the rating
      * @param feedback the feedback comment
      */
     @Override
@@ -4704,7 +4726,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         final KmFeedback kmFeedback = new KmFeedback();
         kmFeedback.setGroupId(channel.getKey());
 
-        if(!TextUtils.isEmpty(feedback)) {
+        if (!TextUtils.isEmpty(feedback)) {
             String[] feedbackArray = new String[1];
             feedbackArray[0] = feedback;
             kmFeedback.setComments(feedbackArray);

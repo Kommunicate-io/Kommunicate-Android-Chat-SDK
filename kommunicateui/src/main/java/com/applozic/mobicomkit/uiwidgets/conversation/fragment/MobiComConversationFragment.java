@@ -459,14 +459,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         imageViewFeedbackRating = feedbackDisplayLayout.findViewById(R.id.idRatingImage);
         constraintLayoutFeedbackTopLayout = feedbackDisplayLayout.findViewById(R.id.idFeedbackTopLayout);
 
-        Utils.printLog(getContext(), TAG, "onCreateView for "+TAG+" called.");
+        Utils.printLog(getContext(), TAG, "onCreateView for " + TAG + " called.");
 
         /**
          * check if conversation is a resolved one, and display the respective feedback layouts
          * also open the feedback input fragment if feedback isn't set
          */
         if(channel!=null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
-            Utils.printLog(getContext() ,TAG ,"Loading feedback for: "+channel.getKey());
+            Utils.printLog(getContext() ,TAG ,"Loading feedback for: " + channel.getKey());
 
             setFeedbackDisplayLayout(true);
         }
@@ -892,7 +892,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
-                    Utils.printLog(context, TAG, "Response : " + response + " ----- Exception : " + e);
+                    Utils.printLog(context, TAG, "Response: " + response + " ----- Exception : " + e);
                 }
             });
         }
@@ -990,7 +990,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
-        Utils.printLog(getContext(), TAG, "onChannelUpdated on "+TAG+" called.");
+        Utils.printLog(getContext(), TAG, "onChannelUpdated on " + TAG + " called.");
 
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
@@ -999,7 +999,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         } else {
             //conversation is open
             //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
-            if(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount()-1).getName().equals(feedBackFragment.getTag())) {
+            if(getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1).getName().equals(feedBackFragment.getTag())) {
                 getFragmentManager().popBackStack();
             }
             setFeedbackDisplayLayout(false);
@@ -2828,7 +2828,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void onResume() {
         super.onResume();
 
-        Utils.printLog(getContext(), TAG, "onResume for "+TAG+" called.");
+        Utils.printLog(getContext(), TAG, "onResume for " + TAG + " called.");
 
         AlEventManager.getInstance().registerUIListener(TAG, this);
 
@@ -4139,7 +4139,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         if(feedback.getComments() != null) {
             textViewfeedbackComment.setVisibility(VISIBLE);
-            textViewfeedbackComment.setText("\""+feedback.getComments()[0]+"\"");
+            textViewfeedbackComment.setText("\"" + feedback.getComments()[0] + "\"");
         }
     }
 
@@ -4172,7 +4172,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
-                    Utils.printLog(getContext(), TAG , "Feedback get failed: "+ e.toString());
+                    Utils.printLog(getContext(), TAG , "Feedback get failed: " + e.toString());
                 }
             });
         } else {
@@ -4720,7 +4720,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             @Override
             public void onFailure(Context context, Exception e, String response) {
-                Utils.printLog(context, TAG, "Feedback update failed: "+ e.toString());
+                Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
                 Toast.makeText(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
             }
         });

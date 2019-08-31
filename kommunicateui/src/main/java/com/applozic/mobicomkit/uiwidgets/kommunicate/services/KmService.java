@@ -169,8 +169,8 @@ public class KmService {
      * @param kmFeedback the feedback object (has groupId, rating and comments data members)
      * @return string response of the post request
      */
-    public synchronized String setConversationFeedback(KmFeedback kmFeedback) throws Exception {
-        return clientService.setConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments());
+    public synchronized String postConversationFeedback(KmFeedback kmFeedback) throws Exception {
+        return clientService.postConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments());
     }
 
 }

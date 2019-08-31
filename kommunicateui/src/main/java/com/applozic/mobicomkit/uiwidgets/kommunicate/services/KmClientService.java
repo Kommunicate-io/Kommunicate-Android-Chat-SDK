@@ -91,13 +91,13 @@ public class KmClientService extends MobiComKitClientService {
     }
 
     /**
-     * to set/post the feedback for a given conversation
+     * to post the feedback for a given conversation
      * @param conversationId the groupId of the conversation
      * @param rating the rating 0-5 given by the user
      * @param feedbackComment the comment array of the inputs given by the user
      * @return the feedback response json string
      */
-    public String setConversationFeedback(int conversationId, int rating, String feedbackComment[]) throws Exception{
+    public String postConversationFeedback(int conversationId, int rating, String feedbackComment[]) throws Exception{
         JSONObject jsonObject = new JSONObject();
         JSONArray feedbackJsonArray = new JSONArray();
 

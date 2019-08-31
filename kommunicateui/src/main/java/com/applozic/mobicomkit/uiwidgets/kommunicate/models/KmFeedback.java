@@ -54,9 +54,7 @@ public class KmFeedback {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 
     public String getUpdatedAt() {
         return updatedAt;
@@ -74,9 +72,4 @@ public class KmFeedback {
         this.deleteAt = deleteAt;
     }
 
-    public class UserInfo {
-        String name;
-        String email;
-        String userName;
-    }
 }

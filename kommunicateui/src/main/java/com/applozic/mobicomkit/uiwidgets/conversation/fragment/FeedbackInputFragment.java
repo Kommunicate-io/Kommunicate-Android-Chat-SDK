@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
  * @author shubham
  * @date july 19
  */
-public class FeedbackInputFragment extends Fragment implements View.OnClickListener{
+public class FeedbackInputFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "FeedbackInputFragment";
 
@@ -97,17 +97,16 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         editTextFeedbackComment.setVisibility(View.GONE);
 
         //selected
-        Drawable[] buttonDrawablesSelected = new Drawable[3];
-        buttonDrawablesSelected[0] = getResources().getDrawable(R.drawable.ic_sad_1);
-        buttonDrawablesSelected[1] = getResources().getDrawable(R.drawable.ic_confused);
-        buttonDrawablesSelected[2] = getResources().getDrawable(R.drawable.ic_happy);
+        Drawable[][] buttonDrawables = new Drawable[3][2];
+        buttonDrawables[0][0] = getResources().getDrawable(R.drawable.ic_sad_1);
+        buttonDrawables[1][0] = getResources().getDrawable(R.drawable.ic_confused);
+        buttonDrawables[2][0] = getResources().getDrawable(R.drawable.ic_happy);
         //not selected
-        Drawable[] buttonDrawablesUnselected = new Drawable[3];
-        buttonDrawablesUnselected[0] = getResources().getDrawable(R.drawable.ic_sad_1_grey);
-        buttonDrawablesUnselected[1] = getResources().getDrawable(R.drawable.ic_confused_grey);
-        buttonDrawablesUnselected[2] = getResources().getDrawable(R.drawable.ic_happy_grey);
+        buttonDrawables[0][1] = getResources().getDrawable(R.drawable.ic_sad_1_grey);
+        buttonDrawables[1][1] = getResources().getDrawable(R.drawable.ic_confused_grey);
+        buttonDrawables[2][1] = getResources().getDrawable(R.drawable.ic_happy_grey);
 
-        feedbackRatingGroup = new FeedbackRatingGroup(3, buttonDrawablesSelected, buttonDrawablesUnselected);
+        feedbackRatingGroup = new FeedbackRatingGroup(3, buttonDrawables);
 
         feedbackRatingGroup.createViewForRatingValue(view, 1, R.id.idButtonPoor, R.id.idTextPoor);
         feedbackRatingGroup.createViewForRatingValue(view, 2, R.id.idButtonAverage, R.id.idTextAverage);
@@ -142,7 +141,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
      */
     void toggleRatingButtonSelected(boolean select, FeedbackRatingGroup.FeedbackRating feedbackRating) {
         //set drawable
-        feedbackRatingGroup.setDrawableForRating(select, feedbackRating);
+        feedbackRating.selectDrawable(select);
 
         //set visibility and size
         if(select) {
@@ -150,7 +149,6 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
             feedbackRating.ratingButton.setScaleY(1f);
             feedbackRating.feedbackTextView.setVisibility(View.VISIBLE);
         } else {
-
             feedbackRating.ratingButton.setScaleX(0.8f);
             feedbackRating.ratingButton.setScaleY(0.8f);
             feedbackRating.feedbackTextView.setVisibility(View.GONE);
@@ -164,7 +162,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         setRatingLevel(buttonTag);
 
         //show the feedback comment input edit text, if not already visible
-        if(editTextFeedbackComment.getVisibility()==View.GONE) {
+        if(editTextFeedbackComment.getVisibility() == View.GONE) {
             editTextFeedbackComment.setVisibility(View.VISIBLE);
         }
 
@@ -178,15 +176,13 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
      * class for the feedback rating input buttons and text views
      */
     public class FeedbackRatingGroup {
-        Drawable[] selectedDrawable;
-        Drawable[] unSelectedDrawable;
+        Drawable[][] drawables;
         FeedbackRating[] feedbackRating;
         int noOfRatingElements;
 
-        public FeedbackRatingGroup(int noOfRatingElements, Drawable[] selectedDrawable, Drawable[] unSelectedDrawable) {
+        public FeedbackRatingGroup(int noOfRatingElements, Drawable[][] drawables) {
             this.noOfRatingElements = noOfRatingElements;
-            this.selectedDrawable = selectedDrawable;
-            this.unSelectedDrawable = unSelectedDrawable;
+            this.drawables = drawables;
             feedbackRating = new FeedbackRating[noOfRatingElements];
         }
 
@@ -197,13 +193,13 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
             Button ratingButton;
             TextView feedbackTextView;
             int ratingValue;
-        }
 
-        void setDrawableForRating(boolean select, FeedbackRating feedbackRating) {
-            if(select) {
-                feedbackRating.ratingButton.setBackground(selectedDrawable[feedbackRating.ratingValue - 1]);
-            } else {
-                feedbackRating.ratingButton.setBackground(unSelectedDrawable[feedbackRating.ratingValue - 1]);
+            void selectDrawable(boolean select) {
+                if(select) {
+                    ratingButton.setBackground(drawables[ratingValue - 1][0]);
+                } else {
+                    ratingButton.setBackground(drawables[ratingValue - 1][1]);
+                }
             }
         }
 
@@ -234,8 +230,6 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
             feedbackRating[value - 1] = feedbackRatingObject;
         }
     }
-
-
 
     public interface FeedbackFragmentListener {
         void onFeedbackSubmitButtonPressed(int rating, String feedback);

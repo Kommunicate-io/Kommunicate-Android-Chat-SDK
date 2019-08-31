@@ -43,7 +43,7 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
                 }
                 return  new KmService(contextWeakReference.get()).getConversationFeedback(conversationId);
             } else {
-                return  new KmService(contextWeakReference.get()).setConversationFeedback(kmFeedback);
+                return  new KmService(contextWeakReference.get()).postConversationFeedback(kmFeedback);
             }
         } catch (Exception i) {
             e = i;

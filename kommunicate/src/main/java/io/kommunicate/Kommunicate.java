@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+import android.util.Log;
 
 
 import com.applozic.mobicomkit.Applozic;
@@ -30,6 +31,11 @@ import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -68,6 +74,7 @@ public class Kommunicate {
     private static final String TAG = "KommunicateTag";
     private static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
     private static final String SKIP_ROUTING = "SKIP_ROUTING";
+    public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
 
     public static void init(Context context, String applicationKey) {
         Applozic.init(context, applicationKey);
@@ -512,5 +519,33 @@ public class Kommunicate {
             text.append(possible.charAt(random.nextInt(possible.length())));
         }
         return text.toString();
+    }
+
+    /**
+     * will update the metadata object with the KM_CHAT_CONTEXT field
+     * @param context the context
+     * @param messageMetadata the map data to update the KM_CHAT_CONTEXT field with
+     */
+    public static void updateChatContext(Context context, Map<String, String> messageMetadata) {
+        //converting the messageMetadata(keyed by KM_CHAT_CONTEXT) to json
+        String messageMetaDataString = GsonUtils.getJsonFromObject(messageMetadata, Map.class);
+        if(messageMetaDataString == null || TextUtils.isEmpty(messageMetaDataString)) {
+            return;
+        }
+
+        //getting the message metadata already in the applozic preferences
+        String existingMetaDataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        Log.d("ChatContext", "Message metadata string: "+ existingMetaDataString);
+        //the new metadata
+        Map<String, String> metadata;
+
+        if(existingMetaDataString == null || TextUtils.isEmpty(existingMetaDataString)) {
+            metadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(context).getMessageMetaData(), Map.class);
+        } else {
+            metadata = new HashMap<>();
+        }
+
+        metadata.put(KM_CHAT_CONTEXT, messageMetaDataString);
+        ApplozicClient.getInstance(context).setMessageMetaData(metadata);
     }
 }

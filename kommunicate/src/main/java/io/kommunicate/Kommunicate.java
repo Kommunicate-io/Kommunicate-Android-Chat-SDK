@@ -519,7 +519,7 @@ public class Kommunicate {
         return text.toString();
     }
 
-    public static void getAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
+    public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
         new KmAwayMessageTask(context, groupId, handler).execute();
     }
 }

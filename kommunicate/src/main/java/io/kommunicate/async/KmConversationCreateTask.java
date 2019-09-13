@@ -21,14 +21,16 @@ public class KmConversationCreateTask extends AsyncTask<Void, Void, ChannelFeedA
 
 
     public KmConversationCreateTask(Context context, ChannelInfo channelInfo, KmStartConversationHandler startConversationHandler) {
-        this.context = new WeakReference<>(context);
-        this.startConversationHandler = startConversationHandler;
-        this.channelInfo = channelInfo;
-        this.channelService = ChannelService.getInstance(context);
+        this(context, channelInfo, null, startConversationHandler);
     }
 
     public KmConversationCreateTask(Context context, ChannelInfo channelInfo, KMStartChatHandler startChatHandler) {
+        this(context, channelInfo, startChatHandler, null);
+    }
+
+    private KmConversationCreateTask(Context context, ChannelInfo channelInfo, KMStartChatHandler startChatHandler, KmStartConversationHandler startConversationHandler) {
         this.context = new WeakReference<>(context);
+        this.startConversationHandler = startConversationHandler;
         this.startChatHandler = startChatHandler;
         this.channelInfo = channelInfo;
         this.channelService = ChannelService.getInstance(context);

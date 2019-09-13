@@ -104,9 +104,7 @@ import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
-import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
-import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioRecordManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
@@ -836,7 +834,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         createTemplateMessages();
 
         if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableAwayMessage()) {
-            Kommunicate.getAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
+            Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse.KmMessageResponse response) {
                     showAwayMessage(true, response.getMessage());
@@ -992,8 +990,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (!TextUtils.isEmpty(message) && messageEditText != null) {
                     messageEditText.setText(message);
                     messageEditText.setSelection(message.length());
-                } else if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
-                    messageEditText.setText("");
                 }
                 if (kmAutoSuggestionDivider != null) {
                     kmAutoSuggestionDivider.setVisibility(View.GONE);

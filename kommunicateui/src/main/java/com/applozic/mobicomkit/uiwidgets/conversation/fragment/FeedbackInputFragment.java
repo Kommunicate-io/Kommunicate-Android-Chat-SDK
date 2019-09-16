@@ -165,7 +165,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         Integer buttonTag = (Integer) view.getTag();
         setRatingLevel(buttonTag);
 
-        //showFeedbackView the feedback comment input edit text, if not already visible
+        //show the feedback comment input edit text, if not already visible
         if (editTextFeedbackComment.getVisibility() == View.GONE) {
             editTextFeedbackComment.setVisibility(View.VISIBLE);
         }

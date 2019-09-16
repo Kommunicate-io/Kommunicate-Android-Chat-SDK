@@ -343,7 +343,7 @@ public class ChannelFragment extends ListFragment implements
 
             if (startIndex == -1) {
                 // If the user didn't do a search, or the search string didn't match a display
-                // name, showFeedbackView the display name without highlighting
+                // name, show the display name without highlighting
                 holder.groupName.setText(channel.getName());
 
                 if (TextUtils.isEmpty(mSearchTerm)) {

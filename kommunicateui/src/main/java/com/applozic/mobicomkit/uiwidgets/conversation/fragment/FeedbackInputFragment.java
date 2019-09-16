@@ -25,7 +25,7 @@ import java.lang.annotation.RetentionPolicy;
  * fragment for the feedback input form
  *
  * @author shubham
- * @date july 19
+ * @date july '19
  */
 public class FeedbackInputFragment extends Fragment implements View.OnClickListener {
 
@@ -122,7 +122,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
                     setRatingLevel(RATING_AVERAGE);
                 }
                 String feedbackComment = editTextFeedbackComment.getText().toString().trim();
-                feedbackFragmentListener.onFeedbackSubmitButtonPressed(getRatingLevel(), feedbackComment);
+                feedbackFragmentListener.onFeedbackFragmentSubmitButtonPressed(getRatingLevel(), feedbackComment);
                 getFragmentManager().popBackStack();
             }
         });
@@ -165,7 +165,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
         Integer buttonTag = (Integer) view.getTag();
         setRatingLevel(buttonTag);
 
-        //show the feedback comment input edit text, if not already visible
+        //showFeedbackView the feedback comment input edit text, if not already visible
         if (editTextFeedbackComment.getVisibility() == View.GONE) {
             editTextFeedbackComment.setVisibility(View.VISIBLE);
         }
@@ -237,6 +237,6 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
     }
 
     public interface FeedbackFragmentListener {
-        void onFeedbackSubmitButtonPressed(int rating, String feedback);
+        void onFeedbackFragmentSubmitButtonPressed(int rating, String feedback);
     }
 }

@@ -780,7 +780,7 @@ public class ConversationUIService {
             //Note: This is used only for the device contacts
             Long contactId = intent.getLongExtra(CONTACT_ID, 0);
             if (contactId == 0) {
-                //Todo: show warning that the user doesn't have any number stored.
+                //Todo: showFeedbackView warning that the user doesn't have any number stored.
                 return;
             }
             contact = baseContactService.getContactById(String.valueOf(contactId));

@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -42,7 +41,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -152,6 +150,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmChannelService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
@@ -204,7 +203,6 @@ import java.util.Timer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static java.util.Collections.disjoint;
 
@@ -332,11 +330,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     FeedbackInputFragment feedBackFragment;
 
-    LinearLayout feedbackDisplayLayout;
-    TextView textViewfeedbackComment;
-    ImageView imageViewFeedbackRating;
-    TextView textViewRestartConversation;
-    ConstraintLayout constraintLayoutFeedbackTopLayout;
+    KmFeedbackView kmFeedbackView;
+
     View mainDivider;
     FrameLayout frameLayoutProgressbar;
 
@@ -453,11 +448,15 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
 
-        feedbackDisplayLayout = list.findViewById(R.id.idRelativeLayoutFeedbackDisplay);
-        textViewRestartConversation = feedbackDisplayLayout.findViewById(R.id.idFeedbackRestartConversation);
-        textViewfeedbackComment = feedbackDisplayLayout.findViewById(R.id.idFeedbackComment);
-        imageViewFeedbackRating = feedbackDisplayLayout.findViewById(R.id.idRatingImage);
-        constraintLayoutFeedbackTopLayout = feedbackDisplayLayout.findViewById(R.id.idFeedbackTopLayout);
+        kmFeedbackView = list.findViewById(R.id.idKmFeedbackView);
+
+        //what to do when Restart Conversation button is clicked
+        kmFeedbackView.setInteractionListener(new KmFeedbackView.KmFeedbackViewCallbacks() {
+            @Override
+            public void onRestartConversationPressed() {
+                setFeedbackDisplay(false);
+            }
+        });
 
         Utils.printLog(getContext(), TAG, "onCreateView for " + TAG + " called.");
 
@@ -466,17 +465,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
          * also open the feedback input fragment if feedback isn't set
          */
         if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
-            Utils.printLog(getContext(), TAG, "Loading feedback for: " + channel.getKey());
-
-            setFeedbackDisplayLayout(true);
+            setFeedbackDisplay(true);
         }
-
-        textViewRestartConversation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setFeedbackDisplayLayout(false);
-            }
-        });
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
 
@@ -1010,14 +1000,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
         if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
-            setFeedbackDisplayLayout(true);
+            setFeedbackDisplay(true);
         } else {
             //conversation is open
             //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
             if (getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1).getName().equals(feedBackFragment.getTag())) {
                 getFragmentManager().popBackStack();
             }
-            setFeedbackDisplayLayout(false);
+            setFeedbackDisplay(false);
         }
     }
 
@@ -4136,43 +4126,15 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     /**
-     * set the feedback data and show the respective feedback layout views and viewgroups
-     *
-     * @param context  the context
-     * @param feedback the feedback object
-     */
-    public void showFeedback(Context context, KmFeedback feedback) {
-        constraintLayoutFeedbackTopLayout.setVisibility(VISIBLE);
-
-        int rating = feedback.getRating();
-        switch (rating) {
-            case FeedbackInputFragment.RATING_POOR:
-                imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_sad_1));
-                break;
-            case FeedbackInputFragment.RATING_AVERAGE:
-                imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_confused));
-                break;
-            case FeedbackInputFragment.RATING_GOOD:
-                imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_happy));
-                break;
-        }
-
-        if (feedback.getComments() != null) {
-            textViewfeedbackComment.setVisibility(VISIBLE);
-            textViewfeedbackComment.setText("\"" + feedback.getComments()[0] + "\"");
-        }
-    }
-
-    /**
      * displays/hides the feedback display layout, along with the feedback received from the server
      *
      * @param display true to display/ false to not
      */
-    public void setFeedbackDisplayLayout(boolean display) {
+    public void setFeedbackDisplay(boolean display) {
         if (display) {
-            feedbackDisplayLayout.setVisibility(VISIBLE);
+            kmFeedbackView.setVisibility(VISIBLE);
             individualMessageSendLayout.setVisibility(View.GONE);
-            mainDivider.setVisibility(INVISIBLE);
+            mainDivider.setVisibility(View.GONE);
 
             frameLayoutProgressbar.setVisibility(VISIBLE);
 
@@ -4183,7 +4145,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     frameLayoutProgressbar.setVisibility(View.GONE);
 
                     if (response.getData() != null) { //i.e if feedback found
-                        showFeedback(context, response.getData());
+                        //show the feedback based on the data given
+                        kmFeedbackView.showFeedback(context, response.getData());
                     } else {
                         //if feedback not found (null)
                         //open the feedback input fragment
@@ -4193,11 +4156,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
+                    frameLayoutProgressbar.setVisibility(View.GONE);
                     Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
                 }
             });
         } else {
-            feedbackDisplayLayout.setVisibility(View.GONE);
+            kmFeedbackView.setVisibility(View.GONE);
             individualMessageSendLayout.setVisibility(VISIBLE);
             mainDivider.setVisibility(VISIBLE);
         }
@@ -4722,7 +4686,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
      * @param feedback the feedback comment
      */
     @Override
-    public void onFeedbackSubmitButtonPressed(int rating, String feedback) {
+    public void onFeedbackFragmentSubmitButtonPressed(int rating, String feedback) {
         final KmFeedback kmFeedback = new KmFeedback();
         kmFeedback.setGroupId(channel.getKey());
 
@@ -4737,7 +4701,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         KommunicateUI.setConversationFeedback(getActivity(), kmFeedback, new KmFeedbackCallback() {
             @Override
             public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
-                showFeedback(context, kmFeedback);
+                kmFeedbackView.showFeedback(context, kmFeedback);
             }
 
             @Override

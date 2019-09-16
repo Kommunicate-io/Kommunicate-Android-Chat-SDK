@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:background="@color/transparent_grey_overlay"
         android:clickable="true"
+        android:focusable="true"
         android:elevation="20dp"
         android:visibility="gone">
 
@@ -523,8 +524,6 @@
                         android:visibility="visible" />
                 </FrameLayout>
 
-                <include layout="@layout/feedback_display_layout"/>
-
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/user_not_able_to_chat_layout"
                     android:layout_width="match_parent"
@@ -543,6 +542,15 @@
                         android:text="@string/user_not_in_this_group_text"
                         android:textSize="18sp" />
                 </LinearLayout>
+
+                <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView
+                    android:id="@+id/idKmFeedbackView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
             </FrameLayout>
         </LinearLayout>
 
@@ -603,5 +611,4 @@
         android:id="@+id/idFrameLayoutFeedbackContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 </RelativeLayout>

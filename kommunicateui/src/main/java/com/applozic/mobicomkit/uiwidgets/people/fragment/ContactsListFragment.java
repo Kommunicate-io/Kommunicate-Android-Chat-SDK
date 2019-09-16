@@ -607,7 +607,7 @@ public class ContactsListFragment extends ListFragment implements SearchListFrag
 
             if (startIndex == -1) {
                 // If the user didn't do a search, or the search string didn't match a display
-                // name, show the display name without highlighting
+                // name, showFeedbackView the display name without highlighting
                 holder.text1.setText(displayName);
 
                 if (TextUtils.isEmpty(mSearchTerm)) {

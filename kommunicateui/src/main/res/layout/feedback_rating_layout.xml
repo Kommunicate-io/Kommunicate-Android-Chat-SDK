@@ -6,14 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#CE000000"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         android:id="@+id/idFeedbackContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/half_rounded_white_rectangle"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         android:paddingTop="10dp"
         android:paddingBottom="5dp">
 
@@ -21,11 +24,10 @@
             android:id="@+id/idCloseFeedbackFragment"
             android:layout_width="20dp"
             android:layout_height="20dp"
+            android:layout_gravity="end"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/ic_cancel_copy"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginRight="10dp"
+            android:background="@drawable/ic_cancel_copy" />
 
         <TextView
             android:id="@+id/idTextViewTitle"
@@ -33,17 +35,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="0dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="47dp"
+            android:layout_marginBottom="40dp"
             android:text="@string/rate_the_conversation"
             android:textColor="@color/dark_black"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/idLinearLayoutRatings"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="16sp" />
 
         <LinearLayout
             android:id="@+id/idLinearLayoutRatings"
@@ -53,12 +51,10 @@
             android:layout_marginLeft="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="55dp"
+            android:layout_marginBottom="47dp"
+            android:baselineAligned="false"
             android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/idEditTextFeedback"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/idRatingPoor"
@@ -73,7 +69,6 @@
                     android:id="@+id/idButtonPoor"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_weight="1"
                     android:background="@drawable/ic_sad_1"
                     android:gravity="center_horizontal" />
 
@@ -82,7 +77,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:text="@string/rating_poor" />
             </LinearLayout>
@@ -98,7 +92,6 @@
                     android:id="@+id/idButtonAverage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_weight="1"
                     android:background="@drawable/ic_confused"
                     android:gravity="center_horizontal" />
 
@@ -107,7 +100,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:text="@string/rating_average" />
             </LinearLayout>
@@ -125,7 +117,6 @@
                     android:id="@+id/idButtonGood"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:layout_weight="1"
                     android:background="@drawable/ic_happy"
                     android:gravity="center_horizontal" />
 
@@ -134,7 +125,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:text="@string/rating_good" />
             </LinearLayout>
@@ -143,7 +133,7 @@
 
         <EditText
             android:id="@+id/idEditTextFeedback"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="21dp"
             android:layout_marginLeft="21dp"
@@ -156,14 +146,11 @@
             android:hint="@string/add_a_comment"
             android:inputType="textMultiLine"
             android:lines="5"
-            android:padding="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/idButtonSubmit"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:padding="8dp" />
 
         <Button
             android:id="@+id/idButtonSubmit"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
@@ -175,11 +162,8 @@
             android:paddingRight="20dp"
             android:text="@string/submit_your_rating"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:textColor="@color/white" />
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 
 </RelativeLayout>

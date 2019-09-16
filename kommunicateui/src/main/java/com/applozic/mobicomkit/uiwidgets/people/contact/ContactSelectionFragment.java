@@ -180,7 +180,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
                     }
                 };
-                ApplozicGetMemberFromContactGroupTask applozicGetMemberFromContactGroupTask = new ApplozicGetMemberFromContactGroupTask(getActivity(), contactsGroupId, String.valueOf(Channel.GroupType.CONTACT_GROUP.getValue()), eventMemberListener);        // pass GroupId whose contact Members you want to show, contactGroupType
+                ApplozicGetMemberFromContactGroupTask applozicGetMemberFromContactGroupTask = new ApplozicGetMemberFromContactGroupTask(getActivity(), contactsGroupId, String.valueOf(Channel.GroupType.CONTACT_GROUP.getValue()), eventMemberListener);        // pass GroupId whose contact Members you want to showFeedbackView, contactGroupType
                 applozicGetMemberFromContactGroupTask.execute();
             } else if (groupContacts != null) {
                 getLoaderManager().initLoader(ContactsQuery.QUERY_ID, null, ContactSelectionFragment.this);
@@ -688,7 +688,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
             if (startIndex == -1) {
                 // If the user didn't do a search, or the search string didn't match a display
-                // name, show the display name without highlighting
+                // name, showFeedbackView the display name without highlighting
                 holder.textView2.setText(contact.getDisplayName());
             } else {
                 // If the search string matched the display name, applies a SpannableString to

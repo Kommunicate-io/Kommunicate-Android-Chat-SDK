@@ -39,6 +39,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -285,7 +286,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private boolean onSelected;
     private ImageCache imageCache;
     private RecyclerView messageTemplateView;
-    private ImageButton cameraButton, locationButton, fileAttachmentButton;
+    private ImageButton cameraButton, locationButton, fileAttachmentButton, imageVideoButton;
     WeakReference<KmRecordButton> recordButtonWeakReference;
     RecyclerView recyclerView;
     RecyclerViewPositionHelper recyclerViewPositionHelper;
@@ -311,6 +312,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public Map<String, CountDownTimer> typingTimerMap;
     public int loggedInUserRole;
     public static final String AUDIO_RECORD_OPTION = ":audio";
+    public static final String IMAGE_VIDEO_ATTACHMENT_OPTION = ":imageVideo";
     KmRecordView recordView;
     FrameLayout recordLayout;
     boolean isRecording = false;
@@ -450,6 +452,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         cameraButton = list.findViewById(R.id.camera_btn);
         locationButton = list.findViewById(R.id.location_btn);
         fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
+        imageVideoButton = list.findViewById(R.id.idImageVideoButton);
         emailReplyReminderLayout = list.findViewById(R.id.emailReplyReminderView);
         processAttachmentIconsClick();
         Configuration config = getResources().getConfiguration();
@@ -858,6 +861,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             if (attachmentOptions.containsKey(":file")) {
                 fileAttachmentButton.setVisibility(attachmentOptions.get(":file") ? VISIBLE : View.GONE);
+            }
+
+            if (attachmentOptions.containsKey(":imageVideo")) {
+                fileAttachmentButton.setVisibility(attachmentOptions.get(":imageVideo") ? VISIBLE : View.GONE);
             }
         }
 
@@ -3908,6 +3915,30 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                                 }
                             }
                         });
+                    }
+                }
+            }
+        });
+
+        imageVideoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                emoticonsFrameLayout.setVisibility(View.GONE);
+                if (getActivity() != null) {
+                    if (!((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
+                        //get permission
+                        ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
+                            @Override
+                            public void onAction(boolean didGrant) {
+                                //did not get permission
+                                if (!didGrant) {
+                                    return;
+                                }
+                            }
+                        });
+                    } else {
+                        ((ConversationActivity) getActivity()).isImageVideo(true);
+                        ((ConversationActivity) getActivity()).processImageVideo();
                     }
                 }
             }

@@ -31,7 +31,8 @@
             android:layout_weight="8"
             android:orientation="horizontal">
 
-            <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <android.support.v4.widget.SwipeRefreshLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swipe_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -452,6 +453,15 @@
                                 android:layout_marginStart="29dp"
                                 android:background="@color/apploizc_transparent_color"
                                 android:src="@drawable/camera" />
+
+                            <ImageButton
+                                android:id="@+id/idImageVideoButton"
+                                android:layout_width="20dp"
+                                android:layout_height="18dp"
+                                android:layout_marginLeft="30dp"
+                                android:layout_marginStart="30dp"
+                                android:background="@color/apploizc_transparent_color"
+                                android:src="@drawable/camera"/>
 
                             <ImageButton
                                 android:id="@+id/file_as_attachment_btn"

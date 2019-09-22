@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -80,8 +81,10 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionF
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs.KmAutoSuggestionsAsyncTask;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
@@ -110,11 +113,16 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.REQUEST_CODE_IMAGE_VIDEO;
 
 
 /**
@@ -145,6 +153,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public LinearLayout layout;
     public boolean isTakePhoto;
     public boolean isAttachment;
+    public boolean isImageVideo;
     public Integer currentConversationId;
     public Snackbar snackbar;
     protected ConversationFragment conversation;
@@ -177,6 +186,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private LinearLayout serviceDisconnectionLayout;
     private KmStoragePermission alStoragePermission;
     private RelativeLayout customToolbarLayout;
+
+    KmAttachmentsController kmAttachmentsController;
+    PrePostUIMethods prePostUIMethods;
 
     public ConversationActivity() {
 
@@ -419,6 +431,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
 
+        kmAttachmentsController = new KmAttachmentsController(this);
+
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -458,6 +472,22 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (KmUtils.isAgent(this)) {
             new KmAutoSuggestionsAsyncTask(this, null).execute();
         }
+
+        //the pre and post attachment write async task callbacks
+        prePostUIMethods = new PrePostUIMethods() {
+            @Override
+            public void preTaskUIMethod() {
+                //TODO: replace with progress bar
+                Toast.makeText(ConversationActivity.this, R.string.applozic_contacts_loading_info, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void postTaskUIMethod(boolean b, File file) {
+                //TODO: add the progress bar in the feedback fragment commit to here
+                //TODO: conversationUIService.getConversationFragment().hideProgressBar();
+                conversationUIService.sendAttachments(new ArrayList<>(Arrays.asList(Uri.parse(file.getAbsolutePath()))), "");
+            }
+        };
     }
 
     @Override
@@ -520,7 +550,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
             conversationUIService.onActivityResult(requestCode, resultCode, data);
+
             handleOnActivityResult(requestCode, data);
+
             if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 if (resultCode == RESULT_OK) {
@@ -545,6 +577,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     Utils.printLog(this, ConversationActivity.class.getName(), "Cropping failed:" + result.getError());
                 }
             }
+
             if (requestCode == LOCATION_SERVICE_ENABLE) {
                 if (((LocationManager) getSystemService(Context.LOCATION_SERVICE))
                         .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -553,6 +586,23 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     Toast.makeText(ConversationActivity.this, R.string.unable_to_fetch_location, Toast.LENGTH_LONG).show();
                 }
                 return;
+            }
+
+            if(requestCode == REQUEST_CODE_IMAGE_VIDEO) {
+                try {
+                    final ClipData clipData = data.getClipData();
+                    if (clipData == null) {
+                        final Uri singleFileUri = (data == null ? null : data.getData());
+                        kmAttachmentsController.processFile(singleFileUri, alCustomizationSettings, prePostUIMethods);
+                    } else {
+                        final int dataCount = clipData.getItemCount();
+                        for (int i = 0; i < dataCount; i++) {
+                            kmAttachmentsController.processFile(clipData.getItemAt(i).getUri(), alCustomizationSettings, prePostUIMethods);
+                        }
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -599,6 +649,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 if (isAttachment) {
                     isAttachment = false;
                     processAttachment();
+                } else if (isImageVideo) {
+                    isImageVideo = false;
+                    processImageVideo();
                 }
             } else {
                 showSnackBar(R.string.storage_permission_not_granted);
@@ -973,6 +1026,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         this.isAttachment = attachment;
     }
 
+    public void isImageVideo(boolean isImageVideo) {
+        this.isImageVideo = isImageVideo;
+    }
+
     public File getFileObject() {
         return mediaFile;
     }
@@ -1182,6 +1239,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             Intent intentPick = new Intent(this, MobiComAttachmentSelectorActivity.class);
             startActivityForResult(intentPick, MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT);
         }
+    }
+
+    public void processImageVideo() {
+        Intent getContentIntent;
+        getContentIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager());
+        getContentIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        getContentIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        Intent intentPick = Intent.createChooser(getContentIntent, getString(R.string.select_file));
+        startActivityForResult(intentPick, REQUEST_CODE_IMAGE_VIDEO);
     }
 
     public void showVideoCapture() {

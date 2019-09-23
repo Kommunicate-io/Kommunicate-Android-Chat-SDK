@@ -114,7 +114,7 @@
     ":camera": true,
     ":file": true,
     ":audio": true,
-    ":imageVideo": true
+    ":multiSelectGalleryItems": true
   },
   "editTextHintText:": "Type your message...",
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",

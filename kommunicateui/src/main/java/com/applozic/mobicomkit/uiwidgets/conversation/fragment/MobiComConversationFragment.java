@@ -39,7 +39,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -312,7 +311,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public Map<String, CountDownTimer> typingTimerMap;
     public int loggedInUserRole;
     public static final String AUDIO_RECORD_OPTION = ":audio";
-    public static final String IMAGE_VIDEO_ATTACHMENT_OPTION = ":imageVideo";
+    public static final String IMAGE_VIDEO_ATTACHMENT_OPTION = ":multiSelectGalleryItems";
     KmRecordView recordView;
     FrameLayout recordLayout;
     boolean isRecording = false;
@@ -863,8 +862,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 fileAttachmentButton.setVisibility(attachmentOptions.get(":file") ? VISIBLE : View.GONE);
             }
 
-            if (attachmentOptions.containsKey(":imageVideo")) {
-                fileAttachmentButton.setVisibility(attachmentOptions.get(":imageVideo") ? VISIBLE : View.GONE);
+            if (attachmentOptions.containsKey(IMAGE_VIDEO_ATTACHMENT_OPTION)) {
+                imageVideoButton.setVisibility(attachmentOptions.get(IMAGE_VIDEO_ATTACHMENT_OPTION) ? VISIBLE : View.GONE);
             }
         }
 
@@ -3903,14 +3902,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
-                        ((ConversationActivity) getActivity()).isTakePhoto(true);
+                        ((ConversationActivity) getActivity()).setFromTakePhoto(true);
                         ((ConversationActivity) getActivity()).processCameraAction();
                     } else {
                         ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
                             @Override
                             public void onAction(boolean didGrant) {
                                 if (didGrant) {
-                                    ((ConversationActivity) getActivity()).isTakePhoto(true);
+                                    ((ConversationActivity) getActivity()).setFromTakePhoto(true);
                                     ((ConversationActivity) getActivity()).processCameraAction();
                                 }
                             }
@@ -3937,7 +3936,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             }
                         });
                     } else {
-                        ((ConversationActivity) getActivity()).isImageVideo(true);
+                        ((ConversationActivity) getActivity()).setFromMultiSelectGallery(true);
                         ((ConversationActivity) getActivity()).processImageVideo();
                     }
                 }
@@ -3950,14 +3949,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
-                        ((ConversationActivity) getActivity()).isAttachment(true);
+                        ((ConversationActivity) getActivity()).setFromAttachment(true);
                         ((ConversationActivity) getActivity()).processAttachment();
                     } else {
                         ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
                             @Override
                             public void onAction(boolean didGrant) {
                                 if (didGrant) {
-                                    ((ConversationActivity) getActivity()).isAttachment(true);
+                                    ((ConversationActivity) getActivity()).setFromAttachment(true);
                                     ((ConversationActivity) getActivity()).processAttachment();
                                 }
                             }

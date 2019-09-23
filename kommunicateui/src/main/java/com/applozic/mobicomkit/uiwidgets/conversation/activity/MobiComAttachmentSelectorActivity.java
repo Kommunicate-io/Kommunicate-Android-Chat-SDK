@@ -67,16 +67,10 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
      * will open either the general file attachment chooser
      */
     void openFileChooser() {
-        Intent getContentIntent;
-        /*
-        if(isImageVideoUpload) {
-            getContentIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager());
-            getContentIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        }
-        */
-        getContentIntent = FileUtils.createGetContentIntent(kmAttachmentsController.getFilterOptions(alCustomizationSettings), getPackageManager());
-        getContentIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        Intent intentPick = Intent.createChooser(getContentIntent, getString(R.string.select_file));
+        Intent contentChooserIntent;
+        contentChooserIntent = FileUtils.createGetContentIntent(kmAttachmentsController.getFilterOptions(alCustomizationSettings), getPackageManager());
+        contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
         startActivityForResult(intentPick, REQUEST_CODE_ATTACH_PHOTO);
     }
 
@@ -195,22 +189,6 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                 }
                 Uri uri = Uri.parse(file.getAbsolutePath());
                 addUri(uri);
-
-                /*
-                if(isImageVideoUpload) {
-                    if(attachmentFileList.size() == dataCount) {
-                        for (Uri singleUri : attachmentFileList) { ;
-                            //sendAttachment(singleUri, true);
-                        }
-                        Intent addImagesIntent = new Intent();
-                        addImagesIntent.putParcelableArrayListExtra(MULTISELECT_SELECTED_FILES, attachmentFileList);
-                        addImagesIntent.putExtra(MULTISELECT_MESSAGE, messageEditText.getText().toString());
-                        setResult(RESULT_OK, addImagesIntent);
-                        finish();
-                    }
-                }
-                */
-
                 imagesAdapter.notifyDataSetChanged();
             }
         };

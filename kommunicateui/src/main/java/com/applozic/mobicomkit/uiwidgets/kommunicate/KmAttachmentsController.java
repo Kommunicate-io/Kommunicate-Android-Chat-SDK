@@ -42,14 +42,14 @@ public class KmAttachmentsController {
      * create a message object and set its attributes for a file (uri given) and return it
      *
      * @param uri the uri of the file
-     * @param isImageVideoUpload true if this is just a image/video (one step flow)
+     * @param imageVideoUpload true if this is just a image/video (one step flow)
      * @param groupID the groupId to send to
      * @param userID the userId to send to
      * @param messageText the message text (only for the non-isImageVideoUpload flow)
      * @throws Exception if uri path is empty and others
      * @return the message (messageToSend)
      */
-    public Message putAttachmentInfo(Uri uri, boolean isImageVideoUpload, int groupID, String userID, String messageText) throws Exception{
+    public Message putAttachmentInfo(Uri uri, boolean imageVideoUpload, int groupID, String userID, String messageText) throws Exception{
         MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
             String filePath = uri.getPath();
             if (TextUtils.isEmpty(filePath)) {
@@ -71,7 +71,7 @@ public class KmAttachmentsController {
             }
             messageToSend.setSendToDevice(Boolean.FALSE);
             messageToSend.setType(Message.MessageType.MT_OUTBOX.getValue());
-            if(!isImageVideoUpload) {
+            if(!imageVideoUpload) {
                 if(!TextUtils.isEmpty(messageText))
                 messageToSend.setMessage(messageText);
             }

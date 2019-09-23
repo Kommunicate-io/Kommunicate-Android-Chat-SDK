@@ -34,7 +34,9 @@ public class KmService {
     private Context context;
     private KmClientService clientService;
     private KmAutoSuggestionDatabase autoSuggestionDatabase;
-
+    public static final String KM_SKIP_BOT = "skipBot";
+    public static final String KM_NO_ALERT = "NO_ALERT";
+    public static final String KM_BADGE_COUNT = "BADGE_COUNT";
 
     public KmService(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -75,29 +77,11 @@ public class KmService {
 
     public static Contact getSupportGroupContact(Context context, Channel channel, BaseContactService contactService, int loggedInUserRoleType) {
         if (User.RoleType.USER_ROLE.getValue() == loggedInUserRoleType) {
-            Map<String, String> metadataMap = channel.getMetadata();
-            if (metadataMap != null) {
-                String conversationAssignee = null;
-                String conversationTitle = null;
-
-                if (metadataMap.containsKey(KmConstants.CONVERSATION_ASSIGNEE)) {
-                    conversationAssignee = metadataMap.get(KmConstants.CONVERSATION_ASSIGNEE);
-                }
-
-                if (metadataMap.containsKey(KmConstants.KM_CONVERSATION_TITLE)) {
-                    conversationTitle = metadataMap.get(KmConstants.KM_CONVERSATION_TITLE);
-                }
-
-                if (!TextUtils.isEmpty(conversationAssignee)) {
-                    return TextUtils.isEmpty(conversationAssignee) ? null : contactService.getContactById(conversationAssignee);
-                }
-                return TextUtils.isEmpty(conversationTitle) ? null : contactService.getContactById(conversationTitle);
-            }
+            return getAssigneeContact(channel, contactService);
         } else {
             String userId = KmChannelService.getInstance(context).getUserInSupportGroup(channel.getKey());
             return TextUtils.isEmpty(userId) ? null : contactService.getContactById(userId);
         }
-        return null;
     }
 
     public static Contact getAssigneeContact(Channel channel, BaseContactService contactService) {

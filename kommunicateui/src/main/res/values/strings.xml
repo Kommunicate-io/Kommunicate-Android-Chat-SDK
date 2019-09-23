@@ -227,4 +227,6 @@
     <string name="km_active_bots_text">Active bot:</string>
     <string name="km_default_assigned_bot_name">Support Bot</string>
     <string name="km_take_over_from_bot_button_text">Take over from bot</string>
+    <string name="km_assign_to_message">Assigned to </string>
+    <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
 </resources>

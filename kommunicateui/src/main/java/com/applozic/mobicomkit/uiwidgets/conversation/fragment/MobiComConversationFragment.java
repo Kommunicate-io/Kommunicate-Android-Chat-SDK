@@ -4403,21 +4403,21 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (metadata == null) {
                     metadata = new HashMap<>();
                 }
-                metadata.put("CONVERSATION_ASSIGNEE", loggedInUserId);
+                metadata.put(Channel.CONVERSATION_ASSIGNEE, loggedInUserId);
                 groupInfoUpdate.setMetadata(metadata);
                 KmService.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
                     @Override
                     public void onSuccess(Context context) {
                         Message message = new Message();
 
-                        message.setMessage("Assigned to " + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
+                        message.setMessage(Utils.getString(context, R.string.km_assign_to_message) + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
 
                         Map<String, String> metadata = new HashMap<>();
-                        metadata.put("skipBot", "true");
-                        metadata.put("KM_ASSIGN", MobiComUserPreference.getInstance(context).getUserId());
-                        metadata.put("NO_ALERT", "true");
-                        metadata.put("BADGE_COUNT", "false");
-                        metadata.put("category", "ARCHIVE");
+                        metadata.put(KmService.KM_SKIP_BOT, Message.GroupMessageMetaData.TRUE.getValue());
+                        metadata.put(Message.KM_ASSIGN, MobiComUserPreference.getInstance(context).getUserId());
+                        metadata.put(KmService.KM_NO_ALERT, Message.GroupMessageMetaData.TRUE.getValue());
+                        metadata.put(KmService.KM_BADGE_COUNT, Message.GroupMessageMetaData.FALSE.getValue());
+                        metadata.put(Message.MetaDataType.KEY.getValue(), Message.MetaDataType.ARCHIVE.getValue());
                         message.setMetadata(metadata);
                         message.setContentType(Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue());
                         message.setGroupId(channel.getKey());

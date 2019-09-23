@@ -56,20 +56,19 @@ public class KmConversationCreateTask extends AsyncTask<Void, Void, ChannelFeedA
                     startChatHandler.onSuccess(channelService.getChannel(channelFeedApiResponse.getResponse()), context.get());
                 }
             } else {
-                if (startConversationHandler != null) {
-                    startConversationHandler.onFailure(channelFeedApiResponse, context.get());
-                }
-                if (startChatHandler != null) {
-                    startChatHandler.onFailure(channelFeedApiResponse, context.get());
-                }
+                sendFailureResult(channelFeedApiResponse);
             }
         } else {
-            if (startConversationHandler != null) {
-                startConversationHandler.onFailure(null, context.get());
-            }
-            if (startChatHandler != null) {
-                startChatHandler.onFailure(null, context.get());
-            }
+            sendFailureResult(null);
+        }
+    }
+
+    private void sendFailureResult(ChannelFeedApiResponse channelFeedApiResponse) {
+        if (startConversationHandler != null) {
+            startConversationHandler.onFailure(channelFeedApiResponse, context.get());
+        }
+        if (startChatHandler != null) {
+            startChatHandler.onFailure(channelFeedApiResponse, context.get());
         }
     }
 }

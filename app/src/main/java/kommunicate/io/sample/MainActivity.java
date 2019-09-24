@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String mPasswordText = mPassword.getText().toString().trim();
                     if (TextUtils.isEmpty(mUserIdText) || mUserId.getText().toString().trim().length() == 0) {
-                        Toast.makeText(getBaseContext(), "Enter UserId ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), R.string.enter_user_id, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         if (exit) {
             finish();
         } else {
-            Toast.makeText(this, "Press Back again to Exit.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.press_back_exit, Toast.LENGTH_SHORT).show();
             exit = true;
 
             new Handler().postDelayed(new Runnable() {

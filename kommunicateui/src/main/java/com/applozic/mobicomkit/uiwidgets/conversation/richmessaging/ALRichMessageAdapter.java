@@ -689,7 +689,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                         || TextUtils.isEmpty(holder.emailIdEt.getText().toString().trim())
                         || TextUtils.isEmpty(holder.firstNameEt.getText().toString().trim())
                         || "Title *".equals(titleList.get(holder.titleSpinner.getSelectedItemPosition()))) {
-                    Toast.makeText(context, "Mandatory fields required...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.mandatory_fields, Toast.LENGTH_SHORT).show();
                 } else {
                     bookingDetails.setTitle(titleList.get(holder.titleSpinner.getSelectedItemPosition()));
                     bookingDetails.setFirstName(holder.firstNameEt.getText().toString().trim());

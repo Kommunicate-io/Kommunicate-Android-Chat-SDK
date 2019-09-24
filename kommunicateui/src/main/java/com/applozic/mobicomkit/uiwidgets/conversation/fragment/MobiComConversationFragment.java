@@ -25,6 +25,8 @@ import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
@@ -89,6 +91,7 @@ import com.applozic.mobicomkit.api.notification.MuteNotificationRequest;
 import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.api.notification.MuteUserNotificationAsync;
 import com.applozic.mobicomkit.api.people.UserIntentService;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
@@ -97,6 +100,7 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
+import com.applozic.mobicomkit.listners.ApplozicUIListener;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
@@ -136,14 +140,17 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmFeedbackCallback;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFeedback;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmChannelService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
@@ -203,7 +210,7 @@ import static java.util.Collections.disjoint;
  * reg
  * Created by devashish on 10/2/15.
  */
-abstract public class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, ALRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor> {
+abstract public class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, ALRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener {
 
     private static final String TAG = "MobiComConversation";
     public FrameLayout emoticonsFrameLayout, contextFrameLayout;
@@ -321,6 +328,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private View kmAutoSuggestionDivider;
     private String loggedInUserId;
 
+    FeedbackInputFragment feedBackFragment;
+
+    KmFeedbackView kmFeedbackView;
+
+    View mainDivider;
+    FrameLayout frameLayoutProgressbar;
+
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -339,6 +353,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         fontManager = new KmFontManager(getContext(), alCustomizationSettings);
 
         restrictedWords = FileUtils.loadRestrictedWordsFile(ApplozicService.getContext(getContext()));
+
+        feedBackFragment = new FeedbackInputFragment();
+        feedBackFragment.setFeedbackFragmentListener(this);
+
         conversationUIService = new ConversationUIService(getActivity());
         syncCallService = SyncCallService.getInstance(getActivity());
         appContactService = new AppContactService(getActivity());
@@ -384,6 +402,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(true);
 
+        frameLayoutProgressbar = list.findViewById(R.id.idProgressBarLayout);
+
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();
 
@@ -424,8 +444,32 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
+        mainDivider = list.findViewById(R.id.idMainDividerLine);
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
+
+        kmFeedbackView = list.findViewById(R.id.idKmFeedbackView);
+
+        //what to do when Restart Conversation button is clicked
+        kmFeedbackView.setInteractionListener(new KmFeedbackView.KmFeedbackViewCallbacks() {
+            @Override
+            public void onRestartConversationPressed() {
+                setFeedbackDisplay(false);
+            }
+        });
+
+        Utils.printLog(getContext(), TAG, "onCreateView for " + TAG + " called.");
+
+        /**
+         * check if conversation is a resolved one, and display the respective feedback layouts
+         * also open the feedback input fragment if feedback isn't set
+         */
+        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
+            setFeedbackDisplay(true);
+        }
+
+        mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
+
         sendButton = (ImageButton) individualMessageSendLayout.findViewById(R.id.conversation_send);
 
         recordLayout = list.findViewById(R.id.kmRecordLayout);
@@ -838,7 +882,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
-                    Utils.printLog(context, TAG, "Response : " + response + " ----- Exception : " + e);
+                    Utils.printLog(context, TAG, "Response: " + response + " ----- Exception : " + e);
                 }
             });
         }
@@ -883,6 +927,114 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
         recordButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.GONE : View.VISIBLE) : View.GONE);
+    }
+
+    @Override
+    public void onMessageSent(Message message) {
+    }
+
+    @Override
+    public void onMessageReceived(Message message) {
+    }
+
+    @Override
+    public void onLoadMore(boolean loadMore) {
+    }
+
+    @Override
+    public void onMessageSync(Message message, String key) {
+    }
+
+    @Override
+    public void onMessageDeleted(String messageKey, String userId) {
+    }
+
+    @Override
+    public void onMessageDelivered(Message message, String userId) {
+    }
+
+    @Override
+    public void onAllMessagesDelivered(String userId) {
+    }
+
+    @Override
+    public void onAllMessagesRead(String userId) {
+    }
+
+    @Override
+    public void onConversationDeleted(String userId, Integer channelKey, String response) {
+    }
+
+    @Override
+    public void onUpdateTypingStatus(String userId, String isTyping) {
+    }
+
+    @Override
+    public void onUpdateLastSeen(String userId) {
+    }
+
+    @Override
+    public void onMqttDisconnected() {
+    }
+
+    @Override
+    public void onMqttConnected() {
+    }
+
+    @Override
+    public void onUserOnline() {
+    }
+
+    @Override
+    public void onUserOffline() {
+    }
+
+    @Override
+    public void onChannelUpdated() {
+        if (channel == null) {
+            return;
+        }
+
+        Utils.printLog(getContext(), TAG, "onChannelUpdated on " + TAG + " called.");
+
+        channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
+
+        if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
+            setFeedbackDisplay(true);
+        } else {
+            //conversation is open
+            //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
+            if (getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1).getName().equals(feedBackFragment.getTag())) {
+                getFragmentManager().popBackStack();
+            }
+            setFeedbackDisplay(false);
+        }
+    }
+
+    @Override
+    public void onConversationRead(String userId, boolean isGroup) {
+    }
+
+    @Override
+    public void onUserDetailUpdated(String userId) {
+    }
+
+    @Override
+    public void onMessageMetadataUpdated(String keyString) {
+    }
+
+    @Override
+    public void onUserMute(boolean mute, String userId) {
+    }
+
+    public void openFeedbackFragment() {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        if (fragmentManager.findFragmentByTag(FeedbackInputFragment.getTAG()) == null) {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, feedBackFragment, FeedbackInputFragment.getTAG());
+            fragmentTransaction.addToBackStack(FeedbackInputFragment.getTAG());
+            fragmentTransaction.commit();
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -2585,6 +2737,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         super.onPause();
         populateAutoSuggestion(false, null, null);
 
+        AlEventManager.getInstance().unregisterUIListener(TAG);
+
         if (isRecording) {
             onLessThanSecond();
             if (recordButton != null) {
@@ -2682,6 +2836,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onResume() {
         super.onResume();
+
+        Utils.printLog(getContext(), TAG, "onResume for " + TAG + " called.");
+
+        AlEventManager.getInstance().registerUIListener(TAG, this);
+
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
             MobiComUserPreference.getInstance(getActivity()).setDeleteChannel(false);
             if (getActivity().getSupportFragmentManager() != null) {
@@ -3966,6 +4125,48 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         return (awayMessageTv != null && awayMessageDivider != null && awayMessageTv.getVisibility() == View.VISIBLE && awayMessageDivider.getVisibility() == View.VISIBLE);
     }
 
+    /**
+     * displays/hides the feedback display layout, along with the feedback received from the server
+     *
+     * @param display true to display/ false to not
+     */
+    public void setFeedbackDisplay(boolean display) {
+        if (display) {
+            kmFeedbackView.setVisibility(VISIBLE);
+            individualMessageSendLayout.setVisibility(View.GONE);
+            mainDivider.setVisibility(View.GONE);
+
+            frameLayoutProgressbar.setVisibility(VISIBLE);
+
+            KommunicateUI.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
+                @Override
+                public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+
+                    frameLayoutProgressbar.setVisibility(View.GONE);
+
+                    if (response.getData() != null) { //i.e if feedback found
+                        //show the feedback based on the data given
+                        kmFeedbackView.showFeedback(context, response.getData());
+                    } else {
+                        //if feedback not found (null)
+                        //open the feedback input fragment
+                        openFeedbackFragment();
+                    }
+                }
+
+                @Override
+                public void onFailure(Context context, Exception e, String response) {
+                    frameLayoutProgressbar.setVisibility(View.GONE);
+                    Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
+                }
+            });
+        } else {
+            kmFeedbackView.setVisibility(View.GONE);
+            individualMessageSendLayout.setVisibility(VISIBLE);
+            mainDivider.setVisibility(VISIBLE);
+        }
+    }
+
     public void hideAwayMessage(Message message) {
         if (message.isTypeOutbox()) {
             return;
@@ -4476,6 +4677,39 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
         }
         kmAutoSuggestionAdapter.swapCursor(c);
+    }
+
+    /**
+     * set the feed back of the given conversation when the submit button on feedback fragment is pressed
+     *
+     * @param rating   the rating
+     * @param feedback the feedback comment
+     */
+    @Override
+    public void onFeedbackFragmentSubmitButtonPressed(int rating, String feedback) {
+        final KmFeedback kmFeedback = new KmFeedback();
+        kmFeedback.setGroupId(channel.getKey());
+
+        if (!TextUtils.isEmpty(feedback)) {
+            String[] feedbackArray = new String[1];
+            feedbackArray[0] = feedback;
+            kmFeedback.setComments(feedbackArray);
+        }
+
+        kmFeedback.setRating(rating);
+
+        KommunicateUI.setConversationFeedback(getActivity(), kmFeedback, new KmFeedbackCallback() {
+            @Override
+            public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+                kmFeedbackView.showFeedback(context, kmFeedback);
+            }
+
+            @Override
+            public void onFailure(Context context, Exception e, String response) {
+                Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
+                Toast.makeText(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

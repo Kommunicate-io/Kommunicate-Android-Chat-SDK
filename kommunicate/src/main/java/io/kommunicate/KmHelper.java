@@ -147,7 +147,7 @@ public class KmHelper {
                     if (dialog != null && dialog.isShowing()) {
                         dialog.dismiss();
                     }
-                    Toast.makeText(context, "Unable to start chat : " + registrationResponse, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.unable_to_start_chat) + registrationResponse, Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {

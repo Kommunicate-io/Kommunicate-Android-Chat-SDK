@@ -12,7 +12,9 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFeedback;
 import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
@@ -25,6 +27,7 @@ import java.util.Set;
 
 /**
  * Created by ashish on 03/04/18.
+ * updated by shubham on 07/19. (feedback)
  */
 
 public class KmService {
@@ -33,6 +36,7 @@ public class KmService {
     private KmClientService clientService;
     private KmAutoSuggestionDatabase autoSuggestionDatabase;
 
+    public static final String TAG = "KmService";
 
     public KmService(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -148,4 +152,27 @@ public class KmService {
     public static void updateChannel(Context context, GroupInfoUpdate groupInfoUpdate, AlChannelUpdateTask.AlChannelUpdateListener listener) {
         new AlChannelUpdateTask(context, groupInfoUpdate, listener).execute();
     }
+
+    /**
+     * the wrapper method to get feedback for given conversation
+     *
+     * @param conversationId the groupId of the conversation
+     * @return the response object, response.getData() will return null in case of feedback not found
+     */
+    public synchronized String getConversationFeedback(String conversationId) {
+        String response = clientService.getConversationFeedback(conversationId);
+        Utils.printLog(context, "KmService", "Feedback get: " + response);
+        return response;
+    }
+
+    /**
+     * the wrapper method tp set the feedback for the conversation at the server
+     *
+     * @param kmFeedback the feedback object (has groupId, rating and comments data members)
+     * @return string response of the post request
+     */
+    public synchronized String postConversationFeedback(KmFeedback kmFeedback) throws Exception {
+        return clientService.postConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments());
+    }
+
 }

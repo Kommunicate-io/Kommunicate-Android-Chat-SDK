@@ -402,9 +402,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 currentConversationId = savedInstanceState.getInt(CONVERSATION_ID);
                 if (contact != null || channel != null) {
                     if (channel != null) {
-                        conversation = ConversationFragment.newInstance(null, channel, currentConversationId, null);
+                        conversation = ConversationFragment.newInstance(null, channel, currentConversationId, null, null);
                     } else {
-                        conversation = ConversationFragment.newInstance(contact, null, currentConversationId, null);
+                        conversation = ConversationFragment.newInstance(contact, null, currentConversationId, null, null);
                     }
                     addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
                 }

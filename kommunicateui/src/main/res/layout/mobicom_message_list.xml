@@ -455,13 +455,13 @@
                                 android:src="@drawable/camera" />
 
                             <ImageButton
-                                android:id="@+id/idImageVideoButton"
+                                android:id="@+id/idMultiSelectGalleryButton"
                                 android:layout_width="20dp"
                                 android:layout_height="18dp"
                                 android:layout_marginLeft="30dp"
                                 android:layout_marginStart="30dp"
                                 android:background="@color/apploizc_transparent_color"
-                                android:src="@drawable/camera"/>
+                                android:src="@drawable/attachment"/>
 
                             <ImageButton
                                 android:id="@+id/file_as_attachment_btn"

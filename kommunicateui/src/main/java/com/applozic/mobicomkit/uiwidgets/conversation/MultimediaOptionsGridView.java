@@ -61,14 +61,14 @@ public class MultimediaOptionsGridView {
             ((ConversationActivity) context).processLocation();
         } else if (key.equals(context.getString(R.string.al_camera))) {
             if (storagePermissionListener.isPermissionGranted()) {
-                ((ConversationActivity) context).setFromTakePhoto(true);
+                ((ConversationActivity) context).setFromCamera(true);
                 ((ConversationActivity) context).processCameraAction();
             } else {
                 storagePermissionListener.checkPermission(new KmStoragePermission() {
                     @Override
                     public void onAction(boolean didGrant) {
                         if (didGrant) {
-                            ((ConversationActivity) context).setFromTakePhoto(true);
+                            ((ConversationActivity) context).setFromCamera(true);
                             ((ConversationActivity) context).processCameraAction();
                         }
                     }
@@ -104,14 +104,14 @@ public class MultimediaOptionsGridView {
             }
         } else if (key.equals(context.getString(R.string.al_video))) {
             if (storagePermissionListener.isPermissionGranted()) {
-                ((ConversationActivity) context).setFromTakePhoto(false);
+                ((ConversationActivity) context).setFromCamera(false);
                 ((ConversationActivity) context).processVideoRecording();
             } else {
                 storagePermissionListener.checkPermission(new KmStoragePermission() {
                     @Override
                     public void onAction(boolean didGrant) {
                         if (didGrant) {
-                            ((ConversationActivity) context).setFromTakePhoto(false);
+                            ((ConversationActivity) context).setFromCamera(false);
                             ((ConversationActivity) context).processVideoRecording();
                         }
                     }

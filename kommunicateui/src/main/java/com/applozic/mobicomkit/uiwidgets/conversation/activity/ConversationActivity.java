@@ -149,7 +149,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private static int retry;
     public Contact contact;
     public LinearLayout layout;
-    public boolean fromTakePhoto;
+    public boolean fromCamera;
     public boolean fromAttachment;
     public boolean fromMultiSelectGallery;
     public Integer currentConversationId;
@@ -649,7 +649,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     processAttachment();
                 } else if (fromMultiSelectGallery) {
                     fromMultiSelectGallery = false;
-                    processImageVideo();
+                    processMultiSelectGallery();
                 }
             } else {
                 showSnackBar(R.string.storage_permission_not_granted);
@@ -685,7 +685,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else if (requestCode == PermissionsUtils.REQUEST_CAMERA) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showSnackBar(R.string.phone_camera_permission_granted);
-                if (fromTakePhoto) {
+                if (fromCamera) {
                     processCameraAction();
                 } else {
                     processVideoRecording();
@@ -1016,8 +1016,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         this.videoFileUri = videoFileUri;
     }
 
-    public void setFromTakePhoto(boolean fromTakePhoto) {
-        this.fromTakePhoto = fromTakePhoto;
+    public void setFromCamera(boolean fromCamera) {
+        this.fromCamera = fromCamera;
     }
 
     public void setFromAttachment(boolean fromAttachment) {
@@ -1239,9 +1239,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
     }
 
-    public void processImageVideo() {
-        Intent contentChooserIntent;
-        contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager());
+    public void processMultiSelectGallery() {
+        Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager());
         contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));

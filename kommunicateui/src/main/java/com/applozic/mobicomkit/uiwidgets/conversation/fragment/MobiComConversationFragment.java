@@ -285,7 +285,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private boolean onSelected;
     private ImageCache imageCache;
     private RecyclerView messageTemplateView;
-    private ImageButton cameraButton, locationButton, fileAttachmentButton, imageVideoButton;
+    private ImageButton cameraButton, locationButton, fileAttachmentButton, multiSelectGalleryButton;
     WeakReference<KmRecordButton> recordButtonWeakReference;
     RecyclerView recyclerView;
     RecyclerViewPositionHelper recyclerViewPositionHelper;
@@ -451,7 +451,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         cameraButton = list.findViewById(R.id.camera_btn);
         locationButton = list.findViewById(R.id.location_btn);
         fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
-        imageVideoButton = list.findViewById(R.id.idImageVideoButton);
+        multiSelectGalleryButton = list.findViewById(R.id.idMultiSelectGalleryButton);
         emailReplyReminderLayout = list.findViewById(R.id.emailReplyReminderView);
         processAttachmentIconsClick();
         Configuration config = getResources().getConfiguration();
@@ -863,7 +863,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
 
             if (attachmentOptions.containsKey(IMAGE_VIDEO_ATTACHMENT_OPTION)) {
-                imageVideoButton.setVisibility(attachmentOptions.get(IMAGE_VIDEO_ATTACHMENT_OPTION) ? VISIBLE : View.GONE);
+                multiSelectGalleryButton.setVisibility(attachmentOptions.get(IMAGE_VIDEO_ATTACHMENT_OPTION) ? VISIBLE : View.GONE);
             }
         }
 
@@ -3902,14 +3902,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
-                        ((ConversationActivity) getActivity()).setFromTakePhoto(true);
+                        ((ConversationActivity) getActivity()).setFromCamera(true);
                         ((ConversationActivity) getActivity()).processCameraAction();
                     } else {
                         ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
                             @Override
                             public void onAction(boolean didGrant) {
                                 if (didGrant) {
-                                    ((ConversationActivity) getActivity()).setFromTakePhoto(true);
+                                    ((ConversationActivity) getActivity()).setFromCamera(true);
                                     ((ConversationActivity) getActivity()).processCameraAction();
                                 }
                             }
@@ -3919,7 +3919,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
         });
 
-        imageVideoButton.setOnClickListener(new View.OnClickListener() {
+        multiSelectGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 emoticonsFrameLayout.setVisibility(View.GONE);
@@ -3937,7 +3937,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         });
                     } else {
                         ((ConversationActivity) getActivity()).setFromMultiSelectGallery(true);
-                        ((ConversationActivity) getActivity()).processImageVideo();
+                        ((ConversationActivity) getActivity()).processMultiSelectGallery();
                     }
                 }
             }

@@ -311,7 +311,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public Map<String, CountDownTimer> typingTimerMap;
     public int loggedInUserRole;
     public static final String AUDIO_RECORD_OPTION = ":audio";
-    public static final String IMAGE_VIDEO_ATTACHMENT_OPTION = ":multiSelectGalleryItems";
+    public static final String MULTI_SELECT_GALLERY_OPTION = ":multiSelectGalleryItems";
     KmRecordView recordView;
     FrameLayout recordLayout;
     boolean isRecording = false;
@@ -862,8 +862,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 fileAttachmentButton.setVisibility(attachmentOptions.get(":file") ? VISIBLE : View.GONE);
             }
 
-            if (attachmentOptions.containsKey(IMAGE_VIDEO_ATTACHMENT_OPTION)) {
-                multiSelectGalleryButton.setVisibility(attachmentOptions.get(IMAGE_VIDEO_ATTACHMENT_OPTION) ? VISIBLE : View.GONE);
+            if (attachmentOptions.containsKey(MULTI_SELECT_GALLERY_OPTION)) {
+                multiSelectGalleryButton.setVisibility(attachmentOptions.get(MULTI_SELECT_GALLERY_OPTION) ? VISIBLE : View.GONE);
             }
         }
 

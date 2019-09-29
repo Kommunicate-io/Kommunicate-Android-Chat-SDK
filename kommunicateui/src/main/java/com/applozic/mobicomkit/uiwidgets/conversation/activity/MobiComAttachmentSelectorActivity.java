@@ -67,8 +67,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
      * will open either the general file attachment chooser
      */
     void openFileChooser() {
-        Intent contentChooserIntent;
-        contentChooserIntent = FileUtils.createGetContentIntent(kmAttachmentsController.getFilterOptions(alCustomizationSettings), getPackageManager());
+        Intent contentChooserIntent = FileUtils.createGetContentIntent(kmAttachmentsController.getFilterOptions(alCustomizationSettings), getPackageManager());
         contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
         startActivityForResult(intentPick, REQUEST_CODE_ATTACH_PHOTO);

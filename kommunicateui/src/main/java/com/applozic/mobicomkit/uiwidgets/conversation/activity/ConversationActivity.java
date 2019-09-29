@@ -120,7 +120,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.REQUEST_CODE_IMAGE_VIDEO;
+import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.REQUEST_CODE_MULTI_SELECT_GALLERY;
 
 
 /**
@@ -586,7 +586,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 return;
             }
 
-            if(requestCode == REQUEST_CODE_IMAGE_VIDEO) {
+            if(requestCode == REQUEST_CODE_MULTI_SELECT_GALLERY) {
                 try {
                     final ClipData clipData = data.getClipData();
                     if (clipData == null) {
@@ -1244,7 +1244,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
-        startActivityForResult(intentPick, REQUEST_CODE_IMAGE_VIDEO);
+        startActivityForResult(intentPick, REQUEST_CODE_MULTI_SELECT_GALLERY);
     }
 
     public void showVideoCapture() {

@@ -34,7 +34,7 @@ public class MultimediaOptionFragment extends DialogFragment {
     public static final int REQUEST_CODE_SEND_LOCATION = 10;
     public static final int REQUEST_CODE_TAKE_PHOTO = 11;
     public static final int REQUEST_CODE_ATTACH_PHOTO = 12;
-    public static final int REQUEST_CODE_IMAGE_VIDEO = 21;
+    public static final int REQUEST_CODE_MULTI_SELECT_GALLERY = 21;
     public static final int REQUEST_MULTI_ATTCAHMENT = 16;
     public static final int REQUEST_CODE_ATTACHE_AUDIO = 13;
     public static final int MEDIA_TYPE_VIDEO = 2;

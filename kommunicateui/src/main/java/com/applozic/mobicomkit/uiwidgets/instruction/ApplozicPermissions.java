@@ -18,6 +18,11 @@ public class ApplozicPermissions {
     private LinearLayout snackBarLayout;
     private Activity activity;
 
+    public static final int REQUEST_STORAGE_MULTI_SELECT_GALLERY = 101;
+    public static final int REQUEST_STORAGE_ATTACHMENT = 201;
+    public static final int REQUEST_CAMERA_PHOTO = 151;
+    public static final int REQUEST_CAMERA_VIDEO = 251;
+
     public ApplozicPermissions(Activity activity, LinearLayout linearLayout) {
         this.activity = activity;
         this.snackBarLayout = linearLayout;
@@ -45,6 +50,14 @@ public class ApplozicPermissions {
         }
     }
 
+    public void requestStoragePermissions(int requestCode) {
+        if (PermissionsUtils.shouldShowRequestForStoragePermission(activity)) {
+            showSnackBar(R.string.storage_permission, PermissionsUtils.PERMISSIONS_STORAGE, requestCode);
+        } else {
+            PermissionsUtils.requestPermissions(activity, PermissionsUtils.PERMISSIONS_STORAGE, requestCode);
+        }
+    }
+
     public void requestLocationPermissions() {
         if (PermissionsUtils.shouldShowRequestForLocationPermission(activity)) {
             showSnackBar(R.string.location_permission, PermissionsUtils.PERMISSIONS_LOCATION, PermissionsUtils.REQUEST_LOCATION);
@@ -54,8 +67,8 @@ public class ApplozicPermissions {
     }
 
     public void requestAudio() {
-        if (PermissionsUtils.shouldShowRequestForLocationPermission(activity)) {
-            showSnackBar(R.string.record_audio, PermissionsUtils.PERMISSIONS_LOCATION, PermissionsUtils.REQUEST_AUDIO_RECORD);
+        if (PermissionsUtils.shouldShowRequestForAudioPermission(activity)) {
+            showSnackBar(R.string.record_audio, PermissionsUtils.PERMISSIONS_RECORD_AUDIO, PermissionsUtils.REQUEST_AUDIO_RECORD);
         } else {
             PermissionsUtils.requestPermissions(activity, PermissionsUtils.PERMISSIONS_RECORD_AUDIO, PermissionsUtils.REQUEST_AUDIO_RECORD);
         }
@@ -74,6 +87,14 @@ public class ApplozicPermissions {
             showSnackBar(R.string.phone_camera_permission, PermissionsUtils.PERMISSION_CAMERA, PermissionsUtils.REQUEST_CAMERA);
         } else {
             PermissionsUtils.requestPermissions(activity, PermissionsUtils.PERMISSION_CAMERA, PermissionsUtils.REQUEST_CAMERA);
+        }
+    }
+
+    public void requestCameraPermission(int requestCode) {
+        if (PermissionsUtils.shouldShowRequestForCameraPermission(activity)) {
+            showSnackBar(R.string.phone_camera_permission, PermissionsUtils.PERMISSION_CAMERA, requestCode);
+        } else {
+            PermissionsUtils.requestPermissions(activity, PermissionsUtils.PERMISSION_CAMERA, requestCode);
         }
     }
 
@@ -103,9 +124,9 @@ public class ApplozicPermissions {
 
     public void requestCameraAndRecordPermission() {
         if (PermissionsUtils.shouldShowRequestForContactPermission(activity)) {
-            showSnackBar(!PermissionsUtils.checkPermissionForCameraAndMicrophone(activity)?R.string.camera_audio_permission:!PermissionsUtils.isAudioRecordingPermissionGranted(activity)?R.string.record_audio:!PermissionsUtils.isCameraPermissionGranted(activity)?R.string.phone_camera_permission:R.string.camera_audio_permission, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, PermissionsUtils.REQUEST_CAMERA_AUDIO);
+            showSnackBar(!PermissionsUtils.checkPermissionForCameraAndMicrophone(activity) ? R.string.camera_audio_permission : !PermissionsUtils.isAudioRecordingPermissionGranted(activity) ? R.string.record_audio : !PermissionsUtils.isCameraPermissionGranted(activity) ? R.string.phone_camera_permission : R.string.camera_audio_permission, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, PermissionsUtils.REQUEST_CAMERA_AUDIO);
         } else {
-            PermissionsUtils.requestPermissions(activity,new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, PermissionsUtils.REQUEST_CAMERA_AUDIO);
+            PermissionsUtils.requestPermissions(activity, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, PermissionsUtils.REQUEST_CAMERA_AUDIO);
         }
     }
 

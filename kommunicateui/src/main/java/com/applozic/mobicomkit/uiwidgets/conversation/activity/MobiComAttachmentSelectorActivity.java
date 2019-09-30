@@ -92,7 +92,9 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         if (intent.getExtras() != null) {
             userID = intent.getExtras().getString(USER_ID);
             displayName = intent.getExtras().getString(DISPLAY_NAME);
-            groupID = intent.getExtras().getInt(GROUP_ID, 0);
+            if (intent.hasExtra(GROUP_ID)) {
+                groupID = intent.getExtras().getInt(GROUP_ID);
+            }
             groupName = intent.getExtras().getString(GROUP_NAME);
             imageUri = (Uri) intent.getParcelableExtra(URI_LIST);
             if (imageUri != null) {
@@ -179,7 +181,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             }
 
             @Override
-            public void postTaskUIMethod(boolean b, File file) {
+            public void postTaskUIMethod(boolean completed, File file) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
@@ -225,16 +227,16 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             int returnCode = kmAttachmentsController.processFile(selectedFileUri, alCustomizationSettings, prePostUIMethodsFileAsyncTask);
 
             switch (returnCode) {
-                case -1:
+                case KmAttachmentsController.MAX_SIZE_EXCEEDED:
                     Toast.makeText(this, R.string.info_attachment_max_allowed_file_size, Toast.LENGTH_LONG).show();
                     break;
-                case -2:
+                case KmAttachmentsController.MIME_TYPE_EMPTY:
                     Utils.printLog(this, TAG, "URI mime type is empty.");
                     break;
-                case -3:
+                case KmAttachmentsController.MIME_TYPE_NOT_SUPPORTED:
                     Toast.makeText(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
                     break;
-                case -4:
+                case KmAttachmentsController.FORMAT_EMPTY:
                     Utils.printLog(this, TAG, "URI format(extension) is empty.");
                     break;
             }

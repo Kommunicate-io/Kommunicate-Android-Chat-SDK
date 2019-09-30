@@ -149,9 +149,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private static int retry;
     public Contact contact;
     public LinearLayout layout;
-    public boolean fromCamera;
-    public boolean fromAttachment;
-    public boolean fromMultiSelectGallery;
     public Integer currentConversationId;
     public Snackbar snackbar;
     protected ConversationFragment conversation;
@@ -480,7 +477,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
 
             @Override
-            public void postTaskUIMethod(boolean b, File file) {
+            public void postTaskUIMethod(boolean completed, File file) {
                 //TODO: add the progress bar in the feedback fragment commit to here
                 //TODO: conversationUIService.getConversationFragment().hideProgressBar();
                 conversationUIService.sendAttachments(new ArrayList<>(Arrays.asList(Uri.parse(file.getAbsolutePath()))), "");
@@ -586,7 +583,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 return;
             }
 
-            if(requestCode == REQUEST_CODE_MULTI_SELECT_GALLERY) {
+            if (requestCode == REQUEST_CODE_MULTI_SELECT_GALLERY) {
                 try {
                     final ClipData clipData = data.getClipData();
                     if (clipData == null) {
@@ -644,13 +641,26 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
             if (PermissionsUtils.verifyPermissions(grantResults)) {
                 showSnackBar(R.string.storage_permission_granted);
-                if (fromAttachment) {
-                    fromAttachment = false;
-                    processAttachment();
-                } else if (fromMultiSelectGallery) {
-                    fromMultiSelectGallery = false;
-                    processMultiSelectGallery();
-                }
+            } else {
+                showSnackBar(R.string.storage_permission_not_granted);
+            }
+        } else if (requestCode == ApplozicPermissions.REQUEST_STORAGE_ATTACHMENT) {
+            if (alStoragePermission != null) {
+                alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));
+            }
+            if (PermissionsUtils.verifyPermissions(grantResults)) {
+                showSnackBar(R.string.storage_permission_granted);
+                processAttachment();
+            } else {
+                showSnackBar(R.string.storage_permission_not_granted);
+            }
+        } else if (requestCode == ApplozicPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY) {
+            if (alStoragePermission != null) {
+                alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));
+            }
+            if (PermissionsUtils.verifyPermissions(grantResults)) {
+                showSnackBar(R.string.storage_permission_granted);
+                processMultiSelectGallery();
             } else {
                 showSnackBar(R.string.storage_permission_not_granted);
             }
@@ -661,7 +671,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 showSnackBar(R.string.location_permission_not_granted);
             }
-
         } else if (requestCode == PermissionsUtils.REQUEST_PHONE_STATE) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showSnackBar(R.string.phone_state_permission_granted);
@@ -682,14 +691,17 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 showSnackBar(R.string.record_audio_permission_not_granted);
             }
-        } else if (requestCode == PermissionsUtils.REQUEST_CAMERA) {
+        } else if (requestCode == ApplozicPermissions.REQUEST_CAMERA_PHOTO) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showSnackBar(R.string.phone_camera_permission_granted);
-                if (fromCamera) {
-                    processCameraAction();
-                } else {
-                    processVideoRecording();
-                }
+                processCameraAction();
+            } else {
+                showSnackBar(R.string.phone_camera_permission_not_granted);
+            }
+        } else if (requestCode == ApplozicPermissions.REQUEST_CAMERA_VIDEO) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showSnackBar(R.string.phone_camera_permission_granted);
+                processVideoRecording();
             } else {
                 showSnackBar(R.string.phone_camera_permission_not_granted);
             }
@@ -764,7 +776,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             //=================  END ===============
 
         }
-
     }
 
     @Override
@@ -1016,18 +1027,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         this.videoFileUri = videoFileUri;
     }
 
-    public void setFromCamera(boolean fromCamera) {
-        this.fromCamera = fromCamera;
-    }
-
-    public void setFromAttachment(boolean fromAttachment) {
-        this.fromAttachment = fromAttachment;
-    }
-
-    public void setFromMultiSelectGallery(boolean fromMultiSelectGallery) {
-        this.fromMultiSelectGallery = fromMultiSelectGallery;
-    }
-
     public File getFileObject() {
         return mediaFile;
     }
@@ -1145,7 +1144,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 imageCapture();
             } else {
                 if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForCameraPermission(this)) {
-                    applozicPermission.requestCameraPermission();
+                    applozicPermission.requestCameraPermission(ApplozicPermissions.REQUEST_CAMERA_PHOTO);
                 } else {
                     imageCapture();
                 }
@@ -1162,7 +1161,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 showVideoCapture();
             } else {
                 if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForCameraPermission(this)) {
-                    applozicPermission.requestCameraPermission();
+                    applozicPermission.requestCameraPermission(ApplozicPermissions.REQUEST_CAMERA_VIDEO);
                 } else {
                     showVideoCapture();
                 }
@@ -1232,7 +1231,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void processAttachment() {
         if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForStoragePermission(this)) {
-            applozicPermission.requestStoragePermissions();
+            applozicPermission.requestStoragePermissions(ApplozicPermissions.REQUEST_STORAGE_ATTACHMENT);
         } else {
             Intent intentPick = new Intent(this, MobiComAttachmentSelectorActivity.class);
             startActivityForResult(intentPick, MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT);
@@ -1240,11 +1239,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     public void processMultiSelectGallery() {
-        Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager());
-        contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
-        startActivityForResult(intentPick, REQUEST_CODE_MULTI_SELECT_GALLERY);
+        if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForStoragePermission(this)) {
+            applozicPermission.requestStoragePermissions(ApplozicPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
+        } else {
+            Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager());
+            contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
+            startActivityForResult(intentPick, REQUEST_CODE_MULTI_SELECT_GALLERY);
+        }
     }
 
     public void showVideoCapture() {

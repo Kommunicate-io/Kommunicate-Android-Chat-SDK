@@ -9,14 +9,14 @@
         android:id="@+id/galleryImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:background="@color/apploizc_transparent_color"
+        android:background="@color/applozic_transparent_color"
         android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/mobicom_attachment_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/apploizc_transparent_color"
+        android:background="@color/applozic_transparent_color"
         android:drawablePadding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/applozic_ic_action_attachment"

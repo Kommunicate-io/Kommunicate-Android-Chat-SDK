@@ -355,7 +355,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -371,7 +371,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -413,7 +413,7 @@
                                 android:layout_marginTop="16dp"
                                 android:layout_toStartOf="@+id/conversation_send"
                                 android:layout_toLeftOf="@+id/conversation_send"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:cursorVisible="true"
                                 android:gravity="start"
                                 android:ellipsize="start"
@@ -442,7 +442,7 @@
                                 android:layout_height="18dp"
                                 android:layout_marginLeft="16dp"
                                 android:layout_marginStart="16dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/smiley" />
 
                             <ImageButton
@@ -451,7 +451,7 @@
                                 android:layout_height="16.3dp"
                                 android:layout_marginLeft="29dp"
                                 android:layout_marginStart="29dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/camera" />
 
                             <ImageButton
@@ -460,7 +460,7 @@
                                 android:layout_height="18dp"
                                 android:layout_marginLeft="30dp"
                                 android:layout_marginStart="30dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/attachment"/>
 
                             <ImageButton
@@ -469,7 +469,7 @@
                                 android:layout_height="18.3dp"
                                 android:layout_marginLeft="30dp"
                                 android:layout_marginStart="30dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/attachment" />
 
                             <ImageButton
@@ -478,7 +478,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginLeft="29dp"
                                 android:layout_marginStart="29dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/locaiton" />
                         </LinearLayout>
                     </LinearLayout>

@@ -5,6 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/idProgressBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_grey_overlay"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="20dp"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -316,6 +334,7 @@
                 android:visibility="gone" />
 
             <View
+                android:id="@+id/idMainDividerLine"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/applozic_theme_color_primary" />
@@ -533,6 +552,15 @@
                         android:text="@string/user_not_in_this_group_text"
                         android:textSize="18sp" />
                 </LinearLayout>
+
+                <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView
+                    android:id="@+id/idKmFeedbackView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
             </FrameLayout>
         </LinearLayout>
 
@@ -588,4 +616,9 @@
             android:paddingBottom="10dp"
             android:visibility="gone" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/idFrameLayoutFeedbackContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

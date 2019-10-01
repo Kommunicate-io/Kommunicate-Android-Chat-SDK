@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.services;
+package io.kommunicate.services;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -12,7 +12,9 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFeedback;
 import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
@@ -23,8 +25,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.kommunicate.async.KmConversationRemoveMemberTask;
+import io.kommunicate.async.KmUpdateConversationTask;
+import io.kommunicate.callbacks.KmRemoveMemberCallback;
+import io.kommunicate.database.KmAutoSuggestionDatabase;
+import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmAutoSuggestionModel;
+import io.kommunicate.utils.KmConstants;
+
 /**
  * Created by ashish on 03/04/18.
+ * updated by shubham on 07/19. (feedback)
  */
 
 public class KmService {
@@ -32,7 +43,10 @@ public class KmService {
     private Context context;
     private KmClientService clientService;
     private KmAutoSuggestionDatabase autoSuggestionDatabase;
-
+    public static final String TAG = "KmService";
+    public static final String KM_SKIP_BOT = "skipBot";
+    public static final String KM_NO_ALERT = "NO_ALERT";
+    public static final String KM_BADGE_COUNT = "BADGE_COUNT";
 
     public KmService(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -73,29 +87,11 @@ public class KmService {
 
     public static Contact getSupportGroupContact(Context context, Channel channel, BaseContactService contactService, int loggedInUserRoleType) {
         if (User.RoleType.USER_ROLE.getValue() == loggedInUserRoleType) {
-            Map<String, String> metadataMap = channel.getMetadata();
-            if (metadataMap != null) {
-                String conversationAssignee = null;
-                String conversationTitle = null;
-
-                if (metadataMap.containsKey(KommunicateUI.CONVERSATION_ASSIGNEE)) {
-                    conversationAssignee = metadataMap.get(KommunicateUI.CONVERSATION_ASSIGNEE);
-                }
-
-                if (metadataMap.containsKey(KommunicateUI.KM_CONVERSATION_TITLE)) {
-                    conversationTitle = metadataMap.get(KommunicateUI.KM_CONVERSATION_TITLE);
-                }
-
-                if (!TextUtils.isEmpty(conversationAssignee)) {
-                    return TextUtils.isEmpty(conversationAssignee) ? null : contactService.getContactById(conversationAssignee);
-                }
-                return TextUtils.isEmpty(conversationTitle) ? null : contactService.getContactById(conversationTitle);
-            }
+            return getAssigneeContact(channel, contactService);
         } else {
             String userId = KmChannelService.getInstance(context).getUserInSupportGroup(channel.getKey());
             return TextUtils.isEmpty(userId) ? null : contactService.getContactById(userId);
         }
-        return null;
     }
 
     public static Contact getAssigneeContact(Channel channel, BaseContactService contactService) {
@@ -104,12 +100,12 @@ public class KmService {
             String conversationAssignee = null;
             String conversationTitle = null;
 
-            if (metadataMap.containsKey(KommunicateUI.CONVERSATION_ASSIGNEE)) {
-                conversationAssignee = metadataMap.get(KommunicateUI.CONVERSATION_ASSIGNEE);
+            if (metadataMap.containsKey(KmConstants.CONVERSATION_ASSIGNEE)) {
+                conversationAssignee = metadataMap.get(KmConstants.CONVERSATION_ASSIGNEE);
             }
 
-            if (metadataMap.containsKey(KommunicateUI.KM_CONVERSATION_TITLE)) {
-                conversationTitle = metadataMap.get(KommunicateUI.KM_CONVERSATION_TITLE);
+            if (metadataMap.containsKey(KmConstants.KM_CONVERSATION_TITLE)) {
+                conversationTitle = metadataMap.get(KmConstants.KM_CONVERSATION_TITLE);
             }
 
             if (!TextUtils.isEmpty(conversationAssignee)) {
@@ -120,32 +116,55 @@ public class KmService {
         return null;
     }
 
-    public static void removeMembersFromChannel(Context context, Integer channelKey, final Set<String> userIds, final ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener listener) {
+    public static void removeMembersFromConversation(final Context context, Integer channelKey, final Set<String> userIds, final KmRemoveMemberCallback listener) {
         if (userIds == null || channelKey == null) {
             return;
         }
 
         int i = 0;
         for (String userId : userIds) {
-            ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener recListener = new ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener() {
+            KmRemoveMemberCallback recListener = new KmRemoveMemberCallback() {
                 @Override
-                public void onSuccess(String response, int i, Context context) {
+                public void onSuccess(String response, int i) {
                     if (i == userIds.size() - 1) {
-                        listener.onSuccess(response, i, context);
+                        listener.onSuccess(response, i);
                     }
                 }
 
                 @Override
-                public void onFailure(String response, Exception e, Context context) {
-                    listener.onFailure(response, e, context);
+                public void onFailure(String response, Exception e) {
+                    listener.onFailure(response, e);
                 }
             };
-            new ApplozicChannelRemoveMemberTask(context, channelKey, userId, i, recListener).execute();
+            new KmConversationRemoveMemberTask(context, channelKey, userId, i, recListener).execute();
             i++;
         }
     }
 
-    public static void updateChannel(Context context, GroupInfoUpdate groupInfoUpdate, AlChannelUpdateTask.AlChannelUpdateListener listener) {
-        new AlChannelUpdateTask(context, groupInfoUpdate, listener).execute();
+    public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, KmUpdateConversationTask.KmConversationUpdateListener listener) {
+        new KmUpdateConversationTask(context, groupInfoUpdate, listener).execute();
     }
+
+    /**
+     * the wrapper method to get feedback for given conversation
+     *
+     * @param conversationId the groupId of the conversation
+     * @return the response object, response.getData() will return null in case of feedback not found
+     */
+    public synchronized String getConversationFeedback(String conversationId) {
+        String response = clientService.getConversationFeedback(conversationId);
+        Utils.printLog(context, "KmService", "Feedback get: " + response);
+        return response;
+    }
+
+    /**
+     * the wrapper method tp set the feedback for the conversation at the server
+     *
+     * @param kmFeedback the feedback object (has groupId, rating and comments data members)
+     * @return string response of the post request
+     */
+    public synchronized String postConversationFeedback(KmFeedback kmFeedback) throws Exception {
+        return clientService.postConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments());
+    }
+
 }

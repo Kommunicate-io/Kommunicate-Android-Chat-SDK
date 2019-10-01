@@ -46,7 +46,10 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
+
+import io.kommunicate.services.KmClientService;
+
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
@@ -178,6 +181,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
             public void onClick(View v) {
                 if (ApplozicService.getContext(getContext()) instanceof KmActionCallback) {
                     ((KmActionCallback) ApplozicService.getContext(getContext())).onReceive(getContext(), null, "startNewChat");
+                } else {
+                    KmHelper.setStartNewChat(getActivity(), null, null, false);
                 }
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(new Intent("KmStartNewConversation"));
             }

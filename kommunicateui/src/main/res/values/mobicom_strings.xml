@@ -243,5 +243,4 @@ over from bot: %1$s?</string>
     <string name="km_take_over_from_bot_dialog_message">The bot will be removed from this conversation and it will not reply to any further messages</string>
     <string name="km_dialog_cancel_button">CANCEL</string>
     <string name="km_dialog_positive_button_text">TAKE OVER FROM BOT</string>
-    <string name="km_prechat_processing_wait_info">Please wait, launching conversation..</string>
 </resources>

@@ -38,7 +38,6 @@ import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
@@ -180,23 +179,16 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                         }
                     } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                        myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
                         channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
                         myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
-                        Contact supportGroupContact = KmService.getSupportGroupContact(context, channel, contactService, loggedInUserRoleType);
-                        if (supportGroupContact != null) {
-                            myholder.smReceivers.setText(supportGroupContact.getDisplayName());
-                            loadSupportGroupImage(supportGroupContact.getImageURL(), supportGroupContact.getDisplayName(), myholder.alphabeticTextView, myholder.contactImage);
-                        } else {
-                            myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
-                            loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
-                        }
+                        loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
                     } else {
-                        myholder.smReceivers.setText(channel.getName() != null ? channel.getName(): "");
+                        myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
                         channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
                         myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
 
                         myholder.alphabeticTextView.setVisibility(View.GONE);
-                        myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
                         myholder.contactImage.setVisibility(View.VISIBLE);
                         myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
 

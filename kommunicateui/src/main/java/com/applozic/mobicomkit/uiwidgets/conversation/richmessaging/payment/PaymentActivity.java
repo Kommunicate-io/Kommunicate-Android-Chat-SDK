@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +22,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import io.kommunicate.utils.KmConstants;
 
 public class PaymentActivity extends AppCompatActivity {
 
@@ -49,7 +50,7 @@ public class PaymentActivity extends AppCompatActivity {
         txnData = new HashMap<>();
         setWebViewClient();
 
-        String helpCenterUrl = getIntent().getStringExtra(KommunicateUI.KM_HELPCENTER_URL);
+        String helpCenterUrl = getIntent().getStringExtra(KmConstants.KM_HELPCENTER_URL);
 
         if (!TextUtils.isEmpty(helpCenterUrl)) {
             loadUrl(helpCenterUrl);

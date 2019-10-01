@@ -6,7 +6,6 @@ import android.os.ResultReceiver;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.account.user.UserLoginTask;
 import com.applozic.mobicomkit.api.account.user.UserService;
@@ -14,9 +13,9 @@ import com.applozic.mobicomkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
 
-import io.kommunicate.activities.LeadCollectionActivity;
 import io.kommunicate.services.KmUserClientService;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmConstants;
 
 /**
  * Created by ashish on 10/02/18.
@@ -74,7 +73,7 @@ public class KmUserLoginTask extends UserLoginTask {
     @Override
     protected void onPostExecute(Boolean result) {
         if (prechatReceiver != null) {
-            prechatReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+            prechatReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
         }
         if (response != null) {
             if (handler != null) {

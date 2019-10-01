@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.models;
+package io.kommunicate.models;
 
 import com.applozic.mobicommons.json.JsonMarker;
 

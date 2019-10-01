@@ -80,9 +80,12 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionF
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs.KmAutoSuggestionsAsyncTask;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
+
+import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
+import io.kommunicate.utils.KmConstants;
+import io.kommunicate.utils.KmUtils;
+
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.CustomToolbarListener;
@@ -399,9 +402,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 currentConversationId = savedInstanceState.getInt(CONVERSATION_ID);
                 if (contact != null || channel != null) {
                     if (channel != null) {
-                        conversation = ConversationFragment.newInstance(null, channel, currentConversationId, null);
+                        conversation = ConversationFragment.newInstance(null, channel, currentConversationId, null, null);
                     } else {
-                        conversation = ConversationFragment.newInstance(contact, null, currentConversationId, null);
+                        conversation = ConversationFragment.newInstance(contact, null, currentConversationId, null, null);
                     }
                     addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
                 }
@@ -785,13 +788,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     if (loginActivity != null) {
                         if (getApplication() instanceof KmActionCallback) {
                             ((KmActionCallback) getApplication()).onReceive(this, alCustomizationSettings.getLogoutPackage().trim(), "logoutCall");
+                        } else {
+                            KmHelper.performLogout(this, alCustomizationSettings.getLogoutPackage().trim());
                         }
-                       /* new UserClientService(this).logout();
-                        Toast.makeText(getBaseContext(), getString(R.string.user_logout_info), Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(this, loginActivity);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        startActivity(intent);
-                        finish();*/
                     }
                 }
             } catch (ClassNotFoundException e) {
@@ -1397,7 +1396,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public static void openFaq(Activity activity, String url) {
         if (activity != null) {
             Intent faqIntent = new Intent(activity, PaymentActivity.class);
-            faqIntent.putExtra(KommunicateUI.KM_HELPCENTER_URL, url);
+            faqIntent.putExtra(KmConstants.KM_HELPCENTER_URL, url);
             activity.startActivity(faqIntent);
         }
     }

@@ -108,9 +108,7 @@ import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
-import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
-import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioRecordManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
@@ -137,20 +135,9 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.Paym
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmAwayMessageHandler;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmFeedbackCallback;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFeedback;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmChannelService;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmClientService;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
+
+
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
@@ -327,6 +314,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private KmAutoSuggestionAdapter kmAutoSuggestionAdapter;
     private View kmAutoSuggestionDivider;
     private String loggedInUserId;
+    protected String messageSearchString;
 
     FeedbackInputFragment feedBackFragment;
 
@@ -874,7 +862,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         createTemplateMessages();
 
         if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableAwayMessage()) {
-            KommunicateUI.getAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
+            Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse.KmMessageResponse response) {
                     showAwayMessage(true, response.getMessage());
@@ -1138,8 +1126,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (!TextUtils.isEmpty(message) && messageEditText != null) {
                     messageEditText.setText(message);
                     messageEditText.setSelection(message.length());
-                } else if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
-                    messageEditText.setText("");
                 }
                 if (kmAutoSuggestionDivider != null) {
                     kmAutoSuggestionDivider.setVisibility(View.GONE);
@@ -1658,7 +1644,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         processMobiTexterUserCheck();
 
 
-        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversationId);
+        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversationId, messageSearchString);
         downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         if (hideExtendedSendingOptionLayout) {
@@ -2798,20 +2784,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void loadConversation(Channel channel, Integer conversationId) {
-        loadConversation(null, channel, conversationId, null);
+        loadConversation(null, channel, conversationId, messageSearchString);
     }
 
     public void loadConversation(Contact contact, Integer conversationId) {
-        loadConversation(contact, null, conversationId, null);
+        loadConversation(contact, null, conversationId, messageSearchString);
     }
 
     //With search
-    public void loadConversation(Contact contact, Integer conversationId, String searchString) {
-        loadConversation(contact, null, conversationId, searchString);
+    public void loadConversation(Contact contact, Integer conversationId, String messageSearchString) {
+        loadConversation(contact, null, conversationId, messageSearchString);
     }
 
-    public void loadConversation(Channel channel, Integer conversationId, String searchString) {
-        loadConversation(null, channel, conversationId, searchString);
+    public void loadConversation(Channel channel, Integer conversationId, String messageSearchString) {
+        loadConversation(null, channel, conversationId, messageSearchString);
     }
 
     public void deleteConversationThread() {
@@ -2907,7 +2893,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
 
             if (messageList.isEmpty()) {
-                loadConversation(contact, channel, currentConversationId, null);
+                loadConversation(contact, channel, currentConversationId, messageSearchString);
             } else if (MobiComUserPreference.getInstance(getActivity()).getNewMessageFlag()) {
                 loadnewMessageOnResume(contact, channel, currentConversationId);
             }
@@ -2916,7 +2902,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             public void onRefresh() {
-                downloadConversation = new DownloadConversation(recyclerView, false, 1, 1, 1, contact, channel, currentConversationId);
+                downloadConversation = new DownloadConversation(recyclerView, false, 1, 1, 1, contact, channel, currentConversationId, messageSearchString);
                 downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
@@ -2985,10 +2971,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         String imageUrl = "";
         String name = "";
 
-        if (contact != null) {
-            name = contact.getDisplayName();
-            imageUrl = contact.getImageURL();
-        } else if (channel != null) {
+        if (channel != null) {
             name = channel.getName();
             imageUrl = channel.getImageUrl();
         }
@@ -3204,7 +3187,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void loadnewMessageOnResume(Contact contact, Channel channel, Integer conversationId) {
-        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversationId);
+        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversationId, messageSearchString);
         downloadConversation.execute();
     }
 
@@ -3602,15 +3585,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         private Channel channel;
         private Integer conversationId;
         private List<Conversation> conversationList;
+        private String messageSearchString;
         private List<Message> nextMessageList = new ArrayList<Message>();
 
-        public DownloadConversation(RecyclerView recyclerView, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, Contact contact, Channel channel, Integer conversationId) {
+        public DownloadConversation(RecyclerView recyclerView, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, Contact contact, Channel channel, Integer conversationId, String messageSearchString) {
             this.recyclerView = recyclerView;
             this.initial = initial;
             this.firstVisibleItem = firstVisibleItem;
             this.contact = contact;
             this.channel = channel;
             this.conversationId = conversationId;
+            this.messageSearchString = messageSearchString;
         }
 
         @Override
@@ -3675,7 +3660,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                     }
 
 
-                    nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId);
+                    nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                 } else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
                     loadMore = false;
                     Long endTime = null;
@@ -3686,7 +3671,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         endTime = messageList.get(0).getCreatedAtTime();
                         break;
                     }
-                    nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId);
+                    nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                 }
                 if (BroadcastService.isContextBasedChatEnabled()) {
                     conversations = ConversationService.getInstance(getActivity()).getConversationList(channel, contact);
@@ -4597,29 +4582,29 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        KmService.removeMembersFromChannel(context, channel.getKey(), botIds, new ApplozicChannelRemoveMemberTask.ChannelRemoveMemberListener() {
+        KmService.removeMembersFromConversation(context, channel.getKey(), botIds, new KmRemoveMemberCallback() {
             @Override
-            public void onSuccess(String response, int index, Context context) {
+            public void onSuccess(String response, int index) {
                 GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(channel);
                 Map<String, String> metadata = channel.getMetadata();
                 if (metadata == null) {
                     metadata = new HashMap<>();
                 }
-                metadata.put("CONVERSATION_ASSIGNEE", loggedInUserId);
+                metadata.put(Channel.CONVERSATION_ASSIGNEE, loggedInUserId);
                 groupInfoUpdate.setMetadata(metadata);
-                KmService.updateChannel(context, groupInfoUpdate, new AlChannelUpdateTask.AlChannelUpdateListener() {
+                KmService.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
                     @Override
                     public void onSuccess(Context context) {
                         Message message = new Message();
 
-                        message.setMessage("Assigned to " + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
+                        message.setMessage(Utils.getString(context, R.string.km_assign_to_message) + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
 
                         Map<String, String> metadata = new HashMap<>();
-                        metadata.put("skipBot", "true");
-                        metadata.put("KM_ASSIGN", MobiComUserPreference.getInstance(context).getUserId());
-                        metadata.put("NO_ALERT", "true");
-                        metadata.put("BADGE_COUNT", "false");
-                        metadata.put("category", "ARCHIVE");
+                        metadata.put(KmService.KM_SKIP_BOT, Message.GroupMessageMetaData.TRUE.getValue());
+                        metadata.put(Message.KM_ASSIGN, MobiComUserPreference.getInstance(context).getUserId());
+                        metadata.put(KmService.KM_NO_ALERT, Message.GroupMessageMetaData.TRUE.getValue());
+                        metadata.put(KmService.KM_BADGE_COUNT, Message.GroupMessageMetaData.FALSE.getValue());
+                        metadata.put(Message.MetaDataType.KEY.getValue(), Message.MetaDataType.ARCHIVE.getValue());
                         message.setMetadata(metadata);
                         message.setContentType(Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue());
                         message.setGroupId(channel.getKey());
@@ -4641,7 +4626,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void onFailure(String response, Exception e, Context context) {
+            public void onFailure(String response, Exception e) {
                 if (progressDialog != null) {
                     progressDialog.dismiss();
                 }

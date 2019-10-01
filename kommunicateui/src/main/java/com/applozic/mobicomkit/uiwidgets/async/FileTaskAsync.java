@@ -44,8 +44,8 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
     }
 
     @Override
-    protected void onPostExecute(Boolean b) {
-        super.onPostExecute(b);
-        prePostUIMethods.postTaskUIMethod(b, file);
+    protected void onPostExecute(Boolean completed) {
+        super.onPostExecute(completed);
+        prePostUIMethods.postTaskUIMethod(completed, file);
     }
 }

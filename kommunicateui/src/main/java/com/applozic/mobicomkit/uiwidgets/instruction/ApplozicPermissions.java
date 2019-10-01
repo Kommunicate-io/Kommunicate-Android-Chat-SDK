@@ -18,10 +18,12 @@ public class ApplozicPermissions {
     private LinearLayout snackBarLayout;
     private Activity activity;
 
-    public static final int REQUEST_STORAGE_MULTI_SELECT_GALLERY = 101;
-    public static final int REQUEST_STORAGE_ATTACHMENT = 201;
-    public static final int REQUEST_CAMERA_PHOTO = 151;
-    public static final int REQUEST_CAMERA_VIDEO = 251;
+    //CODES: all permission request codes here are between 900 and 999 to avoid conflicts
+    //CODES: refer to the PermissionUtils.java request codes to avoid conflicts
+    public static final int REQUEST_STORAGE_MULTI_SELECT_GALLERY = 901;
+    public static final int REQUEST_STORAGE_ATTACHMENT = 902;
+    public static final int REQUEST_CAMERA_PHOTO = 903;
+    public static final int REQUEST_CAMERA_VIDEO = 904;
 
     public ApplozicPermissions(Activity activity, LinearLayout linearLayout) {
         this.activity = activity;

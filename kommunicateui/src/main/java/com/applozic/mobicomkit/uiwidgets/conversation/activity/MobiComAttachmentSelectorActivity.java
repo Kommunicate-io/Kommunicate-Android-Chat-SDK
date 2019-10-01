@@ -47,8 +47,8 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     AlCustomizationSettings alCustomizationSettings;
     FileClientService fileClientService;
     Uri imageUri;
-    String userID, displayName, groupName;
-    Integer groupID;
+    String userId, displayName, groupName;
+    Integer groupId;
     MobiComUserPreference userPreferences;
     private String TAG = "MultiAttActivity";
     private Button sendAttachment;
@@ -90,10 +90,10 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         userPreferences = MobiComUserPreference.getInstance(this);
         Intent intent = getIntent();
         if (intent.getExtras() != null) {
-            userID = intent.getExtras().getString(USER_ID);
+            userId = intent.getExtras().getString(USER_ID);
             displayName = intent.getExtras().getString(DISPLAY_NAME);
             if (intent.hasExtra(GROUP_ID)) {
-                groupID = intent.getExtras().getInt(GROUP_ID);
+                groupId = intent.getExtras().getInt(GROUP_ID);
             }
             groupName = intent.getExtras().getString(GROUP_NAME);
             imageUri = (Uri) intent.getParcelableExtra(URI_LIST);
@@ -142,14 +142,14 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                 if (imageUri != null) {
                     for (Uri uri : attachmentFileList) {
                         try {
-                            Message messageToSend = kmAttachmentsController.putAttachmentInfo(uri, false, groupID, userID, messageEditText.getText().toString());
+                            Message messageToSend = kmAttachmentsController.putAttachmentInfo(uri, false, groupId, userId, messageEditText.getText().toString());
                             Intent startConversationActivity = new Intent(MobiComAttachmentSelectorActivity.this, ConversationActivity.class);
-                            if (groupID != 0) {
-                                startConversationActivity.putExtra(ConversationUIService.GROUP_ID, groupID);
+                            if (groupId != 0) {
+                                startConversationActivity.putExtra(ConversationUIService.GROUP_ID, groupId);
                                 startConversationActivity.putExtra(ConversationUIService.GROUP_NAME, groupName);
                                 startConversationActivity.putExtra(ConversationUIService.FORWARD_MESSAGE, GsonUtils.getJsonFromObject(messageToSend, messageToSend.getClass()));
                             } else {
-                                startConversationActivity.putExtra(ConversationUIService.USER_ID, userID);
+                                startConversationActivity.putExtra(ConversationUIService.USER_ID, userId);
                                 startConversationActivity.putExtra(ConversationUIService.DISPLAY_NAME, displayName);
                                 startConversationActivity.putExtra(ConversationUIService.FORWARD_MESSAGE, GsonUtils.getJsonFromObject(messageToSend, messageToSend.getClass()));
                             }
@@ -176,7 +176,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
             @Override
             public void preTaskUIMethod() {
-                progressDialog = ProgressDialog.show(MobiComAttachmentSelectorActivity.this, "Wait",
+                progressDialog = ProgressDialog.show(MobiComAttachmentSelectorActivity.this, MobiComAttachmentSelectorActivity.this.getString(R.string.wait),
                         MobiComAttachmentSelectorActivity.this.getString(R.string.applozic_contacts_loading_info), true);
             }
 

@@ -590,8 +590,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         final Uri singleFileUri = (data == null ? null : data.getData());
                         kmAttachmentsController.processFile(singleFileUri, alCustomizationSettings, prePostUIMethods);
                     } else {
-                        final int dataCount = clipData.getItemCount();
-                        for (int i = 0; i < dataCount; i++) {
+                        for (int i = 0; i < clipData.getItemCount(); i++) {
                             kmAttachmentsController.processFile(clipData.getItemAt(i).getUri(), alCustomizationSettings, prePostUIMethods);
                         }
                     }

@@ -61,14 +61,12 @@ public class MultimediaOptionsGridView {
             ((ConversationActivity) context).processLocation();
         } else if (key.equals(context.getString(R.string.al_camera))) {
             if (storagePermissionListener.isPermissionGranted()) {
-                ((ConversationActivity) context).isTakePhoto(true);
                 ((ConversationActivity) context).processCameraAction();
             } else {
                 storagePermissionListener.checkPermission(new KmStoragePermission() {
                     @Override
                     public void onAction(boolean didGrant) {
                         if (didGrant) {
-                            ((ConversationActivity) context).isTakePhoto(true);
                             ((ConversationActivity) context).processCameraAction();
                         }
                     }
@@ -76,14 +74,12 @@ public class MultimediaOptionsGridView {
             }
         } else if (key.equals(context.getString(R.string.al_file))) {
             if (storagePermissionListener.isPermissionGranted()) {
-                ((ConversationActivity) context).isAttachment(true);
                 ((ConversationActivity) context).processAttachment();
             } else {
                 storagePermissionListener.checkPermission(new KmStoragePermission() {
                     @Override
                     public void onAction(boolean didGrant) {
                         if (didGrant) {
-                            ((ConversationActivity) context).isAttachment(true);
                             ((ConversationActivity) context).processAttachment();
                         }
                     }
@@ -104,14 +100,12 @@ public class MultimediaOptionsGridView {
             }
         } else if (key.equals(context.getString(R.string.al_video))) {
             if (storagePermissionListener.isPermissionGranted()) {
-                ((ConversationActivity) context).isTakePhoto(false);
                 ((ConversationActivity) context).processVideoRecording();
             } else {
                 storagePermissionListener.checkPermission(new KmStoragePermission() {
                     @Override
                     public void onAction(boolean didGrant) {
                         if (didGrant) {
-                            ((ConversationActivity) context).isTakePhoto(false);
                             ((ConversationActivity) context).processVideoRecording();
                         }
                     }

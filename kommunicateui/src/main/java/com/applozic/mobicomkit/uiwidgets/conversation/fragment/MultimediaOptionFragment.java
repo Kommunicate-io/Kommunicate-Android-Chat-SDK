@@ -34,8 +34,9 @@ public class MultimediaOptionFragment extends DialogFragment {
     public static final int REQUEST_CODE_SEND_LOCATION = 10;
     public static final int REQUEST_CODE_TAKE_PHOTO = 11;
     public static final int REQUEST_CODE_ATTACH_PHOTO = 12;
+    public static final int REQUEST_CODE_MULTI_SELECT_GALLERY = 21;
     public static final int REQUEST_MULTI_ATTCAHMENT = 16;
-    public static final int REQUEST_CODE_ATTACHE_AUDIO = 13;
+    public static final int REQUEST_CODE_ATTACH_AUDIO = 13;
     public static final int MEDIA_TYPE_VIDEO = 2;
     public static final int REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY = 14;
     public static final int REQUEST_CODE_CONTACT_SHARE = 15;
@@ -82,7 +83,6 @@ public class MultimediaOptionFragment extends DialogFragment {
                         }
                         break;
                     case 2:
-
                         Intent intentPick = new Intent(getActivity(), MobiComAttachmentSelectorActivity.class);
                         getActivity().startActivityForResult(intentPick, REQUEST_MULTI_ATTCAHMENT);
                         break;
@@ -90,7 +90,6 @@ public class MultimediaOptionFragment extends DialogFragment {
                         ((ConversationActivity) getActivity()).showAudioRecordingDialog();
                         break;
                     case 4:
-
                         // create new Intentwith with Standard Intent action that can be
                         // sent to have the camera application capture an video and return it.
                         intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);

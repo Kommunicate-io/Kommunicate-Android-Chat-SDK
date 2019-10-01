@@ -279,7 +279,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private boolean onSelected;
     private ImageCache imageCache;
     private RecyclerView messageTemplateView;
-    private ImageButton cameraButton, locationButton, fileAttachmentButton;
+    private ImageButton cameraButton, locationButton, fileAttachmentButton, multiSelectGalleryButton;
     WeakReference<KmRecordButton> recordButtonWeakReference;
     RecyclerView recyclerView;
     RecyclerViewPositionHelper recyclerViewPositionHelper;
@@ -305,6 +305,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public Map<String, CountDownTimer> typingTimerMap;
     public int loggedInUserRole;
     public static final String AUDIO_RECORD_OPTION = ":audio";
+    public static final String MULTI_SELECT_GALLERY_OPTION = ":multiSelectGalleryItems";
     KmRecordView recordView;
     FrameLayout recordLayout;
     boolean isRecording = false;
@@ -482,6 +483,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         cameraButton = list.findViewById(R.id.camera_btn);
         locationButton = list.findViewById(R.id.location_btn);
         fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
+        multiSelectGalleryButton = list.findViewById(R.id.idMultiSelectGalleryButton);
         emailReplyReminderLayout = list.findViewById(R.id.emailReplyReminderView);
         processAttachmentIconsClick();
         Configuration config = getResources().getConfiguration();
@@ -890,6 +892,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             if (attachmentOptions.containsKey(":file")) {
                 fileAttachmentButton.setVisibility(attachmentOptions.get(":file") ? VISIBLE : View.GONE);
+            }
+
+            if (attachmentOptions.containsKey(MULTI_SELECT_GALLERY_OPTION)) {
+                multiSelectGalleryButton.setVisibility(attachmentOptions.get(MULTI_SELECT_GALLERY_OPTION) ? VISIBLE : View.GONE);
             }
         }
 
@@ -3999,14 +4005,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                             galleryImageView.setVisibility(View.GONE);
                             imageViewRLayout.setVisibility(View.GONE);
                         }
-                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(ApplozicService.getContext(getContext()), R.color.apploizc_lite_gray_color));
+                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(ApplozicService.getContext(getContext()), R.color.applozic_lite_gray_color));
                     } else if (message.getContentType() == Message.ContentType.LOCATION.getValue()) {
                         imageViewForAttachmentType.setVisibility(VISIBLE);
                         galleryImageView.setVisibility(VISIBLE);
                         imageViewRLayout.setVisibility(VISIBLE);
                         messageTextView.setText(ApplozicService.getContext(getContext()).getString(R.string.al_location_string));
                         imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_location_on_white_24dp);
-                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(ApplozicService.getContext(getContext()), R.color.apploizc_lite_gray_color));
+                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(ApplozicService.getContext(getContext()), R.color.applozic_lite_gray_color));
                         messageImageLoader.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
                         messageImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), galleryImageView);
                     } else {
@@ -4039,19 +4045,31 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             public void onClick(View v) {
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
-                    if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
-                        ((ConversationActivity) getActivity()).isTakePhoto(true);
-                        ((ConversationActivity) getActivity()).processCameraAction();
-                    } else {
+                    ((ConversationActivity) getActivity()).processCameraAction();
+                }
+            }
+        });
+
+        multiSelectGalleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                emoticonsFrameLayout.setVisibility(View.GONE);
+                if (getActivity() != null) {
+                    if (!((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
+                        //get permission
                         ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
                             @Override
                             public void onAction(boolean didGrant) {
-                                if (didGrant) {
-                                    ((ConversationActivity) getActivity()).isTakePhoto(true);
-                                    ((ConversationActivity) getActivity()).processCameraAction();
+                                //did not get permission
+                                if (!didGrant) {
+                                    return;
+                                } else {
+                                    ((ConversationActivity) getActivity()).processMultiSelectGallery();
                                 }
                             }
                         });
+                    } else {
+                        ((ConversationActivity) getActivity()).processMultiSelectGallery();
                     }
                 }
             }
@@ -4063,14 +4081,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
-                        ((ConversationActivity) getActivity()).isAttachment(true);
                         ((ConversationActivity) getActivity()).processAttachment();
                     } else {
                         ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
                             @Override
                             public void onAction(boolean didGrant) {
                                 if (didGrant) {
-                                    ((ConversationActivity) getActivity()).isAttachment(true);
                                     ((ConversationActivity) getActivity()).processAttachment();
                                 }
                             }

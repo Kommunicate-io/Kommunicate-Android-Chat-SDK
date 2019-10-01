@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 
-
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
@@ -66,6 +65,7 @@ public class Kommunicate {
     private static final String TAG = "KommunicateTag";
     private static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
     private static final String SKIP_ROUTING = "SKIP_ROUTING";
+    public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
 
     public static void init(Context context, String applicationKey) {
         Applozic.init(context, applicationKey);
@@ -519,6 +519,42 @@ public class Kommunicate {
         return text.toString();
     }
 
+    /**
+     * will update the metadata object with the KM_CHAT_CONTEXT field
+     * @param context the context
+     * @param messageMetadata the map data to update the KM_CHAT_CONTEXT field with
+     */
+    public static void updateChatContext(Context context, Map<String, String> messageMetadata) {
+        //converting the messageMetadata parameter passed to function (keyed by KM_CHAT_CONTEXT), to json string
+        String messageMetaDataString = GsonUtils.getJsonFromObject(messageMetadata, Map.class);
+        if(TextUtils.isEmpty(messageMetaDataString)) {
+            return;
+        }
+
+        //getting the message metadata already in the applozic preferences
+        String existingMetaDataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        Map<String, String> existingMetadata;
+
+        if(TextUtils.isEmpty(existingMetaDataString)) { //case 1: no existing metadata
+            existingMetadata = new HashMap<>();
+        } else { //case 2: metadata already exists
+            existingMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(existingMetaDataString, Map.class);
+
+            if(existingMetadata.containsKey(KM_CHAT_CONTEXT)) { //case 2a: km_chat-context already exists
+                Map<String, String> existingKmChatContext = (Map<String, String>) GsonUtils.getObjectFromJson(existingMetadata.get(KM_CHAT_CONTEXT) , Map.class);
+
+                for(Map.Entry<String, String> data : messageMetadata.entrySet()) {
+                    existingKmChatContext.put(data.getKey(), data.getValue());
+                }
+
+                //update messageMetadataString
+                messageMetaDataString = GsonUtils.getJsonFromObject(existingKmChatContext, Map.class);
+            }
+        }
+
+        existingMetadata.put(KM_CHAT_CONTEXT, messageMetaDataString);
+        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+     }
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
         new KmAwayMessageTask(context, groupId, handler).execute();
     }

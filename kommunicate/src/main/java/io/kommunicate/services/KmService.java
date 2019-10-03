@@ -152,18 +152,18 @@ public class KmService {
     }
 
     /**
-     * this method will set the conversation feedback using a async task from the given KmFeedback object
+     * This method will set the conversation feedback using a async task from the given KmFeedback object
      *
      * @param context            the context
      * @param kmFeedback         will have the feedback and the conversation id of the conversation
-     * @param kmFeedbackCallback the callback with the onSuccess and onFailure1
+     * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
     public static void setConversationFeedback(Context context, KmFeedback kmFeedback, KmFeedbackCallback kmFeedbackCallback) {
          new KmConversationFeedbackTask(context, null, kmFeedback, kmFeedbackCallback).execute();
     }
 
     /**
-     * the wrapper method to get feedback for given conversation
+     * The wrapper method to get feedback for given conversation
      *
      * @param conversationId the groupId of the conversation
      * @return the response object, response.getData() will return null in case of feedback not found
@@ -173,7 +173,7 @@ public class KmService {
     }
 
     /**
-     * the wrapper method tp set the feedback for the conversation at the server
+     * The wrapper method tp set the feedback for the conversation at the server
      *
      * @param kmFeedback the feedback object (has groupId, rating and comments data members)
      * @return string response of the post request

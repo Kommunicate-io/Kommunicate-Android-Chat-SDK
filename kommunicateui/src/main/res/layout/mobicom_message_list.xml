@@ -49,7 +49,8 @@
             android:layout_weight="8"
             android:orientation="horizontal">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout 
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swipe_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -373,7 +374,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -389,7 +390,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -431,7 +432,7 @@
                                 android:layout_marginTop="16dp"
                                 android:layout_toStartOf="@+id/conversation_send"
                                 android:layout_toLeftOf="@+id/conversation_send"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:cursorVisible="true"
                                 android:gravity="start"
                                 android:ellipsize="start"
@@ -460,7 +461,7 @@
                                 android:layout_height="18dp"
                                 android:layout_marginLeft="16dp"
                                 android:layout_marginStart="16dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/smiley" />
 
                             <ImageButton
@@ -469,8 +470,17 @@
                                 android:layout_height="16.3dp"
                                 android:layout_marginLeft="29dp"
                                 android:layout_marginStart="29dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/camera" />
+
+                            <ImageButton
+                                android:id="@+id/idMultiSelectGalleryButton"
+                                android:layout_width="20dp"
+                                android:layout_height="18dp"
+                                android:layout_marginLeft="30dp"
+                                android:layout_marginStart="30dp"
+                                android:background="@color/applozic_transparent_color"
+                                android:src="@drawable/attachment"/>
 
                             <ImageButton
                                 android:id="@+id/file_as_attachment_btn"
@@ -478,7 +488,7 @@
                                 android:layout_height="18.3dp"
                                 android:layout_marginLeft="30dp"
                                 android:layout_marginStart="30dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/attachment" />
 
                             <ImageButton
@@ -487,7 +497,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginLeft="29dp"
                                 android:layout_marginStart="29dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/locaiton" />
                         </LinearLayout>
                     </LinearLayout>

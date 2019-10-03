@@ -173,7 +173,7 @@
             android:paddingEnd="2dp"
             android:paddingRight="2dp"
             android:text="@string/self_destruct"
-            android:textColor="@color/apploizc_darker_gray_color"
+            android:textColor="@color/applozic_darker_gray_color"
             android:textSize="11sp"
             android:visibility="gone" />
     </LinearLayout>
@@ -214,7 +214,7 @@
             android:drawableEnd="@drawable/applozic_ic_action_message_pending"
             android:drawableRight="@drawable/applozic_ic_action_message_pending"
             android:gravity="center_vertical"
-            android:textColor="@color/apploizc_darker_gray_color"
+            android:textColor="@color/applozic_darker_gray_color"
             android:textSize="11sp"
             android:visibility="gone" />
     </LinearLayout>

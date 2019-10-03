@@ -94,9 +94,9 @@ public class PictureUploadPopUpFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 getDialog().dismiss();
-                Intent getContentIntent = new Intent(Intent.ACTION_PICK,
+                Intent contentChooserIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                getActivity().startActivityForResult(getContentIntent, ProfileFragment.REQUEST_CODE_ATTACH_PHOTO);
+                getActivity().startActivityForResult(contentChooserIntent, ProfileFragment.REQUEST_CODE_ATTACH_PHOTO);
             }
         });
 

@@ -4,7 +4,7 @@
     android:id="@+id/contact_share_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/apploizc_transparent_color"
+    android:background="@color/applozic_transparent_color"
     android:orientation="vertical"
     android:visibility="gone">
 
@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/apploizc_transparent_color"
+        android:background="@color/applozic_transparent_color"
         android:orientation="vertical"
         android:padding="10dp"
         android:weightSum="3">
@@ -101,7 +101,7 @@
         android:layout_alignEnd="@+id/relativeLayout"
         android:layout_alignRight="@+id/relativeLayout"
         android:layout_marginTop="3dp"
-        android:background="@color/apploizc_transparent_color"
+        android:background="@color/applozic_transparent_color"
         android:text="@string/Add_Contacts" />
 
 

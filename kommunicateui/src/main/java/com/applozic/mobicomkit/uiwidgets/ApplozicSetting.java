@@ -563,7 +563,7 @@ public class ApplozicSetting {
     }
 
     public int getConversationDateTextColor() {
-        return sharedPreferences.getInt(CONVERSATION_DATE_TEXT_COLOR, R.color.apploizc_gray_color);
+        return sharedPreferences.getInt(CONVERSATION_DATE_TEXT_COLOR, R.color.applozic_gray_color);
     }
 
     public ApplozicSetting setConversationDateTextColor(int color) {
@@ -572,7 +572,7 @@ public class ApplozicSetting {
     }
 
     public int getConversationDayTextColor() {
-        return sharedPreferences.getInt(CONVERSATION_DAY_TEXT_COLOR, R.color.apploizc_gray_color);
+        return sharedPreferences.getInt(CONVERSATION_DAY_TEXT_COLOR, R.color.applozic_gray_color);
     }
 
     public ApplozicSetting setConversationDayTextColor(int color) {
@@ -590,7 +590,7 @@ public class ApplozicSetting {
     }
 
     public int getChannelCustomMesssageTextColor() {
-        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_TEXT_COLOR, R.color.apploizc_lite_gray_color);
+        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_TEXT_COLOR, R.color.applozic_lite_gray_color);
     }
 
     public ApplozicSetting setChannelCustomMesssageTextColor(int color) {
@@ -599,7 +599,7 @@ public class ApplozicSetting {
     }
 
     public int getChannelCustomMesssageBgColor() {
-        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_BG_COLOR, R.color.apploizc_custom_channel_message_text_color);
+        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_BG_COLOR, R.color.applozic_custom_channel_message_text_color);
     }
 
     public ApplozicSetting setChannelCustomMesssageBgColor(int color) {
@@ -608,7 +608,7 @@ public class ApplozicSetting {
     }
 
     public int getChannelCustomMesssageBorderColor() {
-        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_BORDER_COLOR, R.color.apploizc_custom_channel_message_text_color);
+        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_BORDER_COLOR, R.color.applozic_custom_channel_message_text_color);
     }
 
     public ApplozicSetting setChannelCustomMesssageBorderColor(int color) {

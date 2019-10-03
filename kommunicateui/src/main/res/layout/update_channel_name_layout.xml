@@ -37,7 +37,7 @@
             android:layout_alignBottom="@+id/applozic_group_profile"
             android:layout_alignEnd="@+id/applozic_group_profile"
             android:layout_alignRight="@+id/applozic_group_profile"
-            android:background="@color/apploizc_transparent_color"
+            android:background="@color/applozic_transparent_color"
             android:clickable="true" />
     </RelativeLayout>
 

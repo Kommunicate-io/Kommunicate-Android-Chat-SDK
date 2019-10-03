@@ -77,18 +77,30 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/idFeedbackComment"
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/idCommentScrollView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:layout_marginBottom="27dp"
-        android:text=""
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:textStyle="italic"
-        android:visibility="gone"/>
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/idFeedbackComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text=""
+                android:textAlignment="center"
+                android:textStyle="italic" />
+        </LinearLayout>
+    </ScrollView>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/idFeedbackFooterContainer"

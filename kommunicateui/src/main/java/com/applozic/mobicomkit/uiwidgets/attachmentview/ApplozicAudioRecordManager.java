@@ -3,8 +3,8 @@ package com.applozic.mobicomkit.uiwidgets.attachmentview;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.attachment.FileClientService;

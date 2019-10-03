@@ -2,7 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.activities;
 
 import android.app.ProgressDialog;
 import android.os.ResultReceiver;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;

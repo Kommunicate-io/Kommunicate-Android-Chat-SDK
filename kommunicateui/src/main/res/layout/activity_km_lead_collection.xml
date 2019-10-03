@@ -42,7 +42,7 @@
         android:textSize="16sp"
         android:textStyle="normal" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -63,9 +63,9 @@
             android:textColor="@color/prechat_edittext_text_color"
             android:textSize="14sp"
             android:textStyle="normal" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -86,9 +86,9 @@
             android:textColor="@color/prechat_edittext_text_color"
             android:textSize="14sp"
             android:textStyle="normal" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -109,7 +109,7 @@
             android:textColor="@color/prechat_edittext_text_color"
             android:textSize="14sp"
             android:textStyle="normal" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/start_conversation"

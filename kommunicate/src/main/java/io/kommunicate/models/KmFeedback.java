@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.models;
+package io.kommunicate.models;
 
 /**
  * model class for the feedback response

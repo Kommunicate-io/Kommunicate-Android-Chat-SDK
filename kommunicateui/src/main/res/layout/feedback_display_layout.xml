@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/idFeedbackTopLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             app:layout_constraintStart_toEndOf="@+id/idFeedbackRateText"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:id="@+id/idCommentScrollView"
@@ -102,7 +102,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/idFeedbackFooterContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -147,5 +147,5 @@
             app:layout_constraintStart_toEndOf="@id/idTextQuestion"
             app:layout_constraintTop_toBottomOf="@+id/idFeedbackResolvedText" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

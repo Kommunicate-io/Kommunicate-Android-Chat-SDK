@@ -1,8 +1,8 @@
 package kommunicate.io.sample;
 
 import android.content.Context;
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDex;
+import androidx.multidex.MultiDexApplication;
 
 /**
  * Created by ashish on 23/01/18.

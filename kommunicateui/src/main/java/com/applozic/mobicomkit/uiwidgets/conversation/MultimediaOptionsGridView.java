@@ -1,7 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
 
 import android.net.Uri;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;

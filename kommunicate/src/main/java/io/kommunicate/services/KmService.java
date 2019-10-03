@@ -6,15 +6,7 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
-import com.applozic.mobicomkit.uiwidgets.async.AlChannelUpdateTask;
-import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelRemoveMemberTask;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFeedback;
 import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
@@ -25,12 +17,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmConversationRemoveMemberTask;
 import io.kommunicate.async.KmUpdateConversationTask;
+import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
+import io.kommunicate.models.KmFeedback;
 import io.kommunicate.utils.KmConstants;
 
 /**
@@ -146,15 +141,35 @@ public class KmService {
     }
 
     /**
+     * This method will get the conversation feedback using a async task for the given conversation id
+     *
+     * @param context            the context
+     * @param conversationId     of which we need to get the feed back
+     * @param kmFeedbackCallback the callback with the onSuccess and onFailure
+     */
+    public static void getConversationFeedback(Context context, String conversationId, KmFeedbackCallback kmFeedbackCallback) {
+         new KmConversationFeedbackTask(context, conversationId, null, kmFeedbackCallback).execute();
+    }
+
+    /**
+     * this method will set the conversation feedback using a async task from the given KmFeedback object
+     *
+     * @param context            the context
+     * @param kmFeedback         will have the feedback and the conversation id of the conversation
+     * @param kmFeedbackCallback the callback with the onSuccess and onFailure1
+     */
+    public static void setConversationFeedback(Context context, KmFeedback kmFeedback, KmFeedbackCallback kmFeedbackCallback) {
+         new KmConversationFeedbackTask(context, null, kmFeedback, kmFeedbackCallback).execute();
+    }
+
+    /**
      * the wrapper method to get feedback for given conversation
      *
      * @param conversationId the groupId of the conversation
      * @return the response object, response.getData() will return null in case of feedback not found
      */
     public synchronized String getConversationFeedback(String conversationId) {
-        String response = clientService.getConversationFeedback(conversationId);
-        Utils.printLog(context, "KmService", "Feedback get: " + response);
-        return response;
+        return clientService.getConversationFeedback(conversationId);
     }
 
     /**

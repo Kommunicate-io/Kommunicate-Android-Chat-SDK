@@ -1,9 +1,9 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks;
+package io.kommunicate.callbacks;
 
 import android.content.Context;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFeedback;
+import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmFeedback;
 
 /**
  * callback for the feedback api async task

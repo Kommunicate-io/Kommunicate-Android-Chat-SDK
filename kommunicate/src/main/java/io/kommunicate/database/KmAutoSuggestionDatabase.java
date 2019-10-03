@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 import android.text.TextUtils;
 
 import com.applozic.mobicommons.ApplozicService;

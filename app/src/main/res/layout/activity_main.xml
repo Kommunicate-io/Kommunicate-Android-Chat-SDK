@@ -24,7 +24,7 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -38,9 +38,9 @@
                 android:textDirection="@integer/locale_mirror_flip"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/black" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -53,9 +53,9 @@
                 android:hint="Password"
                 android:inputType="textPassword"
                 android:textColor="@color/black" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             android:text="@string/login_or_sign_up_info"
             android:textColor="@color/white" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_login_as_visitor"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -111,6 +111,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:orientation="vertical"
-            android:visibility="gone"></LinearLayout>
+            android:visibility="gone"/>
     </LinearLayout>
 </ScrollView>

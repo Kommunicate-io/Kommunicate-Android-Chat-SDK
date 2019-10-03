@@ -24,19 +24,21 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.loader.app.LoaderManager;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.loader.content.Loader;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -138,6 +140,8 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 
 
+import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
@@ -189,6 +193,19 @@ import java.util.TimeZone;
 import java.util.Timer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.Kommunicate;
+import io.kommunicate.async.KmUpdateConversationTask;
+import io.kommunicate.callbacks.KmAwayMessageHandler;
+import io.kommunicate.callbacks.KmFeedbackCallback;
+import io.kommunicate.callbacks.KmRemoveMemberCallback;
+import io.kommunicate.database.KmAutoSuggestionDatabase;
+import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmAutoSuggestionModel;
+import io.kommunicate.models.KmFeedback;
+import io.kommunicate.services.KmChannelService;
+import io.kommunicate.services.KmClientService;
+import io.kommunicate.services.KmService;
+import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.VISIBLE;
 import static java.util.Collections.disjoint;
@@ -314,14 +331,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     private KmAutoSuggestionAdapter kmAutoSuggestionAdapter;
     private View kmAutoSuggestionDivider;
     private String loggedInUserId;
-    protected String messageSearchString;
-
-    FeedbackInputFragment feedBackFragment;
-
-    KmFeedbackView kmFeedbackView;
-
-    View mainDivider;
-    FrameLayout frameLayoutProgressbar;
+    String messageSearchString;
+    private FeedbackInputFragment feedBackFragment;
+    private KmFeedbackView kmFeedbackView;
+    private View mainDivider;
+    private FrameLayout frameLayoutProgressbar;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -517,7 +531,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         if (messageList != null) {
                             messageList.clear();
                         }
-                        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversation.getId());
+                        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversation.getId(), messageSearchString);
                         downloadConversation.execute();
                     }
                 }
@@ -2823,8 +2837,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void onResume() {
         super.onResume();
 
-        Utils.printLog(getContext(), TAG, "onResume for " + TAG + " called.");
-
         AlEventManager.getInstance().registerUIListener(TAG, this);
 
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
@@ -4123,7 +4135,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
             frameLayoutProgressbar.setVisibility(VISIBLE);
 
-            KommunicateUI.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
+            KmService.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
 
@@ -4683,7 +4695,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         kmFeedback.setRating(rating);
 
-        KommunicateUI.setConversationFeedback(getActivity(), kmFeedback, new KmFeedbackCallback() {
+        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmFeedbackCallback() {
             @Override
             public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
                 kmFeedbackView.showFeedback(context, kmFeedback);

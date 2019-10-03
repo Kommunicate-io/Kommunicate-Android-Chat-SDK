@@ -49,13 +49,13 @@
             android:layout_weight="8"
             android:orientation="horizontal">
 
-            <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swipe_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/messageList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true" />
 
-            </android.support.v4.widget.SwipeRefreshLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <TextView
                 android:id="@+id/noConversations"
@@ -308,7 +308,7 @@
                     android:textStyle="italic" />
             </FrameLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mobicomMessageTemplateView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

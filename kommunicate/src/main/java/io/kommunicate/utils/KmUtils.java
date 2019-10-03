@@ -2,7 +2,7 @@ package io.kommunicate.utils;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
 

@@ -190,6 +190,17 @@ public class ConversationUIService {
         });
     }
 
+    /**
+     * send the the attachment messages
+     * @param attachmentList the list of messages
+     * @param messageText the message text
+     */
+    public void sendAttachments(ArrayList<Uri> attachmentList, String messageText) {
+        for (Uri info : attachmentList) {
+            getConversationFragment().sendMessage(messageText, Message.ContentType.ATTACHMENT.getValue(), info.toString());
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         try {
             if ((requestCode == MultimediaOptionFragment.REQUEST_CODE_ATTACH_PHOTO ||
@@ -250,16 +261,11 @@ public class ConversationUIService {
                 }
             }
             if (requestCode == MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT && resultCode == Activity.RESULT_OK) {
-
                 ArrayList<Uri> attachmentList = intent.getParcelableArrayListExtra(MobiComAttachmentSelectorActivity.MULTISELECT_SELECTED_FILES);
                 String messageText = intent.getStringExtra(MobiComAttachmentSelectorActivity.MULTISELECT_MESSAGE);
 
                 //TODO: check performance, we might need to put in each posting in separate thread.
-
-                for (Uri info : attachmentList) {
-                    getConversationFragment().sendMessage(messageText, Message.ContentType.ATTACHMENT.getValue(), info.toString());
-                }
-
+                sendAttachments(attachmentList, messageText);
             }
 
             if (requestCode == MultimediaOptionFragment.REQUEST_CODE_SEND_LOCATION && resultCode == Activity.RESULT_OK) {

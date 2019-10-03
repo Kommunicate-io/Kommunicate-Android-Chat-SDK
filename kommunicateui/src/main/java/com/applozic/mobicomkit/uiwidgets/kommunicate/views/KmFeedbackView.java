@@ -7,10 +7,13 @@ import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.FeedbackInputFragment;
 import io.kommunicate.models.KmFeedback;
@@ -30,6 +33,7 @@ public class KmFeedbackView extends LinearLayout {
     TextView textViewRestartConversation;
     ConstraintLayout constraintLayoutFeedbackTopLayout;
     LinearLayout rootLinearLayout;
+    ScrollView scrollViewFeedbackCommentWrap;
 
     KmFeedbackViewCallbacks kmFeedbackViewCallbackListener;
 
@@ -70,11 +74,26 @@ public class KmFeedbackView extends LinearLayout {
         textViewFeedbackComment = view.findViewById(R.id.idFeedbackComment);
         imageViewFeedbackRating = view.findViewById(R.id.idRatingImage);
         constraintLayoutFeedbackTopLayout = view.findViewById(R.id.idFeedbackTopLayout);
+        scrollViewFeedbackCommentWrap = view.findViewById(R.id.idCommentScrollView);
 
         textViewRestartConversation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 kmFeedbackViewCallbackListener.onRestartConversationPressed();
+            }
+        });
+
+        //to set the max height of the scroll view to 70dp
+        scrollViewFeedbackCommentWrap.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightInPixels = Math.round(DimensionsUtils.convertDpToPixel(70));
+                if(scrollViewFeedbackCommentWrap.getHeight() > heightInPixels) {
+                    LayoutParams layoutParams = (LayoutParams) scrollViewFeedbackCommentWrap.getLayoutParams();
+                    layoutParams.height = heightInPixels;
+
+                    scrollViewFeedbackCommentWrap.setLayoutParams(layoutParams);
+                }
             }
         });
     }
@@ -102,7 +121,7 @@ public class KmFeedbackView extends LinearLayout {
         }
 
         if (feedback.getComments() != null) {
-            textViewFeedbackComment.setVisibility(VISIBLE);
+            scrollViewFeedbackCommentWrap.setVisibility(VISIBLE);
             textViewFeedbackComment.setText("\"" + feedback.getComments()[0] + "\"");
         }
     }

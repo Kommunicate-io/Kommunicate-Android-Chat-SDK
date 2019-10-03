@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- view background color -->
-    <solid android:color="@color/apploizc_transparent_color" />
+    <solid android:color="@color/applozic_transparent_color" />
 
     <!-- view border color and width -->
 

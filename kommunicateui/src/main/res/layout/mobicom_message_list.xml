@@ -479,6 +479,7 @@
                                 android:layout_height="18dp"
                                 android:layout_marginLeft="30dp"
                                 android:layout_marginStart="30dp"
+                                android:visibility="gone"
                                 android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/attachment"/>
 

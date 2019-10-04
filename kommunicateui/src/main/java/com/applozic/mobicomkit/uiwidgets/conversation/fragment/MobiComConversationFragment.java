@@ -461,8 +461,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             }
         });
 
-        Utils.printLog(getContext(), TAG, "onCreateView for " + TAG + " called.");
-
         /**
          * check if conversation is a resolved one, and display the respective feedback layouts
          * also open the feedback input fragment if feedback isn't set

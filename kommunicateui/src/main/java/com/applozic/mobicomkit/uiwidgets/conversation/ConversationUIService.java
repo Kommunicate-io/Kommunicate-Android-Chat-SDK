@@ -414,14 +414,14 @@ public class ConversationUIService {
     }
 
     public void addMessage(Message message) {
-        if (message.isUpdateMessage() || !message.getHidden()) {
+        if (message.isUpdateMessage()) {
             if (!BroadcastService.isQuick()) {
                 return;
             }
 
             MobiComQuickConversationFragment fragment = (MobiComQuickConversationFragment) UIService.getFragmentByTag(fragmentActivity, QUICK_CONVERSATION_FRAGMENT);
             if (fragment != null) {
-                if (message.isHidden()) {
+                if (message.hasHideKey()) {
                     fragment.refreshView();
                 } else {
                     fragment.addMessage(message);
@@ -445,7 +445,7 @@ public class ConversationUIService {
     }
 
     public void syncMessages(Message message, String keyString) {
-        if (!message.isHidden() && !message.isVideoNotificationMessage()) {
+        if (!message.hasHideKey() && !message.isVideoNotificationMessage()) {
             if (BroadcastService.isIndividual()) {
                 ConversationFragment conversationFragment = getConversationFragment();
                 if (conversationFragment != null && conversationFragment.isMsgForConversation(message)
@@ -602,6 +602,9 @@ public class ConversationUIService {
     public void updateChannelSync() {
         if (BroadcastService.isChannelInfo()) {
             BroadcastService.sendUpdateGroupInfoBroadcast(fragmentActivity, BroadcastService.INTENT_ACTIONS.UPDATE_GROUP_INFO.toString());
+        }
+        if (BroadcastService.isQuick() && getQuickConversationFragment() != null) {
+            getQuickConversationFragment().refreshView();
         }
         if (BroadcastService.isIndividual()) {
             getConversationFragment().updateChannelTitleAndSubTitle();

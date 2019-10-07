@@ -50,6 +50,7 @@ import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
+import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAgentModel;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
@@ -87,7 +88,7 @@ public class Kommunicate {
         KMLogoutHandler handler = new KMLogoutHandler() {
             @Override
             public void onSuccess(Context context) {
-                ApplozicService.getContext(context).deleteDatabase(MobiComDatabaseHelper.getInstance(context).getDatabaseName());
+                KmDatabaseHelper.getInstance(context).deleteDatabase();
                 logoutHandler.onSuccess(context);
             }
 

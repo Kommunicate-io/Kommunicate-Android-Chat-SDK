@@ -81,4 +81,10 @@ public class KmDatabaseHelper extends MobiComDatabaseHelper {
         }
         return sInstance;
     }
+
+    public void deleteDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + AUTO_SUGGESTION_TABLE);
+    }
+
 }

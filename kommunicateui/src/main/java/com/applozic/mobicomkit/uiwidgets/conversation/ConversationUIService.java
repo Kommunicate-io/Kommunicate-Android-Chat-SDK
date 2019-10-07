@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,7 +39,6 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.ContactService;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
-import com.applozic.mobicomkit.feed.TopicDetail;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -61,7 +60,6 @@ import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUtils;
-import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
@@ -100,6 +98,7 @@ public class ConversationUIService {
     public static final String CONVERSATION_ID = "CONVERSATION_ID";
     public static final String TOPIC_ID = "TOPIC_ID";
     private static final String TAG = "ConversationUIService";
+    public static final String MESSAGE_SEARCH_STRING = "MESSAGE_SEARCH_STRING";
     private FileClientService fileClientService;
     private FragmentActivity fragmentActivity;
     private BaseContactService baseContactService;
@@ -135,7 +134,7 @@ public class ConversationUIService {
             Contact contact = ((ConversationActivity) fragmentActivity).getContact();
             Channel channel = ((ConversationActivity) fragmentActivity).getChannel();
             Integer conversationId = ((ConversationActivity) fragmentActivity).getConversationId();
-            conversationFragment = ConversationFragment.newInstance(contact, channel, conversationId, null);
+            conversationFragment = ConversationFragment.newInstance(contact, channel, conversationId, null, null);
             ConversationActivity.addFragment(fragmentActivity, conversationFragment, CONVERSATION_FRAGMENT);
         }
         return conversationFragment;
@@ -144,16 +143,16 @@ public class ConversationUIService {
     public void onQuickConversationFragmentItemClick(View view, Contact contact) {
         TextView textView = (TextView) view.findViewById(R.id.unreadSmsCount);
         textView.setVisibility(View.GONE);
-        openConversationFragment(contact, null, null);
+        openConversationFragment(contact, null, null, null);
     }
 
-    public void openConversationFragment(final Contact contact, final Integer conversationId, final String searchString) {
+    public void openConversationFragment(final Contact contact, final Integer conversationId, final String searchString, final String messageSearchString) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 ConversationFragment conversationFragment = (ConversationFragment) UIService.getFragmentByTag(fragmentActivity, CONVERSATION_FRAGMENT);
                 if (conversationFragment == null) {
-                    conversationFragment = ConversationFragment.newInstance(contact, null, conversationId, searchString);
+                    conversationFragment = ConversationFragment.newInstance(contact, null, conversationId, searchString, messageSearchString);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                 } else {
                     UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
@@ -163,19 +162,19 @@ public class ConversationUIService {
                             fragmentActivity.getSupportFragmentManager().popBackStackImmediate();
                         }
                     }
-                    conversationFragment.loadConversation(contact, conversationId, searchString);
+                    conversationFragment.loadConversation(contact, conversationId, messageSearchString);
                 }
             }
         });
     }
 
-    public void openConversationFragment(final Channel channel, final Integer conversationId, final String searchString) {
+    public void openConversationFragment(final Channel channel, final Integer conversationId, final String searchString, final String messageSearchString) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 ConversationFragment conversationFragment = (ConversationFragment) UIService.getFragmentByTag(fragmentActivity, CONVERSATION_FRAGMENT);
                 if (conversationFragment == null) {
-                    conversationFragment = ConversationFragment.newInstance(null, channel, conversationId, searchString);
+                    conversationFragment = ConversationFragment.newInstance(null, channel, conversationId, searchString,  messageSearchString);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                 } else {
                     UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
@@ -185,10 +184,21 @@ public class ConversationUIService {
                             fragmentActivity.getSupportFragmentManager().popBackStackImmediate();
                         }
                     }
-                    conversationFragment.loadConversation(channel, conversationId, searchString);
+                    conversationFragment.loadConversation(channel, conversationId, messageSearchString);
                 }
             }
         });
+    }
+
+    /**
+     * send the the attachment messages
+     * @param attachmentList the list of messages
+     * @param messageText the message text
+     */
+    public void sendAttachments(ArrayList<Uri> attachmentList, String messageText) {
+        for (Uri info : attachmentList) {
+            getConversationFragment().sendMessage(messageText, Message.ContentType.ATTACHMENT.getValue(), info.toString());
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -251,16 +261,11 @@ public class ConversationUIService {
                 }
             }
             if (requestCode == MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT && resultCode == Activity.RESULT_OK) {
-
                 ArrayList<Uri> attachmentList = intent.getParcelableArrayListExtra(MobiComAttachmentSelectorActivity.MULTISELECT_SELECTED_FILES);
                 String messageText = intent.getStringExtra(MobiComAttachmentSelectorActivity.MULTISELECT_MESSAGE);
 
                 //TODO: check performance, we might need to put in each posting in separate thread.
-
-                for (Uri info : attachmentList) {
-                    getConversationFragment().sendMessage(messageText, Message.ContentType.ATTACHMENT.getValue(), info.toString());
-                }
-
+                sendAttachments(attachmentList, messageText);
             }
 
             if (requestCode == MultimediaOptionFragment.REQUEST_CODE_SEND_LOCATION && resultCode == Activity.RESULT_OK) {
@@ -409,14 +414,14 @@ public class ConversationUIService {
     }
 
     public void addMessage(Message message) {
-        if (message.isUpdateMessage() || !message.getHidden()) {
+        if (message.isUpdateMessage()) {
             if (!BroadcastService.isQuick()) {
                 return;
             }
 
             MobiComQuickConversationFragment fragment = (MobiComQuickConversationFragment) UIService.getFragmentByTag(fragmentActivity, QUICK_CONVERSATION_FRAGMENT);
             if (fragment != null) {
-                if (message.isHidden()) {
+                if (message.hasHideKey()) {
                     fragment.refreshView();
                 } else {
                     fragment.addMessage(message);
@@ -440,7 +445,7 @@ public class ConversationUIService {
     }
 
     public void syncMessages(Message message, String keyString) {
-        if (!message.isHidden() && !message.isVideoNotificationMessage()) {
+        if (!message.hasHideKey() && !message.isVideoNotificationMessage()) {
             if (BroadcastService.isIndividual()) {
                 ConversationFragment conversationFragment = getConversationFragment();
                 if (conversationFragment != null && conversationFragment.isMsgForConversation(message)
@@ -597,6 +602,9 @@ public class ConversationUIService {
     public void updateChannelSync() {
         if (BroadcastService.isChannelInfo()) {
             BroadcastService.sendUpdateGroupInfoBroadcast(fragmentActivity, BroadcastService.INTENT_ACTIONS.UPDATE_GROUP_INFO.toString());
+        }
+        if (BroadcastService.isQuick() && getQuickConversationFragment() != null) {
+            getQuickConversationFragment().refreshView();
         }
         if (BroadcastService.isIndividual()) {
             getConversationFragment().updateChannelTitleAndSubTitle();
@@ -870,11 +878,11 @@ public class ConversationUIService {
         }
 
         if (contact != null) {
-            openConversationFragment(contact, conversationId, searchString);
+            openConversationFragment(contact, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING));
         }
 
         if (channel != null) {
-            openConversationFragment(channel, conversationId, searchString);
+            openConversationFragment(channel, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING));
         }
         String productTopicId = intent.getStringExtra(ConversationUIService.PRODUCT_TOPIC_ID);
         String productImageUrl = intent.getStringExtra(ConversationUIService.PRODUCT_IMAGE_URL);

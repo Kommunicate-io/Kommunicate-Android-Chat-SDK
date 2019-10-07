@@ -2,8 +2,8 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmAutoSuggestionDatabase;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.database.KmDatabaseHelper;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
+import io.kommunicate.database.KmAutoSuggestionDatabase;
+import io.kommunicate.database.KmDatabaseHelper;
+import io.kommunicate.models.KmAutoSuggestionModel;
 
 public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
 

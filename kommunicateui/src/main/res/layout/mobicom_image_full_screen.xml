@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/apploizc_dark_black_color"
+    android:background="@color/applozic_dark_black_color"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/apploizc_dark_black_color"
+        android:background="@color/applozic_dark_black_color"
         android:elevation="4dp"
         android:paddingTop="10dp"
         android:theme="@style/Applozic_FullScreen_Theme"
@@ -43,9 +43,9 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
-        android:background="@color/apploizc_transparent_color"
+        android:background="@color/applozic_transparent_color"
         android:textColor="@color/white"
-        android:text="jbdsf dfvhjsdfv dfkvjhndsfv dsfvkjhdfsv dsfjkvhdsfv dfkjhvdf dsfvkjhdfv sdfvkjhndfv dfvkhdfv dfvkhdfv dfkvhdfv dfvkhndfv dfvkjhndfv dfvkhdfv svkher ervoikjewv erviojdfv evihjewv dsfvihdfv eiuvhdfv dfvihev dfivhev dfivhdfv fdivjfv fvoijfv sdfvoijdfv dfviojdfv dfoijvdf dfviojdfv dfvoijfv fdoivdf foijvfd dfvoidf vfiodfv dsfoifdv dfoivdf"
+        android:text=""
         android:ellipsize="marquee"
         android:visibility="gone"/>
 </RelativeLayout>

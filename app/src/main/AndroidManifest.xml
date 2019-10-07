@@ -45,11 +45,13 @@
 
         <!--<meta-data
             android:name="com.applozic.server.url"
-            android:value="https://apps-test.applozic.com" />
+            android:value="https://apps-test.applozic.com"
+            tools:node="replace"/>
 
         <meta-data
             android:name="io.kommunicate.server.url"
-            android:value="https://api-test.kommunicate.io" />-->
+            android:value="https://api-test.kommunicate.io"
+            tools:node="replace"/>-->
 
     </application>
 

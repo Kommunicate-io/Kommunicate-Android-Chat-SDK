@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.database;
+package io.kommunicate.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -81,4 +81,10 @@ public class KmDatabaseHelper extends MobiComDatabaseHelper {
         }
         return sInstance;
     }
+
+    public void deleteDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + AUTO_SUGGESTION_TABLE);
+    }
+
 }

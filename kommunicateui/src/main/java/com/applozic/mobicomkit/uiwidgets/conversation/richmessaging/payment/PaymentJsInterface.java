@@ -3,6 +3,8 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.uiwidgets.R;
+
 /**
  * Created by ashish on 07/03/18.
  */
@@ -16,6 +18,6 @@ public class PaymentJsInterface {
 
     @android.webkit.JavascriptInterface
     public void success(long id, final String paymentId) {
-        Toast.makeText(mContext, "Payment Successful...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, mContext.getString(R.string.payment_successful), Toast.LENGTH_SHORT).show();
     }
 }

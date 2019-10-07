@@ -1,14 +1,15 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs;
+package io.kommunicate.async;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmAutoSuggestionModel;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.List;
+
+import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmAutoSuggestionModel;
+import io.kommunicate.services.KmService;
 
 public class KmAutoSuggestionsAsyncTask extends AsyncTask<Void, Void, KmApiResponse<List<KmAutoSuggestionModel>>> {
 

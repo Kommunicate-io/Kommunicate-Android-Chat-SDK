@@ -3,11 +3,11 @@ package kommunicate.io.sample;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String mPasswordText = mPassword.getText().toString().trim();
                     if (TextUtils.isEmpty(mUserIdText) || mUserId.getText().toString().trim().length() == 0) {
-                        Toast.makeText(getBaseContext(), "Enter UserId ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), R.string.enter_user_id, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         if (exit) {
             finish();
         } else {
-            Toast.makeText(this, "Press Back again to Exit.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.press_back_exit, Toast.LENGTH_SHORT).show();
             exit = true;
 
             new Handler().postDelayed(new Runnable() {

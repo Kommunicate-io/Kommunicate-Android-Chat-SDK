@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -37,7 +37,7 @@
             android:layout_alignBottom="@+id/applozic_group_profile"
             android:layout_alignEnd="@+id/applozic_group_profile"
             android:layout_alignRight="@+id/applozic_group_profile"
-            android:background="@color/apploizc_transparent_color"
+            android:background="@color/applozic_transparent_color"
             android:clickable="true" />
     </RelativeLayout>
 
@@ -87,6 +87,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:orientation="vertical"
-        android:visibility="gone"></LinearLayout>
+        android:visibility="gone"/>
 
 </RelativeLayout>

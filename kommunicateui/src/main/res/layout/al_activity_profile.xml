@@ -42,7 +42,7 @@
                     android:layout_alignStart="@+id/applozic_user_profile"
                     android:layout_marginLeft="76dp"
                     android:layout_marginStart="76dp"
-                    android:background="@color/apploizc_transparent_color"
+                    android:background="@color/applozic_transparent_color"
                     android:clickable="true"
                     android:src="@drawable/applozic_ic_action_camera_new" />
 
@@ -206,7 +206,7 @@
                     android:visibility="gone" />
 
 
-                <android.support.v7.widget.SwitchCompat
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -339,7 +339,7 @@
                     android:textSize="20sp" />
 
 
-                <android.support.v7.widget.SwitchCompat
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/applozic_switch_notification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -3,7 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +16,8 @@ import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.uiwidgets.ApplozicApplication;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.MultimediaOptionsGridView;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMultimediaPopupAdapter;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
@@ -46,7 +46,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
     private List<String> attachmentText = new ArrayList<>();
     private List<String> attachmentIcon = new ArrayList<>();
 
-    public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString) {
+    public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString) {
         ConversationFragment f = new ConversationFragment();
         Bundle args = new Bundle();
         if (contact != null) {
@@ -59,6 +59,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
             args.putInt(CONVERSATION_ID, conversationId);
         }
         args.putString(SEARCH_STRING, searchString);
+        args.putString(ConversationUIService.MESSAGE_SEARCH_STRING, messageSearchString);
         f.setArguments(args);
         return f;
     }
@@ -73,6 +74,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
             channel = (Channel) bundle.getSerializable(CHANNEL);
             currentConversationId = bundle.getInt(CONVERSATION_ID);
             searchString = bundle.getString(SEARCH_STRING);
+            messageSearchString = bundle.getString(ConversationUIService.MESSAGE_SEARCH_STRING);
             if (searchString != null) {
                 SyncCallService.refreshView = true;
             }

@@ -5,6 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/idProgressBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_grey_overlay"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="20dp"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,13 +49,14 @@
             android:layout_weight="8"
             android:orientation="horizontal">
 
-            <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout 
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swipe_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:visibility="visible">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/messageList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -48,7 +67,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true" />
 
-            </android.support.v4.widget.SwipeRefreshLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <TextView
                 android:id="@+id/noConversations"
@@ -290,7 +309,7 @@
                     android:textStyle="italic" />
             </FrameLayout>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mobicomMessageTemplateView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -315,6 +334,7 @@
                 android:visibility="gone" />
 
             <View
+                android:id="@+id/idMainDividerLine"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/applozic_theme_color_primary" />
@@ -354,7 +374,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -370,7 +390,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -412,7 +432,7 @@
                                 android:layout_marginTop="16dp"
                                 android:layout_toStartOf="@+id/conversation_send"
                                 android:layout_toLeftOf="@+id/conversation_send"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:cursorVisible="true"
                                 android:gravity="start"
                                 android:ellipsize="start"
@@ -441,7 +461,7 @@
                                 android:layout_height="18dp"
                                 android:layout_marginLeft="16dp"
                                 android:layout_marginStart="16dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/smiley" />
 
                             <ImageButton
@@ -450,8 +470,18 @@
                                 android:layout_height="16.3dp"
                                 android:layout_marginLeft="29dp"
                                 android:layout_marginStart="29dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/camera" />
+
+                            <ImageButton
+                                android:id="@+id/idMultiSelectGalleryButton"
+                                android:layout_width="20dp"
+                                android:layout_height="18dp"
+                                android:layout_marginLeft="30dp"
+                                android:layout_marginStart="30dp"
+                                android:visibility="gone"
+                                android:background="@color/applozic_transparent_color"
+                                android:src="@drawable/attachment"/>
 
                             <ImageButton
                                 android:id="@+id/file_as_attachment_btn"
@@ -459,7 +489,7 @@
                                 android:layout_height="18.3dp"
                                 android:layout_marginLeft="30dp"
                                 android:layout_marginStart="30dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/attachment" />
 
                             <ImageButton
@@ -468,7 +498,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginLeft="29dp"
                                 android:layout_marginStart="29dp"
-                                android:background="@color/apploizc_transparent_color"
+                                android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/locaiton" />
                         </LinearLayout>
                     </LinearLayout>
@@ -523,6 +553,15 @@
                         android:text="@string/user_not_in_this_group_text"
                         android:textSize="18sp" />
                 </LinearLayout>
+
+                <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView
+                    android:id="@+id/idKmFeedbackView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
             </FrameLayout>
         </LinearLayout>
 
@@ -578,4 +617,9 @@
             android:paddingBottom="10dp"
             android:visibility="gone" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/idFrameLayoutFeedbackContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

@@ -6,7 +6,7 @@
     android:background="#e5e5e5"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -34,7 +34,7 @@
         android:layout_above="@+id/channelName"
         android:layout_alignEnd="@+id/channelIcon"
         android:layout_alignRight="@+id/channelIcon"
-        android:background="@color/apploizc_transparent_color"
+        android:background="@color/applozic_transparent_color"
         android:clickable="true"
         android:src="@drawable/applozic_ic_action_camera_new" />
 

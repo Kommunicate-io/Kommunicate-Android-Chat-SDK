@@ -17,10 +17,6 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.listners.MessageListHandler;
-import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
-import com.applozic.mobicomkit.uiwidgets.async.AlGroupInformationAsyncTask;
-import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
@@ -32,15 +28,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.kommunicate.activities.LeadCollectionActivity;
+import io.kommunicate.async.KmConversationCreateTask;
+import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.async.KmGetAgentListTask;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAgentModel;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmConstants;
+import io.kommunicate.utils.KmUtils;
 
 public class KmConversationHelper {
 
@@ -66,7 +66,7 @@ public class KmConversationHelper {
                         if (messageList.size() == 1) {
                             Message message = messageList.get(0);
                             if (message.getGroupId() != null && message.getGroupId() != 0) {
-                                AlGroupInformationAsyncTask.GroupMemberListener memberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
+                                KmGetConversationInfoCallback memberListener = new KmGetConversationInfoCallback() {
                                     @Override
                                     public void onSuccess(Channel channel, Context context) {
                                         if (channel != null) {
@@ -77,12 +77,11 @@ public class KmConversationHelper {
                                     }
 
                                     @Override
-                                    public void onFailure(Channel channel, Exception e, Context context) {
+                                    public void onFailure(Exception e, Context context) {
                                         Kommunicate.openConversation(context, callback);
                                     }
                                 };
-
-                                new AlGroupInformationAsyncTask(context, message.getGroupId(), memberListener).execute();
+                                new KmConversationInfoTask(context, message.getGroupId(), memberListener).execute();
                             } else {
                                 Kommunicate.openConversation(context, callback);
                             }
@@ -100,12 +99,18 @@ public class KmConversationHelper {
     }
 
     private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, KmCallback callback) {
-        Intent intent = new Intent(context, ConversationActivity.class);
-        intent.putExtra(ConversationUIService.GROUP_ID, conversationId);
-        intent.putExtra(ConversationUIService.TAKE_ORDER, skipConversationList);
-        context.startActivity(intent);
-        if (callback != null) {
-            callback.onSuccess("Successfully launched conversation with Conversation Id : " + conversationId);
+        try {
+            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
+            intent.putExtra(KmConstants.GROUP_ID, conversationId);
+            intent.putExtra(KmConstants.TAKE_ORDER, skipConversationList);
+            context.startActivity(intent);
+            if (callback != null) {
+                callback.onSuccess("Successfully launched conversation with Conversation Id : " + conversationId);
+            }
+        } catch (ClassNotFoundException e) {
+            if(callback != null){
+                callback.onFailure(e.getMessage());
+            }
         }
     }
 
@@ -263,7 +268,7 @@ public class KmConversationHelper {
             public void onSuccess(Channel channel, Context context) {
                 try {
                     if (resultReceiver != null) {
-                        resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                        resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
                     if (callback != null) {
                         if (launchChat) {
@@ -274,7 +279,7 @@ public class KmConversationHelper {
                     }
                 } catch (KmException e) {
                     if (resultReceiver != null) {
-                        resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                        resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
                     if (callback != null) {
                         e.getMessage();
@@ -285,7 +290,7 @@ public class KmConversationHelper {
             @Override
             public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
                 if (resultReceiver != null) {
-                    resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                    resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                 }
                 if (callback != null) {
                     callback.onFailure(channelFeedApiResponse);
@@ -452,7 +457,7 @@ public class KmConversationHelper {
             public void onSuccess(Channel channel, Context context) {
                 try {
                     if (resultReceiver != null) {
-                        resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                        resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
                     if (callback != null) {
                         if (launchConversation) {
@@ -463,7 +468,7 @@ public class KmConversationHelper {
                     }
                 } catch (KmException e) {
                     if (resultReceiver != null) {
-                        resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                        resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
                     if (callback != null) {
                         e.getMessage();
@@ -474,7 +479,7 @@ public class KmConversationHelper {
             @Override
             public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
                 if (resultReceiver != null) {
-                    resultReceiver.send(LeadCollectionActivity.PRECHAT_RESULT_CODE, null);
+                    resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                 }
                 if (callback != null) {
                     callback.onFailure(channelFeedApiResponse);
@@ -512,27 +517,27 @@ public class KmConversationHelper {
         };
     }
 
-    private static void startOrGetConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) throws KmException {
+    private static void startOrGetConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler callback) throws KmException {
 
-        AlGroupInformationAsyncTask.GroupMemberListener groupMemberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
+        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
             @Override
             public void onSuccess(Channel channel, Context context) {
-                if (handler != null) {
-                    handler.onSuccess(channel, context);
+                if (callback != null) {
+                    callback.onSuccess(channel, context);
                 }
             }
 
             @Override
-            public void onFailure(Channel channel, Exception e, Context context) {
+            public void onFailure(Exception e, Context context) {
                 try {
-                    createConversation(conversationBuilder, handler);
+                    createConversation(conversationBuilder, callback);
                 } catch (KmException e1) {
-                    handler.onFailure(null, context);
+                    callback.onFailure(null, context);
                 }
             }
         };
 
-        new AlGroupInformationAsyncTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), groupMemberListener).execute();
+        new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).execute();
     }
 
     private static void createConversation(KmConversationBuilder conversationBuilder, KmStartConversationHandler handler) throws KmException {
@@ -632,7 +637,7 @@ public class KmConversationHelper {
             };
         }
 
-        new AlChannelCreateAsyncTask(conversationBuilder.getContext(), channelInfo, handler).execute();
+        new KmConversationCreateTask(conversationBuilder.getContext(), channelInfo, handler).execute();
     }
 
     private static void startConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) throws KmException {
@@ -683,7 +688,7 @@ public class KmConversationHelper {
     }
 
     public static void getConversationById(Context context, String conversationId, final KmCallback callback) {
-        AlGroupInformationAsyncTask.GroupMemberListener groupMemberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
+        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
             @Override
             public void onSuccess(Channel channel, Context context) {
                 if (callback != null) {
@@ -692,19 +697,19 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(Channel channel, Exception e, Context context) {
+            public void onFailure(Exception e, Context context) {
                 if (callback != null) {
-                    callback.onFailure(channel != null ? channel : e);
+                    callback.onFailure(e);
                 }
             }
         };
 
-        new AlGroupInformationAsyncTask(context, conversationId, groupMemberListener).execute();
+        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).execute();
     }
 
 
     public static void getConversationMetadata(Context context, String conversationId, final KmCallback callback) {
-        AlGroupInformationAsyncTask.GroupMemberListener groupMemberListener = new AlGroupInformationAsyncTask.GroupMemberListener() {
+        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
             @Override
             public void onSuccess(Channel channel, Context context) {
                 if (callback != null) {
@@ -737,14 +742,14 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(Channel channel, Exception e, Context context) {
+            public void onFailure(Exception e, Context context) {
                 if (callback != null) {
-                    callback.onFailure(channel != null ? channel : e);
+                    callback.onFailure(e);
                 }
             }
         };
 
-        new AlGroupInformationAsyncTask(context, conversationId, groupMemberListener).execute();
+        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).execute();
     }
 
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {

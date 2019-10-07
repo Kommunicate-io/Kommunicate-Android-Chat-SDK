@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,9 +94,9 @@ public class PictureUploadPopUpFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 getDialog().dismiss();
-                Intent getContentIntent = new Intent(Intent.ACTION_PICK,
+                Intent contentChooserIntent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                getActivity().startActivityForResult(getContentIntent, ProfileFragment.REQUEST_CODE_ATTACH_PHOTO);
+                getActivity().startActivityForResult(contentChooserIntent, ProfileFragment.REQUEST_CODE_ATTACH_PHOTO);
             }
         });
 

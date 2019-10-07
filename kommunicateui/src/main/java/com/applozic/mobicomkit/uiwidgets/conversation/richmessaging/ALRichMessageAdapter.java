@@ -1,8 +1,8 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -689,7 +689,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                         || TextUtils.isEmpty(holder.emailIdEt.getText().toString().trim())
                         || TextUtils.isEmpty(holder.firstNameEt.getText().toString().trim())
                         || "Title *".equals(titleList.get(holder.titleSpinner.getSelectedItemPosition()))) {
-                    Toast.makeText(context, "Mandatory fields required...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.mandatory_fields, Toast.LENGTH_SHORT).show();
                 } else {
                     bookingDetails.setTitle(titleList.get(holder.titleSpinner.getSelectedItemPosition()));
                     bookingDetails.setFirstName(holder.firstNameEt.getText().toString().trim());

@@ -1,8 +1,8 @@
-package io.kommunicate.activities;
+package com.applozic.mobicomkit.uiwidgets.kommunicate.activities;
 
 import android.app.ProgressDialog;
 import android.os.ResultReceiver;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,50 +10,46 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.regex.Pattern;
 
-import io.kommunicate.R;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmConstants;
 
 public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
-
-    public static final String PRECHAT_RESULT_RECEIVER = "kmPrechatReceiver";
-    public static final int PRECHAT_RESULT_CODE = 100;
-    public static final String KM_USER_DATA = "kmUserData";
-    public static final String FINISH_ACTIVITY_RECEIVER = "kmFinishActivityReceiver";
     private ResultReceiver prechatReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.applozic.mobicomkit.uiwidgets.R.layout.activity_km_lead_collection);
+        setContentView(R.layout.activity_km_lead_collection);
 
         if (getIntent() != null) {
-            prechatReceiver = getIntent().getParcelableExtra(PRECHAT_RESULT_RECEIVER);
+            prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);
         }
-        Button startConversationButton = findViewById(com.applozic.mobicomkit.uiwidgets.R.id.start_conversation);
+        Button startConversationButton = findViewById(R.id.start_conversation);
         startConversationButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        EditText emailEt = findViewById(com.applozic.mobicomkit.uiwidgets.R.id.emailIdEt);
-        EditText phoneEt = findViewById(com.applozic.mobicomkit.uiwidgets.R.id.phoneNumberEt);
-        EditText nameEt = findViewById(com.applozic.mobicomkit.uiwidgets.R.id.nameEt);
+        EditText emailEt = findViewById(R.id.emailIdEt);
+        EditText phoneEt = findViewById(R.id.phoneNumberEt);
+        EditText nameEt = findViewById(R.id.nameEt);
 
         String emailId = emailEt.getText().toString();
         String name = nameEt.getText().toString();
         String phoneNumber = phoneEt.getText().toString();
 
         if (TextUtils.isEmpty(emailId) && TextUtils.isEmpty(phoneNumber)) {
-            Toast.makeText(this, getString(com.applozic.mobicomkit.uiwidgets.R.string.prechat_screen_toast_error_message), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.prechat_screen_toast_error_message), Toast.LENGTH_SHORT).show();
         } else {
             if (TextUtils.isEmpty(emailId) && !isValidPhone(phoneNumber)) {
-                Toast.makeText(this, getString(com.applozic.mobicomkit.uiwidgets.R.string.invalid_contact_number), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.invalid_contact_number), Toast.LENGTH_SHORT).show();
             } else if (!isValidPhone(phoneNumber) && !isValidEmail(emailId)) {
-                Toast.makeText(this, getString(com.applozic.mobicomkit.uiwidgets.R.string.invalid_email_id), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.invalid_email_id), Toast.LENGTH_SHORT).show();
             } else if (!TextUtils.isEmpty(emailId) && isValidEmail(emailId)) {
                 sendPrechatUser(emailId, emailId, name, phoneNumber);
             } else if (TextUtils.isEmpty(emailId) && isValidPhone(phoneNumber)) {
@@ -91,7 +87,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
         ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
             @Override
             protected void onReceiveResult(int resultCode, Bundle resultData) {
-                if (resultCode == PRECHAT_RESULT_CODE) {
+                if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
                     dialog.dismiss();
                     finish();
                 }
@@ -99,10 +95,10 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
         };
 
         Bundle bundle = new Bundle();
-        bundle.putString(KM_USER_DATA, GsonUtils.getJsonFromObject(user, KMUser.class));
-        bundle.putParcelable(FINISH_ACTIVITY_RECEIVER, finishActivityReceiver);
+        bundle.putString(KmConstants.KM_USER_DATA, GsonUtils.getJsonFromObject(user, KMUser.class));
+        bundle.putParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER, finishActivityReceiver);
         if (prechatReceiver != null) {
-            prechatReceiver.send(PRECHAT_RESULT_CODE, bundle);
+            prechatReceiver.send(KmConstants.PRECHAT_RESULT_CODE, bundle);
         }
     }
 

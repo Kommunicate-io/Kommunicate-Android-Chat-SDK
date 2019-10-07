@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -24,6 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:visibility="gone">
 
             <TextView
@@ -44,7 +46,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-
                 android:background="@drawable/km_faq_button_background"
                 android:paddingStart="7dp"
                 android:paddingLeft="7dp"
@@ -59,7 +60,7 @@
         </RelativeLayout>
 
         <include layout="@layout/km_custom_toolbar_layout" />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <include layout="@layout/km_service_disconnection_layout" />
 

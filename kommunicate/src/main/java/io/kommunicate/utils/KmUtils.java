@@ -1,8 +1,8 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.utils;
+package io.kommunicate.utils;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -31,7 +31,7 @@ public class KmUtils {
         }
     }
 
-    public static boolean isAgent(Context context){
+    public static boolean isAgent(Context context) {
         return User.RoleType.AGENT.getValue().equals(MobiComUserPreference.getInstance(context).getUserRoleType());
     }
 
@@ -53,6 +53,14 @@ public class KmUtils {
 
         public int getValue() {
             return value;
+        }
+    }
+
+    public static Class getClassFromName(String className) throws ClassNotFoundException {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new ClassNotFoundException("No class found for name : " + className);
         }
     }
 }

@@ -8,7 +8,7 @@
     android:background="@drawable/applozic_received_message"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/al_rich_message_border">
@@ -20,7 +20,7 @@
             android:src="@drawable/mobicom_attachment_file"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop" />
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/alCaptionText"
@@ -29,5 +29,5 @@
         android:ellipsize="marquee"
         android:maxLines="3"
         android:visibility="gone"
-        android:text="Hey this is a caption" />
+        android:text="" />
 </LinearLayout>

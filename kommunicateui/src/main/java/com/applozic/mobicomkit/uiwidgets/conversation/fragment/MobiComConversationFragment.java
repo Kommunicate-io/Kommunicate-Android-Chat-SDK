@@ -4055,7 +4055,18 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             public void onClick(View v) {
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
-                    ((ConversationActivity) getActivity()).processCameraAction();
+                    if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
+                        ((ConversationActivity) getActivity()).processCameraAction();
+                    } else {
+                        ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
+                            @Override
+                            public void onAction(boolean didGrant) {
+                                if (didGrant) {
+                                    ((ConversationActivity) getActivity()).processCameraAction();
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });

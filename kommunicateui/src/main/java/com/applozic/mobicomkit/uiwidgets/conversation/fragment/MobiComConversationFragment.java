@@ -465,7 +465,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
          * check if conversation is a resolved one, and display the respective feedback layouts
          * also open the feedback input fragment if feedback isn't set
          */
-        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
+        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
             setFeedbackDisplay(true);
         }
 
@@ -1001,11 +1001,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
-        Utils.printLog(getContext(), TAG, "onChannelUpdated on " + TAG + " called.");
-
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
-        if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
+        if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
             setFeedbackDisplay(true);
         } else {
             //conversation is open

@@ -73,10 +73,13 @@ public class Kommunicate {
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler) {
-        new KmUserLoginTask(kmUser, false, handler, context).execute();
+        login(context, kmUser, handler, null);
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler, ResultReceiver prechatReceiver) {
+        if (kmUser != null) {
+            kmUser.setHideActionMessages(true);
+        }
         new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
     }
 
@@ -522,13 +525,14 @@ public class Kommunicate {
 
     /**
      * will update the metadata object with the KM_CHAT_CONTEXT field
-     * @param context the context
+     *
+     * @param context         the context
      * @param messageMetadata the map data to update the KM_CHAT_CONTEXT field with
      */
     public static void updateChatContext(Context context, Map<String, String> messageMetadata) {
         //converting the messageMetadata parameter passed to function (keyed by KM_CHAT_CONTEXT), to json string
         String messageMetaDataString = GsonUtils.getJsonFromObject(messageMetadata, Map.class);
-        if(TextUtils.isEmpty(messageMetaDataString)) {
+        if (TextUtils.isEmpty(messageMetaDataString)) {
             return;
         }
 
@@ -536,15 +540,15 @@ public class Kommunicate {
         String existingMetaDataString = ApplozicClient.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
 
-        if(TextUtils.isEmpty(existingMetaDataString)) { //case 1: no existing metadata
+        if (TextUtils.isEmpty(existingMetaDataString)) { //case 1: no existing metadata
             existingMetadata = new HashMap<>();
         } else { //case 2: metadata already exists
             existingMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(existingMetaDataString, Map.class);
 
-            if(existingMetadata.containsKey(KM_CHAT_CONTEXT)) { //case 2a: km_chat-context already exists
-                Map<String, String> existingKmChatContext = (Map<String, String>) GsonUtils.getObjectFromJson(existingMetadata.get(KM_CHAT_CONTEXT) , Map.class);
+            if (existingMetadata.containsKey(KM_CHAT_CONTEXT)) { //case 2a: km_chat-context already exists
+                Map<String, String> existingKmChatContext = (Map<String, String>) GsonUtils.getObjectFromJson(existingMetadata.get(KM_CHAT_CONTEXT), Map.class);
 
-                for(Map.Entry<String, String> data : messageMetadata.entrySet()) {
+                for (Map.Entry<String, String> data : messageMetadata.entrySet()) {
                     existingKmChatContext.put(data.getKey(), data.getValue());
                 }
 
@@ -555,7 +559,8 @@ public class Kommunicate {
 
         existingMetadata.put(KM_CHAT_CONTEXT, messageMetaDataString);
         ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
-     }
+    }
+
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
         new KmAwayMessageTask(context, groupId, handler).execute();
     }

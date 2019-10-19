@@ -1,7 +1,12 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -10,9 +15,12 @@ import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.JsonMarker;
 
 public class KmCustomDialog {
+
+    private final static String TAG = "KmCustomDialog";
 
     private Dialog dialog;
 
@@ -258,7 +266,62 @@ public class KmCustomDialog {
 
     public interface KmDialogClickListener {
         void onClickNegativeButton(Dialog dialog);
-
         void onClickPositiveButton(Dialog dialog);
+    }
+
+    //TODO: update for androidx migration
+    public static class KmAlertDialog extends DialogFragment {
+
+        String messageText;
+        String positiveButtonText;
+        String negativeButtonText;
+        String title;
+        KmDialogClickListener kmDialogClickListener;
+
+        //bundle key constants
+        public final static String MESSAGE = "messageText";
+        public final static String TITLE = "titleText";
+        public final static String POSITIVE_BUTTON_TEXT = "positiveText";
+        public final static String NEGATIVE_BUTTON_TEXT = "negativeText";
+
+        public void setKmDialogClickListener(KmDialogClickListener kmDialogClickListener) {
+            this.kmDialogClickListener = kmDialogClickListener;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            Bundle arguments = getArguments();
+            if(arguments == null || arguments.isEmpty()) {
+                Utils.printLog(getActivity(), TAG, "No arguments provided for dialog.");
+                messageText = "";
+                positiveButtonText = "";
+                negativeButtonText = "";
+                title = "";
+            } else {
+                messageText = arguments.getString(MESSAGE, "");
+                positiveButtonText = arguments.getString(POSITIVE_BUTTON_TEXT, "");
+                negativeButtonText = arguments.getString(NEGATIVE_BUTTON_TEXT, "");
+                title = arguments.getString(TITLE, "");
+            }
+
+            builder.setMessage(messageText).setTitle(title).setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int id) {
+                    kmDialogClickListener.onClickPositiveButton(dialogInterface, id);
+                }
+            }).setNegativeButton(negativeButtonText, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int id) {
+                    kmDialogClickListener.onClickNegativeButton(dialogInterface, id);
+                }
+            });
+            return builder.create();
+        }
+
+        public interface KmDialogClickListener {
+            void onClickNegativeButton(DialogInterface dialog, int id);
+            void onClickPositiveButton(DialogInterface dialog, int id);
+        }
     }
 }

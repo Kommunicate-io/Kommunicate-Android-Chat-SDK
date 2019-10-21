@@ -1,18 +1,19 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs;
+package io.kommunicate.async;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmFeedbackCallback;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmApiResponse;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFeedback;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.services.KmService;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+
+import io.kommunicate.callbacks.KmFeedbackCallback;
+import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmFeedback;
+import io.kommunicate.services.KmService;
 
 /**
  * the feedback api async task

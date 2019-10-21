@@ -3,7 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.views;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Spannable;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
@@ -13,7 +13,7 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class KmTextViewWithImage extends android.support.v7.widget.AppCompatTextView {
+public class KmTextViewWithImage extends androidx.appcompat.widget.AppCompatTextView {
 
     private static final String DRAWABLE = "drawable";
     /**

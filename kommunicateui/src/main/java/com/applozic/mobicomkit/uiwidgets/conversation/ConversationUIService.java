@@ -12,7 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,7 +39,6 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.ContactService;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
-import com.applozic.mobicomkit.feed.TopicDetail;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -61,7 +60,6 @@ import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUtils;
-import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
@@ -416,14 +414,14 @@ public class ConversationUIService {
     }
 
     public void addMessage(Message message) {
-        if (message.isUpdateMessage() || !message.getHidden()) {
+        if (message.isUpdateMessage()) {
             if (!BroadcastService.isQuick()) {
                 return;
             }
 
             MobiComQuickConversationFragment fragment = (MobiComQuickConversationFragment) UIService.getFragmentByTag(fragmentActivity, QUICK_CONVERSATION_FRAGMENT);
             if (fragment != null) {
-                if (message.isHidden()) {
+                if (message.hasHideKey()) {
                     fragment.refreshView();
                 } else {
                     fragment.addMessage(message);
@@ -447,7 +445,7 @@ public class ConversationUIService {
     }
 
     public void syncMessages(Message message, String keyString) {
-        if (!message.isHidden() && !message.isVideoNotificationMessage()) {
+        if (!message.hasHideKey() && !message.isVideoNotificationMessage()) {
             if (BroadcastService.isIndividual()) {
                 ConversationFragment conversationFragment = getConversationFragment();
                 if (conversationFragment != null && conversationFragment.isMsgForConversation(message)
@@ -604,6 +602,9 @@ public class ConversationUIService {
     public void updateChannelSync() {
         if (BroadcastService.isChannelInfo()) {
             BroadcastService.sendUpdateGroupInfoBroadcast(fragmentActivity, BroadcastService.INTENT_ACTIONS.UPDATE_GROUP_INFO.toString());
+        }
+        if (BroadcastService.isQuick() && getQuickConversationFragment() != null) {
+            getQuickConversationFragment().refreshView();
         }
         if (BroadcastService.isIndividual()) {
             getConversationFragment().updateChannelTitleAndSubTitle();

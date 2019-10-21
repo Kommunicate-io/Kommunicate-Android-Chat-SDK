@@ -3,7 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.ApplozicClient;

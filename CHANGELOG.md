@@ -3,6 +3,30 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 1.9.1
+
+**Features**
+1. Added feedback option in conversation once the conversation is closed.
+2. Migrated complete kommunicate SDK to AndroidX.
+3. Added chat context update method.
+
+**Fixes**
+
+1. Fix channel name not updating in real time.
+2. Fix logout issue.
+
+**Breaking changes** 
+
+We have reversed the gradle name to kommunicateui  from kommunicate.
+
+If your updaing the gradle version to new version i.e to 1.9.1 and above the please use the correct gradle plugin name 
+
+### Before 
+The gradle plugin you where using like ``implementation 'io.kommunicate:kommunicate:1.9.*`` the artifact name is changed from **kommunicate**  to **kommunicateui**.  
+
+### Now 
+The gradle plugin now you need to use  it as ``implementation 'io.kommunicate:kommunicateui:1.9.*`` the artifact name is changed from **kommunicate**  to **kommunicateui**.
+
 ## Kommunicate Android SDK 1.9.0
 **Features**
 1. KMConversationBuilder to create conversation seamlessly. All the methods or classes with chat text have been deprecated along with KmChatBuilder.

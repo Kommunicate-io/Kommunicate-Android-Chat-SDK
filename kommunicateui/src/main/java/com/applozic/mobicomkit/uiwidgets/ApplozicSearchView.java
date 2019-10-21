@@ -1,7 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets;
 
 import android.content.Context;
-import android.support.v7.widget.SearchView;
+import androidx.appcompat.widget.SearchView;
 import android.util.AttributeSet;
 
 class ApplozicSearchView extends SearchView {

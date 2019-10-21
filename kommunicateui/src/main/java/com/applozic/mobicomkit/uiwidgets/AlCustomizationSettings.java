@@ -82,7 +82,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean muteOption = true;
     private MobicomMessageTemplate messageTemplate;
     private String logoutPackageName = "kommunicate.io.sample.MainActivity";
-    private boolean logoutOption = true;
+    private boolean logoutOption = false;
     private int defaultGroupType = 2;
     private boolean muteUserChatOption = false;
 

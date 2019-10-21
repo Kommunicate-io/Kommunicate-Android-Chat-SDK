@@ -23,22 +23,25 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.FileProvider;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.app.NavUtils;
+import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.FileProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -82,10 +85,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.Paym
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KommunicateUI;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.asyncs.KmAutoSuggestionsAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmUtils;
 import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -914,7 +914,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     public void onQuickConversationFragmentItemClick(View view, Contact contact, Channel channel, Integer conversationId, String searchString) {
-        conversation = ConversationFragment.newInstance(contact, channel, conversationId, searchString);
+        conversation = ConversationFragment.newInstance(contact, channel, conversationId, searchString, null);
         addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
         this.channel = channel;
         this.contact = contact;

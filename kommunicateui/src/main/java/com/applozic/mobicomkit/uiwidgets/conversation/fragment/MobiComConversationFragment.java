@@ -4209,7 +4209,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             case AlRichMessage.OPEN_WEB_VIEW_ACTIVITY:
                 if (getActivity() != null) {
                     Intent intent = new Intent(getActivity(), AlWebViewActivity.class);
-                    intent.putExtra(AlRichMessage.OPEN_WEB_VIEW_ACTIVITY, (Bundle) object);
+                    intent.putExtra(AlWebViewActivity.Al_WEB_VIEW_BUNDLE, (Bundle) object);
                     getActivity().startActivity(intent);
                 }
                 break;

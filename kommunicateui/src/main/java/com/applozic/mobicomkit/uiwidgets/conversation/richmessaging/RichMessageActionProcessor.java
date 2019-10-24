@@ -119,7 +119,7 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         String message = null;
         if (object instanceof ALRichMessageModel.AlButtonModel) {
             ALRichMessageModel.AlButtonModel buttonModel = (ALRichMessageModel.AlButtonModel) object;
-            if (buttonModel.getAction() != null) {
+            if (isValidAction(buttonModel.getAction())) {
                 handleQuickReplies(buttonModel.getAction(), replyMetadata);
             } else {
                 message = buttonModel.getName();
@@ -147,7 +147,7 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                 replyMetadata.put(AlRichMessage.KM_SOURCE, elementModel.getSource());
             }
 
-            if (elementModel.getAction() != null && (elementModel.getAction().getPayload() != null || !TextUtils.isEmpty(elementModel.getAction().getText()))) {
+            if (isValidAction(elementModel.getAction())) {
                 handleQuickReplies(elementModel.getAction(), replyMetadata);
             } else {
                 message = elementModel.getTitle();
@@ -157,6 +157,10 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         if (!TextUtils.isEmpty(message)) {
             sendMessage(message, getStringMap(replyMetadata));
         }
+    }
+
+    public boolean isValidAction(ALRichMessageModel.AlAction action) {
+        return action != null && (action.getPayload() != null || !TextUtils.isEmpty(action.getText()));
     }
 
     public void handleSubmitButton(Object object) {

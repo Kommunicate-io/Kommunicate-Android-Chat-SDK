@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAutoSuggestionModel;

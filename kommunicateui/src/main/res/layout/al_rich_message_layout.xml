@@ -21,7 +21,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="15dp" />
 
-    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmCustomLayoutManager
+    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmCustomLayoutManager
         android:id="@+id/alQuickReplyRecycler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

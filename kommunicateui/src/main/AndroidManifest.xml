@@ -89,7 +89,7 @@
         </activity>
 
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity"
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
             android:launchMode="singleTop"

@@ -249,6 +249,7 @@
     <string name="unable_to_start_chat">"Unable to start chat: "</string>
     <string name="failed_load_contacts">"Failed to load contacts, response: "</string>
     <string name="payment_successful">"Payment Successful.."</string>
+    <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
 </resources>

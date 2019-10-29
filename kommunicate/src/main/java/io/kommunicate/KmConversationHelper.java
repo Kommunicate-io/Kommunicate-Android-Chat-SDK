@@ -419,18 +419,13 @@ public class KmConversationHelper {
             @Override
             public void onResult(List<Message> messageList, ApplozicException e) {
                 if (e == null) {
-                    if (messageList != null) {
-                        if (messageList.size() == 0) {
-                            conversationBuilder.setSkipConversationList(false);
-                            conversationBuilder.launchConversation(callback);
-                        } else if (messageList.size() == 1) {
-                            openParticularConversation(conversationBuilder.getContext(), false, messageList.get(0).getGroupId(), callback);
-                        } else if (messageList.size() > 1) {
-                            Kommunicate.openConversation(conversationBuilder.getContext(), callback);
-                        }
-                    } else {
+                    if (messageList.isEmpty()) {
                         conversationBuilder.setSkipConversationList(false);
                         conversationBuilder.launchConversation(callback);
+                    } else if (messageList.size() == 1) {
+                        openParticularConversation(conversationBuilder.getContext(), false, messageList.get(0).getGroupId(), callback);
+                    } else {
+                        Kommunicate.openConversation(conversationBuilder.getContext(), callback);
                     }
                 }
             }

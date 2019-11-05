@@ -158,6 +158,7 @@ public class KmConversationHelper {
                         }
                     });
                 } catch (KmException e) {
+                    e.printStackTrace();
                     if (callback != null) {
                         callback.onFailure(e);
                     }
@@ -182,6 +183,7 @@ public class KmConversationHelper {
     public static void createChat(final KmChatBuilder launchChat, final KmCallback callback) {
         if (launchChat == null) {
             if (callback != null) {
+                Utils.printLog(null, TAG, Utils.getString(null, R.string.km_chat_builder_cannot_be_null));
                 callback.onFailure(Utils.getString(null, R.string.km_chat_builder_cannot_be_null));
             }
             return;
@@ -189,6 +191,7 @@ public class KmConversationHelper {
 
         if (launchChat.getContext() == null) {
             if (callback != null) {
+                Utils.printLog(null, TAG, Utils.getString(null, R.string.km_context_cannot_be_null));
                 callback.onFailure(Utils.getString(launchChat.getContext(), R.string.km_context_cannot_be_null));
             }
             return;
@@ -209,6 +212,7 @@ public class KmConversationHelper {
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
+                        Utils.printLog(null, TAG, Utils.getString(null, R.string.km_app_id_cannot_be_null));
                         callback.onFailure(Utils.getString(launchChat.getContext(), R.string.km_app_id_cannot_be_null));
                     }
                 }
@@ -281,6 +285,7 @@ public class KmConversationHelper {
                         }
                     }
                 } catch (KmException e) {
+                    e.printStackTrace();
                     if (resultReceiver != null) {
                         resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
@@ -298,6 +303,7 @@ public class KmConversationHelper {
                 if (callback != null) {
                     callback.onFailure(channelFeedApiResponse);
                 }
+                Utils.printLog(context, TAG, "Failed to start chat : " + channelFeedApiResponse);
             }
         };
     }
@@ -327,6 +333,7 @@ public class KmConversationHelper {
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                Utils.printLog(null, TAG, "Failed to login : " + (registrationResponse != null ? registrationResponse : exception));
                 callback.onFailure(registrationResponse);
             }
         };
@@ -335,6 +342,7 @@ public class KmConversationHelper {
     public static void createOrLaunchConversation(final KmConversationBuilder conversationBuilder, final boolean launchConversation, final KmCallback callback) {
         if (conversationBuilder == null) {
             if (callback != null) {
+                Utils.printLog(null, TAG, Utils.getString(null, R.string.km_conversation_builder_cannot_be_null));
                 callback.onFailure(Utils.getString(null, R.string.km_conversation_builder_cannot_be_null));
             }
             return;
@@ -342,6 +350,7 @@ public class KmConversationHelper {
 
         if (conversationBuilder.getContext() == null) {
             if (callback != null) {
+                Utils.printLog(null, TAG, Utils.getString(null, R.string.km_context_cannot_be_null));
                 callback.onFailure(Utils.getString(conversationBuilder.getContext(), R.string.km_context_cannot_be_null));
             }
             return;
@@ -362,6 +371,7 @@ public class KmConversationHelper {
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey())) {
                     if (callback != null) {
+                        Utils.printLog(null, TAG, Utils.getString(null, R.string.km_app_id_cannot_be_null));
                         callback.onFailure(Utils.getString(conversationBuilder.getContext(), R.string.km_app_id_cannot_be_null));
                     }
                 }
@@ -396,6 +406,7 @@ public class KmConversationHelper {
     public static void launchAndCreateIfEmpty(final KmConversationBuilder conversationBuilder, final KmCallback callback) {
         if (conversationBuilder == null) {
             if (callback != null) {
+                Utils.printLog(null, TAG, Utils.getString(null, R.string.km_conversation_builder_cannot_be_null));
                 callback.onFailure(Utils.getString(null, R.string.km_conversation_builder_cannot_be_null));
             }
             return;
@@ -403,6 +414,7 @@ public class KmConversationHelper {
 
         if (conversationBuilder.getContext() == null) {
             if (callback != null) {
+                Utils.printLog(null, TAG, Utils.getString(null, R.string.km_context_cannot_be_null));
                 callback.onFailure(Utils.getString(conversationBuilder.getContext(), R.string.km_context_cannot_be_null));
             }
             return;
@@ -410,6 +422,7 @@ public class KmConversationHelper {
 
         if (!(conversationBuilder.getContext() instanceof Activity)) {
             if (callback != null) {
+                Utils.printLog(null, TAG, Utils.getString(null, R.string.km_method_needs_activity_context));
                 callback.onFailure(Utils.getString(conversationBuilder.getContext(), R.string.km_method_needs_activity_context));
             }
             return;
@@ -451,6 +464,7 @@ public class KmConversationHelper {
                         }
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                     if (resultReceiver != null) {
                         resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
@@ -468,6 +482,7 @@ public class KmConversationHelper {
                 if (callback != null) {
                     callback.onFailure(channelFeedApiResponse);
                 }
+                Utils.printLog(null, TAG, "Error while creating conversation : " + channelFeedApiResponse);
             }
         };
     }
@@ -497,6 +512,7 @@ public class KmConversationHelper {
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
                 callback.onFailure(registrationResponse);
+                Utils.printLog(null, TAG, "Error while logging in user : " + (registrationResponse != null ? registrationResponse : exception));
             }
         };
     }

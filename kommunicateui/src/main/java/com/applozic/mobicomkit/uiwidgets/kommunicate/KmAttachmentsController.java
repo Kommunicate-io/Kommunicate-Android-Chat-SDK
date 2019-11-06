@@ -41,6 +41,8 @@ public class KmAttachmentsController {
     public static final int EXCEPTION_OCCURED = -10;
     public static final int FILE_PROCESSING_DONE = 1;
 
+    public static final int NO_OF_MULTI_SELECTIONS_ALLOWED = 20;
+
     public KmAttachmentsController(Context context) {
         this.context = context;
     }

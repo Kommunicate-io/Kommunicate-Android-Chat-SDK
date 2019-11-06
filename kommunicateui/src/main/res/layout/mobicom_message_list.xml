@@ -481,7 +481,7 @@
                                 android:layout_marginStart="30dp"
                                 android:visibility="gone"
                                 android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/attachment"/>
+                                android:src="@drawable/km_multiselectgallery_icon"/>
 
                             <ImageButton
                                 android:id="@+id/file_as_attachment_btn"

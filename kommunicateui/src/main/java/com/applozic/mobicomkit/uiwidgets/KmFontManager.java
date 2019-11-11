@@ -5,10 +5,13 @@ import android.graphics.Typeface;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFontModel;
+import com.applozic.mobicommons.json.Exclude;
+import com.applozic.mobicommons.json.JsonMarker;
 
-public class KmFontManager {
+public class KmFontManager extends JsonMarker {
 
-    private Context context;
+    @Exclude
+    private transient Context context;
     private static final String FONT_PATH = "fonts/";
     private Typeface messageTextFont;
     private Typeface createdAtTimeFont;

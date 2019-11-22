@@ -598,7 +598,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     } else {
                         int itemCount = clipData.getItemCount();
                         if(itemCount > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
-                            KmCustomDialog.KmAlertDialog dialogFragmentSelectLimitCrossed = new KmCustomDialog.KmAlertDialog();
+                            //TODO: Add string entries to string file and fix dialogFragmentSelectLimitCrossed constructor
+                           /* KmCustomDialog.KmAlertDialog dialogFragmentSelectLimitCrossed = new KmCustomDialog.KmAlertDialog();
 
                             Bundle bundleDialogFragmentDetails = new Bundle();
                             bundleDialogFragmentDetails.putString(KmCustomDialog.KmAlertDialog.TITLE, getString(R.string.max_media_select_title));
@@ -622,7 +623,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                                     }
                                 }
                             });
-                            dialogFragmentSelectLimitCrossed.show(getFragmentManager(), "FragmentSelectLimitCrossed");
+                            dialogFragmentSelectLimitCrossed.show(getFragmentManager(), "FragmentSelectLimitCrossed");*/
                         } else {
                             for (int i = 0; i < itemCount; i++) {
                                 int returnCode = kmAttachmentsController.processFile(clipData.getItemAt(i).getUri(), alCustomizationSettings, prePostUIMethods);

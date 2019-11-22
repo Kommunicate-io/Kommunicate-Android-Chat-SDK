@@ -4280,16 +4280,16 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         if (alAction != null) {
             if (!TextUtils.isEmpty(alAction.getUrl())) {
-                openWebLink(alAction.getUrl(), alAction.isDeepLink());
+                openWebLink(alAction.getUrl());
             } else if (alAction.getPayload() != null && !TextUtils.isEmpty(alAction.getPayload().getUrl())) {
-                openWebLink(alAction.getPayload().getUrl(), alAction.isDeepLink());
+                openWebLink(alAction.getPayload().getUrl());
             }
         }
 
         if (object instanceof ALRichMessageModel.ALPayloadModel) {
             ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) object;
             if (!TextUtils.isEmpty(payloadModel.getUrl())) {
-                openWebLink(payloadModel.getUrl(), payloadModel.isDeepLink());
+                openWebLink(payloadModel.getUrl());
             }
         }
     }
@@ -4298,7 +4298,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         String message = null;
         if (object instanceof ALRichMessageModel.AlButtonModel) {
             ALRichMessageModel.AlButtonModel buttonModel = (ALRichMessageModel.AlButtonModel) object;
-            if (isValidAction(buttonModel.getAction())) {
+            if (buttonModel.getAction() != null) {
                 handleQuickReplies(buttonModel.getAction(), replyMetadata);
             } else {
                 message = buttonModel.getName();

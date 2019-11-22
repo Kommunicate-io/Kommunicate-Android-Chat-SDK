@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
+package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models;
 
 import com.applozic.mobicommons.json.JsonMarker;
 

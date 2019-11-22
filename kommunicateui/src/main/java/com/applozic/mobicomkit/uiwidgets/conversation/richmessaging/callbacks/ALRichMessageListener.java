@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
+package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks;
 
 import android.content.Context;
 

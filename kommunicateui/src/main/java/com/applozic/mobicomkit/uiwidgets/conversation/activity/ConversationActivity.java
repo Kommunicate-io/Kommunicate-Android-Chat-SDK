@@ -24,6 +24,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.core.app.ActivityCompat;
@@ -81,7 +82,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragm
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
@@ -1509,7 +1509,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public static void openFaq(Activity activity, String url) {
         if (activity != null) {
-            Intent faqIntent = new Intent(activity, PaymentActivity.class);
+            Intent faqIntent = new Intent(activity, AlWebViewActivity.class);
             faqIntent.putExtra(KmConstants.KM_HELPCENTER_URL, url);
             activity.startActivity(faqIntent);
         }

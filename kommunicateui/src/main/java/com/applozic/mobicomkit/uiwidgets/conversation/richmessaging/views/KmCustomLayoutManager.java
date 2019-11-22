@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
+package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

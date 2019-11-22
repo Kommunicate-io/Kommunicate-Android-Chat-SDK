@@ -200,10 +200,14 @@ public class KmConversationBuilder extends JsonMarker {
     }
 
     public void createConversation(KmCallback callback) {
-        KmConversationHelper.createConversation(this, callback);
+        KmConversationHelper.createOrLaunchConversation(this, false, callback);
     }
 
     public void launchConversation(KmCallback callback) {
-        KmConversationHelper.launchConversation(this, callback);
+        KmConversationHelper.createOrLaunchConversation(this, true, callback);
+    }
+
+    public void launchAndCreateIfEmpty(KmCallback callback) {
+        KmConversationHelper.launchAndCreateIfEmpty(this, callback);
     }
 }

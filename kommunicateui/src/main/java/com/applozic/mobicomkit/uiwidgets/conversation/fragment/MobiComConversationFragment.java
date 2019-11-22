@@ -1003,7 +1003,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
-        if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
+        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
             setFeedbackDisplay(true);
         } else {
             //conversation is open
@@ -1308,7 +1308,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
         if (i != -1) {
             messageList.get(i).setMetadata(messageDatabaseService.getMessage(keyString).getMetadata());
-            conversationAdapter.notifyDataSetChanged();
+            if (conversationAdapter != null) {
+                conversationAdapter.notifyDataSetChanged();
+            }
             if (messageList.get(messageList.size() - 1).getMetadata().containsKey("isDoneWithClicking")) {
                 templateAdapter.setMessageList(new HashMap<String, String>());
                 templateAdapter.notifyDataSetChanged();
@@ -4278,16 +4280,16 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         if (alAction != null) {
             if (!TextUtils.isEmpty(alAction.getUrl())) {
-                openWebLink(alAction.getUrl());
+                openWebLink(alAction.getUrl(), alAction.isDeepLink());
             } else if (alAction.getPayload() != null && !TextUtils.isEmpty(alAction.getPayload().getUrl())) {
-                openWebLink(alAction.getPayload().getUrl());
+                openWebLink(alAction.getPayload().getUrl(), alAction.isDeepLink());
             }
         }
 
         if (object instanceof ALRichMessageModel.ALPayloadModel) {
             ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) object;
             if (!TextUtils.isEmpty(payloadModel.getUrl())) {
-                openWebLink(payloadModel.getUrl());
+                openWebLink(payloadModel.getUrl(), payloadModel.isDeepLink());
             }
         }
     }
@@ -4296,7 +4298,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         String message = null;
         if (object instanceof ALRichMessageModel.AlButtonModel) {
             ALRichMessageModel.AlButtonModel buttonModel = (ALRichMessageModel.AlButtonModel) object;
-            if (buttonModel.getAction() != null) {
+            if (isValidAction(buttonModel.getAction())) {
                 handleQuickReplies(buttonModel.getAction(), replyMetadata);
             } else {
                 message = buttonModel.getName();

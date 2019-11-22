@@ -79,6 +79,7 @@ public class Kommunicate {
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler, ResultReceiver prechatReceiver) {
         if (kmUser != null) {
             kmUser.setHideActionMessages(true);
+            kmUser.setSkipDeletedGroups(true);
         }
         new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
     }

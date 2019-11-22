@@ -1002,7 +1002,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
-        if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
+        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
             setFeedbackDisplay(true);
         } else {
             //conversation is open
@@ -1307,7 +1307,9 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
         if (i != -1) {
             messageList.get(i).setMetadata(messageDatabaseService.getMessage(keyString).getMetadata());
-            conversationAdapter.notifyDataSetChanged();
+            if (conversationAdapter != null) {
+                conversationAdapter.notifyDataSetChanged();
+            }
             if (messageList.get(messageList.size() - 1).getMetadata().containsKey("isDoneWithClicking")) {
                 templateAdapter.setMessageList(new HashMap<String, String>());
                 templateAdapter.notifyDataSetChanged();

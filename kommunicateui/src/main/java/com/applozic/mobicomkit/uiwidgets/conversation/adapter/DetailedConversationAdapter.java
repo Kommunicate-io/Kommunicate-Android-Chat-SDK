@@ -66,6 +66,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessageFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
@@ -1027,7 +1028,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
 
                         try {
-                            new AlRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
+                            AlRichMessageFactory.getInstance().getRichMessage(Integer.parseInt(message.getMetadata().get("templateId")), context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
                         } catch (Exception e) {
                             e.printStackTrace();
                             myHolder.richMessageLayout.setVisibility(View.GONE);

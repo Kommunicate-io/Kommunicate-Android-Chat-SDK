@@ -3,39 +3,27 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 import android.content.Context;
 import android.os.Build;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.ALRichMessageAdapter;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.AlImageAdapter;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.AlRichListsAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicommons.json.GsonUtils;
-import com.bumptech.glide.Glide;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
-/**
- * Created by ashish on 28/02/18.
+/** abstract class for a `Rich Message` implementing the factory pattern
+ *
+ * Created by: ashish on 28/02/18.
+ * Updated by: shubhamtewari on 15 Nov 2019.
  */
-
-public class AlRichMessage {
+public abstract class AlRichMessage {
     public static final String SEND_GUEST_LIST = "sendGuestList";
     public static final String SEND_HOTEL_RATING = "sendHotelRating";
     public static final String SEND_HOTEL_DETAILS = "sendHotelDetails";
@@ -54,14 +42,13 @@ public class AlRichMessage {
     public static final String KM_FORM_ACTION = "formAction";
     public static final String SEND_MESSAGE = "sendMessage";
     public static final String OPEN_WEB_VIEW_ACTIVITY = "openWebViewActivity";
-    public static final String IS_DEEP_LINK = "isDeepLink";
 
-
-    private Context context;
-    private Message message;
-    private ALRichMessageListener listener;
-    private LinearLayout containerView;
-    private AlCustomizationSettings alCustomizationSettings;
+    protected Context context;
+    protected Message message;
+    protected ALRichMessageListener listener;
+    protected LinearLayout containerView;
+    protected AlCustomizationSettings alCustomizationSettings;
+    protected ALRichMessageModel model;
 
     public AlRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         this.context = context;
@@ -69,125 +56,37 @@ public class AlRichMessage {
         this.listener = listener;
         this.containerView = containerView;
         this.alCustomizationSettings = alCustomizationSettings;
+        this.model = (ALRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), ALRichMessageModel.class);
     }
 
-
+    //bind views and set the visibilities according to the type of message
     public void createRichMessage() {
-        ALRichMessageModel model = (ALRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), ALRichMessageModel.class);
-
-        LinearLayout listItemlayout = containerView.findViewById(R.id.alListMessageLayout);
-        LinearLayout faqReplyLayout = containerView.findViewById(R.id.alFaqReplyLayout);
-        LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
-        RecyclerView genericCardRecycler = containerView.findViewById(R.id.alGenericCardContainer);
-        RecyclerView imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
-        KmFlowLayout flowLayout = containerView.findViewById(R.id.kmFlowLayout);
-
-        listItemlayout.setVisibility(model.getTemplateId() == 7 ? View.VISIBLE : View.GONE);
-        genericCardRecycler.setVisibility(model.getTemplateId() == 10 ? View.VISIBLE : View.GONE);
-        faqLayout.setVisibility(model.getTemplateId() == 8 ? View.VISIBLE : View.GONE);
-        faqReplyLayout.setVisibility(model.getTemplateId() == 8 ? View.VISIBLE : View.GONE);
-        imageListRecycler.setVisibility(model.getTemplateId() == 9 ? View.VISIBLE : View.GONE);
-        flowLayout.setVisibility((model.getTemplateId() == 3 || model.getTemplateId() == 6 || model.getTemplateId() == 11) ? View.VISIBLE : View.GONE);
-
-        switch (model.getTemplateId()) {
-            case 3:
-            case 6:
-            case 11:
-                setUpGridView(flowLayout, model);
-                break;
-
-            case 7:
-                setupListItemView(listItemlayout, model);
-                break;
-
-            case 8:
-                setupFaqItemView(faqLayout, faqReplyLayout, model);
-                break;
-
-            case 9:
-                LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                imageListRecycler.setLayoutManager(layoutManager);
-                AlImageAdapter imageAdapter = new AlImageAdapter(context, model, listener, message, alCustomizationSettings);
-                imageListRecycler.setAdapter(imageAdapter);
-                break;
-
-            case 10:
-                LinearLayoutManager genericCardsLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-                genericCardRecycler.setLayoutManager(genericCardsLayoutManager);
-                ALRichMessageAdapter adapter = new ALRichMessageAdapter(context, model, listener, message);
-                genericCardRecycler.setAdapter(adapter);
-                break;
-
-            default:
-                containerView.setVisibility(View.GONE);
+        if(model.getTemplateId() <= 0) {
+            containerView.setVisibility(View.GONE);
+            return;
         }
     }
 
-    private void setupFaqItemView(LinearLayout faqLayout, LinearLayout faqReplyLayout, ALRichMessageModel model) {
-        if (model != null) {
-            TextView headerText = faqLayout.findViewById(R.id.headerText);
-            TextView titleText = faqLayout.findViewById(R.id.questionText);
-            TextView descriptionText = faqLayout.findViewById(R.id.bodyText);
-            TextView buttonLabel = faqReplyLayout.findViewById(R.id.buttonLabel);
-            TextView actionYes = faqReplyLayout.findViewById(R.id.actionYes);
-            TextView actionNo = faqReplyLayout.findViewById(R.id.actionNo);
+    //display the message details from the message model
+    protected void setupAlRichMessage(ViewGroup layout, final ALRichMessageModel alRichMessageModel) { }
 
-            if (model.getPayload() != null) {
-                ALRichMessageModel.ALPayloadModel payload = (ALRichMessageModel.ALPayloadModel) GsonUtils.getObjectFromJson(model.getPayload(), ALRichMessageModel.ALPayloadModel.class);
-                if (payload != null) {
-                    if (!TextUtils.isEmpty(payload.getTitle())) {
-                        titleText.setVisibility(View.VISIBLE);
-                        titleText.setText(getHtmlText(payload.getTitle()));
-                    } else {
-                        titleText.setVisibility(View.GONE);
-                    }
+    //display the message details from the message model
+    //over riding due to faq rich message template requirement of two layouts
+    protected void setupAlRichMessage(ViewGroup layout1, ViewGroup layout2, final ALRichMessageModel alRichMessageModel) { }
 
-                    if (!TextUtils.isEmpty(payload.getDescription())) {
-                        descriptionText.setVisibility(View.VISIBLE);
-                        descriptionText.setText(getHtmlText(payload.getDescription()));
-                    } else {
-                        descriptionText.setVisibility(View.GONE);
-                    }
-
-                    List<ALRichMessageModel.AlButtonModel> actionModel = payload.getButtons();
-                    if (actionModel != null) {
-                        faqReplyLayout.setVisibility(View.VISIBLE);
-
-                        if (!TextUtils.isEmpty(payload.getButtonLabel())) {
-                            buttonLabel.setVisibility(View.VISIBLE);
-                            buttonLabel.setText(payload.getButtonLabel());
-                        } else {
-                            buttonLabel.setVisibility(View.GONE);
-                        }
-
-                        if (actionModel.size() > 0 && actionModel.get(0) != null) {
-                            if (!TextUtils.isEmpty(actionModel.get(0).getName())) {
-                                actionYes.setVisibility(View.VISIBLE);
-                                actionYes.setText(actionModel.get(0).getName());
-                                setActionListener(actionYes, model, actionModel.get(0), payload);
-                            } else {
-                                actionYes.setVisibility(View.GONE);
-                            }
-                        }
-
-                        if (actionModel.size() > 1 && actionModel.get(1) != null) {
-                            if (!TextUtils.isEmpty(actionModel.get(1).getName())) {
-                                actionNo.setVisibility(View.VISIBLE);
-                                actionNo.setText(actionModel.get(1).getName());
-                                setActionListener(actionNo, model, actionModel.get(1), payload);
-                            } else {
-                                actionNo.setVisibility(View.GONE);
-                            }
-                        }
-                    } else {
-                        faqReplyLayout.setVisibility(View.GONE);
-                    }
-                }
+    private String getActionType(ALRichMessageModel model, ALRichMessageModel.AlButtonModel buttonModel) {
+        if (buttonModel != null) {
+            if (!TextUtils.isEmpty(buttonModel.getType())) {
+                return buttonModel.getType();
+            }
+            if (buttonModel.getAction() != null && !TextUtils.isEmpty(buttonModel.getAction().getType())) {
+                return buttonModel.getAction().getType();
             }
         }
+        return TEMPLATE_ID + model.getTemplateId();
     }
 
-    private void setActionListener(View view, final ALRichMessageModel model, final ALRichMessageModel.AlButtonModel buttonModel, final ALRichMessageModel.ALPayloadModel payloadModel) {
+    protected void setActionListener(View view, final ALRichMessageModel model, final ALRichMessageModel.AlButtonModel buttonModel, final ALRichMessageModel.ALPayloadModel payloadModel) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

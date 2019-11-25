@@ -124,7 +124,7 @@ public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
                             mCursor.moveToPosition(getAdapterPosition());
                             KmAutoSuggestionModel autoSuggestion = KmAutoSuggestionDatabase.getAutoSuggestion(mCursor);
                             if (autoSuggestion != null) {
-                                listener.onAction(context, KM_AUTO_SUGGESTION_ACTION, null, autoSuggestion, null);
+                                listener.onAction(context, KM_AUTO_SUGGESTION_ACTION, null, autoSuggestion.getContent(), null);
                             }
                         }
                     }

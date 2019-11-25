@@ -980,10 +980,12 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onMqttDisconnected() {
+        Applozic.unSubscribeToTyping(getContext(), channel, contact);
     }
 
     @Override
     public void onMqttConnected() {
+        Applozic.subscribeToTyping(getContext(), channel, contact);
     }
 
     @Override

@@ -24,6 +24,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.core.app.ActivityCompat;
@@ -74,13 +75,13 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobiComKitBroadcastReceiver;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
@@ -148,6 +149,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private static final String CAPTURED_VIDEO_URI = "capturedVideoUri";
     private static final String SHARE_TEXT = "share_text";
     public static final String CONTACTS_GROUP_ID = "CONTACTS_GROUP_ID";
+    private static final String TAG = "ConversationActivity";
     private static Uri capturedImageUri;
     private static String inviteMessage;
     private static int retry;
@@ -476,8 +478,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         prePostUIMethods = new PrePostUIMethods() {
             @Override
             public void preTaskUIMethod() {
-                //TODO: replace with progress bar
-                Toast.makeText(ConversationActivity.this, R.string.applozic_contacts_loading_info, Toast.LENGTH_SHORT).show();
+                //TODO: add progress bar
             }
 
             @Override
@@ -592,10 +593,42 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     final ClipData clipData = data.getClipData();
                     if (clipData == null) {
                         final Uri singleFileUri = (data == null ? null : data.getData());
-                        kmAttachmentsController.processFile(singleFileUri, alCustomizationSettings, prePostUIMethods);
+                        int returnCode = kmAttachmentsController.processFile(singleFileUri, alCustomizationSettings, prePostUIMethods);
+                        doReturnCodeActions(returnCode);
                     } else {
-                        for (int i = 0; i < clipData.getItemCount(); i++) {
-                            kmAttachmentsController.processFile(clipData.getItemAt(i).getUri(), alCustomizationSettings, prePostUIMethods);
+                        int itemCount = clipData.getItemCount();
+                        if(itemCount > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
+                            //TODO: Add string entries to string file and fix dialogFragmentSelectLimitCrossed constructor
+                           /* KmCustomDialog.KmAlertDialog dialogFragmentSelectLimitCrossed = new KmCustomDialog.KmAlertDialog();
+
+                            Bundle bundleDialogFragmentDetails = new Bundle();
+                            bundleDialogFragmentDetails.putString(KmCustomDialog.KmAlertDialog.TITLE, getString(R.string.max_media_select_title));
+                            bundleDialogFragmentDetails.putString(KmCustomDialog.KmAlertDialog.MESSAGE, getString(R.string.max_media_select_message, KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED));
+                            bundleDialogFragmentDetails.putString(KmCustomDialog.KmAlertDialog.POSITIVE_BUTTON_TEXT, getString(R.string.send_max_limit_files, KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED));
+                            bundleDialogFragmentDetails.putString(KmCustomDialog.KmAlertDialog.NEGATIVE_BUTTON_TEXT, getString(R.string.reselect_files));
+
+                            dialogFragmentSelectLimitCrossed.setArguments(bundleDialogFragmentDetails);
+
+                            dialogFragmentSelectLimitCrossed.setKmDialogClickListener(new KmCustomDialog.KmAlertDialog.KmDialogClickListener() {
+                                @Override
+                                public void onClickNegativeButton(DialogInterface dialog, int id) {
+                                    processMultiSelectGallery();
+                                }
+
+                                @Override
+                                public void onClickPositiveButton(DialogInterface dialog, int id) {
+                                    for (int i = 0; i < KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED; i++) {
+                                        int returnCode = kmAttachmentsController.processFile(clipData.getItemAt(i).getUri(), alCustomizationSettings, prePostUIMethods);
+                                        doReturnCodeActions(returnCode);
+                                    }
+                                }
+                            });
+                            dialogFragmentSelectLimitCrossed.show(getFragmentManager(), "FragmentSelectLimitCrossed");*/
+                        } else {
+                            for (int i = 0; i < itemCount; i++) {
+                                int returnCode = kmAttachmentsController.processFile(clipData.getItemAt(i).getUri(), alCustomizationSettings, prePostUIMethods);
+                                doReturnCodeActions(returnCode);
+                            }
                         }
                     }
                 } catch (Exception exception) {
@@ -605,7 +638,23 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    private void doReturnCodeActions(int returnCode) {
+        switch (returnCode) {
+            case KmAttachmentsController.MAX_SIZE_EXCEEDED:
+                Toast.makeText(this, R.string.info_attachment_max_allowed_file_size, Toast.LENGTH_LONG).show();
+                break;
+            case KmAttachmentsController.MIME_TYPE_EMPTY:
+                Utils.printLog(this, TAG, "URI mime type is empty.");
+                break;
+            case KmAttachmentsController.MIME_TYPE_NOT_SUPPORTED:
+                Toast.makeText(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
+                break;
+            case KmAttachmentsController.FORMAT_EMPTY:
+                Utils.printLog(this, TAG, "URI format(extension) is empty.");
+                break;
+        }
     }
 
     public void handleOnActivityResult(int requestCode, Intent intent) {
@@ -1461,7 +1510,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public static void openFaq(Activity activity, String url) {
         if (activity != null) {
-            Intent faqIntent = new Intent(activity, PaymentActivity.class);
+            Intent faqIntent = new Intent(activity, AlWebViewActivity.class);
             faqIntent.putExtra(KmConstants.KM_HELPCENTER_URL, url);
             activity.startActivity(faqIntent);
         }

@@ -7,8 +7,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "1.9.2"
-
+        versionName "1.9.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -24,29 +23,29 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.applozic.communication.message:mobicomkit:5.64'
+    api 'com.applozic.communication.message:mobicomkit:5.65'
     //api project(':mobicomkit')
 }
 
 /*ext {
     // Where you will see your artifact in Bintray's web interface
     // The "bintrayName" should match the name of the Bintray repro.
-    bintrayRepo = 'maven'
-    bintrayName = 'kommunicate-customer-support-chat-sdk'
+    bintrayRepo = 'Kommunicate-Android-Chat-SDK'
+    bintrayName = 'kommunicate-android-chat-sdk'
+    bintrayOrg = 'kommunicate'
     // Maven metadata
-    publishedGroupId = 'io.kommunicate'
+    publishedGroupId = 'io.kommunicate.sdk'
     libraryName = 'kommunicate'
     // Save yourself a head ache, and set this equal to the name of the Android Studio library
     // module. The artifact name needs to match the name of the library.
     artifact = 'kommunicate'
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '1.9.2'
-    developerId = 'devashish'
-    developerName = 'Applozic'
+    libraryVersion = '1.9.3'
+    developerId = 'kommunicate'
+    developerName = 'Kommunicate'
     developerEmail = 'devashish.mamgain@gmail.com'
 }
-//apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
-//apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
+
 apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
 apply plugin: 'com.jfrog.bintray'
 version = libraryVersion
@@ -78,6 +77,7 @@ bintray {
     pkg {
         repo = bintrayRepo
         name = bintrayName
+        userOrg = bintrayOrg
         desc = libraryDescription
         publish = true
         publicDownloadNumbers = true

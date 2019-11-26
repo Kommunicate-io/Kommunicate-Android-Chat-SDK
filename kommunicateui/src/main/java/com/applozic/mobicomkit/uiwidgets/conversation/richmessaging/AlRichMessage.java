@@ -2,8 +2,10 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
 import android.os.Build;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -16,7 +18,12 @@ import android.widget.TextView;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.lists.AlRichListsAdapter;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.ALRichMessageAdapter;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.AlImageAdapter;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.AlRichListsAdapter;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmCustomLayoutManager;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -45,6 +52,8 @@ public class AlRichMessage {
     public static final String KM_SOURCE = "source";
     public static final String KM_FORM_DATA = "formData";
     public static final String KM_FORM_ACTION = "formAction";
+    public static final String SEND_MESSAGE = "sendMessage";
+    public static final String OPEN_WEB_VIEW_ACTIVITY = "openWebViewActivity";
 
 
     private Context context;
@@ -62,7 +71,6 @@ public class AlRichMessage {
     }
 
 
-
     public void createRichMessage() {
         ALRichMessageModel model = (ALRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), ALRichMessageModel.class);
 
@@ -71,7 +79,6 @@ public class AlRichMessage {
         LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
         RecyclerView recyclerView = containerView.findViewById(R.id.alRichMessageContainer);
         KmCustomLayoutManager quickRepliesRecycler = containerView.findViewById(R.id.alQuickReplyRecycler);
-
 
 
         if (model.getTemplateId() == 7) {

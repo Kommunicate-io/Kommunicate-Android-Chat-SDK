@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAutoSuggestionModel;
@@ -124,7 +124,7 @@ public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
                             mCursor.moveToPosition(getAdapterPosition());
                             KmAutoSuggestionModel autoSuggestion = KmAutoSuggestionDatabase.getAutoSuggestion(mCursor);
                             if (autoSuggestion != null) {
-                                listener.onAction(context, KM_AUTO_SUGGESTION_ACTION, null, autoSuggestion, null);
+                                listener.onAction(context, KM_AUTO_SUGGESTION_ACTION, null, autoSuggestion.getContent(), null);
                             }
                         }
                     }

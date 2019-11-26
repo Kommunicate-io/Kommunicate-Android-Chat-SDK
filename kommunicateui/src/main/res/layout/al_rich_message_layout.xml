@@ -14,14 +14,13 @@
         android:id="@+id/alRichMessageContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="38dp"
-        android:layout_marginLeft="38dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="15dp" />
 
-    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmCustomLayoutManager
+    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmCustomLayoutManager
         android:id="@+id/alQuickReplyRecycler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,8 +36,8 @@
         android:id="@+id/alListMessageLayout"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
         android:background="@drawable/al_rich_message_border"
         android:gravity="center"
         android:orientation="vertical">

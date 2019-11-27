@@ -65,7 +65,11 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
 
             case AlRichMessage.QUICK_REPLY_OLD:
             case AlRichMessage.QUICK_REPLY:
-                handleQuickReplies(object, replyMetadata);
+                if (object instanceof String) {
+                    sendMessage((String) object, getStringMap(replyMetadata));
+                } else {
+                    handleQuickReplies(object, replyMetadata);
+                }
                 break;
 
             case AlRichMessage.TEMPLATE_ID + 9:

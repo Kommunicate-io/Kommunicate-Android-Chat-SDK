@@ -222,30 +222,28 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
     }
 
     public void makeFormRequest(final Context context, ALRichMessageModel.ALPayloadModel payloadModel) {
-        if (payloadModel != null) {
-            if (payloadModel.getAction() != null) {
-                if (!TextUtils.isEmpty(payloadModel.getAction().getMessage())) {
-                    sendMessage(payloadModel.getAction().getMessage(), getStringMap(payloadModel.getReplyMetadata()));
-                } else if (!TextUtils.isEmpty(payloadModel.getAction().getName())) {
-                    sendMessage(payloadModel.getAction().getName(), getStringMap(payloadModel.getReplyMetadata()));
-                }
+        if (payloadModel != null && payloadModel.getAction() != null) {
+            if (!TextUtils.isEmpty(payloadModel.getAction().getMessage())) {
+                sendMessage(payloadModel.getAction().getMessage(), getStringMap(payloadModel.getReplyMetadata()));
+            } else if (!TextUtils.isEmpty(payloadModel.getAction().getName())) {
+                sendMessage(payloadModel.getAction().getName(), getStringMap(payloadModel.getReplyMetadata()));
+            }
 
-                if (payloadModel.getAction().getFormData() != null && !TextUtils.isEmpty(payloadModel.getAction().getFormAction())) {
-                    if (AlWebViewActivity.REQUEST_TYPE_JSON.equals(payloadModel.getAction().getRequestType())) {
-                        new KmPostDataAsyncTask(context, payloadModel.getAction().getFormAction(), null, GsonUtils.getJsonFromObject(payloadModel.getFormData(), ALRichMessageModel.AlFormDataModel.class), "application/json", new KmCallback() {
-                            @Override
-                            public void onSuccess(Object message) {
-                                Utils.printLog(context, TAG, "Submit post success : " + message);
-                            }
+            if (payloadModel.getAction().getFormData() != null && !TextUtils.isEmpty(payloadModel.getAction().getFormAction())) {
+                if (AlWebViewActivity.REQUEST_TYPE_JSON.equals(payloadModel.getAction().getRequestType())) {
+                    new KmPostDataAsyncTask(context, payloadModel.getAction().getFormAction(), null, GsonUtils.getJsonFromObject(payloadModel.getFormData(), ALRichMessageModel.AlFormDataModel.class), "application/json", new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            Utils.printLog(context, TAG, "Submit post success : " + message);
+                        }
 
-                            @Override
-                            public void onFailure(Object error) {
-                                Utils.printLog(context, TAG, "Submit post error : " + error);
-                            }
-                        }).execute();
-                    } else {
-                        openWebLink(GsonUtils.getJsonFromObject(payloadModel.getAction().getFormData(), ALRichMessageModel.AlFormDataModel.class), payloadModel.getFormAction());
-                    }
+                        @Override
+                        public void onFailure(Object error) {
+                            Utils.printLog(context, TAG, "Submit post error : " + error);
+                        }
+                    }).execute();
+                } else {
+                    openWebLink(GsonUtils.getJsonFromObject(payloadModel.getAction().getFormData(), ALRichMessageModel.AlFormDataModel.class), payloadModel.getFormAction());
                 }
             }
         }

@@ -22,6 +22,7 @@ public class ALRichMessageModel extends JsonMarker {
     private String formAction;
     private String formData;
     private String headerText;
+    private String requestType;
     private String messagePreview;
 
     public Short getContentType() {
@@ -120,6 +121,14 @@ public class ALRichMessageModel extends JsonMarker {
         this.formData = formData;
     }
 
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
     public static class AlElementModel<T> extends JsonMarker {
         private String title;
         private String description;
@@ -205,6 +214,7 @@ public class ALRichMessageModel extends JsonMarker {
         private String description;
         private String caption;
         private String titleExt;
+        private String replyText;
         private AlAction action;
         private AlHeaderModel header;
         private List<AlElementModel> elements;
@@ -316,6 +326,14 @@ public class ALRichMessageModel extends JsonMarker {
 
         public AlAction getAction() {
             return action;
+        }
+
+        public String getReplyText() {
+            return replyText;
+        }
+
+        public void setReplyText(String replyText) {
+            this.replyText = replyText;
         }
 
         public void setAction(AlAction action) {
@@ -488,6 +506,7 @@ public class ALRichMessageModel extends JsonMarker {
         private List<AlElementModel> elements;
         private List<AlButtonModel> actions;
         private String rating;
+        private String replyText;
         private String overlayText;
         private String buttonLabel;
         private String requestType;
@@ -547,6 +566,14 @@ public class ALRichMessageModel extends JsonMarker {
 
         public void setHandlerId(String handlerId) {
             this.handlerId = handlerId;
+        }
+
+        public String getReplyText() {
+            return replyText;
+        }
+
+        public void setReplyText(String replyText) {
+            this.replyText = replyText;
         }
 
         public String getFormAction() {

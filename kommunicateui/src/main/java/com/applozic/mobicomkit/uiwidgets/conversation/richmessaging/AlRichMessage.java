@@ -310,10 +310,11 @@ public class AlRichMessage {
                     if (context.getApplicationContext() instanceof ALRichMessageListener) {
                         ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, payloadModel, payloadModel.getReplyMetadata());
                     } else {
+                        String actionType = payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) ? payloadModel.getAction().getType() : payloadModel.getType();
                         if (payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) || !TextUtils.isEmpty(payloadModel.getType())) {
-                            listener.onAction(context, payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) ? payloadModel.getAction().getType() : payloadModel.getType(), message, payloadModel.getAction() != null ? payloadModel.getAction() : payloadModel, payloadModel.getReplyMetadata());
+                            listener.onAction(context, actionType, message, payloadModel, payloadModel.getReplyMetadata());
                         } else {
-                            listener.onAction(context, AlRichMessage.QUICK_REPLY, message, payloadModel.getMessage().trim(), payloadModel.getReplyMetadata());
+                            listener.onAction(context, SUBMIT_BUTTON, message, model, payloadModel.getReplyMetadata());
                         }
                     }
                 }

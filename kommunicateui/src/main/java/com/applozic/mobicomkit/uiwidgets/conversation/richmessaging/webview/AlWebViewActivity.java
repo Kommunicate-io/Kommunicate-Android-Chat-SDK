@@ -39,6 +39,8 @@ public class AlWebViewActivity extends AppCompatActivity {
     private static final String JS_INTERFACE_NAME = "AlWebViewScreen";
     public static final String SURL = "surl";
     public static final String FURL = "furl";
+    public static final String DEFAULT_REQUEST_TYPE = "application/x-www-form-urlencoded";
+    public static final String REQUEST_TYPE_JSON = "json";
     public static final String Al_WEB_VIEW_BUNDLE = "alWebViewBundle";
 
     @Override
@@ -67,7 +69,7 @@ public class AlWebViewActivity extends AppCompatActivity {
                     loadUrl(helpCenterUrl);
                 } else if (isLinkType) {
                     String linkUrl = alWebViewBundle.getString(AlRichMessage.LINK_URL);
-                    if (linkUrl  != null && !TextUtils.isEmpty(linkUrl)) {
+                    if (linkUrl != null && !TextUtils.isEmpty(linkUrl)) {
                         loadUrl(linkUrl.startsWith("http") ? linkUrl : "http://" + linkUrl);
                     }
                 } else {

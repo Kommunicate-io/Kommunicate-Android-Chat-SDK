@@ -55,7 +55,7 @@ public class KmSettings {
     public static void updateUserLanguage(Context context, String languageCode) {
         Map<String, String> languageCodeMap = new HashMap<>();
         languageCodeMap.put(KM_LANGUAGE_UPDATE_KEY, languageCode);
-        updateMessageMetadata(context, languageCodeMap);
+        updateChatContext(context, languageCodeMap);
     }
 
     public static void updateMessageMetadata(Context context, Map<String, String> metadata) {
@@ -68,5 +68,6 @@ public class KmSettings {
         }
 
         existingMetadata.putAll(metadata);
+        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
     }
 }

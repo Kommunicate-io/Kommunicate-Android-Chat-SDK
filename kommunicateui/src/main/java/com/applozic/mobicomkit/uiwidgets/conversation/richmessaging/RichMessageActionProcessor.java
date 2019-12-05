@@ -13,18 +13,23 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALBoo
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALGuestCountModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.AlHotelBookingModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.async.KmPostDataAsyncTask;
+import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAutoSuggestionModel;
 
 public class RichMessageActionProcessor implements ALRichMessageListener {
 
     private ALRichMessageListener richMessageListener;
+    private static final String TAG = "AlRichMessageAction";
 
     public RichMessageActionProcessor(ALRichMessageListener richMessageListener) {
         this.richMessageListener = richMessageListener;
@@ -60,12 +65,16 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
 
             case AlRichMessage.MAKE_PAYMENT:
             case AlRichMessage.SUBMIT_BUTTON:
-                handleSubmitButton(object);
+                handleSubmitButton(context, object);
                 break;
 
             case AlRichMessage.QUICK_REPLY_OLD:
             case AlRichMessage.QUICK_REPLY:
-                handleQuickReplies(object, replyMetadata);
+                if (object instanceof String) {
+                    sendMessage((String) object, getStringMap(replyMetadata));
+                } else {
+                    handleQuickReplies(object, replyMetadata);
+                }
                 break;
 
             case AlRichMessage.TEMPLATE_ID + 9:
@@ -97,6 +106,8 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
             alAction = ((ALRichMessageModel.AlElementModel) object).getAction();
         } else if (object instanceof ALRichMessageModel.AlAction) {
             alAction = (ALRichMessageModel.AlAction) object;
+        } else if (object instanceof ALRichMessageModel.ALPayloadModel) {
+            alAction = ((ALRichMessageModel.ALPayloadModel) object).getAction();
         }
 
         if (alAction != null) {
@@ -117,7 +128,15 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
 
     public void handleQuickReplies(Object object, Map<String, Object> replyMetadata) {
         String message = null;
-        if (object instanceof ALRichMessageModel.AlButtonModel) {
+
+        if (object instanceof ALRichMessageModel.ALPayloadModel) {
+            ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) object;
+            if (payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getMessage())) {
+                handleQuickReplies(payloadModel.getAction(), payloadModel.getReplyMetadata());
+            } else {
+                message = !TextUtils.isEmpty(payloadModel.getMessage()) ? payloadModel.getMessage() : payloadModel.getName();
+            }
+        } else if (object instanceof ALRichMessageModel.AlButtonModel) {
             ALRichMessageModel.AlButtonModel buttonModel = (ALRichMessageModel.AlButtonModel) object;
             if (isValidAction(buttonModel.getAction())) {
                 handleQuickReplies(buttonModel.getAction(), replyMetadata);
@@ -133,7 +152,7 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                     message = action.getPayload().getTitle();
                 }
             } else {
-                message = action.getText();
+                message = !TextUtils.isEmpty(action.getMessage()) ? action.getMessage() : !TextUtils.isEmpty(action.getText()) ? action.getText() : !TextUtils.isEmpty(action.getTitle()) ? action.getTitle() : action.getName();
             }
         } else if (object instanceof ALRichMessageModel.AlElementModel) {
             ALRichMessageModel.AlElementModel elementModel = (ALRichMessageModel.AlElementModel) object;
@@ -163,7 +182,7 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         return action != null && (action.getPayload() != null || !TextUtils.isEmpty(action.getText()));
     }
 
-    public void handleSubmitButton(Object object) {
+    public void handleSubmitButton(Context context, Object object) {
         if (object instanceof ALRichMessageModel.AlButtonModel) {
             ALRichMessageModel.AlButtonModel buttonModel = (ALRichMessageModel.AlButtonModel) object;
             if (buttonModel.getAction() != null && buttonModel.getAction().getPayload() != null) {
@@ -173,6 +192,8 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         } else if (object instanceof ALRichMessageModel) {
             ALRichMessageModel model = (ALRichMessageModel) object;
             openWebLink(model.getFormData(), model.getFormAction());
+        } else if (object instanceof ALRichMessageModel.ALPayloadModel) {
+            makeFormRequest(context, (ALRichMessageModel.ALPayloadModel) object);
         }
     }
 
@@ -197,6 +218,34 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         bundle.putString(AlRichMessage.LINK_URL, url);
         if (richMessageListener != null) {
             richMessageListener.onAction(null, AlRichMessage.OPEN_WEB_VIEW_ACTIVITY, null, bundle, null);
+        }
+    }
+
+    public void makeFormRequest(final Context context, ALRichMessageModel.ALPayloadModel payloadModel) {
+        if (payloadModel != null && payloadModel.getAction() != null) {
+            if (!TextUtils.isEmpty(payloadModel.getAction().getMessage())) {
+                sendMessage(payloadModel.getAction().getMessage(), getStringMap(payloadModel.getReplyMetadata()));
+            } else if (!TextUtils.isEmpty(payloadModel.getAction().getName())) {
+                sendMessage(payloadModel.getAction().getName(), getStringMap(payloadModel.getReplyMetadata()));
+            }
+
+            if (payloadModel.getAction().getFormData() != null && !TextUtils.isEmpty(payloadModel.getAction().getFormAction())) {
+                if (AlWebViewActivity.REQUEST_TYPE_JSON.equals(payloadModel.getAction().getRequestType())) {
+                    new KmPostDataAsyncTask(context, payloadModel.getAction().getFormAction(), null, GsonUtils.getJsonFromObject(payloadModel.getFormData(), ALRichMessageModel.AlFormDataModel.class), "application/json", new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            Utils.printLog(context, TAG, "Submit post success : " + message);
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            Utils.printLog(context, TAG, "Submit post error : " + error);
+                        }
+                    }).execute();
+                } else {
+                    openWebLink(GsonUtils.getJsonFromObject(payloadModel.getAction().getFormData(), ALRichMessageModel.AlFormDataModel.class), payloadModel.getFormAction());
+                }
+            }
         }
     }
 

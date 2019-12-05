@@ -16,10 +16,8 @@ import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
-import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
-import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
@@ -530,6 +528,7 @@ public class Kommunicate {
      * @param context         the context
      * @param messageMetadata the map data to update the KM_CHAT_CONTEXT field with
      */
+    @Deprecated
     public static void updateChatContext(Context context, Map<String, String> messageMetadata) {
         //converting the messageMetadata parameter passed to function (keyed by KM_CHAT_CONTEXT), to json string
         String messageMetaDataString = GsonUtils.getJsonFromObject(messageMetadata, Map.class);

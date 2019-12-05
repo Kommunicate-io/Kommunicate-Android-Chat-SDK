@@ -1,5 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicommons.json.JsonMarker;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ALRichMessageModel extends JsonMarker {
     private String formAction;
     private String formData;
     private String headerText;
+    private String requestType;
     private String messagePreview;
 
     public Short getContentType() {
@@ -119,6 +121,14 @@ public class ALRichMessageModel extends JsonMarker {
         this.formData = formData;
     }
 
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
     public static class AlElementModel<T> extends JsonMarker {
         private String title;
         private String description;
@@ -204,6 +214,8 @@ public class ALRichMessageModel extends JsonMarker {
         private String description;
         private String caption;
         private String titleExt;
+        private String replyText;
+        private AlAction action;
         private AlHeaderModel header;
         private List<AlElementModel> elements;
         private List<AlButtonModel> actions;
@@ -214,6 +226,7 @@ public class ALRichMessageModel extends JsonMarker {
         private Map<String, Object> replyMetadata;
         private List<AlButtonModel> buttons;
         private AlFormDataModel formData;
+        private boolean isDeepLink;
 
         public String getTitle() {
             return title;
@@ -311,8 +324,32 @@ public class ALRichMessageModel extends JsonMarker {
             return header;
         }
 
+        public AlAction getAction() {
+            return action;
+        }
+
+        public String getReplyText() {
+            return replyText;
+        }
+
+        public void setReplyText(String replyText) {
+            this.replyText = replyText;
+        }
+
+        public void setAction(AlAction action) {
+            this.action = action;
+        }
+
         public String getRequestType() {
             return requestType;
+        }
+
+        public boolean isDeepLink() {
+            return isDeepLink;
+        }
+
+        public void setDeepLink(boolean deepLink) {
+            isDeepLink = deepLink;
         }
 
         @Override
@@ -453,7 +490,31 @@ public class ALRichMessageModel extends JsonMarker {
         private String url;
         private String type;
         private String text;
+        private String title;
+        private String name;
+        private String handlerId;
+        private String formAction;
+        private String message;
+        private String headerText;
+        private String headerImgSrc;
+        private String headerImageUrl;
+        private String subtitle;
+        private String description;
+        private String caption;
+        private String titleExt;
+        private AlHeaderModel header;
+        private List<AlElementModel> elements;
+        private List<AlButtonModel> actions;
+        private String rating;
+        private String replyText;
+        private String overlayText;
+        private String buttonLabel;
+        private String requestType;
+        private Map<String, Object> replyMetadata;
+        private List<AlButtonModel> buttons;
+        private AlFormDataModel formData;
         private ALPayloadModel payload;
+        private boolean isDeepLink;
 
         public String getUrl() {
             return url;
@@ -477,6 +538,218 @@ public class ALRichMessageModel extends JsonMarker {
 
         public ALPayloadModel getPayload() {
             return payload;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getHandlerId() {
+            return handlerId;
+        }
+
+        public void setHandlerId(String handlerId) {
+            this.handlerId = handlerId;
+        }
+
+        public String getReplyText() {
+            return replyText;
+        }
+
+        public void setReplyText(String replyText) {
+            this.replyText = replyText;
+        }
+
+        public String getFormAction() {
+            return formAction;
+        }
+
+        public void setFormAction(String formAction) {
+            this.formAction = formAction;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public String getHeaderText() {
+            return headerText;
+        }
+
+        public void setHeaderText(String headerText) {
+            this.headerText = headerText;
+        }
+
+        public String getHeaderImgSrc() {
+            return headerImgSrc;
+        }
+
+        public void setHeaderImgSrc(String headerImgSrc) {
+            this.headerImgSrc = headerImgSrc;
+        }
+
+        public String getHeaderImageUrl() {
+            return headerImageUrl;
+        }
+
+        public void setHeaderImageUrl(String headerImageUrl) {
+            this.headerImageUrl = headerImageUrl;
+        }
+
+        public String getSubtitle() {
+            return subtitle;
+        }
+
+        public void setSubtitle(String subtitle) {
+            this.subtitle = subtitle;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getCaption() {
+            return caption;
+        }
+
+        public void setCaption(String caption) {
+            this.caption = caption;
+        }
+
+        public String getTitleExt() {
+            return titleExt;
+        }
+
+        public void setTitleExt(String titleExt) {
+            this.titleExt = titleExt;
+        }
+
+        public AlHeaderModel getHeader() {
+            return header;
+        }
+
+        public void setHeader(AlHeaderModel header) {
+            this.header = header;
+        }
+
+        public List<AlElementModel> getElements() {
+            return elements;
+        }
+
+        public void setElements(List<AlElementModel> elements) {
+            this.elements = elements;
+        }
+
+        public List<AlButtonModel> getActions() {
+            return actions;
+        }
+
+        public void setActions(List<AlButtonModel> actions) {
+            this.actions = actions;
+        }
+
+        public String getRating() {
+            return rating;
+        }
+
+        public void setRating(String rating) {
+            this.rating = rating;
+        }
+
+        public String getOverlayText() {
+            return overlayText;
+        }
+
+        public void setOverlayText(String overlayText) {
+            this.overlayText = overlayText;
+        }
+
+        public String getButtonLabel() {
+            return buttonLabel;
+        }
+
+        public void setButtonLabel(String buttonLabel) {
+            this.buttonLabel = buttonLabel;
+        }
+
+        public String getRequestType() {
+            return requestType;
+        }
+
+        public void setRequestType(String requestType) {
+            this.requestType = requestType;
+        }
+
+        public Map<String, Object> getReplyMetadata() {
+            return replyMetadata;
+        }
+
+        public void setReplyMetadata(Map<String, Object> replyMetadata) {
+            this.replyMetadata = replyMetadata;
+        }
+
+        public List<AlButtonModel> getButtons() {
+            return buttons;
+        }
+
+        public void setButtons(List<AlButtonModel> buttons) {
+            this.buttons = buttons;
+        }
+
+        public AlFormDataModel getFormData() {
+            return formData;
+        }
+
+        public void setFormData(AlFormDataModel formData) {
+            this.formData = formData;
+        }
+
+        public void setPayload(ALPayloadModel payload) {
+            this.payload = payload;
+        }
+
+        public boolean isQuickReply() {
+            return AlRichMessage.QUICK_REPLY.equals(type);
+        }
+
+        public boolean isSubmitButton() {
+            return AlRichMessage.SUBMIT_BUTTON.equals(type);
+        }
+
+        public boolean isWebLink() {
+            return AlRichMessage.WEB_LINK.equals(type);
+        }
+
+        public boolean isDeepLink() {
+            return isDeepLink;
+        }
+
+        public void setDeepLink(boolean deepLink) {
+            isDeepLink = deepLink;
         }
 
         @Override

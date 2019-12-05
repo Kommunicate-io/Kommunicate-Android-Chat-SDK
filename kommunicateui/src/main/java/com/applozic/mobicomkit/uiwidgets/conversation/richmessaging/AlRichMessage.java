@@ -106,7 +106,7 @@ public class AlRichMessage {
             recyclerView.setLayoutManager(layoutManager);
             AlImageAdapter imageAdapter = new AlImageAdapter(context, model, listener, message, alCustomizationSettings);
             recyclerView.setAdapter(imageAdapter);
-        } else if (model.getTemplateId() == 3 || model.getTemplateId() == 6) {
+        } else if (model.getTemplateId() == 3 || model.getTemplateId() == 6 || model.getTemplateId() == 11) {
             listItemlayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.GONE);
             faqLayout.setVisibility(View.GONE);
@@ -285,51 +285,42 @@ public class AlRichMessage {
         final List<ALRichMessageModel.ALPayloadModel> payloadList = Arrays.asList((ALRichMessageModel.ALPayloadModel[])
                 GsonUtils.getObjectFromJson(model.getPayload(), ALRichMessageModel.ALPayloadModel[].class));
 
-        if (model.getTemplateId() == 3 || model.getTemplateId() == 6) {
-            flowLayout.removeAllViews();
-            for (final ALRichMessageModel.ALPayloadModel payloadModel : payloadList) {
-                View view = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, null);
-                TextView itemTextView = view.findViewById(R.id.singleTextItem);
+        flowLayout.removeAllViews();
+        for (final ALRichMessageModel.ALPayloadModel payloadModel : payloadList) {
+            View view = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, null);
+            TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
-                if (model.getTemplateId() == 3) {
-                    if (!TextUtils.isEmpty(payloadModel.getName())) {
-                        itemTextView.setText(payloadModel.getName().trim());
-                    } else {
-                        itemTextView.setText("");
-                    }
+            if (model.getTemplateId() == 3 || model.getTemplateId() == 11) {
+                if (!TextUtils.isEmpty(payloadModel.getName())) {
+                    itemTextView.setText(payloadModel.getName().trim());
                 } else {
-                    if (payloadModel.getTitle() != null) {
-                        itemTextView.setText(payloadModel.getTitle().trim());
-                    } else {
-                        itemTextView.setText("");
-                    }
+                    itemTextView.setText("");
                 }
+            } else {
+                if (payloadModel.getTitle() != null) {
+                    itemTextView.setText(payloadModel.getTitle().trim());
+                } else {
+                    itemTextView.setText("");
+                }
+            }
 
-                itemTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (model.getTemplateId() == 6) {
-                            if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, payloadModel, payloadModel.getReplyMetadata());
-                            } else {
-                                listener.onAction(context, AlRichMessage.SEND_HOTEL_RATING, message, payloadModel.getMessage().trim(), payloadModel.getReplyMetadata());
-                            }
+            itemTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (context.getApplicationContext() instanceof ALRichMessageListener) {
+                        ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, payloadModel, payloadModel.getReplyMetadata());
+                    } else {
+                        String actionType = payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) ? payloadModel.getAction().getType() : payloadModel.getType();
+                        if (payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) || !TextUtils.isEmpty(payloadModel.getType())) {
+                            listener.onAction(context, actionType, message, payloadModel, payloadModel.getReplyMetadata());
                         } else {
-                            if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, TEMPLATE_ID + model.getTemplateId(), message, payloadModel, payloadModel.getReplyMetadata());
-                            } else {
-                                if (!TextUtils.isEmpty(model.getFormData()) && !TextUtils.isEmpty(model.getFormAction())) {
-                                    listener.onAction(context, AlRichMessage.MAKE_PAYMENT, message, model, payloadModel != null ? payloadModel.getReplyMetadata() : null);
-                                } else {
-                                    listener.onAction(context, AlRichMessage.WEB_LINK, message, payloadModel, payloadModel.getReplyMetadata());
-                                }
-                            }
+                            listener.onAction(context, SUBMIT_BUTTON, message, model, payloadModel.getReplyMetadata());
                         }
                     }
-                });
+                }
+            });
 
-                flowLayout.addView(view);
-            }
+            flowLayout.addView(view);
         }
     }
 

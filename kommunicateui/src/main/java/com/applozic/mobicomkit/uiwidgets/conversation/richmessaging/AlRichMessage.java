@@ -81,55 +81,44 @@ public class AlRichMessage {
         RecyclerView imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
         KmFlowLayout flowLayout = containerView.findViewById(R.id.kmFlowLayout);
 
-        if (model.getTemplateId() == 7) {
-            listItemlayout.setVisibility(View.VISIBLE);
-            genericCardRecycler.setVisibility(View.GONE);
-            faqLayout.setVisibility(View.GONE);
-            faqReplyLayout.setVisibility(View.GONE);
-            flowLayout.setVisibility(View.GONE);
-            imageListRecycler.setVisibility(View.GONE);
-            setupListItemView(listItemlayout, model);
-        } else if (model.getTemplateId() == 8) {
-            faqLayout.setVisibility(View.VISIBLE);
-            faqReplyLayout.setVisibility(View.VISIBLE);
-            listItemlayout.setVisibility(View.GONE);
-            genericCardRecycler.setVisibility(View.GONE);
-            imageListRecycler.setVisibility(View.GONE);
-            flowLayout.setVisibility(View.GONE);
-            setupFaqItemView(faqLayout, faqReplyLayout, model);
-        } else if (model.getTemplateId() == 9) {
-            listItemlayout.setVisibility(View.GONE);
-            genericCardRecycler.setVisibility(View.GONE);
-            faqLayout.setVisibility(View.GONE);
-            faqReplyLayout.setVisibility(View.GONE);
-            imageListRecycler.setVisibility(View.VISIBLE);
-            flowLayout.setVisibility(View.GONE);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-            imageListRecycler.setLayoutManager(layoutManager);
-            AlImageAdapter imageAdapter = new AlImageAdapter(context, model, listener, message, alCustomizationSettings);
-            imageListRecycler.setAdapter(imageAdapter);
-        } else if (model.getTemplateId() == 3 || model.getTemplateId() == 6 || model.getTemplateId() == 11) {
-            listItemlayout.setVisibility(View.GONE);
-            genericCardRecycler.setVisibility(View.GONE);
-            faqLayout.setVisibility(View.GONE);
-            faqReplyLayout.setVisibility(View.GONE);
-            imageListRecycler.setVisibility(View.GONE);
-            flowLayout.setVisibility(View.VISIBLE);
-            setUpGridView(flowLayout, model);
-        } else if (model.getTemplateId() > 0) {
-            listItemlayout.setVisibility(View.GONE);
-            genericCardRecycler.setVisibility(View.VISIBLE);
-            faqLayout.setVisibility(View.GONE);
-            faqReplyLayout.setVisibility(View.GONE);
-            imageListRecycler.setVisibility(View.GONE);
-            flowLayout.setVisibility(View.GONE);
+        listItemlayout.setVisibility(model.getTemplateId() == 7 ? View.VISIBLE : View.GONE);
+        genericCardRecycler.setVisibility(model.getTemplateId() == 10 ? View.VISIBLE : View.GONE);
+        faqLayout.setVisibility(model.getTemplateId() == 8 ? View.VISIBLE : View.GONE);
+        faqReplyLayout.setVisibility(model.getTemplateId() == 8 ? View.VISIBLE : View.GONE);
+        imageListRecycler.setVisibility(model.getTemplateId() == 9 ? View.VISIBLE : View.GONE);
+        flowLayout.setVisibility((model.getTemplateId() == 3 || model.getTemplateId() == 6 || model.getTemplateId() == 11) ? View.VISIBLE : View.GONE);
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-            genericCardRecycler.setLayoutManager(layoutManager);
-            ALRichMessageAdapter adapter = new ALRichMessageAdapter(context, model, listener, message);
-            genericCardRecycler.setAdapter(adapter);
-        } else {
-            containerView.setVisibility(View.GONE);
+        switch (model.getTemplateId()) {
+            case 3:
+            case 6:
+            case 11:
+                setUpGridView(flowLayout, model);
+                break;
+
+            case 7:
+                setupListItemView(listItemlayout, model);
+                break;
+
+            case 8:
+                setupFaqItemView(faqLayout, faqReplyLayout, model);
+                break;
+
+            case 9:
+                LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                imageListRecycler.setLayoutManager(layoutManager);
+                AlImageAdapter imageAdapter = new AlImageAdapter(context, model, listener, message, alCustomizationSettings);
+                imageListRecycler.setAdapter(imageAdapter);
+                break;
+
+            case 10:
+                LinearLayoutManager genericCardsLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+                genericCardRecycler.setLayoutManager(genericCardsLayoutManager);
+                ALRichMessageAdapter adapter = new ALRichMessageAdapter(context, model, listener, message);
+                genericCardRecycler.setAdapter(adapter);
+                break;
+
+            default:
+                containerView.setVisibility(View.GONE);
         }
     }
 

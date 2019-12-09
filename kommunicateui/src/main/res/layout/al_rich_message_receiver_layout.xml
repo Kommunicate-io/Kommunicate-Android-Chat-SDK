@@ -5,28 +5,29 @@
     android:layout_height="wrap_content"
     android:layout_below="@+id/messageTextLayout"
     android:layout_marginTop="8dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginStart="52dp"
+    android:layout_marginLeft="52dp"
     android:orientation="vertical"
     android:visibility="gone"
     android:gravity="start">
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/alRichMessageContainer"
+        android:id="@+id/alGenericCardContainer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginLeft="52dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_height="wrap_content" />
 
-    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmCustomLayoutManager
-        android:id="@+id/alQuickReplyRecycler"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/alImageListContainer"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginLeft="52dp"
-        android:layout_marginBottom="15dp" />
+        android:layout_height="wrap_content" />
+
+    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmReceiverFlowLayout
+        android:id="@+id/kmFlowLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <include layout="@layout/al_faq_layout" />
 
@@ -36,8 +37,6 @@
         android:id="@+id/alListMessageLayout"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginLeft="52dp"
         android:background="@drawable/al_rich_message_border"
         android:gravity="center"
         android:orientation="vertical">

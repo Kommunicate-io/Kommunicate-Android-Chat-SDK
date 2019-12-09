@@ -3,11 +3,6 @@
     android:id="@+id/alFaqLayout"
     android:layout_width="260dp"
     android:layout_height="wrap_content"
-    android:layout_marginStart="53dp"
-    android:layout_marginLeft="53dp"
-    android:layout_marginEnd="27dp"
-    android:layout_marginRight="27dp"
-    android:layout_marginBottom="8dp"
     android:visibility="gone"
     android:background="@drawable/al_rich_message_border"
     android:orientation="vertical">

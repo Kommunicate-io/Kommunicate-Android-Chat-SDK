@@ -23,7 +23,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.AlI
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.AlRichListsAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmCustomLayoutManager;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -77,53 +77,57 @@ public class AlRichMessage {
         LinearLayout listItemlayout = containerView.findViewById(R.id.alListMessageLayout);
         LinearLayout faqReplyLayout = containerView.findViewById(R.id.alFaqReplyLayout);
         LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
-        RecyclerView recyclerView = containerView.findViewById(R.id.alRichMessageContainer);
-        KmCustomLayoutManager quickRepliesRecycler = containerView.findViewById(R.id.alQuickReplyRecycler);
-
+        RecyclerView genericCardRecycler = containerView.findViewById(R.id.alGenericCardContainer);
+        RecyclerView imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
+        KmFlowLayout flowLayout = containerView.findViewById(R.id.kmFlowLayout);
 
         if (model.getTemplateId() == 7) {
             listItemlayout.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
+            genericCardRecycler.setVisibility(View.GONE);
             faqLayout.setVisibility(View.GONE);
             faqReplyLayout.setVisibility(View.GONE);
-            quickRepliesRecycler.setVisibility(View.GONE);
+            flowLayout.setVisibility(View.GONE);
+            imageListRecycler.setVisibility(View.GONE);
             setupListItemView(listItemlayout, model);
         } else if (model.getTemplateId() == 8) {
             faqLayout.setVisibility(View.VISIBLE);
             faqReplyLayout.setVisibility(View.VISIBLE);
             listItemlayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-            quickRepliesRecycler.setVisibility(View.GONE);
+            genericCardRecycler.setVisibility(View.GONE);
+            imageListRecycler.setVisibility(View.GONE);
+            flowLayout.setVisibility(View.GONE);
             setupFaqItemView(faqLayout, faqReplyLayout, model);
         } else if (model.getTemplateId() == 9) {
             listItemlayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            genericCardRecycler.setVisibility(View.GONE);
             faqLayout.setVisibility(View.GONE);
             faqReplyLayout.setVisibility(View.GONE);
-            quickRepliesRecycler.setVisibility(View.GONE);
-
+            imageListRecycler.setVisibility(View.VISIBLE);
+            flowLayout.setVisibility(View.GONE);
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(layoutManager);
+            imageListRecycler.setLayoutManager(layoutManager);
             AlImageAdapter imageAdapter = new AlImageAdapter(context, model, listener, message, alCustomizationSettings);
-            recyclerView.setAdapter(imageAdapter);
+            imageListRecycler.setAdapter(imageAdapter);
         } else if (model.getTemplateId() == 3 || model.getTemplateId() == 6 || model.getTemplateId() == 11) {
             listItemlayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
+            genericCardRecycler.setVisibility(View.GONE);
             faqLayout.setVisibility(View.GONE);
             faqReplyLayout.setVisibility(View.GONE);
-            quickRepliesRecycler.setVisibility(View.VISIBLE);
-            setUpGridView(quickRepliesRecycler, model);
+            imageListRecycler.setVisibility(View.GONE);
+            flowLayout.setVisibility(View.VISIBLE);
+            setUpGridView(flowLayout, model);
         } else if (model.getTemplateId() > 0) {
             listItemlayout.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            genericCardRecycler.setVisibility(View.VISIBLE);
             faqLayout.setVisibility(View.GONE);
             faqReplyLayout.setVisibility(View.GONE);
-            quickRepliesRecycler.setVisibility(View.GONE);
+            imageListRecycler.setVisibility(View.GONE);
+            flowLayout.setVisibility(View.GONE);
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-            recyclerView.setLayoutManager(layoutManager);
+            genericCardRecycler.setLayoutManager(layoutManager);
             ALRichMessageAdapter adapter = new ALRichMessageAdapter(context, model, listener, message);
-            recyclerView.setAdapter(adapter);
+            genericCardRecycler.setAdapter(adapter);
         } else {
             containerView.setVisibility(View.GONE);
         }
@@ -280,7 +284,7 @@ public class AlRichMessage {
         }
     }
 
-    private void setUpGridView(KmCustomLayoutManager flowLayout, final ALRichMessageModel model) {
+    private void setUpGridView(KmFlowLayout flowLayout, final ALRichMessageModel model) {
 
         final List<ALRichMessageModel.ALPayloadModel> payloadList = Arrays.asList((ALRichMessageModel.ALPayloadModel[])
                 GsonUtils.getObjectFromJson(model.getPayload(), ALRichMessageModel.ALPayloadModel[].class));

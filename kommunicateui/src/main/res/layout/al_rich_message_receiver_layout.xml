@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/alRichMessageView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,9 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmReceiverFlowLayout
+    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout
         android:id="@+id/kmFlowLayout"
         android:layout_width="wrap_content"
+        app:alignSenderSide = "false"
         android:layout_height="wrap_content" />
 
     <include layout="@layout/al_faq_layout" />

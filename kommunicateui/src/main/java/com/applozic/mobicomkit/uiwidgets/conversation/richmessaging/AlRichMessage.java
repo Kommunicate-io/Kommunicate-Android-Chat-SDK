@@ -54,6 +54,7 @@ public class AlRichMessage {
     public static final String KM_FORM_ACTION = "formAction";
     public static final String SEND_MESSAGE = "sendMessage";
     public static final String OPEN_WEB_VIEW_ACTIVITY = "openWebViewActivity";
+    public static final String IS_DEEP_LINK = "isDeepLink";
 
 
     private Context context;

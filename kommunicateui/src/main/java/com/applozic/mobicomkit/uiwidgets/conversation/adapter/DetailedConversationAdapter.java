@@ -10,10 +10,12 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -1032,6 +1034,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     } else {
                         myHolder.richMessageLayout.setVisibility(View.GONE);
+                        myHolder.messageTextLayout.setVisibility(View.VISIBLE);
                     }
 
                     //Handling contact share

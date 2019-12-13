@@ -112,16 +112,16 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
 
         if (alAction != null) {
             if (!TextUtils.isEmpty(alAction.getUrl())) {
-                openWebLink(alAction.getUrl());
+                openWebLink(alAction.getUrl(), alAction.isDeepLink());
             } else if (alAction.getPayload() != null && !TextUtils.isEmpty(alAction.getPayload().getUrl())) {
-                openWebLink(alAction.getPayload().getUrl());
+                openWebLink(alAction.getPayload().getUrl(), alAction.getPayload().isDeepLink());
             }
         }
 
         if (object instanceof ALRichMessageModel.ALPayloadModel) {
             ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) object;
             if (!TextUtils.isEmpty(payloadModel.getUrl())) {
-                openWebLink(payloadModel.getUrl());
+                openWebLink(payloadModel.getUrl(), payloadModel.isDeepLink());
             }
         }
     }
@@ -212,10 +212,11 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         sendMessage(message, replyMetadata, Message.ContentType.DEFAULT.getValue());
     }
 
-    public void openWebLink(String url) {
+    public void openWebLink(String url, boolean isDeepLink) {
         Bundle bundle = new Bundle();
         bundle.putBoolean(AlRichMessage.WEB_LINK, true);
         bundle.putString(AlRichMessage.LINK_URL, url);
+        bundle.putBoolean(AlRichMessage.IS_DEEP_LINK, isDeepLink);
         if (richMessageListener != null) {
             richMessageListener.onAction(null, AlRichMessage.OPEN_WEB_VIEW_ACTIVITY, null, bundle, null);
         }

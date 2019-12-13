@@ -101,6 +101,6 @@
 
         <meta-data
             android:name="com.applozic.mqtt.server.url"
-            android:value="tcp://socket.applozic.com:1883" />
+            android:value="tcp://socket.applozic.com:8080" />
     </application>
 </manifest>

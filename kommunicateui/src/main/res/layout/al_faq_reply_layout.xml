@@ -3,8 +3,6 @@
     android:id="@+id/alFaqReplyLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="50dp"
-    android:layout_marginLeft="50dp"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingTop="2dp"

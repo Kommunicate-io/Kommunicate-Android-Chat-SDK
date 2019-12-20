@@ -148,7 +148,7 @@
         </FrameLayout>
     </LinearLayout>
 
-    <include layout="@layout/al_rich_message_layout" />
+    <include layout="@layout/al_rich_message_sender_layout" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/statusMainLayout"

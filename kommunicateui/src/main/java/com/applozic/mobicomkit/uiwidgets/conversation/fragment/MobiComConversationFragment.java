@@ -4226,8 +4226,15 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         switch (action) {
             case AlRichMessage.OPEN_WEB_VIEW_ACTIVITY:
                 if (getActivity() != null) {
-                    Intent intent = new Intent(getActivity(), AlWebViewActivity.class);
-                    intent.putExtra(AlWebViewActivity.Al_WEB_VIEW_BUNDLE, (Bundle) object);
+                    Bundle bundle = (Bundle) object;
+                    boolean isDeepLink = bundle.getBoolean(AlRichMessage.IS_DEEP_LINK, false);
+                    Intent intent;
+                    if (isDeepLink) {
+                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(bundle.getString(AlRichMessage.LINK_URL)));
+                    } else {
+                        intent = new Intent(getActivity(), AlWebViewActivity.class);
+                        intent.putExtra(AlWebViewActivity.Al_WEB_VIEW_BUNDLE, bundle);
+                    }
                     getActivity().startActivity(intent);
                 }
                 break;

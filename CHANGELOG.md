@@ -3,6 +3,38 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 1.9.4
+
+1) Support for templateId 11 in Rich messages
+
+## Kommunicate Android SDK 1.9.3
+
+Features:-
+1) Added launch and create method in conversation builder. It works as below:
+    a) If there are no conversations, create a new conversation and open it. 
+    b) If there is only one conversation, open it.
+    c) If there are multiple conversations, open the conversation list screen.
+
+    Below is the code to launch the conversation:
+    ```
+       new KmConversationBuilder(context).setAppId("<Your-App-Id>")
+                            .launchAndCreateIfEmpty(new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+
+                        }
+                    });
+    ```
+2)  SDK is now present under kommunicate organization in bintray. The SDK needs to be imported using below path:
+    ```
+       implementation 'io.kommunicate.sdk:kommunicateui:1.9.3'
+    ```
+
 ## Kommunicate Android SDK 1.9.1
 
 **Features**

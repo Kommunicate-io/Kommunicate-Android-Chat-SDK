@@ -1511,7 +1511,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public static void openFaq(Activity activity, String url) {
         if (activity != null) {
             Intent faqIntent = new Intent(activity, AlWebViewActivity.class);
-            faqIntent.putExtra(KmConstants.KM_HELPCENTER_URL, url);
+            Bundle urlBundle = new Bundle();
+            urlBundle.putString(KmConstants.KM_HELPCENTER_URL, url);
+            faqIntent.putExtra(AlWebViewActivity.Al_WEB_VIEW_BUNDLE, urlBundle);
             activity.startActivity(faqIntent);
         }
     }

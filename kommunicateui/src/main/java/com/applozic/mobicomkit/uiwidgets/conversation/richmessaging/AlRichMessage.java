@@ -308,7 +308,7 @@ public class AlRichMessage {
                         if (payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) || !TextUtils.isEmpty(payloadModel.getType())) {
                             listener.onAction(context, actionType, message, payloadModel, payloadModel.getReplyMetadata());
                         } else {
-                            listener.onAction(context, model.getTemplateId() == 6 ? QUICK_REPLY : SUBMIT_BUTTON, message, payloadModel, payloadModel.getReplyMetadata());
+                            listener.onAction(context, model.getTemplateId() == 6 ? QUICK_REPLY : SUBMIT_BUTTON, message, model.getTemplateId() == 6 ? payloadModel : model, payloadModel.getReplyMetadata());
                         }
                     }
                 }

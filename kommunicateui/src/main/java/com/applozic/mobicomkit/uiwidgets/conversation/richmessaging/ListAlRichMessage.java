@@ -33,11 +33,6 @@ public class ListAlRichMessage extends AlRichMessage {
     public void createRichMessage() {
         super.createRichMessage();
         LinearLayout listItemLayout = containerView.findViewById(R.id.alListMessageLayout);
-        listItemLayout.setVisibility(View.VISIBLE);
-        containerView.findViewById(R.id.alRichMessageContainer).setVisibility(View.GONE);
-        containerView.findViewById(R.id.alFaqLayout).setVisibility(View.GONE);
-        containerView.findViewById(R.id.alFaqReplyLayout).setVisibility(View.GONE);
-        containerView.findViewById(R.id.alQuickReplyRecycler).setVisibility(View.GONE);
         setupAlRichMessage(listItemLayout, model);
     }
 

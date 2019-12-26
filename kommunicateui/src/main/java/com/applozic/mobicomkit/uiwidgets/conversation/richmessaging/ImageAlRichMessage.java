@@ -25,13 +25,8 @@ public class ImageAlRichMessage extends AlRichMessage {
     @Override
     public void createRichMessage() {
         super.createRichMessage();
-        RecyclerView recyclerView = containerView.findViewById(R.id.alRichMessageContainer);
-        containerView.findViewById(R.id.alListMessageLayout).setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
-        containerView.findViewById(R.id.alFaqLayout).setVisibility(View.GONE);
-        containerView.findViewById(R.id.alFaqReplyLayout).setVisibility(View.GONE);
-        containerView.findViewById(R.id.alQuickReplyRecycler).setVisibility(View.GONE);
-        setupAlRichMessage(recyclerView, model);
+        RecyclerView imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
+        setupAlRichMessage(imageListRecycler, model);
     }
 
     @Override

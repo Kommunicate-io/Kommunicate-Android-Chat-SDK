@@ -27,18 +27,13 @@ public class FaqAlRichMessage extends AlRichMessage {
         super.createRichMessage();
         LinearLayout faqReplyLayout = containerView.findViewById(R.id.alFaqReplyLayout);
         LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
-        faqLayout.setVisibility(View.VISIBLE);
-        faqReplyLayout.setVisibility(View.VISIBLE);
-        containerView.findViewById(R.id.alListMessageLayout).setVisibility(View.GONE);
-        containerView.findViewById(R.id.alRichMessageContainer).setVisibility(View.GONE);
-        containerView.findViewById(R.id.alQuickReplyRecycler).setVisibility(View.GONE);
         setupAlRichMessage(faqLayout, faqReplyLayout, model);
     }
 
     @Override
     protected void setupAlRichMessage(ViewGroup faqLayout, ViewGroup faqReplyLayout, ALRichMessageModel model) {
         super.setupAlRichMessage(faqLayout, faqReplyLayout, model);
-        if (model != null) {
+        if(model != null) {
             TextView headerText = faqLayout.findViewById(R.id.headerText);
             TextView titleText = faqLayout.findViewById(R.id.questionText);
             TextView descriptionText = faqLayout.findViewById(R.id.bodyText);

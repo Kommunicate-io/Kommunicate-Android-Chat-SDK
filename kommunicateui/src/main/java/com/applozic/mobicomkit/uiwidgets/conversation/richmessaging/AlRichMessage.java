@@ -10,10 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.Map;
@@ -42,6 +46,7 @@ public abstract class AlRichMessage {
     public static final String KM_FORM_ACTION = "formAction";
     public static final String SEND_MESSAGE = "sendMessage";
     public static final String OPEN_WEB_VIEW_ACTIVITY = "openWebViewActivity";
+    public static final String IS_DEEP_LINK = "isDeepLink";
 
     protected Context context;
     protected Message message;
@@ -65,6 +70,20 @@ public abstract class AlRichMessage {
             containerView.setVisibility(View.GONE);
             return;
         }
+
+        LinearLayout listItemLayout = containerView.findViewById(R.id.alListMessageLayout);
+        LinearLayout faqReplyLayout = containerView.findViewById(R.id.alFaqReplyLayout);
+        LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
+        RecyclerView genericCardRecycler = containerView.findViewById(R.id.alGenericCardContainer);
+        RecyclerView imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
+        KmFlowLayout flowLayout = containerView.findViewById(R.id.kmFlowLayout);
+
+        listItemLayout.setVisibility(model.getTemplateId() == 7 ? View.VISIBLE : View.GONE);
+        genericCardRecycler.setVisibility(model.getTemplateId() == 10 ? View.VISIBLE : View.GONE);
+        faqLayout.setVisibility(model.getTemplateId() == 8 ? View.VISIBLE : View.GONE);
+        faqReplyLayout.setVisibility(model.getTemplateId() == 8 ? View.VISIBLE : View.GONE);
+        imageListRecycler.setVisibility(model.getTemplateId() == 9 ? View.VISIBLE : View.GONE);
+        flowLayout.setVisibility((model.getTemplateId() == 3 || model.getTemplateId() == 6 || model.getTemplateId() == 11) ? View.VISIBLE : View.GONE);
     }
 
     //display the message details from the message model

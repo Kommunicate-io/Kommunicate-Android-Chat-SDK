@@ -23,6 +23,7 @@ public class AlRichMessageFactory {
     public final static int LIST_RICH_MESSAGE = 7;
     public final static int BUTTON_RICH_MESSAGE = 3;
     public final static int REPLY_RICH_MESSAGE = 6;
+    public final static int TEMPLATE_11 = 11;
 
     //factory class is a singleton
     private AlRichMessageFactory() {}
@@ -49,7 +50,7 @@ public class AlRichMessageFactory {
             return new ListAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
         else if(type == AlRichMessageFactory.FAQ_RICH_MESSAGE)
             return new FaqAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if(type == AlRichMessageFactory.BUTTON_RICH_MESSAGE || type == AlRichMessageFactory.REPLY_RICH_MESSAGE)
+        else if(type == AlRichMessageFactory.BUTTON_RICH_MESSAGE || type == AlRichMessageFactory.REPLY_RICH_MESSAGE || type == AlRichMessageFactory.TEMPLATE_11)
             return new ButtonAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
         else return null;
     }

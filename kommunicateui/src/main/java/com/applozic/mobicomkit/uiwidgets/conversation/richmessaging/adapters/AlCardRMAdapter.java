@@ -45,7 +45,7 @@ public class AlCardRMAdapter extends ALRichMessageAdapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
+        bindItems(holder, position);
     }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {

@@ -43,19 +43,12 @@ public class ButtonAlRichMessage extends AlRichMessage {
             View view = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, null);
             TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
-            if (model.getTemplateId() == 3 || model.getTemplateId() == 11) {
-                if (!TextUtils.isEmpty(payloadModel.getName())) {
-                    itemTextView.setText(payloadModel.getName().trim());
-                } else {
-                    itemTextView.setText("");
-                }
-            } else {
-                if (payloadModel.getTitle() != null) {
-                    itemTextView.setText(payloadModel.getTitle().trim());
-                } else {
-                    itemTextView.setText("");
-                }
-            }
+            //for 3 and 11 use name, for 6 use title
+            String buttonTitle = (model.getTemplateId() == 3 || model.getTemplateId() == 11) ?
+                    (!TextUtils.isEmpty(payloadModel.getName()) ? payloadModel.getName().trim() : "") :
+                    (payloadModel.getTitle() != null) ? payloadModel.getTitle().trim() : "";
+
+            itemTextView.setText(buttonTitle);
 
             itemTextView.setOnClickListener(new View.OnClickListener() {
                 @Override

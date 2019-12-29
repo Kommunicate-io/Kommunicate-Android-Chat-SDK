@@ -36,6 +36,16 @@ public class ListAlRichMessage extends AlRichMessage {
         setupAlRichMessage(listItemLayout, model);
     }
 
+    void setActionTextView(TextView actionTextView, View actionDivider, int index, ALRichMessageModel.ALPayloadModel payload, final List<ALRichMessageModel.AlButtonModel> action, ALRichMessageModel model) {
+        actionTextView.setVisibility(View.VISIBLE);
+        actionTextView.setText(action.get(index).getName());
+        setActionListener(actionTextView, model, action.get(index), payload);
+
+        if(actionDivider != null) {
+            actionDivider.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     protected void setupAlRichMessage(ViewGroup listItemLayout, ALRichMessageModel model) {
         super.setupAlRichMessage(listItemLayout, model);
@@ -70,27 +80,19 @@ public class ListAlRichMessage extends AlRichMessage {
 
                         if (action.get(0) != null) {
                             final TextView actionText1 = listItemLayout.findViewById(R.id.actionButton1);
-                            actionText1.setVisibility(View.VISIBLE);
-                            actionText1.setText(action.get(0).getName());
-                            setActionListener(actionText1, model, action.get(0), payload);
+                            setActionTextView(actionText1, null, 0, payload, action, model);
                         }
 
                         if (action.size() > 1 && action.get(1) != null) {
                             final TextView actionText2 = listItemLayout.findViewById(R.id.actionButton2);
                             View actionDivider2 = listItemLayout.findViewById(R.id.actionDivider2);
-                            actionDivider2.setVisibility(View.VISIBLE);
-                            actionText2.setVisibility(View.VISIBLE);
-                            actionText2.setText(action.get(1).getName());
-                            setActionListener(actionText2, model, action.get(1), payload);
+                            setActionTextView(actionText2, actionDivider2, 1, payload, action, model);
                         }
 
                         if (action.size() > 2 && action.get(2) != null) {
                             final TextView actionText3 = listItemLayout.findViewById(R.id.actionButton3);
                             View actionDivider3 = listItemLayout.findViewById(R.id.actionDivider3);
-                            actionDivider3.setVisibility(View.VISIBLE);
-                            actionText3.setVisibility(View.VISIBLE);
-                            actionText3.setText(action.get(2).getName());
-                            setActionListener(actionText3, model, action.get(2), payload);
+                            setActionTextView(actionText3, actionDivider3, 2, payload, action, model);
                         }
                     }
                 }

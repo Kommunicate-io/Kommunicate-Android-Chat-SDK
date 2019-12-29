@@ -30,6 +30,15 @@ public class FaqAlRichMessage extends AlRichMessage {
         setupAlRichMessage(faqLayout, faqReplyLayout, model);
     }
 
+    //setup he actionYes and actionNo text views
+    void setActionTextView(TextView actionTextView, int index, List<ALRichMessageModel.AlButtonModel> actionModel, ALRichMessageModel.ALPayloadModel payload) {
+        if (!TextUtils.isEmpty(actionModel.get(index).getName())) {
+            actionTextView.setVisibility(View.VISIBLE);
+            actionTextView.setText(actionModel.get(index).getName());
+            setActionListener(actionTextView, model, actionModel.get(index), payload);
+        }
+    }
+
     @Override
     protected void setupAlRichMessage(ViewGroup faqLayout, ViewGroup faqReplyLayout, ALRichMessageModel model) {
         super.setupAlRichMessage(faqLayout, faqReplyLayout, model);
@@ -47,15 +56,11 @@ public class FaqAlRichMessage extends AlRichMessage {
                     if (!TextUtils.isEmpty(payload.getTitle())) {
                         titleText.setVisibility(View.VISIBLE);
                         titleText.setText(getHtmlText(payload.getTitle()));
-                    } else {
-                        titleText.setVisibility(View.GONE);
                     }
 
                     if (!TextUtils.isEmpty(payload.getDescription())) {
                         descriptionText.setVisibility(View.VISIBLE);
                         descriptionText.setText(getHtmlText(payload.getDescription()));
-                    } else {
-                        descriptionText.setVisibility(View.GONE);
                     }
 
                     List<ALRichMessageModel.AlButtonModel> actionModel = payload.getButtons();
@@ -65,28 +70,14 @@ public class FaqAlRichMessage extends AlRichMessage {
                         if (!TextUtils.isEmpty(payload.getButtonLabel())) {
                             buttonLabel.setVisibility(View.VISIBLE);
                             buttonLabel.setText(payload.getButtonLabel());
-                        } else {
-                            buttonLabel.setVisibility(View.GONE);
                         }
 
                         if (actionModel.size() > 0 && actionModel.get(0) != null) {
-                            if (!TextUtils.isEmpty(actionModel.get(0).getName())) {
-                                actionYes.setVisibility(View.VISIBLE);
-                                actionYes.setText(actionModel.get(0).getName());
-                                setActionListener(actionYes, model, actionModel.get(0), payload);
-                            } else {
-                                actionYes.setVisibility(View.GONE);
-                            }
+                            setActionTextView(actionYes, 0, actionModel, payload);
                         }
 
                         if (actionModel.size() > 1 && actionModel.get(1) != null) {
-                            if (!TextUtils.isEmpty(actionModel.get(1).getName())) {
-                                actionNo.setVisibility(View.VISIBLE);
-                                actionNo.setText(actionModel.get(1).getName());
-                                setActionListener(actionNo, model, actionModel.get(1), payload);
-                            } else {
-                                actionNo.setVisibility(View.GONE);
-                            }
+                            setActionTextView(actionNo, 1, actionModel, payload);
                         }
                     } else {
                         faqReplyLayout.setVisibility(View.GONE);

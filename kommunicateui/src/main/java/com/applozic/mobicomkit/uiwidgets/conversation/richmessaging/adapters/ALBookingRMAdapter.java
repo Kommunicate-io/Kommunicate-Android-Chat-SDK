@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +47,10 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
     private List<ALGuestCountModel> guestList;
     private List<String> titleList;
     private List<ALRichMessageModel.ALPayloadModel> payloadList;
+    public final int MAX_GUEST_COUNT = 5;
+    public final int MIN_GUEST_COUNT = 0;
+    public final int MAX_CHILD_GUEST_COUNT = 2;
+    public final int MAX_RATING_VALUE = 5;
 
     ALBookingRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
         super(context, model, listener, message);
@@ -155,13 +158,7 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
             contactNumberEt = itemView.findViewById(R.id.contactNumberEt);
             submitAction = itemView.findViewById(R.id.submitDetails);
 
-            titleList = new ArrayList<>();
-            titleList.add("Title *");
-            titleList.add("Mr.");
-            titleList.add("Ms.");
-            titleList.add("Mrs");
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, titleList);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, Arrays.asList(context.getString(R.string.list_item_title), context.getString(R.string.list_item_mr), context.getString(R.string.list_item_ms), context.getString(R.string.list_item_mrs)));
             titleSpinner.setAdapter(adapter);
         }
     }
@@ -211,7 +208,7 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
             public void onClick(View v) {
                 int count = Integer.parseInt(holder.adultCountTv.getText().toString());
                 ALGuestCountModel guestModel = guestList.get(position);
-                if (count < 5) {
+                if (count < MAX_GUEST_COUNT) {
                     holder.adultCountTv.setText(String.valueOf(count + 1));
                     guestModel.setNoOfAdults(String.valueOf(count + 1));
                 }
@@ -223,7 +220,7 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
             public void onClick(View v) {
                 int count = Integer.parseInt(holder.childCountTv.getText().toString());
                 ALGuestCountModel guestModel = guestList.get(position);
-                if (count > 0) {
+                if (count > MIN_GUEST_COUNT) {
                     holder.childCountTv.setText(String.valueOf(count - 1));
                     guestModel.getChildAge().remove(guestModel.getChildAge().size() - 1);
                     guestModel.setNoOfChild(String.valueOf(count - 1));
@@ -236,7 +233,7 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
             public void onClick(View v) {
                 int count = Integer.parseInt(holder.childCountTv.getText().toString());
                 ALGuestCountModel guestModel = guestList.get(position);
-                if (count < 2) {
+                if (count < MAX_CHILD_GUEST_COUNT) {
                     holder.childCountTv.setText(String.valueOf(count + 1));
                     guestModel.getChildAge().add(10);
                     guestModel.setNoOfChild(String.valueOf(count + 1));
@@ -273,7 +270,7 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
         final ALGuestCountModel guestModel = guestList.get(position);
 
         if (guestModel != null) {
-            holder.roomDetailTv.setText("ROOM " + String.valueOf(position + 1));
+            holder.roomDetailTv.setText(context.getString(R.string.room, position + 1));
             holder.adultCountTv.setText(guestModel.getNoOfAdults());
             holder.childCountTv.setText(guestModel.getNoOfChild());
 
@@ -300,18 +297,25 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
         }
     }
 
+    private void setupBookActions(TextView bookAction, View viewAction, int index, ALRichMessageModel.ALPayloadModel payload, List<ALRichMessageModel.AlButtonModel> actionsList) {
+        bookAction.setVisibility(View.VISIBLE);
+        viewAction.setVisibility(View.VISIBLE);
+        bookAction.setText(actionsList.get(index).getName());
+        bookAction.setOnClickListener(getActionClickListener(actionsList.get(index), payload.getReplyMetadata()));
+    }
+
     //for templateId = 2
     private void bindHotelView(AlCardRMAdapter.CardViewHolder viewHolder, int position) {
         if (hotelList != null) {
             final AlHotelBookingModel hotel = hotelList.get(position);
 
             if (!TextUtils.isEmpty(hotel.getHotelName())) {
-                viewHolder.productNameSingleLine.setText(AlRichMessage.getHtmlText(hotel.getHotelName() + " (" + hotel.getStarRating() + "/5)"));
+                viewHolder.productNameSingleLine.setText(AlRichMessage.getHtmlText(context.getString(R.string.hotel_rating, hotel.getHotelName(), String.valueOf(hotel.getStarRating()), MAX_RATING_VALUE)));
             } else {
-                viewHolder.productNameSingleLine.setText(AlRichMessage.getHtmlText("Name Unavailable (" + hotel.getStarRating() + "/5)"));
+                viewHolder.productNameSingleLine.setText(AlRichMessage.getHtmlText(context.getString(R.string.name_unavailable, String.valueOf(hotel.getStarRating()), MAX_RATING_VALUE)));
             }
 
-            viewHolder.productPrice.setText(context.getString(R.string.rupee_symbol) + " " + hotel.getPrice().getRoomPrice());
+            viewHolder.productPrice.setText(context.getString(R.string.rupee_symbol, String.valueOf(hotel.getPrice().getRoomPrice())));
 
             if (!TextUtils.isEmpty(hotel.getHotelPicture())) {
                 Glide.with(context).load(hotel.getHotelPicture()).into(viewHolder.productImage);
@@ -322,21 +326,26 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
             if (!TextUtils.isEmpty(hotel.getHotelAddress())) {
                 viewHolder.productLocation.setText(AlRichMessage.getHtmlText(hotel.getHotelAddress()));
             } else {
-                viewHolder.productLocation.setText("Address unavailable");
+                viewHolder.productLocation.setText(context.getString(R.string.address_unavailable));
             }
 
             if (!TextUtils.isEmpty(hotel.getHotelDescription())) {
                 viewHolder.productDescription.setText(AlRichMessage.getHtmlText(hotel.getHotelDescription()));
             } else {
-                viewHolder.productDescription.setText("Description unavailable");
+                viewHolder.productDescription.setText(context.getString(R.string.description_unavailable));
             }
 
-            viewHolder.bookAction2.setVisibility(View.GONE);
-            viewHolder.bookAction3.setVisibility(View.GONE);
-            viewHolder.viewAction2.setVisibility(View.GONE);
-            viewHolder.viewAction3.setVisibility(View.GONE);
+            for (TextView textView : viewHolder.bookActions)
+                textView.setVisibility(View.GONE);
+            for (View view : viewHolder.viewActions)
+                view.setVisibility(View.GONE);
 
-            viewHolder.bookAction1.setOnClickListener(new View.OnClickListener() {
+            for (int i = 0; i < 2; i++) {
+                viewHolder.bookActions[i].setVisibility(GONE);
+                viewHolder.viewActions[i].setVisibility(GONE);
+            }
+
+            viewHolder.bookActions[0].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     hotel.setSessionId(model.getSessionId());
@@ -399,37 +408,16 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
                 viewHolder.productDescription.setVisibility(View.GONE);
             }
 
-            viewHolder.bookAction1.setVisibility(View.GONE);
-            viewHolder.bookAction2.setVisibility(View.GONE);
-            viewHolder.bookAction3.setVisibility(View.GONE);
-            viewHolder.viewAction1.setVisibility(View.GONE);
-            viewHolder.viewAction2.setVisibility(View.GONE);
-            viewHolder.viewAction3.setVisibility(View.GONE);
+            for (int i = 0; i < 3; i++) {
+                viewHolder.bookActions[i].setVisibility(GONE);
+                viewHolder.viewActions[i].setVisibility(GONE);
+            }
 
             if (payload.getActions() != null && !payload.getActions().isEmpty()) {
                 try {
                     List<ALRichMessageModel.AlButtonModel> actionsList = payload.getActions();
                     for (int i = 0; i < actionsList.size(); i++) {
-                        if (i == 0) {
-                            viewHolder.bookAction1.setVisibility(View.VISIBLE);
-                            viewHolder.viewAction1.setVisibility(View.VISIBLE);
-                            viewHolder.bookAction1.setText(actionsList.get(0).getName());
-                            viewHolder.bookAction1.setOnClickListener(getActionClickListener(actionsList.get(0), payload.getReplyMetadata()));
-                        }
-
-                        if (i == 1) {
-                            viewHolder.bookAction2.setVisibility(View.VISIBLE);
-                            viewHolder.viewAction2.setVisibility(View.VISIBLE);
-                            viewHolder.bookAction2.setText(actionsList.get(1).getName());
-                            viewHolder.bookAction2.setOnClickListener(getActionClickListener(actionsList.get(1), payload.getReplyMetadata()));
-                        }
-
-                        if (i == 2) {
-                            viewHolder.bookAction3.setVisibility(View.VISIBLE);
-                            viewHolder.viewAction3.setVisibility(View.VISIBLE);
-                            viewHolder.bookAction3.setText(actionsList.get(2).getName());
-                            viewHolder.bookAction3.setOnClickListener(getActionClickListener(actionsList.get(2), payload.getReplyMetadata()));
-                        }
+                        setupBookActions(viewHolder.bookActions[i], viewHolder.viewActions[i], i, payload, actionsList);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -445,7 +433,7 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
             if (!TextUtils.isEmpty(hotel.getRoomTypeName())) {
                 holder.roomTypeTv.setText(AlRichMessage.getHtmlText(hotel.getRoomTypeName()));
             } else {
-                holder.roomTypeTv.setText("Room name unavailable");
+                holder.roomTypeTv.setText(context.getString(R.string.room_name_unavailable));
             }
 
             if (!TextUtils.isEmpty(hotel.getHotelPicture())) {
@@ -456,12 +444,12 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
 
             holder.noOfGuestTv.setText(String.valueOf(hotel.getNoOfGuest()));
 
-            String text = "(1 Room for " + String.valueOf(hotel.getNoOfNights()) + " Nights)";
+            String text = context.getString(R.string.room_night_detail, hotel.getNoOfNights());
             holder.totalPriceHeaderTv.setText(text);
 
-            holder.priceTv.setText(context.getString(R.string.rupee_symbol) + " " + String.valueOf(hotel.getPrice().getRoomPrice()));
+            holder.priceTv.setText(context.getString(R.string.rupee_symbol, String.valueOf(hotel.getPrice().getRoomPrice())));
 
-            holder.totalPriceTv.setText(context.getString(R.string.rupee_symbol) + " " + String.valueOf(hotel.getPrice().getRoomPrice() * hotel.getNoOfNights()));
+            holder.totalPriceTv.setText(context.getString(R.string.rupee_symbol, String.valueOf(hotel.getPrice().getRoomPrice() * hotel.getNoOfNights())));
 
             holder.bookAction.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -487,7 +475,7 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                bookingDetails.setTitle("Title *");
+                bookingDetails.setTitle(context.getString(R.string.list_item_title));
             }
         });
 

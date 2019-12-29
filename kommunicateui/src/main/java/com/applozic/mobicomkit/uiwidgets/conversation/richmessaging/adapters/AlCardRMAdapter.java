@@ -59,8 +59,8 @@ public class AlCardRMAdapter extends ALRichMessageAdapter {
         RelativeLayout productNameSplitLayout;
         TextView productName;
         View productImageOverlay;
-        TextView bookAction1, bookAction2, bookAction3;
-        View viewAction1, viewAction2, viewAction3;
+        TextView[] bookActions = new TextView[3];
+        View[] viewActions = new View[3];
 
         public CardViewHolder(View itemView) {
             super(itemView);
@@ -76,13 +76,20 @@ public class AlCardRMAdapter extends ALRichMessageAdapter {
             productImageOverlay = itemView.findViewById(R.id.productImageOverlay);
             productNameSplitLayout = itemView.findViewById(R.id.productNameSplitLayout);
             productRating = itemView.findViewById(R.id.productRating);
-            bookAction1 = itemView.findViewById(R.id.bookingAction1);
-            bookAction2 = itemView.findViewById(R.id.bookingAction2);
-            bookAction3 = itemView.findViewById(R.id.bookingAction3);
-            viewAction1 = itemView.findViewById(R.id.viewAction1);
-            viewAction2 = itemView.findViewById(R.id.viewAction2);
-            viewAction3 = itemView.findViewById(R.id.viewAction3);
+            bookActions[0] = itemView.findViewById(R.id.bookingAction1);
+            bookActions[1] = itemView.findViewById(R.id.bookingAction2);
+            bookActions[2] = itemView.findViewById(R.id.bookingAction3);
+            viewActions[0] = itemView.findViewById(R.id.viewAction1);
+            viewActions[1] = itemView.findViewById(R.id.viewAction2);
+            viewActions[2] = itemView.findViewById(R.id.viewAction3);
         }
+    }
+
+    private void setupBookActions(CardViewHolder viewHolder, int index, List<ALRichMessageModel.AlButtonModel> actionsList) {
+        viewHolder.bookActions[index].setVisibility(View.VISIBLE);
+        viewHolder.viewActions[index].setVisibility(View.VISIBLE);
+        viewHolder.bookActions[index].setText(actionsList.get(index).getName());
+        viewHolder.bookActions[index].setOnClickListener(getGenericCardClickListener(actionsList.get(index)));
     }
 
     @Override
@@ -145,37 +152,16 @@ public class AlCardRMAdapter extends ALRichMessageAdapter {
                 viewHolder.productDescription.setVisibility(View.GONE);
             }
 
-            viewHolder.bookAction1.setVisibility(View.GONE);
-            viewHolder.bookAction2.setVisibility(View.GONE);
-            viewHolder.bookAction3.setVisibility(View.GONE);
-            viewHolder.viewAction1.setVisibility(View.GONE);
-            viewHolder.viewAction2.setVisibility(View.GONE);
-            viewHolder.viewAction3.setVisibility(View.GONE);
+            for (int i = 0; i < 3; i++) {
+                viewHolder.bookActions[i].setVisibility(GONE);
+                viewHolder.viewActions[i].setVisibility(GONE);
+            }
 
             if (payloadModel.getButtons() != null && !payloadModel.getButtons().isEmpty()) {
                 try {
                     List<ALRichMessageModel.AlButtonModel> actionsList = payloadModel.getButtons();
                     for (int i = 0; i < actionsList.size(); i++) {
-                        if (i == 0) {
-                            viewHolder.bookAction1.setVisibility(View.VISIBLE);
-                            viewHolder.viewAction1.setVisibility(View.VISIBLE);
-                            viewHolder.bookAction1.setText(actionsList.get(0).getName());
-                            viewHolder.bookAction1.setOnClickListener(getGenericCardClickListener(actionsList.get(0)));
-                        }
-
-                        if (i == 1) {
-                            viewHolder.bookAction2.setVisibility(View.VISIBLE);
-                            viewHolder.viewAction2.setVisibility(View.VISIBLE);
-                            viewHolder.bookAction2.setText(actionsList.get(1).getName());
-                            viewHolder.bookAction2.setOnClickListener(getGenericCardClickListener(actionsList.get(1)));
-                        }
-
-                        if (i == 2) {
-                            viewHolder.bookAction3.setVisibility(View.VISIBLE);
-                            viewHolder.viewAction3.setVisibility(View.VISIBLE);
-                            viewHolder.bookAction3.setText(actionsList.get(2).getName());
-                            viewHolder.bookAction3.setOnClickListener(getGenericCardClickListener(actionsList.get(2)));
-                        }
+                        setupBookActions(viewHolder, i, actionsList);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

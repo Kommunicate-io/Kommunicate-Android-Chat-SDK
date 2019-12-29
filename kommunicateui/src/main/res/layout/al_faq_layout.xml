@@ -38,7 +38,8 @@
         android:text=""
         android:textColor="#646262"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/bodyText"
@@ -55,5 +56,6 @@
         android:text=""
         android:textColor="#646262"
         android:textSize="14sp"
-        android:textStyle="normal" />
+        android:textStyle="normal"
+        android:visibility="gone"/>
 </LinearLayout>

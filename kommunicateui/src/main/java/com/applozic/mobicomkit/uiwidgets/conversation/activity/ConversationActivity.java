@@ -1238,7 +1238,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
 
-            capturedImageUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", mediaFile);
+            capturedImageUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", mediaFile);
 
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -1309,7 +1309,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "video/mp4");
 
-            videoFileUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", mediaFile);
+            videoFileUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", mediaFile);
 
             videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoFileUri);
 
@@ -1357,7 +1357,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
         profilePhotoFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
-        imageUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", profilePhotoFile);
+        imageUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", profilePhotoFile);
         return imageUri;
     }
 

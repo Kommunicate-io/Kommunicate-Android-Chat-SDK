@@ -4,19 +4,8 @@
     package="com.applozic.mobicomkit.uiwidgets">
 
     <application
-        android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-        <provider
-            android:name="com.applozic.mobicomkit.uiwidgets.ALFileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true"
-            tools:node="merge">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/applozic_provider_paths" />
-        </provider>
 
         <activity
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"

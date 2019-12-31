@@ -3913,7 +3913,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 if (message.getFilePaths() != null) {
                     Uri shareUri = null;
                     if (Utils.hasNougat()) {
-                        shareUri = FileProvider.getUriForFile(ApplozicService.getContext(getContext()), Utils.getMetaDataValue(getActivity(), MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+                        shareUri = FileProvider.getUriForFile(ApplozicService.getContext(getContext()), Utils.getMetaDataValue(getActivity(), MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", new File(message.getFilePaths().get(0)));
                     } else {
                         shareUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                     }

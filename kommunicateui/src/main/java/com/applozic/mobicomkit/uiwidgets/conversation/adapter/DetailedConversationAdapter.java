@@ -1119,7 +1119,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         Uri outputUri = null;
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         if (Utils.hasNougat()) {
-                            outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+                            outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", new File(message.getFilePaths().get(0)));
                         } else {
                             outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                         }
@@ -1138,7 +1138,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 Uri outputUri = null;
                                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                                 if (Utils.hasNougat()) {
-                                    outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+                                    outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", new File(message.getFilePaths().get(0)));
                                 } else {
                                     outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                                 }
@@ -1251,7 +1251,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         intent.setAction(Intent.ACTION_VIEW);
                         Uri outputUri;
                         if (Utils.hasNougat()) {
-                            outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+                            outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", new File(message.getFilePaths().get(0)));
                         } else {
                             outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                         }
@@ -1301,7 +1301,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         intentVideo.setAction(Intent.ACTION_VIEW);
                         Uri outputUri;
                         if (Utils.hasNougat()) {
-                            outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(smListItem.getFilePaths().get(0)));
+                            outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", new File(smListItem.getFilePaths().get(0)));
                         } else {
                             outputUri = Uri.fromFile(new File(smListItem.getFilePaths().get(0)));
                         }

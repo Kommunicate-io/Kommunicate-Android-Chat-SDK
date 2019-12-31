@@ -381,7 +381,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
         profilePhotoFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
-        imageChangeUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", profilePhotoFile);
+        imageChangeUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", profilePhotoFile);
         return imageChangeUri;
     }
 

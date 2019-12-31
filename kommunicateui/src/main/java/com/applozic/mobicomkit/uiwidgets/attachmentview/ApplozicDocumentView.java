@@ -350,7 +350,7 @@ public class ApplozicDocumentView {
     public void playAudio() {
         final String mimeType = FileUtils.getMimeType(message.getFileMetas().getName());
         if (Utils.hasNougat()) {
-            uri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+            uri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".applozic.provider", new File(message.getFilePaths().get(0)));
         } else {
             uri = Uri.fromFile(new File(message.getFilePaths().get(0)));
             Log.i(TAG, uri.toString());

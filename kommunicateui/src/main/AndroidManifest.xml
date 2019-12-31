@@ -4,8 +4,7 @@
     package="com.applozic.mobicomkit.uiwidgets">
 
     <application
-        android:label="@string/app_name"
-        android:supportsRtl="true">
+        android:label="@string/app_name">
 
         <activity
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"

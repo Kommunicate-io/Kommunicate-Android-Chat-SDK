@@ -28,8 +28,7 @@ public class ButtonAlRichMessage extends AlRichMessage {
     @Override
     public void createRichMessage() {
         super.createRichMessage();
-        KmFlowLayout flowLayout = containerView.findViewById(R.id.kmFlowLayout);
-        setupAlRichMessage(flowLayout, model);
+        setupAlRichMessage((KmFlowLayout) containerView.findViewById(R.id.kmFlowLayout), model);
     }
 
     @Override

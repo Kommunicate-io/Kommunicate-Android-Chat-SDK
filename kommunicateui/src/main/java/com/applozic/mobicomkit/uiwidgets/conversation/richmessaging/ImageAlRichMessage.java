@@ -25,8 +25,7 @@ public class ImageAlRichMessage extends AlRichMessage {
     @Override
     public void createRichMessage() {
         super.createRichMessage();
-        RecyclerView imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
-        setupAlRichMessage(imageListRecycler, model);
+        setupAlRichMessage((RecyclerView) containerView.findViewById(R.id.alImageListContainer), model);
     }
 
     @Override

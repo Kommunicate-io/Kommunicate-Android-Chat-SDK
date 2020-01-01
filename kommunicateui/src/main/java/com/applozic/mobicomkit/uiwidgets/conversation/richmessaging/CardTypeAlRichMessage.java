@@ -25,8 +25,7 @@ public class CardTypeAlRichMessage extends AlRichMessage {
     @Override
     public void createRichMessage() {
         super.createRichMessage();
-        RecyclerView genericCardRecyclerView = containerView.findViewById(R.id.alGenericCardContainer);
-        setupAlRichMessage(genericCardRecyclerView, model);
+        setupAlRichMessage((RecyclerView) containerView.findViewById(R.id.alGenericCardContainer), model);
     }
 
     @Override

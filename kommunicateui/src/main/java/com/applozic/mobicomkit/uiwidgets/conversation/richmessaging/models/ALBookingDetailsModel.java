@@ -43,7 +43,7 @@ public class ALBookingDetailsModel extends JsonMarker {
         }
 
         public void setTitle(String title) {
-            Title = title;
+            Title = title.trim();
         }
 
         public String getAge() {
@@ -51,7 +51,7 @@ public class ALBookingDetailsModel extends JsonMarker {
         }
 
         public void setAge(String age) {
-            Age = age;
+            Age = age.trim();
         }
 
         public String getFirstName() {
@@ -59,7 +59,7 @@ public class ALBookingDetailsModel extends JsonMarker {
         }
 
         public void setFirstName(String firstName) {
-            FirstName = firstName;
+            FirstName = firstName.trim();
         }
 
         public String getMiddleName() {
@@ -67,7 +67,7 @@ public class ALBookingDetailsModel extends JsonMarker {
         }
 
         public void setMiddleName(String middleName) {
-            MiddleName = middleName;
+            MiddleName = middleName.trim();
         }
 
         public String getLastName() {
@@ -75,7 +75,7 @@ public class ALBookingDetailsModel extends JsonMarker {
         }
 
         public void setLastName(String lastName) {
-            LastName = lastName;
+            LastName = lastName.trim();
         }
 
         public String getEmailId() {
@@ -83,7 +83,7 @@ public class ALBookingDetailsModel extends JsonMarker {
         }
 
         public void setEmailId(String emailId) {
-            EmailId = emailId;
+            EmailId = emailId.trim();
         }
 
         public String getPhoneNo() {
@@ -91,7 +91,7 @@ public class ALBookingDetailsModel extends JsonMarker {
         }
 
         public void setPhoneNo(String phoneNo) {
-            PhoneNo = phoneNo;
+            PhoneNo = phoneNo.trim();
         }
     }
 }

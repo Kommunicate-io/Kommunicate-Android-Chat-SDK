@@ -27,7 +27,8 @@ public class AlRichMessageAdapterFactory {
     public final static int REPLY_RICH_MESSAGE = 6;
 
     //factory class is a singleton
-    private AlRichMessageAdapterFactory() {}
+    private AlRichMessageAdapterFactory() {
+    }
 
     //singleton helper (Bill Pugh Method)
     private static class RMFactoryHelper {
@@ -39,9 +40,9 @@ public class AlRichMessageAdapterFactory {
     }
 
     public ALRichMessageAdapter getRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
-        if(model.getTemplateId() == AlRichMessageAdapterFactory.CARD_RICH_MESSAGE)
+        if (model.getTemplateId() == AlRichMessageAdapterFactory.CARD_RICH_MESSAGE)
             return new AlCardRMAdapter(context, model, listener, message);
-        else if(model.getTemplateId() == AlRichMessageAdapterFactory.BUTTON_RICH_MESSAGE || model.getTemplateId() == AlRichMessageAdapterFactory.REPLY_RICH_MESSAGE)
+        else if (model.getTemplateId() == AlRichMessageAdapterFactory.BUTTON_RICH_MESSAGE || model.getTemplateId() == AlRichMessageAdapterFactory.REPLY_RICH_MESSAGE)
             return new AlButtonRMAdapter(context, model, listener, message);
         else return null;
     }

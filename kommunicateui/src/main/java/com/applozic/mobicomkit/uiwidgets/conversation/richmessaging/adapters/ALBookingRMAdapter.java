@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static android.view.View.GONE;
+import static com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ListAlRichMessage.MAX_ACTIONS_LIMIT;
 
 /**
  * Created by ashish on 28/02/18.
@@ -408,7 +409,7 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
                 viewHolder.productDescription.setVisibility(View.GONE);
             }
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < MAX_ACTIONS_LIMIT; i++) {
                 viewHolder.bookActions[i].setVisibility(GONE);
                 viewHolder.viewActions[i].setVisibility(GONE);
             }
@@ -491,10 +492,10 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
                     Toast.makeText(context, R.string.mandatory_fields, Toast.LENGTH_SHORT).show();
                 } else {
                     bookingDetails.setTitle(titleList.get(holder.titleSpinner.getSelectedItemPosition()));
-                    bookingDetails.setFirstName(holder.firstNameEt.getText().toString().trim());
-                    bookingDetails.setLastName(holder.lastNameEt.getText().toString().trim());
-                    bookingDetails.setEmailId(holder.emailIdEt.getText().toString().trim());
-                    bookingDetails.setPhoneNo(holder.contactNumberEt.getText().toString().trim());
+                    bookingDetails.setFirstName(holder.firstNameEt.getText().toString());
+                    bookingDetails.setLastName(holder.lastNameEt.getText().toString());
+                    bookingDetails.setEmailId(holder.emailIdEt.getText().toString());
+                    bookingDetails.setPhoneNo(holder.contactNumberEt.getText().toString());
 
                     listener.onAction(context, AlRichMessage.SEND_BOOKING_DETAILS, null, detailsModel, null);
                 }

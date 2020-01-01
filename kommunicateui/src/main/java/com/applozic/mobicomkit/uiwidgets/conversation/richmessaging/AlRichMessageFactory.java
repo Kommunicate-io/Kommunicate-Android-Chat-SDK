@@ -26,7 +26,8 @@ public class AlRichMessageFactory {
     public final static int MIXED_BUTTON_RICH_MESSAGE = 11;
 
     //factory class is a singleton
-    private AlRichMessageFactory() {}
+    private AlRichMessageFactory() {
+    }
 
     //singleton helper (Bill Pugh Method)
     private static class RMFactoryHelper {
@@ -39,18 +40,18 @@ public class AlRichMessageFactory {
 
     public AlRichMessage getRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         int type = -1;
-        if(message.getMetadata().containsKey("templateId"))
-        type = Integer.parseInt(message.getMetadata().get("templateId"));
+        if (message.getMetadata().containsKey("templateId"))
+            type = Integer.parseInt(message.getMetadata().get("templateId"));
 
-        if(type == AlRichMessageFactory.CARD_RICH_MESSAGE)
+        if (type == AlRichMessageFactory.CARD_RICH_MESSAGE)
             return new CardTypeAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if(type == AlRichMessageFactory.IMAGE_RICH_MESSAGE)
+        else if (type == AlRichMessageFactory.IMAGE_RICH_MESSAGE)
             return new ImageAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if(type == AlRichMessageFactory.LIST_RICH_MESSAGE)
+        else if (type == AlRichMessageFactory.LIST_RICH_MESSAGE)
             return new ListAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if(type == AlRichMessageFactory.FAQ_RICH_MESSAGE)
+        else if (type == AlRichMessageFactory.FAQ_RICH_MESSAGE)
             return new FaqAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if(type == AlRichMessageFactory.BUTTON_RICH_MESSAGE || type == AlRichMessageFactory.REPLY_RICH_MESSAGE || type == AlRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE)
+        else if (type == AlRichMessageFactory.BUTTON_RICH_MESSAGE || type == AlRichMessageFactory.REPLY_RICH_MESSAGE || type == AlRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE)
             return new ButtonAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
         else return null;
     }

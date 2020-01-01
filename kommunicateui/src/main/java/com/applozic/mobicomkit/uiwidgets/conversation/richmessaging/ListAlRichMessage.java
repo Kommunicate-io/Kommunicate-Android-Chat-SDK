@@ -25,6 +25,8 @@ import java.util.List;
 
 public class ListAlRichMessage extends AlRichMessage {
 
+    public static final int MAX_ACTIONS_LIMIT = 3;
+
     public ListAlRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         super(context, containerView, message, listener, alCustomizationSettings);
     }
@@ -32,16 +34,15 @@ public class ListAlRichMessage extends AlRichMessage {
     @Override
     public void createRichMessage() {
         super.createRichMessage();
-        LinearLayout listItemLayout = containerView.findViewById(R.id.alListMessageLayout);
-        setupAlRichMessage(listItemLayout, model);
+        setupAlRichMessage((LinearLayout) containerView.findViewById(R.id.alListMessageLayout), model);
     }
 
-    void setActionTextView(TextView actionTextView, View actionDivider, int index, ALRichMessageModel.ALPayloadModel payload, final List<ALRichMessageModel.AlButtonModel> action, ALRichMessageModel model) {
+    private void setActionTextView(TextView actionTextView, View actionDivider, ALRichMessageModel.AlButtonModel buttonModel, ALRichMessageModel.ALPayloadModel payload, ALRichMessageModel model) {
         actionTextView.setVisibility(View.VISIBLE);
-        actionTextView.setText(action.get(index).getName());
-        setActionListener(actionTextView, model, action.get(index), payload);
+        actionTextView.setText(buttonModel.getName());
+        setActionListener(actionTextView, model, buttonModel, payload);
 
-        if(actionDivider != null) {
+        if (actionDivider != null) {
             actionDivider.setVisibility(View.VISIBLE);
         }
     }
@@ -79,20 +80,15 @@ public class ListAlRichMessage extends AlRichMessage {
                         final List<ALRichMessageModel.AlButtonModel> action = payload.getButtons();
 
                         if (action.get(0) != null) {
-                            final TextView actionText1 = listItemLayout.findViewById(R.id.actionButton1);
-                            setActionTextView(actionText1, null, 0, payload, action, model);
+                            setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton1), null, action.get(0), payload, model);
                         }
 
                         if (action.size() > 1 && action.get(1) != null) {
-                            final TextView actionText2 = listItemLayout.findViewById(R.id.actionButton2);
-                            View actionDivider2 = listItemLayout.findViewById(R.id.actionDivider2);
-                            setActionTextView(actionText2, actionDivider2, 1, payload, action, model);
+                            setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton2), listItemLayout.findViewById(R.id.actionDivider2), action.get(1), payload, model);
                         }
 
                         if (action.size() > 2 && action.get(2) != null) {
-                            final TextView actionText3 = listItemLayout.findViewById(R.id.actionButton3);
-                            View actionDivider3 = listItemLayout.findViewById(R.id.actionDivider3);
-                            setActionTextView(actionText3, actionDivider3, 2, payload, action, model);
+                            setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton3), listItemLayout.findViewById(R.id.actionDivider3), action.get(2), payload, model);
                         }
                     }
                 }

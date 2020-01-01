@@ -25,24 +25,22 @@ public class FaqAlRichMessage extends AlRichMessage {
     @Override
     public void createRichMessage() {
         super.createRichMessage();
-        LinearLayout faqReplyLayout = containerView.findViewById(R.id.alFaqReplyLayout);
-        LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
-        setupAlRichMessage(faqLayout, faqReplyLayout, model);
+        setupAlRichMessage((LinearLayout) containerView.findViewById(R.id.alFaqLayout), (LinearLayout) containerView.findViewById(R.id.alFaqReplyLayout), model);
     }
 
     //setup he actionYes and actionNo text views
-    void setActionTextView(TextView actionTextView, int index, List<ALRichMessageModel.AlButtonModel> actionModel, ALRichMessageModel.ALPayloadModel payload) {
-        if (!TextUtils.isEmpty(actionModel.get(index).getName())) {
+    void setActionTextView(TextView actionTextView, ALRichMessageModel.AlButtonModel actionModel, ALRichMessageModel.ALPayloadModel payload) {
+        if (!TextUtils.isEmpty(actionModel.getName())) {
             actionTextView.setVisibility(View.VISIBLE);
-            actionTextView.setText(actionModel.get(index).getName());
-            setActionListener(actionTextView, model, actionModel.get(index), payload);
+            actionTextView.setText(actionModel.getName());
+            setActionListener(actionTextView, model, actionModel, payload);
         }
     }
 
     @Override
     protected void setupAlRichMessage(ViewGroup faqLayout, ViewGroup faqReplyLayout, ALRichMessageModel model) {
         super.setupAlRichMessage(faqLayout, faqReplyLayout, model);
-        if(model != null) {
+        if (model != null) {
             TextView headerText = faqLayout.findViewById(R.id.headerText);
             TextView titleText = faqLayout.findViewById(R.id.questionText);
             TextView descriptionText = faqLayout.findViewById(R.id.bodyText);
@@ -73,11 +71,11 @@ public class FaqAlRichMessage extends AlRichMessage {
                         }
 
                         if (actionModel.size() > 0 && actionModel.get(0) != null) {
-                            setActionTextView(actionYes, 0, actionModel, payload);
+                            setActionTextView(actionYes, actionModel.get(0), payload);
                         }
 
                         if (actionModel.size() > 1 && actionModel.get(1) != null) {
-                            setActionTextView(actionNo, 1, actionModel, payload);
+                            setActionTextView(actionNo, actionModel.get(1), payload);
                         }
                     } else {
                         faqReplyLayout.setVisibility(View.GONE);

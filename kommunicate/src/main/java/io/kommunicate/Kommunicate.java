@@ -16,11 +16,13 @@ import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
+import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
+import com.applozic.mobicommons.people.contact.Contact;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -71,7 +73,22 @@ public class Kommunicate {
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler) {
-        login(context, kmUser, handler, null);
+        if (isLoggedIn(context)) {
+            RegistrationResponse registrationResponse = new RegistrationResponse();
+            registrationResponse.setMessage("USER ALREADY LOGGED IN");
+            Contact contact = new ContactDatabase(context).getContactById(MobiComUserPreference.getInstance(context).getUserId());
+            if (contact != null) {
+                registrationResponse.setUserId(contact.getUserId());
+                registrationResponse.setContactNumber(contact.getContactNumber());
+                registrationResponse.setRoleType(contact.getRoleType());
+                registrationResponse.setImageLink(contact.getImageURL());
+                registrationResponse.setDisplayName(contact.getDisplayName());
+                registrationResponse.setStatusMessage(contact.getStatus());
+            }
+            handler.onSuccess(registrationResponse, context);
+        } else {
+            login(context, kmUser, handler, null);
+        }
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler, ResultReceiver prechatReceiver) {

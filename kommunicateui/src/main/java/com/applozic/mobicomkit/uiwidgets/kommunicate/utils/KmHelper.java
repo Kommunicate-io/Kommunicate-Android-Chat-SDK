@@ -129,17 +129,6 @@ public class KmHelper {
         try {
             Kommunicate.login(context, kmUser, new KMLoginHandler() {
                 @Override
-                public void onConnected(Context context, KMUser user) {
-                    if (dialog != null && dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    Kommunicate.openConversation(context);
-                    if (context instanceof Activity) {
-                        ((Activity) context).finish();
-                    }
-                }
-
-                @Override
                 public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                     Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
                         @Override
@@ -152,6 +141,13 @@ public class KmHelper {
 
                         }
                     });
+                    if (dialog != null && dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    Kommunicate.openConversation(context);
+                    if (context instanceof Activity) {
+                        ((Activity) context).finish();
+                    }
                 }
 
                 @Override

@@ -312,11 +312,6 @@ public class KmConversationHelper {
     private static KMLoginHandler getLoginHandler(final KmChatBuilder launchChat, final KMStartChatHandler startChatHandler, final KmCallback callback) {
         return new KMLoginHandler() {
             @Override
-            public void onConnected(Context context, KMUser user) {
-
-            }
-
-            @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
 
                 String deviceToken = launchChat.getDeviceToken() != null ? launchChat.getDeviceToken() : Kommunicate.getDeviceToken(context);
@@ -494,11 +489,6 @@ public class KmConversationHelper {
 
     private static KMLoginHandler getLoginHandler(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler startConversationHandler, final KmCallback callback) {
         return new KMLoginHandler() {
-            @Override
-            public void onConnected(Context context, KMUser user) {
-
-            }
-
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
 

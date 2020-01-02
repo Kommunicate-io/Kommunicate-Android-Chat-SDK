@@ -8,10 +8,10 @@ import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.account.user.UserLoginTask;
 import com.applozic.mobicomkit.api.account.user.UserService;
+import com.applozic.mobicomkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
 
-import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.services.KmUserClientService;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
@@ -23,7 +23,7 @@ import io.kommunicate.utils.KmConstants;
 public class KmUserLoginTask extends UserLoginTask {
     private Exception e;
     private KMUser user;
-    private KMLoginHandler handler;
+    private AlLoginHandler handler;
     private WeakReference<Context> context;
     private RegistrationResponse response;
     private KmUserClientService userClientService;
@@ -31,7 +31,7 @@ public class KmUserLoginTask extends UserLoginTask {
     private ResultReceiver prechatReceiver;
 
 
-    public KmUserLoginTask(KMUser user, boolean isAgent, KMLoginHandler listener, Context context) {
+    public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context) {
         super(user, listener, context);
         this.user = user;
         this.context = new WeakReference<Context>(context);
@@ -40,7 +40,7 @@ public class KmUserLoginTask extends UserLoginTask {
         this.isAgent = isAgent;
     }
 
-    public KmUserLoginTask(KMUser user, boolean isAgent, KMLoginHandler listener, Context context, ResultReceiver prechatReceiver) {
+    public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context, ResultReceiver prechatReceiver) {
         super(user, listener, context);
         this.user = user;
         this.context = new WeakReference<Context>(context);
@@ -78,7 +78,6 @@ public class KmUserLoginTask extends UserLoginTask {
             if (handler != null) {
                 if (response.isRegistrationSuccess()) {
                     handler.onSuccess(response, context.get());
-                    handler.onConnected(context.get(), KMUser.getLoggedInUser(context.get()));
                 } else {
                     handler.onFailure(response, e);
                 }

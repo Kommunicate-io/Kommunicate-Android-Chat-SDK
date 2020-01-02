@@ -73,19 +73,8 @@ public class Kommunicate {
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler) {
-        if (isLoggedIn(context)) {
-            RegistrationResponse registrationResponse = new RegistrationResponse();
-            registrationResponse.setMessage("USER ALREADY LOGGED IN");
-            Contact contact = new ContactDatabase(context).getContactById(MobiComUserPreference.getInstance(context).getUserId());
-            if (contact != null) {
-                registrationResponse.setUserId(contact.getUserId());
-                registrationResponse.setContactNumber(contact.getContactNumber());
-                registrationResponse.setRoleType(contact.getRoleType());
-                registrationResponse.setImageLink(contact.getImageURL());
-                registrationResponse.setDisplayName(contact.getDisplayName());
-                registrationResponse.setStatusMessage(contact.getStatus());
-            }
-            handler.onSuccess(registrationResponse, context);
+        if (isLoggedIn(context) && kmUser.getUserId().equals(MobiComUserPreference.getInstance(context).getUserId())) {
+            handler.onConnected(context, KMUser.getLoggedInUser(context));
         } else {
             login(context, kmUser, handler, null);
         }
@@ -222,6 +211,11 @@ public class Kommunicate {
             }
         } else {
             final KMLoginHandler loginHandler = new KMLoginHandler() {
+                @Override
+                public void onConnected(Context context, KMUser user) {
+
+                }
+
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                     try {

@@ -3,11 +3,18 @@ package kommunicate.io.sample;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
+
+import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.json.GsonUtils;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.appcompat.widget.AppCompatButton;
+
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -91,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.show();
                 Kommunicate.loginAsVisitor(MainActivity.this, new KMLoginHandler() {
                     @Override
+                    public void onConnected(Context context, KMUser user) {
+
+                    }
+
+                    @Override
                     public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                         progressDialog.dismiss();
                         Kommunicate.openConversation(context, null);
@@ -172,7 +184,30 @@ public class MainActivity extends AppCompatActivity {
 
         Kommunicate.login(MainActivity.this, user, new KMLoginHandler() {
             @Override
+            public void onConnected(Context context, KMUser user) {
+                try {
+                    KmConversationHelper.openConversation(context, true, null, new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+
+                        }
+                    });
+                } catch (KmException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                Utils.printLog(context, "LogTest", "Reg response : " + GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
                 if (KMUser.RoleType.USER_ROLE.getValue().equals(registrationResponse.getRoleType())) {
                     ApplozicClient.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
                 } else {
@@ -192,25 +227,6 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
-                try {
-                    KmConversationHelper.openConversation(context, true, null, new KmCallback() {
-                        @Override
-                        public void onSuccess(Object message) {
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                            finish();
-                        }
-
-                        @Override
-                        public void onFailure(Object error) {
-
-                        }
-                    });
-                } catch (KmException e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override

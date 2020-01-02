@@ -40,8 +40,9 @@ public class AlRichMessageFactory {
 
     public AlRichMessage getRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         int type = -1;
-        if (message.getMetadata().containsKey("templateId"))
+        if (message.getMetadata().containsKey("templateId")) {
             type = Integer.parseInt(message.getMetadata().get("templateId"));
+        }
 
         if (type == AlRichMessageFactory.CARD_RICH_MESSAGE)
             return new CardTypeAlRichMessage(context, containerView, message, listener, alCustomizationSettings);

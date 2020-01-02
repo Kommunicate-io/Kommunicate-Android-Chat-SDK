@@ -23,7 +23,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.applozic.communication.message:mobicomkit:5.65'
+    api 'com.applozic.communication.message:mobicomkit:5.66'
     //api project(':mobicomkit')
 }
 

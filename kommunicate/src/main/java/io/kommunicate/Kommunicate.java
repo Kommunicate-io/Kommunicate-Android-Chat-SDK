@@ -306,7 +306,7 @@ public class Kommunicate {
     private static void createConversation(KmChatBuilder chatBuilder, KMStartChatHandler handler) throws KmException {
         List<KMGroupInfo.GroupUser> users = new ArrayList<>();
 
-        KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(chatBuilder.getChatName()) ? "Kommunicate Support" : chatBuilder.getChatName(), new ArrayList<String>());
+        KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(chatBuilder.getChatName()) ? Utils.getString(chatBuilder.getContext(), R.string.km_default_support_group_name) : chatBuilder.getChatName(), new ArrayList<String>());
 
         if (chatBuilder.getAgentIds() == null || chatBuilder.getAgentIds().isEmpty()) {
             throw new KmException("Agent Id list cannot be null or empty");

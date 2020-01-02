@@ -7,8 +7,10 @@ import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
+
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -121,7 +123,7 @@ public class ApplozicDocumentView {
             }
         }
 
-        fileText.setTextColor(ContextCompat.getColor(context, R.color.message_text_color));
+        fileText.setTextColor(ContextCompat.getColor(context, message.isTypeOutbox() ? R.color.message_text_color : R.color.km_received_message_text_color));
         audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? 0xFFFFFFFF : 0xFFFFB242, PorterDuff.Mode.MULTIPLY);
         cancelIcon.setVisibility(message.isTypeOutbox() ? GONE : View.VISIBLE);
         if (message.isTypeOutbox()) {
@@ -248,7 +250,7 @@ public class ApplozicDocumentView {
     }
 
     public void showDownloadInProgress() {
-        Utils.printLog(context, TAG, "showDownloadInProgress :: ");
+        Utils.printLog(context, TAG, "showDownloadInProgress");
         mainLayout.setVisibility(View.VISIBLE);
         downloadInProgressLayout.setVisibility(View.VISIBLE);
         previewLayout.setVisibility(GONE);
@@ -257,7 +259,7 @@ public class ApplozicDocumentView {
     }
 
     public void showDownloaded() {
-        Utils.printLog(context, TAG, "showDownloaded :: ");
+        Utils.printLog(context, TAG, "showDownloaded");
         mainLayout.setVisibility(View.VISIBLE);
         downloadedLayout.setVisibility(View.VISIBLE);
         previewLayout.setVisibility(GONE);

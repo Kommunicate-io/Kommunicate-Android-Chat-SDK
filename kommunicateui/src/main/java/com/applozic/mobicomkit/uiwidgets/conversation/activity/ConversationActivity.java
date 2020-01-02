@@ -86,9 +86,11 @@ import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
+
 import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
+
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
@@ -317,7 +319,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public boolean onSupportNavigateUp() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                Intent upIntent = ApplozicSetting.getInstance(this).getParentActivityIntent(this);
                 if (upIntent != null && isTaskRoot()) {
                     TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
                 }
@@ -327,7 +329,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
             if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
                 try {
-                    String parentActivity = NavUtils.getParentActivityName(this);
+                    String parentActivity = ApplozicSetting.getInstance(this).getParentActivityName(this);
                     if (parentActivity != null) {
                         Intent intent = new Intent(this, Class.forName(parentActivity));
                         startActivity(intent);
@@ -597,7 +599,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         doReturnCodeActions(returnCode);
                     } else {
                         int itemCount = clipData.getItemCount();
-                        if(itemCount > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
+                        if (itemCount > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
                             //TODO: Add string entries to string file and fix dialogFragmentSelectLimitCrossed constructor
                            /* KmCustomDialog.KmAlertDialog dialogFragmentSelectLimitCrossed = new KmCustomDialog.KmAlertDialog();
 
@@ -937,7 +939,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             try {
-                Intent upIntent = NavUtils.getParentActivityIntent(this);
+                Intent upIntent = ApplozicSetting.getInstance(this).getParentActivityIntent(this);
                 if (upIntent != null && isTaskRoot()) {
                     TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
                 }
@@ -955,7 +957,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
-            Intent upIntent = NavUtils.getParentActivityIntent(this);
+            Intent upIntent = ApplozicSetting.getInstance(this).getParentActivityIntent(this);
             if (upIntent != null && isTaskRoot()) {
                 TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
             }
@@ -1511,7 +1513,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public static void openFaq(Activity activity, String url) {
         if (activity != null) {
             Intent faqIntent = new Intent(activity, AlWebViewActivity.class);
-            faqIntent.putExtra(KmConstants.KM_HELPCENTER_URL, url);
+            Bundle urlBundle = new Bundle();
+            urlBundle.putString(KmConstants.KM_HELPCENTER_URL, url);
+            faqIntent.putExtra(AlWebViewActivity.Al_WEB_VIEW_BUNDLE, urlBundle);
             activity.startActivity(faqIntent);
         }
     }

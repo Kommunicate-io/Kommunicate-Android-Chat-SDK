@@ -1,20 +1,22 @@
 #!/bin/bash
 
-# An example hook script to verify what is about to be pushed.  Called by "git
-# push" after it has checked the remote status, but before anything has been
-# pushed.  If this script exits with a non-zero status nothing will be pushed.
+# Instructions:
+# 1) Download the checkstyle(code inspector) jar from https://github.com/checkstyle/checkstyle/releases/
+#    NOTE: preffered version 8.28
+# 2) Copy the "pre-push" script in the ./hooks folder to .git/hooks folder.
+# 3) Set the location of the checkstyle jar with "git config --add checkstyle.jar <location of jar>"
+# 4) Set the location of the checkstyle .xml check file with "git config --add checkstyle.checkfile <location of checkfile>"
+# 5) Optionally if you don't have it already set the location of the java executale with "git config --add java.command <path to java executale> [optional defaults to assuming it's in your path]"
+# 6) You can keep both the checkstyle jar and check file at the root of the project.
 #
-# This hook is called with the following parameters:
+# * Checkstyle will run before you push to github. It can be bypassed by adding a --no-verify flag (can be used right now during testing, though it's not preffered)
+# * The checkstyle check file uses the official google style guide with the major modification of using 4 spaces as the base indentation offset instead of 2.
+# * Feel free to modify the check file or provide the input so I can do it.
+# * FUTURE PLANS: 1) Adding a automated setup process
+#                 2) Making this process GUI intensive instead of terminal based
+# 
 #
-# $1 -- Name of the remote to which the push is being done
-# $2 -- URL to which the push is being done
-#
-# If pushing without using a named remote those arguments will be equal.
-#
-# Information about the commits which are being pushed is supplied as lines to
-# the standard input in the form:
-#
-#   <local ref> <local sha1> <remote ref> <remote sha1>
+# TO BETTER CODE!
 
 remote="$1"
 url="$2"

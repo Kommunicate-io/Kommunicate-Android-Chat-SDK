@@ -459,11 +459,12 @@ public class Kommunicate {
             listener.onFailure(null, new KmException("Push token cannot be null or empty"));
             return;
         }
-        setDeviceToken(context, token);
 
         if (!token.equals(getDeviceToken(context))) {
             new PushNotificationTask(context, token, listener).execute();
         }
+
+        setDeviceToken(context, token);
     }
 
     public static void registerForPushNotification(Context context, KmPushNotificationHandler listener) {

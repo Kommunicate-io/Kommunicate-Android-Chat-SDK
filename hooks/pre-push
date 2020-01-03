@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# An example hook script to verify what is about to be pushed.  Called by "git
+# push" after it has checked the remote status, but before anything has been
+# pushed.  If this script exits with a non-zero status nothing will be pushed.
+#
+# This hook is called with the following parameters:
+#
+# $1 -- Name of the remote to which the push is being done
+# $2 -- URL to which the push is being done
+#
+# If pushing without using a named remote those arguments will be equal.
+#
+# Information about the commits which are being pushed is supplied as lines to
+# the standard input in the form:
+#
+#   <local ref> <local sha1> <remote ref> <remote sha1>
+
+remote="$1"
+url="$2"
+
+z40=0000000000000000000000000000000000000000
+
+while read local_ref local_sha remote_ref remote_sha
+do
+	#checking the formatting and exiting accordingly        
+	function checkstyle() {
+		echo "Checking formatting of files..."
+		java_command=""
+		if [[ -z "$3" ]];
+		  then
+		  java_command="java"
+		fi
+
+		#get the files changed between local HEAD commit and remote HEAD commit
+		diff_files=`git diff --name-only $local_sha $remote_sha`
+                
+		#converting diff files string to array		
+		diff_files=(${diff_files//\\n/ })
+		
+		flag=0
+
+		#iterating through files and running checkstyle on them
+		for (( i=0; i<${#diff_files[@]}; i++ ))
+		  do
+		  FILE="${diff_files[$i]}"
+		  if [[ -e "$FILE" && $(echo $FILE | grep ".*\.java") ]];
+		    then
+		    output=`$java_command -jar $1 -c $2 $FILE`
+		    string_output="$output"
+                    
+                    echo "FILE: $FILE"
+		    
+                    if [[ $($java_command -jar $1 -c $2 $FILE | grep 'WARN') ]];
+		      then 
+		      echo "$output"
+                      flag=1
+		      else 
+		      echo "No code style issues."
+		    fi
+		    
+                    echo "=NEXT="
+		  fi
+		done
+		
+                echo "=FINAL END="
+		
+                exit $flag
+        }
+	
+	#setting up the configurations $1 -- checkstyle path, $2 -- configurations file path 
+	function check_configs_then_run() {
+        	check_file=`git config --get checkstyle.checkfile`;
+                checkstyle_jar=`git config --get checkstyle.jar`;
+                java_command=`git config --get java.command`;
+
+		if [[ -z "$check_file" ]] || [[ -z "$checkstyle_jar" ]];
+		then
+			echo "You do not seem to be configured correctly for codestyle checking. Have:  1. checkstyle's jar file somewhere 2. a checkstyle XML check file somewhere 3. To configure git: * git config --add checkstyle.jar <location of jar> * git config --add checkstyle.checkfile <location of checkfile> * git config --add java.command <path to java executale> [optional defaults to assuming it's in your path]"
+			exit 1
+		else
+			checkstyle $checkstyle_jar $check_file $java_command
+		fi
+	}
+
+        if [[ "$remote_sha" == $z40 ]];
+        then
+	# New branch, examine all commits
+	range="$local_sha"
+	else
+	# Update to existing branch, examine new commits
+	range="$remote_sha..$local_sha"
+	fi
+	#check the code		
+	check_configs_then_run		
+done
+
+exit 0

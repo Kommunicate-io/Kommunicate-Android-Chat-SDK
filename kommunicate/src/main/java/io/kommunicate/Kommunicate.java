@@ -87,6 +87,7 @@ public class Kommunicate {
                     registrationResponse.setImageLink(contact.getImageURL());
                     registrationResponse.setDisplayName(contact.getDisplayName());
                     registrationResponse.setStatusMessage(contact.getStatus());
+                    registrationResponse.setMetadata(contact.getMetadata());
                 }
                 handler.onSuccess(registrationResponse, context);
             } else {

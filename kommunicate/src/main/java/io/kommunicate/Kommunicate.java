@@ -78,7 +78,7 @@ public class Kommunicate {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
             if (loggedInUserId.equals(kmUser.getUserId())) {
                 RegistrationResponse registrationResponse = new RegistrationResponse();
-                registrationResponse.setStatusMessage(KM_ALREADY_LOGGED_IN_STATUS);
+                registrationResponse.setMessage(KM_ALREADY_LOGGED_IN_STATUS);
                 Contact contact = new ContactDatabase(context).getContactById(loggedInUserId);
                 if (contact != null) {
                     registrationResponse.setUserId(contact.getUserId());

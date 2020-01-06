@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
+import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
@@ -465,6 +466,20 @@ public class Kommunicate {
         }
 
         setDeviceToken(context, token);
+    }
+
+    public static void updateDeviceToken(Context context, String deviceToken) {
+        if (TextUtils.isEmpty(deviceToken)) {
+            return;
+        }
+        if (MobiComUserPreference.getInstance(context).isRegistered() && !deviceToken.equals(getDeviceToken(context))) {
+            try {
+                new RegisterUserClientService(context).updatePushNotificationId(deviceToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        setDeviceToken(context, deviceToken);
     }
 
     public static void registerForPushNotification(Context context, KmPushNotificationHandler listener) {

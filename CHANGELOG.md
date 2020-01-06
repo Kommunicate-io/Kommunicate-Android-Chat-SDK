@@ -15,6 +15,7 @@ Features:-
 3) Optimised login flow and push notification registration. The functions will internally check for already logged in user.
 4) Added method to update bot language
 5) Added deepLink support in web-links rich messages
+6) Added new file provider authority for Kommunicate SDK to avoid conflicts with other file providers.
 
 Fixes:-
 1) Fixed FAQ button click on the toolbar

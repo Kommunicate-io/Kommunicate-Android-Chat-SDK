@@ -224,7 +224,7 @@
     <string name="profile_contact">No Contact number</string>
     <string name="profile_contact_number">Contact Number</string>
     <string name="user_name">User Name</string>
-    <string name="rupee_symbol">\u20B9</string>
+    <string name="rupee_symbol">\u20B9 %1$s</string>
     <string name="km_audio_record_toast_message">Press and hold  [img src=noun_mic_1057615_copy/]  to send a voice clip</string>
     <string name="km_recording_text">Recording</string>
     <string name="km_active_bots_text">Active bot:</string>
@@ -252,4 +252,15 @@
     <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
+    <string name="list_item_title">Title *</string>
+    <string name="list_item_mr">Mr.</string>
+    <string name="list_item_ms">Ms.</string>
+    <string name="list_item_mrs">Mrs.</string>
+    <string name="room">ROOM %1$d</string>
+    <string name="name_unavailable">Name Unavailable (%1$s/%2$d)</string>
+    <string name="hotel_rating">%1$s (%2$s/%3$d)</string>
+    <string name="address_unavailable">Address unavailable</string>
+    <string name="description_unavailable">Description unavailable</string>
+    <string name="room_night_detail">(1 Room for %1$d Nights)</string>
+    <string name="room_name_unavailable">Room name unavailable</string>
 </resources>

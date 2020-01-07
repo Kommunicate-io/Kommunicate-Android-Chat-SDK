@@ -543,7 +543,7 @@ public class KmConversationHelper {
     private static void createConversation(KmConversationBuilder conversationBuilder, KmStartConversationHandler handler) throws KmException {
         List<KMGroupInfo.GroupUser> users = new ArrayList<>();
 
-        KMGroupInfo channelInfo = new KMGroupInfo(Utils.getString(conversationBuilder.getContext(), R.string.km_deafult_support_group_name), new ArrayList<String>());
+        KMGroupInfo channelInfo = new KMGroupInfo(Utils.getString(conversationBuilder.getContext(), R.string.km_default_support_group_name), new ArrayList<String>());
 
         if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
             throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_agent_list_empty_error));

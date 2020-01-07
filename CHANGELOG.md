@@ -5,7 +5,23 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 
 ## Kommunicate Android SDK 1.9.4
 
+Features:-
 1) Support for templateId 11 in Rich messages
+2) Settings to add conversation parent activity dynamically. Use the below code to set the parent activity dynamically:
+   ```java
+    ApplozicSetting.getInstance(getContext()).setParentActivity("<COMPLETE-RESOLVED-PATH-OF-THE-ACTIVITY>");
+    //resolved path e.g: kommunicate.io.sample.MainActivity
+   ```
+3) Optimised login flow and push notification registration. The functions will internally check for already logged in user.
+4) Added method to update bot language
+5) Added deepLink support in web-links rich messages
+
+Fixes:-
+1) Fixed FAQ button click on the toolbar
+2) Fixed rich message rendering on sender side
+3) Optimised rich messages
+4) Fixed the clicks for old rich message buttons
+5) Fixed document view click on the sender side
 
 ## Kommunicate Android SDK 1.9.3
 

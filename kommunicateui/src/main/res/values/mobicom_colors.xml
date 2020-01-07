@@ -89,4 +89,5 @@
     <color name="km_custom_toast_background_color">#636262</color>
     <color name="km_audio_button_background_color">#d8d8d8</color>
     <color name="km_take_over_from_bot_layout_background_color">#f2f0f0</color>
+    <color name="km_received_message_text_color">#646262</color>
 </resources>

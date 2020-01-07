@@ -95,7 +95,7 @@ public class Kommunicate {
                 logout(context, new KMLogoutHandler() {
                     @Override
                     public void onSuccess(Context context) {
-                        login(context, kmUser, handler, null);
+                        login(context, kmUser, getKmLoginHandlerWithPush(handler), null);
                     }
 
                     @Override
@@ -105,8 +105,37 @@ public class Kommunicate {
                 });
             }
         } else {
-            login(context, kmUser, handler, null);
+            login(context, kmUser, getKmLoginHandlerWithPush(handler), null);
         }
+    }
+
+    private static KMLoginHandler getKmLoginHandlerWithPush(final KMLoginHandler handler) {
+        return new KMLoginHandler() {
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, final Context context) {
+                if (handler != null) {
+                    handler.onSuccess(registrationResponse, context);
+                }
+                Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
+                    @Override
+                    public void onSuccess(RegistrationResponse registrationResponse) {
+                        Utils.printLog(context, TAG, "Registered for push notifications : " + registrationResponse);
+                    }
+
+                    @Override
+                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                        Utils.printLog(context, TAG, "Failed to register for push notifications : " + registrationResponse + " \n\n " + exception);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                if (handler != null) {
+                    handler.onFailure(registrationResponse, exception);
+                }
+            }
+        };
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler, ResultReceiver prechatReceiver) {
@@ -126,7 +155,7 @@ public class Kommunicate {
             @Override
             public void onSuccess(Context context) {
                 KmDatabaseHelper.getInstance(context).deleteDatabase();
-                Kommunicate.setDeviceToken(context, null);
+                KmPreference.getInstance(context).setFcmRegistrationCallDone(false);
                 logoutHandler.onSuccess(context);
             }
 
@@ -455,17 +484,33 @@ public class Kommunicate {
         return MobiComUserPreference.getInstance(context).isLoggedIn();
     }
 
-    public static void registerForPushNotification(Context context, String token, KmPushNotificationHandler listener) {
+    public static void registerForPushNotification(final Context context, String token, final KmPushNotificationHandler listener) {
         if (TextUtils.isEmpty(token)) {
-            listener.onFailure(null, new KmException("Push token cannot be null or empty"));
+            if (listener != null) {
+                listener.onFailure(null, new KmException("Push token cannot be null or empty"));
+            }
             return;
         }
 
-        if (!token.equals(getDeviceToken(context))) {
-            new PushNotificationTask(context, token, listener).execute();
-        }
+        if (!token.equals(getDeviceToken(context)) || !KmPreference.getInstance(context).isFcmRegistrationCallDone()) {
+            setDeviceToken(context, token);
+            new PushNotificationTask(context, token, new KmPushNotificationHandler() {
+                @Override
+                public void onSuccess(RegistrationResponse registrationResponse) {
+                    KmPreference.getInstance(context).setFcmRegistrationCallDone(true);
+                    if (listener != null) {
+                        listener.onSuccess(registrationResponse);
+                    }
+                }
 
-        setDeviceToken(context, token);
+                @Override
+                public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                    if (listener != null) {
+                        listener.onFailure(registrationResponse, exception);
+                    }
+                }
+            }).execute();
+        }
     }
 
     public static void updateDeviceToken(Context context, String deviceToken) {
@@ -483,7 +528,7 @@ public class Kommunicate {
     }
 
     public static void registerForPushNotification(Context context, KmPushNotificationHandler listener) {
-        registerForPushNotification(context, Kommunicate.getDeviceToken(context), listener);
+        registerForPushNotification(context, getDeviceToken(context), listener);
     }
 
     public static boolean isKmNotification(Context context, Map<String, String> data) {

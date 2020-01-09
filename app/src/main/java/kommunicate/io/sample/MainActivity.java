@@ -181,18 +181,6 @@ public class MainActivity extends AppCompatActivity {
                     ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
 
-                Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
-                    @Override
-                    public void onSuccess(RegistrationResponse registrationResponse) {
-
-                    }
-
-                    @Override
-                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-
-                    }
-                });
-
                 try {
                     KmConversationHelper.openConversation(context, true, null, new KmCallback() {
                         @Override

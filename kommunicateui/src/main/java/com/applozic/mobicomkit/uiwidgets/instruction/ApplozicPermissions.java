@@ -100,14 +100,6 @@ public class ApplozicPermissions {
         }
     }
 
-    public void requestContactPermission() {
-        if (PermissionsUtils.shouldShowRequestForContactPermission(activity)) {
-            showSnackBar(R.string.contact_permission, PermissionsUtils.PERMISSION_CONTACT, PermissionsUtils.REQUEST_CONTACT);
-        } else {
-            PermissionsUtils.requestPermissions(activity, PermissionsUtils.PERMISSION_CONTACT, PermissionsUtils.REQUEST_CONTACT);
-        }
-    }
-
     public void requestCameraPermissionForProfilePhoto() {
         if (PermissionsUtils.shouldShowRequestForCameraPermission(activity)) {
             showSnackBar(R.string.phone_camera_permission, PermissionsUtils.PERMISSION_CAMERA, PermissionsUtils.REQUEST_CAMERA_FOR_PROFILE_PHOTO);
@@ -125,7 +117,7 @@ public class ApplozicPermissions {
     }
 
     public void requestCameraAndRecordPermission() {
-        if (PermissionsUtils.shouldShowRequestForContactPermission(activity)) {
+        if (PermissionsUtils.checkPermissionForCameraAndMicrophone(activity)) {
             showSnackBar(!PermissionsUtils.checkPermissionForCameraAndMicrophone(activity) ? R.string.camera_audio_permission : !PermissionsUtils.isAudioRecordingPermissionGranted(activity) ? R.string.record_audio : !PermissionsUtils.isCameraPermissionGranted(activity) ? R.string.phone_camera_permission : R.string.camera_audio_permission, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, PermissionsUtils.REQUEST_CAMERA_AUDIO);
         } else {
             PermissionsUtils.requestPermissions(activity, new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, PermissionsUtils.REQUEST_CAMERA_AUDIO);

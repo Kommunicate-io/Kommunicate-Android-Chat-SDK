@@ -99,7 +99,7 @@ public class KmFeedbackView extends LinearLayout {
     }
 
     /**
-     * set the feedback data and showFeedbackView the respective feedback layout views and viewgroups
+     * set the feedback data and showFeedbackView the respective feedback layout views and viewgroups.
      *
      * @param context  the context
      * @param feedback the feedback object
@@ -108,6 +108,7 @@ public class KmFeedbackView extends LinearLayout {
         constraintLayoutFeedbackTopLayout.setVisibility(VISIBLE);
 
         int rating = feedback.getRating();
+
         switch (rating) {
             case FeedbackInputFragment.RATING_POOR:
                 imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_sad_1));
@@ -118,6 +119,9 @@ public class KmFeedbackView extends LinearLayout {
             case FeedbackInputFragment.RATING_GOOD:
                 imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_happy));
                 break;
+            default:
+                imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_confused));
+
         }
 
         if (feedback.getComments() != null) {

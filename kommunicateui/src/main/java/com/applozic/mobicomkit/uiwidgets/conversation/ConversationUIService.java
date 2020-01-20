@@ -191,7 +191,7 @@ public class ConversationUIService {
     }
 
     /**
-     * send the the attachment messages
+     * send the the attachment messages.
      * @param attachmentList the list of messages
      * @param messageText the message text
      */

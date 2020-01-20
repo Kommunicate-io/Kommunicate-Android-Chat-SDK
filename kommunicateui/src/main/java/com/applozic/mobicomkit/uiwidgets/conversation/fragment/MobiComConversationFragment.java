@@ -25,7 +25,6 @@ import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -136,7 +135,6 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 
-
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
@@ -213,8 +211,10 @@ import static java.util.Collections.disjoint;
 abstract public class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, ALRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener {
 
     private static final String TAG = "MobiComConversation";
+
     public FrameLayout emoticonsFrameLayout, contextFrameLayout;
     public GridView multimediaPopupGrid;
+
     protected List<Conversation> conversations;
     protected String title = "Conversations";
     protected DownloadConversation downloadConversation;
@@ -1034,10 +1034,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void openFeedbackFragment() {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(FeedbackInputFragment.getTAG()) == null) {
+        if (fragmentManager.findFragmentByTag(FeedbackInputFragment.getFragTag()) == null) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, feedBackFragment, FeedbackInputFragment.getTAG());
-            fragmentTransaction.addToBackStack(FeedbackInputFragment.getTAG());
+            fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, feedBackFragment, FeedbackInputFragment.getFragTag());
+            fragmentTransaction.addToBackStack(FeedbackInputFragment.getFragTag());
             fragmentTransaction.commit();
         }
     }
@@ -4152,7 +4152,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     }
 
     /**
-     * displays/hides the feedback display layout, along with the feedback received from the server
+     * displays/hides the feedback display layout, along with the feedback received from the server.
      *
      * @param display true to display/ false to not
      */
@@ -4484,11 +4484,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     /**
      * set the feed back of the given conversation when the submit button on feedback fragment is pressed
      *
-     * @param rating   the rating
-     * @param feedback the feedback comment
+     * @param ratingValue the rating
+     * @param feedback    the feedback comment
      */
     @Override
-    public void onFeedbackFragmentSubmitButtonPressed(int rating, String feedback) {
+    public void onFeedbackFragmentSubmitButtonPressed(int ratingValue, String feedback) {
         final KmFeedback kmFeedback = new KmFeedback();
         kmFeedback.setGroupId(channel.getKey());
 
@@ -4498,7 +4498,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             kmFeedback.setComments(feedbackArray);
         }
 
-        kmFeedback.setRating(rating);
+        kmFeedback.setRating(ratingValue);
 
         KmService.setConversationFeedback(getActivity(), kmFeedback, new KmFeedbackCallback() {
             @Override

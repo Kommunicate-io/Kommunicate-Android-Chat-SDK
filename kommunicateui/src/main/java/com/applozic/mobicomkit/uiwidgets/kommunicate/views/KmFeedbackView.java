@@ -113,13 +113,13 @@ public class KmFeedbackView extends LinearLayout {
         int ratingValue = feedback.getRating();
 
         switch (ratingValue) {
-            case FeedbackInputFragment.RATING_POOR_VALUE:
+            case FeedbackInputFragment.RATING_POOR:
                 imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_sad_1));
                 break;
-            case FeedbackInputFragment.RATING_AVERAGE_VALUE:
+            case FeedbackInputFragment.RATING_AVERAGE:
                 imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_confused));
                 break;
-            case FeedbackInputFragment.RATING_GOOD_VALUE:
+            case FeedbackInputFragment.RATING_GOOD:
                 imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_happy));
                 break;
             default:

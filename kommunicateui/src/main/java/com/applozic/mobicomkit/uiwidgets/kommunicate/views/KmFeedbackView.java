@@ -1,11 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.views;
 
 import android.content.Context;
-
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +12,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.FeedbackInputFragment;
-
 import io.kommunicate.models.KmFeedback;
 
 /**

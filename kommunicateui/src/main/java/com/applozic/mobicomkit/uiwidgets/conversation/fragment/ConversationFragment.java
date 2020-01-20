@@ -35,10 +35,10 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
     public static final int ATTCHMENT_OPTIONS = 6;
     private static final String TAG = "ConversationFragment";
-    private final static String CONTACT = "CONTACT";
-    private final static String CHANNEL = "CHANNEL";
-    private final static String CONVERSATION_ID = "CONVERSATION_ID";
-    private final static String SEARCH_STRING = "SEARCH_STRING";
+    private static final String CONTACT = "CONTACT";
+    private static final String CHANNEL = "CHANNEL";
+    private static final String CONVERSATION_ID = "CONVERSATION_ID";
+    private static final String SEARCH_STRING = "SEARCH_STRING";
     InputMethodManager inputMethodManager;
     Bundle bundle;
     private MultimediaOptionsGridView popupGrid;
@@ -81,14 +81,14 @@ public class ConversationFragment extends MobiComConversationFragment implements
         }
     }
 
-    public void attachLocation(Location mCurrentLocation) {
-        String address = LocationUtils.getAddress(getActivity(), mCurrentLocation);
+    public void attachLocation(Location currentLocation) {
+        String address = LocationUtils.getAddress(getActivity(), currentLocation);
         if (!TextUtils.isEmpty(address)) {
             address = "Address: " + address + "\n";
         } else {
             address = "";
         }
-        this.messageEditText.setText(address + "http://maps.google.com/?q=" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude());
+        this.messageEditText.setText(address + "http://maps.google.com/?q=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -39,26 +39,28 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
 
     private FeedbackFragmentListener feedbackFragmentListener;
 
-    public static final int RATING_POOR = 1;
-    public static final int RATING_AVERAGE = 5;
-    public static final int RATING_GOOD = 10;
+    public static final int RATING_POOR = 0;
+    public static final int RATING_POOR_VALUE = 1;
+    public static final int RATING_AVERAGE = 1;
+    public static final int RATING_AVERAGE_VALUE = 5;
+    public static final int RATING_GOOD = 2;
+    public static final int RATING_GOOD_VALUE = 10;
 
     //using IntDef to replace enum
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({RATING_POOR, RATING_AVERAGE, RATING_GOOD})
-    public @interface Rating {
-    }
+    private  @interface Rating { }
 
-    public static final int[] FEEDBACK_RATING_VALUES = {RATING_POOR, RATING_AVERAGE, RATING_GOOD};
+    private static final int[] FEEDBACK_RATING_VALUES = {RATING_POOR_VALUE, RATING_AVERAGE_VALUE, RATING_GOOD_VALUE};
 
-    //1, 2 and 3 (POOR, AVERAGE and GOOD)
-    private int ratingIndex;
+    private @Rating int ratingIndex;
 
-    public int getRatingIndex() {
+    @Rating
+    private int getRatingIndex() {
         return ratingIndex;
     }
 
-    public void setRatingIndex(int ratingIndex) {
+    private void setRatingIndex(@Rating int ratingIndex) {
         this.ratingIndex = ratingIndex;
     }
 
@@ -112,18 +114,15 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
 
         feedbackRatingGroup = new FeedbackRatingGroup(3, buttonDrawables);
 
-        feedbackRatingGroup.createViewForRatingLevel(view, 1, R.id.idButtonPoor, R.id.idTextPoor);
-        feedbackRatingGroup.createViewForRatingLevel(view, 2, R.id.idButtonAverage, R.id.idTextAverage);
-        feedbackRatingGroup.createViewForRatingLevel(view, 3, R.id.idButtonGood, R.id.idTextGood);
+        feedbackRatingGroup.createViewForRatingLevel(view, RATING_POOR, R.id.idButtonPoor, R.id.idTextPoor);
+        feedbackRatingGroup.createViewForRatingLevel(view, RATING_AVERAGE, R.id.idButtonAverage, R.id.idTextAverage);
+        feedbackRatingGroup.createViewForRatingLevel(view, RATING_GOOD, R.id.idButtonGood, R.id.idTextGood);
 
         buttonSubmitFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ratingIndex == 0) {
-                    setRatingIndex(2);//average by default
-                }
                 String feedbackComment = editTextFeedbackComment.getText().toString().trim();
-                feedbackFragmentListener.onFeedbackFragmentSubmitButtonPressed(FEEDBACK_RATING_VALUES[getRatingIndex() - 1], feedbackComment);
+                feedbackFragmentListener.onFeedbackFragmentSubmitButtonPressed(FEEDBACK_RATING_VALUES[getRatingIndex()], feedbackComment);
                 getFragmentManager().popBackStack();
             }
         });
@@ -144,7 +143,7 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
      * @param select         true or false
      * @param feedbackRating the views to toggle
      */
-    void toggleRatingButtonSelected(boolean select, FeedbackRatingGroup.FeedbackRating feedbackRating) {
+    private void toggleRatingButtonSelected(boolean select, FeedbackRatingGroup.FeedbackRating feedbackRating) {
         //set drawable
         feedbackRating.selectDrawable(select);
 
@@ -202,9 +201,9 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
 
             void selectDrawable(boolean select) {
                 if (select) {
-                    ratingButton.setBackground(drawables[ratingIndex - 1][0]);
+                    ratingButton.setBackground(drawables[ratingIndex][0]);
                 } else {
-                    ratingButton.setBackground(drawables[ratingIndex - 1][1]);
+                    ratingButton.setBackground(drawables[ratingIndex][1]);
                 }
             }
         }
@@ -231,11 +230,11 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
             feedbackRatingObject.ratingButton.setScaleY(0.8f);
 
             feedbackRatingObject.ratingIndex = index;
-            feedbackRatingObject.ratingValue = FEEDBACK_RATING_VALUES[index - 1];
+            feedbackRatingObject.ratingValue = FEEDBACK_RATING_VALUES[index];
 
             feedbackRatingObject.feedbackTextView.setVisibility(View.GONE);
 
-            feedbackRating[index - 1] = feedbackRatingObject;
+            feedbackRating[index] = feedbackRatingObject;
         }
     }
 

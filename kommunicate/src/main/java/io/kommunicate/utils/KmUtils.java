@@ -2,14 +2,21 @@ package io.kommunicate.utils;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+
 import androidx.core.content.ContextCompat;
+
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicommons.commons.core.utils.Utils;
+
 
 public class KmUtils {
+
+    private static final String TAG = "Kommunicate";
 
     public static boolean isServiceDisconnected(Context context, boolean isAgentApp, RelativeLayout customToolbarLayout) {
         boolean isDebuggable = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
@@ -29,6 +36,11 @@ public class KmUtils {
         } else {
             view.setBackground(ContextCompat.getDrawable(context, resId));
         }
+    }
+
+    public static void showToastAndLog(Context context, int messageResId) {
+        Toast.makeText(context, messageResId, Toast.LENGTH_LONG).show();
+        Utils.printLog(context, TAG, Utils.getString(context, messageResId));
     }
 
     public static boolean isAgent(Context context) {

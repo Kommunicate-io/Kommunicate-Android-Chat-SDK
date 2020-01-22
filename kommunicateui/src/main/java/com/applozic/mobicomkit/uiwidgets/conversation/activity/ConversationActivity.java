@@ -759,13 +759,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 showSnackBar(R.string.phone_camera_permission_not_granted);
             }
-        } else if (requestCode == PermissionsUtils.REQUEST_CONTACT) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                showSnackBar(R.string.contact_permission_granted);
-                processContact();
-            } else {
-                showSnackBar(R.string.contact_permission_not_granted);
-            }
         } else if (requestCode == PermissionsUtils.REQUEST_CAMERA_FOR_PROFILE_PHOTO) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showSnackBar(R.string.phone_camera_permission_granted);
@@ -1218,16 +1211,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public void processContact() {
-        if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForContactPermission(this)) {
-            applozicPermission.requestContactPermission();
-        } else {
-            Intent contactIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-            contactIntent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-            startActivityForResult(contactIntent, MultimediaOptionFragment.REQUEST_CODE_CONTACT_SHARE);
         }
     }
 

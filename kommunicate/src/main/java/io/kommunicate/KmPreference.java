@@ -15,6 +15,7 @@ public class KmPreference {
     private static KmPreference kmPreference;
     private static final String KM_USER_PREFERENCES = "KOMMUNICATE_USER_PREFS";
     private static final String KM_CONVERSATION_BUILDER = "KM_CONVERSATION_BUILDER";
+    private static final String IS_FCM_REGISTRATION_CALL_DONE = "IS_FCM_REGISTRATION_CALL_DONE";
 
     private String HELPDOCS_ACCESS_KEY = "HELPDOCS_ACCESS_KEY";
 
@@ -47,5 +48,16 @@ public class KmPreference {
 
     public KmConversationBuilder getKmConversationBuilder() {
         return (KmConversationBuilder) GsonUtils.getObjectFromJson(preferences.getString(KM_CONVERSATION_BUILDER, null), KmConversationBuilder.class);
+    }
+
+    public KmPreference setFcmRegistrationCallDone(boolean callDone) {
+        if (preferences != null) {
+            preferences.edit().putBoolean(IS_FCM_REGISTRATION_CALL_DONE, callDone).commit();
+        }
+        return this;
+    }
+
+    public boolean isFcmRegistrationCallDone() {
+        return preferences != null && preferences.getBoolean(IS_FCM_REGISTRATION_CALL_DONE, false);
     }
 }

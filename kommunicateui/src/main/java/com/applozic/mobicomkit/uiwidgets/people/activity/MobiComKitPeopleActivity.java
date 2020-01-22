@@ -158,21 +158,8 @@ public class MobiComKitPeopleActivity extends AppCompatActivity implements OnCon
         } else {
             addFragment(this, appContactFragment, "AppContactFragment");
         }
-      /*  mContactsListFragment = (AppContactFragment)
-                getSupportFragmentManager().findFragmentById(R.id.contact_list);*/
 
-        // This flag notes that the Activity is doing a search, and so the result will be
-        // search results rather than all contacts. This prevents the Activity and Fragment
-        // from trying to a search on search results.
         isSearchResultView = true;
-
-        // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        // Set special title for search results
-
-      /*  if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            mContactsListFragment.onQueryTextChange(searchQuery);
-        }*/
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)

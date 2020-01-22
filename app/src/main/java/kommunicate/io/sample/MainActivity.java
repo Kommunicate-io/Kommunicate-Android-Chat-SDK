@@ -3,11 +3,16 @@ package kommunicate.io.sample;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
+
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.appcompat.widget.AppCompatButton;
+
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -62,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     final String mUserIdText = mUserId.getText().toString().trim();
-
                     String mPasswordText = mPassword.getText().toString().trim();
                     if (TextUtils.isEmpty(mUserIdText) || mUserId.getText().toString().trim().length() == 0) {
                         Toast.makeText(getBaseContext(), R.string.enter_user_id, Toast.LENGTH_SHORT).show();
@@ -109,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     public String getInvalidAppIdError(RegistrationResponse registrationResponse) {
         if (registrationResponse != null) {
             if (registrationResponse.getMessage() != null && INVALID_APP_ID.equals(registrationResponse.getMessage())) {
-                return getString(R.string.inavild_app_id_error);
+                return getString(R.string.invalid_app_id_error);
             } else {
                 return registrationResponse.getMessage();
             }

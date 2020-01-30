@@ -967,8 +967,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     public void onConnected(Bundle bundle) {
         try {
-            Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if (mCurrentLocation == null) {
+            Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            if (currentLocation == null) {
                 Toast.makeText(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
                 locationRequest = new LocationRequest();
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -976,8 +976,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 locationRequest.setFastestInterval(FASTEST_INTERVAL);
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
-            if (mCurrentLocation != null && conversation != null) {
-                conversation.attachLocation(mCurrentLocation);
+            if (currentLocation != null && conversation != null) {
+                conversation.attachLocation(currentLocation);
             }
         } catch (Exception e) {
         }

@@ -71,7 +71,13 @@ public class Kommunicate {
     public static final String KM_ALREADY_LOGGED_IN_STATUS = "ALREADY_LOGGED_IN";
 
     public static void init(Context context, String applicationKey) {
-        Applozic.init(context, applicationKey);
+        if (TextUtils.isEmpty(applicationKey)) {
+            KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
+        } else if (TextUtils.isEmpty(Applozic.getInstance(context).getApplicationKey())) {
+            Applozic.init(context, applicationKey);
+        } else if (!applicationKey.equals(Applozic.getInstance(context).getApplicationKey())) {
+            KmUtils.showToastAndLog(context, R.string.km_clear_app_data);
+        }
     }
 
     public static void login(Context context, final KMUser kmUser, final KMLoginHandler handler) {
@@ -156,6 +162,7 @@ public class Kommunicate {
             public void onSuccess(Context context) {
                 KmDatabaseHelper.getInstance(context).deleteDatabase();
                 KmPreference.getInstance(context).setFcmRegistrationCallDone(false);
+                Applozic.getInstance(context).setApplicationKey(null);
                 logoutHandler.onSuccess(context);
             }
 

@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 
@@ -195,7 +196,7 @@ public class KmAttachmentsController {
                     fileNameToWrite = timeStamp + "." + fileFormat;
                 }
                 File mediaFile = FileClientService.getFilePath(fileNameToWrite, context.getApplicationContext(), mimeType);
-                new FileTaskAsync(mediaFile, selectedFileUri, context, prePostUIMethods).execute((Void) null);
+                new FileTaskAsync(mediaFile, selectedFileUri, context, prePostUIMethods).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } catch (Exception e) {
                 e.printStackTrace();
                 return EXCEPTION_OCCURED;

@@ -69,11 +69,12 @@ public class Kommunicate {
     private static final String SKIP_ROUTING = "SKIP_ROUTING";
     public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
     public static final String KM_ALREADY_LOGGED_IN_STATUS = "ALREADY_LOGGED_IN";
+    private static final String PLACEHOLDER_APP_ID = "<Your-APP-ID>";
 
     public static void init(Context context, String applicationKey) {
         if (TextUtils.isEmpty(applicationKey)) {
             KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
-        } else if (TextUtils.isEmpty(Applozic.getInstance(context).getApplicationKey())) {
+        } else if (!PLACEHOLDER_APP_ID.equals(applicationKey) && TextUtils.isEmpty(Applozic.getInstance(context).getApplicationKey())) {
             Applozic.init(context, applicationKey);
         } else if (!applicationKey.equals(Applozic.getInstance(context).getApplicationKey())) {
             KmUtils.showToastAndLog(context, R.string.km_clear_app_data);

@@ -12,4 +12,7 @@
     <string name="km_conversation_builder_cannot_be_null">Conversation Builder cannot be null</string>
     <string name="km_agent_list_empty_error">Agent Id list cannot be null or empty</string>
     <string name="km_default_support_group_name">Conversations</string>
+    <string name="km_ok_button">OK</string>
+    <string name="km_set_app_id">You need to replace the &lt;Your-App-ID&gt; in the app level build.gradle file with your actual appId from Kommunicate dashboard</string>
+    <string name="km_clear_app_data">You just changed the AppId, please clear the app data or logout/login the user again in Kommunicate for the new AppId to reflect</string>
 </resources>

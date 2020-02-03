@@ -6,6 +6,11 @@ import android.widget.LinearLayout;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ButtonAlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.CardTypeAlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.FaqAlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ImageAlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ListAlRichMessage;
 
 /**
  * factory class for creating `AlRichMessage` instances
@@ -44,16 +49,18 @@ public class AlRichMessageFactory {
             type = Integer.parseInt(message.getMetadata().get("templateId"));
         }
 
-        if (type == AlRichMessageFactory.CARD_RICH_MESSAGE)
+        if (type == AlRichMessageFactory.CARD_RICH_MESSAGE) {
             return new CardTypeAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if (type == AlRichMessageFactory.IMAGE_RICH_MESSAGE)
+        } else if (type == AlRichMessageFactory.IMAGE_RICH_MESSAGE) {
             return new ImageAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if (type == AlRichMessageFactory.LIST_RICH_MESSAGE)
+        } else if (type == AlRichMessageFactory.LIST_RICH_MESSAGE) {
             return new ListAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if (type == AlRichMessageFactory.FAQ_RICH_MESSAGE)
+        } else if (type == AlRichMessageFactory.FAQ_RICH_MESSAGE) {
             return new FaqAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else if (type == AlRichMessageFactory.BUTTON_RICH_MESSAGE || type == AlRichMessageFactory.REPLY_RICH_MESSAGE || type == AlRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE)
+        } else if (type == AlRichMessageFactory.BUTTON_RICH_MESSAGE || type == AlRichMessageFactory.REPLY_RICH_MESSAGE || type == AlRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new ButtonAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        else return null;
+        } else {
+            return null;
+        }
     }
 }

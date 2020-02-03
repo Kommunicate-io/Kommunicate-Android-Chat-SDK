@@ -22,7 +22,6 @@ import java.util.List;
 public class AlButtonRMAdapter extends ALRichMessageAdapter {
 
     private List<ALRichMessageModel.ALPayloadModel> payloadList;
-    ALRichMessageModel model;
 
     AlButtonRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
         super(context, model, listener, message);

@@ -28,14 +28,12 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.AlHot
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
-import java.nio.DoubleBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import static android.view.View.GONE;
-import static com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ListAlRichMessage.MAX_ACTIONS_LIMIT;
+import static com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ListAlRichMessage.MAX_ACTIONS_LIMIT;
 
 /**
  * Created by ashish on 28/02/18.

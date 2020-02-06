@@ -6,8 +6,11 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.SystemClock;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,6 +45,8 @@ public class KmRecordView extends FrameLayout {
     private KmOnRecordListener recordListener;
     private boolean isSwiped, isLessThanSecondAllowed = false;
     private boolean isSoundEnabled = true;
+    private boolean hideTimer = false;
+    private String recordingTextString;
     private MediaPlayer player;
     private KmAnimationHelper animationHelper;
 
@@ -135,8 +140,15 @@ public class KmRecordView extends FrameLayout {
     private void showViews() {
         slideToCancelLayout.setVisibility(VISIBLE);
         smallBlinkingDot.setVisibility(VISIBLE);
-        counterTime.setVisibility(VISIBLE);
+
+        if (!hideTimer) {
+            counterTime.setVisibility(VISIBLE);
+        }
         recordingText.setVisibility(VISIBLE);
+
+        if (!TextUtils.isEmpty(recordingTextString)) {
+            recordingText.setText(recordingTextString);
+        }
     }
 
     private boolean isLessThanOneSecond(long time) {
@@ -199,11 +211,10 @@ public class KmRecordView extends FrameLayout {
         long time = System.currentTimeMillis() - startTime;
 
 
-
-        if(context.getResources().getConfiguration().getLayoutDirection()==View.LAYOUT_DIRECTION_RTL) {
+        if (context.getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
 
             if (!isSwiped && time >= 150) {
-                if (slideToCancelLayout.getX() != 0 && (slideToCancelLayout.getX()+slideToCancelLayout.getWidth()) >= counterTime.getX() - cancelBounds) {
+                if (slideToCancelLayout.getX() != 0 && (slideToCancelLayout.getX() + slideToCancelLayout.getWidth()) >= counterTime.getX() - cancelBounds) {
                     if (isLessThanOneSecond(time)) {
                         hideViews(true);
                         animationHelper.clearAlphaAnimation(false);
@@ -352,6 +363,14 @@ public class KmRecordView extends FrameLayout {
 
     public void setCancelBounds(float cancelBounds) {
         setCancelBounds(cancelBounds, true);
+    }
+
+    public void hideTimer(boolean hide) {
+        hideTimer = hide;
+    }
+
+    public void setRecordingText(String recordingText) {
+        this.recordingTextString = recordingText;
     }
 
     public void setCounterTimeColor(int color) {

@@ -3,7 +3,6 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -35,22 +34,7 @@ public class ListAlRichMessage extends AlRichMessage {
     @Override
     public void createRichMessage() {
         super.createRichMessage();
-        setupAlRichMessage((LinearLayout) containerView.findViewById(R.id.alListMessageLayout), model);
-    }
 
-    private void setActionTextView(TextView actionTextView, View actionDivider, ALRichMessageModel.AlButtonModel buttonModel, ALRichMessageModel.ALPayloadModel payload, ALRichMessageModel model) {
-        actionTextView.setVisibility(View.VISIBLE);
-        actionTextView.setText(buttonModel.getName());
-        setActionListener(actionTextView, model, buttonModel, payload);
-
-        if (actionDivider != null) {
-            actionDivider.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    protected void setupAlRichMessage(ViewGroup listItemLayout, ALRichMessageModel model) {
-        super.setupAlRichMessage(listItemLayout, model);
         if (model != null) {
             if (model.getPayload() != null) {
                 TextView headerText = listItemLayout.findViewById(R.id.headerText);
@@ -94,6 +78,16 @@ public class ListAlRichMessage extends AlRichMessage {
                     }
                 }
             }
+        }
+    }
+
+    private void setActionTextView(TextView actionTextView, View actionDivider, ALRichMessageModel.AlButtonModel buttonModel, ALRichMessageModel.ALPayloadModel payload, ALRichMessageModel model) {
+        actionTextView.setVisibility(View.VISIBLE);
+        actionTextView.setText(buttonModel.getName());
+        setActionListener(actionTextView, model, buttonModel, payload);
+
+        if (actionDivider != null) {
+            actionDivider.setVisibility(View.VISIBLE);
         }
     }
 }

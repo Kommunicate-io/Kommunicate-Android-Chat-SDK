@@ -27,6 +27,12 @@
         android:layout_marginRight="14dp"
         android:layout_height="wrap_content" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/alFormLayoutRecycler"
+        android:layout_width="260dp"
+        android:background="@drawable/al_rich_message_border"
+        android:layout_height="wrap_content" />
+
     <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout
         android:id="@+id/kmFlowLayout"
         android:layout_width="wrap_content"

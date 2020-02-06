@@ -13,6 +13,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALBoo
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALGuestCountModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.AlHotelBookingModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -183,7 +184,10 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
     }
 
     public void handleSubmitButton(Context context, Object object) {
-        if (object instanceof ALRichMessageModel.AlButtonModel) {
+        if (object instanceof KmRMActionModel.SubmitButton) {
+            KmRMActionModel.SubmitButton submitButton = (KmRMActionModel.SubmitButton) object;
+            // Need to implement
+        } else if (object instanceof ALRichMessageModel.AlButtonModel) {
             ALRichMessageModel.AlButtonModel buttonModel = (ALRichMessageModel.AlButtonModel) object;
             if (buttonModel.getAction() != null && buttonModel.getAction().getPayload() != null) {
                 openWebLink(GsonUtils.getJsonFromObject(buttonModel.getAction().getPayload().getFormData(), ALRichMessageModel.AlFormDataModel.class)
@@ -248,6 +252,10 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                 }
             }
         }
+    }
+
+    public void makeFormRequest(Context context, KmRMActionModel.SubmitButton submitButton) {
+
     }
 
     public void openWebLink(String formData, String formAction) {

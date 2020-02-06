@@ -7,7 +7,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,13 +16,17 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Map;
 
-/** abstract class for a `Rich Message` implementing the factory pattern
- *
+/**
+ * abstract class for a `Rich Message` implementing the factory pattern
+ * <p>
  * Created by: ashish on 28/02/18.
  * Updated by: shubhamtewari on 15 Nov 2019.
  */
@@ -51,9 +54,18 @@ public abstract class AlRichMessage {
     protected Context context;
     protected Message message;
     protected ALRichMessageListener listener;
-    protected LinearLayout containerView;
+    private LinearLayout containerView;
+    protected LinearLayout listItemLayout;
+    protected LinearLayout faqReplyLayout;
+    protected LinearLayout faqLayout;
+    protected RecyclerView genericCardRecycler;
+    protected RecyclerView imageListRecycler;
+    protected RecyclerView alFormLayoutRecycler;
+    protected KmFlowLayout flowLayout;
     protected AlCustomizationSettings alCustomizationSettings;
     protected ALRichMessageModel model;
+    protected KmRichMessageModel kmRichMessageModel;
+    protected Gson gson;
 
     public AlRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         this.context = context;
@@ -61,37 +73,39 @@ public abstract class AlRichMessage {
         this.listener = listener;
         this.containerView = containerView;
         this.alCustomizationSettings = alCustomizationSettings;
+        this.gson = new Gson();
         this.model = (ALRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), ALRichMessageModel.class);
+        this.kmRichMessageModel = gson.fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<KmRichMessageModel>() {
+        }.getType());
     }
 
     //bind views and set the visibilities according to the type of message
     public void createRichMessage() {
-        if(model.getTemplateId() <= 0) {
+        if (model.getTemplateId() <= 0) {
             containerView.setVisibility(View.GONE);
             return;
         }
 
-        LinearLayout listItemLayout = containerView.findViewById(R.id.alListMessageLayout);
-        LinearLayout faqReplyLayout = containerView.findViewById(R.id.alFaqReplyLayout);
-        LinearLayout faqLayout = containerView.findViewById(R.id.alFaqLayout);
-        RecyclerView genericCardRecycler = containerView.findViewById(R.id.alGenericCardContainer);
-        RecyclerView imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
-        KmFlowLayout flowLayout = containerView.findViewById(R.id.kmFlowLayout);
+        listItemLayout = containerView.findViewById(R.id.alListMessageLayout);
+        faqReplyLayout = containerView.findViewById(R.id.alFaqReplyLayout);
+        faqLayout = containerView.findViewById(R.id.alFaqLayout);
+        genericCardRecycler = containerView.findViewById(R.id.alGenericCardContainer);
+        imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
+        flowLayout = containerView.findViewById(R.id.kmFlowLayout);
+        alFormLayoutRecycler = containerView.findViewById(R.id.alFormLayoutRecycler);
 
-        listItemLayout.setVisibility(model.getTemplateId() == 7 ? View.VISIBLE : View.GONE);
-        genericCardRecycler.setVisibility(model.getTemplateId() == 10 ? View.VISIBLE : View.GONE);
-        faqLayout.setVisibility(model.getTemplateId() == 8 ? View.VISIBLE : View.GONE);
-        faqReplyLayout.setVisibility(model.getTemplateId() == 8 ? View.VISIBLE : View.GONE);
-        imageListRecycler.setVisibility(model.getTemplateId() == 9 ? View.VISIBLE : View.GONE);
-        flowLayout.setVisibility((model.getTemplateId() == 3 || model.getTemplateId() == 6 || model.getTemplateId() == 11) ? View.VISIBLE : View.GONE);
+        handleLayoutVisibilities(model.getTemplateId());
     }
 
-    //display the message details from the message model
-    protected void setupAlRichMessage(ViewGroup layout, final ALRichMessageModel alRichMessageModel) { }
-
-    //display the message details from the message model
-    //over riding due to faq rich message template requirement of two layouts
-    protected void setupAlRichMessage(ViewGroup layout1, ViewGroup layout2, final ALRichMessageModel alRichMessageModel) { }
+    private void handleLayoutVisibilities(Short templateId) {
+        listItemLayout.setVisibility(templateId == 7 ? View.VISIBLE : View.GONE);
+        genericCardRecycler.setVisibility(templateId == 10 ? View.VISIBLE : View.GONE);
+        faqLayout.setVisibility(templateId == 8 ? View.VISIBLE : View.GONE);
+        faqReplyLayout.setVisibility(templateId == 8 ? View.VISIBLE : View.GONE);
+        imageListRecycler.setVisibility(templateId == 9 ? View.VISIBLE : View.GONE);
+        alFormLayoutRecycler.setVisibility(templateId == 12 ? View.VISIBLE : View.GONE);
+        flowLayout.setVisibility((templateId == 3 || templateId == 6 || templateId == 11 || templateId == 12) ? View.VISIBLE : View.GONE);
+    }
 
     private String getActionType(ALRichMessageModel model, ALRichMessageModel.AlButtonModel buttonModel) {
         if (buttonModel != null) {

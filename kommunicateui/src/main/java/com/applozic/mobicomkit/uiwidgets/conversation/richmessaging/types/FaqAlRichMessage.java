@@ -3,7 +3,6 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,21 +25,7 @@ public class FaqAlRichMessage extends AlRichMessage {
     @Override
     public void createRichMessage() {
         super.createRichMessage();
-        setupAlRichMessage((LinearLayout) containerView.findViewById(R.id.alFaqLayout), (LinearLayout) containerView.findViewById(R.id.alFaqReplyLayout), model);
-    }
 
-    //setup he actionYes and actionNo text views
-    void setActionTextView(TextView actionTextView, ALRichMessageModel.AlButtonModel actionModel, ALRichMessageModel.ALPayloadModel payload) {
-        if (!TextUtils.isEmpty(actionModel.getName())) {
-            actionTextView.setVisibility(View.VISIBLE);
-            actionTextView.setText(actionModel.getName());
-            setActionListener(actionTextView, model, actionModel, payload);
-        }
-    }
-
-    @Override
-    protected void setupAlRichMessage(ViewGroup faqLayout, ViewGroup faqReplyLayout, ALRichMessageModel model) {
-        super.setupAlRichMessage(faqLayout, faqReplyLayout, model);
         if (model != null) {
             TextView headerText = faqLayout.findViewById(R.id.headerText);
             TextView titleText = faqLayout.findViewById(R.id.questionText);
@@ -83,6 +68,15 @@ public class FaqAlRichMessage extends AlRichMessage {
                     }
                 }
             }
+        }
+    }
+
+    //setup he actionYes and actionNo text views
+    void setActionTextView(TextView actionTextView, ALRichMessageModel.AlButtonModel actionModel, ALRichMessageModel.ALPayloadModel payload) {
+        if (!TextUtils.isEmpty(actionModel.getName())) {
+            actionTextView.setVisibility(View.VISIBLE);
+            actionTextView.setText(actionModel.getName());
+            setActionListener(actionTextView, model, actionModel, payload);
         }
     }
 }

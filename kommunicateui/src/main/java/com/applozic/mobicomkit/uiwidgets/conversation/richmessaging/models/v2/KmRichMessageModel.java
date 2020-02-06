@@ -1,6 +1,11 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2;
 
+import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.json.JsonMarker;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 public class KmRichMessageModel<T> extends JsonMarker {
     private Short contentType;
@@ -43,5 +48,19 @@ public class KmRichMessageModel<T> extends JsonMarker {
         public Short getValue() {
             return value;
         }
+    }
+
+    public List<KmFormPayloadModel> getFormModelList() {
+        return new Gson().fromJson(getPayloadJson(), new TypeToken<List<KmFormPayloadModel>>() {
+        }.getType());
+    }
+
+    public List<KmRMActionModel> getButtonList() {
+        return new Gson().fromJson(getPayloadJson(), new TypeToken<List<KmFormPayloadModel>>() {
+        }.getType());
+    }
+
+    private String getPayloadJson() {
+        return payload instanceof String ? payload.toString() : GsonUtils.getJsonFromObject(payload, Object.class);
     }
 }

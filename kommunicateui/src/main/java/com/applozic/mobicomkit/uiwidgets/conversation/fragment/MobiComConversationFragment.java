@@ -495,7 +495,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (isSpeechToTextEnabled) {
             recordView.enableSpeechToText(true);
             recordView.setLessThanSecondAllowed(true);
-            speechToText = new KmSpeechToText(getContext(), recordButton, this);
+            speechToText = new KmSpeechToText(getActivity(), recordButton, this);
         }
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);

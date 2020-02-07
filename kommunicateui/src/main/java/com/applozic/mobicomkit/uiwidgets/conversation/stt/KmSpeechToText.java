@@ -1,13 +1,18 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.stt;
 
-import android.content.Context;
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 
+import androidx.core.app.ActivityCompat;
+
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
+import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.util.ArrayList;
@@ -16,31 +21,39 @@ import java.util.Locale;
 public class KmSpeechToText implements RecognitionListener {
     private static final String TAG = "KmSpeechToText";
     private KmRecordButton recordButton;
-    private Context context;
+    private Activity context;
     private KmTextListener listener;
     private SpeechRecognizer speechRecognizer;
     private boolean isStopped;
 
-    public KmSpeechToText(Context context, KmRecordButton recordButton, KmTextListener listener) {
+    public KmSpeechToText(Activity context, KmRecordButton recordButton, KmTextListener listener) {
         this.context = context;
         this.listener = listener;
         this.recordButton = recordButton;
     }
 
     public void startListening() {
-        isStopped = false;
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        if (PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+            isStopped = false;
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.getPackageName());
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+            intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
+            intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.getPackageName());
 
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
-        speechRecognizer.setRecognitionListener(this);
-        speechRecognizer.startListening(intent);
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+            speechRecognizer.setRecognitionListener(this);
+            speechRecognizer.startListening(intent);
+        } else {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.RECORD_AUDIO},
+                        10);
+            }
+        }
     }
 
     public void stopListening() {

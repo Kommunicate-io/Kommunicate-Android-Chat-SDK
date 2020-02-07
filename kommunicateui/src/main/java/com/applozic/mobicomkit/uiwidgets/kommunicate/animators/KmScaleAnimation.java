@@ -26,6 +26,15 @@ public class KmScaleAnimation {
         set.start();
     }
 
+    public void startWithValue(float scale) {
+        AnimatorSet set = new AnimatorSet();
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, SCALE_Y, scale);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, SCALE_X, scale);
+        set.setInterpolator(new AccelerateDecelerateInterpolator());
+        set.playTogether(scaleY, scaleX);
+        set.start();
+    }
+
     public void stop() {
         AnimatorSet set = new AnimatorSet();
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, SCALE_Y, 1.0f);

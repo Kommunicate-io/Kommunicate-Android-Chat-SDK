@@ -6,8 +6,10 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.SystemClock;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +26,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.KmAnimationHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.io.IOException;
 
@@ -44,6 +47,7 @@ public class KmRecordView extends FrameLayout {
     private boolean isSoundEnabled = true;
     private MediaPlayer player;
     private KmAnimationHelper animationHelper;
+    private boolean isSpeechToTextEnabled;
 
     public KmRecordView(Context context) {
         super(context);
@@ -133,10 +137,14 @@ public class KmRecordView extends FrameLayout {
     }
 
     private void showViews() {
-        slideToCancelLayout.setVisibility(VISIBLE);
-        smallBlinkingDot.setVisibility(VISIBLE);
-        counterTime.setVisibility(VISIBLE);
-        recordingText.setVisibility(VISIBLE);
+        if (!isSpeechToTextEnabled) {
+            counterTime.setVisibility(VISIBLE);
+            recordingText.setVisibility(VISIBLE);
+            smallBlinkingDot.setVisibility(VISIBLE);
+            slideToCancelLayout.setVisibility(VISIBLE);
+        } else {
+            recordingText.setText(Utils.getString(context, R.string.km_speech_listening_text));
+        }
     }
 
     private boolean isLessThanOneSecond(long time) {
@@ -182,8 +190,9 @@ public class KmRecordView extends FrameLayout {
         animationHelper.resetSmallMic();
 
 
-        recordBtn.startScale();
-
+        if (!isSpeechToTextEnabled) {
+            recordBtn.startScale();
+        }
         initialX = recordBtn.getX();
 
         showViews();
@@ -196,14 +205,15 @@ public class KmRecordView extends FrameLayout {
     }
 
     protected void onActionMove(KmRecordButton recordBtn, MotionEvent motionEvent) {
+        if (isSpeechToTextEnabled) {
+            return;
+        }
         long time = System.currentTimeMillis() - startTime;
 
-
-
-        if(context.getResources().getConfiguration().getLayoutDirection()==View.LAYOUT_DIRECTION_RTL) {
+        if (context.getResources().getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
 
             if (!isSwiped && time >= 150) {
-                if (slideToCancelLayout.getX() != 0 && (slideToCancelLayout.getX()+slideToCancelLayout.getWidth()) >= counterTime.getX() - cancelBounds) {
+                if (slideToCancelLayout.getX() != 0 && (slideToCancelLayout.getX() + slideToCancelLayout.getWidth()) >= counterTime.getX() - cancelBounds) {
                     if (isLessThanOneSecond(time)) {
                         hideViews(true);
                         animationHelper.clearAlphaAnimation(false);
@@ -283,6 +293,14 @@ public class KmRecordView extends FrameLayout {
     }
 
     protected void onActionUp(KmRecordButton recordBtn) {
+        if (isSpeechToTextEnabled) {
+            return;
+        }
+
+        stopRecordingAnimation(recordBtn);
+    }
+
+    public void stopRecordingAnimation(KmRecordButton recordButton) {
         elapsedTime = System.currentTimeMillis() - startTime;
 
         if (!isLessThanSecondAllowed && isLessThanOneSecond(elapsedTime) && !isSwiped) {
@@ -302,10 +320,11 @@ public class KmRecordView extends FrameLayout {
         if (!isSwiped)
             animationHelper.clearAlphaAnimation(true);
 
-        animationHelper.moveRecordButtonAndSlideToCancelBack(recordBtn, slideToCancelLayout, initialX, difX);
+        if (recordButton != null) {
+            animationHelper.moveRecordButtonAndSlideToCancelBack(recordButton, slideToCancelLayout, initialX, difX);
+        }
         counterTime.stop();
     }
-
 
     private void setMarginRight(int marginRight, boolean convertToDp) {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) slideToCancelLayout.getLayoutParams();
@@ -352,6 +371,10 @@ public class KmRecordView extends FrameLayout {
 
     public void setCancelBounds(float cancelBounds) {
         setCancelBounds(cancelBounds, true);
+    }
+
+    public void enableSpeechToText(boolean enable) {
+        this.isSpeechToTextEnabled = enable;
     }
 
     public void setCounterTimeColor(int color) {

@@ -14,8 +14,8 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmFormItemAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,32 +44,27 @@ public class KmFormRichMessage extends AlRichMessage {
                 if (KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType())) {
                     actionModelList.add(formPayloadModel.getAction());
                 }
-            } else if (object instanceof ALRichMessageModel.ALPayloadModel) {
-                ALRichMessageModel.ALPayloadModel model = (ALRichMessageModel.ALPayloadModel) object;
-                if ("submit".equals(model.getType())) {
-                    actionModelList.add(model);
-                }
             }
         }
 
         if (!actionModelList.isEmpty()) {
-            flowLayout.setVisibility(View.GONE);
             if (flowLayout != null) {
+                flowLayout.setVisibility(View.VISIBLE);
                 flowLayout.removeAllViews();
-
                 View view = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, null);
                 TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
-                if (itemTextView != null) {
-                    itemTextView.setText(((ALRichMessageModel.ALPayloadModel) actionModelList.get(0)).getName());
+                final KmRMActionModel<KmRMActionModel.SubmitButton> submitButtonModel = (KmRMActionModel<KmRMActionModel.SubmitButton>) actionModelList.get(0);
+                itemTextView.setText(submitButtonModel.getName());
 
-                    itemTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
-                }
+                itemTextView.setText(((KmRMActionModel) actionModelList.get(0)).getName());
+                itemTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                    }
+                });
+                flowLayout.addView(view);
             }
         } else {
             flowLayout.setVisibility(View.GONE);

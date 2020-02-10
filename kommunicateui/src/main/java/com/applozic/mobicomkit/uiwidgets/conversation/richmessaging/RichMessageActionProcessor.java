@@ -9,17 +9,25 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.helpers.KmFormStateHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALBookingDetailsModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALGuestCountModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.AlHotelBookingModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFormStateModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +74,11 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
 
             case AlRichMessage.MAKE_PAYMENT:
             case AlRichMessage.SUBMIT_BUTTON:
-                handleSubmitButton(context, object);
+                if (object instanceof KmRMActionModel.SubmitButton) {
+                    handleKmSubmitButton(context, message, (KmRMActionModel.SubmitButton) object);
+                } else {
+                    handleSubmitButton(context, object);
+                }
                 break;
 
             case AlRichMessage.QUICK_REPLY_OLD:
@@ -201,6 +213,82 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         }
     }
 
+    public void handleKmSubmitButton(final Context context, final Message message, KmRMActionModel.SubmitButton submitButtonModel) {
+        if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
+            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()));
+        }
+
+        KmFormStateModel formStateModel = null;
+        if (message != null) {
+            formStateModel = KmFormStateHelper.getFormState(message.getKeyString());
+        }
+
+        if (AlWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType())) {
+            new KmPostDataAsyncTask(context, submitButtonModel.getFormAction(), null,
+                    GsonUtils.getJsonFromObject(formStateModel != null ? getKmFormMap(message, formStateModel) : submitButtonModel.getFormData(), Map.class), "application/json", new KmCallback() {
+                @Override
+                public void onSuccess(Object messageString) {
+                    Utils.printLog(context, TAG, "Submit post success : " + messageString);
+                    KmFormStateHelper.removeFormState(message.getKeyString());
+                }
+
+                @Override
+                public void onFailure(Object error) {
+                    Utils.printLog(context, TAG, "Submit post error : " + error);
+                }
+            });
+        } else {
+            openWebLink(GsonUtils.getJsonFromObject(formStateModel != null ? getKmFormMap(message, formStateModel) : submitButtonModel.getFormData(), Map.class), submitButtonModel.getFormAction());
+        }
+    }
+
+    private Map<String, Object> getKmFormMap(Message message, KmFormStateModel formStateModel) {
+        Map<String, Object> formDataMap = new HashMap<>();
+
+        if (message.getMetadata() != null) {
+            KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<KmRichMessageModel>() {
+            }.getType());
+
+            if (formStateModel == null) {
+                return formDataMap;
+            }
+
+            List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
+
+            for (int i = 0; i < formPayloadModelList.size(); i++) {
+                KmFormPayloadModel model = formPayloadModelList.get(i);
+
+                if (KmFormPayloadModel.Type.TEXT.getValue().equals(model.getType()) || KmFormPayloadModel.Type.PASSWORD.getValue().equals(model.getType())) {
+                    KmFormPayloadModel.Text textModel = model.getTextModel();
+                    formDataMap.put(textModel.getLabel(), formStateModel.getTextFields().valueAt(i));
+                } else if (KmFormPayloadModel.Type.HIDDEN.getValue().equals(model.getType())) {
+                    KmFormPayloadModel.Hidden hiddenModel = model.getHiddenModel();
+                    formDataMap.put(hiddenModel.getName(), hiddenModel.getValue());
+                } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(model.getType())) {
+                    KmFormPayloadModel.Selections radioOptions = model.getSelectionModel();
+                    KmFormPayloadModel.Options selectedOption = radioOptions.getOptions().get(formStateModel.getSelectedRadioButtonIndex().get(i));
+                    formDataMap.put(radioOptions.getName(), selectedOption.getValue());
+                } else if (KmFormPayloadModel.Type.CHECKBOX.getValue().equals(model.getType())) {
+                    KmFormPayloadModel.Selections checkBoxModel = model.getSelectionModel();
+                    List<KmFormPayloadModel.Options> allOptions = checkBoxModel.getOptions();
+
+                    HashSet<Integer> checkedOptions = formStateModel.getCheckBoxStates().get(i);
+                    String[] checkBoxesArray = new String[checkedOptions.size()];
+
+                    Iterator<Integer> iterator = checkedOptions.iterator();
+                    int index = 0;
+                    while (iterator.hasNext()) {
+                        checkBoxesArray[index] = allOptions.get(iterator.next()).getValue();
+                        index++;
+                    }
+                    formDataMap.put(checkBoxModel.getName(), checkBoxesArray);
+                }
+            }
+        }
+
+        return formDataMap;
+    }
+
     public Map<String, String> getStringMap(Map<String, Object> objectMap) {
         if (objectMap == null) {
             return null;
@@ -252,10 +340,6 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                 }
             }
         }
-    }
-
-    public void makeFormRequest(Context context, KmRMActionModel.SubmitButton submitButton) {
-
     }
 
     public void openWebLink(String formData, String formAction) {

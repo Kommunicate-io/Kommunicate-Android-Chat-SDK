@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class KmFormStateHelper {
 
-    public static Map<String, KmFormStateModel> formStateModelMap;
+    private static Map<String, KmFormStateModel> formStateModelMap;
 
     public static void addFormState(String messageKey, KmFormStateModel formStateModel) {
         if (formStateModelMap == null) {
@@ -22,6 +22,12 @@ public class KmFormStateHelper {
             return formStateModelMap.get(messageKey);
         }
         return null;
+    }
+
+    public static void removeFormState(String messageKey) {
+        if (formStateModelMap != null) {
+            formStateModelMap.remove(messageKey);
+        }
     }
 
     public static void clearInstance() {

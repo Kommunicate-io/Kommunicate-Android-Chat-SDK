@@ -129,6 +129,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMessageTemp
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.RichMessageActionProcessor;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.helpers.KmFormStateHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmSpeechToText;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmTextToSpeech;
@@ -3498,6 +3499,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (ApplozicAudioManager.getInstance(getContext()) != null) {
             ApplozicAudioManager.getInstance(getContext()).audiostop();
         }
+        KmFormStateHelper.clearInstance();
     }
 
     public ViewGroup.LayoutParams getImageLayoutParam(boolean outBoxType) {

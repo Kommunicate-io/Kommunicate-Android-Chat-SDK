@@ -51,8 +51,13 @@ public class KmRichMessageModel<T> extends JsonMarker {
     }
 
     public List<KmFormPayloadModel> getFormModelList() {
-        return new Gson().fromJson(getPayloadJson(), new TypeToken<List<KmFormPayloadModel>>() {
-        }.getType());
+        try {
+            return new Gson().fromJson(getPayloadJson(), new TypeToken<List<KmFormPayloadModel>>() {
+            }.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public List<KmRMActionModel> getButtonList() {

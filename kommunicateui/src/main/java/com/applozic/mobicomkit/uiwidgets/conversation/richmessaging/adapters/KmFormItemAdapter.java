@@ -98,7 +98,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                 if (payloadModel != null) {
                     final KmFormItemViewHolder formItemViewHolder = (KmFormItemViewHolder) holder;
 
-                    if (!isViewTypeField(payloadModel.getType())) {
+                    if (!isViewTypeField(payloadModel.getType()) || getItemViewType(position) == 0) {
                         if (formItemViewHolder.formItemLayout != null) {
                             formItemViewHolder.formItemLayout.setVisibility(View.GONE);
                         }
@@ -251,11 +251,9 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                     @Override
                     public void afterTextChanged(Editable s) {
                         String text = s.toString().trim();
-                        if (!TextUtils.isEmpty(text)) {
-                            textFieldArray.put(getAdapterPosition(), text);
-                            formStateModel.setTextFields(textFieldArray);
-                            KmFormStateHelper.addFormState(messageKey, formStateModel);
-                        }
+                        textFieldArray.put(getAdapterPosition(), text);
+                        formStateModel.setTextFields(textFieldArray);
+                        KmFormStateHelper.addFormState(messageKey, formStateModel);
                     }
                 });
             }

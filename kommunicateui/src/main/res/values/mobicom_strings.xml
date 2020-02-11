@@ -248,4 +248,5 @@
     <string name="km_take_over_from_bot_dialog_message">The bot will be removed from this conversation and it will not reply to any further messages</string>
     <string name="km_dialog_cancel_button">CANCEL</string>
     <string name="km_dialog_positive_button_text">TAKE OVER FROM BOT</string>
+    <string name="km_invalid_form_data_error">Invalid or empty form data</string>
 </resources>

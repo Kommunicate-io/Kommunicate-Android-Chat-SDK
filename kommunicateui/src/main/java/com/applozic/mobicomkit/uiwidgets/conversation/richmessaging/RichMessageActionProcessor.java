@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
@@ -213,20 +215,33 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         }
     }
 
-    public void handleKmSubmitButton(final Context context, final Message message, KmRMActionModel.SubmitButton submitButtonModel) {
-        if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
-            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()));
-        }
+    private boolean isInvalidData(Map<String, Object> dataMap, KmRMActionModel.SubmitButton submitButton) {
+        return (dataMap == null || dataMap.isEmpty()) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
+    }
 
+    public void handleKmSubmitButton(final Context context, final Message message, KmRMActionModel.SubmitButton submitButtonModel) {
         KmFormStateModel formStateModel = null;
         if (message != null) {
             formStateModel = KmFormStateHelper.getFormState(message.getKeyString());
         }
+        Map<String, Object> dataMap = getKmFormMap(message, formStateModel);
+
+        if (isInvalidData(dataMap, submitButtonModel)) {
+            Toast.makeText(context, Utils.getString(context, R.string.km_invalid_form_data_error), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
+            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()));
+        }
+
+        Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
+
         new KmPostDataAsyncTask(context,
                 submitButtonModel.getFormAction(),
                 null,
                 AlWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType()) ? "application/json" : AlWebViewActivity.DEFAULT_REQUEST_TYPE,
-                GsonUtils.getJsonFromObject(formStateModel != null ? getKmFormMap(message, formStateModel) : submitButtonModel.getFormData(), Map.class),
+                GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class),
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object messageString) {
@@ -254,34 +269,50 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
 
             List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
 
-            for (int i = 0; i < formPayloadModelList.size(); i++) {
-                KmFormPayloadModel model = formPayloadModelList.get(i);
-
-                if (KmFormPayloadModel.Type.TEXT.getValue().equals(model.getType()) || KmFormPayloadModel.Type.PASSWORD.getValue().equals(model.getType())) {
-                    KmFormPayloadModel.Text textModel = model.getTextModel();
-                    formDataMap.put(textModel.getLabel(), formStateModel.getTextFields().valueAt(i));
-                } else if (KmFormPayloadModel.Type.HIDDEN.getValue().equals(model.getType())) {
-                    KmFormPayloadModel.Hidden hiddenModel = model.getHiddenModel();
-                    formDataMap.put(hiddenModel.getName(), hiddenModel.getValue());
-                } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(model.getType())) {
-                    KmFormPayloadModel.Selections radioOptions = model.getSelectionModel();
-                    KmFormPayloadModel.Options selectedOption = radioOptions.getOptions().get(formStateModel.getSelectedRadioButtonIndex().get(i));
-                    formDataMap.put(radioOptions.getName(), selectedOption.getValue());
-                } else if (KmFormPayloadModel.Type.CHECKBOX.getValue().equals(model.getType())) {
-                    KmFormPayloadModel.Selections checkBoxModel = model.getSelectionModel();
-                    List<KmFormPayloadModel.Options> allOptions = checkBoxModel.getOptions();
-
-                    HashSet<Integer> checkedOptions = formStateModel.getCheckBoxStates().get(i);
-                    String[] checkBoxesArray = new String[checkedOptions.size()];
-
-                    Iterator<Integer> iterator = checkedOptions.iterator();
-                    int index = 0;
-                    while (iterator.hasNext()) {
-                        checkBoxesArray[index] = allOptions.get(iterator.next()).getValue();
-                        index++;
-                    }
-                    formDataMap.put(checkBoxModel.getName(), checkBoxesArray);
+            if (formStateModel.getTextFields() != null) {
+                int size = formStateModel.getTextFields().size();
+                for (int i = 0; i < size; i++) {
+                    int key = formStateModel.getTextFields().keyAt(i);
+                    KmFormPayloadModel.Text textModel = formPayloadModelList.get(key).getTextModel();
+                    formDataMap.put(textModel.getLabel(), formStateModel.getTextFields().get(key));
                 }
+            }
+
+            if (formStateModel.getCheckBoxStates() != null) {
+                int size = formStateModel.getCheckBoxStates().size();
+                for (int i = 0; i < size; i++) {
+                    int key = formStateModel.getCheckBoxStates().keyAt(i);
+                    List<KmFormPayloadModel.Options> allOptions = formPayloadModelList.get(key).getSelectionModel().getOptions();
+
+                    HashSet<Integer> checkedOptions = formStateModel.getCheckBoxStates().get(key);
+
+                    if (checkedOptions != null && allOptions != null) {
+                        String[] checkBoxesArray = new String[checkedOptions.size()];
+
+                        Iterator<Integer> iterator = checkedOptions.iterator();
+                        int index = 0;
+                        while (iterator.hasNext()) {
+                            checkBoxesArray[index] = allOptions.get(iterator.next()).getValue();
+                            index++;
+                        }
+                        formDataMap.put(formPayloadModelList.get(key).getSelectionModel().getName(), checkBoxesArray);
+                    }
+                }
+            }
+
+            if (formStateModel.getSelectedRadioButtonIndex() != null) {
+                int size = formStateModel.getSelectedRadioButtonIndex().size();
+
+                for (int i = 0; i < size; i++) {
+                    int key = formStateModel.getSelectedRadioButtonIndex().keyAt(i);
+                    KmFormPayloadModel.Selections radioOptions = formPayloadModelList.get(key).getSelectionModel();
+                    KmFormPayloadModel.Options selectedOption = radioOptions.getOptions().get(formStateModel.getSelectedRadioButtonIndex().get(key));
+                    formDataMap.put(radioOptions.getName(), selectedOption.getValue());
+                }
+            }
+
+            if (formStateModel.getHiddenFields() != null) {
+                formDataMap.putAll(formStateModel.getHiddenFields());
             }
         }
 

@@ -85,10 +85,9 @@ public class KmHttpClient {
             return sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
-            return e.getLocalizedMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            return e.getLocalizedMessage();
         }
+        return null;
     }
 }

@@ -27,9 +27,12 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFor
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 public class KmFormItemAdapter extends RecyclerView.Adapter {
 
@@ -39,6 +42,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private SparseArray<String> textFieldArray;
     private SparseArray<HashSet<Integer>> checkBoxStateArray;
     private SparseIntArray radioButtonSelectedIndices;
+    private Map<String, String> hiddenFields;
     private KmFormStateModel formStateModel;
     private String messageKey;
 
@@ -59,6 +63,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         textFieldArray = formStateModel.getTextFields();
         checkBoxStateArray = formStateModel.getCheckBoxStates();
         radioButtonSelectedIndices = formStateModel.getSelectedRadioButtonIndex();
+        hiddenFields = formStateModel.getHiddenFields();
 
         if (textFieldArray == null) {
             textFieldArray = new SparseArray<>();
@@ -70,6 +75,10 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
         if (radioButtonSelectedIndices == null) {
             radioButtonSelectedIndices = new SparseIntArray();
+        }
+
+        if (hiddenFields == null) {
+            hiddenFields = new HashMap<>();
         }
     }
 
@@ -102,39 +111,33 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         if (formItemViewHolder.formItemLayout != null) {
                             formItemViewHolder.formItemLayout.setVisibility(View.GONE);
                         }
+                        if (KmFormPayloadModel.Type.HIDDEN.getValue().equals(payloadModel.getType())) {
+                            KmFormPayloadModel.Hidden hiddenModel = payloadModel.getHiddenModel();
+                            if (hiddenModel != null && !hiddenFields.containsKey(hiddenModel.getName())) {
+                                hiddenFields.put(hiddenModel.getName(), hiddenModel.getValue());
+                            }
+                        }
                         return;
                     }
 
                     formItemViewHolder.formItemLayout.setVisibility(View.VISIBLE);
 
-                    if (KmFormPayloadModel.Type.TEXT.getValue().equals(payloadModel.getType())) {
+                    if (isTypeText(payloadModel.getType())) {
                         KmFormPayloadModel.Text textModel = payloadModel.getTextModel();
 
                         formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(textModel.getLabel()) ? View.VISIBLE : View.GONE);
                         formItemViewHolder.flowLayout.setVisibility(View.GONE);
-                        formItemViewHolder.getEditTextField().setVisibility(View.VISIBLE);
 
+                        EditText editText = KmFormPayloadModel.Type.PASSWORD.getValue().equals(payloadModel.getType()) ? formItemViewHolder.getPasswordTextField() : formItemViewHolder.getEditTextField();
+
+                        editText.setVisibility(View.VISIBLE);
                         formItemViewHolder.formLabel.setText(textModel.getLabel());
-                        formItemViewHolder.getEditTextField().setHint(TextUtils.isEmpty(textModel.getPlaceholder()) ? "" : textModel.getPlaceholder());
+                        editText.setHint(TextUtils.isEmpty(textModel.getPlaceholder()) ? "" : textModel.getPlaceholder());
 
                         String savedStr = textFieldArray.get(position, null);
 
                         if (savedStr != null) {
-                            formItemViewHolder.getEditTextField().setText(savedStr);
-                        }
-                    } else if (KmFormPayloadModel.Type.PASSWORD.getValue().equals(payloadModel.getType())) {
-                        KmFormPayloadModel.Text textModel = payloadModel.getTextModel();
-
-                        formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(textModel.getLabel()) ? View.VISIBLE : View.GONE);
-                        formItemViewHolder.flowLayout.setVisibility(View.GONE);
-                        formItemViewHolder.getPasswordTextField().setVisibility(View.VISIBLE);
-
-                        formItemViewHolder.formLabel.setText(textModel.getLabel());
-                        formItemViewHolder.getPasswordTextField().setHint(TextUtils.isEmpty(textModel.getPlaceholder()) ? "" : textModel.getPlaceholder());
-
-                        String savedStr = textFieldArray.get(position, null);
-                        if (savedStr != null) {
-                            formItemViewHolder.getPasswordTextField().setText(savedStr);
+                            editText.setText(savedStr);
                         }
                     } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(payloadModel.getType())) {
                         KmFormPayloadModel.Selections selectionModel = payloadModel.getSelectionModel();
@@ -151,6 +154,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             public void onClick(int index) {
                                 radioButtonSelectedIndices.put(position, index);
                                 formStateModel.setSelectedRadioButtonIndex(radioButtonSelectedIndices);
+                                Utils.printLog(context, "State1Test", "Clicked radio button at index : " + index);
                                 KmFormStateHelper.addFormState(messageKey, formStateModel);
                             }
                         }, formItemViewHolder.flowLayout, options).createLayout(radioButtonSelectedIndices.get(position, -1));
@@ -183,6 +187,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                         checkBoxStateArray.put(position, checkedBoxes);
                                         formStateModel.setCheckBoxStates(checkBoxStateArray);
                                         KmFormStateHelper.addFormState(messageKey, formStateModel);
+                                        Utils.printLog(context, "State1Test", "Checked check box at : " + index);
                                     }
                                 });
 
@@ -240,20 +245,20 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                 formEditText.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
                     }
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                     }
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        String text = s.toString().trim();
-                        textFieldArray.put(getAdapterPosition(), text);
-                        formStateModel.setTextFields(textFieldArray);
-                        KmFormStateHelper.addFormState(messageKey, formStateModel);
+                        if (formEditText.hasFocus()) {
+                            String text = s.toString().trim();
+                            textFieldArray.put(getAdapterPosition(), text);
+                            formStateModel.setTextFields(textFieldArray);
+                            KmFormStateHelper.addFormState(messageKey, formStateModel);
+                        }
                     }
                 });
             }
@@ -270,5 +275,9 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
             formEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
             return formEditText;
         }
+    }
+
+    private boolean isTypeText(String type) {
+        return KmFormPayloadModel.Type.TEXT.getValue().equals(type) || KmFormPayloadModel.Type.PASSWORD.getValue().equals(type);
     }
 }

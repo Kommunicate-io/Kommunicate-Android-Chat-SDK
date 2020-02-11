@@ -222,24 +222,23 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         if (message != null) {
             formStateModel = KmFormStateHelper.getFormState(message.getKeyString());
         }
+        new KmPostDataAsyncTask(context,
+                submitButtonModel.getFormAction(),
+                null,
+                AlWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType()) ? "application/json" : AlWebViewActivity.DEFAULT_REQUEST_TYPE,
+                GsonUtils.getJsonFromObject(formStateModel != null ? getKmFormMap(message, formStateModel) : submitButtonModel.getFormData(), Map.class),
+                new KmCallback() {
+                    @Override
+                    public void onSuccess(Object messageString) {
+                        Utils.printLog(context, TAG, "Submit post success : " + messageString);
+                        KmFormStateHelper.removeFormState(message.getKeyString());
+                    }
 
-        if (AlWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType())) {
-            new KmPostDataAsyncTask(context, submitButtonModel.getFormAction(), null,
-                    GsonUtils.getJsonFromObject(formStateModel != null ? getKmFormMap(message, formStateModel) : submitButtonModel.getFormData(), Map.class), "application/json", new KmCallback() {
-                @Override
-                public void onSuccess(Object messageString) {
-                    Utils.printLog(context, TAG, "Submit post success : " + messageString);
-                    KmFormStateHelper.removeFormState(message.getKeyString());
-                }
-
-                @Override
-                public void onFailure(Object error) {
-                    Utils.printLog(context, TAG, "Submit post error : " + error);
-                }
-            });
-        } else {
-            openWebLink(GsonUtils.getJsonFromObject(formStateModel != null ? getKmFormMap(message, formStateModel) : submitButtonModel.getFormData(), Map.class), submitButtonModel.getFormAction());
-        }
+                    @Override
+                    public void onFailure(Object error) {
+                        Utils.printLog(context, TAG, "Submit post error : " + error);
+                    }
+                }).execute();
     }
 
     private Map<String, Object> getKmFormMap(Message message, KmFormStateModel formStateModel) {
@@ -322,9 +321,12 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                 sendMessage(payloadModel.getAction().getName(), getStringMap(payloadModel.getReplyMetadata()));
             }
 
-            if (payloadModel.getAction().getFormData() != null && !TextUtils.isEmpty(payloadModel.getAction().getFormAction())) {
-                if (AlWebViewActivity.REQUEST_TYPE_JSON.equals(payloadModel.getAction().getRequestType())) {
-                    new KmPostDataAsyncTask(context, payloadModel.getAction().getFormAction(), null, GsonUtils.getJsonFromObject(payloadModel.getFormData(), ALRichMessageModel.AlFormDataModel.class), "application/json", new KmCallback() {
+            new KmPostDataAsyncTask(context,
+                    payloadModel.getAction().getFormAction(),
+                    null,
+                    AlWebViewActivity.REQUEST_TYPE_JSON.equals(payloadModel.getRequestType()) ? "application/json" : AlWebViewActivity.DEFAULT_REQUEST_TYPE,
+                    GsonUtils.getJsonFromObject(payloadModel.getFormData(), ALRichMessageModel.AlFormDataModel.class),
+                    new KmCallback() {
                         @Override
                         public void onSuccess(Object message) {
                             Utils.printLog(context, TAG, "Submit post success : " + message);
@@ -335,10 +337,6 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                             Utils.printLog(context, TAG, "Submit post error : " + error);
                         }
                     }).execute();
-                } else {
-                    openWebLink(GsonUtils.getJsonFromObject(payloadModel.getAction().getFormData(), ALRichMessageModel.AlFormDataModel.class), payloadModel.getFormAction());
-                }
-            }
         }
     }
 

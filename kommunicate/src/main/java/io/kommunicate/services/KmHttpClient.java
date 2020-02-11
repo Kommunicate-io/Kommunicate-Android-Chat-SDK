@@ -85,10 +85,10 @@ public class KmHttpClient {
             return sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
+            return e.getLocalizedMessage();
         } catch (Exception e) {
             e.printStackTrace();
+            return e.getLocalizedMessage();
         }
-        Utils.printLog(context, TAG, "Http call failed");
-        return null;
     }
 }

@@ -40,6 +40,7 @@ import io.kommunicate.models.KmAutoSuggestionModel;
 public class RichMessageActionProcessor implements ALRichMessageListener {
 
     private ALRichMessageListener richMessageListener;
+    public static final String NOTIFY_ITEM_CHANGE = "notifyItemChange";
     private static final String TAG = "AlRichMessageAction";
 
     public RichMessageActionProcessor(ALRichMessageListener richMessageListener) {
@@ -246,6 +247,11 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                     @Override
                     public void onSuccess(Object messageString) {
                         Utils.printLog(context, TAG, "Submit post success : " + messageString);
+                        KmFormStateHelper.removeFormState(message.getKeyString());
+                        if (richMessageListener != null) {
+                            richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, null, null);
+                        }
+
                     }
 
                     @Override

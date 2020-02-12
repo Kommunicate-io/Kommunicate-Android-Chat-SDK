@@ -4247,6 +4247,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             case KmAutoSuggestionAdapter.KM_AUTO_SUGGESTION_ACTION:
                 populateAutoSuggestion(false, null, (String) object);
                 break;
+            case RichMessageActionProcessor.NOTIFY_ITEM_CHANGE:
+                if (messageList != null && recyclerDetailConversationAdapter != null && message != null) {
+                    int index = messageList.indexOf(message);
+
+                    if (index != -1) {
+                        recyclerDetailConversationAdapter.notifyItemChanged(index);
+                    }
+                }
         }
     }
 

@@ -35,7 +35,6 @@ public class KmFormRichMessage extends AlRichMessage {
         KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString());
         alFormLayoutRecycler.setAdapter(formItemAdapter);
 
-
         List<Object> actionModelList = new ArrayList<>();
 
         for (Object object : kmRichMessageModel.getFormModelList()) {

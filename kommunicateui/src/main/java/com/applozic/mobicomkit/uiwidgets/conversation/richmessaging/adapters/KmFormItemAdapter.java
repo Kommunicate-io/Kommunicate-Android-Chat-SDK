@@ -154,7 +154,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             public void onClick(int index) {
                                 radioButtonSelectedIndices.put(position, index);
                                 formStateModel.setSelectedRadioButtonIndex(radioButtonSelectedIndices);
-                                Utils.printLog(context, "State1Test", "Clicked radio button at index : " + index);
                                 KmFormStateHelper.addFormState(messageKey, formStateModel);
                             }
                         }, formItemViewHolder.flowLayout, options).createLayout(radioButtonSelectedIndices.get(position, -1));

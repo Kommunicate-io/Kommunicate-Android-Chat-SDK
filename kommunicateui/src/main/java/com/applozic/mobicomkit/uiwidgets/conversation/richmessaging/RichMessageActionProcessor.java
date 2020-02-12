@@ -246,7 +246,6 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                     @Override
                     public void onSuccess(Object messageString) {
                         Utils.printLog(context, TAG, "Submit post success : " + messageString);
-                        KmFormStateHelper.removeFormState(message.getKeyString());
                     }
 
                     @Override

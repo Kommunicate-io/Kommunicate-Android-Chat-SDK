@@ -27,7 +27,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFor
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -186,7 +185,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                         checkBoxStateArray.put(position, checkedBoxes);
                                         formStateModel.setCheckBoxStates(checkBoxStateArray);
                                         KmFormStateHelper.addFormState(messageKey, formStateModel);
-                                        Utils.printLog(context, "State1Test", "Checked check box at : " + index);
                                     }
                                 });
 

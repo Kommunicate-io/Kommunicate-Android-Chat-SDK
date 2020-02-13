@@ -1,6 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2;
 
+import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.json.JsonMarker;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
@@ -66,10 +69,10 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         }
     }
 
-    public static class Selections<K> extends JsonMarker {
+    public static class Selections extends JsonMarker {
         private String title;
         private String name;
-        private List<K> options;
+        private List<Options> options;
 
         public String getTitle() {
             return title;
@@ -87,11 +90,11 @@ public class KmFormPayloadModel<T> extends JsonMarker {
             this.name = name;
         }
 
-        public List<K> getOptions() {
+        public List<Options> getOptions() {
             return options;
         }
 
-        public void setOptions(List<K> options) {
+        public void setOptions(List<Options> options) {
             this.options = options;
         }
     }
@@ -115,5 +118,47 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         public void setValue(String value) {
             this.value = value;
         }
+    }
+
+    public enum Type {
+        TEXT("text"), PASSWORD("password"), HIDDEN("hidden"), RADIO("radio"), CHECKBOX("checkbox"), ACTION("action");
+
+        private String value;
+
+        Type(String s) {
+            value = s;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public Text getTextModel() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<Text>() {
+        }.getType());
+    }
+
+    public KmFormPayloadModel.Hidden getHiddenModel() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmFormPayloadModel.Hidden>() {
+        }.getType());
+    }
+
+    public KmFormPayloadModel.Selections getSelectionModel() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmFormPayloadModel.Selections>() {
+        }.getType());
+    }
+
+    public KmRMActionModel<KmRMActionModel.SubmitButton> getAction() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmRMActionModel<KmRMActionModel.SubmitButton>>() {
+        }.getType());
+    }
+
+    @Override
+    public String toString() {
+        return "KmFormPayloadModel{" +
+                "type='" + type + '\'' +
+                ", data=" + data +
+                '}';
     }
 }

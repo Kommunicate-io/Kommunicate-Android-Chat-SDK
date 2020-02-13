@@ -6,10 +6,12 @@ import android.widget.LinearLayout;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ButtonAlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.CardTypeAlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.FaqAlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ImageAlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.KmFormRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ListAlRichMessage;
 
 /**
@@ -57,6 +59,8 @@ public class AlRichMessageFactory {
             return new ListAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
         } else if (type == AlRichMessageFactory.FAQ_RICH_MESSAGE) {
             return new FaqAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
+        } else if (type == KmRichMessageModel.TemplateId.FORM.getValue()) {
+            return new KmFormRichMessage(context, containerView, message, listener, alCustomizationSettings);
         } else if (type == AlRichMessageFactory.BUTTON_RICH_MESSAGE || type == AlRichMessageFactory.REPLY_RICH_MESSAGE || type == AlRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new ButtonAlRichMessage(context, containerView, message, listener, alCustomizationSettings);
         } else {

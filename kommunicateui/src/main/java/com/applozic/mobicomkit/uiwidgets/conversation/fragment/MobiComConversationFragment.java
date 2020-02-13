@@ -25,7 +25,6 @@ import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -130,6 +129,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMessageTemp
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.RichMessageActionProcessor;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.helpers.KmFormStateHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
@@ -3458,6 +3458,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (ApplozicAudioManager.getInstance(getContext()) != null) {
             ApplozicAudioManager.getInstance(getContext()).audiostop();
         }
+        KmFormStateHelper.clearInstance();
     }
 
     public ViewGroup.LayoutParams getImageLayoutParam(boolean outBoxType) {
@@ -4246,6 +4247,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             case KmAutoSuggestionAdapter.KM_AUTO_SUGGESTION_ACTION:
                 populateAutoSuggestion(false, null, (String) object);
                 break;
+            case RichMessageActionProcessor.NOTIFY_ITEM_CHANGE:
+                if (messageList != null && recyclerDetailConversationAdapter != null && message != null) {
+                    int index = messageList.indexOf(message);
+
+                    if (index != -1) {
+                        recyclerDetailConversationAdapter.notifyItemChanged(index);
+                    }
+                }
         }
     }
 

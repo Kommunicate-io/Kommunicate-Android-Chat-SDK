@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/messageTextLayout"
+    android:layout_marginStart="52dp"
+    android:layout_marginLeft="52dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="10dp"
     android:layout_marginRight="10dp"
-    android:layout_marginStart="52dp"
-    android:layout_marginLeft="52dp"
+    android:gravity="start"
     android:orientation="vertical"
-    android:visibility="gone"
-    android:gravity="start">
-
+    android:visibility="gone">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/alGenericCardContainer"
@@ -25,11 +24,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/alFormLayoutRecycler"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/al_rich_message_border" />
+
     <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout
         android:id="@+id/kmFlowLayout"
         android:layout_width="wrap_content"
-        app:alignSenderSide = "false"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:alignSenderSide="false" />
 
     <include layout="@layout/al_faq_layout" />
 

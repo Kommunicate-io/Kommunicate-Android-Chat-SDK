@@ -5,14 +5,16 @@ import android.content.pm.ApplicationInfo;
 
 import androidx.core.content.ContextCompat;
 
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-
 
 public class KmUtils {
 
@@ -36,6 +38,11 @@ public class KmUtils {
         } else {
             view.setBackground(ContextCompat.getDrawable(context, resId));
         }
+    }
+
+    public static void setDrawableTint(TextView textView, int colorId, int index) {
+        textView.getCompoundDrawables()[index]
+                .setColorFilter(new PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN));
     }
 
     public static void showToastAndLog(Context context, int messageResId) {

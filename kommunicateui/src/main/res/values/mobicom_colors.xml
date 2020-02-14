@@ -91,4 +91,9 @@
     <color name="km_take_over_from_bot_layout_background_color">#f2f0f0</color>
     <color name="km_received_message_text_color">#646262</color>
     <color name="km_form_rich_message_background_color">#e6e5ec</color>
+    <color name="km_resolved_conversation_background">#f2f0f1</color>
+    <color name="km_spam_status_color">#C93F50</color>
+    <color name="km_open_status_color">#2C91CC</color>
+    <color name="km_resolved_status_color">#56BA90</color>
+    <color name="km_duplicate_status_color">#3C4B50</color>
 </resources>

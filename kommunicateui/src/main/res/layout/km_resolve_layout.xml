@@ -1,0 +1,76 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="resolveModel"
+            type="com.applozic.mobicomkit.uiwidgets.conversation.KmResolve" />
+
+        <variable
+            name="resolveViewModel"
+            type="com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.KmResolveViewModel" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/kmResolveStatusLayout"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:elevation="2dp"
+        android:visibility="@{resolveModel.isVisible() ? View.VISIBLE : View.GONE, default = gone}"
+        app:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/km_resolved_conversation_background"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:onClick="@{(v) -> resolveViewModel.openAssigneFragment()}">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="@{resolveViewModel.assigneeNameLiveData}"
+                    android:textSize="14sp"
+                    app:drawableLeftCompat="@drawable/ic_assignee"
+                    app:drawableStartCompat="@drawable/ic_assignee" />
+            </FrameLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.1"
+                android:background="@color/black" />
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="50"
+                android:onClick="@{(v) -> resolveViewModel.openResolveStatusFragment()}">
+
+                <TextView
+                    android:id="@+id/kmResolveStatusTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:drawableStart="@{resolveModel.icon}"
+                    android:drawableLeft="@{resolveModel.icon}"
+                    android:drawablePadding="4dp"
+                    android:gravity="center"
+                    android:text="@{resolveModel.statusName}"
+                    android:textColor="@{resolveModel.colorResId}"
+                    android:textSize="14sp" />
+            </FrameLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

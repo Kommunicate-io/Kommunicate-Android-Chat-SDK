@@ -252,4 +252,13 @@
     <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
+    <string name="km_conversation_status">Conversation Status</string>
+    <string name="km_status_resolved">Resolved</string>
+    <string name="km_status_spam">Spam</string>
+    <string name="km_status_duplicate">Duplicate</string>
+    <string name="km_status_not_responded">Not Responded</string>
+    <string name="km_status_open">Open</string>
+    <string name="km_status_mark_as_spam">Mark as Spam</string>
+    <string name="km_status_mark_as_duplicate">Mark as Duplicate</string>
+    <string name="km_change_status_to_message">Status changed to </string>
 </resources>

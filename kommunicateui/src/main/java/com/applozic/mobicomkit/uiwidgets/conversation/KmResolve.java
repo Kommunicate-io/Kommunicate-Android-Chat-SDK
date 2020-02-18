@@ -22,14 +22,14 @@ public class KmResolve extends BaseObservable {
     }
 
     public KmResolve(int status) {
-        setStatusName(KmConversationStatus.getStatus(status));
+        setStatusName(KmConversationStatus.getStatusText(status));
         setColorResId(KmConversationStatus.getColorId(status));
         setIconId(KmConversationStatus.getIconId(status));
     }
 
     public KmResolve(int status, boolean visible) {
         setVisible(visible);
-        setStatusName(KmConversationStatus.getStatus(status));
+        setStatusName(KmConversationStatus.getStatusText(status));
         setColorResId(KmConversationStatus.getColorId(status));
         setIconId(KmConversationStatus.getIconId(status));
     }

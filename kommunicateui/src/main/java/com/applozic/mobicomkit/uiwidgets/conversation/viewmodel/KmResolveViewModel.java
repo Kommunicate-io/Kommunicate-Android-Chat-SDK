@@ -17,7 +17,7 @@ public class KmResolveViewModel extends KmViewModel {
 
     public MutableLiveData<String> assigneeNameLiveData = new MutableLiveData<>();
     public MutableLiveData<Integer> resolveStatusLiveData = new MutableLiveData<>();
-    public MutableLiveData<Boolean> clickListenerLiveData = new MutableLiveData<>();
+    private Channel channel;
 
     private int conversationStatus;
     private KmResolve kmResolve;
@@ -36,6 +36,7 @@ public class KmResolveViewModel extends KmViewModel {
             updateConversationStatus(conversationStatus);
             resolveStatusLiveData.postValue(conversationStatus);
         }
+        this.channel = channel;
     }
 
     public KmResolve getKmResolveModel() {
@@ -46,24 +47,18 @@ public class KmResolveViewModel extends KmViewModel {
         return conversationStatus;
     }
 
-    public void openResolveStatusFragment() {
-        clickListenerLiveData.postValue(true);
-    }
-
     public void updateConversationStatus(KmResolve resolve) {
-        updateConversationStatus(KmConversationStatus.getStatusFromName(resolve.getStatusName()));
+        if (!KmConversationStatus.SPAM_STATUS_NAME.equals(resolve.getStatusName())) {
+            KmConversationStatus.updateConversationStatus(resolve, channel);
+        }
     }
 
     public void updateConversationStatus(int conversationStatus) {
         this.conversationStatus = conversationStatus;
         kmResolve.setColorResId(KmConversationStatus.getColorId(conversationStatus));
         kmResolve.setIconId(KmConversationStatus.getIconId(conversationStatus));
-        kmResolve.setStatusName(KmConversationStatus.getStatus(conversationStatus));
+        kmResolve.setStatusName(KmConversationStatus.getStatusText(conversationStatus));
         kmResolve.setVisible(alCustomizationSettings != null && alCustomizationSettings.isAgentApp());
-    }
-
-    public void openAssigneFragment() {
-        clickListenerLiveData.postValue(false);
     }
 
     public String getConversationAssinee(Channel channel) {

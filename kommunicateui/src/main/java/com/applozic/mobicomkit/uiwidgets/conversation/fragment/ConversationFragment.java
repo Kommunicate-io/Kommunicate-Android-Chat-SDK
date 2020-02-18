@@ -49,6 +49,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
     private Bundle bundle;
     private KmResolveLayoutBinding resolveLayoutBinding;
     private KmResolveViewModel resolveViewModel;
+    private ImageButton moreOptionsButton;
 
     public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString) {
         ConversationFragment f = new ConversationFragment();
@@ -117,27 +118,21 @@ public class ConversationFragment extends MobiComConversationFragment implements
                 resolveViewModel = ViewModelProviders.of(this, new KmViewModelFactory(alCustomizationSettings)).get(KmResolveViewModel.class);
                 resolveLayoutBinding.setResolveViewModel(resolveViewModel);
                 resolveLayoutBinding.setResolveModel(resolveViewModel.getKmResolveModel());
+                moreOptionsButton = view.findViewById(R.id.more_options_btn);
 
-                resolveViewModel.resolveStatusLiveData.observe(this, new Observer<Integer>() {
+                moreOptionsButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onChanged(Integer status) {
-                        resolveLayoutBinding.kmResolveStatusLayout.setVisibility(View.VISIBLE);
+                    public void onClick(View v) {
+                        openFragment(resolveViewModel != null ? resolveViewModel.getCurrentStatus() : 0);
                     }
                 });
-            }
 
-            if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
-                ImageButton moreOptionsButton = view.findViewById(R.id.more_options_btn);
-
-                if (moreOptionsButton != null) {
-                    moreOptionsButton.setVisibility(View.VISIBLE);
-                    moreOptionsButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            openFragment(resolveViewModel != null ? resolveViewModel.getCurrentStatus() : 0);
-                        }
-                    });
-                }
+                resolveViewModel.resolveStatusLiveData.observe(this, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        moreOptionsButton.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
+                    }
+                });
             }
         }
 

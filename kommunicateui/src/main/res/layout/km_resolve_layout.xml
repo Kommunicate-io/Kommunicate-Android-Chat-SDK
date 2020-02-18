@@ -21,7 +21,7 @@
         android:background="@{resolveModel.colorResId}"
         android:elevation="2dp"
         android:onClick="@{(v) -> resolveViewModel.updateConversationStatus(resolveModel)}"
-        android:visibility="@{resolveModel.isVisible() ? View.VISIBLE : View.GONE, default = gone}"
+        android:visibility="@{resolveModel.visible ? View.VISIBLE : View.GONE, default = gone}"
         app:cardCornerRadius="4dp">
 
         <TextView

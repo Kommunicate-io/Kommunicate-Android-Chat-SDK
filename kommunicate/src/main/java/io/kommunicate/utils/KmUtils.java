@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
 public class KmUtils {
@@ -52,6 +53,10 @@ public class KmUtils {
 
     public static boolean isAgent(Context context) {
         return User.RoleType.AGENT.getValue().equals(MobiComUserPreference.getInstance(context).getUserRoleType());
+    }
+
+    public static boolean isAgent() {
+        return isAgent(ApplozicService.getAppContext());
     }
 
     public enum PackageType {

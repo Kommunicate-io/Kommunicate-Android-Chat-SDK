@@ -12,6 +12,8 @@ import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 
+import io.kommunicate.utils.KmUtils;
+
 
 public class KmResolveViewModel extends KmViewModel {
     private Channel channel;
@@ -80,6 +82,6 @@ public class KmResolveViewModel extends KmViewModel {
     }
 
     private boolean isResolveStatusEnabled() {
-        return alCustomizationSettings != null && alCustomizationSettings.isAgentApp() && channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType());
+        return KmUtils.isAgent() && channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType());
     }
 }

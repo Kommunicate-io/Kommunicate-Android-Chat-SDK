@@ -5,7 +5,6 @@ import android.location.Location;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -17,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -26,12 +26,11 @@ import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.KmResolve;
+import com.applozic.mobicomkit.uiwidgets.conversation.KmConversationStatus;
 import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.KmResolveViewModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.KmViewModelFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.providers.ViewModelProviders;
 import com.applozic.mobicomkit.uiwidgets.databinding.KmResolveLayoutBinding;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmClickHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmBottomSlideFragment;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -39,9 +38,7 @@ import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 
-import io.kommunicate.utils.KmUtils;
-
-public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment, KmClickHandler<KmResolve> {
+public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment {
 
     private static final String TAG = "ConversationFragment";
     private static final String CONTACT = "CONTACT";
@@ -52,7 +49,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
     private Bundle bundle;
     private KmResolveLayoutBinding resolveLayoutBinding;
     private KmResolveViewModel resolveViewModel;
-
 
     public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString) {
         ConversationFragment f = new ConversationFragment();
@@ -121,36 +117,27 @@ public class ConversationFragment extends MobiComConversationFragment implements
                 resolveViewModel = ViewModelProviders.of(this, new KmViewModelFactory(alCustomizationSettings)).get(KmResolveViewModel.class);
                 resolveLayoutBinding.setResolveViewModel(resolveViewModel);
                 resolveLayoutBinding.setResolveModel(resolveViewModel.getKmResolveModel());
-                messageEditText.setTextColor(ContextCompat.getColor(getContext(), R.color.received_message_bg_color));
-
-                resolveViewModel.assigneeNameLiveData.observe(this, new Observer<String>() {
-                    @Override
-                    public void onChanged(String s) {
-                    }
-                });
 
                 resolveViewModel.resolveStatusLiveData.observe(this, new Observer<Integer>() {
                     @Override
                     public void onChanged(Integer status) {
                         resolveLayoutBinding.kmResolveStatusLayout.setVisibility(View.VISIBLE);
-
-                        if (resolveLayoutBinding.kmResolveStatusTextView != null) {
-                            KmUtils.setDrawableTint(resolveLayoutBinding.kmResolveStatusTextView, resolveViewModel.getKmResolveModel().getColorResId(), 0);
-                        }
-
                     }
                 });
+            }
 
-                resolveViewModel.clickListenerLiveData.observe(this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean resolveStatusClicked) {
-                        if (resolveStatusClicked) {
+            if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
+                ImageButton moreOptionsButton = view.findViewById(R.id.more_options_btn);
+
+                if (moreOptionsButton != null) {
+                    moreOptionsButton.setVisibility(View.VISIBLE);
+                    moreOptionsButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             openFragment(resolveViewModel != null ? resolveViewModel.getCurrentStatus() : 0);
-                        } else {
-
                         }
-                    }
-                });
+                    });
+                }
             }
         }
 
@@ -230,6 +217,15 @@ public class ConversationFragment extends MobiComConversationFragment implements
         return true;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (resolveViewModel != null && channel != null) {
+            resolveViewModel.setChannel(ChannelService.getInstance(getContext()).getChannel(channel.getKey()));
+        }
+    }
+
     public void reload() {
 
         try {
@@ -270,10 +266,18 @@ public class ConversationFragment extends MobiComConversationFragment implements
     @Override
     public void onMessageReceived(Message message) {
         super.onMessageReceived(message);
-        if (message != null && !message.isTypeOutbox() && message.getMetadata().get(Message.KM_STATUS) != null) {
-            if (resolveViewModel != null) {
-                resolveViewModel.updateConversationStatus(Integer.parseInt(message.getMetadata().get(Message.KM_STATUS)));
-            }
+        notifyUiForStatusUpdate(message);
+    }
+
+    @Override
+    public void onMessageSync(Message message, String key) {
+        super.onMessageSync(message, key);
+        notifyUiForStatusUpdate(message);
+    }
+
+    public void notifyUiForStatusUpdate(Message message) {
+        if (message != null && message.getMetadata() != null && message.getMetadata().get(Message.KM_STATUS) != null && resolveViewModel != null) {
+            resolveViewModel.updateConversationStatus(KmConversationStatus.getStatusFromName(message.getMetadata().get(Message.KM_STATUS)));
         }
     }
 
@@ -287,20 +291,13 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
     public void openFragment(int status) {
         if (getActivity() != null) {
-            FragmentManager fragmentManager = getChildFragmentManager();
-            if (fragmentManager.findFragmentByTag(KmBottomSlideFragment.getFragTag()) == null) {
+            FragmentManager fragmentManager = getFragmentManager();
+            if (fragmentManager != null && fragmentManager.findFragmentByTag(KmBottomSlideFragment.getFragTag()) == null) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, KmBottomSlideFragment.newInstance(status, channel), KmBottomSlideFragment.getFragTag());
                 fragmentTransaction.addToBackStack(KmBottomSlideFragment.getFragTag());
                 fragmentTransaction.commit();
             }
-        }
-    }
-
-    @Override
-    public void onItemClicked(View view, KmResolve data) {
-        if (resolveViewModel != null) {
-            resolveViewModel.updateConversationStatus(data);
         }
     }
 }

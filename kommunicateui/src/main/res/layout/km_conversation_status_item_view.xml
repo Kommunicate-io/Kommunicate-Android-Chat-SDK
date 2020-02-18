@@ -44,9 +44,8 @@
             android:layout_marginLeft="22dp"
             android:layout_marginEnd="20dp"
             android:layout_marginRight="20dp"
-            android:src="@drawable/ic_current_selected_status"
             android:tint="@{itemResolveModel.colorResId}"
-            android:visibility="@{itemResolveModel.visible ? View.VISIBLE : View.GONE, default = gone}" />
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"

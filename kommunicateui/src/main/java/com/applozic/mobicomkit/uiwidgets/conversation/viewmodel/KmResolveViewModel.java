@@ -14,10 +14,8 @@ import com.applozic.mobicommons.people.contact.Contact;
 
 
 public class KmResolveViewModel extends KmViewModel {
-
-    public MutableLiveData<String> assigneeNameLiveData = new MutableLiveData<>();
-    public MutableLiveData<Integer> resolveStatusLiveData = new MutableLiveData<>();
     private Channel channel;
+    public MutableLiveData<Boolean> resolveStatusLiveData = new MutableLiveData<>();
 
     private int conversationStatus;
     private KmResolve kmResolve;
@@ -28,15 +26,12 @@ public class KmResolveViewModel extends KmViewModel {
     }
 
     public void setChannel(Channel channel) {
-        if (assigneeNameLiveData != null) {
-            assigneeNameLiveData.postValue(getConversationAssinee(channel));
-        }
-        if (resolveStatusLiveData != null) {
-            conversationStatus = getConversationStatus(channel);
-            updateConversationStatus(conversationStatus);
-            resolveStatusLiveData.postValue(conversationStatus);
-        }
+        conversationStatus = getConversationStatus(channel);
+        updateConversationStatus(conversationStatus);
         this.channel = channel;
+        if (resolveStatusLiveData != null) {
+            resolveStatusLiveData.postValue(isResolveStatusEnabled());
+        }
     }
 
     public KmResolve getKmResolveModel() {
@@ -58,7 +53,7 @@ public class KmResolveViewModel extends KmViewModel {
         kmResolve.setColorResId(KmConversationStatus.getColorId(conversationStatus));
         kmResolve.setIconId(KmConversationStatus.getIconId(conversationStatus));
         kmResolve.setStatusName(KmConversationStatus.getStatusText(conversationStatus));
-        kmResolve.setVisible(alCustomizationSettings != null && alCustomizationSettings.isAgentApp());
+        kmResolve.setVisible(isResolveStatusEnabled());
     }
 
     public String getConversationAssinee(Channel channel) {
@@ -74,7 +69,7 @@ public class KmResolveViewModel extends KmViewModel {
         return null;
     }
 
-    public int getConversationStatus(Channel channel) {
+    private int getConversationStatus(Channel channel) {
         if (channel != null && channel.getMetadata() != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
             String status = channel.getMetadata().get(Channel.CONVERSATION_STATUS);
             if (status != null) {
@@ -82,5 +77,9 @@ public class KmResolveViewModel extends KmViewModel {
             }
         }
         return -1;
+    }
+
+    private boolean isResolveStatusEnabled() {
+        return alCustomizationSettings != null && alCustomizationSettings.isAgentApp() && channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType());
     }
 }

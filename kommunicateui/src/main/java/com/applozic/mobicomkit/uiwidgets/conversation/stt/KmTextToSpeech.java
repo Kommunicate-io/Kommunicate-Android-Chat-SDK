@@ -1,9 +1,12 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.stt;
 
 import android.content.Context;
+import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.util.Locale;
@@ -25,7 +28,7 @@ public class KmTextToSpeech implements TextToSpeech.OnInitListener {
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int ttsLang = textToSpeech.setLanguage(Locale.US);
+            int ttsLang = textToSpeech.setLanguage(getLocale());
 
             if (ttsLang == TextToSpeech.LANG_MISSING_DATA || ttsLang == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Toast.makeText(context, "The Language is not supported", Toast.LENGTH_SHORT).show();
@@ -53,5 +56,12 @@ public class KmTextToSpeech implements TextToSpeech.OnInitListener {
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
+    }
+
+    public Locale getLocale() {
+        if (Build.VERSION.SDK_INT >= 21 && !TextUtils.isEmpty(KmPrefSettings.getInstance(context).getTextToSpeechLanguage())) {
+            return Locale.forLanguageTag(KmPrefSettings.getInstance(context).getTextToSpeechLanguage());
+        }
+        return Locale.getDefault();
     }
 }

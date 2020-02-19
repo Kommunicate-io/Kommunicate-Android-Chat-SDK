@@ -135,7 +135,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmSpeechToText;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmTextToSpeech;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
@@ -338,9 +338,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private View mainDivider;
     private FrameLayout frameLayoutProgressbar;
     private RichMessageActionProcessor richMessageActionProcessor;
-    private boolean isTextToSpeechEnabled = true;
-    private boolean isSpeechToTextEnabled = true;
-    private boolean isSendOnSpeechEnd = true;
+    private boolean isTextToSpeechEnabled;
+    private boolean isSpeechToTextEnabled;
+    private boolean isSendOnSpeechEnd;
     private KmTextToSpeech textToSpeech;
     private KmSpeechToText speechToText;
 
@@ -358,6 +358,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+
+        isSpeechToTextEnabled = KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled();
+        isTextToSpeechEnabled = KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
+        isSendOnSpeechEnd = KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
 
         if (isTextToSpeechEnabled) {
             textToSpeech = new KmTextToSpeech(getContext());
@@ -444,7 +448,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             TextView faqOption = customToolbarLayout.findViewById(R.id.kmFaqOption);
 
-            if (KmSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(2)) {
+            if (KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(2)) {
                 faqOption.setVisibility(View.VISIBLE);
                 if (faqOption != null) {
                     faqOption.setOnClickListener(new View.OnClickListener() {

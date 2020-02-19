@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -39,7 +41,7 @@ public class KmSpeechToText implements RecognitionListener {
 
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, TextUtils.isEmpty(KmPrefSettings.getInstance(context).getSpeechToTextLanguage()) ? Locale.getDefault() : KmPrefSettings.getInstance(context).getSpeechToTextLanguage());
             intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
             intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
             intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.getPackageName());

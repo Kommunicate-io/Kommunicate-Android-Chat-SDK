@@ -45,7 +45,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 
 import io.kommunicate.services.KmClientService;
 
@@ -139,7 +139,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
         faqButtonLayout = getActivity().findViewById(R.id.faqButtonLayout);
 
-        if (alCustomizationSettings.isFaqOptionEnabled() || KmSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(1)) {
+        if (alCustomizationSettings.isFaqOptionEnabled() || KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(1)) {
             faqButtonLayout.setVisibility(View.VISIBLE);
             TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
 

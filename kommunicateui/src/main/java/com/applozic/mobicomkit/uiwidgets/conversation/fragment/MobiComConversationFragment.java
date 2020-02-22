@@ -461,13 +461,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         });
 
-
-        // check if conversation is a resolved one, and display the respective feedback layouts
-        // also open the feedback input fragment if feedback isn't set
-        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
-            setFeedbackDisplay(true);
-        }
-
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
 
         sendButton = (ImageButton) individualMessageSendLayout.findViewById(R.id.conversation_send);
@@ -1796,6 +1789,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         InstructionUtil.showInstruction(getActivity(), R.string.instruction_go_back_to_recent_conversation_list, MobiComKitActivityInterface.INSTRUCTION_DELAY, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());
+
+        // check if conversation is a resolved one, and display the respective feedback layouts
+        // also open the feedback input fragment if feedback isn't set
+        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
+            setFeedbackDisplay(true);
+        } else {
+            setFeedbackDisplay(false);
+        }
     }
 
 

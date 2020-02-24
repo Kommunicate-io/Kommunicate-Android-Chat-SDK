@@ -5,17 +5,14 @@ import android.content.pm.ApplicationInfo;
 
 import androidx.core.content.ContextCompat;
 
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+
 
 public class KmUtils {
 
@@ -41,11 +38,6 @@ public class KmUtils {
         }
     }
 
-    public static void setDrawableTint(TextView textView, int colorId, int index) {
-        textView.getCompoundDrawables()[index]
-                .setColorFilter(new PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN));
-    }
-
     public static void showToastAndLog(Context context, int messageResId) {
         Toast.makeText(context, messageResId, Toast.LENGTH_LONG).show();
         Utils.printLog(context, TAG, Utils.getString(context, messageResId));
@@ -53,10 +45,6 @@ public class KmUtils {
 
     public static boolean isAgent(Context context) {
         return User.RoleType.AGENT.getValue().equals(MobiComUserPreference.getInstance(context).getUserRoleType());
-    }
-
-    public static boolean isAgent() {
-        return isAgent(ApplozicService.getAppContext());
     }
 
     public enum PackageType {

@@ -3,35 +3,21 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.KmConversationStatus;
-import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.KmResolveViewModel;
-import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.KmViewModelFactory;
-import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.providers.ViewModelProviders;
-import com.applozic.mobicomkit.uiwidgets.databinding.KmResolveLayoutBinding;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmBottomSlideFragment;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.SearchListFragment;
@@ -45,11 +31,8 @@ public class ConversationFragment extends MobiComConversationFragment implements
     private static final String CHANNEL = "CHANNEL";
     private static final String CONVERSATION_ID = "CONVERSATION_ID";
     private static final String SEARCH_STRING = "SEARCH_STRING";
-    private InputMethodManager inputMethodManager;
-    private Bundle bundle;
-    private KmResolveLayoutBinding resolveLayoutBinding;
-    private KmResolveViewModel resolveViewModel;
-    private ImageButton moreOptionsButton;
+    InputMethodManager inputMethodManager;
+    Bundle bundle;
 
     public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString) {
         ConversationFragment f = new ConversationFragment();
@@ -110,31 +93,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
             messageEditText.setPadding(20, 0, 0, 0);
         }
         sendType.setSelection(1);
-
-        if (view != null) {
-            resolveLayoutBinding = DataBindingUtil.bind(view.findViewById(R.id.kmResolveLayout));
-            if (resolveLayoutBinding != null) {
-                resolveLayoutBinding.setLifecycleOwner(this);
-                resolveViewModel = ViewModelProviders.of(this, new KmViewModelFactory(alCustomizationSettings)).get(KmResolveViewModel.class);
-                resolveLayoutBinding.setResolveViewModel(resolveViewModel);
-                resolveLayoutBinding.setResolveModel(resolveViewModel.getKmResolveModel());
-                moreOptionsButton = view.findViewById(R.id.more_options_btn);
-
-                moreOptionsButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        openFragment(resolveViewModel != null ? resolveViewModel.getCurrentStatus() : 0);
-                    }
-                });
-
-                resolveViewModel.resolveStatusLiveData.observe(this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean aBoolean) {
-                        moreOptionsButton.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
-                    }
-                });
-            }
-        }
 
         messageEditText.setHint(R.string.enter_message_hint);
 
@@ -212,15 +170,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
         return true;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (resolveViewModel != null && channel != null) {
-            resolveViewModel.setChannel(ChannelService.getInstance(getContext()).getChannel(channel.getKey()));
-        }
-    }
-
     public void reload() {
 
         try {
@@ -256,43 +205,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
-    @Override
-    public void onMessageReceived(Message message) {
-        super.onMessageReceived(message);
-        notifyUiForStatusUpdate(message);
-    }
-
-    @Override
-    public void onMessageSync(Message message, String key) {
-        super.onMessageSync(message, key);
-        notifyUiForStatusUpdate(message);
-    }
-
-    public void notifyUiForStatusUpdate(Message message) {
-        if (message != null && message.getMetadata() != null && message.getMetadata().get(Message.KM_STATUS) != null && resolveViewModel != null) {
-            resolveViewModel.updateConversationStatus(KmConversationStatus.getStatusFromName(message.getMetadata().get(Message.KM_STATUS)));
-        }
-    }
-
-    @Override
-    protected void setChannel(Channel channel) {
-        super.setChannel(channel);
-        if (resolveViewModel != null) {
-            resolveViewModel.setChannel(channel);
-        }
-    }
-
-    public void openFragment(int status) {
-        if (getActivity() != null) {
-            FragmentManager fragmentManager = getFragmentManager();
-            if (fragmentManager != null && fragmentManager.findFragmentByTag(KmBottomSlideFragment.getFragTag()) == null) {
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, KmBottomSlideFragment.newInstance(status, channel), KmBottomSlideFragment.getFragTag());
-                fragmentTransaction.addToBackStack(KmBottomSlideFragment.getFragTag());
-                fragmentTransaction.commit();
-            }
-        }
     }
 }

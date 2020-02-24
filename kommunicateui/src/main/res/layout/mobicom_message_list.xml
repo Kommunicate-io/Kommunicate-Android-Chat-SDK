@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:applozic="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,8 +11,8 @@
         android:layout_height="match_parent"
         android:background="@color/transparent_grey_overlay"
         android:clickable="true"
-        android:elevation="20dp"
         android:focusable="true"
+        android:elevation="20dp"
         android:visibility="gone">
 
         <ProgressBar
@@ -42,17 +43,14 @@
                 android:drawSelectorOnTop="true" />
         </FrameLayout>
 
-        <include
-            android:id="@+id/kmResolveLayout"
-            layout="@layout/km_resolve_layout" />
-
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="8"
             android:orientation="horizontal">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout 
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/swipe_container"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -317,8 +315,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_marginBottom="5dp"
                 android:gravity="center_horizontal"
                 android:visibility="gone" />
@@ -436,12 +434,12 @@
                                 android:layout_toLeftOf="@+id/conversation_send"
                                 android:background="@color/applozic_transparent_color"
                                 android:cursorVisible="true"
+                                android:gravity="start"
                                 android:ellipsize="start"
                                 android:fontFamily="sans-serif"
-                                android:gravity="start"
                                 android:inputType="textCapSentences|textMultiLine"
-                                android:layoutDirection="inherit"
                                 android:letterSpacing="0.04"
+                                android:layoutDirection="inherit"
                                 android:maxLines="6"
                                 android:minLines="2"
                                 android:textAlignment="viewStart"
@@ -461,8 +459,8 @@
                                 android:id="@+id/emoji_btn"
                                 android:layout_width="20dp"
                                 android:layout_height="18dp"
-                                android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
+                                android:layout_marginStart="16dp"
                                 android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/smiley" />
 
@@ -470,8 +468,8 @@
                                 android:id="@+id/camera_btn"
                                 android:layout_width="20dp"
                                 android:layout_height="16.3dp"
-                                android:layout_marginStart="29dp"
                                 android:layout_marginLeft="29dp"
+                                android:layout_marginStart="29dp"
                                 android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/camera" />
 
@@ -479,18 +477,18 @@
                                 android:id="@+id/idMultiSelectGalleryButton"
                                 android:layout_width="20dp"
                                 android:layout_height="18dp"
-                                android:layout_marginStart="30dp"
                                 android:layout_marginLeft="30dp"
+                                android:layout_marginStart="30dp"
+                                android:visibility="gone"
                                 android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/km_multiselectgallery_icon"
-                                android:visibility="gone" />
+                                android:src="@drawable/km_multiselectgallery_icon"/>
 
                             <ImageButton
                                 android:id="@+id/file_as_attachment_btn"
                                 android:layout_width="20dp"
                                 android:layout_height="18.3dp"
-                                android:layout_marginStart="30dp"
                                 android:layout_marginLeft="30dp"
+                                android:layout_marginStart="30dp"
                                 android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/attachment" />
 
@@ -498,20 +496,10 @@
                                 android:id="@+id/location_btn"
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_marginStart="29dp"
                                 android:layout_marginLeft="29dp"
+                                android:layout_marginStart="29dp"
                                 android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/locaiton" />
-
-                            <ImageButton
-                                android:id="@+id/more_options_btn"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_marginStart="29dp"
-                                android:layout_marginLeft="29dp"
-                                android:visibility="gone"
-                                android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/ic_more_options" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -633,5 +621,5 @@
     <FrameLayout
         android:id="@+id/idFrameLayoutFeedbackContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 </RelativeLayout>

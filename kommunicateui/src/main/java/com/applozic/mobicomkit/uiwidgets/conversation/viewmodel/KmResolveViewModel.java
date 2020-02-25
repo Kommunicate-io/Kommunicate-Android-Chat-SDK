@@ -29,7 +29,7 @@ public class KmResolveViewModel extends KmViewModel {
 
     public void setChannel(Channel channel) {
         if (assigneeNameLiveData != null) {
-            assigneeNameLiveData.postValue(getConversationAssinee(channel));
+            assigneeNameLiveData.postValue(getConversationAssineeName(channel));
         }
         if (resolveStatusLiveData != null) {
             conversationStatus = getConversationStatus(channel);
@@ -61,11 +61,11 @@ public class KmResolveViewModel extends KmViewModel {
         kmResolve.setVisible(alCustomizationSettings != null && alCustomizationSettings.isAgentApp());
     }
 
-    public String getConversationAssinee(Channel channel) {
-        if (channel != null && channel.getMetadata() != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-            String assigneId = channel.getMetadata().get(Channel.CONVERSATION_ASSIGNEE);
-            if (!TextUtils.isEmpty(assigneId)) {
-                Contact assignee = new AppContactService(ApplozicService.getAppContext()).getContactById(assigneId);
+    public String getConversationAssineeName(Channel channel) {
+        if (channel != null) {
+            String assigneeId = channel.getConversationAssignee();
+            if (!TextUtils.isEmpty(assigneeId)) {
+                Contact assignee = new AppContactService(ApplozicService.getAppContext()).getContactById(assigneeId);
                 if (assignee != null) {
                     return assignee.getDisplayName();
                 }
@@ -74,13 +74,7 @@ public class KmResolveViewModel extends KmViewModel {
         return null;
     }
 
-    public int getConversationStatus(Channel channel) {
-        if (channel != null && channel.getMetadata() != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-            String status = channel.getMetadata().get(Channel.CONVERSATION_STATUS);
-            if (status != null) {
-                return Integer.parseInt(status);
-            }
-        }
-        return -1;
+    private int getConversationStatus(Channel channel) {
+        return channel != null ? channel.getConversationStatus() : -1;
     }
 }

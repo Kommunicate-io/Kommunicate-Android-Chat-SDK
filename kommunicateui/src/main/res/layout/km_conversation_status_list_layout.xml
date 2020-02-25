@@ -12,7 +12,7 @@
         android:id="@+id/kmStatusListLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#99112222"
+        android:background="@color/km_resolve_status_list_background"
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical">
@@ -39,7 +39,7 @@
                     android:layout_gravity="center_vertical"
                     android:lineSpacingExtra="4sp"
                     android:text="@string/km_more_options"
-                    android:textColor="#112222"
+                    android:textColor="@color/km_resolve_status_list_heading"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 

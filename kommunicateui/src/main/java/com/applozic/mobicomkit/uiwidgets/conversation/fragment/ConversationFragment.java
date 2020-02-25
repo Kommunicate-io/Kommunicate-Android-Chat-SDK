@@ -38,6 +38,8 @@ import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 
+import io.kommunicate.utils.KmUtils;
+
 public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment {
 
     private static final String TAG = "ConversationFragment";
@@ -110,7 +112,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
         }
         sendType.setSelection(1);
 
-        if (view != null) {
+        if (view != null && KmUtils.isAgent()) {
             resolveLayoutBinding = DataBindingUtil.bind(view.findViewById(R.id.kmResolveLayout));
             if (resolveLayoutBinding != null) {
                 resolveLayoutBinding.setLifecycleOwner(this);

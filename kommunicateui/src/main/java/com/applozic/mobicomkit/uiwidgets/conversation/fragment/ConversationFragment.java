@@ -271,8 +271,8 @@ public class ConversationFragment extends MobiComConversationFragment implements
     }
 
     public void notifyUiForStatusUpdate(Message message) {
-        if (message != null && message.getMetadata() != null && message.getMetadata().get(Message.KM_STATUS) != null && resolveViewModel != null) {
-            resolveViewModel.updateConversationStatus(KmConversationStatus.getStatusFromName(message.getMetadata().get(Message.KM_STATUS)));
+        if (message != null && !TextUtils.isEmpty(message.getConversationStatus()) && resolveViewModel != null) {
+            resolveViewModel.updateConversationStatus(KmConversationStatus.getStatusFromName(message.getConversationStatus()));
         }
     }
 
@@ -291,7 +291,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, KmBottomSlideFragment.newInstance(status, channel), KmBottomSlideFragment.getFragTag());
                 fragmentTransaction.addToBackStack(KmBottomSlideFragment.getFragTag());
-                fragmentTransaction.commit();
+                fragmentTransaction.commitAllowingStateLoss();
             }
         }
     }

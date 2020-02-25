@@ -58,11 +58,11 @@ public class KmResolveViewModel extends KmViewModel {
         kmResolve.setVisible(isResolveStatusEnabled());
     }
 
-    public String getConversationAssinee(Channel channel) {
-        if (channel != null && channel.getMetadata() != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-            String assigneId = channel.getMetadata().get(Channel.CONVERSATION_ASSIGNEE);
-            if (!TextUtils.isEmpty(assigneId)) {
-                Contact assignee = new AppContactService(ApplozicService.getAppContext()).getContactById(assigneId);
+    public String getConversationAssineeName(Channel channel) {
+        if (channel != null) {
+            String assigneeId = channel.getConversationAssignee();
+            if (!TextUtils.isEmpty(assigneeId)) {
+                Contact assignee = new AppContactService(ApplozicService.getAppContext()).getContactById(assigneeId);
                 if (assignee != null) {
                     return assignee.getDisplayName();
                 }
@@ -72,13 +72,7 @@ public class KmResolveViewModel extends KmViewModel {
     }
 
     private int getConversationStatus(Channel channel) {
-        if (channel != null && channel.getMetadata() != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-            String status = channel.getMetadata().get(Channel.CONVERSATION_STATUS);
-            if (status != null) {
-                return Integer.parseInt(status);
-            }
-        }
-        return -1;
+        return channel != null ? channel.getConversationStatus() : -1;
     }
 
     private boolean isResolveStatusEnabled() {

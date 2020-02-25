@@ -51,6 +51,6 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_gravity="bottom"
-            android:background="#E7EAF2" />
+            android:background="@color/km_resolve_status_item_divider_color" />
     </FrameLayout>
 </layout>

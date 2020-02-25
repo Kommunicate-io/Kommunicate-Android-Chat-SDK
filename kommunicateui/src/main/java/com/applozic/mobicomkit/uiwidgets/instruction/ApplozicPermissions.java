@@ -76,14 +76,6 @@ public class ApplozicPermissions {
         }
     }
 
-    public void requestCallPermission() {
-        if (PermissionsUtils.shouldShowRequestForCallPermission(activity)) {
-            showSnackBar(R.string.phone_call_permission, PermissionsUtils.PERMISSION_CALL, PermissionsUtils.REQUEST_CALL_PHONE);
-        } else {
-            PermissionsUtils.requestPermissions(activity, PermissionsUtils.PERMISSION_CALL, PermissionsUtils.REQUEST_CALL_PHONE);
-        }
-    }
-
     public void requestCameraPermission() {
         if (PermissionsUtils.shouldShowRequestForCameraPermission(activity)) {
             showSnackBar(R.string.phone_camera_permission, PermissionsUtils.PERMISSION_CAMERA, PermissionsUtils.REQUEST_CAMERA);

@@ -527,11 +527,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
         return true;
     }
 
-
-    /**
-     * This interface defines constants for the Cursor and CursorLoader, based on constants defined
-     * in the {@link android.provider.ContactsContract.Contacts} class.
-     */
     public interface ContactsQuery {
         // An identifier for the loader
         int QUERY_ID = 1;

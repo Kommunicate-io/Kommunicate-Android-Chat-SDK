@@ -63,7 +63,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View v) {
-        EditText emailEt = findViewById(R.id.emailIdEt);
+       /* EditText emailEt = findViewById(R.id.emailIdEt);
         EditText phoneEt = findViewById(R.id.phoneNumberEt);
         EditText nameEt = findViewById(R.id.nameEt);
 
@@ -83,7 +83,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             } else if (TextUtils.isEmpty(emailId) && isValidPhone(phoneNumber)) {
                 sendPrechatUser(phoneNumber, emailId, name, phoneNumber);
             }
-        }
+        }*/
     }
 
     public List<KmPrechatInputModel> getDefaultModelList() {

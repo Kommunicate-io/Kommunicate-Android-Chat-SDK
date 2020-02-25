@@ -5,18 +5,18 @@
     android:orientation="vertical">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/prechatTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/prechatInputEt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:letterSpacing="0.06"
-            android:hint="@string/phoneNumberEt"
             android:textColor="@color/prechat_edittext_text_color"
             android:textSize="14sp"
             android:textStyle="normal" />

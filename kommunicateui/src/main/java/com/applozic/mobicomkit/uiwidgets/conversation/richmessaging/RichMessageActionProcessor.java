@@ -14,7 +14,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALGue
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.AlHotelBookingModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 

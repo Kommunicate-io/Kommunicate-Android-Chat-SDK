@@ -2,7 +2,11 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.activities;
 
 import android.app.ProgressDialog;
 import android.os.ResultReceiver;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,14 +15,20 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmPrechatInputModel;
 import com.applozic.mobicommons.json.GsonUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 
 public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String KM_PRECHAT_MODEL_LIST = "preChatModelList";
     private ResultReceiver prechatReceiver;
 
     @Override
@@ -26,9 +36,27 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_km_lead_collection);
 
+        List<KmPrechatInputModel> inputModelList = null;
+
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);
+
+            String preChatModelListJson = getIntent().getStringExtra(KM_PRECHAT_MODEL_LIST);
+            if (!TextUtils.isEmpty(preChatModelListJson)) {
+                inputModelList = Arrays.asList((KmPrechatInputModel[]) GsonUtils.getObjectFromJson(preChatModelListJson, KmPrechatInputModel[].class));
+            }
         }
+
+        if (inputModelList == null || inputModelList.isEmpty()) {
+            inputModelList = getDefaultModelList();
+        }
+
+        RecyclerView kmPreChatRecyclerView = findViewById(R.id.kmPreChatRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        kmPreChatRecyclerView.setLayoutManager(layoutManager);
+        kmPreChatRecyclerView.setAdapter(new KmPrechatInputAdapter(inputModelList));
+
         Button startConversationButton = findViewById(R.id.start_conversation);
         startConversationButton.setOnClickListener(this);
     }
@@ -56,6 +84,31 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
                 sendPrechatUser(phoneNumber, emailId, name, phoneNumber);
             }
         }
+    }
+
+    public List<KmPrechatInputModel> getDefaultModelList() {
+        List<KmPrechatInputModel> inputModelList = new ArrayList<>();
+
+        KmPrechatInputModel emailField = new KmPrechatInputModel();
+        emailField.setType(KmPrechatInputModel.KmInputType.EMAIL);
+        emailField.setField("Email");
+        emailField.setPlaceholder("Enter your EID");
+
+        KmPrechatInputModel nameField = new KmPrechatInputModel();
+        nameField.setType(KmPrechatInputModel.KmInputType.TEXT);
+        nameField.setField("Name");
+        nameField.setPlaceholder("Enter your naam");
+
+        KmPrechatInputModel contactField = new KmPrechatInputModel();
+        contactField.setType(KmPrechatInputModel.KmInputType.NUMBER);
+        contactField.setField("Number");
+        contactField.setPlaceholder("Enter your number");
+
+        inputModelList.add(emailField);
+        inputModelList.add(nameField);
+        inputModelList.add(contactField);
+
+        return inputModelList;
     }
 
     public void sendPrechatUser(String userId, String emailId, String name, String phoneNumber) {

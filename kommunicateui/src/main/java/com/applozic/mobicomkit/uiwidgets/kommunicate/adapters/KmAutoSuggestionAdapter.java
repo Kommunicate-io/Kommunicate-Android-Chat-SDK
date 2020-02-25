@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate;
+package com.applozic.mobicomkit.uiwidgets.kommunicate.adapters;
 
 import android.content.Context;
 import android.database.Cursor;

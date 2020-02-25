@@ -131,7 +131,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessag
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.RichMessageActionProcessor;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAutoSuggestionAdapter;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 
@@ -4328,10 +4328,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onRecordStart() {
         vibrate();
-        toggleRecordViews(false);
-        if (applozicAudioRecordManager != null) {
-            applozicAudioRecordManager.recordAudio();
-        }
+                toggleRecordViews(false);
+            if (applozicAudioRecordManager != null) {
+                applozicAudioRecordManager.recordAudio();
+            }
     }
 
     @Override

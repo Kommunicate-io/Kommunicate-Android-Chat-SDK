@@ -43,20 +43,7 @@
     <string name="cancel_transaction">Do you want to cancel this transaction?</string>
     <string name="go_back">Are you sure you want to exit this page?</string>
     <string name="unable_to_create_conversation">Unable to create conversation.</string>
-
-    <!--
-         Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
-         alphabet using ListView fast scroll.
-    -->
     <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
-
-    <!--
-         When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
-         when using a number of different fields, such as name, e-mail address, address, phone
-         number, etc. When a match occurs that is not the name, there is currently no way to tell
-         which other field was matched. This string is displayed in the secondary display text in
-         ContactsListFragment when a search query match occurs that is not the display name.
-    -->
     <string name="search_match_other">Matches Other Field</string>
     <string name="invite">Invite your friends</string>
     <array name="alphabet_color">
@@ -252,4 +239,16 @@
     <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
+    <string name="km_more_options">More</string>
+    <string name="km_status_resolved">Resolved</string>
+    <string name="km_status_spam">Spam/Irrelevant</string>
+    <string name="km_status_duplicate">Duplicate</string>
+    <string name="km_status_not_responded">Not Responded</string>
+    <string name="km_status_open">Open</string>
+    <string name="km_status_mark_as_spam">Mark as Spam</string>
+    <string name="km_status_mark_as_duplicate">Mark as Duplicate</string>
+    <string name="km_change_status_to_message">Status changed to </string>
+    <string name="km_resolve_conversation">Resolve Conversation</string>
+    <string name="km_reopen_conversation">Reopen Conversation</string>
+    <string name="km_conversation_marked_as_spam">Marked as Spam</string>
 </resources>

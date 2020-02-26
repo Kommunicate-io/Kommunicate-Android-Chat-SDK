@@ -7,7 +7,6 @@ import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.account.user.UserLoginTask;
-import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
@@ -59,7 +58,6 @@ public class KmUserLoginTask extends UserLoginTask {
             } else {
                 new UserClientService(context.get()).clearDataAndPreference();
                 response = new RegisterUserClientService(context.get()).createAccount(user);
-                UserService.getInstance(context.get()).processPackageDetail();
             }
         } catch (Exception e) {
             e.printStackTrace();

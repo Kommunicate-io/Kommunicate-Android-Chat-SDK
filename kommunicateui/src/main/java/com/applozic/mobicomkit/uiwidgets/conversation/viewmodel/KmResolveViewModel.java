@@ -1,0 +1,81 @@
+package com.applozic.mobicomkit.uiwidgets.conversation.viewmodel;
+
+import android.text.TextUtils;
+
+import androidx.lifecycle.MutableLiveData;
+
+import com.applozic.mobicomkit.contact.AppContactService;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.conversation.KmConversationStatus;
+import com.applozic.mobicomkit.uiwidgets.conversation.KmResolve;
+import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.people.channel.Channel;
+import com.applozic.mobicommons.people.contact.Contact;
+
+import io.kommunicate.utils.KmUtils;
+
+
+public class KmResolveViewModel extends KmViewModel {
+    private Channel channel;
+    public MutableLiveData<Boolean> resolveStatusLiveData = new MutableLiveData<>();
+
+    private int conversationStatus;
+    private KmResolve kmResolve;
+
+    public KmResolveViewModel(final AlCustomizationSettings alCustomizationSettings) {
+        super(alCustomizationSettings);
+        kmResolve = new KmResolve();
+    }
+
+    public void setChannel(Channel channel) {
+        conversationStatus = getConversationStatus(channel);
+        updateConversationStatus(conversationStatus);
+        this.channel = channel;
+        if (resolveStatusLiveData != null) {
+            resolveStatusLiveData.postValue(isResolveStatusEnabled());
+        }
+    }
+
+    public KmResolve getKmResolveModel() {
+        return this.kmResolve;
+    }
+
+    public int getCurrentStatus() {
+        return conversationStatus;
+    }
+
+    public void updateConversationStatus(KmResolve resolve) {
+        if (!KmConversationStatus.SPAM_STATUS_NAME.equals(resolve.getStatusName())) {
+            KmConversationStatus.updateConversationStatus(resolve, channel);
+        }
+    }
+
+    public void updateConversationStatus(int conversationStatus) {
+        this.conversationStatus = conversationStatus;
+        kmResolve.setColorResId(KmConversationStatus.getColorId(conversationStatus));
+        kmResolve.setIconId(KmConversationStatus.getIconId(conversationStatus));
+        kmResolve.setStatusName(KmConversationStatus.getStatusText(conversationStatus));
+        kmResolve.setVisible(isResolveStatusEnabled());
+    }
+
+    public String getConversationAssineeName(Channel channel) {
+        if (channel != null) {
+            String assigneeId = channel.getConversationAssignee();
+            if (!TextUtils.isEmpty(assigneeId)) {
+                Contact assignee = new AppContactService(ApplozicService.getAppContext()).getContactById(assigneeId);
+                if (assignee != null) {
+                    return assignee.getDisplayName();
+                }
+            }
+        }
+        return null;
+    }
+
+    private int getConversationStatus(Channel channel) {
+        return channel != null ? channel.getConversationStatus() : -1;
+    }
+
+    private boolean isResolveStatusEnabled() {
+        return KmUtils.isAgent() && channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType());
+    }
+}

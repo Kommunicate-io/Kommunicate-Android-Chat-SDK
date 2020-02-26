@@ -4437,6 +4437,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void onSpeechToTextResult(String text) {
         if (messageEditText != null && !TextUtils.isEmpty(text)) {
             messageEditText.setText(text);
+            messageEditText.setSelection(text.length());
 
             if (isSendOnSpeechEnd && sendButton != null) {
                 sendButton.callOnClick();
@@ -4448,6 +4449,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void onSpeechToTextPartialResult(String text) {
         if (messageEditText != null && !TextUtils.isEmpty(text)) {
             messageEditText.setText(text);
+            messageEditText.setSelection(text.length());
             handleSendAndRecordButtonView(speechToText.isStopped());
         }
     }

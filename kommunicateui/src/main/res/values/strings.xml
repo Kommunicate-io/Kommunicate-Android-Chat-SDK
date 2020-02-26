@@ -252,7 +252,6 @@
     <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
-<<<<<<< HEAD
     <string name="list_item_title">Title *</string>
     <string name="list_item_mr">Mr.</string>
     <string name="list_item_ms">Ms.</string>
@@ -278,6 +277,6 @@
     <string name="km_resolve_conversation">Resolve Conversation</string>
     <string name="km_reopen_conversation">Reopen Conversation</string>
     <string name="km_conversation_marked_as_spam">Marked as Spam</string>
-=======
->>>>>>> Revert "[CM-132] Add Resolve status feature"
+    <string name="km_language_not_supported">The Language is not supported</string>
+    <string name="km_text_to_speech_init_failed">Text to Speech initialization failed!</string>
 </resources>

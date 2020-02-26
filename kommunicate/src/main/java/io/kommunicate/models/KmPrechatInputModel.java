@@ -1,73 +1,110 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.models;
+package io.kommunicate.models;
 
 import android.text.InputType;
 
 import com.applozic.mobicommons.json.JsonMarker;
 
 public class KmPrechatInputModel extends JsonMarker {
-
+    public static final String KM_PRECHAT_MODEL_LIST = "preChatModelList";
     private String field;
     private String placeholder;
     private String type;
-    private boolean required;
     private String element;
     private String validationRegex;
     private String validationError;
+    private String compositeRequiredField;
+    private boolean required;
+    private boolean displayValidationError;
+    private boolean displayEmptyFieldError;
 
     public String getField() {
         return field;
     }
 
-    public void setField(String field) {
+    public KmPrechatInputModel setField(String field) {
         this.field = field;
+        return this;
     }
 
     public String getPlaceholder() {
         return placeholder;
     }
 
-    public void setPlaceholder(String placeholder) {
+    public KmPrechatInputModel setPlaceholder(String placeholder) {
         this.placeholder = placeholder;
+        return this;
     }
 
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public KmPrechatInputModel setType(String type) {
         this.type = type;
+        return this;
     }
 
     public boolean isRequired() {
         return required;
     }
 
-    public void setRequired(boolean required) {
+    public KmPrechatInputModel setRequired(boolean required) {
         this.required = required;
+        return this;
     }
 
     public String getElement() {
         return element;
     }
 
-    public void setElement(String element) {
+    public KmPrechatInputModel setElement(String element) {
         this.element = element;
+        return this;
     }
 
     public String getValidationRegex() {
         return validationRegex;
     }
 
-    public void setValidationRegex(String validationRegex) {
+    public KmPrechatInputModel setValidationRegex(String validationRegex) {
         this.validationRegex = validationRegex;
+        return this;
     }
 
     public String getValidationError() {
         return validationError;
     }
 
-    public void setValidationError(String validationError) {
+    public KmPrechatInputModel setValidationError(String validationError) {
         this.validationError = validationError;
+        return this;
+    }
+
+    public boolean isDisplayValidationError() {
+        return displayValidationError;
+    }
+
+    public KmPrechatInputModel setDisplayValidationError(boolean displayValidationError) {
+        this.displayValidationError = displayValidationError;
+        return this;
+    }
+
+    public boolean isDisplayEmptyFieldError() {
+        return displayEmptyFieldError;
+    }
+
+    public KmPrechatInputModel setDisplayEmptyFieldError(boolean displayEmptyFieldError) {
+        this.displayEmptyFieldError = displayEmptyFieldError;
+        return this;
+    }
+
+    public String getCompositeRequiredField() {
+        return compositeRequiredField;
+    }
+
+    public KmPrechatInputModel setCompositeRequiredField(String compositeRequiredField) {
+        this.compositeRequiredField = compositeRequiredField;
+        return this;
     }
 
     public static class KmInputType {

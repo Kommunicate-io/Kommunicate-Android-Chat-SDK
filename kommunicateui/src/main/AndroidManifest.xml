@@ -18,6 +18,14 @@
                 android:resource="@xml/applozic_provider_paths" />
         </provider>
 
+        <service
+            android:name="com.applozic.mobicomkit.uiwidgets.KmFirebaseMessagingService"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
             android:configChanges="keyboardHidden|screenSize|locale|smallestScreenSize|screenLayout|orientation"

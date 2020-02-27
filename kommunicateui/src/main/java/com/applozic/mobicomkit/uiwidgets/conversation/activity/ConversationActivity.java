@@ -20,10 +20,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 
+import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -33,7 +33,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.core.app.NavUtils;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -75,7 +74,6 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobiComKitBroadcastReceiver;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragment;
@@ -269,20 +267,13 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     protected void onStop() {
         super.onStop();
-        final String deviceKeyString = MobiComUserPreference.getInstance(this).getDeviceKeyString();
-        final String userKeyString = MobiComUserPreference.getInstance(this).getSuUserKeyString();
-        Intent intent = new Intent(this, ApplozicMqttIntentService.class);
-        intent.putExtra(ApplozicMqttIntentService.USER_KEY_STRING, userKeyString);
-        intent.putExtra(ApplozicMqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
-        ApplozicMqttIntentService.enqueueWork(this, intent);
+        Applozic.disconnectPublish(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Intent subscribeIntent = new Intent(this, ApplozicMqttIntentService.class);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.SUBSCRIBE, true);
-        ApplozicMqttIntentService.enqueueWork(this, subscribeIntent);
+        Applozic.connectPublish(this);
 
         if (!Utils.isInternetAvailable(getApplicationContext())) {
             String errorMessage = getResources().getString(R.string.internet_connection_not_available);
@@ -759,13 +750,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 showSnackBar(R.string.phone_camera_permission_not_granted);
             }
-        } else if (requestCode == PermissionsUtils.REQUEST_CONTACT) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                showSnackBar(R.string.contact_permission_granted);
-                processContact();
-            } else {
-                showSnackBar(R.string.contact_permission_not_granted);
-            }
         } else if (requestCode == PermissionsUtils.REQUEST_CAMERA_FOR_PROFILE_PHOTO) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showSnackBar(R.string.phone_camera_permission_granted);
@@ -983,8 +967,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     public void onConnected(Bundle bundle) {
         try {
-            Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if (mCurrentLocation == null) {
+            Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            if (currentLocation == null) {
                 Toast.makeText(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
                 locationRequest = new LocationRequest();
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -992,8 +976,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 locationRequest.setFastestInterval(FASTEST_INTERVAL);
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
-            if (mCurrentLocation != null && conversation != null) {
-                conversation.attachLocation(mCurrentLocation);
+            if (currentLocation != null && conversation != null) {
+                conversation.attachLocation(currentLocation);
             }
         } catch (Exception e) {
         }
@@ -1218,16 +1202,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public void processContact() {
-        if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForContactPermission(this)) {
-            applozicPermission.requestContactPermission();
-        } else {
-            Intent contactIntent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-            contactIntent.setType(ContactsContract.Contacts.CONTENT_TYPE);
-            startActivityForResult(contactIntent, MultimediaOptionFragment.REQUEST_CODE_CONTACT_SHARE);
         }
     }
 

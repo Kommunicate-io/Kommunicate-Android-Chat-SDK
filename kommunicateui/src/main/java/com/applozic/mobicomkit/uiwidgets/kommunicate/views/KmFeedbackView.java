@@ -12,14 +12,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.FeedbackInputFragment;
 import io.kommunicate.models.KmFeedback;
 
 /**
- * fragment for the feedback display view
+ * fragment for the feedback display view.
  *
  * @author shubham
  * @date september '19
@@ -38,7 +37,7 @@ public class KmFeedbackView extends LinearLayout {
     KmFeedbackViewCallbacks kmFeedbackViewCallbackListener;
 
     /**
-     * inflate the view from the layout
+     * inflate the view from the layout.
      *
      * @param context the activity context
      * @return the inflated linear layout
@@ -65,7 +64,7 @@ public class KmFeedbackView extends LinearLayout {
     }
 
     /**
-     * initialize the view
+     * initialize the view.
      *
      * @param view the root view passed
      */
@@ -88,7 +87,7 @@ public class KmFeedbackView extends LinearLayout {
             @Override
             public void onGlobalLayout() {
                 int heightInPixels = Math.round(DimensionsUtils.convertDpToPixel(70));
-                if(scrollViewFeedbackCommentWrap.getHeight() > heightInPixels) {
+                if (scrollViewFeedbackCommentWrap.getHeight() > heightInPixels) {
                     LayoutParams layoutParams = (LayoutParams) scrollViewFeedbackCommentWrap.getLayoutParams();
                     layoutParams.height = heightInPixels;
 
@@ -99,7 +98,7 @@ public class KmFeedbackView extends LinearLayout {
     }
 
     /**
-     * set the feedback data and showFeedbackView the respective feedback layout views and viewgroups
+     * set the feedback data and showFeedbackView the respective feedback layout views and viewgroups.
      *
      * @param context  the context
      * @param feedback the feedback object
@@ -107,8 +106,9 @@ public class KmFeedbackView extends LinearLayout {
     public void showFeedback(Context context, KmFeedback feedback) {
         constraintLayoutFeedbackTopLayout.setVisibility(VISIBLE);
 
-        int rating = feedback.getRating();
-        switch (rating) {
+        int ratingValue = feedback.getRating();
+
+        switch (ratingValue) {
             case FeedbackInputFragment.RATING_POOR:
                 imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_sad_1));
                 break;
@@ -118,6 +118,9 @@ public class KmFeedbackView extends LinearLayout {
             case FeedbackInputFragment.RATING_GOOD:
                 imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_happy));
                 break;
+            default:
+                imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_confused));
+
         }
 
         if (feedback.getComments() != null) {

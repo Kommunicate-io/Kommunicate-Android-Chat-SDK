@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
+import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
@@ -68,9 +69,16 @@ public class Kommunicate {
     private static final String SKIP_ROUTING = "SKIP_ROUTING";
     public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
     public static final String KM_ALREADY_LOGGED_IN_STATUS = "ALREADY_LOGGED_IN";
+    public static final String PLACEHOLDER_APP_ID = "<Your-APP-ID>";
 
     public static void init(Context context, String applicationKey) {
-        Applozic.init(context, applicationKey);
+        if (TextUtils.isEmpty(applicationKey)) {
+            KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
+        } else if (TextUtils.isEmpty(Applozic.getInstance(context).getApplicationKey()) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
+            Applozic.init(context, applicationKey);
+        } else if (!applicationKey.equals(Applozic.getInstance(context).getApplicationKey())) {
+            KmUtils.showToastAndLog(context, R.string.km_clear_app_data);
+        }
     }
 
     public static void login(Context context, final KMUser kmUser, final KMLoginHandler handler) {
@@ -94,7 +102,7 @@ public class Kommunicate {
                 logout(context, new KMLogoutHandler() {
                     @Override
                     public void onSuccess(Context context) {
-                        login(context, kmUser, handler, null);
+                        login(context, kmUser, getKmLoginHandlerWithPush(handler), null);
                     }
 
                     @Override
@@ -104,8 +112,37 @@ public class Kommunicate {
                 });
             }
         } else {
-            login(context, kmUser, handler, null);
+            login(context, kmUser, getKmLoginHandlerWithPush(handler), null);
         }
+    }
+
+    private static KMLoginHandler getKmLoginHandlerWithPush(final KMLoginHandler handler) {
+        return new KMLoginHandler() {
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, final Context context) {
+                if (handler != null) {
+                    handler.onSuccess(registrationResponse, context);
+                }
+                Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
+                    @Override
+                    public void onSuccess(RegistrationResponse registrationResponse) {
+                        Utils.printLog(context, TAG, "Registered for push notifications : " + registrationResponse);
+                    }
+
+                    @Override
+                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                        Utils.printLog(context, TAG, "Failed to register for push notifications : " + registrationResponse + " \n\n " + exception);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                if (handler != null) {
+                    handler.onFailure(registrationResponse, exception);
+                }
+            }
+        };
     }
 
     public static void login(Context context, KMUser kmUser, KMLoginHandler handler, ResultReceiver prechatReceiver) {
@@ -125,7 +162,8 @@ public class Kommunicate {
             @Override
             public void onSuccess(Context context) {
                 KmDatabaseHelper.getInstance(context).deleteDatabase();
-                Kommunicate.setDeviceToken(context, null);
+                KmPreference.getInstance(context).setFcmRegistrationCallDone(false);
+                Applozic.getInstance(context).setApplicationKey(null);
                 logoutHandler.onSuccess(context);
             }
 
@@ -454,21 +492,51 @@ public class Kommunicate {
         return MobiComUserPreference.getInstance(context).isLoggedIn();
     }
 
-    public static void registerForPushNotification(Context context, String token, KmPushNotificationHandler listener) {
+    public static void registerForPushNotification(final Context context, String token, final KmPushNotificationHandler listener) {
         if (TextUtils.isEmpty(token)) {
-            listener.onFailure(null, new KmException("Push token cannot be null or empty"));
+            if (listener != null) {
+                listener.onFailure(null, new KmException("Push token cannot be null or empty"));
+            }
             return;
         }
 
-        if (!token.equals(getDeviceToken(context))) {
-            new PushNotificationTask(context, token, listener).execute();
-        }
+        if (!token.equals(getDeviceToken(context)) || !KmPreference.getInstance(context).isFcmRegistrationCallDone()) {
+            setDeviceToken(context, token);
+            new PushNotificationTask(context, token, new KmPushNotificationHandler() {
+                @Override
+                public void onSuccess(RegistrationResponse registrationResponse) {
+                    KmPreference.getInstance(context).setFcmRegistrationCallDone(true);
+                    if (listener != null) {
+                        listener.onSuccess(registrationResponse);
+                    }
+                }
 
-        setDeviceToken(context, token);
+                @Override
+                public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                    if (listener != null) {
+                        listener.onFailure(registrationResponse, exception);
+                    }
+                }
+            }).execute();
+        }
+    }
+
+    public static void updateDeviceToken(Context context, String deviceToken) {
+        if (TextUtils.isEmpty(deviceToken)) {
+            return;
+        }
+        if (MobiComUserPreference.getInstance(context).isRegistered() && !deviceToken.equals(getDeviceToken(context))) {
+            try {
+                new RegisterUserClientService(context).updatePushNotificationId(deviceToken);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        setDeviceToken(context, deviceToken);
     }
 
     public static void registerForPushNotification(Context context, KmPushNotificationHandler listener) {
-        registerForPushNotification(context, Kommunicate.getDeviceToken(context), listener);
+        registerForPushNotification(context, getDeviceToken(context), listener);
     }
 
     public static boolean isKmNotification(Context context, Map<String, String> data) {

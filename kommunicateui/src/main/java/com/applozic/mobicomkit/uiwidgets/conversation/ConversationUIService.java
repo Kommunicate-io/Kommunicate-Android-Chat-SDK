@@ -37,7 +37,6 @@ import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.contact.ContactService;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
@@ -191,7 +190,7 @@ public class ConversationUIService {
     }
 
     /**
-     * send the the attachment messages
+     * send the the attachment messages.
      * @param attachmentList the list of messages
      * @param messageText the message text
      */
@@ -246,20 +245,6 @@ public class ConversationUIService {
                 }
             }
 
-            if (requestCode == MultimediaOptionFragment.REQUEST_CODE_CONTACT_SHARE && resultCode == Activity.RESULT_OK) {
-
-                try {
-                    File vCradFile = new ContactService(fragmentActivity).vCard(intent.getData());
-
-                    if (vCradFile != null) {
-                        getConversationFragment().sendMessage(Message.ContentType.CONTACT_MSG.getValue(), vCradFile.getAbsolutePath());
-                    }
-
-                } catch (Exception e) {
-                    Toast.makeText(fragmentActivity, fragmentActivity.getString(R.string.applozic_failed_to_load_contact), Toast.LENGTH_SHORT).show();
-                    Log.e("Exception::", "Exception", e);
-                }
-            }
             if (requestCode == MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT && resultCode == Activity.RESULT_OK) {
                 ArrayList<Uri> attachmentList = intent.getParcelableArrayListExtra(MobiComAttachmentSelectorActivity.MULTISELECT_SELECTED_FILES);
                 String messageText = intent.getStringExtra(MobiComAttachmentSelectorActivity.MULTISELECT_MESSAGE);

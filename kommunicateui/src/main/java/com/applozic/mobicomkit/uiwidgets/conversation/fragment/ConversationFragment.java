@@ -18,33 +18,21 @@ import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.MultimediaOptionsGridView;
-import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMultimediaPopupAdapter;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-
 public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment {
 
-    public static final int ATTCHMENT_OPTIONS = 6;
     private static final String TAG = "ConversationFragment";
-    private final static String CONTACT = "CONTACT";
-    private final static String CHANNEL = "CHANNEL";
-    private final static String CONVERSATION_ID = "CONVERSATION_ID";
-    private final static String SEARCH_STRING = "SEARCH_STRING";
+    private static final String CONTACT = "CONTACT";
+    private static final String CHANNEL = "CHANNEL";
+    private static final String CONVERSATION_ID = "CONVERSATION_ID";
+    private static final String SEARCH_STRING = "SEARCH_STRING";
     InputMethodManager inputMethodManager;
     Bundle bundle;
-    private MultimediaOptionsGridView popupGrid;
-    private List<String> attachmentKey = new ArrayList<>();
-    private List<String> attachmentText = new ArrayList<>();
-    private List<String> attachmentIcon = new ArrayList<>();
 
     public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString) {
         ConversationFragment f = new ConversationFragment();
@@ -81,14 +69,14 @@ public class ConversationFragment extends MobiComConversationFragment implements
         }
     }
 
-    public void attachLocation(Location mCurrentLocation) {
-        String address = LocationUtils.getAddress(getActivity(), mCurrentLocation);
+    public void attachLocation(Location currentLocation) {
+        String address = LocationUtils.getAddress(getActivity(), currentLocation);
         if (!TextUtils.isEmpty(address)) {
             address = "Address: " + address + "\n";
         } else {
             address = "";
         }
-        this.messageEditText.setText(address + "http://maps.google.com/?q=" + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude());
+        this.messageEditText.setText(address + "http://maps.google.com/?q=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,7 +86,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
         hideExtendedSendingOptionLayout = true;
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        populateAttachmentOptions();
 
         if (alCustomizationSettings.isHideAttachmentButton()) {
 
@@ -143,18 +130,12 @@ public class ConversationFragment extends MobiComConversationFragment implements
                             Contact withUserContact = appContactService.getContactById(userId);
                             if (withUserContact.isBlocked()) {
                                 userBlockDialog(false, withUserContact, true);
-                            } else {
-                                processAttachButtonClick(view);
                             }
                         }
-                    } else {
-                        processAttachButtonClick(view);
                     }
                 } else if (contact != null) {
                     if (contact.isBlocked()) {
                         userBlockDialog(false, contact, false);
-                    } else {
-                        processAttachButtonClick(view);
                     }
                 }
             }
@@ -179,12 +160,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
         return (multimediaPopupGrid.getVisibility() == View.VISIBLE || emoticonsFrameLayout.getVisibility() == View.VISIBLE);
     }
 
-    public void hideMultimediaOptionGrid() {
-        if (multimediaPopupGrid.getVisibility() == View.VISIBLE) {
-            multimediaPopupGrid.setVisibility(View.GONE);
-        }
-    }
-
     @Override
     public boolean onQueryTextChange(String newText) {
         if (TextUtils.isEmpty(newText)) {
@@ -193,48 +168,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
             conversationAdapter.getFilter().filter(newText);
         }
         return true;
-    }
-
-
-    void processAttachButtonClick(View view) {
-        MobicomMultimediaPopupAdapter mobicomMultimediaPopupAdapter = new MobicomMultimediaPopupAdapter(getActivity(), attachmentIcon, attachmentText);
-        mobicomMultimediaPopupAdapter.setAlCustomizationSettings(alCustomizationSettings);
-        multimediaPopupGrid.setAdapter(mobicomMultimediaPopupAdapter);
-
-        int noOfColumn = (attachmentKey.size() == ATTCHMENT_OPTIONS) ? 3 : attachmentKey.size();
-        multimediaPopupGrid.setNumColumns(noOfColumn);
-        multimediaPopupGrid.setVisibility(View.VISIBLE);
-        if (inputMethodManager.isActive()) {
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-
-        MultimediaOptionsGridView itemClickHandler = new MultimediaOptionsGridView(getActivity(), multimediaPopupGrid);
-        itemClickHandler.setMultimediaClickListener(attachmentKey);
-
-    }
-
-    private void populateAttachmentOptions() {
-        if (attachmentKey != null && attachmentKey.size() > 0) {
-            attachmentKey.clear();
-            attachmentText.clear();
-            attachmentIcon.clear();
-        }
-
-        String[] allKeys = getResources().getStringArray(R.array.multimediaOptions_without_price_key);
-        String[] allValues = getResources().getStringArray(R.array.multimediaOptions_without_price_text);
-        String[] allIcons = getResources().getStringArray(R.array.multimediaOptionIcons_without_price);
-
-        Map<String, Boolean> maps = alCustomizationSettings.getAttachmentOptions();
-
-        for (int index = 0; index < allKeys.length; index++) {
-
-            String key = allKeys[index];
-            if (maps == null || maps.get(key) == null || maps.get(key)) {
-                attachmentKey.add(key);
-                attachmentText.add(allValues[index]);
-                attachmentIcon.add(allIcons[index]);
-            }
-        }
     }
 
     public void reload() {

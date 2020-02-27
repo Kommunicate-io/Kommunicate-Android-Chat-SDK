@@ -3,11 +3,17 @@ package kommunicate.io.sample;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
+
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.appcompat.widget.AppCompatButton;
+
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -26,7 +32,6 @@ import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
 import io.kommunicate.app.BuildConfig;
 import io.kommunicate.callbacks.KmCallback;
-import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
@@ -61,8 +66,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    if (isPlaceHolderAppId()) {
+                        return;
+                    }
                     final String mUserIdText = mUserId.getText().toString().trim();
-
                     String mPasswordText = mPassword.getText().toString().trim();
                     if (TextUtils.isEmpty(mUserIdText) || mUserId.getText().toString().trim().length() == 0) {
                         Toast.makeText(getBaseContext(), R.string.enter_user_id, Toast.LENGTH_SHORT).show();
@@ -84,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
         visitorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isPlaceHolderAppId()) {
+                    return;
+                }
                 final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
                 progressDialog.setTitle("Logging in..");
                 progressDialog.setMessage("Please wait...");
@@ -106,10 +116,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public boolean isPlaceHolderAppId() {
+        if (Kommunicate.PLACEHOLDER_APP_ID.equals(APP_ID)) {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setCancelable(true);
+            dialogBuilder.setMessage(Utils.getString(this, R.string.invalid_app_id_error));
+            dialogBuilder.show();
+            return true;
+        }
+        return false;
+    }
+
     public String getInvalidAppIdError(RegistrationResponse registrationResponse) {
         if (registrationResponse != null) {
             if (registrationResponse.getMessage() != null && INVALID_APP_ID.equals(registrationResponse.getMessage())) {
-                return getString(R.string.inavild_app_id_error);
+                return getString(R.string.invalid_app_id_error);
             } else {
                 return registrationResponse.getMessage();
             }
@@ -180,18 +201,6 @@ public class MainActivity extends AppCompatActivity {
                     metadata.put("skipBot", "true");
                     ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
-
-                Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
-                    @Override
-                    public void onSuccess(RegistrationResponse registrationResponse) {
-
-                    }
-
-                    @Override
-                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-
-                    }
-                });
 
                 try {
                     KmConversationHelper.openConversation(context, true, null, new KmCallback() {

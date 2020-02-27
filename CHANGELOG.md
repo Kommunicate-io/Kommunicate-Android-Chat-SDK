@@ -3,6 +3,16 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 1.9.6
+* Changed the CSAT rating scale to 1,5,10
+* Show toast in case of APP_ID change
+* Fixed MQTT not working for users registered in app version 112
+* Fixed file access issue for apps targetting SDK version 29
+* Fixed issue where file upload was not working after the first install
+
+## Kommunicate Android SDK 1.9.5
+Removed all contact related permissions and code
+
 ## Kommunicate Android SDK 1.9.4
 
 Features:-
@@ -15,6 +25,7 @@ Features:-
 3) Optimised login flow and push notification registration. The functions will internally check for already logged in user.
 4) Added method to update bot language
 5) Added deepLink support in web-links rich messages
+6) Added new file provider authority for Kommunicate SDK to avoid conflicts with other file providers.
 
 Fixes:-
 1) Fixed FAQ button click on the toolbar

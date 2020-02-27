@@ -263,4 +263,7 @@
     <string name="description_unavailable">Description unavailable</string>
     <string name="room_night_detail">(1 Room for %1$d Nights)</string>
     <string name="room_name_unavailable">Room name unavailable</string>
+    <string name="km_speech_listening_text">Listening...</string>
+    <string name="km_language_not_supported">The Language is not supported</string>
+    <string name="km_text_to_speech_init_failed">Text to Speech initialization failed!</string>
 </resources>

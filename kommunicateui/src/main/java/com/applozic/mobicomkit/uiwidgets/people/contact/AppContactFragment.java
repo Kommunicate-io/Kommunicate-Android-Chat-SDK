@@ -97,17 +97,11 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     private int mPreviouslySelectedSearchItem = 0;
     private BaseContactService contactService;
     private Button shareButton;
-    private TextView resultTextView;
-    private List<Contact> contactList;
-    private boolean syncStatus = true;
     private String[] userIdArray;
     private MobiComUserPreference userPreference;
-    private boolean isScrolling = false;
     private int visibleThreshold = 0;
-    private int currentPage = 0;
     private int previousTotalItemCount = 0;
     private boolean loading = true;
-    private int startingPageIndex = 0;
     private ContactDatabase contactDatabase;
 
     /**
@@ -216,7 +210,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         View view = inflater.inflate(R.layout.contact_list_fragment, container, false);
         shareButton = (Button) view.findViewById(R.id.actionButton);
         shareButton.setVisibility(alCustomizationSettings.isInviteFriendsInContactActivity() ? View.VISIBLE : View.GONE);
-        resultTextView = (TextView) view.findViewById(R.id.result);
         return view;
     }
 
@@ -268,7 +261,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemsCount) {
                 if ((alCustomizationSettings.isRegisteredUserContactListCall() || ApplozicSetting.getInstance(getActivity()).isRegisteredUsersContactCall()) && Utils.isInternetAvailable(getActivity().getApplicationContext()) && TextUtils.isEmpty(userPreference.getContactsGroupId())) {
                     if (totalItemsCount < previousTotalItemCount) {
-                        currentPage = startingPageIndex;
                         previousTotalItemCount = totalItemsCount;
                         if (totalItemsCount == 0) {
                             loading = true;
@@ -281,7 +273,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                     if (loading && (totalItemsCount > previousTotalItemCount)) {
                         loading = false;
                         previousTotalItemCount = totalItemsCount;
-                        currentPage++;
                     }
 
                     if (totalItemsCount - visibleItemCount == 0) {

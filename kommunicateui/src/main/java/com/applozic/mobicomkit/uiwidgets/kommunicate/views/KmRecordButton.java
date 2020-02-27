@@ -3,8 +3,10 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatImageView;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -114,6 +116,10 @@ public class KmRecordButton extends AppCompatImageView implements View.OnTouchLi
 
     public void stopScale() {
         scaleAnim.stop();
+    }
+
+    public void startScaleWithValue(float value) {
+        scaleAnim.startWithValue(value);
     }
 
     public void setListenForRecord(boolean listenForRecord) {

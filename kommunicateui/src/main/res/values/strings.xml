@@ -252,4 +252,7 @@
     <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
+    <string name="km_speech_listening_text">Listening...</string>
+    <string name="km_language_not_supported">The Language is not supported</string>
+    <string name="km_text_to_speech_init_failed">Text to Speech initialization failed!</string>
 </resources>

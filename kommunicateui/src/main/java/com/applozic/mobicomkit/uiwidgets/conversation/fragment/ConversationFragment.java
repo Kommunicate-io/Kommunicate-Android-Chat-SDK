@@ -128,7 +128,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
                 });
             }
 
-            if (alCustomizationSettings != null && alCustomizationSettings.isAgentApp()) {
+            if (alCustomizationSettings != null && KmUtils.isAgent()) {
                 ImageButton moreOptionsButton = view.findViewById(R.id.more_options_btn);
 
                 if (moreOptionsButton != null) {

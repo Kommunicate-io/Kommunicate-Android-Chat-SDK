@@ -239,7 +239,7 @@
     <string name="nameEt">Name</string>
     <string name="phoneNumberEt">Phone number</string>
     <string name="prechat_screen_text">We just need a few details to help you get started</string>
-    <string name="prechat_screen_toast_error_message">Either %1$s or %2$s is required.</string>
+    <string name="prechat_screen_toast_error_message">Either %1$s or %2$s is required</string>
     <string name="invalid_contact_number">Please enter a valid contact number</string>
     <string name="invalid_email_id">Please enter a valid emailId</string>
     <string name="via_email_text">via email</string>

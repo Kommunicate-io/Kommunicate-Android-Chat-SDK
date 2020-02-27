@@ -43,20 +43,7 @@
     <string name="cancel_transaction">Do you want to cancel this transaction?</string>
     <string name="go_back">Are you sure you want to exit this page?</string>
     <string name="unable_to_create_conversation">Unable to create conversation.</string>
-
-    <!--
-         Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
-         alphabet using ListView fast scroll.
-    -->
     <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
-
-    <!--
-         When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
-         when using a number of different fields, such as name, e-mail address, address, phone
-         number, etc. When a match occurs that is not the name, there is currently no way to tell
-         which other field was matched. This string is displayed in the secondary display text in
-         ContactsListFragment when a search query match occurs that is not the display name.
-    -->
     <string name="search_match_other">Matches Other Field</string>
     <string name="invite">Invite your friends</string>
     <array name="alphabet_color">

@@ -4438,6 +4438,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (messageEditText != null && !TextUtils.isEmpty(text)) {
             messageEditText.setText(text);
             messageEditText.setSelection(text.length());
+            handleSendAndRecordButtonView(!isSendOnSpeechEnd);
 
             if (isSendOnSpeechEnd && sendButton != null) {
                 sendButton.callOnClick();

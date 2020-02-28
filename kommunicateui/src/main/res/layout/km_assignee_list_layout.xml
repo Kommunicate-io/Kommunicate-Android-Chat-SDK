@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
-            name="bottomSlideFragment"
-            type="com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmBottomSlideFragment" />
+            name="assigneeListFragment"
+            type="com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAssigneeListFragment" />
     </data>
 
     <RelativeLayout
-        android:id="@+id/kmStatusListLayout"
+        android:id="@+id/kmAssigneeListLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/km_resolve_status_list_background"
@@ -27,8 +28,8 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
-                android:layout_marginLeft="22dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="22dp"
                 android:layout_marginRight="22dp">
@@ -38,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:lineSpacingExtra="4sp"
-                    android:text="@string/km_more_options"
+                    android:text="@string/km_assign_conversation_text"
                     android:textColor="@color/km_resolve_status_list_heading"
                     android:textSize="17sp"
                     android:textStyle="bold" />
@@ -48,12 +49,33 @@
                     android:layout_height="28dp"
                     android:layout_gravity="end"
                     android:background="@color/applozic_transparent_color"
-                    android:onClick="@{(v) -> bottomSlideFragment.dismissFragment()}"
+                    android:onClick="@{(v) -> assigneeListFragment.dismissFragment()}"
                     android:src="@drawable/applozic_ic_action_cancel" />
             </FrameLayout>
 
+            <androidx.appcompat.widget.SearchView
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_margin="16dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/km_assignee_search_background"
+                app:iconifiedByDefault="false"
+                app:queryHint="Search..." />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/kmAssigneeTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:visibility="visible" />
+
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/statusRecyclerView"
+                android:id="@+id/assigneeRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp" />

@@ -266,4 +266,5 @@
     <string name="km_conversation_marked_as_spam">Marked as Spam</string>
     <string name="km_language_not_supported">The Language is not supported</string>
     <string name="km_text_to_speech_init_failed">Text to Speech initialization failed!</string>
+    <string name="km_assign_conversation_text">Assign Conversation</string>
 </resources>

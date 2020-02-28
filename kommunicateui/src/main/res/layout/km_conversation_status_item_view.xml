@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <import type="android.view.View" />
+
+        <import type="android.text.TextUtils" />
 
         <variable
             name="clickHandler"
@@ -31,26 +34,34 @@
             android:layout_marginRight="20dp"
             android:drawableStart="@{itemResolveModel.icon}"
             android:drawableLeft="@{itemResolveModel.icon}"
-            android:drawablePadding="4dp"
+            android:drawablePadding="18.5dp"
             android:text="@{itemResolveModel.statusName}"
             android:textColor="@{itemResolveModel.colorResId}"
-            android:textSize="14sp" />
+            android:textSize="17sp"
+            app:isBold="@{itemResolveModel.statusTextStyleBold}" />
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="18dp"
-            android:layout_gravity="center_vertical|end"
-            android:layout_marginStart="22dp"
-            android:layout_marginLeft="22dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginRight="20dp"
-            android:tint="@{itemResolveModel.colorResId}"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="15.3dp"
+            android:layout_marginRight="15.3dp"
+            android:drawableEnd="@drawable/slide_arrow_right"
+            android:drawableRight="@drawable/slide_arrow_right"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxWidth="200dp"
+            android:maxLines="1"
+            android:text="@{itemResolveModel.extensionText}"
+            android:textSize="17sp"
+            android:visibility="@{!TextUtils.isEmpty(itemResolveModel.extensionText) ? View.VISIBLE : View.GONE}" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_gravity="bottom"
+            android:layout_marginStart="56dp"
+            android:layout_marginLeft="56dp"
             android:background="@color/km_resolve_status_item_divider_color" />
     </FrameLayout>
 </layout>

@@ -58,7 +58,7 @@ public class KmConversationStatusListAdapter extends RecyclerView.Adapter<KmConv
         public void bind(KmResolve obj) {
             binding.setVariable(BR.itemResolveModel, obj);
             binding.executePendingBindings();
-            KmUtils.setDrawableTint(binding.conversationStatusTextView, obj.getColorResId(), 0);
+            KmUtils.setDrawableTint(binding.conversationStatusTextView, obj.getIconTintColorId() == 0 ? obj.getColorResId() : obj.getIconTintColorId(), 0);
         }
     }
 }

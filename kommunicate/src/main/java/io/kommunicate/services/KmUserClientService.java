@@ -99,24 +99,28 @@ public class KmUserClientService extends UserClientService {
         return getKmBaseUrl() + USER_LOGIN_API;
     }
 
-    public String getUserListFilter(List<String> roleList, int startIndex, int pageSize) {
-        StringBuilder urlBuilder = new StringBuilder(getUserListFilterUrl());
+    public String getUserListFilter(List<String> roleList, int startIndex, int pageSize, int orderBy) throws Exception {
+        try {
+            StringBuilder urlBuilder = new StringBuilder(getUserListFilterUrl());
 
-        urlBuilder.append(startIndex);
-        urlBuilder.append("&pageSize=");
-        urlBuilder.append(pageSize);
+            urlBuilder.append(startIndex);
+            urlBuilder.append("&pageSize=");
+            urlBuilder.append(pageSize);
+            urlBuilder.append("&orderBy=");
+            urlBuilder.append(orderBy);
 
-        if (roleList != null && !roleList.isEmpty()) {
-            for (String role : roleList) {
-                urlBuilder.append("&");
-                urlBuilder.append("roleNameList=");
-                urlBuilder.append(role);
+            if (roleList != null && !roleList.isEmpty()) {
+                for (String role : roleList) {
+                    urlBuilder.append("&");
+                    urlBuilder.append("roleNameList=");
+                    urlBuilder.append(role);
+                }
             }
+
+            return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+        } catch (Exception e) {
+            throw e;
         }
-
-        String response = httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
-
-        return response;
     }
 
     public String createConversation(Integer groupId, String userId, String agentId, String applicationId) {

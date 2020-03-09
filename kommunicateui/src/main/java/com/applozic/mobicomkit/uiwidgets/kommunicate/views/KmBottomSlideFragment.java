@@ -123,7 +123,7 @@ public class KmBottomSlideFragment extends Fragment implements KmClickHandler<Km
             FragmentManager fragmentManager = getFragmentManager();
             if (fragmentManager != null && fragmentManager.findFragmentByTag(KmAssigneeListFragment.getFragTag()) == null) {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, KmAssigneeListFragment.newInstance(), KmAssigneeListFragment.getFragTag());
+                fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, KmAssigneeListFragment.newInstance(channel.getConversationAssignee(), channel.getKey()), KmAssigneeListFragment.getFragTag());
                 fragmentTransaction.addToBackStack(KmAssigneeListFragment.getFragTag());
                 fragmentTransaction.commitAllowingStateLoss();
             }

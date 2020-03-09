@@ -108,8 +108,8 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
                 @Override
                 protected void onReceiveResult(int resultCode, Bundle resultData) {
+                    dialog.dismiss();
                     if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
-                        dialog.dismiss();
                         finish();
                     }
                 }
@@ -154,10 +154,10 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
                 @Override
                 protected void onReceiveResult(int resultCode, Bundle resultData) {
+                    dialog.dismiss();
                     if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
                         finish();
                     }
-                    dialog.dismiss();
                 }
             };
 

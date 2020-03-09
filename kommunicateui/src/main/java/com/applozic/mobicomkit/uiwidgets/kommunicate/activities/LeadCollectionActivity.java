@@ -155,9 +155,9 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
                 @Override
                 protected void onReceiveResult(int resultCode, Bundle resultData) {
                     if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
-                        dialog.dismiss();
                         finish();
                     }
+                    dialog.dismiss();
                 }
             };
 

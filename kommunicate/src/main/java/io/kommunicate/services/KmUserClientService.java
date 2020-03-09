@@ -103,17 +103,11 @@ public class KmUserClientService extends UserClientService {
         try {
             StringBuilder urlBuilder = new StringBuilder(getUserListFilterUrl());
 
-            urlBuilder.append(startIndex);
-            urlBuilder.append("&pageSize=");
-            urlBuilder.append(pageSize);
-            urlBuilder.append("&orderBy=");
-            urlBuilder.append(orderBy);
+            urlBuilder.append(startIndex).append("&pageSize=").append(pageSize).append("&orderBy=").append(orderBy);
 
             if (roleList != null && !roleList.isEmpty()) {
                 for (String role : roleList) {
-                    urlBuilder.append("&");
-                    urlBuilder.append("roleNameList=");
-                    urlBuilder.append(role);
+                    urlBuilder.append("&").append("roleNameList=").append(role);
                 }
             }
 
@@ -163,8 +157,7 @@ public class KmUserClientService extends UserClientService {
             urlBuilder.append(appKey);
         }
         if (!TextUtils.isEmpty(type)) {
-            urlBuilder.append("?type=");
-            urlBuilder.append(type);
+            urlBuilder.append("?type=").append(type);
         }
 
         try {
@@ -180,8 +173,7 @@ public class KmUserClientService extends UserClientService {
         StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_URL);
 
         if (!TextUtils.isEmpty(helpDocsKey)) {
-            urlBuilder.append("?key=");
-            urlBuilder.append(helpDocsKey);
+            urlBuilder.append("?key=").append(helpDocsKey);
         }
 
         try {
@@ -195,9 +187,7 @@ public class KmUserClientService extends UserClientService {
 
     public String getSelectedArticles(String helpDocsKey, String queryString) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_SERACH_URL);
-        urlBuilder.append(helpDocsKey);
-        urlBuilder.append("&query=");
-        urlBuilder.append(queryString);
+        urlBuilder.append(helpDocsKey).append("&query=").append(queryString);
 
         try {
             return getResponse(urlBuilder.toString(), "application/json", "application/json");
@@ -210,10 +200,7 @@ public class KmUserClientService extends UserClientService {
 
     public String getArticleAnswer(String articleId, String helpDocsKey) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_URL);
-        urlBuilder.append("/");
-        urlBuilder.append(articleId);
-        urlBuilder.append("?key=");
-        urlBuilder.append(helpDocsKey);
+        urlBuilder.append("/").append(articleId).append("?key=").append(helpDocsKey);
 
         try {
             return getResponse(urlBuilder.toString(), "application/json", "application/json");
@@ -226,11 +213,9 @@ public class KmUserClientService extends UserClientService {
 
     public String getDashboardFaq(String appKey, String articleId) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(getKmBaseUrl());
-        urlBuilder.append("/kb/search?appId=");
-        urlBuilder.append(appKey);
+        urlBuilder.append("/kb/search?appId=").append(appKey);
         if (!TextUtils.isEmpty(articleId)) {
-            urlBuilder.append("&articleId=");
-            urlBuilder.append(articleId);
+            urlBuilder.append("&articleId=").append(articleId);
         }
 
         try {

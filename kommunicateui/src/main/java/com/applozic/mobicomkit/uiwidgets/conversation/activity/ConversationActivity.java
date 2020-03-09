@@ -382,7 +382,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         if (KmUtils.isAgent()) {
-            KmAssigneeListHelper.fetchUserList(this);
+            KmAssigneeListHelper.fetchAssigneeList(this);
         }
         mActionBar = getSupportActionBar();
         if (!TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimary()) && !TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimaryDark())) {

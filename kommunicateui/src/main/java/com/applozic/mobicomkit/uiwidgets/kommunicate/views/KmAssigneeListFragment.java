@@ -76,8 +76,8 @@ public class KmAssigneeListFragment extends Fragment implements TabLayout.OnTabS
         if (binding != null) {
             binding.setAssigneeListFragment(this);
             pagerAdapter = new KmUserPagerAdapter(getFragmentManager(), titleList);
-            KmUserListFragment agentsFragment = KmUserListFragment.getInstance(assigneeId, true, channelId, KmAssigneeListHelper.getAgentList());
-            KmUserListFragment botsFragment = KmUserListFragment.getInstance(assigneeId, false, channelId, KmAssigneeListHelper.getBotList());
+            KmUserListFragment agentsFragment = KmUserListFragment.newInstance(assigneeId, true, channelId, KmAssigneeListHelper.getAssigneeList(KmAssigneeListHelper.AGENT_LIST_CODE));
+            KmUserListFragment botsFragment = KmUserListFragment.newInstance(assigneeId, false, channelId, KmAssigneeListHelper.getAssigneeList(KmAssigneeListHelper.BOT_LIST_CODE));
             pagerAdapter.addFragment(agentsFragment);
             pagerAdapter.addFragment(botsFragment);
 
@@ -86,10 +86,11 @@ public class KmAssigneeListFragment extends Fragment implements TabLayout.OnTabS
             binding.kmAssignTabLayout.setupWithViewPager(binding.kmAssigneeViewPager);
             binding.kmAssignTabLayout.addOnTabSelectedListener(this);
 
-            if (KmAssigneeListHelper.isAgentListEmpty()) {
-                Kommunicate.getAgentsList(getContext(), 0, 100, 1, new KMGetContactsHandler() {
+            if (KmAssigneeListHelper.isListEmpty(KmAssigneeListHelper.AGENT_LIST_CODE)) {
+                Kommunicate.fetchAgentList(getContext(), 0, 100, 1, new KMGetContactsHandler() {
                     @Override
                     public void onSuccess(List<KmContact> contactList) {
+                        KmAssigneeListHelper.addAssigneeList(KmAssigneeListHelper.AGENT_LIST_CODE, contactList);
                         pagerAdapter.getItem(0).addUserList(contactList);
                     }
 
@@ -101,10 +102,11 @@ public class KmAssigneeListFragment extends Fragment implements TabLayout.OnTabS
                 });
             }
 
-            if (KmAssigneeListHelper.isBotListEmpty()) {
-                Kommunicate.getBotList(getContext(), 0, 100, 1, new KMGetContactsHandler() {
+            if (KmAssigneeListHelper.isListEmpty(KmAssigneeListHelper.BOT_LIST_CODE)) {
+                Kommunicate.fetchBotList(getContext(), 0, 100, 1, new KMGetContactsHandler() {
                     @Override
                     public void onSuccess(List<KmContact> contactList) {
+                        KmAssigneeListHelper.addAssigneeList(KmAssigneeListHelper.BOT_LIST_CODE, contactList);
                         pagerAdapter.getItem(1).addUserList(contactList);
                     }
 

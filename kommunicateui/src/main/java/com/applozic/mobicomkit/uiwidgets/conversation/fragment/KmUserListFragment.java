@@ -46,7 +46,7 @@ public class KmUserListFragment extends Fragment implements KmCallback {
     private int channelKey;
     private boolean isAgentTab;
 
-    public static KmUserListFragment getInstance(String assigneeId, boolean isAgentTab, int channelId, List<KmContact> userList) {
+    public static KmUserListFragment newInstance(String assigneeId, boolean isAgentTab, int channelId, List<KmContact> userList) {
         KmUserListFragment fragment = new KmUserListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(Channel.CONVERSATION_ASSIGNEE, assigneeId);

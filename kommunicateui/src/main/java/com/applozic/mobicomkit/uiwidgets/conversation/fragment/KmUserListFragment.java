@@ -154,11 +154,7 @@ public class KmUserListFragment extends Fragment implements KmCallback {
             Channel channel = ChannelService.getInstance(getContext()).getChannel(channelKey);
 
             if (channel != null) {
-                Map<String, String> metadata = channel.getMetadata();
-
-                if (metadata == null) {
-                    metadata = new HashMap<>();
-                }
+                Map<String, String> metadata = new HashMap<>();
 
                 metadata.put(Channel.CONVERSATION_ASSIGNEE, contact.getContactIds());
                 channel.setMetadata(metadata);

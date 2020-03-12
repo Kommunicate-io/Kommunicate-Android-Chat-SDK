@@ -462,12 +462,21 @@ public class Kommunicate {
         new KmConversationCreateTask(chatBuilder.getContext(), channelInfo, handler).execute();
     }
 
-    public static void getAgents(Context context, int startIndex, int pageSize, KMGetContactsHandler handler) {
+    public static void fetchAgentList(Context context, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
         List<String> roleName = new ArrayList<>();
         roleName.add(KMUser.RoleName.APPLICATION_ADMIN.getValue());
         roleName.add(KMUser.RoleName.APPLICATION_WEB_ADMIN.getValue());
+        fetchUserList(context, roleName, startIndex, pageSize, orderBy, handler);
+    }
 
-        new GetUserListAsyncTask(context, roleName, startIndex, pageSize, handler).execute();
+    public static void fetchBotList(Context context, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
+        List<String> roleName = new ArrayList<>();
+        roleName.add(KMUser.RoleName.BOT.getValue());
+        fetchUserList(context, roleName, startIndex, pageSize, orderBy, handler);
+    }
+
+    public static void fetchUserList(Context context, List<String> roleNameList, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
+        new GetUserListAsyncTask(context, roleNameList, startIndex, pageSize, orderBy, handler).execute();
     }
 
     public static void getFaqs(Context context, String type, String helpDocsKey, String data, KmFaqTaskListener listener) {

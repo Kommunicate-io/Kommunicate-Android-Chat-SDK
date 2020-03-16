@@ -29,8 +29,8 @@ import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 
 public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-    private static final String PHONE_NUMBER_VALIDATION_REGEX = "^\\d{10}$";
+    public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    public static final String PHONE_NUMBER_VALIDATION_REGEX = "^\\d{10}$";
     private ResultReceiver prechatReceiver;
     private KmPrechatInputAdapter prechatInputAdapter;
     private List<KmPrechatInputModel> inputModelList;

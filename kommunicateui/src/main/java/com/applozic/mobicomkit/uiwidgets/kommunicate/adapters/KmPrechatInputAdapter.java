@@ -30,10 +30,12 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter<KmPrechatInputAd
 
     private List<KmPrechatInputModel> inputModelList;
     private Map<String, String> dataMap;
+    private Map<String, String> inputTextMap;
 
     public KmPrechatInputAdapter(List<KmPrechatInputModel> inputModelList) {
         this.inputModelList = inputModelList;
         this.dataMap = new HashMap<>();
+        this.inputTextMap = new HashMap<>();
     }
 
     @NonNull
@@ -90,22 +92,24 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter<KmPrechatInputAd
                 inputEditText.setInputType(KmPrechatInputModel.KmInputType.getInputType(inputModel.getType()));
                 inputEditText.setTransformationMethod(KmPrechatInputModel.KmInputType.PASSWORD.equals(inputModel.getType()) ? PasswordTransformationMethod.getInstance() : null);
                 textInputLayout.setHint(inputModel.getField());
-                inputEditText.setText(dataMap != null && !TextUtils.isEmpty(dataMap.get(inputModel.getField())) ? dataMap.get(inputModel.getField()) : "");
-                inputEditText.setSelection(dataMap != null && dataMap.get(inputModel.getField()) != null ? dataMap.get(inputModel.getField()).length() : 0);
+
+                inputEditText.setText(inputTextMap != null && !TextUtils.isEmpty(inputTextMap.get(inputModel.getField())) ? inputTextMap.get(inputModel.getField()) : "");
+                inputEditText.setSelection(inputTextMap != null && inputTextMap.get(inputModel.getField()) != null ? inputTextMap.get(inputModel.getField()).length() : 0);
                 inputEditText.setError(getErrorText(inputModel));
             }
         }
     }
 
     public Map<String, String> getDataMap() {
-        return dataMap;
+        return inputTextMap;
     }
 
     public boolean areFieldsValid() {
         boolean isValid = true;
+        inputTextMap.putAll(dataMap);
         for (KmPrechatInputModel inputModel : inputModelList) {
-            boolean isEmptyFieldError = inputModel.isRequired() && TextUtils.isEmpty(dataMap.get(inputModel.getField()));
-            boolean isValidationError = !isInValidCompositeField(inputModel) && !TextUtils.isEmpty(dataMap.get(inputModel.getField())) && !TextUtils.isEmpty(inputModel.getValidationRegex()) && !Pattern.compile(inputModel.getValidationRegex()).matcher(dataMap.get(inputModel.getField())).matches();
+            boolean isEmptyFieldError = inputModel.isRequired() && TextUtils.isEmpty(inputTextMap.get(inputModel.getField()));
+            boolean isValidationError = !isInValidCompositeField(inputModel) && !TextUtils.isEmpty(inputTextMap.get(inputModel.getField())) && !TextUtils.isEmpty(inputModel.getValidationRegex()) && !Pattern.compile(inputModel.getValidationRegex()).matcher(inputTextMap.get(inputModel.getField())).matches();
 
             if (isEmptyFieldError || isValidationError) {
                 isValid = false;
@@ -124,7 +128,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter<KmPrechatInputAd
     }
 
     private boolean isInValidCompositeField(KmPrechatInputModel inputModel) {
-        return !TextUtils.isEmpty(inputModel.getCompositeRequiredField()) && TextUtils.isEmpty(dataMap.get(inputModel.getField())) && TextUtils.isEmpty(dataMap.get(inputModel.getCompositeRequiredField()));
+        return !TextUtils.isEmpty(inputModel.getCompositeRequiredField()) && TextUtils.isEmpty(inputTextMap.get(inputModel.getField())) && TextUtils.isEmpty(inputTextMap.get(inputModel.getCompositeRequiredField()));
     }
 
     private String getString(int resId) {

@@ -443,7 +443,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
             toolbarOnlineTv = customToolbarLayout.findViewById(R.id.onlineTextView);
             toolbarOfflineTv = customToolbarLayout.findViewById(R.id.offlineTextView);
-            KmUtils.setGradientSolidColor(toolbarOnlineTv, themeHelper.getPrimaryColor());
             KmUtils.setGradientStrokeColor(toolbarOnlineTv, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
             KmUtils.setGradientStrokeColor(toolbarOfflineTv, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
 

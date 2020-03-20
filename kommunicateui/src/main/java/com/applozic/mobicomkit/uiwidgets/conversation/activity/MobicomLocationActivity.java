@@ -15,13 +15,18 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.google.android.material.snackbar.Snackbar;
+
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -47,6 +52,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import io.kommunicate.utils.KmUtils;
 
 
 public class MobicomLocationActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -88,7 +95,11 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                 getWindow().setStatusBarColor(Color.parseColor(alCustomizationSettings.getThemeColorPrimaryDark()));
             }
         }
+        toolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
+
         layout = (LinearLayout) findViewById(R.id.footerAd);
         sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -147,7 +158,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             sendLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.printLog(MobicomLocationActivity.this,TAG, "On click of send location button");
+                    Utils.printLog(MobicomLocationActivity.this, TAG, "On click of send location button");
                     if (myLocationMarker != null) {
                         Intent intent = new Intent();
                         intent.putExtra("latitude", myLocationMarker.getPosition().latitude);
@@ -158,7 +169,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                 }
             });
         } catch (Exception e) {
-            Utils.printLog(MobicomLocationActivity.this,TAG, "Check if location permission are added");
+            Utils.printLog(MobicomLocationActivity.this, TAG, "Check if location permission are added");
         }
 
     }

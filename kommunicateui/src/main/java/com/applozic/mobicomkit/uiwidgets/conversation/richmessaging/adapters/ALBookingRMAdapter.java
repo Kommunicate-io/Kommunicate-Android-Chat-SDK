@@ -1,8 +1,10 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALBoo
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALGuestCountModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.AlHotelBookingModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -51,8 +54,8 @@ public class ALBookingRMAdapter extends ALRichMessageAdapter {
     public final int MAX_CHILD_GUEST_COUNT = 2;
     public final int MAX_RATING_VALUE = 5;
 
-    ALBookingRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
-        super(context, model, listener, message);
+    ALBookingRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, KmThemeHelper themeHelper) {
+        super(context, model, listener, message, themeHelper);
 
         if (model.getHotelList() != null) {
             this.hotelList = Arrays.asList((AlHotelBookingModel[])

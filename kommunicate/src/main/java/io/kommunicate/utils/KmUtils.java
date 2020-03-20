@@ -5,8 +5,11 @@ import android.content.pm.ApplicationInfo;
 
 import androidx.core.content.ContextCompat;
 
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.GradientDrawable;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,6 +60,16 @@ public class KmUtils {
 
     public static boolean isAgent() {
         return isAgent(ApplozicService.getAppContext());
+    }
+
+    public static void setGradientSolidColor(View view, int color) {
+        GradientDrawable gradientDrawable = (GradientDrawable) view.getBackground();
+        gradientDrawable.setColor(color);
+    }
+
+    public static void setGradientStrokeColor(View view, int width, int color) {
+        GradientDrawable gradientDrawable = (GradientDrawable) view.getBackground();
+        gradientDrawable.setStroke(width, color);
     }
 
     public enum PackageType {

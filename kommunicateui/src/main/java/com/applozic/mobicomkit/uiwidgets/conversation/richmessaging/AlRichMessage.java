@@ -18,6 +18,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.AL
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -65,6 +66,7 @@ public abstract class AlRichMessage {
     protected AlCustomizationSettings alCustomizationSettings;
     protected ALRichMessageModel model;
     protected KmRichMessageModel kmRichMessageModel;
+    protected KmThemeHelper themeHelper;
     protected Gson gson;
 
     public AlRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
@@ -77,6 +79,7 @@ public abstract class AlRichMessage {
         this.model = (ALRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), ALRichMessageModel.class);
         this.kmRichMessageModel = gson.fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<KmRichMessageModel>() {
         }.getType());
+        themeHelper = KmThemeHelper.getInstance(context, alCustomizationSettings);
     }
 
     //bind views and set the visibilities according to the type of message

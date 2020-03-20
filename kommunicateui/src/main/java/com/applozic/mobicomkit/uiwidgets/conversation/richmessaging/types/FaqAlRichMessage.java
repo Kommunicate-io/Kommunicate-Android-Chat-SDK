@@ -12,9 +12,12 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.List;
+
+import io.kommunicate.utils.KmUtils;
 
 public class FaqAlRichMessage extends AlRichMessage {
 
@@ -76,6 +79,8 @@ public class FaqAlRichMessage extends AlRichMessage {
         if (!TextUtils.isEmpty(actionModel.getName())) {
             actionTextView.setVisibility(View.VISIBLE);
             actionTextView.setText(actionModel.getName());
+            KmUtils.setGradientStrokeColor(actionTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
+            actionTextView.setTextColor(themeHelper.getPrimaryColor());
             setActionListener(actionTextView, model, actionModel, payload);
         }
     }

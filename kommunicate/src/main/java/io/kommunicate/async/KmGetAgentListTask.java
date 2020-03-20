@@ -8,10 +8,10 @@ import com.applozic.mobicommons.json.GsonUtils;
 import java.lang.ref.WeakReference;
 
 import io.kommunicate.callbacks.KmCallback;
-import io.kommunicate.models.KmAgentModel;
+import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.services.KmUserService;
 
-public class KmGetAgentListTask extends AsyncTask<Void, Void, KmAgentModel> {
+public class KmGetAgentListTask extends AsyncTask<Void, Void, KmAppSettingModel> {
 
     private String appKey;
     private KmUserService userService;
@@ -25,9 +25,9 @@ public class KmGetAgentListTask extends AsyncTask<Void, Void, KmAgentModel> {
     }
 
     @Override
-    protected KmAgentModel doInBackground(Void... voids) {
+    protected KmAppSettingModel doInBackground(Void... voids) {
         try {
-            return (KmAgentModel) GsonUtils.getObjectFromJson(userService.getAgentList(appKey), KmAgentModel.class);
+            return (KmAppSettingModel) GsonUtils.getObjectFromJson(userService.getAgentList(appKey), KmAppSettingModel.class);
         } catch (Exception e) {
             e.printStackTrace();
             exception = e;
@@ -36,12 +36,12 @@ public class KmGetAgentListTask extends AsyncTask<Void, Void, KmAgentModel> {
     }
 
     @Override
-    protected void onPostExecute(KmAgentModel agentModel) {
+    protected void onPostExecute(KmAppSettingModel agentModel) {
         if (callback != null) {
             if (exception != null) {
                 callback.onFailure(exception);
             } else if (agentModel != null) {
-                if (KmAgentModel.SUCCESS.equals(agentModel.getCode())) {
+                if (agentModel.isSuccess()) {
                     callback.onSuccess(agentModel.getResponse());
                 } else {
                     callback.onFailure(agentModel);

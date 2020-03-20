@@ -1,8 +1,10 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -26,8 +29,8 @@ public class AlListRMAdapter extends ALRichMessageAdapter {
     private List<ALRichMessageModel.AlElementModel> elementList;
     private Map<String, Object> replyMetadata;
 
-    AlListRMAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, Object> replyMetadata, ALRichMessageListener messageListener) {
-        super(context, messageListener, message);
+    AlListRMAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, Object> replyMetadata, ALRichMessageListener messageListener, KmThemeHelper themeHelper) {
+        super(context, messageListener, message, themeHelper);
         this.elementList = elementList;
         this.replyMetadata = replyMetadata;
     }
@@ -91,6 +94,7 @@ public class AlListRMAdapter extends ALRichMessageAdapter {
             rootLayout = itemView.findViewById(R.id.rootLayout);
             listImage = itemView.findViewById(R.id.listItemImage);
 
+            headerTv.setTextColor(themeHelper.getPrimaryColor());
             rootLayout.setOnClickListener(this);
         }
 

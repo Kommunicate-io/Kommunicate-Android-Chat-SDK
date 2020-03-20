@@ -3,6 +3,7 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.ResultReceiver;
 
+import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
@@ -14,6 +15,7 @@ import java.lang.ref.WeakReference;
 import io.kommunicate.services.KmUserClientService;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 /**
  * Created by ashish on 10/02/18.
@@ -57,6 +59,8 @@ public class KmUserLoginTask extends UserLoginTask {
                 response = userClientService.loginKmUser(user);
             } else {
                 new UserClientService(context.get()).clearDataAndPreference();
+                KmAppSettingPreferences.getInstance().clearInstance();
+                KmAppSettingPreferences.fetchAppSetting(context.get(), Applozic.getInstance(context.get()).getApplicationKey());
                 response = new RegisterUserClientService(context.get()).createAccount(user);
             }
         } catch (Exception e) {

@@ -11,6 +11,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessag
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.AlCardRMAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.AlRichMessageAdapterFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 
 public class CardTypeAlRichMessage extends AlRichMessage {
 
@@ -23,7 +24,7 @@ public class CardTypeAlRichMessage extends AlRichMessage {
         super.createRichMessage();
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         genericCardRecycler.setLayoutManager(layoutManager);
-        AlCardRMAdapter adapter = (AlCardRMAdapter) AlRichMessageAdapterFactory.getInstance().getRMAdapter(context, model, listener, message);
+        AlCardRMAdapter adapter = (AlCardRMAdapter) AlRichMessageAdapterFactory.getInstance().getRMAdapter(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings));
         genericCardRecycler.setAdapter(adapter);
     }
 }

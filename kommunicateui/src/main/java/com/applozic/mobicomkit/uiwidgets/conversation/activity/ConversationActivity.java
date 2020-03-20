@@ -361,7 +361,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         setContentView(R.layout.quickconversion_activity);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
-
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getSecondaryColor());
         customToolbarLayout = myToolbar.findViewById(R.id.custom_toolbar_root_layout);
         setSupportActionBar(myToolbar);
         baseContactService = new AppContactService(this);

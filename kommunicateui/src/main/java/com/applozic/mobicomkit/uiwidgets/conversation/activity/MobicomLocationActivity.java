@@ -99,6 +99,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getSecondaryColor());
 
         layout = (LinearLayout) findViewById(R.id.footerAd);
         sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);

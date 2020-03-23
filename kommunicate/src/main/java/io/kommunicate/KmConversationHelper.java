@@ -151,10 +151,15 @@ public class KmConversationHelper {
             }
             if (launchChat.isWithPreChat()) {
                 try {
-                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {
+                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback<KMUser>() {
                         @Override
-                        public void onReceive(KMUser user, ResultReceiver resultReceiver) {
-                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, resultReceiver, callback), callback));
+                        public void onReceive(KMUser user, Context context, ResultReceiver finishActivityReceiver) {
+                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, finishActivityReceiver, callback), callback));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+
                         }
                     });
                 } catch (KmException e) {
@@ -219,10 +224,15 @@ public class KmConversationHelper {
             }
             if (launchChat.isWithPreChat()) {
                 try {
-                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {
+                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback<KMUser>() {
                         @Override
-                        public void onReceive(KMUser user, ResultReceiver resultReceiver) {
-                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, resultReceiver, callback), callback));
+                        public void onReceive(KMUser user, Context context, ResultReceiver finishActivityReceiver) {
+                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, finishActivityReceiver, callback), callback));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+
                         }
                     });
                 } catch (KmException e) {
@@ -378,10 +388,15 @@ public class KmConversationHelper {
             }
             if (conversationBuilder.isWithPreChat()) {
                 try {
-                    Kommunicate.launchPrechatWithResult(conversationBuilder.getContext(), new KmPrechatCallback() {
+                    Kommunicate.launchPrechatWithResult(conversationBuilder.getContext(), new KmPrechatCallback<KMUser>() {
                         @Override
-                        public void onReceive(KMUser user, ResultReceiver resultReceiver) {
-                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, resultReceiver, callback), callback));
+                        public void onReceive(KMUser user, Context context, ResultReceiver finishActivityReceiver) {
+                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, finishActivityReceiver, callback), callback));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+
                         }
                     });
                 } catch (KmException e) {

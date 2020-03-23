@@ -2,125 +2,171 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.activities;
 
 import android.app.ProgressDialog;
 import android.os.ResultReceiver;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter;
+
+import io.kommunicate.models.KmPrechatInputModel;
+
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.GsonUtils;
 
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 
 public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
+    public static final String PHONE_NUMBER_VALIDATION_REGEX = "^\\d{10}$";
     private ResultReceiver prechatReceiver;
+    private KmPrechatInputAdapter prechatInputAdapter;
+    private List<KmPrechatInputModel> inputModelList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_km_lead_collection);
+        ApplozicService.initWithContext(this);
 
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);
+
+            String preChatModelListJson = getIntent().getStringExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST);
+            if (!TextUtils.isEmpty(preChatModelListJson)) {
+                inputModelList = Arrays.asList((KmPrechatInputModel[]) GsonUtils.getObjectFromJson(preChatModelListJson, KmPrechatInputModel[].class));
+            }
         }
+
+        RecyclerView kmPreChatRecyclerView = findViewById(R.id.kmPreChatRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(RecyclerView.VERTICAL);
+        kmPreChatRecyclerView.setLayoutManager(layoutManager);
+        prechatInputAdapter = new KmPrechatInputAdapter((inputModelList != null && !inputModelList.isEmpty()) ? inputModelList : getDefaultModelList());
+        kmPreChatRecyclerView.setAdapter(prechatInputAdapter);
+
         Button startConversationButton = findViewById(R.id.start_conversation);
         startConversationButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        EditText emailEt = findViewById(R.id.emailIdEt);
-        EditText phoneEt = findViewById(R.id.phoneNumberEt);
-        EditText nameEt = findViewById(R.id.nameEt);
-
-        String emailId = emailEt.getText().toString();
-        String name = nameEt.getText().toString();
-        String phoneNumber = phoneEt.getText().toString();
-
-        if (TextUtils.isEmpty(emailId) && TextUtils.isEmpty(phoneNumber)) {
-            Toast.makeText(this, getString(R.string.prechat_screen_toast_error_message), Toast.LENGTH_SHORT).show();
-        } else {
-            if (TextUtils.isEmpty(emailId) && !isValidPhone(phoneNumber)) {
-                Toast.makeText(this, getString(R.string.invalid_contact_number), Toast.LENGTH_SHORT).show();
-            } else if (!isValidPhone(phoneNumber) && !isValidEmail(emailId)) {
-                Toast.makeText(this, getString(R.string.invalid_email_id), Toast.LENGTH_SHORT).show();
-            } else if (!TextUtils.isEmpty(emailId) && isValidEmail(emailId)) {
-                sendPrechatUser(emailId, emailId, name, phoneNumber);
-            } else if (TextUtils.isEmpty(emailId) && isValidPhone(phoneNumber)) {
-                sendPrechatUser(phoneNumber, emailId, name, phoneNumber);
+        if (prechatInputAdapter != null && prechatInputAdapter.areFieldsValid()) {
+            if (inputModelList != null) {
+                sendPrechatData(prechatInputAdapter.getDataMap());
+            } else {
+                sendPrechatUser(prechatInputAdapter.getDataMap());
             }
         }
     }
 
-    public void sendPrechatUser(String userId, String emailId, String name, String phoneNumber) {
-        KMUser user = new KMUser();
+    public List<KmPrechatInputModel> getDefaultModelList() {
+        List<KmPrechatInputModel> inputModelList = new ArrayList<>();
 
-        if (TextUtils.isEmpty(userId)) {
-            return;
-        } else {
-            user.setUserName(userId);
-        }
+        KmPrechatInputModel emailField = new KmPrechatInputModel();
+        emailField.setType(KmPrechatInputModel.KmInputType.EMAIL);
+        emailField.setRequired(true);
+        emailField.setValidationRegex(EMAIL_VALIDATION_REGEX);
+        emailField.setField(getString(R.string.emailEt));
+        emailField.setCompositeRequiredField(getString(R.string.phoneNumberEt));
 
-        if (!TextUtils.isEmpty(emailId)) {
-            user.setEmail(emailId);
-        }
+        KmPrechatInputModel nameField = new KmPrechatInputModel();
+        nameField.setType(KmPrechatInputModel.KmInputType.TEXT);
+        nameField.setField(getString(R.string.nameEt));
 
-        if (!TextUtils.isEmpty(name)) {
-            user.setDisplayName(name);
-        }
+        KmPrechatInputModel contactField = new KmPrechatInputModel();
+        contactField.setType(KmPrechatInputModel.KmInputType.NUMBER);
+        contactField.setValidationRegex(PHONE_NUMBER_VALIDATION_REGEX);
+        contactField.setField(getString(R.string.phoneNumberEt));
 
-        if (!TextUtils.isEmpty(phoneNumber)) {
-            user.setContactNumber(phoneNumber);
-        }
+        inputModelList.add(emailField);
+        inputModelList.add(nameField);
+        inputModelList.add(contactField);
 
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setCancelable(false);
-        dialog.setMessage(getString(R.string.km_prechat_processing_wait_info));
-        dialog.show();
+        return inputModelList;
+    }
 
-        ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
-            @Override
-            protected void onReceiveResult(int resultCode, Bundle resultData) {
-                if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
+    public void sendPrechatData(Map<String, String> dataMap) {
+        if (dataMap != null) {
+            final ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setCancelable(false);
+            dialog.setMessage(getString(R.string.km_prechat_processing_wait_info));
+            dialog.show();
+
+            ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
+                @Override
+                protected void onReceiveResult(int resultCode, Bundle resultData) {
                     dialog.dismiss();
-                    finish();
+                    if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
+                        finish();
+                    }
                 }
+            };
+
+            Bundle bundle = new Bundle();
+            bundle.putString(KmConstants.KM_USER_DATA, GsonUtils.getJsonFromObject(dataMap, Map.class));
+            bundle.putParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER, finishActivityReceiver);
+            if (prechatReceiver != null) {
+                prechatReceiver.send(KmConstants.PRECHAT_RESULT_CODE, bundle);
             }
-        };
-
-        Bundle bundle = new Bundle();
-        bundle.putString(KmConstants.KM_USER_DATA, GsonUtils.getJsonFromObject(user, KMUser.class));
-        bundle.putParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER, finishActivityReceiver);
-        if (prechatReceiver != null) {
-            prechatReceiver.send(KmConstants.PRECHAT_RESULT_CODE, bundle);
         }
     }
 
-    public boolean isValidEmail(String emailId) {
-        if (TextUtils.isEmpty(emailId)) {
-            return false;
+    public void sendPrechatUser(Map<String, String> dataMap) {
+        if (dataMap != null) {
+            String EMAIL_FIELD = getString(R.string.emailEt);
+            String CONTACT_NUMBER_FILED = getString(R.string.phoneNumberEt);
+            String NAME_FIELD = getString(R.string.nameEt);
+
+            KMUser user = new KMUser();
+
+            user.setUserName(!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD)) ? dataMap.get(EMAIL_FIELD) : dataMap.get(CONTACT_NUMBER_FILED));
+
+            if (!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD))) {
+                user.setEmail(dataMap.get(EMAIL_FIELD));
+            }
+
+            if (!TextUtils.isEmpty(dataMap.get(NAME_FIELD))) {
+                user.setDisplayName(dataMap.get(NAME_FIELD));
+            }
+
+            if (!TextUtils.isEmpty(dataMap.get(CONTACT_NUMBER_FILED))) {
+                user.setContactNumber(dataMap.get(CONTACT_NUMBER_FILED));
+            }
+
+            final ProgressDialog dialog = new ProgressDialog(this);
+            dialog.setCancelable(false);
+            dialog.setMessage(getString(R.string.km_prechat_processing_wait_info));
+            dialog.show();
+
+            ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
+                @Override
+                protected void onReceiveResult(int resultCode, Bundle resultData) {
+                    dialog.dismiss();
+                    if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
+                        finish();
+                    }
+                }
+            };
+
+            Bundle bundle = new Bundle();
+            bundle.putString(KmConstants.KM_USER_DATA, GsonUtils.getJsonFromObject(user, KMUser.class));
+            bundle.putParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER, finishActivityReceiver);
+            if (prechatReceiver != null) {
+                prechatReceiver.send(KmConstants.PRECHAT_RESULT_CODE, bundle);
+            }
         }
-
-        String regex = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-        Pattern pattern = Pattern.compile(regex);
-
-        return pattern.matcher(emailId).matches();
-    }
-
-    public boolean isValidPhone(String phoneNumber) {
-        if (TextUtils.isEmpty(phoneNumber)) {
-            return false;
-        }
-
-        if (phoneNumber.length() < 8) {
-            return false;
-        }
-        return true;
     }
 }

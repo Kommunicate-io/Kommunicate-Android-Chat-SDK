@@ -24,6 +24,7 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
+import com.google.gson.reflect.TypeToken;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAgentModel;
+import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -213,7 +215,7 @@ public class Kommunicate {
         }
     }
 
-    public static void launchPrechatWithResult(Context context, final KmPrechatCallback callback) throws KmException {
+    public static void launchPrechatWithResult(final Context context, final KmPrechatCallback<KMUser> callback) throws KmException {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
         }
@@ -224,7 +226,7 @@ public class Kommunicate {
                 if (KmConstants.PRECHAT_RESULT_CODE == resultCode) {
                     KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(KmConstants.KM_USER_DATA), KMUser.class);
                     if (callback != null) {
-                        callback.onReceive(user, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
+                        callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
                     }
                 }
             }
@@ -239,75 +241,40 @@ public class Kommunicate {
         }
     }
 
-    @Deprecated
-    public static void launchSingleChat(final Context context, final String groupName, KMUser kmUser, boolean withPreChat, final boolean isUnique, final List<String> agents, final List<String> bots, final String clientConversationId, final KmCallback callback) {
-        if (callback == null) {
-            return;
-        }
-        if (!(context instanceof Activity)) {
-            callback.onFailure("This method needs Activity context");
+    public static void launchPrechatWithResult(final Context context, List<KmPrechatInputModel> inputModelList, final KmPrechatCallback<Map<String, String>> callback) {
+        if (!(context instanceof Activity) && callback != null) {
+            callback.onError("This method needs Activity context");
         }
 
-        final KMStartChatHandler startChatHandler = new KMStartChatHandler() {
+        ResultReceiver resultReceiver = new ResultReceiver(null) {
             @Override
-            public void onSuccess(Channel channel, Context context) {
-                callback.onSuccess(channel);
-                openParticularConversation(context, channel.getKey());
-            }
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                if (KmConstants.PRECHAT_RESULT_CODE == resultCode) {
+                    Map<String, String> dataMap = (Map<String, String>) GsonUtils.getObjectFromJson(resultData.getString(KmConstants.KM_USER_DATA), new TypeToken<Map<String, String>>() {
+                    }.getType());
 
-            @Override
-            public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-                callback.onFailure(channelFeedApiResponse);
+                    if (callback != null) {
+                        callback.onReceive(dataMap, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
+                    }
+                }
             }
         };
 
-        final KmChatBuilder chatBuilder = new KmChatBuilder(context);
-        chatBuilder.setChatName(groupName)
-                .setKmUser(kmUser)
-                .setWithPreChat(withPreChat)
-                .setSingleChat(isUnique)
-                .setAgentIds(agents)
-                .setBotIds(bots)
-                .setClientConversationId(clientConversationId);
-
-        if (isLoggedIn(context)) {
-            try {
-                startConversation(chatBuilder, startChatHandler);
-            } catch (KmException e) {
-                callback.onFailure(e);
+        try {
+            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.PRECHAT_ACTIVITY_NAME));
+            intent.putExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST, GsonUtils.getJsonFromObject(inputModelList, List.class));
+            intent.putExtra(KmConstants.PRECHAT_RESULT_RECEIVER, resultReceiver);
+            context.startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            if (callback != null) {
+                callback.onError(e.getMessage());
             }
-        } else {
-            final KMLoginHandler loginHandler = new KMLoginHandler() {
-                @Override
-                public void onSuccess(RegistrationResponse registrationResponse, Context context) {
-                    try {
-                        startConversation(chatBuilder, startChatHandler);
-                    } catch (KmException e) {
-                        e.printStackTrace();
-                        callback.onFailure(e);
-                    }
-                }
+        }
+    }
 
-                @Override
-                public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                    callback.onFailure(registrationResponse);
-                }
-            };
-
-            if (withPreChat) {
-                try {
-                    launchPrechatWithResult(context, new KmPrechatCallback() {
-                        @Override
-                        public void onReceive(KMUser user, ResultReceiver finishActivityReceiver) {
-                            login(context, user, loginHandler, finishActivityReceiver);
-                        }
-                    });
-                } catch (KmException e) {
-                    callback.onFailure(e);
-                }
-            } else {
-                login(context, kmUser, loginHandler);
-            }
+    public static void notifiyPrechatActivity(ResultReceiver finishActivityReceiver) {
+        if (finishActivityReceiver != null) {
+            finishActivityReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
         }
     }
 

@@ -239,6 +239,8 @@
     <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
+    <string name="km_empty_field_error">Required</string>
+    <string name="km_validation_error">Invalid %1$s</string>
     <string name="list_item_title">Title *</string>
     <string name="list_item_mr">Mr.</string>
     <string name="list_item_ms">Ms.</string>

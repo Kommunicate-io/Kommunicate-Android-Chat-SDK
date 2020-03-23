@@ -91,6 +91,7 @@ public class KmAppSettingPreferences {
             KmAppSettingModel appSettingModel = (KmAppSettingModel) GsonUtils.getObjectFromJson(response, KmAppSettingModel.class);
 
             if (appSettingModel != null && appSettingModel.isSuccess()) {
+                getInstance().clearInstance();
                 KmAppSettingPreferences.getInstance().setAppSetting(appSettingModel);
                 return appSettingModel;
             }

@@ -25,20 +25,13 @@ import com.bumptech.glide.Glide;
 import java.util.Arrays;
 import java.util.List;
 
-public class AlImageAdapter extends RecyclerView.Adapter {
+public class AlImageRMAdapter extends ALRichMessageAdapter {
 
-    private Context context;
-    private ALRichMessageModel model;
-    private ALRichMessageListener listener;
-    private Message message;
     private List<ALRichMessageModel.ALPayloadModel> payloadList;
     private AlCustomizationSettings alCustomizationSettings;
 
-    public AlImageAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, AlCustomizationSettings alCustomizationSettings) {
-        this.context = context;
-        this.model = model;
-        this.listener = listener;
-        this.message = message;
+    AlImageRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, AlCustomizationSettings alCustomizationSettings) {
+        super(context, model, listener, message);
         this.alCustomizationSettings = alCustomizationSettings;
 
         if (model.getPayload() != null) {

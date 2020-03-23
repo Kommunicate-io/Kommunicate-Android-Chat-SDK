@@ -66,6 +66,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessageFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
@@ -74,7 +75,6 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
-import com.applozic.mobicommons.commons.core.utils.Support;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageCache;
 import com.applozic.mobicommons.commons.image.ImageLoader;
@@ -657,8 +657,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         if (message.isDeliveredAndRead()) {
                             statusIcon = readIcon;
                         } else {
-                            statusIcon = (message.getDelivered() || (contact != null && new Support(context).isSupportNumber(contact.getFormattedContactNumber())) ?
-                                    deliveredIcon : (message.getScheduledAt() != null ? scheduledIcon : sentIcon));
+                            statusIcon = (message.getDelivered() ? deliveredIcon : (message.getScheduledAt() != null ? scheduledIcon : sentIcon));
                         }
                         myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
                     }
@@ -1027,7 +1026,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
 
                         try {
-                            new AlRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
+                            AlRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
                         } catch (Exception e) {
                             e.printStackTrace();
                             myHolder.richMessageLayout.setVisibility(View.GONE);

@@ -39,37 +39,41 @@ public class KmUserService {
         contactService = new AppContactService(context);
     }
 
-    public synchronized KmUserResponse getUserList(List<String> roleName, int startIndex, int pageSize) throws Exception {
-        ApiResponse response = (ApiResponse) GsonUtils.getObjectFromJson(userClientService.getUserListFilter(roleName, startIndex, pageSize), ApiResponse.class);
+    public synchronized KmUserResponse getUserList(List<String> roleName, int startIndex, int pageSize, int orderBy) throws Exception {
         KmUserResponse userResponse = new KmUserResponse();
-        List<KmContact> contactList = new ArrayList<>();
+        try {
+            ApiResponse response = (ApiResponse) GsonUtils.getObjectFromJson(userClientService.getUserListFilter(roleName, startIndex, pageSize, orderBy), ApiResponse.class);
+            List<KmContact> contactList = new ArrayList<>();
 
-        if (response != null && response.isSuccess()) {
-            if (response.getResponse() != null) {
+            if (response != null && response.isSuccess()) {
+                if (response.getResponse() != null) {
 
-                Type typeToken = new TypeToken<KmUserDetailResponse>() {
-                }.getType();
+                    Type typeToken = new TypeToken<KmUserDetailResponse>() {
+                    }.getType();
 
-                KmUserDetailResponse responseString = (KmUserDetailResponse) GsonUtils.getObjectFromJson(response.getResponse().toString(), typeToken);
-                List<UserDetail> userDetailList = responseString.getUsers();
+                    KmUserDetailResponse responseString = (KmUserDetailResponse) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(response.getResponse(), Object.class), typeToken);
+                    List<UserDetail> userDetailList = responseString.getUsers();
 
-                if (userDetailList != null) {
-                    for (UserDetail userDetail : userDetailList) {
-                        contactList.add(processUser(userDetail));
+                    if (userDetailList != null) {
+                        for (UserDetail userDetail : userDetailList) {
+                            contactList.add(processUser(userDetail));
+                        }
+                        userResponse.setContactList(contactList);
                     }
-                    userResponse.setContactList(contactList);
                 }
             }
-        }
 
-        if (response != null && response.getErrorResponse() != null) {
-            userResponse.setErrorList(response.getErrorResponse());
-        }
+            if (response != null && response.getErrorResponse() != null) {
+                userResponse.setErrorList(response.getErrorResponse());
+            }
 
-        if (response != null) {
-            userResponse.setSuccess(response.isSuccess());
+            if (response != null) {
+                userResponse.setSuccess(response.isSuccess());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            userResponse.setException(e);
         }
-
         return userResponse;
     }
 

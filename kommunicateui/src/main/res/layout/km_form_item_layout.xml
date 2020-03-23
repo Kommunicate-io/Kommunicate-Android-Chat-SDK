@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/kmFormItemLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/kmFormLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/kmFormEditText"
+        android:width="240dp"
+        android:height="32dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/km_form_edit_text_background"
+        android:layout_width="wrap_content"
+        android:padding="5dp"
+        android:maxLines="1"
+        android:textSize="14sp"
+        android:layout_height="wrap_content" />
+
+    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout
+        android:id="@+id/kmFormSelectionItems"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:visibility="gone" />
+</LinearLayout>

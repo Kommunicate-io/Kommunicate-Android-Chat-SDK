@@ -53,7 +53,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionF
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicommons.commons.core.utils.LocationInfo;
-import com.applozic.mobicommons.commons.core.utils.Support;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -844,11 +843,6 @@ public class ConversationUIService {
             getConversationFragment().setConversationId(conversationId);
         } else {
             conversationId = null;
-        }
-
-        boolean support = intent.getBooleanExtra(Support.SUPPORT_INTENT_KEY, false);
-        if (support) {
-            contact = new Support(fragmentActivity).getSupportContact();
         }
 
         String defaultText = intent.getStringExtra(ConversationUIService.DEFAULT_TEXT);

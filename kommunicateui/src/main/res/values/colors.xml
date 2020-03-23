@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="transparent_grey_overlay">#97292929</color>
+    <color name="km_resolve_status_list_background">#99112222</color>
+    <color name="km_resolve_status_list_heading">#112222</color>
+    <color name="km_resolve_status_item_divider_color">#E7EAF2</color>
+    <color name="km_assignee_icon_tint_color">#57C6F7</color>
 </resources>

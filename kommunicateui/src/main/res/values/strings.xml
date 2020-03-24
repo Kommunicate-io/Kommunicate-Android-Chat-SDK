@@ -239,6 +239,8 @@
     <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
+    <string name="km_empty_field_error">Required</string>
+    <string name="km_validation_error">Invalid %1$s</string>
     <string name="list_item_title">Title *</string>
     <string name="list_item_mr">Mr.</string>
     <string name="list_item_ms">Ms.</string>
@@ -261,9 +263,17 @@
     <string name="km_status_mark_as_spam">Mark as Spam</string>
     <string name="km_status_mark_as_duplicate">Mark as Duplicate</string>
     <string name="km_change_status_to_message">Status changed to </string>
+    <string name="km_change_assignee_to_message">Assigned to </string>
     <string name="km_resolve_conversation">Resolve Conversation</string>
     <string name="km_reopen_conversation">Reopen Conversation</string>
     <string name="km_conversation_marked_as_spam">Marked as Spam</string>
     <string name="km_language_not_supported">The Language is not supported</string>
     <string name="km_text_to_speech_init_failed">Text to Speech initialization failed!</string>
+    <string name="km_assign_conversation_text">Assign Conversation</string>
+    <string name="km_agent_list_title">Agents</string>
+    <string name="km_bot_list_title">Bots</string>
+    <string name="km_empty_bot_list_message">Bots not integrated</string>
+    <string name="km_empty_agent_list_message">No Agents found</string>
+    <string name="km_no_agents_found">No matching agents found</string>
+    <string name="km_no_bots_found">No matching bots found</string>
 </resources>

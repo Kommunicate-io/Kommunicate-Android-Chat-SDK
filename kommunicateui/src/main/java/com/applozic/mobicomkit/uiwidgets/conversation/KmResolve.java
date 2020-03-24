@@ -1,10 +1,13 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import androidx.databinding.BindingAdapter;
 import androidx.databinding.library.baseAdapters.BR;
 
 import com.applozic.mobicommons.ApplozicService;
@@ -16,6 +19,9 @@ public class KmResolve extends BaseObservable {
     private Drawable icon;
     private String statusName;
     private int colorResId;
+    private String extensionText;
+    private boolean statusTextStyleBold;
+    private int iconTintColorId;
 
     public KmResolve() {
 
@@ -79,6 +85,39 @@ public class KmResolve extends BaseObservable {
     public void setColorResId(int colorResId) {
         this.colorResId = ContextCompat.getColor(ApplozicService.getAppContext(), colorResId);
         notifyPropertyChanged(BR.colorResId);
+    }
+
+    @Bindable
+    public String getExtensionText() {
+        return extensionText;
+    }
+
+    public void setExtensionText(String extensionText) {
+        this.extensionText = extensionText;
+        notifyPropertyChanged(BR.extensionText);
+    }
+
+    @Bindable
+    public boolean isStatusTextStyleBold() {
+        return statusTextStyleBold;
+    }
+
+    public void setStatusTextStyleBold(boolean statusTextStyleBold) {
+        this.statusTextStyleBold = statusTextStyleBold;
+        notifyPropertyChanged(BR.statusTextStyleBold);
+    }
+
+    public int getIconTintColorId() {
+        return iconTintColorId;
+    }
+
+    public void setIconTintColorId(int iconTintColorId) {
+        this.iconTintColorId = iconTintColorId;
+    }
+
+    @BindingAdapter("isBold")
+    public static void setBold(TextView view, boolean statusTextStyleBold) {
+        view.setTypeface(null, statusTextStyleBold ? Typeface.BOLD : Typeface.NORMAL);
     }
 
     @Override

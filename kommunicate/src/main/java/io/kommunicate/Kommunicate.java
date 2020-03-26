@@ -55,7 +55,6 @@ import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAppSettingModel;
-import io.kommunicate.models.KmAgentModel;
 import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;

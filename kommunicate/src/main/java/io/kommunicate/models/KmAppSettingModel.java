@@ -76,7 +76,7 @@ public class KmAppSettingModel extends JsonMarker {
         private String primaryColor;
         private String secondaryColor;
         private boolean showPoweredBy;
-        private int sessionTimeout;
+        private long sessionTimeout;
         private int botMessageDelayInterval;
 
         public boolean isPopup() {
@@ -119,11 +119,11 @@ public class KmAppSettingModel extends JsonMarker {
             this.showPoweredBy = showPoweredBy;
         }
 
-        public int getSessionTimeout() {
+        public long getSessionTimeout() {
             return sessionTimeout;
         }
 
-        public void setSessionTimeout(int sessionTimeout) {
+        public void setSessionTimeout(long sessionTimeout) {
             this.sessionTimeout = sessionTimeout;
         }
 

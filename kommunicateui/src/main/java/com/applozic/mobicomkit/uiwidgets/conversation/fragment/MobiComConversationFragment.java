@@ -134,11 +134,13 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWe
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmSpeechToText;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmTextToSpeech;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KmSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
@@ -338,6 +340,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private boolean isSendOnSpeechEnd;
     private KmTextToSpeech textToSpeech;
     private KmSpeechToText speechToText;
+    private KmThemeHelper themeHelper;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -354,6 +357,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             alCustomizationSettings = new AlCustomizationSettings();
         }
 
+        themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
         isSpeechToTextEnabled = KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled();
         isTextToSpeechEnabled = KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
         isSendOnSpeechEnd = KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
@@ -439,6 +443,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
             toolbarOnlineTv = customToolbarLayout.findViewById(R.id.onlineTextView);
             toolbarOfflineTv = customToolbarLayout.findViewById(R.id.offlineTextView);
+            KmUtils.setGradientStrokeColor(toolbarOnlineTv, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
+            KmUtils.setGradientStrokeColor(toolbarOfflineTv, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
+
             toolbarAlphabeticImage = customToolbarLayout.findViewById(R.id.toolbarAlphabeticImage);
 
             TextView faqOption = customToolbarLayout.findViewById(R.id.kmFaqOption);
@@ -581,9 +588,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         recordButton.setVisibility(isRecordOptionEnabled ? View.VISIBLE : View.GONE);
         sendButton.setVisibility(isRecordOptionEnabled ? View.GONE : View.VISIBLE);
-
-        GradientDrawable bgShape = (GradientDrawable) sendButton.getBackground();
-        bgShape.setColor(Color.parseColor(alCustomizationSettings.getSendButtonBackgroundColor().trim()));
+        KmUtils.setGradientSolidColor(sendButton, themeHelper.getSendButtonBackgroundColor());
 
         attachButton = (ImageButton) individualMessageSendLayout.findViewById(R.id.attach_button);
 

@@ -7,6 +7,7 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessageFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -32,11 +33,11 @@ public class AlRichMessageAdapterFactory {
         return RMFactoryHelper.INSTANCE;
     }
 
-    public ALRichMessageAdapter getRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
+    public ALRichMessageAdapter getRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, KmThemeHelper themeHelper) {
         if (model.getTemplateId() == AlRichMessageFactory.CARD_RICH_MESSAGE) {
-            return new AlCardRMAdapter(context, model, listener, message);
+            return new AlCardRMAdapter(context, model, listener, message, themeHelper);
         } else if (model.getTemplateId() == AlRichMessageFactory.BUTTON_RICH_MESSAGE || model.getTemplateId() == AlRichMessageFactory.REPLY_RICH_MESSAGE || model.getTemplateId() == AlRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
-            return new AlButtonRMAdapter(context, model, listener, message);
+            return new AlButtonRMAdapter(context, model, listener, message, themeHelper);
         } else return null;
     }
 
@@ -44,7 +45,7 @@ public class AlRichMessageAdapterFactory {
         return new AlImageRMAdapter(context, model, listener, message, alCustomizationSettings);
     }
 
-    public ALRichMessageAdapter getListRMAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, Object> replyMetadata, ALRichMessageListener messageListener) {
-        return new AlListRMAdapter(context, message, elementList, replyMetadata, messageListener);
+    public ALRichMessageAdapter getListRMAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, Object> replyMetadata, ALRichMessageListener messageListener, AlCustomizationSettings alCustomizationSettings) {
+        return new AlListRMAdapter(context, message, elementList, replyMetadata, messageListener, KmThemeHelper.getInstance(context, alCustomizationSettings));
     }
 }

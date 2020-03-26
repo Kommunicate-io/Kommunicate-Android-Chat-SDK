@@ -25,6 +25,7 @@ import android.provider.Settings;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.core.app.ActivityCompat;
@@ -187,7 +188,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private LinearLayout serviceDisconnectionLayout;
     private KmStoragePermission alStoragePermission;
     private RelativeLayout customToolbarLayout;
-
     KmAttachmentsController kmAttachmentsController;
     PrePostUIMethods prePostUIMethods;
 
@@ -361,6 +361,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         setContentView(R.layout.quickconversion_activity);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getSecondaryColor());
         customToolbarLayout = myToolbar.findViewById(R.id.custom_toolbar_root_layout);
         setSupportActionBar(myToolbar);
         baseContactService = new AppContactService(this);

@@ -3,8 +3,10 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -31,7 +34,7 @@ public class AlImageRMAdapter extends ALRichMessageAdapter {
     private AlCustomizationSettings alCustomizationSettings;
 
     AlImageRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, AlCustomizationSettings alCustomizationSettings) {
-        super(context, model, listener, message);
+        super(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings));
         this.alCustomizationSettings = alCustomizationSettings;
 
         if (model.getPayload() != null) {
@@ -57,9 +60,9 @@ public class AlImageRMAdapter extends ALRichMessageAdapter {
             if (payloadModel != null) {
                 if (alCustomizationSettings != null) {
                     GradientDrawable bgShape = (GradientDrawable) imageViewHolder.rootLayout.getBackground();
-                    bgShape.setColor(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageBackgroundColor() : alCustomizationSettings.getReceivedMessageBackgroundColor()));
-                    bgShape.setStroke(3, message.isTypeOutbox() ?
-                            Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                    bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                    bgShape.setStroke(3, message.isTypeOutbox() ? themeHelper.getSentMessageBorderColor() :
+                            Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
                 }
                 if (!TextUtils.isEmpty(payloadModel.getUrl())) {
                     Glide.with(context)

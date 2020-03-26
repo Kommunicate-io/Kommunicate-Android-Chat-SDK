@@ -10,6 +10,7 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 
 import java.util.Map;
 
@@ -22,22 +23,23 @@ public abstract class ALRichMessageAdapter extends RecyclerView.Adapter {
     protected ALRichMessageModel model;
     protected Message message;
     protected ALRichMessageListener listener;
+    protected KmThemeHelper themeHelper;
 
-    ALRichMessageAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
+    ALRichMessageAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, KmThemeHelper themeHelper) {
         this.context = context;
         this.model = model;
         this.listener = listener;
         this.message = message;
+        this.themeHelper = themeHelper;
     }
 
-    ALRichMessageAdapter(Context context, ALRichMessageListener listener, Message message) {
-        this.context = context;
-        this.listener = listener;
-        this.message = message;
+    ALRichMessageAdapter(Context context, ALRichMessageListener listener, Message message, KmThemeHelper themeHelper) {
+        this(context, null, listener, message, themeHelper);
     }
 
     //to populate the views etc.
-    void bindItems(RecyclerView.ViewHolder viewHolder, final int position) {}
+    void bindItems(RecyclerView.ViewHolder viewHolder, final int position) {
+    }
 
     //utility functions >>>
     View.OnClickListener getActionClickListener(final ALRichMessageModel.AlButtonModel buttonModel, final Map<String, Object> replyMetadata) {

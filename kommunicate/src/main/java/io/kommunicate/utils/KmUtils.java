@@ -1,5 +1,6 @@
 package io.kommunicate.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 
@@ -7,7 +8,11 @@ import androidx.core.content.ContextCompat;
 
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +62,25 @@ public class KmUtils {
 
     public static boolean isAgent() {
         return isAgent(ApplozicService.getAppContext());
+    }
+
+    public static void setGradientSolidColor(View view, int color) {
+        GradientDrawable gradientDrawable = (GradientDrawable) view.getBackground();
+        gradientDrawable.setColor(color);
+    }
+
+    public static void setGradientStrokeColor(View view, int width, int color) {
+        GradientDrawable gradientDrawable = (GradientDrawable) view.getBackground();
+        gradientDrawable.setStroke(width, color);
+    }
+
+    public static void setStatusBarColor(Activity activity, int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+        }
     }
 
     public enum PackageType {

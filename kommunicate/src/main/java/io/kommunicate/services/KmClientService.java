@@ -31,6 +31,7 @@ public class KmClientService extends MobiComKitClientService {
     public static final String KM_DASHBOARD = "km_dashboard_url";
     public static final String KM_HELPCENTER = "km_helpcenter_url";
     private static final String CONVERSATION_FEEDBACK_URL = "/feedback";
+    private static final String APP_SETTING_URL = "/users/v2/chat/plugin/settings?appId=";
 
     private static final String TAG = "KmClientService";
 
@@ -55,6 +56,10 @@ public class KmClientService extends MobiComKitClientService {
         return getKmBaseUrl() + "/applications/";
     }
 
+    private String getAppSettingUrl() {
+        return getKmBaseUrl() + APP_SETTING_URL;
+    }
+
     public String getAwayMessage(String appKey, Integer groupId) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(getAwayMessageUrl());
         if (!TextUtils.isEmpty(appKey)) {
@@ -70,6 +75,10 @@ public class KmClientService extends MobiComKitClientService {
 
     public String getKmAutoSuggestions() {
         return httpRequestUtils.getResponse(getKmAutoSuggestionUrl() + getApplicationKey(context) + KM_AUTO_SUGGESTION_ENDPOINT, "application/json", "application/json");
+    }
+
+    public String getAppSetting(String appId) {
+        return httpRequestUtils.getResponse(getAppSettingUrl() + appId, "application/json", "application/json");
     }
 
     public String getHelpCenterUrl() {

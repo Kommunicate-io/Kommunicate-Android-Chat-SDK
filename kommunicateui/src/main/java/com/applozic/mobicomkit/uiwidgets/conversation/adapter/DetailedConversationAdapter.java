@@ -68,8 +68,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivit
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessageFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -101,6 +101,7 @@ import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.GONE;
 
@@ -144,9 +145,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private float[] sentMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
     private float[] receivedMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
     private KmFontManager fontManager;
+    private KmThemeHelper themeHelper;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
+        themeHelper = KmThemeHelper.getInstance(context, alCustomizationSettings);
         initRadius();
     }
 
@@ -990,10 +993,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             }
 
                             if (bgShape != null) {
-                                bgShape.setColor(message.isTypeOutbox() ?
-                                        Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : (isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
-                                bgShape.setStroke(3, message.isTypeOutbox() ?
-                                        Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                                bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() :
+                                        (isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
+                                bgShape.setStroke(3, message.isTypeOutbox() ? themeHelper.getSentMessageBorderColor() :
+                                        Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
                                 if (alCustomizationSettings.getSentMessageCornerRadii() != null && message.isTypeOutbox()) {
                                     bgShape.setCornerRadii(sentMessageCornerRadii);
                                 } else if (alCustomizationSettings.getReceivedMessageCornerRadii() != null) {
@@ -1482,6 +1485,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         RelativeLayout messageRootLayout;
         FrameLayout emailLayout;
         TextView viaEmailView;
+        View statusIconBackground;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1525,6 +1529,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             messageRootLayout = (RelativeLayout) customView.findViewById(R.id.messageLayout);
             emailLayout = customView.findViewById(R.id.emailLayout);
             viaEmailView = customView.findViewById(R.id.via_email_text_view);
+            statusIconBackground = customView.findViewById(R.id.statusIconBackground);
+
+            if (statusIconBackground != null) {
+                KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getSentMessageBackgroundColor());
+            }
 
             shareContactImage = (ImageView) mainContactShareLayout.findViewById(R.id.contact_share_image);
             shareContactName = (TextView) mainContactShareLayout.findViewById(R.id.contact_share_tv_name);

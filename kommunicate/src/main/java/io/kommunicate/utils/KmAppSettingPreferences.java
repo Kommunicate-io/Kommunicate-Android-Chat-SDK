@@ -31,8 +31,6 @@ public class KmAppSettingPreferences {
     public static KmAppSettingPreferences getInstance() {
         if (kmAppSettingPreferences == null) {
             kmAppSettingPreferences = new KmAppSettingPreferences();
-        } else {
-            preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
         }
         return kmAppSettingPreferences;
     }

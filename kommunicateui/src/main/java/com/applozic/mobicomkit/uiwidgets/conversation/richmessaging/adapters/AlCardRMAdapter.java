@@ -18,6 +18,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -29,9 +30,11 @@ import static android.view.View.GONE;
 public class AlCardRMAdapter extends ALRichMessageAdapter {
 
     private List<ALRichMessageModel.ALPayloadModel> payloadList;
+    private KmThemeHelper themeHelper;
 
-    AlCardRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
-        super(context, model, listener, message);
+    AlCardRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, KmThemeHelper themeHelper) {
+        super(context, model, listener, message, themeHelper);
+        this.themeHelper = themeHelper;
         this.payloadList = Arrays.asList((ALRichMessageModel.ALPayloadModel[])
                 GsonUtils.getObjectFromJson(model.getPayload(), ALRichMessageModel.ALPayloadModel[].class));
     }
@@ -89,6 +92,7 @@ public class AlCardRMAdapter extends ALRichMessageAdapter {
         viewHolder.bookActions[index].setVisibility(View.VISIBLE);
         viewHolder.viewActions[index].setVisibility(View.VISIBLE);
         viewHolder.bookActions[index].setText(actionsList.get(index).getName());
+        viewHolder.bookActions[index].setTextColor(themeHelper.getPrimaryColor());
         viewHolder.bookActions[index].setOnClickListener(getGenericCardClickListener(actionsList.get(index)));
     }
 

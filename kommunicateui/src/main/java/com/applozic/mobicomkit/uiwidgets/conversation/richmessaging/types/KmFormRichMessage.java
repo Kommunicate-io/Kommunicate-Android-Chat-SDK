@@ -16,9 +16,12 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmF
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.kommunicate.utils.KmUtils;
 
 public class KmFormRichMessage extends AlRichMessage {
 
@@ -52,6 +55,9 @@ public class KmFormRichMessage extends AlRichMessage {
                 flowLayout.removeAllViews();
                 View view = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, null);
                 TextView itemTextView = view.findViewById(R.id.singleTextItem);
+
+                KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
+                itemTextView.setTextColor(themeHelper.getPrimaryColor());
 
                 final KmRMActionModel<KmRMActionModel.SubmitButton> submitButtonModel = (KmRMActionModel<KmRMActionModel.SubmitButton>) actionModelList.get(0);
                 itemTextView.setText(submitButtonModel.getName());

@@ -37,7 +37,7 @@ import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
-import io.kommunicate.models.KmAgentModel;
+import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -664,7 +664,7 @@ public class KmConversationHelper {
             KmCallback callback = new KmCallback() {
                 @Override
                 public void onSuccess(Object message) {
-                    KmAgentModel.KmResponse agent = (KmAgentModel.KmResponse) message;
+                    KmAppSettingModel.KmResponse agent = (KmAppSettingModel.KmResponse) message;
                     if (agent != null) {
                         List<String> agents = new ArrayList<>();
                         agents.add(agent.getAgentId());

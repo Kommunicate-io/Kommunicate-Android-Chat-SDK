@@ -136,6 +136,7 @@
             android:layout_marginStart="4dp">
 
             <View
+                android:id="@+id/statusIconBackground"
                 android:layout_width="11dp"
                 android:layout_height="11dp"
                 android:background="@drawable/km_status_icon_background" />

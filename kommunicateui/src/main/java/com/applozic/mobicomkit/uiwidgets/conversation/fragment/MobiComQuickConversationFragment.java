@@ -6,10 +6,12 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
+
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,8 +50,10 @@ import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationA
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 
 import io.kommunicate.services.KmClientService;
+import io.kommunicate.utils.KmUtils;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
@@ -172,6 +176,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
 
         startNewConv = list.findViewById(R.id.start_new_conversation);
+        KmUtils.setGradientSolidColor(startNewConv, KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
+
         if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             startNewConv.setVisibility(View.VISIBLE);
         }

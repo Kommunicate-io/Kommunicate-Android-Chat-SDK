@@ -3,6 +3,7 @@ package io.kommunicate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
@@ -53,7 +54,7 @@ import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
 import io.kommunicate.database.KmDatabaseHelper;
-import io.kommunicate.models.KmAgentModel;
+import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
@@ -152,7 +153,7 @@ public class Kommunicate {
             kmUser.setHideActionMessages(true);
             kmUser.setSkipDeletedGroups(true);
         }
-        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
+        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {
@@ -304,7 +305,7 @@ public class Kommunicate {
             KmCallback callback = new KmCallback() {
                 @Override
                 public void onSuccess(Object message) {
-                    KmAgentModel.KmResponse agent = (KmAgentModel.KmResponse) message;
+                    KmAppSettingModel.KmResponse agent = (KmAppSettingModel.KmResponse) message;
                     if (agent != null) {
                         List<String> agents = new ArrayList<>();
                         agents.add(agent.getAgentId());

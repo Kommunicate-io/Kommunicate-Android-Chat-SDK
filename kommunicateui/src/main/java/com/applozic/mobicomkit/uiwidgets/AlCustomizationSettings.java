@@ -12,9 +12,9 @@ import java.util.Map;
 public class AlCustomizationSettings extends JsonMarker {
 
     private String customMessageBackgroundColor = "#e6e5ec";
-    private String sentMessageBackgroundColor = "#5c5aa7";
+    private String sentMessageBackgroundColor = "";
     private String receivedMessageBackgroundColor = "#e6e5ec";
-    private String sendButtonBackgroundColor = "#5c5aa7";
+    private String sendButtonBackgroundColor = "";
     private String attachmentIconsBackgroundColor = "#FF03A9F4";
     private String chatBackgroundColorOrDrawable;
     private String editTextBackgroundColorOrDrawable;
@@ -35,7 +35,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String conversationDayTextColor = "#333333";
     private String messageTimeTextColor = "#ede6e6";
     private String channelCustomMessageTextColor = "#666666";
-    private String sentMessageBorderColor = "#5c5aa7";
+    private String sentMessageBorderColor = "";
     private String receivedMessageBorderColor = "#e6e5ec";
     private String channelCustomMessageBorderColor = "#cccccc";
     private String collapsingToolbarLayoutColor = "#5c5aa7";

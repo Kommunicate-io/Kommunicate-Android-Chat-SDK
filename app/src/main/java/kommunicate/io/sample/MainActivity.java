@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 Kommunicate.loginAsVisitor(MainActivity.this, new KMLoginHandler() {
                     @Override
                     public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                        finish();
                         progressDialog.dismiss();
                         Kommunicate.openConversation(context, null);
                     }

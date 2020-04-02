@@ -44,7 +44,7 @@ public class ListAlRichMessage extends AlRichMessage {
                     RecyclerView listRecycler = listItemLayout.findViewById(R.id.alListItemRecycler);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                     listRecycler.setLayoutManager(layoutManager);
-                    AlListRMAdapter adapter = (AlListRMAdapter) AlRichMessageAdapterFactory.getInstance().getListRMAdapter(context, message, payload.getElements(), payload.getReplyMetadata(), listener);
+                    AlListRMAdapter adapter = (AlListRMAdapter) AlRichMessageAdapterFactory.getInstance().getListRMAdapter(context, message, payload.getElements(), payload.getReplyMetadata(), listener, alCustomizationSettings);
                     listRecycler.setAdapter(adapter);
 
                     if (!TextUtils.isEmpty(payload.getHeaderText())) {
@@ -84,6 +84,7 @@ public class ListAlRichMessage extends AlRichMessage {
     private void setActionTextView(TextView actionTextView, View actionDivider, ALRichMessageModel.AlButtonModel buttonModel, ALRichMessageModel.ALPayloadModel payload, ALRichMessageModel model) {
         actionTextView.setVisibility(View.VISIBLE);
         actionTextView.setText(buttonModel.getName());
+        actionTextView.setTextColor(themeHelper.getPrimaryColor());
         setActionListener(actionTextView, model, buttonModel, payload);
 
         if (actionDivider != null) {

@@ -80,6 +80,10 @@ public class KmService {
         return null;
     }
 
+    public String getAppSetting(String appId) {
+        return clientService.getAppSetting(appId);
+    }
+
     public static Contact getSupportGroupContact(Context context, Channel channel, BaseContactService contactService, int loggedInUserRoleType) {
         if (User.RoleType.USER_ROLE.getValue() == loggedInUserRoleType) {
             return getAssigneeContact(channel, contactService);
@@ -148,7 +152,7 @@ public class KmService {
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
     public static void getConversationFeedback(Context context, String conversationId, KmFeedbackCallback kmFeedbackCallback) {
-         new KmConversationFeedbackTask(context, conversationId, null, kmFeedbackCallback).execute();
+        new KmConversationFeedbackTask(context, conversationId, null, kmFeedbackCallback).execute();
     }
 
     /**
@@ -159,7 +163,7 @@ public class KmService {
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
     public static void setConversationFeedback(Context context, KmFeedback kmFeedback, KmFeedbackCallback kmFeedbackCallback) {
-         new KmConversationFeedbackTask(context, null, kmFeedback, kmFeedbackCallback).execute();
+        new KmConversationFeedbackTask(context, null, kmFeedback, kmFeedbackCallback).execute();
     }
 
     /**

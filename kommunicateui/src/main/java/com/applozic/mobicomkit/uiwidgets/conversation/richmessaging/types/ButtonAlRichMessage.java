@@ -14,10 +14,13 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessag
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.Arrays;
 import java.util.List;
+
+import io.kommunicate.utils.KmUtils;
 
 public class ButtonAlRichMessage extends AlRichMessage {
 
@@ -35,6 +38,9 @@ public class ButtonAlRichMessage extends AlRichMessage {
         for (final ALRichMessageModel.ALPayloadModel payloadModel : payloadList) {
             View view = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, null);
             TextView itemTextView = view.findViewById(R.id.singleTextItem);
+
+            KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
+            itemTextView.setTextColor(themeHelper.getPrimaryColor());
 
             //for 3 and 11 use name, for 6 use title
             String buttonTitle = (model.getTemplateId() == 3 || model.getTemplateId() == 11) ?

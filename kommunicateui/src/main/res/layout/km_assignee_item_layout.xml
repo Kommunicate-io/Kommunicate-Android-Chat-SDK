@@ -11,7 +11,7 @@
 
         <variable
             name="isCurrentAssignee"
-            type="Boolean" />
+            type="boolean" />
 
         <variable
             name="kmCallback"

@@ -88,7 +88,6 @@ public class KmHttpClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Utils.printLog(context, TAG, "Http call failed");
         return null;
     }
 }

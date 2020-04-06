@@ -3,8 +3,10 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,26 +21,20 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class AlImageAdapter extends RecyclerView.Adapter {
+public class AlImageRMAdapter extends ALRichMessageAdapter {
 
-    private Context context;
-    private ALRichMessageModel model;
-    private ALRichMessageListener listener;
-    private Message message;
     private List<ALRichMessageModel.ALPayloadModel> payloadList;
     private AlCustomizationSettings alCustomizationSettings;
 
-    public AlImageAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, AlCustomizationSettings alCustomizationSettings) {
-        this.context = context;
-        this.model = model;
-        this.listener = listener;
-        this.message = message;
+    AlImageRMAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message, AlCustomizationSettings alCustomizationSettings) {
+        super(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings));
         this.alCustomizationSettings = alCustomizationSettings;
 
         if (model.getPayload() != null) {
@@ -64,9 +60,9 @@ public class AlImageAdapter extends RecyclerView.Adapter {
             if (payloadModel != null) {
                 if (alCustomizationSettings != null) {
                     GradientDrawable bgShape = (GradientDrawable) imageViewHolder.rootLayout.getBackground();
-                    bgShape.setColor(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageBackgroundColor() : alCustomizationSettings.getReceivedMessageBackgroundColor()));
-                    bgShape.setStroke(3, message.isTypeOutbox() ?
-                            Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                    bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                    bgShape.setStroke(3, message.isTypeOutbox() ? themeHelper.getSentMessageBorderColor() :
+                            Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
                 }
                 if (!TextUtils.isEmpty(payloadModel.getUrl())) {
                     Glide.with(context)

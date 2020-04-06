@@ -37,7 +37,7 @@ import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
-import io.kommunicate.models.KmAgentModel;
+import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -151,10 +151,15 @@ public class KmConversationHelper {
             }
             if (launchChat.isWithPreChat()) {
                 try {
-                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {
+                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback<KMUser>() {
                         @Override
-                        public void onReceive(KMUser user, ResultReceiver resultReceiver) {
-                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, resultReceiver, callback), callback));
+                        public void onReceive(KMUser user, Context context, ResultReceiver finishActivityReceiver) {
+                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, finishActivityReceiver, callback), callback));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+
                         }
                     });
                 } catch (KmException e) {
@@ -219,10 +224,15 @@ public class KmConversationHelper {
             }
             if (launchChat.isWithPreChat()) {
                 try {
-                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback() {
+                    Kommunicate.launchPrechatWithResult(launchChat.getContext(), new KmPrechatCallback<KMUser>() {
                         @Override
-                        public void onReceive(KMUser user, ResultReceiver resultReceiver) {
-                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, resultReceiver, callback), callback));
+                        public void onReceive(KMUser user, Context context, ResultReceiver finishActivityReceiver) {
+                            Kommunicate.login(launchChat.getContext(), user, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, finishActivityReceiver, callback), callback));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+
                         }
                     });
                 } catch (KmException e) {
@@ -378,10 +388,15 @@ public class KmConversationHelper {
             }
             if (conversationBuilder.isWithPreChat()) {
                 try {
-                    Kommunicate.launchPrechatWithResult(conversationBuilder.getContext(), new KmPrechatCallback() {
+                    Kommunicate.launchPrechatWithResult(conversationBuilder.getContext(), new KmPrechatCallback<KMUser>() {
                         @Override
-                        public void onReceive(KMUser user, ResultReceiver resultReceiver) {
-                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, resultReceiver, callback), callback));
+                        public void onReceive(KMUser user, Context context, ResultReceiver finishActivityReceiver) {
+                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, finishActivityReceiver, callback), callback));
+                        }
+
+                        @Override
+                        public void onError(String error) {
+
                         }
                     });
                 } catch (KmException e) {
@@ -542,6 +557,7 @@ public class KmConversationHelper {
 
     private static void createConversation(KmConversationBuilder conversationBuilder, KmStartConversationHandler handler) throws KmException {
         List<KMGroupInfo.GroupUser> users = new ArrayList<>();
+        String loginUserId = MobiComUserPreference.getInstance(conversationBuilder.getContext()).getUserId();
 
         KMGroupInfo channelInfo = new KMGroupInfo(Utils.getString(conversationBuilder.getContext(), R.string.km_default_support_group_name), new ArrayList<String>());
 
@@ -553,7 +569,18 @@ public class KmConversationHelper {
         }
 
         users.add(channelInfo.new GroupUser().setUserId(KM_BOT).setGroupRole(2));
-        users.add(channelInfo.new GroupUser().setUserId(MobiComUserPreference.getInstance(conversationBuilder.getContext()).getUserId()).setGroupRole(3));
+
+        if (conversationBuilder.getUserIds() == null || conversationBuilder.getUserIds().isEmpty()) {
+            List<String> userIds = new ArrayList<>();
+            userIds.add(loginUserId);
+            conversationBuilder.setUserIds(userIds);
+        } else if (!conversationBuilder.getUserIds().contains(loginUserId)) {
+            conversationBuilder.getUserIds().add(loginUserId);
+        }
+
+        for (String userId : conversationBuilder.getUserIds()) {
+            users.add(channelInfo.new GroupUser().setUserId(userId).setGroupRole(3));
+        }
 
         if (conversationBuilder.getBotIds() != null) {
             for (String botId : conversationBuilder.getBotIds()) {
@@ -573,7 +600,7 @@ public class KmConversationHelper {
         if (!TextUtils.isEmpty(conversationBuilder.getClientConversationId())) {
             channelInfo.setClientGroupId(conversationBuilder.getClientConversationId());
         } else if (conversationBuilder.isSingleConversation()) {
-            channelInfo.setClientGroupId(getClientGroupId(MobiComUserPreference.getInstance(conversationBuilder.getContext()).getUserId(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds()));
+            channelInfo.setClientGroupId(getClientGroupId(conversationBuilder.getUserIds(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds(), conversationBuilder.getContext()));
         }
 
         Map<String, String> metadata = new HashMap<>();
@@ -649,13 +676,13 @@ public class KmConversationHelper {
             KmCallback callback = new KmCallback() {
                 @Override
                 public void onSuccess(Object message) {
-                    KmAgentModel.KmResponse agent = (KmAgentModel.KmResponse) message;
+                    KmAppSettingModel.KmResponse agent = (KmAppSettingModel.KmResponse) message;
                     if (agent != null) {
                         List<String> agents = new ArrayList<>();
                         agents.add(agent.getAgentId());
                         conversationBuilder.setAgentIds(agents);
                         try {
-                            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(MobiComUserPreference.getInstance(conversationBuilder.getContext()).getUserId(), agents, conversationBuilder.getBotIds()) : null);
+                            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), agents, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
                             if (!TextUtils.isEmpty(clientChannelKey)) {
                                 conversationBuilder.setClientConversationId(clientChannelKey);
                                 startOrGetConversation(conversationBuilder, handler);
@@ -678,7 +705,7 @@ public class KmConversationHelper {
 
             new KmGetAgentListTask(conversationBuilder.getContext(), MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()), callback).execute();
         } else {
-            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(MobiComUserPreference.getInstance(conversationBuilder.getContext()).getUserId(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds()) : null);
+            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
                 startOrGetConversation(conversationBuilder, handler);
             } else {
@@ -752,20 +779,27 @@ public class KmConversationHelper {
         new KmConversationInfoTask(context, conversationId, conversationInfoCallback).execute();
     }
 
-    private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
+    private static String getClientGroupId(List<String> userIds, List<String> agentIds, List<String> botIds, Context context) throws KmException {
 
         if (agentIds == null || agentIds.isEmpty()) {
             throw new KmException("Please add at-least one Agent");
         }
-
-        if (TextUtils.isEmpty(userId)) {
-            throw new KmException("UserId cannot be null");
+        if (userIds == null || userIds.isEmpty()) {
+            userIds = new ArrayList<>();
         }
 
         Collections.sort(agentIds);
 
         List<String> tempList = new ArrayList<>(agentIds);
-        tempList.add(userId);
+
+        String loginUserId = MobiComUserPreference.getInstance(context).getUserId();
+
+        if (!userIds.contains(loginUserId)) {
+            userIds.add(loginUserId);
+        }
+
+        Collections.sort(userIds);
+        tempList.addAll(userIds);
 
         if (botIds != null && !botIds.isEmpty()) {
             if (botIds.contains(KM_BOT)) {

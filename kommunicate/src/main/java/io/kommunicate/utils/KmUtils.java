@@ -1,18 +1,26 @@
 package io.kommunicate.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 
 import androidx.core.content.ContextCompat;
 
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-
 
 public class KmUtils {
 
@@ -38,6 +46,11 @@ public class KmUtils {
         }
     }
 
+    public static void setDrawableTint(TextView textView, int colorId, int index) {
+        textView.getCompoundDrawables()[index]
+                .setColorFilter(new PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN));
+    }
+
     public static void showToastAndLog(Context context, int messageResId) {
         Toast.makeText(context, messageResId, Toast.LENGTH_LONG).show();
         Utils.printLog(context, TAG, Utils.getString(context, messageResId));
@@ -45,6 +58,29 @@ public class KmUtils {
 
     public static boolean isAgent(Context context) {
         return User.RoleType.AGENT.getValue().equals(MobiComUserPreference.getInstance(context).getUserRoleType());
+    }
+
+    public static boolean isAgent() {
+        return isAgent(ApplozicService.getAppContext());
+    }
+
+    public static void setGradientSolidColor(View view, int color) {
+        GradientDrawable gradientDrawable = (GradientDrawable) view.getBackground();
+        gradientDrawable.setColor(color);
+    }
+
+    public static void setGradientStrokeColor(View view, int width, int color) {
+        GradientDrawable gradientDrawable = (GradientDrawable) view.getBackground();
+        gradientDrawable.setStroke(width, color);
+    }
+
+    public static void setStatusBarColor(Activity activity, int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = activity.getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+        }
     }
 
     public enum PackageType {

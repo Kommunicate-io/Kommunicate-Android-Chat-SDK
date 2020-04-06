@@ -19,13 +19,15 @@ public class GetUserListAsyncTask extends AsyncTask<Void, Void, KmUserResponse> 
     private List<String> userRoleList;
     private int startIndex;
     private int pageSize;
+    private int orderBy;
     private KMGetContactsHandler handler;
 
-    public GetUserListAsyncTask(Context context, List<String> userRoleList, int startIndex, int pageSize, KMGetContactsHandler handler) {
+    public GetUserListAsyncTask(Context context, List<String> userRoleList, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
         this.context = new WeakReference<Context>(context);
         this.userRoleList = userRoleList;
         this.startIndex = startIndex;
         this.pageSize = pageSize;
+        this.orderBy = orderBy;
         this.handler = handler;
     }
 
@@ -34,7 +36,7 @@ public class GetUserListAsyncTask extends AsyncTask<Void, Void, KmUserResponse> 
 
         KmUserResponse response;
         try {
-            response = new KmUserService(context.get()).getUserList(userRoleList, startIndex, pageSize);
+            response = new KmUserService(context.get()).getUserList(userRoleList, startIndex, pageSize, orderBy);
         } catch (Exception e) {
             e.printStackTrace();
             response = new KmUserResponse();
@@ -54,12 +56,7 @@ public class GetUserListAsyncTask extends AsyncTask<Void, Void, KmUserResponse> 
             if (kmUserResponse.isSuccess() && kmUserResponse.getContactList() != null) {
                 handler.onSuccess(kmUserResponse.getContactList());
             } else {
-                if (kmUserResponse.getErrorList() != null) {
-                    handler.onFailure(kmUserResponse.getErrorList(), null);
-                } else if (kmUserResponse.getException() != null) {
-                    handler.onFailure(null, kmUserResponse.getException());
-                }
-
+                handler.onFailure(kmUserResponse.getErrorList(), kmUserResponse.getException());
             }
         } else {
             handler.onFailure(null, null);

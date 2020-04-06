@@ -1,129 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/prechatLayout"
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:visibility="visible">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="25dp">
-
-        <View
-            android:layout_width="68.8dp"
-            android:layout_height="68.8dp"
-            android:layout_gravity="center"
-            android:background="@drawable/km_prechat_collection_background" />
-
-        <ImageView
-            android:id="@+id/launcherImage"
-            android:layout_width="39.8dp"
-            android:layout_height="39.8dp"
-            android:layout_gravity="center"
-            android:src="@drawable/start_1" />
-    </FrameLayout>
-
-    <TextView
-        android:layout_width="269dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="45dp"
-        android:layout_marginLeft="46dp"
-        android:layout_marginRight="45dp"
-        android:layout_marginStart="46dp"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif"
-        android:gravity="center_horizontal"
-        android:letterSpacing="0.05"
-        android:text="@string/prechat_screen_text"
-        android:textColor="#4e4e50"
-        android:textSize="16sp"
-        android:textStyle="normal" />
-
-    <com.google.android.material.textfield.TextInputLayout
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="39dp"
-        android:layout_marginLeft="37dp"
-        android:layout_marginRight="39dp"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="46dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
-        <EditText
-            android:id="@+id/emailIdEt"
+        <LinearLayout
+            android:id="@+id/prechatLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:hint="@string/emailEt"
-            android:inputType="textEmailAddress"
-            android:letterSpacing="0.06"
-            android:textColor="@color/prechat_edittext_text_color"
-            android:textSize="14sp"
-            android:textStyle="normal" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25dp">
 
-        <EditText
-            android:id="@+id/nameEt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="39dp"
-            android:layout_marginLeft="37dp"
-            android:layout_marginRight="39dp"
-            android:layout_marginStart="37dp"
-            android:fontFamily="sans-serif"
-            android:hint="@string/nameEt"
-            android:inputType="textPersonName"
-            android:letterSpacing="0.06"
-            android:textColor="@color/prechat_edittext_text_color"
-            android:textSize="14sp"
-            android:textStyle="normal" />
-    </com.google.android.material.textfield.TextInputLayout>
+                <View
+                    android:layout_width="68.8dp"
+                    android:layout_height="68.8dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/km_prechat_collection_background" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp">
+                <ImageView
+                    android:id="@+id/launcherImage"
+                    android:layout_width="39.8dp"
+                    android:layout_height="39.8dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/start_1" />
+            </FrameLayout>
 
-        <EditText
-            android:id="@+id/phoneNumberEt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="39dp"
-            android:layout_marginLeft="37dp"
-            android:layout_marginRight="39dp"
-            android:layout_marginStart="37dp"
-            android:fontFamily="sans-serif"
-            android:hint="@string/phoneNumberEt"
-            android:inputType="phone"
-            android:letterSpacing="0.06"
-            android:textColor="@color/prechat_edittext_text_color"
-            android:textSize="14sp"
-            android:textStyle="normal" />
-    </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:layout_width="269dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="46dp"
+                android:layout_marginLeft="46dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="45dp"
+                android:layout_marginRight="45dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:letterSpacing="0.05"
+                android:text="@string/prechat_screen_text"
+                android:textColor="#4e4e50"
+                android:textSize="16sp"
+                android:textStyle="normal" />
 
-    <Button
-        android:id="@+id/start_conversation"
-        android:layout_width="248dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="25dp"
-        android:layout_marginTop="54dp"
-        android:background="@drawable/start_new_conv_shape"
-        android:fontFamily="sans-serif-medium"
-        android:letterSpacing="0.04"
-        android:text="@string/start_conversation"
-        android:textAllCaps="false"
-        android:textColor="@color/default_start_new_button_text_color"
-        android:textSize="14sp"
-        android:visibility="visible" />
-</LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/kmPreChatRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="37dp"
+                android:layout_marginLeft="37dp"
+                android:layout_marginTop="46dp"
+                android:layout_marginEnd="39dp"
+                android:nestedScrollingEnabled="false"
+                android:layout_marginRight="39dp"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/start_conversation"
+                android:layout_width="248dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="54dp"
+                android:layout_marginBottom="25dp"
+                android:background="@drawable/start_new_conv_shape"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.04"
+                android:text="@string/start_conversation"
+                android:textAllCaps="false"
+                android:textColor="@color/default_start_new_button_text_color"
+                android:textSize="14sp"
+                android:visibility="visible" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

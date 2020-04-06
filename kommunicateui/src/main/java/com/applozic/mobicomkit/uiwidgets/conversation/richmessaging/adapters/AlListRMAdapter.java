@@ -1,8 +1,10 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,24 +18,20 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
 import java.util.Map;
 
-public class AlRichListsAdapter extends RecyclerView.Adapter {
+public class AlListRMAdapter extends ALRichMessageAdapter {
 
-    private Context context;
     private List<ALRichMessageModel.AlElementModel> elementList;
-    private ALRichMessageListener messageListener;
-    private Message message;
     private Map<String, Object> replyMetadata;
 
-    public AlRichListsAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, Object> replyMetadata, ALRichMessageListener messageListener) {
-        this.context = context;
+    AlListRMAdapter(Context context, Message message, List<ALRichMessageModel.AlElementModel> elementList, Map<String, Object> replyMetadata, ALRichMessageListener messageListener, KmThemeHelper themeHelper) {
+        super(context, messageListener, message, themeHelper);
         this.elementList = elementList;
-        this.messageListener = messageListener;
-        this.message = message;
         this.replyMetadata = replyMetadata;
     }
 
@@ -46,10 +44,14 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        bindView((AlListItemViewHolder) holder, elementList.get(position));
+        bindItems(holder, position);
     }
 
-    public void bindView(AlListItemViewHolder holder, ALRichMessageModel.AlElementModel element) {
+    @Override
+    public void bindItems(RecyclerView.ViewHolder viewHolder, int position) {
+        ALRichMessageModel.AlElementModel element = elementList.get(position);
+        AlListItemViewHolder holder = (AlListItemViewHolder) viewHolder;
+
         if (!TextUtils.isEmpty(element.getTitle())) {
             holder.headerTv.setVisibility(View.VISIBLE);
             holder.headerTv.setText(AlRichMessage.getHtmlText(element.getTitle().trim()));
@@ -92,6 +94,7 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
             rootLayout = itemView.findViewById(R.id.rootLayout);
             listImage = itemView.findViewById(R.id.listItemImage);
 
+            headerTv.setTextColor(themeHelper.getPrimaryColor());
             rootLayout.setOnClickListener(this);
         }
 
@@ -101,8 +104,8 @@ public class AlRichListsAdapter extends RecyclerView.Adapter {
             if (itemPosition != -1 && elementList != null && !elementList.isEmpty()) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
                     ((ALRichMessageListener) context.getApplicationContext()).onAction(context, getAction(elementList.get(itemPosition)), message, elementList.get(itemPosition), getReplyMetadata(elementList.get(itemPosition)));
-                } else if (messageListener != null) {
-                    messageListener.onAction(context, getAction(elementList.get(itemPosition)), message, elementList.get(itemPosition), getReplyMetadata(elementList.get(itemPosition)));
+                } else if (listener != null) {
+                    listener.onAction(context, getAction(elementList.get(itemPosition)), message, elementList.get(itemPosition), getReplyMetadata(elementList.get(itemPosition)));
                 }
             }
         }

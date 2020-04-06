@@ -43,20 +43,7 @@
     <string name="cancel_transaction">Do you want to cancel this transaction?</string>
     <string name="go_back">Are you sure you want to exit this page?</string>
     <string name="unable_to_create_conversation">Unable to create conversation.</string>
-
-    <!--
-         Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
-         alphabet using ListView fast scroll.
-    -->
     <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
-
-    <!--
-         When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
-         when using a number of different fields, such as name, e-mail address, address, phone
-         number, etc. When a match occurs that is not the name, there is currently no way to tell
-         which other field was matched. This string is displayed in the secondary display text in
-         ContactsListFragment when a search query match occurs that is not the display name.
-    -->
     <string name="search_match_other">Matches Other Field</string>
     <string name="invite">Invite your friends</string>
     <array name="alphabet_color">
@@ -224,7 +211,7 @@
     <string name="profile_contact">No Contact number</string>
     <string name="profile_contact_number">Contact Number</string>
     <string name="user_name">User Name</string>
-    <string name="rupee_symbol">\u20B9</string>
+    <string name="rupee_symbol">\u20B9 %1$s</string>
     <string name="km_audio_record_toast_message">Press and hold  [img src=noun_mic_1057615_copy/]  to send a voice clip</string>
     <string name="km_recording_text">Recording</string>
     <string name="km_active_bots_text">Active bot:</string>
@@ -252,4 +239,41 @@
     <string name="form_action_success">Successfully submitted</string>
     <string name="km_assign_to_message">Assigned to </string>
     <string name="km_unable_to_start_conversation_error">Unable to start conversation: </string>
+    <string name="km_empty_field_error">Required</string>
+    <string name="km_validation_error">Invalid %1$s</string>
+    <string name="list_item_title">Title *</string>
+    <string name="list_item_mr">Mr.</string>
+    <string name="list_item_ms">Ms.</string>
+    <string name="list_item_mrs">Mrs.</string>
+    <string name="room">ROOM %1$d</string>
+    <string name="name_unavailable">Name Unavailable (%1$s/%2$d)</string>
+    <string name="hotel_rating">%1$s (%2$s/%3$d)</string>
+    <string name="address_unavailable">Address unavailable</string>
+    <string name="description_unavailable">Description unavailable</string>
+    <string name="room_night_detail">(1 Room for %1$d Nights)</string>
+    <string name="room_name_unavailable">Room name unavailable</string>
+    <string name="km_speech_listening_text">Listening...</string>
+    <string name="km_conversation_status">Conversation Status</string>
+    <string name="km_more_options">More</string>
+    <string name="km_status_resolved">Resolved</string>
+    <string name="km_status_spam">Spam/Irrelevant</string>
+    <string name="km_status_duplicate">Duplicate</string>
+    <string name="km_status_not_responded">Not Responded</string>
+    <string name="km_status_open">Open</string>
+    <string name="km_status_mark_as_spam">Mark as Spam</string>
+    <string name="km_status_mark_as_duplicate">Mark as Duplicate</string>
+    <string name="km_change_status_to_message">Status changed to </string>
+    <string name="km_change_assignee_to_message">Assigned to </string>
+    <string name="km_resolve_conversation">Resolve Conversation</string>
+    <string name="km_reopen_conversation">Reopen Conversation</string>
+    <string name="km_conversation_marked_as_spam">Marked as Spam</string>
+    <string name="km_language_not_supported">The Language is not supported</string>
+    <string name="km_text_to_speech_init_failed">Text to Speech initialization failed!</string>
+    <string name="km_assign_conversation_text">Assign Conversation</string>
+    <string name="km_agent_list_title">Agents</string>
+    <string name="km_bot_list_title">Bots</string>
+    <string name="km_empty_bot_list_message">Bots not integrated</string>
+    <string name="km_empty_agent_list_message">No Agents found</string>
+    <string name="km_no_agents_found">No matching agents found</string>
+    <string name="km_no_bots_found">No matching bots found</string>
 </resources>

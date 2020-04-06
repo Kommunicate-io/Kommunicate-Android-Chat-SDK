@@ -20,6 +20,7 @@ public class KmConversationBuilder extends JsonMarker {
     private String appId;
     private List<String> agentIds;
     private List<String> botIds;
+    private List<String> userIds;
     private boolean skipConversationList = true;
     private String conversationId;
     private String fcmDeviceToken;
@@ -196,6 +197,15 @@ public class KmConversationBuilder extends JsonMarker {
 
     public KmConversationBuilder setConversationTitle(String conversationTitle) {
         this.conversationTitle = conversationTitle;
+        return this;
+    }
+
+    public List<String> getUserIds() {
+        return userIds;
+    }
+
+    public KmConversationBuilder setUserIds(List<String> userIds) {
+        this.userIds = userIds;
         return this;
     }
 

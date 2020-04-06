@@ -3,6 +3,14 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.0.0
+1) Option to set custom prechat fields and validations
+2) Form type rich messge support with new rich message models
+3) Option to set some themes/colors dynamically from the dashboard
+4) Speech to text and textToSpeech feature
+6) Removed Contact and Phone releated permissions/code
+7) Several bug fixes and optimisations
+
 ## Kommunicate Android SDK 1.9.6
 * Changed the CSAT rating scale to 1,5,10
 * Show toast in case of APP_ID change

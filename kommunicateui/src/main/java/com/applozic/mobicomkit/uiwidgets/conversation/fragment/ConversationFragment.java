@@ -31,7 +31,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.KmResolveViewMod
 import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.KmViewModelFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.viewmodel.providers.ViewModelProviders;
 import com.applozic.mobicomkit.uiwidgets.databinding.KmResolveLayoutBinding;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAssigneeListFragment;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmBottomSlideFragment;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;

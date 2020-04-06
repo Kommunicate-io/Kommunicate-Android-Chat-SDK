@@ -48,9 +48,7 @@ public class KmResolveViewModel extends KmViewModel {
     }
 
     public void updateConversationStatus(KmResolve resolve) {
-        if (!KmConversationStatus.SPAM_STATUS_NAME.equals(resolve.getStatusName())) {
-            KmConversationStatus.updateConversationStatus(resolve, channel);
-        }
+        KmConversationStatus.updateConversationStatus(resolve, channel);
     }
 
     public void updateConversationStatus(int conversationStatus) {

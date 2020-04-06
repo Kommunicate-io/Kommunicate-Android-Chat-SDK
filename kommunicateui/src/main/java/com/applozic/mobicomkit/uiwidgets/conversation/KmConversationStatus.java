@@ -20,7 +20,7 @@ public class KmConversationStatus {
     private static final String TAG = "KmConversationStatus";
     public static final String OPEN_STATUS_NAME = getString(R.string.km_resolve_conversation);
     public static final String RESOLVED_STATUS_NAME = getString(R.string.km_reopen_conversation);
-    public static final String SPAM_STATUS_NAME = getString(R.string.km_conversation_marked_as_spam);
+    //public static final String SPAM_STATUS_NAME = getString(R.string.km_conversation_marked_as_spam);
     public static final String MARK_AS_SPAM = getString(R.string.km_status_mark_as_spam);
     public static final int STATUS_OPEN = 0;
     public static final int STATUS_RESOLVED = 2;
@@ -29,9 +29,8 @@ public class KmConversationStatus {
     public static String getStatusText(int status) {
         switch (status) {
             case 2:
-                return RESOLVED_STATUS_NAME;
             case 3:
-                return SPAM_STATUS_NAME;
+                return RESOLVED_STATUS_NAME;
             default:
                 return OPEN_STATUS_NAME;
         }
@@ -55,9 +54,8 @@ public class KmConversationStatus {
     public static int getColorId(int status) {
         switch (status) {
             case 2:
-                return R.color.km_reopen_status_color;
             case 3:
-                return R.color.km_spam_status_color;
+                return R.color.km_reopen_status_color;
             default:
                 return R.color.km_resolve_status_color;
         }

@@ -111,6 +111,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean launchChatFromProfilePicOrName = false;
     private Map<String, Boolean> filterGallery;
     private boolean enableShareConversation = false;
+    private String messageStatusIconColor = "";
     private float[] sentMessageCornerRadii;
     private float[] receivedMessageCornerRadii;
     private KmFontModel fontModel;
@@ -624,6 +625,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isFaqOptionEnabled(int screen) {
         return enableFaqOption[screen - 1];
+    }
+
+    public String getMessageStatusIconColor() {
+        return messageStatusIconColor;
+    }
+
+    public void setMessageStatusIconColor(String messageStatusIconColor) {
+        this.messageStatusIconColor = messageStatusIconColor;
     }
 
     @Override

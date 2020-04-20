@@ -22,6 +22,7 @@ public class KmThemeHelper implements KmCallback {
     private int sentMessageBackgroundColor = -1;
     private int sendButtonBackgroundColor = -1;
     private int sentMessageBorderColor = -1;
+    private int messageStatusIconColor = -1;
 
     public static KmThemeHelper getInstance(Context context, AlCustomizationSettings alCustomizationSettings) {
         if (kmThemeHelper == null) {
@@ -79,6 +80,19 @@ public class KmThemeHelper implements KmCallback {
             sendButtonBackgroundColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.applozic_theme_color_primary);
         }
         return sendButtonBackgroundColor;
+    }
+
+    public int getMessageStatusIconColor() {
+        if (messageStatusIconColor == -1) {
+            String colorStr = alCustomizationSettings.getMessageStatusIconColor();
+
+            if (TextUtils.isEmpty(colorStr)) {
+                colorStr = appSettingPreferences.getPrimaryColor();
+            }
+
+            messageStatusIconColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.message_status_icon_colors);
+        }
+        return messageStatusIconColor;
     }
 
     public int getSecondaryColor() {

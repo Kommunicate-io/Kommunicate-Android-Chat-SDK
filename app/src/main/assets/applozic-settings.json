@@ -9,6 +9,7 @@
   "channelCustomMessageBgColor": "#cccccc",
   "sentContactMessageTextColor:": "#5fba7d",
   "receivedContactMessageTextColor": "#646262",
+  "messageStatusIconColor": "#5c5aa7",
   "sentMessageTextColor": "#FFFFFFFF",
   "receivedMessageTextColor": "#646262",
   "messageEditTextTextColor": "#000000",

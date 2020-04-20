@@ -1532,7 +1532,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             statusIconBackground = customView.findViewById(R.id.statusIconBackground);
 
             if (statusIconBackground != null) {
-                KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getSentMessageBackgroundColor());
+                KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getMessageStatusIconColor());
             }
 
             shareContactImage = (ImageView) mainContactShareLayout.findViewById(R.id.contact_share_image);

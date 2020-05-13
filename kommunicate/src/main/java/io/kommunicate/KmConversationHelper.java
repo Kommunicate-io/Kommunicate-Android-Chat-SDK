@@ -707,6 +707,7 @@ public class KmConversationHelper {
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
+                conversationBuilder.setClientConversationId(clientChannelKey);
                 startOrGetConversation(conversationBuilder, handler);
             } else {
                 createConversation(conversationBuilder, handler);

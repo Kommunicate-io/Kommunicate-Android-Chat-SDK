@@ -411,9 +411,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 currentConversationId = savedInstanceState.getInt(CONVERSATION_ID);
                 if (contact != null || channel != null) {
                     if (channel != null) {
-                        conversation = ConversationFragment.newInstance(null, channel, currentConversationId, null, null);
+                        conversation = ConversationUIService.getConversationFragment(this, null, channel, currentConversationId, null, null);
                     } else {
-                        conversation = ConversationFragment.newInstance(contact, null, currentConversationId, null, null);
+                        conversation = ConversationUIService.getConversationFragment(this, contact, null, currentConversationId, null, null);
                     }
                     addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
                 }
@@ -900,7 +900,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     public void onQuickConversationFragmentItemClick(View view, Contact contact, Channel channel, Integer conversationId, String searchString) {
-        conversation = ConversationFragment.newInstance(contact, channel, conversationId, searchString, null);
+        conversation = ConversationUIService.getConversationFragment(this, contact, channel, conversationId, searchString, null);
         addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
         this.channel = channel;
         this.contact = contact;
@@ -917,6 +917,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         addFragment(this, conversationFragment, ConversationUIService.CONVERSATION_FRAGMENT);
         conversation = conversationFragment;
     }
+
 
     @Override
     public void onBackPressed() {

@@ -42,10 +42,6 @@
                 android:drawSelectorOnTop="true" />
         </FrameLayout>
 
-        <include
-            android:id="@+id/kmResolveLayout"
-            layout="@layout/km_resolve_layout" />
-
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="0dp"

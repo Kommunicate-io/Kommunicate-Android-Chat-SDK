@@ -71,29 +71,11 @@ public class KmAppSettingModel extends JsonMarker {
     }
 
     public class KmChatWidget extends JsonMarker {
-        private boolean popup;
-        private Short iconIndex;
         private String primaryColor;
         private String secondaryColor;
         private boolean showPoweredBy;
         private long sessionTimeout;
         private int botMessageDelayInterval;
-
-        public boolean isPopup() {
-            return popup;
-        }
-
-        public void setPopup(boolean popup) {
-            this.popup = popup;
-        }
-
-        public Short getIconIndex() {
-            return iconIndex;
-        }
-
-        public void setIconIndex(Short iconIndex) {
-            this.iconIndex = iconIndex;
-        }
 
         public String getPrimaryColor() {
             return primaryColor;

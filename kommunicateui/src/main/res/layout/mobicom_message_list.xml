@@ -498,16 +498,6 @@
                                 android:layout_marginLeft="29dp"
                                 android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/locaiton" />
-
-                            <ImageButton
-                                android:id="@+id/more_options_btn"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_marginStart="29dp"
-                                android:layout_marginLeft="29dp"
-                                android:visibility="gone"
-                                android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/ic_more_options" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

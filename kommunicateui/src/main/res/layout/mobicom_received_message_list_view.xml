@@ -211,8 +211,6 @@
             android:id="@+id/tempForLayoutAdjustment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/applozic_ic_action_message_pending"
-            android:drawableRight="@drawable/applozic_ic_action_message_pending"
             android:gravity="center_vertical"
             android:textColor="@color/applozic_darker_gray_color"
             android:textSize="11sp"

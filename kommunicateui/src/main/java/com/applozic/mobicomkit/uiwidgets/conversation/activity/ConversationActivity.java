@@ -86,7 +86,6 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
 
 import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
-import io.kommunicate.users.KmAssigneeListHelper;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -383,9 +382,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             applozicPermission.checkRuntimePermissionForStorage();
         }
 
-        if (KmUtils.isAgent()) {
-            KmAssigneeListHelper.fetchAssigneeList(this);
-        }
         mActionBar = getSupportActionBar();
         if (!TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimary()) && !TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimaryDark())) {
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(alCustomizationSettings.getThemeColorPrimary())));

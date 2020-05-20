@@ -125,7 +125,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private Drawable deliveredIcon;
     private Drawable pendingIcon;
     private Drawable readIcon;
-    private Drawable scheduledIcon;
     private ImageLoader imageThumbnailLoader;
     private EmojiconHandler emojiconHandler;
     private FileClientService fileClientService;
@@ -241,7 +240,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_c);
         readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_c);
         pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
-        scheduledIcon = context.getResources().getDrawable(R.drawable.applozic_ic_action_message_schedule);
         final String alphabet = context.getString(R.string.alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
     }
@@ -654,13 +652,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     if (message.isCall() || message.isDummyEmptyMessage()) {
                         myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                     } else if (!message.isSentToServer() && message.isTypeOutbox()) {
-                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(message.getScheduledAt() != null ? scheduledIcon : pendingIcon, null, null, null);
+                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(pendingIcon, null, null, null);
                     } else if (message.getKeyString() != null && message.isTypeOutbox() && message.isSentToServer()) {
                         Drawable statusIcon;
                         if (message.isDeliveredAndRead()) {
                             statusIcon = readIcon;
                         } else {
-                            statusIcon = (message.getDelivered() ? deliveredIcon : (message.getScheduledAt() != null ? scheduledIcon : sentIcon));
+                            statusIcon = (message.getDelivered() ? deliveredIcon : sentIcon);
                         }
                         myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
                     }

@@ -216,6 +216,7 @@ public class ALRichMessageModel extends JsonMarker {
         private String titleExt;
         private String replyText;
         private AlAction action;
+        private String updateLanguage;
         private AlHeaderModel header;
         private List<AlElementModel> elements;
         private List<AlButtonModel> actions;
@@ -227,6 +228,14 @@ public class ALRichMessageModel extends JsonMarker {
         private List<AlButtonModel> buttons;
         private AlFormDataModel formData;
         private boolean isDeepLink;
+
+        public String getUpdateLanguage() {
+            return updateLanguage;
+        }
+
+        public void setUpdateLanguage(String updateLanguage) {
+            this.updateLanguage = updateLanguage;
+        }
 
         public String getTitle() {
             return title;
@@ -510,11 +519,20 @@ public class ALRichMessageModel extends JsonMarker {
         private String overlayText;
         private String buttonLabel;
         private String requestType;
+        private String updateLanguage;
         private Map<String, Object> replyMetadata;
         private List<AlButtonModel> buttons;
         private AlFormDataModel formData;
         private ALPayloadModel payload;
         private boolean isDeepLink;
+
+        public String getUpdateLanguage() {
+            return updateLanguage;
+        }
+
+        public void setUpdateLanguage(String updateLanguage) {
+            this.updateLanguage = updateLanguage;
+        }
 
         public String getUrl() {
             return url;

@@ -47,10 +47,7 @@
             android:paddingLeft="10dp"
             android:paddingStart="10dp"
             android:textColor="@color/black" />
-
-
     </RelativeLayout>
-
 
     <FrameLayout
         android:layout_width="match_parent"

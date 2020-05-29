@@ -12,7 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+
 import androidx.fragment.app.FragmentActivity;
+
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,10 +50,12 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachment
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MessageInfoFragment;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
+import com.applozic.mobicomkit.uiwidgets.uilistener.KmFragmentGetter;
 import com.applozic.mobicommons.commons.core.utils.LocationInfo;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -132,7 +136,7 @@ public class ConversationUIService {
             Contact contact = ((ConversationActivity) fragmentActivity).getContact();
             Channel channel = ((ConversationActivity) fragmentActivity).getChannel();
             Integer conversationId = ((ConversationActivity) fragmentActivity).getConversationId();
-            conversationFragment = ConversationFragment.newInstance(contact, channel, conversationId, null, null);
+            conversationFragment = getConversationFragment(fragmentActivity, contact, channel, conversationId, null, null);
             ConversationActivity.addFragment(fragmentActivity, conversationFragment, CONVERSATION_FRAGMENT);
         }
         return conversationFragment;
@@ -150,7 +154,7 @@ public class ConversationUIService {
             public void run() {
                 ConversationFragment conversationFragment = (ConversationFragment) UIService.getFragmentByTag(fragmentActivity, CONVERSATION_FRAGMENT);
                 if (conversationFragment == null) {
-                    conversationFragment = ConversationFragment.newInstance(contact, null, conversationId, searchString, messageSearchString);
+                    conversationFragment = getConversationFragment(fragmentActivity, contact, null, conversationId, searchString, messageSearchString);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                 } else {
                     UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
@@ -172,7 +176,7 @@ public class ConversationUIService {
             public void run() {
                 ConversationFragment conversationFragment = (ConversationFragment) UIService.getFragmentByTag(fragmentActivity, CONVERSATION_FRAGMENT);
                 if (conversationFragment == null) {
-                    conversationFragment = ConversationFragment.newInstance(null, channel, conversationId, searchString,  messageSearchString);
+                    conversationFragment = getConversationFragment(fragmentActivity, null, channel, conversationId, searchString, messageSearchString);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                 } else {
                     UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
@@ -190,8 +194,9 @@ public class ConversationUIService {
 
     /**
      * send the the attachment messages.
+     *
      * @param attachmentList the list of messages
-     * @param messageText the message text
+     * @param messageText    the message text
      */
     public void sendAttachments(ArrayList<Uri> attachmentList, String messageText) {
         for (Uri info : attachmentList) {
@@ -957,6 +962,12 @@ public class ConversationUIService {
             usersAsyncTask = new RegisteredUsersAsyncTask(fragmentActivity, usersAsyncTaskTaskListener, totalOnlineUser, message, messageContent);
         }
         usersAsyncTask.execute((Void) null);
+    }
 
+    public static ConversationFragment getConversationFragment(Context context, Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString) {
+        if (context != null && context.getApplicationContext() instanceof KmFragmentGetter) {
+            return ((KmFragmentGetter) context.getApplicationContext()).getConversationFragment(contact, channel, conversationId, searchString, messageSearchString);
+        }
+        return ConversationFragment.newInstance(contact, channel, conversationId, searchString, messageSearchString);
     }
 }

@@ -87,7 +87,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     ConversationUIService conversationUIService;
     AlCustomizationSettings alCustomizationSettings;
     String searchString;
-    private Long minCreatedAtTime;
     private DownloadConversation downloadConversation;
     private BaseContactService baseContactService;
     private Toolbar toolbar;
@@ -587,8 +586,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                         return;
                     }
                     if (loadMore && !loading && (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                        DownloadConversation downloadConversation = new DownloadConversation(recyclerView, false, listIndex, visibleItemCount, totalItemCount);
-                        downloadConversation.setQuickConversationAdapterWeakReference(recyclerAdapter);
+                        DownloadConversation downloadConversation = new DownloadConversation(getContext(), false, listIndex);
                         downloadConversation.setTextViewWeakReference(emptyTextView);
                         downloadConversation.setSwipeRefreshLayoutWeakReference(swipeLayout);
                         downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -600,15 +598,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         });
     }
 
-
-    public void downloadConversations() {
-        downloadConversations(false, null);
-    }
-
     public void downloadConversations(boolean showInstruction, String searchString) {
-        minCreatedAtTime = null;
-        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, showInstruction, searchString);
-        downloadConversation.setQuickConversationAdapterWeakReference(recyclerAdapter);
+        downloadConversation = new DownloadConversation(getContext(), true, 1, searchString);
         downloadConversation.setTextViewWeakReference(emptyTextView);
         downloadConversation.setSwipeRefreshLayoutWeakReference(swipeLayout);
         downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -696,13 +687,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         private List<Message> nextMessageList = new ArrayList<Message>();
         private boolean loadMoreMessages;
         private String searchString;
+        private WeakReference<Context> context;
         private WeakReference<SwipeRefreshLayout> swipeRefreshLayoutWeakReference;
-        private WeakReference<QuickConversationAdapter> quickConversationAdapterWeakReference;
         private WeakReference<TextView> textViewWeakReference;
-
-        public void setQuickConversationAdapterWeakReference(QuickConversationAdapter quickConversationAdapterWeakReference) {
-            this.quickConversationAdapterWeakReference = new WeakReference<QuickConversationAdapter>(quickConversationAdapterWeakReference);
-        }
 
         public void setTextViewWeakReference(TextView emptyTextViewWeakReference) {
             this.textViewWeakReference = new WeakReference<TextView>(emptyTextViewWeakReference);
@@ -714,14 +701,15 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         }
 
 
-        public DownloadConversation(RecyclerView view, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, boolean showInstruction, String searchString) {
+        public DownloadConversation(Context context, boolean initial, int firstVisibleItem, String searchString) {
+            this.context = new WeakReference<>(context);
             this.initial = initial;
             this.firstVisibleItem = firstVisibleItem;
             this.searchString = searchString;
         }
 
-        public DownloadConversation(RecyclerView view, boolean initial, int firstVisibleItem, int amountVisible, int totalItems) {
-            this(view, initial, firstVisibleItem, amountVisible, totalItems, false, null);
+        public DownloadConversation(Context context, boolean initial, int firstVisibleItem) {
+            this(context, initial, firstVisibleItem, null);
             loadMoreMessages = true;
         }
 
@@ -733,7 +721,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 if (!messageList.contains(null)) {
                     messageList.add(null);
                 }
-                quickConversationAdapterWeakReference.get().notifyItemInserted(messageList.size() - 1);
+                if (recyclerAdapter != null) {
+                    recyclerAdapter.notifyItemInserted(messageList.size() - 1);
+                }
             } else {
                 if (swipeRefreshLayoutWeakReference != null) {
                     final SwipeRefreshLayout swipeRefreshLayout = swipeRefreshLayoutWeakReference.get();
@@ -753,9 +743,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         protected Long doInBackground(Void... voids) {
             if (initial) {
                 nextMessageList = syncCallService.getLatestMessagesGroupByPeople(searchString);
-                if (!nextMessageList.isEmpty()) {
-                    minCreatedAtTime = nextMessageList.get(nextMessageList.size() - 1).getCreatedAtTime();
-                }
             } else if (!messageList.isEmpty()) {
                 listIndex = firstVisibleItem;
                 Long createdAt;
@@ -764,8 +751,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 } else {
                     createdAt = messageList.isEmpty() ? null : messageList.get(messageList.size() - 1).getCreatedAtTime();
                 }
-                minCreatedAtTime = (minCreatedAtTime == null ? createdAt : Math.min(minCreatedAtTime, createdAt));
-                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(minCreatedAtTime, searchString);
+                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(createdAt, searchString, MobiComUserPreference.getInstance(ApplozicService.getContextFromWeak(context)).getParentGroupKey());
             }
 
             return 0L;
@@ -827,16 +813,12 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 if (messageList.contains(null)) {
                     messageList.remove(null);
                 }
-                if (quickConversationAdapterWeakReference != null && quickConversationAdapterWeakReference.get() != null) {
-                    quickConversationAdapterWeakReference.get().notifyDataSetChanged();
-                }
             }
-            if (quickConversationAdapterWeakReference != null) {
-                QuickConversationAdapter quickConversationAdapter = quickConversationAdapterWeakReference.get();
-                if (quickConversationAdapter != null) {
-                    quickConversationAdapter.notifyDataSetChanged();
-                }
+
+            if (recyclerAdapter != null) {
+                recyclerAdapter.notifyDataSetChanged();
             }
+
             if (initial) {
                 if (textViewWeakReference != null) {
                     TextView emptyTextView = textViewWeakReference.get();

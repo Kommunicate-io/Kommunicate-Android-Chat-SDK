@@ -22,6 +22,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
@@ -33,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.KmSettings;
 import io.kommunicate.async.KmPostDataAsyncTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAutoSuggestionModel;
@@ -142,11 +144,18 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         }
     }
 
+    private void updateLanguage(String languageCode) {
+        if (!TextUtils.isEmpty(languageCode)) {
+            KmSettings.updateUserLanguage(ApplozicService.getAppContext(), languageCode);
+        }
+    }
+
     public void handleQuickReplies(Object object, Map<String, Object> replyMetadata) {
         String message = null;
 
         if (object instanceof ALRichMessageModel.ALPayloadModel) {
             ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) object;
+            updateLanguage(payloadModel.getUpdateLanguage());
             if (payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getMessage())) {
                 handleQuickReplies(payloadModel.getAction(), payloadModel.getReplyMetadata());
             } else {
@@ -161,7 +170,9 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
             }
         } else if (object instanceof ALRichMessageModel.AlAction) {
             ALRichMessageModel.AlAction action = (ALRichMessageModel.AlAction) object;
+            updateLanguage(action.getUpdateLanguage());
             if (action.getPayload() != null) {
+                updateLanguage(action.getPayload().getUpdateLanguage());
                 if (!TextUtils.isEmpty(action.getPayload().getMessage())) {
                     message = action.getPayload().getMessage();
                 } else if (!TextUtils.isEmpty(action.getPayload().getTitle())) {

@@ -48,6 +48,22 @@
         android:visibility="gone" />
 
     <TextView
+        android:id="@+id/awayTextView"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_alignEnd="@+id/profile_image_layout"
+        android:layout_alignRight="@+id/profile_image_layout"
+        android:layout_alignBottom="@+id/profile_image_layout"
+        android:layout_marginEnd="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/toolbar_away_circle"
+        android:textColor="#BFBC05"
+        android:textSize="7sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/offlineTextView"
         android:layout_width="9dp"
         android:layout_height="9dp"

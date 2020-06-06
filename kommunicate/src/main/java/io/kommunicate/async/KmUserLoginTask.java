@@ -12,6 +12,7 @@ import com.applozic.mobicomkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
 
+import io.kommunicate.services.KmRegisterUserClientService;
 import io.kommunicate.services.KmUserClientService;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
@@ -60,7 +61,9 @@ public class KmUserLoginTask extends UserLoginTask {
             } else {
                 new UserClientService(context.get()).clearDataAndPreference();
                 KmAppSettingPreferences.fetchAppSetting(context.get(), Applozic.getInstance(context.get()).getApplicationKey());
-                response = new RegisterUserClientService(context.get()).createAccount(user);
+                //TODO: won't be needed after applozic sdk update
+                response = new KmRegisterUserClientService(context.get()).createAccount(user);
+                //response = new RegisterUserClientService(context.get()).createAccount(user);
             }
         } catch (Exception e) {
             e.printStackTrace();

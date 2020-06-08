@@ -39,7 +39,6 @@ import java.util.TimeZone;
 
 import io.kommunicate.KMGroupInfo;
 import io.kommunicate.KmException;
-import io.kommunicate.KmUserPreference;
 import io.kommunicate.feeds.KmRegistrationResponse;
 import io.kommunicate.users.KMUser;
 
@@ -62,7 +61,7 @@ public class KmUserClientService extends UserClientService {
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String CREATE_CONVERSATION_URL = "/create";
     private static final String GET_AGENT_LIST_URL = "/users/chat/plugin/settings";
-    private static final String GET_AGENT_DETAILS = "/rest/ws/users/list";
+    private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
     private static String TAG = "KmUserClientService";
 
@@ -285,7 +284,7 @@ public class KmUserClientService extends UserClientService {
 
         try {
             String url = getKmBaseUrl() + GET_AGENT_DETAILS + "?applicationId=" + applicationKey.trim() + "&userName=" + URLEncoder.encode(userId, "UTF-8").trim();
-            String response = getResponseUsingJWTToken(url, "application/json", "application/json, text/plain, */*");
+            String response = getResponse(url, "application/json", "application/json, text/plain, */*");
             Utils.printLog(context, TAG, "User details GET method response: "+response);
             return response;
         } catch (Exception exception) {
@@ -457,7 +456,7 @@ public class KmUserClientService extends UserClientService {
     }
 
     //uses jwt-token in the authorisation header
-    public String getResponseUsingJWTToken(String urlString, String contentType, String accept) {
+    public String getResponseUsingJWTToken(String urlString, String contentType, String accept, String jwtToken) {
         Utils.printLog(context, TAG, "Calling URL(with jwt-token): " + urlString);
 
         HttpURLConnection connection = null;
@@ -468,11 +467,10 @@ public class KmUserClientService extends UserClientService {
             if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getDeviceKeyString())) {
                 connection.setRequestProperty(DEVICE_KEY_HEADER, MobiComUserPreference.getInstance(context).getDeviceKeyString());
             }
-            String token = KmUserPreference.getInstance(context).getJwtToken();
-            if (TextUtils.isEmpty(token)) {
+            if (TextUtils.isEmpty(jwtToken)) {
                 Utils.printLog(context, TAG, "The JWT Token is null. Can't set authorization header.");
             } else {
-                connection.setRequestProperty("Authorization", token);
+                connection.setRequestProperty("Authorization", jwtToken);
             }
 
             connection.connect();

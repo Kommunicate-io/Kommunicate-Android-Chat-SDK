@@ -3154,7 +3154,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 return;
             }
             if (contact.isConnected()) {
-                toolbarSubtitleText.setText(getString(agentStatus ? R.string.online : R.string.away));
+                if (agentStatus) {
+                    toolbarSubtitleText.setText(R.string.online);
+                } else {
+                    toolbarSubtitleText.setText(R.string.away);
+                }
                 toolbarSubtitleText.setVisibility(VISIBLE);
             } else {
                 if (User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {

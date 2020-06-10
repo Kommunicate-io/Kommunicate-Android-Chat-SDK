@@ -49,6 +49,13 @@ import static com.applozic.mobicomkit.api.HttpRequestUtils.DEVICE_KEY_HEADER;
  */
 
 public class KmUserClientService extends UserClientService {
+    private static String TAG = "KmUserClientService";
+
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String ACCEPT = "Accept";
+    public static final String GET = "GET";
+    public static final String UTF_8 = "UTF-8";
 
     private static final String USER_LIST_FILTER_URL = "/rest/ws/user/v3/filter?startIndex=";
     private static final String USER_LOGIN_API = "/login";
@@ -63,7 +70,6 @@ public class KmUserClientService extends UserClientService {
     private static final String GET_AGENT_LIST_URL = "/users/chat/plugin/settings";
     private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
-    private static String TAG = "KmUserClientService";
 
     public KmUserClientService(Context context) {
         super(context);
@@ -470,7 +476,7 @@ public class KmUserClientService extends UserClientService {
             if (TextUtils.isEmpty(jwtToken)) {
                 Utils.printLog(context, TAG, "The JWT Token is null. Can't set authorization header.");
             } else {
-                connection.setRequestProperty("Authorization", jwtToken);
+                connection.setRequestProperty(AUTHORIZATION, jwtToken);
             }
 
             connection.connect();
@@ -490,15 +496,15 @@ public class KmUserClientService extends UserClientService {
         URL url = new URL(urlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setInstanceFollowRedirects(true);
-        connection.setRequestMethod("GET");
+        connection.setRequestMethod(GET);
         connection.setUseCaches(false);
         connection.setDoInput(true);
 
         if (!TextUtils.isEmpty(contentType)) {
-            connection.setRequestProperty("Content-Type", contentType);
+            connection.setRequestProperty(CONTENT_TYPE, contentType);
         }
         if (!TextUtils.isEmpty(accept)) {
-            connection.setRequestProperty("Accept", accept);
+            connection.setRequestProperty(ACCEPT, accept);
         }
         return connection;
     }
@@ -507,7 +513,7 @@ public class KmUserClientService extends UserClientService {
         BufferedReader bufferedReader = null;
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             InputStream inputStream = connection.getInputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, UTF_8));
         } else {
             Utils.printLog(context, TAG, "Response code for getResponse is  :" + connection.getResponseCode());
         }

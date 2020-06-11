@@ -47,6 +47,7 @@ public class KmRMActionModel<T> extends JsonMarker {
     }
 
     public static class SubmitButton extends JsonMarker {
+        public static final String KM_POST_DATA_TO_BOT_PLATFORM = "postBackToBotPlatform";
         private String message;
         private Map<String, String> formData;
         private String formAction;

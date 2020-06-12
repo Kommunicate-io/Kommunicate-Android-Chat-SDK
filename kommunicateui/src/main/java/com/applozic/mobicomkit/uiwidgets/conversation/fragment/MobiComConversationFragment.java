@@ -71,6 +71,7 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
@@ -191,9 +192,12 @@ import java.util.Timer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.Kommunicate;
+import io.kommunicate.async.KmGetBotTypeTask;
 import io.kommunicate.async.AgentGetStatusTask;
 import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
+import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.callbacks.KmCharLimitCallback;
 import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
@@ -202,8 +206,10 @@ import io.kommunicate.models.KmFeedback;
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.utils.KmTextLimitWatcherUtil;
 import io.kommunicate.utils.KmUtils;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static java.util.Collections.disjoint;
 
@@ -218,6 +224,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public GridView multimediaPopupGrid;
 
     private static final String TAG = "MobiComConversation";
+    private static final int CHAR_LIMIT_FOR_DIALOG_FLOW_BOT = 256;
+    private static final int CHAR_LIMIT_WARNING_FOR_DIALOG_FLOW_BOT = 55;
 
     protected List<Conversation> conversations;
     protected String title = "Conversations";
@@ -344,9 +352,20 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private KmTextToSpeech textToSpeech;
     private KmSpeechToText speechToText;
     private KmThemeHelper themeHelper;
+    private TextView textViewCharLimitMessage;
+    private TextWatcher dialogFlowCharLimitTextWatcher;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
+    }
+
+    public void fetchBotType(Contact contact, KmCallback kmCallback) {
+        if (contact == null) {
+            contact = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
+        }
+        if (contact != null && User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
+            new KmGetBotTypeTask(getContext(), MobiComKitClientService.getApplicationKey(ApplozicService.getContext(getContext())), contact.getUserId(), kmCallback).execute();
+        }
     }
 
     @Override
@@ -416,6 +435,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         ((ConversationActivity) getActivity()).setChildFragmentLayoutBGToTransparent();
         messageList = new ArrayList<Message>();
         multimediaPopupGrid = (GridView) list.findViewById(R.id.mobicom_multimedia_options1);
+        textViewCharLimitMessage = list.findViewById(R.id.botCharLimitTextView);
         loggedInUserRole = MobiComUserPreference.getInstance(ApplozicService.getContext(getContext())).getUserRoleType();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -928,6 +948,20 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 return false;
             }
         });
+
+        final KmTextLimitWatcherUtil kmTextLimitWatcherUtil = new KmTextLimitWatcherUtil(CHAR_LIMIT_FOR_DIALOG_FLOW_BOT, CHAR_LIMIT_WARNING_FOR_DIALOG_FLOW_BOT);
+        dialogFlowCharLimitTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                setCharLimitExceededMessage(charSequence.length(), kmTextLimitWatcherUtil);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        };
 
         return list;
     }
@@ -1651,6 +1685,29 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         return false;
     }
 
+    private void setCharLimitExceededMessage(int characterCount, KmTextLimitWatcherUtil kmTextLimitWatcherUtil) {
+        if(textViewCharLimitMessage == null || sendButton == null) {
+            return;
+        }
+
+        kmTextLimitWatcherUtil.checkCharacterLimit(characterCount, new KmCharLimitCallback() {
+            @Override
+            public void onCrossed(boolean exceeded, boolean warning, int deltaCharacterCount) {
+                textViewCharLimitMessage.setText(requireActivity().getString(R.string.bot_char_limit,
+                        CHAR_LIMIT_FOR_DIALOG_FLOW_BOT,
+                        requireActivity().getString(exceeded ? R.string.remove_char_message : R.string.remaining_char_message, deltaCharacterCount)));
+                textViewCharLimitMessage.setVisibility(VISIBLE);
+                sendButton.setVisibility(!exceeded ? VISIBLE : View.INVISIBLE);
+            }
+
+            @Override
+            public void onNormal() {
+                textViewCharLimitMessage.setVisibility(GONE);
+                sendButton.setVisibility(VISIBLE);
+            }
+        });
+    }
+
     public void loadConversation(Channel channel, Integer conversationId) {
         loadConversation(null, channel, conversationId, messageSearchString);
     }
@@ -1825,6 +1882,20 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         } else {
             setFeedbackDisplay(false);
         }
+
+        fetchBotType(conversationAssignee, new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                if(KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(message)) {
+                    messageEditText.addTextChangedListener(dialogFlowCharLimitTextWatcher);
+                } else {
+                    messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
+                }
+            }
+
+            @Override
+            public void onFailure(Object error) { }
+        });
     }
 
 

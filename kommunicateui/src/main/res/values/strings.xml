@@ -276,4 +276,5 @@
     <string name="km_empty_agent_list_message">No Agents found</string>
     <string name="km_no_agents_found">No matching agents found</string>
     <string name="km_no_bots_found">No matching bots found</string>
+    <string name="away">Away</string>
 </resources>

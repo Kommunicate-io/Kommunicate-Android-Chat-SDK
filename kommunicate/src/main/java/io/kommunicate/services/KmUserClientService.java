@@ -42,11 +42,20 @@ import io.kommunicate.KmException;
 import io.kommunicate.feeds.KmRegistrationResponse;
 import io.kommunicate.users.KMUser;
 
+import static com.applozic.mobicomkit.api.HttpRequestUtils.DEVICE_KEY_HEADER;
+
 /**
  * Created by ashish on 30/01/18.
  */
 
 public class KmUserClientService extends UserClientService {
+    private static String TAG = "KmUserClientService";
+
+    public static final String AUTHORIZATION = "Authorization";
+    public static final String CONTENT_TYPE = "Content-Type";
+    public static final String ACCEPT = "Accept";
+    public static final String GET = "GET";
+    public static final String UTF_8 = "UTF-8";
 
     private static final String USER_LIST_FILTER_URL = "/rest/ws/user/v3/filter?startIndex=";
     private static final String USER_LOGIN_API = "/login";
@@ -59,8 +68,8 @@ public class KmUserClientService extends UserClientService {
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String CREATE_CONVERSATION_URL = "/create";
     private static final String GET_AGENT_LIST_URL = "/users/chat/plugin/settings";
+    private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
-    private static String TAG = "KmUserClientService";
 
     public KmUserClientService(Context context) {
         super(context);
@@ -272,6 +281,25 @@ public class KmUserClientService extends UserClientService {
         }
     }
 
+    //gets the kommunicate api user details (with status away/online)
+    public String getUserDetails(String userId, String applicationKey) {
+        if(TextUtils.isEmpty(userId) || TextUtils.isEmpty(applicationKey)) {
+            Utils.printLog(context, TAG, "User Id or Application Key is null/empty.");
+            return null;
+        }
+
+        try {
+            String url = getKmBaseUrl() + GET_AGENT_DETAILS + "?applicationId=" + applicationKey.trim() + "&userName=" + URLEncoder.encode(userId, "UTF-8").trim();
+            String response = getResponse(url, "application/json", "application/json, text/plain, */*");
+            Utils.printLog(context, TAG, "User details GET method response: "+response);
+            return response;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        return null;
+    }
+
     public RegistrationResponse loginKmUser(KMUser user) throws Exception {
         if (user == null) {
             return null;
@@ -410,70 +438,112 @@ public class KmUserClientService extends UserClientService {
         boolean isFileUpload = false;
 
         HttpURLConnection connection = null;
-        URL url;
 
         try {
-            url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setInstanceFollowRedirects(true);
-            connection.setRequestMethod("GET");
-            connection.setUseCaches(false);
-            connection.setDoInput(true);
-
-            if (!TextUtils.isEmpty(contentType)) {
-                connection.setRequestProperty("Content-Type", contentType);
-            }
-            if (!TextUtils.isEmpty(accept)) {
-                connection.setRequestProperty("Accept", accept);
-            }
+            connection = createAndGetConnectionObjectForMethodGet(urlString, contentType, accept);
             connection.connect();
 
-            if (connection == null) {
-                return null;
+            StringBuilder stringBuilder = getResponseForConnection(connection);
+
+            if (!TextUtils.isEmpty(stringBuilder.toString())) {
+                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
+                    return isFileUpload ? stringBuilder.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), stringBuilder.toString());
+                }
             }
-            BufferedReader br = null;
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                InputStream inputStream = connection.getInputStream();
-                br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            return stringBuilder.toString();
+        } catch (ConnectException e) {
+            Utils.printLog(context, TAG, "Failed to connect Internet is not working");
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        } finally {
+            closeConnection(connection);
+        }
+        return null;
+    }
+
+    //uses jwt-token in the authorisation header
+    public String getResponseUsingJWTToken(String urlString, String contentType, String accept, String jwtToken) {
+        Utils.printLog(context, TAG, "Calling URL(with jwt-token): " + urlString);
+
+        HttpURLConnection connection = null;
+
+        try {
+            connection = createAndGetConnectionObjectForMethodGet(urlString, contentType, accept);
+
+            if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getDeviceKeyString())) {
+                connection.setRequestProperty(DEVICE_KEY_HEADER, MobiComUserPreference.getInstance(context).getDeviceKeyString());
+            }
+            if (TextUtils.isEmpty(jwtToken)) {
+                Utils.printLog(context, TAG, "The JWT Token is null. Can't set authorization header.");
             } else {
-                Utils.printLog(context, TAG, "Response code for getResponse is  :" + connection.getResponseCode());
+                connection.setRequestProperty(AUTHORIZATION, jwtToken);
             }
 
-            StringBuilder sb = new StringBuilder();
-            try {
-                String line;
-                if (br != null) {
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line);
-                    }
+            connection.connect();
+
+            return getResponseForConnection(connection).toString();
+        } catch (ConnectException exception) {
+            Utils.printLog(context, TAG, "Failed to connect. Internet is not working.");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            closeConnection(connection);
+        }
+        return null;
+    }
+
+    private HttpURLConnection createAndGetConnectionObjectForMethodGet(String urlString, String contentType, String accept) throws Exception {
+        URL url = new URL(urlString);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setInstanceFollowRedirects(true);
+        connection.setRequestMethod(GET);
+        connection.setUseCaches(false);
+        connection.setDoInput(true);
+
+        if (!TextUtils.isEmpty(contentType)) {
+            connection.setRequestProperty(CONTENT_TYPE, contentType);
+        }
+        if (!TextUtils.isEmpty(accept)) {
+            connection.setRequestProperty(ACCEPT, accept);
+        }
+        return connection;
+    }
+
+    private StringBuilder getResponseForConnection(HttpURLConnection connection) throws Exception {
+        BufferedReader bufferedReader = null;
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            InputStream inputStream = connection.getInputStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, UTF_8));
+        } else {
+            Utils.printLog(context, TAG, "Response code for getResponse is  :" + connection.getResponseCode());
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            String line;
+            if (bufferedReader != null) {
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+        }
+        Utils.printLog(context, TAG, "Response :" + stringBuilder.toString());
+        return stringBuilder;
+    }
+
+    private void closeConnection(HttpURLConnection connection) {
+        if (connection != null) {
+            try {
+                connection.disconnect();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            Utils.printLog(context, TAG, "Response :" + sb.toString());
-
-            if (!TextUtils.isEmpty(sb.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
-                }
-            }
-            return sb.toString();
-        } catch (ConnectException e) {
-            Utils.printLog(context, TAG, "failed to connect Internet is not working");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (Throwable e) {
-
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
-        return null;
     }
 }

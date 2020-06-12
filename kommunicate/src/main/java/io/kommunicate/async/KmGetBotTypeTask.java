@@ -52,6 +52,8 @@ public class KmGetBotTypeTask extends AsyncTask<Void, Void, String> {
     }
 
     public static class BotDetailsResponseData {
+        public static final String PLATFORM_DIALOG_FLOW = "dialogflow";
+
         private String aiPlatform;
 
         public String getAiPlatform() {

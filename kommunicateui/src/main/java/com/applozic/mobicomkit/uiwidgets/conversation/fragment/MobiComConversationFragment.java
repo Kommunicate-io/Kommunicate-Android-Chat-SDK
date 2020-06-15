@@ -1724,6 +1724,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
+    public void watchMessageTextChangeForDialogFlowBotAssignee() {
+        if(channel != null) {
+            watchMessageTextChangeForDialogFlowBotAssignee(conversationAssignee, channel, loggedInUserRole);
+        }
+    }
+
     public void loadConversation(Channel channel, Integer conversationId) {
         loadConversation(null, channel, conversationId, messageSearchString);
     }

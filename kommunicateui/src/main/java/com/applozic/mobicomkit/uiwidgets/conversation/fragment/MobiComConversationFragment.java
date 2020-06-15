@@ -206,7 +206,7 @@ import io.kommunicate.models.KmFeedback;
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
-import io.kommunicate.utils.KmTextLimitWatcherUtil;
+import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.GONE;
@@ -360,9 +360,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void fetchBotType(Contact contact, KmCallback kmCallback) {
-        if (contact == null) {
-            contact = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
-        }
         if (contact != null && User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
             new KmGetBotTypeTask(getContext(), MobiComKitClientService.getApplicationKey(ApplozicService.getContext(getContext())), contact.getUserId(), kmCallback).execute();
         }
@@ -949,14 +946,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         });
 
-        final KmTextLimitWatcherUtil kmTextLimitWatcherUtil = new KmTextLimitWatcherUtil(CHAR_LIMIT_FOR_DIALOG_FLOW_BOT, CHAR_LIMIT_WARNING_FOR_DIALOG_FLOW_BOT);
         dialogFlowCharLimitTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                setCharLimitExceededMessage(charSequence.length(), kmTextLimitWatcherUtil);
+                setCharLimitExceededMessage(charSequence.length());
             }
 
             @Override
@@ -1685,12 +1681,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         return false;
     }
 
-    private void setCharLimitExceededMessage(int characterCount, KmTextLimitWatcherUtil kmTextLimitWatcherUtil) {
-        if(textViewCharLimitMessage == null || sendButton == null) {
+    private void setCharLimitExceededMessage(int characterCount) {
+        if (textViewCharLimitMessage == null || sendButton == null || messageEditText == null) {
             return;
         }
 
-        kmTextLimitWatcherUtil.checkCharacterLimit(characterCount, new KmCharLimitCallback() {
+        new KmInputTextLimitUtil(CHAR_LIMIT_FOR_DIALOG_FLOW_BOT, CHAR_LIMIT_WARNING_FOR_DIALOG_FLOW_BOT).checkCharacterLimit(characterCount, new KmCharLimitCallback() {
             @Override
             public void onCrossed(boolean exceeded, boolean warning, int deltaCharacterCount) {
                 textViewCharLimitMessage.setText(requireActivity().getString(R.string.bot_char_limit,
@@ -1705,6 +1701,26 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 textViewCharLimitMessage.setVisibility(GONE);
                 sendButton.setVisibility(VISIBLE);
             }
+        });
+    }
+
+    public void watchMessageTextChangeForDialogFlowBotAssignee(Contact assignee, Channel channel, int loggedInUserRole) {
+        if (assignee == null) {
+            assignee = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
+        }
+
+        fetchBotType(assignee, new KmCallback() {
+            @Override
+            public void onSuccess(Object botTypeResponseString) {
+                if (KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(botTypeResponseString)) {
+                    messageEditText.addTextChangedListener(dialogFlowCharLimitTextWatcher);
+                } else {
+                    messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
+                }
+            }
+
+            @Override
+            public void onFailure(Object error) { }
         });
     }
 
@@ -1871,6 +1887,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else if (!Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
                 updateChannelSubTitle(channel);
             }
+
+            //for char limit for the message sent to a dialog flow bot
+            watchMessageTextChangeForDialogFlowBotAssignee(conversationAssignee, channel, loggedInUserRole);
         }
 
         InstructionUtil.showInstruction(getActivity(), R.string.instruction_go_back_to_recent_conversation_list, MobiComKitActivityInterface.INSTRUCTION_DELAY, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());
@@ -1882,20 +1901,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         } else {
             setFeedbackDisplay(false);
         }
-
-        fetchBotType(conversationAssignee, new KmCallback() {
-            @Override
-            public void onSuccess(Object message) {
-                if(KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(message)) {
-                    messageEditText.addTextChangedListener(dialogFlowCharLimitTextWatcher);
-                } else {
-                    messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
-                }
-            }
-
-            @Override
-            public void onFailure(Object error) { }
-        });
     }
 
 

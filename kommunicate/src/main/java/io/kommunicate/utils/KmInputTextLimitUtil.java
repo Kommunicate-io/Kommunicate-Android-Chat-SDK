@@ -2,11 +2,11 @@ package io.kommunicate.utils;
 
 import io.kommunicate.callbacks.KmCharLimitCallback;
 
-public class KmTextLimitWatcherUtil {
+public class KmInputTextLimitUtil {
     private int characterLimit;
     private int notifyAtCharacterCount;
 
-    public KmTextLimitWatcherUtil(int characterLimit, int charactersRemainingTillLimit) {
+    public KmInputTextLimitUtil(int characterLimit, int charactersRemainingTillLimit) {
         this.characterLimit = characterLimit;
         this.notifyAtCharacterCount = characterLimit - charactersRemainingTillLimit;
     }

@@ -191,6 +191,7 @@ import java.util.TimeZone;
 import java.util.Timer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.KmBotPreference;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.async.KmGetBotTypeTask;
 import io.kommunicate.async.AgentGetStatusTask;
@@ -361,7 +362,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void fetchBotType(Contact contact, KmCallback kmCallback) {
         if (contact != null) {
-            new KmGetBotTypeTask(getContext(), MobiComKitClientService.getApplicationKey(ApplozicService.getContext(getContext())), contact.getUserId(), kmCallback).execute();
+            String botTypeLocal = KmBotPreference.getInstance(getContext()).getBotType(contact.getUserId());
+            if (!TextUtils.isEmpty(botTypeLocal)) {
+                kmCallback.onSuccess(botTypeLocal);
+            } else {
+                new KmGetBotTypeTask(getContext(), MobiComKitClientService.getApplicationKey(ApplozicService.getContext(getContext())), contact.getUserId(), kmCallback).execute();
+            }
         }
     }
 

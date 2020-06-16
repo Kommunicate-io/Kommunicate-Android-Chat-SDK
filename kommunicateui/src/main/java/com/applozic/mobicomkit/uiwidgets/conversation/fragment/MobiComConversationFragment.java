@@ -360,7 +360,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void fetchBotType(Contact contact, KmCallback kmCallback) {
-        if (contact != null && User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
+        if (contact != null) {
             new KmGetBotTypeTask(getContext(), MobiComKitClientService.getApplicationKey(ApplozicService.getContext(getContext())), contact.getUserId(), kmCallback).execute();
         }
     }
@@ -1704,29 +1704,34 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-    public void watchMessageTextChangeForDialogFlowBotAssignee(Contact assignee, Channel channel, int loggedInUserRole) {
+    private void watchMessageTextChangeForDialogFlowBotAssignee(Contact assignee, Channel channel, AppContactService appContactService, int loggedInUserRole) {
         if (assignee == null) {
             assignee = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
         }
+        if (assignee != null) {
+            if (!User.RoleType.BOT.getValue().equals(assignee.getRoleType())) {
+                setCharLimitExceededMessage(0); //disable the message if assignee isn't a bot
+            } else {
+                fetchBotType(assignee, new KmCallback() {
+                    @Override
+                    public void onSuccess(Object botTypeResponseString) {
+                        if (KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(botTypeResponseString)) {
+                            messageEditText.addTextChangedListener(dialogFlowCharLimitTextWatcher);
+                        } else {
+                            messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
+                        }
+                    }
 
-        fetchBotType(assignee, new KmCallback() {
-            @Override
-            public void onSuccess(Object botTypeResponseString) {
-                if (KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(botTypeResponseString)) {
-                    messageEditText.addTextChangedListener(dialogFlowCharLimitTextWatcher);
-                } else {
-                    messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
-                }
+                    @Override
+                    public void onFailure(Object error) { }
+                });
             }
-
-            @Override
-            public void onFailure(Object error) { }
-        });
+        }
     }
 
     public void watchMessageTextChangeForDialogFlowBotAssignee() {
-        if(channel != null) {
-            watchMessageTextChangeForDialogFlowBotAssignee(conversationAssignee, channel, loggedInUserRole);
+        if (channel != null && appContactService != null) {
+            watchMessageTextChangeForDialogFlowBotAssignee(conversationAssignee, channel, appContactService, loggedInUserRole);
         }
     }
 
@@ -1895,7 +1900,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             //for char limit for the message sent to a dialog flow bot
-            watchMessageTextChangeForDialogFlowBotAssignee(conversationAssignee, channel, loggedInUserRole);
+            watchMessageTextChangeForDialogFlowBotAssignee(conversationAssignee, channel, appContactService, loggedInUserRole);
         }
 
         InstructionUtil.showInstruction(getActivity(), R.string.instruction_go_back_to_recent_conversation_list, MobiComKitActivityInterface.INSTRUCTION_DELAY, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());

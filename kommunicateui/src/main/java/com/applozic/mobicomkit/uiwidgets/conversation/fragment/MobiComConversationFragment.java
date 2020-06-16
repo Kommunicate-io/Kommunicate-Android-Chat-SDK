@@ -1704,21 +1704,31 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
+    private void removeCharLimitExceededMessage() {
+        setCharLimitExceededMessage(0);
+    }
+
     private void watchMessageTextChangeForDialogFlowBotAssignee(Contact assignee, Channel channel, AppContactService appContactService, int loggedInUserRole) {
         if (assignee == null) {
             assignee = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
         }
+
         if (assignee != null) {
             if (!User.RoleType.BOT.getValue().equals(assignee.getRoleType())) {
-                setCharLimitExceededMessage(0); //disable the message if assignee isn't a bot
+                removeCharLimitExceededMessage();
             } else {
                 fetchBotType(assignee, new KmCallback() {
                     @Override
                     public void onSuccess(Object botTypeResponseString) {
-                        if (KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(botTypeResponseString)) {
-                            messageEditText.addTextChangedListener(dialogFlowCharLimitTextWatcher);
-                        } else {
-                            messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
+                        if(messageEditText != null) {
+                            boolean isDialogFlowBot = KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(botTypeResponseString);
+                            if (isDialogFlowBot) {
+                                setCharLimitExceededMessage(messageEditText.getText().length());
+                                messageEditText.addTextChangedListener(dialogFlowCharLimitTextWatcher);
+                            } else {
+                                messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
+                                removeCharLimitExceededMessage();
+                            }
                         }
                     }
 

@@ -14,7 +14,7 @@ public class KmInputTextLimitUtil {
     public void checkCharacterLimit(int characterCount, KmCharLimitCallback kmCharLimitCallback) {
         int deltaCharacterCount = characterCount - characterLimit;
         boolean exceeded = characterCount > characterLimit;
-        boolean warning = characterCount > notifyAtCharacterCount;
+        boolean warning = characterCount >= notifyAtCharacterCount;
         if (warning || exceeded) {
             kmCharLimitCallback.onCrossed(exceeded, warning, exceeded ? deltaCharacterCount : -deltaCharacterCount);
         } else {

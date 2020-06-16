@@ -71,7 +71,6 @@ public class KmUserClientService extends UserClientService {
     private static final String BOTS_BASE_URL = "https://bots.kommunicate.io";
     private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
-    private static String TAG = "KmUserClientService";
 
     public KmUserClientService(Context context) {
         super(context);

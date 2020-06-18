@@ -355,6 +355,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private KmThemeHelper themeHelper;
     private TextView textViewCharLimitMessage;
     private TextWatcher dialogFlowCharLimitTextWatcher;
+    private boolean isCharLimitExceeded;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -973,7 +974,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 && alCustomizationSettings.getAttachmentOptions() != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null;
 
-        sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
+        if(!isCharLimitExceeded) {
+            sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
+        }
         recordButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.GONE : View.VISIBLE) : View.GONE);
     }
 
@@ -1695,6 +1698,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         new KmInputTextLimitUtil(CHAR_LIMIT_FOR_DIALOG_FLOW_BOT, CHAR_LIMIT_WARNING_FOR_DIALOG_FLOW_BOT).checkCharacterLimit(characterCount, new KmCharLimitCallback() {
             @Override
             public void onCrossed(boolean exceeded, boolean warning, int deltaCharacterCount) {
+                isCharLimitExceeded = exceeded;
                 textViewCharLimitMessage.setText(requireActivity().getString(R.string.bot_char_limit,
                         CHAR_LIMIT_FOR_DIALOG_FLOW_BOT,
                         requireActivity().getString(exceeded ? R.string.remove_char_message : R.string.remaining_char_message, deltaCharacterCount)));

@@ -973,10 +973,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         boolean showRecordButton = alCustomizationSettings != null
                 && alCustomizationSettings.getAttachmentOptions() != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null;
-
-        if(!isCharLimitExceeded) {
-            sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
-        }
+        sendButton.setVisibility(showRecordButton ? (isSendButtonVisible && !isCharLimitExceeded ? View.VISIBLE : View.GONE) : View.VISIBLE);
         recordButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.GONE : View.VISIBLE) : View.GONE);
     }
 
@@ -1709,7 +1706,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onNormal() {
                 textViewCharLimitMessage.setVisibility(GONE);
-                sendButton.setVisibility(VISIBLE);
+                handleSendAndRecordButtonView(true);
             }
         });
     }

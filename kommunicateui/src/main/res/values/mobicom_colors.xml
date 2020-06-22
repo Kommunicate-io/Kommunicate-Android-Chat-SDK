@@ -95,4 +95,6 @@
     <color name="km_spam_status_color">#FE7C3A</color>
     <color name="km_resolve_status_color">#64D9A8</color>
     <color name="km_reopen_status_color">#ED495C</color>
+    <color name="km_toast_success_color">#F23B7D5F</color>
+    <color name="km_toast_error_color">#F2C93F50</color>
 </resources>

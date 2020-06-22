@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/custom_toast_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/km_custom_toast_background"
-    android:orientation="vertical"
-    android:paddingStart="12dp"
-    android:paddingTop="6dp"
-    android:paddingEnd="12dp"
-    android:paddingBottom="6dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/km_toast_root_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="false"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    tools:ignore="UseCompoundDrawables">
 
-    <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmTextViewWithImage
-        android:id="@+id/toastText"
+    <ImageView
+        android:id="@+id/km_toast_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp" />
+
+    <TextView
+        android:id="@+id/km_toast_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFF" />
+        android:textStyle="bold" />
 </LinearLayout>

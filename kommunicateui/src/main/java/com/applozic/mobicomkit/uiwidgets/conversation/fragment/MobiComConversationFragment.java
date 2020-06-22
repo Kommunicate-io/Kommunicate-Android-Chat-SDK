@@ -1728,6 +1728,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (assignee != null) {
             if (!User.RoleType.BOT.getValue().equals(assignee.getRoleType())) {
                 removeCharLimitExceededMessage();
+                messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
             } else {
                 fetchBotType(assignee, new KmCallback() {
                     @Override

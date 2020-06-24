@@ -20,6 +20,7 @@ import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.SearchListFragment;
@@ -120,7 +121,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (contact != null && !contact.isBlocked() || channel != null) {
                     if (attachmentLayout.getVisibility() == View.VISIBLE) {
-                        Toast.makeText(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();
+                        KmToast.error(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();
                         return;
                     }
                 }

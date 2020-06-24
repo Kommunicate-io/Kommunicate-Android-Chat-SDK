@@ -11,6 +11,7 @@ import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class KmHelper {
             @Override
             public void onSuccess(Context context) {
                 dialog.dismiss();
-                Toast.makeText(context, Utils.getString(context, R.string.user_logout_info), Toast.LENGTH_SHORT).show();
+                KmToast.success(context, Utils.getString(context, R.string.user_logout_info), Toast.LENGTH_SHORT).show();
                 Intent intent = null;
                 try {
                     intent = new Intent(context, Class.forName((String) object));
@@ -75,12 +76,12 @@ public class KmHelper {
                 @Override
                 public void onFailure(Object error) {
                     dialog.dismiss();
-                    Toast.makeText(context, Utils.getString(context, R.string.unable_to_create_conversation) + ": " + error, Toast.LENGTH_SHORT).show();
+                    KmToast.error(context, Utils.getString(context, R.string.unable_to_create_conversation) + ": " + error, Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {
             dialog.dismiss();
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            KmToast.error(context, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -104,7 +105,7 @@ public class KmHelper {
                         @Override
                         public void onFailure(Object error) {
                             dialog.dismiss();
-                            Toast.makeText(context, Utils.getString(context, R.string.unable_to_create_conversation) + ": " + error, Toast.LENGTH_SHORT).show();
+                            KmToast.error(context, Utils.getString(context, R.string.unable_to_create_conversation) + ": " + error, Toast.LENGTH_SHORT).show();
                         }
                     });
         } catch (Exception e) {
@@ -155,7 +156,7 @@ public class KmHelper {
                     if (dialog != null && dialog.isShowing()) {
                         dialog.dismiss();
                     }
-                    Toast.makeText(context, Utils.getString(context, R.string.km_unable_to_start_conversation_error) + registrationResponse, Toast.LENGTH_SHORT).show();
+                    KmToast.error(context, Utils.getString(context, R.string.km_unable_to_start_conversation_error) + registrationResponse, Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (Exception e) {

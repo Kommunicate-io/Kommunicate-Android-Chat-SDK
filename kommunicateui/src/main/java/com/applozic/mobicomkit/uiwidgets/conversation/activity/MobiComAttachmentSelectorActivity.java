@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -28,6 +27,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobiComAttachmentGridViewAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -136,7 +136,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (attachmentFileList.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), R.string.mobicom_select_attachment_text, Toast.LENGTH_SHORT).show();
+                    KmToast.error(getApplicationContext(), R.string.mobicom_select_attachment_text, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -157,7 +157,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                             startActivity(startConversationActivity);
                             finish();
                         } catch (Exception e) {
-                            Toast.makeText(MobiComAttachmentSelectorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            KmToast.error(MobiComAttachmentSelectorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }
@@ -229,13 +229,13 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
             switch (returnCode) {
                 case KmAttachmentsController.MAX_SIZE_EXCEEDED:
-                    Toast.makeText(this, R.string.info_attachment_max_allowed_file_size, Toast.LENGTH_LONG).show();
+                    KmToast.error(this, R.string.info_attachment_max_allowed_file_size, Toast.LENGTH_LONG).show();
                     break;
                 case KmAttachmentsController.MIME_TYPE_EMPTY:
                     Utils.printLog(this, TAG, "URI mime type is empty.");
                     break;
                 case KmAttachmentsController.MIME_TYPE_NOT_SUPPORTED:
-                    Toast.makeText(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
+                    KmToast.error(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
                     break;
                 case KmAttachmentsController.FORMAT_EMPTY:
                     Utils.printLog(this, TAG, "URI format(extension) is empty.");

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     final String mUserIdText = mUserId.getText().toString().trim();
                     String mPasswordText = mPassword.getText().toString().trim();
                     if (TextUtils.isEmpty(mUserIdText) || mUserId.getText().toString().trim().length() == 0) {
-                        Toast.makeText(getBaseContext(), R.string.enter_user_id, Toast.LENGTH_SHORT).show();
+                        KmToast.error(getBaseContext(), R.string.enter_user_id, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         if (exit) {
             finish();
         } else {
-            Toast.makeText(this, R.string.press_back_exit, Toast.LENGTH_SHORT).show();
+            KmToast.success(this, R.string.press_back_exit, Toast.LENGTH_SHORT).show();
             exit = true;
 
             new Handler().postDelayed(new Runnable() {

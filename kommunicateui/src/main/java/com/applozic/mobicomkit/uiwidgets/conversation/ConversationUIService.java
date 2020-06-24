@@ -50,9 +50,9 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachment
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MessageInfoFragment;
-import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmFragmentGetter;
@@ -537,9 +537,9 @@ public class ConversationUIService {
                 getConversationFragment().clearList();
             } else {
                 if (!Utils.isInternetAvailable(fragmentActivity)) {
-                    Toast.makeText(fragmentActivity, fragmentActivity.getString(R.string.you_need_network_access_for_delete), Toast.LENGTH_SHORT).show();
+                    KmToast.error(fragmentActivity, fragmentActivity.getString(R.string.you_need_network_access_for_delete), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(fragmentActivity, fragmentActivity.getString(R.string.delete_conversation_failed), Toast.LENGTH_SHORT).show();
+                    KmToast.error(fragmentActivity, fragmentActivity.getString(R.string.delete_conversation_failed), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -889,7 +889,7 @@ public class ConversationUIService {
     }
 
     void showToastMessage(final String messageToShow) {
-        Toast toast = Toast.makeText(fragmentActivity, messageToShow, Toast.LENGTH_SHORT);
+        Toast toast = KmToast.error(fragmentActivity, messageToShow, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
@@ -946,7 +946,7 @@ public class ConversationUIService {
                     progressDialog.dismiss();
                 }
                 String error = fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.applozic_server_error : R.string.you_need_network_access_for_block_or_unblock);
-                Toast toast = Toast.makeText(fragmentActivity, error, Toast.LENGTH_LONG);
+                Toast toast = KmToast.error(fragmentActivity, error, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }

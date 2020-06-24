@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.ApplozicService;
 
 import java.io.IOException;
@@ -71,7 +72,7 @@ public class ApplozicAudioManager implements AudioManager.OnAudioFocusChangeList
         mp.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                Toast.makeText(context, context.getString(R.string.unable_to_play_requested_audio_file), Toast.LENGTH_LONG).show();
+                KmToast.error(context, context.getString(R.string.unable_to_play_requested_audio_file), Toast.LENGTH_LONG).show();
                 return false;
             }
         });

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.core.app.ActivityCompat;
@@ -26,7 +27,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -183,7 +183,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                     .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 googleApiClient.connect();
             } else {
-                Toast.makeText(MobicomLocationActivity.this, R.string.unable_to_fetch_location, Toast.LENGTH_LONG).show();
+                KmToast.error(MobicomLocationActivity.this, R.string.unable_to_fetch_location, Toast.LENGTH_LONG).show();
             }
             return;
         }
@@ -205,7 +205,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
-                            Toast.makeText(MobicomLocationActivity.this, R.string.location_sending_cancelled, Toast.LENGTH_LONG).show();
+                            KmToast.error(MobicomLocationActivity.this, R.string.location_sending_cancelled, Toast.LENGTH_LONG).show();
                         }
                     });
             AlertDialog alert = builder.create();
@@ -264,7 +264,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             }
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (mCurrentLocation == null) {
-                Toast.makeText(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
+                KmToast.error(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
                 locationRequest = new LocationRequest();
                 locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
                 locationRequest.setInterval(UPDATE_INTERVAL);

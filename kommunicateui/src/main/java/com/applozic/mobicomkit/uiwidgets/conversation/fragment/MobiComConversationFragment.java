@@ -1143,7 +1143,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if (Utils.isInternetAvailable(getActivity())) {
                     processSendMessage();
                 } else {
-                    Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
+                    KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
                 }
             } else {
                 processSendMessage();
@@ -1299,17 +1299,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             }
         }
-    }
-
-    public void showScheduleMessageToast() {
-        if (getActivity() == null) {
-            return;
-        }
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_message_scheduled), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     public void deleteMessageFromDeviceList(String messageKeyString) {
@@ -2293,7 +2282,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void loadFile(Uri uri, File file) {
         if (uri == null || file == null) {
-            Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.file_not_selected), Toast.LENGTH_LONG).show();
+            KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.file_not_selected), Toast.LENGTH_LONG).show();
             return;
         }
         handleSendAndRecordButtonView(true);
@@ -2301,7 +2290,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (TextUtils.isEmpty(filePath)) {
             Utils.printLog(getContext(), TAG, "Error while fetching filePath");
             attachmentLayout.setVisibility(View.GONE);
-            Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_file_attachment_error), Toast.LENGTH_LONG).show();
+            KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_file_attachment_error), Toast.LENGTH_LONG).show();
             return;
         }
         String mimeType = ApplozicService.getContext(getContext()).getContentResolver().getType(uri);
@@ -2313,7 +2302,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             long fileSize = returnCursor.getLong(sizeIndex);
             long maxFileSize = alCustomizationSettings.getMaxAttachmentSizeAllowed() * 1024 * 1024;
             if (fileSize > maxFileSize) {
-                Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_attachment_max_allowed_file_size), Toast.LENGTH_LONG).show();
+                KmToast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_attachment_max_allowed_file_size), Toast.LENGTH_LONG).show();
                 return;
             }
             attachedFile.setText(returnCursor.getString(returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
@@ -3423,7 +3412,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onFailure(ApiResponse apiResponse, Exception exception) {
                 String error = ApplozicService.getContext(getContext()).getString(Utils.isInternetAvailable(getActivity()) ? R.string.applozic_server_error : R.string.you_need_network_access_for_block_or_unblock);
-                Toast toast = Toast.makeText(getActivity(), error, Toast.LENGTH_LONG);
+                Toast toast = KmToast.error(getActivity(), error, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
@@ -4734,7 +4723,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onFailure(Context context, Exception e, String response) {
                 Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
-                Toast.makeText(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
+                KmToast.error(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
             }
         });
     }

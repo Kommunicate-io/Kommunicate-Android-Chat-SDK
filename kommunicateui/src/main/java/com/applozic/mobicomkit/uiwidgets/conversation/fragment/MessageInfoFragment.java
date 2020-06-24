@@ -42,6 +42,7 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -322,7 +323,7 @@ public class MessageInfoFragment extends Fragment {
                 return;
             }
             if (messageInfoResponse == null) {
-                Toast.makeText(getContext(), getString(R.string.applozic_message_info_no_network), Toast.LENGTH_SHORT).show();
+                KmToast.error(getContext(), getString(R.string.applozic_message_info_no_network), Toast.LENGTH_SHORT).show();
                 return;
             }
             if (messageInfoResponse.getReadByUserList() != null) {

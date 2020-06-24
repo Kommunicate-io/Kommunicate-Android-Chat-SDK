@@ -189,6 +189,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmBotPreference;
@@ -1247,26 +1249,59 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             List<String> userInputList = Arrays.asList(inputMsg);
 
             boolean disjointResult = (restrictedWords == null) || disjoint(restrictedWords, userInputList);
+            boolean restrictedWordMatches;
 
-            if (disjointResult) {
+            try {
+                String dynamicRegex = ApplozicSetting.getInstance(getContext()).getRestrictedWordsRegex();
+                String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (alCustomizationSettings != null
+                        && !TextUtils.isEmpty(alCustomizationSettings.getRestrictedWordRegex()) ? alCustomizationSettings.getRestrictedWordRegex() : "");
+
+                restrictedWordMatches = !TextUtils.isEmpty(pattern) && Pattern.compile(pattern).matcher(inputMessage.trim()).matches();
+            } catch (PatternSyntaxException e) {
+                e.printStackTrace();
+                createInvalidPatternExceptionDialog();
+                return;
+            }
+
+            if (disjointResult && !restrictedWordMatches) {
                 sendMessage(messageEditText.getText().toString().trim());
                 messageEditText.setText("");
-                scheduleOption.setText(R.string.ScheduleText);
             } else {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
                         setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                handleSendAndRecordButtonView(true);
                             }
-                        });
+                        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        handleSendAndRecordButtonView(true);
+                    }
+                });
                 alertDialog.setTitle(alCustomizationSettings.getRestrictedWordMessage());
                 alertDialog.setCancelable(true);
                 alertDialog.create().show();
-
             }
         }
+    }
 
+    private void createInvalidPatternExceptionDialog() {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
+                setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        handleSendAndRecordButtonView(true);
+                    }
+                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                handleSendAndRecordButtonView(true);
+            }
+        });
+        alertDialog.setTitle(ApplozicService.getContext(getContext()).getString(R.string.invalid_message_matching_pattern));
+        alertDialog.setCancelable(true);
+        alertDialog.create().show();
     }
 
     public void populateAutoSuggestion(boolean show, String typedText, String message) {

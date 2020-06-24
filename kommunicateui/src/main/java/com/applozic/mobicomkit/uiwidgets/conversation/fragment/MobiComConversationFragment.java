@@ -1462,7 +1462,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         try {
                             messageDatabaseService.updateReadStatusForKeyString(message.getKeyString());
                             Intent intent = new Intent(getActivity(), UserIntentService.class);
-                            intent.putExtra(UserIntentService.SINGLE_MESSAGE_READ, true);
+                            intent.putExtra(UserIntentService.PAIRED_MESSAGE_KEY_STRING, message.getKeyString());
                             intent.putExtra(UserIntentService.CONTACT, contact);
                             intent.putExtra(UserIntentService.CHANNEL, channel);
                             UserIntentService.enqueueWork(getActivity(), intent);
@@ -3086,9 +3086,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
-            if (assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !"bot".equals(assigneeContact.getUserId())) {
-                showTakeOverFromBotLayout(true, assigneeContact);
-            }
+            showTakeOverFromBotLayout(assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !"bot".equals(assigneeContact.getUserId()), assigneeContact);
         }
 
         updateSupportGroupTitle(contact, channel);

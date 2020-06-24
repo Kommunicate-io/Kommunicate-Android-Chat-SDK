@@ -168,15 +168,6 @@ public class ApplozicSetting {
         return sharedPreferences.getInt(CHAT_BACKGROUND_COLOR_OR_DRAWABLE, R.color.conversation_list_background);
     }
 
-    public ApplozicSetting setChatBackgroundColorOrDrawableResource(int colorOrDrawable) {
-        sharedPreferences.edit().putInt(CHAT_BACKGROUND_COLOR_OR_DRAWABLE, colorOrDrawable).commit();
-        return this;
-    }
-
-    public int getEditTextBackgroundColorOrDrawableResource() {
-        return sharedPreferences.getInt(EDIT_TEXT_BACKGROUND_COLOR_OR_DRAWABLE, R.drawable.input);
-    }
-
     public ApplozicSetting setEditTextBackgroundColorOrDrawableResource(int colorOrDrawable) {
         sharedPreferences.edit().putInt(EDIT_TEXT_BACKGROUND_COLOR_OR_DRAWABLE, colorOrDrawable).commit();
         return this;

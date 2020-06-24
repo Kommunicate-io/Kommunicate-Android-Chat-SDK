@@ -2,10 +2,12 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
@@ -22,6 +24,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
@@ -33,6 +36,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.KmSettings;
+import io.kommunicate.Kommunicate;
 import io.kommunicate.async.KmPostDataAsyncTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAutoSuggestionModel;
@@ -142,11 +147,18 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         }
     }
 
+    private void updateLanguage(String languageCode) {
+        if (!TextUtils.isEmpty(languageCode)) {
+            KmSettings.updateUserLanguage(ApplozicService.getAppContext(), languageCode);
+        }
+    }
+
     public void handleQuickReplies(Object object, Map<String, Object> replyMetadata) {
         String message = null;
 
         if (object instanceof ALRichMessageModel.ALPayloadModel) {
             ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) object;
+            updateLanguage(payloadModel.getUpdateLanguage());
             if (payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getMessage())) {
                 handleQuickReplies(payloadModel.getAction(), payloadModel.getReplyMetadata());
             } else {
@@ -161,7 +173,9 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
             }
         } else if (object instanceof ALRichMessageModel.AlAction) {
             ALRichMessageModel.AlAction action = (ALRichMessageModel.AlAction) object;
+            updateLanguage(action.getUpdateLanguage());
             if (action.getPayload() != null) {
+                updateLanguage(action.getPayload().getUpdateLanguage());
                 if (!TextUtils.isEmpty(action.getPayload().getMessage())) {
                     message = action.getPayload().getMessage();
                 } else if (!TextUtils.isEmpty(action.getPayload().getTitle())) {
@@ -220,45 +234,64 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         return (dataMap == null || dataMap.isEmpty()) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
     }
 
-    public void handleKmSubmitButton(final Context context, final Message message, KmRMActionModel.SubmitButton submitButtonModel) {
+    public void handleKmSubmitButton(final Context context, final Message message, final KmRMActionModel.SubmitButton submitButtonModel) {
         KmFormStateModel formStateModel = null;
         if (message != null) {
             formStateModel = KmFormStateHelper.getFormState(message.getKeyString());
         }
-        Map<String, Object> dataMap = getKmFormMap(message, formStateModel);
+        final Map<String, Object> dataMap = getKmFormMap(message, formStateModel);
 
         if (isInvalidData(dataMap, submitButtonModel)) {
             Toast.makeText(context, Utils.getString(context, R.string.km_invalid_form_data_error), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
-            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()));
-        }
-
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
 
-        new KmPostDataAsyncTask(context,
-                submitButtonModel.getFormAction(),
-                null,
-                AlWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType()) ? "application/json" : AlWebViewActivity.DEFAULT_REQUEST_TYPE,
-                GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class),
-                new KmCallback() {
-                    @Override
-                    public void onSuccess(Object messageString) {
-                        Utils.printLog(context, TAG, "Submit post success : " + messageString);
-                        KmFormStateHelper.removeFormState(message.getKeyString());
-                        if (richMessageListener != null) {
-                            richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, null, null);
+        if (KmRMActionModel.SubmitButton.KM_POST_DATA_TO_BOT_PLATFORM.equals(submitButtonModel.getRequestType())) {
+            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
+            KmFormStateHelper.removeFormState(message.getKeyString());
+            if (richMessageListener != null) {
+                richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
+            }
+        } else {
+            if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
+                sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()));
+            }
+            new KmPostDataAsyncTask(context,
+                    submitButtonModel.getFormAction(),
+                    null,
+                    AlWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType()) ? "application/json" : AlWebViewActivity.DEFAULT_REQUEST_TYPE,
+                    GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class),
+                    new KmCallback() {
+                        @Override
+                        public void onSuccess(Object messageString) {
+                            Utils.printLog(context, TAG, "Submit post success : " + messageString);
+                            KmFormStateHelper.removeFormState(message.getKeyString());
+                            if (richMessageListener != null) {
+                                richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
+                            }
                         }
 
-                    }
+                        @Override
+                        public void onFailure(Object error) {
+                            Utils.printLog(context, TAG, "Submit post error : " + error);
+                        }
+                    }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
 
-                    @Override
-                    public void onFailure(Object error) {
-                        Utils.printLog(context, TAG, "Submit post error : " + error);
-                    }
-                }).execute();
+    private void sendMessage(String message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
+        Map<String, String> metadata = new HashMap<>();
+        if (replyMetadata != null) {
+            metadata.putAll(replyMetadata);
+        }
+        if (formSelectedData != null) {
+            metadata.put(Kommunicate.KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(getStringMap(formSelectedData), Map.class));
+        } else {
+            metadata.putAll(formData);
+        }
+        sendMessage(message, metadata);
     }
 
     private Map<String, Object> getKmFormMap(Message message, KmFormStateModel formStateModel) {

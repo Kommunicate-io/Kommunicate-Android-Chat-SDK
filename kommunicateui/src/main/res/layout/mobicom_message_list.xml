@@ -283,6 +283,20 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/botCharLimitTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.05"
+                android:textColor="@color/white"
+                android:background="@color/applozic_theme_color_primary"
+                android:paddingStart="16dp"
+                android:paddingTop="11.5dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="11.5dp"
+                android:textSize="14sp"
+                android:visibility="gone"/>
+
             <include layout="@layout/km_take_over_from_bot_layout" />
 
             <FrameLayout

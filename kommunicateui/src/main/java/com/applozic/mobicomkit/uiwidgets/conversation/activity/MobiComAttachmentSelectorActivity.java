@@ -1,7 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -14,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -22,6 +23,7 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobiComAttachmentGridViewAdapter;
@@ -34,6 +36,12 @@ import com.applozic.mobicommons.json.GsonUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import static java.util.Collections.disjoint;
 
 public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
@@ -55,9 +63,9 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     private Button sendAttachment;
     private Button cancelAttachment;
     private EditText messageEditText;
-    private LinearLayout linearLayoutRoot;
     private ConnectivityReceiver connectivityReceiver;
     private GridView galleryImagesGridView;
+    List<String> restrictedWords;
     private ArrayList<Uri> attachmentFileList = new ArrayList<>();
     private MobiComAttachmentGridViewAdapter imagesAdapter;
 
@@ -87,6 +95,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
         kmAttachmentsController = new KmAttachmentsController(this);
 
+        restrictedWords = FileUtils.loadRestrictedWordsFile(this);
         fileClientService = new FileClientService(this);
         userPreferences = MobiComUserPreference.getInstance(this);
         Intent intent = getIntent();
@@ -121,7 +130,6 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         cancelAttachment = (Button) findViewById(R.id.mobicom_attachment_cancel_btn);
         galleryImagesGridView = (GridView) findViewById(R.id.mobicom_attachment_grid_View);
         messageEditText = (EditText) findViewById(R.id.mobicom_attachment_edit_text);
-        linearLayoutRoot = findViewById(R.id.idRootLinearLayout);
 
         cancelAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +145,11 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (attachmentFileList.isEmpty()) {
                     KmToast.error(getApplicationContext(), R.string.mobicom_select_attachment_text, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!validateCaptionTextAndShowDialog()) {
+                    Utils.printLog(MobiComAttachmentSelectorActivity.this, TAG, "Caption Text is not valid");
                     return;
                 }
 
@@ -194,6 +207,48 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                 imagesAdapter.notifyDataSetChanged();
             }
         };
+    }
+
+    boolean validateCaptionTextAndShowDialog() {
+        if (!TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
+            String inputMessage = messageEditText.getText().toString();
+            String[] inputMsg = inputMessage.toLowerCase().split(" ");
+            List<String> userInputList = Arrays.asList(inputMsg);
+
+            boolean disjointResult = (restrictedWords == null) || disjoint(restrictedWords, userInputList);
+            boolean restrictedWordMatches;
+
+            try {
+                String dynamicRegex = ApplozicSetting.getInstance(this).getRestrictedWordsRegex();
+                String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (alCustomizationSettings != null
+                        && !TextUtils.isEmpty(alCustomizationSettings.getRestrictedWordRegex()) ? alCustomizationSettings.getRestrictedWordRegex() : "");
+
+                restrictedWordMatches = !TextUtils.isEmpty(pattern) && Pattern.compile(pattern).matcher(inputMessage.trim()).matches();
+            } catch (PatternSyntaxException e) {
+                Utils.printLog(this, TAG, "The Regex to match message is invalid");
+                e.printStackTrace();
+                return false;
+            }
+
+            if (!(disjointResult && !restrictedWordMatches)) {
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this).
+                        setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                    }
+                });
+                alertDialog.setTitle(alCustomizationSettings.getRestrictedWordMessage());
+                alertDialog.setCancelable(true);
+                alertDialog.create().show();
+                return false;
+            }
+        }
+        return true;
     }
 
     private void addUri(Uri uri) {

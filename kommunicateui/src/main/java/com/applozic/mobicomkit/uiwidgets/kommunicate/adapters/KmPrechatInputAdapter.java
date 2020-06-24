@@ -16,6 +16,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 
 import io.kommunicate.models.KmPrechatInputModel;
 
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.google.android.material.textfield.TextInputEditText;
@@ -119,7 +120,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter<KmPrechatInputAd
             inputModel.setDisplayValidationError(isValidationError);
 
             if (isInValidCompositeField(inputModel)) {
-                Toast.makeText(ApplozicService.getAppContext(), getString(R.string.prechat_screen_toast_error_message, inputModel.getField(), inputModel.getCompositeRequiredField()), Toast.LENGTH_SHORT).show();
+                KmToast.error(ApplozicService.getAppContext(), getString(R.string.prechat_screen_toast_error_message, inputModel.getField(), inputModel.getCompositeRequiredField()), Toast.LENGTH_SHORT).show();
                 return false;
             }
         }

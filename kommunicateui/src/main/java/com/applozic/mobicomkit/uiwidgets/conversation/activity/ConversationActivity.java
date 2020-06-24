@@ -26,6 +26,7 @@ import android.provider.Settings;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.core.app.ActivityCompat;
@@ -578,7 +579,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     googleApiClient.connect();
                 } else {
-                    Toast.makeText(ConversationActivity.this, R.string.unable_to_fetch_location, Toast.LENGTH_LONG).show();
+                    KmToast.error(ConversationActivity.this, R.string.unable_to_fetch_location, Toast.LENGTH_LONG).show();
                 }
                 return;
             }
@@ -638,13 +639,13 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private void doReturnCodeActions(int returnCode) {
         switch (returnCode) {
             case KmAttachmentsController.MAX_SIZE_EXCEEDED:
-                Toast.makeText(this, R.string.info_attachment_max_allowed_file_size, Toast.LENGTH_LONG).show();
+                KmToast.error(this, R.string.info_attachment_max_allowed_file_size, Toast.LENGTH_LONG).show();
                 break;
             case KmAttachmentsController.MIME_TYPE_EMPTY:
                 Utils.printLog(this, TAG, "URI mime type is empty.");
                 break;
             case KmAttachmentsController.MIME_TYPE_NOT_SUPPORTED:
-                Toast.makeText(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
+                KmToast.error(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
                 break;
             case KmAttachmentsController.FORMAT_EMPTY:
                 Utils.printLog(this, TAG, "URI format(extension) is empty.");
@@ -796,7 +797,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
-                                Toast.makeText(ConversationActivity.this, R.string.location_sending_cancelled, Toast.LENGTH_LONG).show();
+                                KmToast.error(ConversationActivity.this, R.string.location_sending_cancelled, Toast.LENGTH_LONG).show();
                             }
                         });
                 AlertDialog alert = builder.create();
@@ -861,7 +862,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             intent.putExtra(ContactSelectionActivity.GROUP_TYPE, Channel.GroupType.BROADCAST.getValue().intValue());
             startActivity(intent);
         } else if (id == R.id.refresh) {
-            Toast.makeText(this, getString(R.string.info_message_sync), Toast.LENGTH_LONG).show();
+            KmToast.success(this, getString(R.string.info_message_sync), Toast.LENGTH_LONG).show();
             new SyncMessagesAsyncTask(this).execute();
         } else if (id == R.id.shareOptions) {
             Intent intent = new Intent(Intent.ACTION_SEND);
@@ -965,7 +966,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         try {
             Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (currentLocation == null) {
-                Toast.makeText(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
+                KmToast.success(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
                 locationRequest = new LocationRequest();
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                 locationRequest.setInterval(UPDATE_INTERVAL);

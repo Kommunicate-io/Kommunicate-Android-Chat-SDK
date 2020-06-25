@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.List;
 
 public class KmFormPayloadModel<T> extends JsonMarker {
+    public static final String KM_FORM_DATA = "formData";
     private String type;
     private T data;
 

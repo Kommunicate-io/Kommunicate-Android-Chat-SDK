@@ -155,7 +155,7 @@ public class MessageInfoFragment extends Fragment {
         }
 
         messageInfoAsyncTask = new MessageInfoAsyncTask(message.getKeyString(), getActivity());
-        messageInfoAsyncTask.execute();
+        messageInfoAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
         return view;
     }
 
@@ -306,8 +306,6 @@ public class MessageInfoFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-
         }
 
         @Override

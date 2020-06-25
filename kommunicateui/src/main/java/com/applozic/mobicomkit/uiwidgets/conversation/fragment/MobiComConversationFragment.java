@@ -3225,7 +3225,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 Utils.printLog(getContext(), TAG, "Couldn't get agent status.");
                 switchContactStatus(contact, null);
             }
-        }).execute();
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void getUserDetail(Context context, String userId, KmUserDetailsCallback callback) {

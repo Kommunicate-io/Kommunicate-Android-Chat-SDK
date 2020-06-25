@@ -1353,9 +1353,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             Message belowMessage = messageList.get(belowIndex);
                             if (aboveMessage.isTempDateType() && belowMessage.isTempDateType()) {
                                 messageList.remove(aboveMessage);
+                                recyclerDetailConversationAdapter.notifyItemRemoved(aboveIndex);
                             }
                         } else if (belowIndex == messageList.size() && aboveMessage.isTempDateType()) {
                             messageList.remove(aboveMessage);
+                            recyclerDetailConversationAdapter.notifyItemRemoved(aboveIndex);
                         }
                     }
                 }
@@ -1369,7 +1371,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         messageDatabaseService.deleteScheduledMessage(messageKeyString);
                     }
                     messageList.remove(position);
-                    recyclerDetailConversationAdapter.notifyDataSetChanged();
+                    recyclerDetailConversationAdapter.notifyItemRemoved(position);
                     if (messageList.isEmpty()) {
                         emptyTextView.setVisibility(VISIBLE);
                         if (getActivity() != null) {
@@ -2904,11 +2906,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     //                insert(currentPos, emojicon.getEmoji()));
     //    }
 
-    @Override
-    public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
-        return super.getLayoutInflater(savedInstanceState);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
     //TODO: Please add onclick events here...  anonymous class are
     // TODO :hard to read and suggested if we have very few event view
     @Override
@@ -4088,6 +4085,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 conversationUIService.startContactActivityForResult(message, null);
                 break;
             case 2:
+                messageDatabaseService.deleteMessageFromDb(message);
+                deleteMessageFromDeviceList(message.getKeyString());
                 Message messageToResend = new Message(message);
                 messageToResend.setCreatedAtTime(System.currentTimeMillis() + MobiComUserPreference.getInstance(getActivity()).getDeviceTimeOffset());
                 conversationService.sendMessage(messageToResend, messageIntentClass);

@@ -240,7 +240,7 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         if (message != null) {
             formStateModel = KmFormStateHelper.getFormState(message.getKeyString());
         }
-        final Map<String, Object> dataMap = getKmFormMap(message, formStateModel);
+        final Map<String, Object> dataMap = KmFormStateHelper.getKmFormMap(message, formStateModel);
 
         if (isInvalidData(dataMap, submitButtonModel)) {
             KmToast.error(context, Utils.getString(context, R.string.km_invalid_form_data_error), Toast.LENGTH_SHORT).show();
@@ -288,74 +288,13 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
             metadata.putAll(replyMetadata);
         }
         if (formSelectedData != null) {
-            metadata.put(Kommunicate.KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(getStringMap(formSelectedData), Map.class));
+            Map<String, String> formDataMap = new HashMap<>();
+            formDataMap.put(KmFormPayloadModel.KM_FORM_DATA, GsonUtils.getJsonFromObject(getStringMap(formSelectedData), Map.class));
+            metadata.put(Kommunicate.KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(formDataMap, Map.class));
         } else {
             metadata.putAll(formData);
         }
         sendMessage(message, metadata);
-    }
-
-    private Map<String, Object> getKmFormMap(Message message, KmFormStateModel formStateModel) {
-        Map<String, Object> formDataMap = new HashMap<>();
-
-        if (message.getMetadata() != null) {
-            KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<KmRichMessageModel>() {
-            }.getType());
-
-            if (formStateModel == null) {
-                return formDataMap;
-            }
-
-            List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
-
-            if (formStateModel.getTextFields() != null) {
-                int size = formStateModel.getTextFields().size();
-                for (int i = 0; i < size; i++) {
-                    int key = formStateModel.getTextFields().keyAt(i);
-                    KmFormPayloadModel.Text textModel = formPayloadModelList.get(key).getTextModel();
-                    formDataMap.put(textModel.getLabel(), formStateModel.getTextFields().get(key));
-                }
-            }
-
-            if (formStateModel.getCheckBoxStates() != null) {
-                int size = formStateModel.getCheckBoxStates().size();
-                for (int i = 0; i < size; i++) {
-                    int key = formStateModel.getCheckBoxStates().keyAt(i);
-                    List<KmFormPayloadModel.Options> allOptions = formPayloadModelList.get(key).getSelectionModel().getOptions();
-
-                    HashSet<Integer> checkedOptions = formStateModel.getCheckBoxStates().get(key);
-
-                    if (checkedOptions != null && allOptions != null) {
-                        String[] checkBoxesArray = new String[checkedOptions.size()];
-
-                        Iterator<Integer> iterator = checkedOptions.iterator();
-                        int index = 0;
-                        while (iterator.hasNext()) {
-                            checkBoxesArray[index] = allOptions.get(iterator.next()).getValue();
-                            index++;
-                        }
-                        formDataMap.put(formPayloadModelList.get(key).getSelectionModel().getName(), checkBoxesArray);
-                    }
-                }
-            }
-
-            if (formStateModel.getSelectedRadioButtonIndex() != null) {
-                int size = formStateModel.getSelectedRadioButtonIndex().size();
-
-                for (int i = 0; i < size; i++) {
-                    int key = formStateModel.getSelectedRadioButtonIndex().keyAt(i);
-                    KmFormPayloadModel.Selections radioOptions = formPayloadModelList.get(key).getSelectionModel();
-                    KmFormPayloadModel.Options selectedOption = radioOptions.getOptions().get(formStateModel.getSelectedRadioButtonIndex().get(key));
-                    formDataMap.put(radioOptions.getName(), selectedOption.getValue());
-                }
-            }
-
-            if (formStateModel.getHiddenFields() != null) {
-                formDataMap.putAll(formStateModel.getHiddenFields());
-            }
-        }
-
-        return formDataMap;
     }
 
     public Map<String, String> getStringMap(Map<String, Object> objectMap) {
@@ -364,7 +303,7 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         }
         Map<String, String> newMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
-            newMap.put(entry.getKey(), entry.getValue() instanceof String ? (String) entry.getValue() : entry.getValue().toString());
+            newMap.put(entry.getKey(), entry.getValue() instanceof String ? (String) entry.getValue() : GsonUtils.getJsonFromObject(entry.getValue(), Object.class));
         }
         return newMap;
     }

@@ -2,10 +2,12 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
@@ -22,6 +24,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -35,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.KmSettings;
+import io.kommunicate.Kommunicate;
 import io.kommunicate.async.KmPostDataAsyncTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAutoSuggestionModel;
@@ -231,108 +235,66 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         return (dataMap == null || dataMap.isEmpty()) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
     }
 
-    public void handleKmSubmitButton(final Context context, final Message message, KmRMActionModel.SubmitButton submitButtonModel) {
+    public void handleKmSubmitButton(final Context context, final Message message, final KmRMActionModel.SubmitButton submitButtonModel) {
         KmFormStateModel formStateModel = null;
         if (message != null) {
             formStateModel = KmFormStateHelper.getFormState(message.getKeyString());
         }
-        Map<String, Object> dataMap = getKmFormMap(message, formStateModel);
+        final Map<String, Object> dataMap = KmFormStateHelper.getKmFormMap(message, formStateModel);
 
         if (isInvalidData(dataMap, submitButtonModel)) {
-            Toast.makeText(context, Utils.getString(context, R.string.km_invalid_form_data_error), Toast.LENGTH_SHORT).show();
+            KmToast.error(context, Utils.getString(context, R.string.km_invalid_form_data_error), Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
-            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()));
         }
 
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
 
-        new KmPostDataAsyncTask(context,
-                submitButtonModel.getFormAction(),
-                null,
-                AlWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType()) ? "application/json" : AlWebViewActivity.DEFAULT_REQUEST_TYPE,
-                GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class),
-                new KmCallback() {
-                    @Override
-                    public void onSuccess(Object messageString) {
-                        Utils.printLog(context, TAG, "Submit post success : " + messageString);
-                        KmFormStateHelper.removeFormState(message.getKeyString());
-                        if (richMessageListener != null) {
-                            richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, null, null);
+        if (KmRMActionModel.SubmitButton.KM_POST_DATA_TO_BOT_PLATFORM.equals(submitButtonModel.getRequestType())) {
+            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
+            KmFormStateHelper.removeFormState(message.getKeyString());
+            if (richMessageListener != null) {
+                richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
+            }
+        } else {
+            if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
+                sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()));
+            }
+            new KmPostDataAsyncTask(context,
+                    submitButtonModel.getFormAction(),
+                    null,
+                    AlWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType()) ? "application/json" : AlWebViewActivity.DEFAULT_REQUEST_TYPE,
+                    GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class),
+                    new KmCallback() {
+                        @Override
+                        public void onSuccess(Object messageString) {
+                            Utils.printLog(context, TAG, "Submit post success : " + messageString);
+                            KmFormStateHelper.removeFormState(message.getKeyString());
+                            if (richMessageListener != null) {
+                                richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
+                            }
                         }
 
-                    }
-
-                    @Override
-                    public void onFailure(Object error) {
-                        Utils.printLog(context, TAG, "Submit post error : " + error);
-                    }
-                }).execute();
+                        @Override
+                        public void onFailure(Object error) {
+                            Utils.printLog(context, TAG, "Submit post error : " + error);
+                        }
+                    }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
-    private Map<String, Object> getKmFormMap(Message message, KmFormStateModel formStateModel) {
-        Map<String, Object> formDataMap = new HashMap<>();
-
-        if (message.getMetadata() != null) {
-            KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<KmRichMessageModel>() {
-            }.getType());
-
-            if (formStateModel == null) {
-                return formDataMap;
-            }
-
-            List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
-
-            if (formStateModel.getTextFields() != null) {
-                int size = formStateModel.getTextFields().size();
-                for (int i = 0; i < size; i++) {
-                    int key = formStateModel.getTextFields().keyAt(i);
-                    KmFormPayloadModel.Text textModel = formPayloadModelList.get(key).getTextModel();
-                    formDataMap.put(textModel.getLabel(), formStateModel.getTextFields().get(key));
-                }
-            }
-
-            if (formStateModel.getCheckBoxStates() != null) {
-                int size = formStateModel.getCheckBoxStates().size();
-                for (int i = 0; i < size; i++) {
-                    int key = formStateModel.getCheckBoxStates().keyAt(i);
-                    List<KmFormPayloadModel.Options> allOptions = formPayloadModelList.get(key).getSelectionModel().getOptions();
-
-                    HashSet<Integer> checkedOptions = formStateModel.getCheckBoxStates().get(key);
-
-                    if (checkedOptions != null && allOptions != null) {
-                        String[] checkBoxesArray = new String[checkedOptions.size()];
-
-                        Iterator<Integer> iterator = checkedOptions.iterator();
-                        int index = 0;
-                        while (iterator.hasNext()) {
-                            checkBoxesArray[index] = allOptions.get(iterator.next()).getValue();
-                            index++;
-                        }
-                        formDataMap.put(formPayloadModelList.get(key).getSelectionModel().getName(), checkBoxesArray);
-                    }
-                }
-            }
-
-            if (formStateModel.getSelectedRadioButtonIndex() != null) {
-                int size = formStateModel.getSelectedRadioButtonIndex().size();
-
-                for (int i = 0; i < size; i++) {
-                    int key = formStateModel.getSelectedRadioButtonIndex().keyAt(i);
-                    KmFormPayloadModel.Selections radioOptions = formPayloadModelList.get(key).getSelectionModel();
-                    KmFormPayloadModel.Options selectedOption = radioOptions.getOptions().get(formStateModel.getSelectedRadioButtonIndex().get(key));
-                    formDataMap.put(radioOptions.getName(), selectedOption.getValue());
-                }
-            }
-
-            if (formStateModel.getHiddenFields() != null) {
-                formDataMap.putAll(formStateModel.getHiddenFields());
-            }
+    private void sendMessage(String message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
+        Map<String, String> metadata = new HashMap<>();
+        if (replyMetadata != null) {
+            metadata.putAll(replyMetadata);
         }
-
-        return formDataMap;
+        if (formSelectedData != null) {
+            Map<String, String> formDataMap = new HashMap<>();
+            formDataMap.put(KmFormPayloadModel.KM_FORM_DATA, GsonUtils.getJsonFromObject(getStringMap(formSelectedData), Map.class));
+            metadata.put(Kommunicate.KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(formDataMap, Map.class));
+        } else {
+            metadata.putAll(formData);
+        }
+        sendMessage(message, metadata);
     }
 
     public Map<String, String> getStringMap(Map<String, Object> objectMap) {
@@ -341,7 +303,7 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
         }
         Map<String, String> newMap = new HashMap<>();
         for (Map.Entry<String, Object> entry : objectMap.entrySet()) {
-            newMap.put(entry.getKey(), entry.getValue() instanceof String ? (String) entry.getValue() : entry.getValue().toString());
+            newMap.put(entry.getKey(), entry.getValue() instanceof String ? (String) entry.getValue() : GsonUtils.getJsonFromObject(entry.getValue(), Object.class));
         }
         return newMap;
     }

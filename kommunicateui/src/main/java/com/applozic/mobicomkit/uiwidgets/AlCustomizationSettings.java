@@ -85,7 +85,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean logoutOption = false;
     private int defaultGroupType = 2;
     private boolean muteUserChatOption = false;
-
+    private String restrictedWordRegex;
     private int totalRegisteredUserToFetch = 100;
     private int maxAttachmentAllowed = 5;
     private int maxAttachmentSizeAllowed = 30;
@@ -633,6 +633,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setMessageStatusIconColor(String messageStatusIconColor) {
         this.messageStatusIconColor = messageStatusIconColor;
+    }
+
+    public String getRestrictedWordRegex() {
+        return restrictedWordRegex;
     }
 
     @Override

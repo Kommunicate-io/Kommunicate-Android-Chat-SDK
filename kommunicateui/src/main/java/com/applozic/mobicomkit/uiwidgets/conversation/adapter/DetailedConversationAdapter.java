@@ -70,6 +70,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessag
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
@@ -826,11 +827,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     file = new File(message.getFilePaths().get(0));
                                 }
                                 if (file != null && !file.exists()) {
-                                    Toast.makeText(context, context.getString(R.string.file_does_not_exist), Toast.LENGTH_SHORT).show();
+                                    KmToast.error(context, context.getString(R.string.file_does_not_exist), Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
-                                Toast.makeText(context, context.getString(R.string.applozic_resending_attachment), Toast.LENGTH_LONG).show();
+                                KmToast.success(context, context.getString(R.string.applozic_resending_attachment), Toast.LENGTH_LONG).show();
                                 myHolder.mediaUploadProgressBar.setVisibility(View.VISIBLE);
                                 myHolder.attachmentRetry.setVisibility(View.GONE);
                                 //updating Cancel Flag to smListItem....
@@ -838,7 +839,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 messageDatabaseService.updateCanceledFlag(message.getMessageId(), 0);
                                 conversationService.sendMessage(message, messageIntentClass);
                             } else {
-                                Toast.makeText(context, context.getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
+                                KmToast.error(context, context.getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -1127,7 +1128,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             intent.setDataAndType(outputUri, "text/x-vcard");
                             context.startActivity(intent);
                         } else {
-                            Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+                            KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
                         }
                     } else {
                         storagePermissionListener.checkPermission(new KmStoragePermission() {
@@ -1146,7 +1147,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     intent.setDataAndType(outputUri, "text/x-vcard");
                                     context.startActivity(intent);
                                 } else {
-                                    Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+                                    KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -1260,7 +1261,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             intent.setDataAndType(outputUri, mimeType);
                             context.startActivity(intent);
                         } else {
-                            Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+                            KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
                         }
                     }
                 } catch (Exception e) {
@@ -1310,7 +1311,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             intentVideo.setDataAndType(outputUri, "video/*");
                             context.startActivity(intentVideo);
                         } else {
-                            Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+                            KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
                         }
                     }
                 }

@@ -6,11 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -42,6 +44,7 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -64,7 +67,7 @@ public class MessageInfoFragment extends Fragment {
     AttachmentView attachmentView;
     MessageInfoResponse messageInfoResponse;
     MessageInfoAsyncTask messageInfoAsyncTask;
-    private ImageLoader locationImageLoader;
+    private ImageLoader locationImageLoader, contactImageLoader;
     private RecyclerView readListView;
     private RecyclerView deliveredListView;
     private String geoApiKey;
@@ -152,30 +155,34 @@ public class MessageInfoFragment extends Fragment {
         }
 
         messageInfoAsyncTask = new MessageInfoAsyncTask(message.getKeyString(), getActivity());
-        messageInfoAsyncTask.execute();
+        messageInfoAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);;
         return view;
     }
 
 
     private void init() {
-        /*if (contactImageLoader == null) {
+        if (contactImageLoader == null) {
             contactImageLoader = new ImageLoader(getContext(), getListPreferredItemHeight()) {
                 @Override
                 protected Bitmap processBitmap(Object data) {
-                    BaseContactService contactService = new AppContactService(getContext());
-                    return contactService.downloadContactImage(getContext(), (Contact) data);
+                    if (getContext() != null) {
+                        return new AppContactService(getContext()).downloadContactImage(getContext(), (Contact) data);
+                    }
+                    return null;
                 }
             };
             contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
             contactImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
-        }*/
+        }
 
         if (locationImageLoader == null) {
             locationImageLoader = new ImageLoader(getContext(), ImageUtils.getLargestScreenDimension((Activity) getContext())) {
                 @Override
                 protected Bitmap processBitmap(Object data) {
-                    FileClientService fileClientService = new FileClientService(getContext());
-                    return fileClientService.loadMessageImage(getContext(), (String) data);
+                    if (getContext() != null) {
+                        return new FileClientService(getContext()).loadMessageImage(getContext(), (String) data);
+                    }
+                    return null;
                 }
             };
             locationImageLoader.setImageFadeIn(false);
@@ -299,8 +306,6 @@ public class MessageInfoFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-
         }
 
         @Override
@@ -322,7 +327,7 @@ public class MessageInfoFragment extends Fragment {
                 return;
             }
             if (messageInfoResponse == null) {
-                Toast.makeText(getContext(), getString(R.string.applozic_message_info_no_network), Toast.LENGTH_SHORT).show();
+                KmToast.error(getContext(), getString(R.string.applozic_message_info_no_network), Toast.LENGTH_SHORT).show();
                 return;
             }
             if (messageInfoResponse.getReadByUserList() != null) {
@@ -366,20 +371,8 @@ public class MessageInfoFragment extends Fragment {
             char firstLetter;
             Contact contact = contactService.getContactById(messageInfo.getUserId());
             holder.displayName.setText(contact.getDisplayName());
-            long timeStamp = messageInfo.isRead() ? messageInfo.getReadAtTime() :
-                    (messageInfo.getDeliveredAtTime() == null ? 0 : messageInfo.getDeliveredAtTime());
-            if (timeStamp != 0) {
-                holder.lastSeenAtTextView.setVisibility(View.VISIBLE);
-                holder.lastSeenAtTextView.setText(String.valueOf(DateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
-
-            } else {
-                holder.lastSeenAtTextView.setVisibility(View.GONE);
-                holder.lastSeenAtTextView.setText("");
-            }
 
             if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {
-                holder.alphabeticImage.setVisibility(View.VISIBLE);
-                holder.circleImageView.setVisibility(View.GONE);
                 contactNumber = contact.getDisplayName().toUpperCase();
                 firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
                 if (firstLetter != '+') {
@@ -395,12 +388,8 @@ public class MessageInfoFragment extends Fragment {
             if (contact.isDrawableResources()) {
                 int drawableResourceId = getContext().getResources().getIdentifier(contact.getrDrawableName(), "drawable", getContext().getPackageName());
                 holder.circleImageView.setImageResource(drawableResourceId);
-                holder.alphabeticImage.setVisibility(View.GONE);
-                holder.circleImageView.setVisibility(View.VISIBLE);
-            } else if (!TextUtils.isEmpty(contact.getImageURL())) {
-                holder.alphabeticImage.setVisibility(View.GONE);
-                holder.circleImageView.setVisibility(View.VISIBLE);
-                Glide.with(getContext()).load(contact.getImageURL()).into(holder.circleImageView);
+            } else {
+                contactImageLoader.loadImage(contact, holder.circleImageView, holder.alphabeticImage);
             }
         }
 

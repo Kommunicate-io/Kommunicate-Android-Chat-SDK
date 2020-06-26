@@ -189,6 +189,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmBotPreference;
@@ -1143,7 +1145,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if (Utils.isInternetAvailable(getActivity())) {
                     processSendMessage();
                 } else {
-                    Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
+                    KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
                 }
             } else {
                 processSendMessage();
@@ -1247,26 +1249,59 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             List<String> userInputList = Arrays.asList(inputMsg);
 
             boolean disjointResult = (restrictedWords == null) || disjoint(restrictedWords, userInputList);
+            boolean restrictedWordMatches;
 
-            if (disjointResult) {
+            try {
+                String dynamicRegex = ApplozicSetting.getInstance(getContext()).getRestrictedWordsRegex();
+                String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (alCustomizationSettings != null
+                        && !TextUtils.isEmpty(alCustomizationSettings.getRestrictedWordRegex()) ? alCustomizationSettings.getRestrictedWordRegex() : "");
+
+                restrictedWordMatches = !TextUtils.isEmpty(pattern) && Pattern.compile(pattern).matcher(inputMessage.trim()).matches();
+            } catch (PatternSyntaxException e) {
+                e.printStackTrace();
+                createInvalidPatternExceptionDialog();
+                return;
+            }
+
+            if (disjointResult && !restrictedWordMatches) {
                 sendMessage(messageEditText.getText().toString().trim());
                 messageEditText.setText("");
-                scheduleOption.setText(R.string.ScheduleText);
             } else {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
                         setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                handleSendAndRecordButtonView(true);
                             }
-                        });
+                        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        handleSendAndRecordButtonView(true);
+                    }
+                });
                 alertDialog.setTitle(alCustomizationSettings.getRestrictedWordMessage());
                 alertDialog.setCancelable(true);
                 alertDialog.create().show();
-
             }
         }
+    }
 
+    private void createInvalidPatternExceptionDialog() {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
+                setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        handleSendAndRecordButtonView(true);
+                    }
+                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                handleSendAndRecordButtonView(true);
+            }
+        });
+        alertDialog.setTitle(ApplozicService.getContext(getContext()).getString(R.string.invalid_message_matching_pattern));
+        alertDialog.setCancelable(true);
+        alertDialog.create().show();
     }
 
     public void populateAutoSuggestion(boolean show, String typedText, String message) {
@@ -1301,17 +1336,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void showScheduleMessageToast() {
-        if (getActivity() == null) {
-            return;
-        }
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_message_scheduled), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     public void deleteMessageFromDeviceList(String messageKeyString) {
         try {
             int position;
@@ -1329,9 +1353,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             Message belowMessage = messageList.get(belowIndex);
                             if (aboveMessage.isTempDateType() && belowMessage.isTempDateType()) {
                                 messageList.remove(aboveMessage);
+                                recyclerDetailConversationAdapter.notifyItemRemoved(aboveIndex);
                             }
                         } else if (belowIndex == messageList.size() && aboveMessage.isTempDateType()) {
                             messageList.remove(aboveMessage);
+                            recyclerDetailConversationAdapter.notifyItemRemoved(aboveIndex);
                         }
                     }
                 }
@@ -1345,7 +1371,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         messageDatabaseService.deleteScheduledMessage(messageKeyString);
                     }
                     messageList.remove(position);
-                    recyclerDetailConversationAdapter.notifyDataSetChanged();
+                    recyclerDetailConversationAdapter.notifyItemRemoved(position);
                     if (messageList.isEmpty()) {
                         emptyTextView.setVisibility(VISIBLE);
                         if (getActivity() != null) {
@@ -1503,7 +1529,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         try {
                             messageDatabaseService.updateReadStatusForKeyString(message.getKeyString());
                             Intent intent = new Intent(getActivity(), UserIntentService.class);
-                            intent.putExtra(UserIntentService.SINGLE_MESSAGE_READ, true);
+                            intent.putExtra(UserIntentService.PAIRED_MESSAGE_KEY_STRING, message.getKeyString());
                             intent.putExtra(UserIntentService.CONTACT, contact);
                             intent.putExtra(UserIntentService.CHANNEL, channel);
                             UserIntentService.enqueueWork(getActivity(), intent);
@@ -2293,7 +2319,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void loadFile(Uri uri, File file) {
         if (uri == null || file == null) {
-            Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.file_not_selected), Toast.LENGTH_LONG).show();
+            KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.file_not_selected), Toast.LENGTH_LONG).show();
             return;
         }
         handleSendAndRecordButtonView(true);
@@ -2301,7 +2327,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (TextUtils.isEmpty(filePath)) {
             Utils.printLog(getContext(), TAG, "Error while fetching filePath");
             attachmentLayout.setVisibility(View.GONE);
-            Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_file_attachment_error), Toast.LENGTH_LONG).show();
+            KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_file_attachment_error), Toast.LENGTH_LONG).show();
             return;
         }
         String mimeType = ApplozicService.getContext(getContext()).getContentResolver().getType(uri);
@@ -2313,7 +2339,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             long fileSize = returnCursor.getLong(sizeIndex);
             long maxFileSize = alCustomizationSettings.getMaxAttachmentSizeAllowed() * 1024 * 1024;
             if (fileSize > maxFileSize) {
-                Toast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_attachment_max_allowed_file_size), Toast.LENGTH_LONG).show();
+                KmToast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_attachment_max_allowed_file_size), Toast.LENGTH_LONG).show();
                 return;
             }
             attachedFile.setText(returnCursor.getString(returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
@@ -2880,11 +2906,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     //                insert(currentPos, emojicon.getEmoji()));
     //    }
 
-    @Override
-    public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
-        return super.getLayoutInflater(savedInstanceState);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
     //TODO: Please add onclick events here...  anonymous class are
     // TODO :hard to read and suggested if we have very few event view
     @Override
@@ -3204,7 +3225,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 Utils.printLog(getContext(), TAG, "Couldn't get agent status.");
                 switchContactStatus(contact, null);
             }
-        }).execute();
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void getUserDetail(Context context, String userId, KmUserDetailsCallback callback) {
@@ -3216,9 +3237,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
-            if (assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !"bot".equals(assigneeContact.getUserId())) {
-                showTakeOverFromBotLayout(true, assigneeContact);
-            }
+            showTakeOverFromBotLayout(assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !"bot".equals(assigneeContact.getUserId()), assigneeContact);
         }
 
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
@@ -3425,7 +3444,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onFailure(ApiResponse apiResponse, Exception exception) {
                 String error = ApplozicService.getContext(getContext()).getString(Utils.isInternetAvailable(getActivity()) ? R.string.applozic_server_error : R.string.you_need_network_access_for_block_or_unblock);
-                Toast toast = Toast.makeText(getActivity(), error, Toast.LENGTH_LONG);
+                Toast toast = KmToast.error(getActivity(), error, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             }
@@ -4066,6 +4085,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 conversationUIService.startContactActivityForResult(message, null);
                 break;
             case 2:
+                messageDatabaseService.deleteMessageFromDb(message);
+                deleteMessageFromDeviceList(message.getKeyString());
                 Message messageToResend = new Message(message);
                 messageToResend.setCreatedAtTime(System.currentTimeMillis() + MobiComUserPreference.getInstance(getActivity()).getDeviceTimeOffset());
                 conversationService.sendMessage(messageToResend, messageIntentClass);
@@ -4736,7 +4757,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onFailure(Context context, Exception e, String response) {
                 Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
-                Toast.makeText(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
+                KmToast.error(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
             }
         });
     }

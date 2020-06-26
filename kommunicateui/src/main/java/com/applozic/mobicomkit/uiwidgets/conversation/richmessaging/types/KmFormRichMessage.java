@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -43,7 +44,7 @@ public class KmFormRichMessage extends AlRichMessage {
         for (Object object : kmRichMessageModel.getFormModelList()) {
             if (object instanceof KmFormPayloadModel) {
                 KmFormPayloadModel formPayloadModel = (KmFormPayloadModel) object;
-                if (KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType())) {
+                if (KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType()) || TextUtils.isEmpty(formPayloadModel.getType())) {
                     actionModelList.add(formPayloadModel.getAction());
                 }
             }

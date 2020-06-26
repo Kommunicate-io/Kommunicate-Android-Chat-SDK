@@ -63,6 +63,7 @@
   "profileOption": false,
   "broadcastOption": false,
   "restrictedWordMessage": " Please don't use restricted word",
+  "restrictedWordRegex": "",
   "hideAttachmentButton": false,
   "groupUsersOnlineStatus": false,
   "launchChatFromProfilePicOrName": false,

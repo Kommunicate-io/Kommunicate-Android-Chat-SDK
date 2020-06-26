@@ -10,8 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        //buildConfigField "String", "APP_ID", '"3f4d0cc30b95c4deb37639d7cc350c728"'
-        buildConfigField "String", "APP_ID", '"22823b4a764f9944ad7913ddb3e43cae1"'
+        buildConfigField "String", "APP_ID", '"<YOUR_APP_ID>"'
     }
     buildTypes {
         release {

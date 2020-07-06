@@ -3,6 +3,23 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.0.3
+1) Added support for language chnage bot
+2) MQTT security enhancement: Added support for JWT based authentication in MQTT connection
+3) Added support for away status
+4) Added support for postBackToBotPlatform in form type rich message
+5) Added support for character limit check in message for dialog flow bot
+6) Added custom toasts in the SDK. You can use the KmToast.success and KmToast.error methods to display custom Toast in your app.
+7) Added support for message blocking via custom regex
+8) Fixed issue with message status in MessageInfoFragment
+9) Fixed issue where form data was getting cleared after submit
+
+## Kommunicate Android SDK 2.0.1
+1) Setting to override message status icon color
+2) SDK optimisation: reduced size of SDK by ~1MB
+3) Fixed singe conversation opening issue when agentList or botList are passed
+4) Fixed message scrolling issue
+
 ## Kommunicate Android SDK 2.0.0
 1) Option to set custom prechat fields and validations
 2) Form type rich messge support with new rich message models

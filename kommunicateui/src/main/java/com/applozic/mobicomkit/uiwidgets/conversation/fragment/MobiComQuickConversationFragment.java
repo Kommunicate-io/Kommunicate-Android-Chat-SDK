@@ -188,7 +188,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 if (ApplozicService.getContext(getContext()) instanceof KmActionCallback) {
                     ((KmActionCallback) ApplozicService.getContext(getContext())).onReceive(getContext(), null, "startNewChat");
                 } else {
-                    KmHelper.setStartNewChat(getActivity(), null, null, false);
+                    KmHelper.setStartNewChat(getActivity());
                 }
                 LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(new Intent("KmStartNewConversation"));
             }

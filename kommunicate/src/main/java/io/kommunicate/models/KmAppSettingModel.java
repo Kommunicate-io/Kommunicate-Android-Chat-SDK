@@ -76,6 +76,7 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean showPoweredBy;
         private long sessionTimeout;
         private int botMessageDelayInterval;
+        private boolean isSingleThreaded;
 
         public String getPrimaryColor() {
             return primaryColor;
@@ -115,6 +116,10 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setBotMessageDelayInterval(int botMessageDelayInterval) {
             this.botMessageDelayInterval = botMessageDelayInterval;
+        }
+
+        public boolean isSingleThreaded() {
+            return isSingleThreaded;
         }
     }
 }

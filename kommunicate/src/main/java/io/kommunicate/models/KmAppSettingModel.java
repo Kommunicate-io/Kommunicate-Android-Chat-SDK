@@ -1,6 +1,7 @@
 package io.kommunicate.models;
 
 import com.applozic.mobicommons.json.JsonMarker;
+import com.google.gson.annotations.SerializedName;
 
 public class KmAppSettingModel extends JsonMarker {
     private String code;
@@ -76,7 +77,8 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean showPoweredBy;
         private long sessionTimeout;
         private int botMessageDelayInterval;
-        private boolean isSingleThreaded;
+        @SerializedName("isSingleThreaded")
+        private boolean singleThreaded;
 
         public String getPrimaryColor() {
             return primaryColor;
@@ -119,7 +121,7 @@ public class KmAppSettingModel extends JsonMarker {
         }
 
         public boolean isSingleThreaded() {
-            return isSingleThreaded;
+            return singleThreaded;
         }
     }
 }

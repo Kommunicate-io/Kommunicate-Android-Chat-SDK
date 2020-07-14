@@ -352,7 +352,7 @@ public class KmConversationHelper {
     //meant to be used from the conversation screen start new conversation button
     public static void launchConversationIfLoggedIn(Context context, KmCallback callback) {
         if (Kommunicate.isLoggedIn(context)) {
-            KmConversationBuilder conversationBuilder = new KmConversationBuilder(context).setAgentIds(null).setBotIds(null);
+            KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
             try {
                 startConversation(true, conversationBuilder,
                         getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, callback));

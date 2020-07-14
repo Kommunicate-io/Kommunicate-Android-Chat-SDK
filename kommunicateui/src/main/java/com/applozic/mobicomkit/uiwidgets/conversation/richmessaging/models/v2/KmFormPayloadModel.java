@@ -122,7 +122,7 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     }
 
     public enum Type {
-        TEXT("text"), PASSWORD("password"), HIDDEN("hidden"), RADIO("radio"), CHECKBOX("checkbox"), ACTION("action");
+        TEXT("text"), PASSWORD("password"), HIDDEN("hidden"), RADIO("radio"), CHECKBOX("checkbox"), SUBMIT("submit");
 
         private String value;
 

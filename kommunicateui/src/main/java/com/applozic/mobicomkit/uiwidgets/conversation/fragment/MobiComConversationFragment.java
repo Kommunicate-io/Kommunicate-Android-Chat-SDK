@@ -694,7 +694,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     } else if (s.toString().trim().length() == 0) {
                         if (typingStarted) {
                             typingStarted = false;
-                            handleSendAndRecordButtonView(false);
+                            handleSendAndRecordButtonView(!TextUtils.isEmpty(filePath));
                             Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
                             intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
                             intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);

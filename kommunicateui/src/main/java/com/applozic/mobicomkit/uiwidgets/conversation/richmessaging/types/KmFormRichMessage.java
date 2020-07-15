@@ -67,6 +67,9 @@ public class KmFormRichMessage extends AlRichMessage {
                 itemTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (submitButtonModel != null && TextUtils.isEmpty(submitButtonModel.getType())) {
+                            submitButtonModel.setType(KmFormPayloadModel.Type.SUBMIT.getValue());
+                        }
                         listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
                     }
                 });

@@ -349,6 +349,21 @@ public class KmConversationHelper {
         };
     }
 
+    //meant to be used from the conversation screen start new conversation button
+    public static void launchConversationIfLoggedIn(Context context, KmCallback callback) {
+        if (Kommunicate.isLoggedIn(context)) {
+            KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
+            try {
+                startConversation(true, conversationBuilder,
+                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, callback));
+            } catch (KmException e) {
+                if (callback != null) {
+                    callback.onFailure(e);
+                }
+            }
+        }
+    }
+
     public static void createOrLaunchConversation(final KmConversationBuilder conversationBuilder, final boolean launchConversation, final KmCallback callback) {
         if (conversationBuilder == null) {
             if (callback != null) {
@@ -368,7 +383,7 @@ public class KmConversationHelper {
 
         if (Kommunicate.isLoggedIn(conversationBuilder.getContext())) {
             try {
-                startConversation(conversationBuilder,
+                startConversation(false, conversationBuilder,
                         getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, null, callback));
             } catch (KmException e) {
                 if (callback != null) {
@@ -517,7 +532,7 @@ public class KmConversationHelper {
                 }
 
                 try {
-                    startConversation(conversationBuilder, startConversationHandler);
+                    startConversation(false, conversationBuilder, startConversationHandler);
                 } catch (KmException e) {
                     e.printStackTrace();
                     callback.onFailure(e);
@@ -667,43 +682,47 @@ public class KmConversationHelper {
         new KmConversationCreateTask(conversationBuilder.getContext(), channelInfo, handler).execute();
     }
 
-    private static void startConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) throws KmException {
+    private static KmCallback getCallbackWithAppSettingsToCreateConversation(final boolean useSingleThreadedSettingFromServer, final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) {
+        return new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                KmAppSettingModel.KmResponse kmAppSettings = (KmAppSettingModel.KmResponse) message;
+                if (kmAppSettings != null) {
+                    List<String> agents = new ArrayList<>();
+                    agents.add(kmAppSettings.getAgentId());
+                    conversationBuilder.setAgentIds(agents);
+                    if (useSingleThreadedSettingFromServer) {
+                        conversationBuilder.setSingleConversation(kmAppSettings.getChatWidget().isSingleThreaded());
+                    }
+                    try {
+                        final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), agents, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
+                        if (!TextUtils.isEmpty(clientChannelKey)) {
+                            conversationBuilder.setClientConversationId(clientChannelKey);
+                            startOrGetConversation(conversationBuilder, handler);
+                        } else {
+                            createConversation(conversationBuilder, handler);
+                        }
+                    } catch (KmException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                if (handler != null) {
+                    handler.onFailure(null, conversationBuilder.getContext());
+                }
+            }
+        };
+    }
+
+    private static void startConversation(boolean useSingleThreadedSettingFromServer, final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) throws KmException {
         if (conversationBuilder == null) {
             throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_conversation_builder_cannot_be_null));
         }
-
         if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
-            KmCallback callback = new KmCallback() {
-                @Override
-                public void onSuccess(Object message) {
-                    KmAppSettingModel.KmResponse agent = (KmAppSettingModel.KmResponse) message;
-                    if (agent != null) {
-                        List<String> agents = new ArrayList<>();
-                        agents.add(agent.getAgentId());
-                        conversationBuilder.setAgentIds(agents);
-                        try {
-                            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), agents, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
-                            if (!TextUtils.isEmpty(clientChannelKey)) {
-                                conversationBuilder.setClientConversationId(clientChannelKey);
-                                startOrGetConversation(conversationBuilder, handler);
-                            } else {
-                                createConversation(conversationBuilder, handler);
-                            }
-                        } catch (KmException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Object error) {
-                    if (handler != null) {
-                        handler.onFailure(null, conversationBuilder.getContext());
-                    }
-                }
-            };
-
-            new KmGetAgentListTask(conversationBuilder.getContext(), MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()), callback).execute();
+            new KmGetAgentListTask(conversationBuilder.getContext(), MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()), getCallbackWithAppSettingsToCreateConversation(useSingleThreadedSettingFromServer, conversationBuilder, handler)).execute();
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {

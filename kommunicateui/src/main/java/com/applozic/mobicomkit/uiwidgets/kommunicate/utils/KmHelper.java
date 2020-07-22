@@ -17,7 +17,7 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import java.util.List;
 
 import io.kommunicate.KmChatBuilder;
-import io.kommunicate.KmConversationBuilder;
+import io.kommunicate.KmConversationHelper;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
@@ -86,28 +86,25 @@ public class KmHelper {
         }
     }
 
-    public static void setStartNewChat(final Context context, final List<String> agentIds, List<String> botIds, boolean isUnique) {
+    public static void setStartNewChat(final Context context) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage(Utils.getString(context, R.string.create_conversation_info));
         dialog.setCancelable(false);
         dialog.show();
 
         try {
-            new KmConversationBuilder(context).setAgentIds(agentIds)
-                    .setBotIds(botIds)
-                    .setSingleConversation(isUnique)
-                    .launchConversation(new KmCallback() {
-                        @Override
-                        public void onSuccess(Object message) {
-                            dialog.dismiss();
-                        }
+            KmConversationHelper.launchConversationIfLoggedIn(context, new KmCallback() {
+                @Override
+                public void onSuccess(Object message) {
+                    dialog.dismiss();
+                }
 
-                        @Override
-                        public void onFailure(Object error) {
-                            dialog.dismiss();
-                            KmToast.error(context, Utils.getString(context, R.string.unable_to_create_conversation) + ": " + error, Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                @Override
+                public void onFailure(Object error) {
+                    dialog.dismiss();
+                    KmToast.error(context, Utils.getString(context, R.string.unable_to_create_conversation) + ": " + error, Toast.LENGTH_SHORT).show();
+                }
+            });
         } catch (Exception e) {
             dialog.dismiss();
             e.printStackTrace();

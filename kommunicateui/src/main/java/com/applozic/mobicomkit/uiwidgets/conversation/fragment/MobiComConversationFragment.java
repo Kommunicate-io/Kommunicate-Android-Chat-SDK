@@ -516,13 +516,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         recordLayout = list.findViewById(R.id.kmRecordLayout);
 
-        if (alCustomizationSettings != null
-                && alCustomizationSettings.getAttachmentOptions() != null
-                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
-                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) {
-            recordLayout.setVisibility(VISIBLE);
-        }
-
         recordView = list.findViewById(R.id.km_record_view);
         recordView.setOnBasketAnimationEndListener(this);
         recordView.setOnRecordListener(this);
@@ -613,10 +606,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
         awayMessageTv = list.findViewById(R.id.awayMessageTV);
 
-        boolean isRecordOptionEnabled = alCustomizationSettings != null && alCustomizationSettings.getAttachmentOptions() != null
+        boolean isRecordOptionEnabled = (alCustomizationSettings != null
+                && alCustomizationSettings.getAttachmentOptions() != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
-                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION);
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) || isSpeechToTextEnabled;
 
+        recordLayout.setVisibility(isRecordOptionEnabled ? View.VISIBLE : View.GONE);
         recordButton.setVisibility(isRecordOptionEnabled ? View.VISIBLE : View.GONE);
         sendButton.setVisibility(isRecordOptionEnabled ? View.GONE : View.VISIBLE);
         KmUtils.setGradientSolidColor(sendButton, themeHelper.getSendButtonBackgroundColor());
@@ -699,7 +694,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     } else if (s.toString().trim().length() == 0) {
                         if (typingStarted) {
                             typingStarted = false;
-                            handleSendAndRecordButtonView(false);
+                            handleSendAndRecordButtonView(!TextUtils.isEmpty(filePath));
                             Intent intent = new Intent(getActivity(), ApplozicMqttIntentService.class);
                             intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
                             intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
@@ -957,7 +952,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         dialogFlowCharLimitTextWatcher = new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -965,16 +961,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void afterTextChanged(Editable editable) { }
+            public void afterTextChanged(Editable editable) {
+            }
         };
 
         return list;
     }
 
     public void handleSendAndRecordButtonView(boolean isSendButtonVisible) {
-        boolean showRecordButton = alCustomizationSettings != null
+        boolean showRecordButton = (alCustomizationSettings != null
                 && alCustomizationSettings.getAttachmentOptions() != null
-                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null;
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
+                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) || isSpeechToTextEnabled;
 
         sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
         recordButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.GONE : View.VISIBLE) : View.GONE);
@@ -1769,7 +1767,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 fetchBotType(assignee, new KmCallback() {
                     @Override
                     public void onSuccess(Object botTypeResponseString) {
-                        if(messageEditText != null) {
+                        if (messageEditText != null) {
                             isAssigneeDialogFlowBot = KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(botTypeResponseString);
                             if (isAssigneeDialogFlowBot) {
                                 setCharLimitExceededMessage(true, messageEditText.getText().length());
@@ -1782,7 +1780,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
 
                     @Override
-                    public void onFailure(Object error) { }
+                    public void onFailure(Object error) {
+                    }
                 });
             }
         }
@@ -3270,7 +3269,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void switchContactStatus(Contact contact, Boolean agentStatus) {
-        if(contact == null) {
+        if (contact == null) {
             return;
         }
 

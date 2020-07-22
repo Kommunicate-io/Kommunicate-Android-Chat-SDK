@@ -44,7 +44,7 @@ public class KmFormRichMessage extends AlRichMessage {
         for (Object object : kmRichMessageModel.getFormModelList()) {
             if (object instanceof KmFormPayloadModel) {
                 KmFormPayloadModel formPayloadModel = (KmFormPayloadModel) object;
-                if (KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType()) || TextUtils.isEmpty(formPayloadModel.getType())) {
+                if (KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType()) || TextUtils.isEmpty(formPayloadModel.getType())) {
                     actionModelList.add(formPayloadModel.getAction());
                 }
             }
@@ -67,6 +67,9 @@ public class KmFormRichMessage extends AlRichMessage {
                 itemTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (submitButtonModel != null && TextUtils.isEmpty(submitButtonModel.getType())) {
+                            submitButtonModel.setType(KmFormPayloadModel.Type.SUBMIT.getValue());
+                        }
                         listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
                     }
                 });

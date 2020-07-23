@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -40,12 +41,15 @@ public class KmAppSettingPreferences {
     }
 
     public void setAppSetting(KmAppSettingModel appSetting) {
-        if (appSetting != null) {
+        if (appSetting != null && appSetting.getChatWidget() != null) {
             if (!TextUtils.isEmpty(appSetting.getChatWidget().getPrimaryColor())) {
                 setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
             }
             if (!TextUtils.isEmpty(appSetting.getChatWidget().getSecondaryColor())) {
                 setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
+            }
+            if (KmAppSettingModel.KmChatWidget.AWS_FILE_UPLOAD.equals(appSetting.getChatWidget().getFileUpload())) {
+                ApplozicClient.getInstance(ApplozicService.getAppContext()).enableS3StorageService();
             }
         }
     }

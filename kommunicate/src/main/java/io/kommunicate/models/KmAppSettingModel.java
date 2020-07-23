@@ -71,12 +71,14 @@ public class KmAppSettingModel extends JsonMarker {
         }
     }
 
-    public class KmChatWidget extends JsonMarker {
+    public static class KmChatWidget extends JsonMarker {
+        public static final String AWS_FILE_UPLOAD = "awsS3Server";
         private String primaryColor;
         private String secondaryColor;
         private boolean showPoweredBy;
         private long sessionTimeout;
         private int botMessageDelayInterval;
+        private String fileUpload;
         @SerializedName("isSingleThreaded")
         private boolean singleThreaded;
 
@@ -122,6 +124,14 @@ public class KmAppSettingModel extends JsonMarker {
 
         public boolean isSingleThreaded() {
             return singleThreaded;
+        }
+
+        public String getFileUpload() {
+            return fileUpload;
+        }
+
+        public void setFileUpload(String fileUpload) {
+            this.fileUpload = fileUpload;
         }
     }
 }

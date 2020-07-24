@@ -44,7 +44,7 @@ public class KmFormRichMessage extends AlRichMessage {
         for (Object object : kmRichMessageModel.getFormModelList()) {
             if (object instanceof KmFormPayloadModel) {
                 KmFormPayloadModel formPayloadModel = (KmFormPayloadModel) object;
-                if (KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType()) || TextUtils.isEmpty(formPayloadModel.getType())) {
+                if (KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType()) || KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType())|| TextUtils.isEmpty(formPayloadModel.getType())) {
                     actionModelList.add(formPayloadModel.getAction());
                 }
             }

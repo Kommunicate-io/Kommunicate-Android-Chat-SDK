@@ -7,7 +7,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.0.4"
+        versionName "2.0.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -23,7 +23,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.applozic.communication.message:mobicomkit:5.80'
+    api 'com.applozic.communication.message:mobicomkit:5.80.1'
     //api project(':mobicomkit')
 }
 
@@ -40,7 +40,7 @@ dependencies {
     // module. The artifact name needs to match the name of the library.
     artifact = 'kommunicate'
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '2.0.4'
+    libraryVersion = '2.0.4.1'
     developerId = 'kommunicate'
     developerName = 'Kommunicate'
     developerEmail = 'devashish.mamgain@gmail.com'

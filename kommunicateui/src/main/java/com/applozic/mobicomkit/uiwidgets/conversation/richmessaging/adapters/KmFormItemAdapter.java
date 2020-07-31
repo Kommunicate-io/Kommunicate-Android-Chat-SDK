@@ -27,11 +27,13 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFor
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class KmFormItemAdapter extends RecyclerView.Adapter {
 
@@ -44,6 +46,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private Map<String, String> hiddenFields;
     private KmFormStateModel formStateModel;
     private String messageKey;
+    private SparseIntArray validationArray;
 
     private static final int VIEW_TYPE_TEXT_FIELD = 1;
     private static final int VIEW_TYPE_SELECTION = 2;
@@ -78,6 +81,10 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
         if (hiddenFields == null) {
             hiddenFields = new HashMap<>();
+        }
+
+        if (validationArray == null) {
+            validationArray = new SparseIntArray();
         }
     }
 
@@ -137,6 +144,12 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
                         if (savedStr != null) {
                             editText.setText(savedStr);
+                        }
+
+                        if (validationArray.get(position) == 1) {
+                            editText.setError(textModel.getValidation() != null && !TextUtils.isEmpty(textModel.getValidation().getErrorText()) ? textModel.getValidation().getErrorText() : Utils.getString(context, R.string.default_form_validation_error_text));
+                        } else {
+                            editText.setError(null);
                         }
                     } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(payloadModel.getType())) {
                         KmFormPayloadModel.Selections selectionModel = payloadModel.getSelectionModel();
@@ -200,6 +213,31 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean isFormDataValid() {
+        boolean isValid = true;
+        if (payloadList != null) {
+            for (int i = 0; i < payloadList.size(); i++) {
+                if (payloadList.get(i).getData() instanceof KmFormPayloadModel.Text) {
+                    KmFormPayloadModel.Text textField = (KmFormPayloadModel.Text) payloadList.get(i).getData();
+                    String enteredText = KmFormStateHelper.getFormState(messageKey).getTextFields().get(i);
+                    String text = TextUtils.isEmpty(enteredText) ? "" : enteredText;
+                    if (textField.getValidation() != null
+                            && !TextUtils.isEmpty(textField.getValidation().getRegex())
+                            && Pattern.compile(textField.getValidation().getRegex()).matcher(text).matches()) {
+                        validationArray.put(i, 2); // 1 for invalid and 2 for valid
+                    } else {
+                        validationArray.put(i, 1); // 1 for invalid and 2 for valid
+                        isValid = false;
+                    }
+                }
+            }
+        }
+        if (!isValid) {
+            notifyDataSetChanged();
+        }
+        return isValid;
     }
 
     @Override

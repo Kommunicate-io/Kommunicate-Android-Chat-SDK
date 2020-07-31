@@ -31,6 +31,7 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     public static class Text extends JsonMarker {
         private String label;
         private String placeholder;
+        private Validation validation;
 
         public String getLabel() {
             return label;
@@ -46,6 +47,14 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
         public void setPlaceholder(String placeholder) {
             this.placeholder = placeholder;
+        }
+
+        public Validation getValidation() {
+            return validation;
+        }
+
+        public void setValidation(Validation validation) {
+            this.validation = validation;
         }
     }
 
@@ -121,8 +130,29 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         }
     }
 
+    public static class Validation extends JsonMarker {
+        private String regex;
+        private String errorText;
+
+        public String getRegex() {
+            return regex;
+        }
+
+        public void setRegex(String regex) {
+            this.regex = regex;
+        }
+
+        public String getErrorText() {
+            return errorText;
+        }
+
+        public void setErrorText(String errorText) {
+            this.errorText = errorText;
+        }
+    }
+
     public enum Type {
-        TEXT("text"), PASSWORD("password"), HIDDEN("hidden"), RADIO("radio"), CHECKBOX("checkbox"), ACTION("action");
+        TEXT("text"), PASSWORD("password"), HIDDEN("hidden"), RADIO("radio"), CHECKBOX("checkbox"), ACTION("action"), SUBMIT("submit");
 
         private String value;
 

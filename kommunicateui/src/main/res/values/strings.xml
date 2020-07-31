@@ -281,4 +281,5 @@
     <string name="remove_char_message">Remove %1$d characters</string>
     <string name="remaining_char_message">%1$d characters remaining</string>
     <string name="away">Away</string>
+    <string name="default_form_validation_error_text">Please enter valid data</string>
 </resources>

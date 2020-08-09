@@ -47,6 +47,8 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private KmFormStateModel formStateModel;
     private String messageKey;
     private SparseIntArray validationArray;
+    private static final int VALID_DATA = 2;
+    private static final int INVALID_DATA = 1;
 
     private static final int VIEW_TYPE_TEXT_FIELD = 1;
     private static final int VIEW_TYPE_SELECTION = 2;
@@ -58,6 +60,8 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
         this.formStateModel = KmFormStateHelper.getFormState(messageKey);
 
+        KmFormStateHelper.initFormState();
+
         if (formStateModel == null) {
             formStateModel = new KmFormStateModel();
         }
@@ -66,6 +70,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         checkBoxStateArray = formStateModel.getCheckBoxStates();
         radioButtonSelectedIndices = formStateModel.getSelectedRadioButtonIndex();
         hiddenFields = formStateModel.getHiddenFields();
+        validationArray = formStateModel.getValidationArray();
 
         if (textFieldArray == null) {
             textFieldArray = new SparseArray<>();
@@ -86,6 +91,8 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         if (validationArray == null) {
             validationArray = new SparseIntArray();
         }
+
+        formStateModel.setTextFields(textFieldArray);
     }
 
 
@@ -144,6 +151,8 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
                         if (savedStr != null) {
                             editText.setText(savedStr);
+                        } else {
+                            editText.setText(null);
                         }
 
                         if (validationArray.get(position) == 1) {
@@ -219,17 +228,27 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         boolean isValid = true;
         if (payloadList != null) {
             for (int i = 0; i < payloadList.size(); i++) {
-                if (payloadList.get(i).getData() instanceof KmFormPayloadModel.Text) {
-                    KmFormPayloadModel.Text textField = (KmFormPayloadModel.Text) payloadList.get(i).getData();
-                    String enteredText = KmFormStateHelper.getFormState(messageKey).getTextFields().get(i);
-                    String text = TextUtils.isEmpty(enteredText) ? "" : enteredText;
-                    if (textField.getValidation() != null
-                            && !TextUtils.isEmpty(textField.getValidation().getRegex())
-                            && Pattern.compile(textField.getValidation().getRegex()).matcher(text).matches()) {
-                        validationArray.put(i, 2); // 1 for invalid and 2 for valid
-                    } else {
-                        validationArray.put(i, 1); // 1 for invalid and 2 for valid
-                        isValid = false;
+                if (KmFormPayloadModel.Type.TEXT.getValue().equals(payloadList.get(i).getType())) {
+                    KmFormPayloadModel.Text textField = payloadList.get(i).getTextModel();
+                    if (textField != null) {
+
+                        String enteredText;
+                        if (KmFormStateHelper.getFormState(messageKey) == null || TextUtils.isEmpty(KmFormStateHelper.getFormState(messageKey).getTextFields().get(i))) {
+                            enteredText = "";
+                        } else {
+                            enteredText = KmFormStateHelper.getFormState(messageKey).getTextFields().get(i);
+                        }
+
+                        if (textField.getValidation() != null
+                                && !TextUtils.isEmpty(textField.getValidation().getRegex())
+                                && !Pattern.compile(textField.getValidation().getRegex()).matcher(enteredText).matches()) {
+                            validationArray.put(i, INVALID_DATA);
+                            formStateModel.setValidationArray(validationArray);
+                            KmFormStateHelper.addFormState(messageKey, formStateModel);
+                            isValid = false;
+                        } else {
+                            validationArray.put(i, VALID_DATA);
+                        }
                     }
                 }
             }

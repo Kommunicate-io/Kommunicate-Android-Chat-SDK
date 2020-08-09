@@ -18,6 +18,12 @@ public class KmFormStateHelper {
 
     private static Map<String, KmFormStateModel> formStateModelMap;
 
+    public static void initFormState() {
+        if (formStateModelMap == null) {
+            formStateModelMap = new HashMap<>();
+        }
+    }
+
     public static void addFormState(String messageKey, KmFormStateModel formStateModel) {
         if (formStateModelMap == null) {
             formStateModelMap = new HashMap<>();

@@ -1,5 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.InputType;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +31,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlow
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +47,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private SparseArray<String> textFieldArray;
     private SparseArray<HashSet<Integer>> checkBoxStateArray;
     private SparseIntArray radioButtonSelectedIndices;
+    private SparseArray<String> dateFieldArray;
     private Map<String, String> hiddenFields;
     private KmFormStateModel formStateModel;
     private String messageKey;
@@ -71,6 +76,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         radioButtonSelectedIndices = formStateModel.getSelectedRadioButtonIndex();
         hiddenFields = formStateModel.getHiddenFields();
         validationArray = formStateModel.getValidationArray();
+        dateFieldArray = formStateModel.getDateFieldArray();
 
         if (textFieldArray == null) {
             textFieldArray = new SparseArray<>();
@@ -90,6 +96,10 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
         if (validationArray == null) {
             validationArray = new SparseIntArray();
+        }
+
+        if (dateFieldArray == null) {
+            dateFieldArray = new SparseArray<>();
         }
 
         formStateModel.setTextFields(textFieldArray);
@@ -215,13 +225,40 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         } else {
                             formItemViewHolder.flowLayout.setVisibility(View.GONE);
                         }
-                    }
+                    } else if (KmFormPayloadModel.Type.DATE.getValue().equals(payloadModel.getType()) || KmFormPayloadModel.Type.TIME.getValue().equals(payloadModel.getType())) {
+                        KmFormPayloadModel.DateTimePicker dateTimePickerModel = payloadModel.getDatePickerModel();
+                        if (dateTimePickerModel != null) {
+                            formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(dateTimePickerModel.getLabel()) ? View.VISIBLE : View.GONE);
+                            formItemViewHolder.formEditText.setVisibility(View.GONE);
+                            formItemViewHolder.formLabel.setText(dateTimePickerModel.getLabel());
 
+                            if()
+                        }
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void openDateTimePickerDialog(final int position, final EditText editText) {
+        new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                Date date = new Date();
+                date.setYear(year);
+                date.setMonth(month);
+                date.setDate(dayOfMonth);
+
+                editText.setText(new SimpleDateFormat("dd/mm/yyyy").format(date));
+                notifyItemChanged(position);
+            }
+        }, 0, 0, 0).show();
+    }
+
+    private String getFormattedDate(Date date) {
+
     }
 
     public boolean isFormDataValid() {
@@ -286,6 +323,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         EditText formEditText;
         LinearLayout formItemLayout;
         KmFlowLayout flowLayout;
+        EditText formDatePicker;
 
         public KmFormItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -294,6 +332,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
             formEditText = itemView.findViewById(R.id.kmFormEditText);
             formItemLayout = itemView.findViewById(R.id.kmFormItemLayout);
             flowLayout = itemView.findViewById(R.id.kmFormSelectionItems);
+            formDatePicker = itemView.findViewById(R.id.kmFormDatePicker);
 
             if (formEditText != null) {
                 formEditText.addTextChangedListener(new TextWatcher() {
@@ -313,6 +352,15 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             formStateModel.setTextFields(textFieldArray);
                             KmFormStateHelper.addFormState(messageKey, formStateModel);
                         }
+                    }
+                });
+            }
+
+            if (formDatePicker != null) {
+                formDatePicker.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        openDateTimePickerDialog(getAdapterPosition(), formEditText);
                     }
                 });
             }

@@ -151,8 +151,26 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         }
     }
 
+    public static class DateTimePicker extends JsonMarker {
+        private String label;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+    }
+
     public enum Type {
-        TEXT("text"), PASSWORD("password"), HIDDEN("hidden"), RADIO("radio"), CHECKBOX("checkbox"), ACTION("action"), SUBMIT("submit");
+        TEXT("text"), PASSWORD("password"),
+        HIDDEN("hidden"), RADIO("radio"),
+        CHECKBOX("checkbox"),
+        DATE("date"),
+        TIME("time"),
+        ACTION("action"),
+        SUBMIT("submit");
 
         private String value;
 
@@ -182,6 +200,11 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
     public KmRMActionModel<KmRMActionModel.SubmitButton> getAction() {
         return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmRMActionModel<KmRMActionModel.SubmitButton>>() {
+        }.getType());
+    }
+
+    public KmFormPayloadModel.DateTimePicker getDatePickerModel() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmFormPayloadModel.DateTimePicker>() {
         }.getType());
     }
 

@@ -25,7 +25,7 @@ public class KmFormStateHelper {
     }
 
     public static void addFormState(String messageKey, KmFormStateModel formStateModel) {
-        initFormState()
+        initFormState();
 
         formStateModelMap.put(messageKey, formStateModel);
     }

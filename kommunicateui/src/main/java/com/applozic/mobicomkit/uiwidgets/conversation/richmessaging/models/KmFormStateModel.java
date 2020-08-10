@@ -15,6 +15,7 @@ public class KmFormStateModel extends JsonMarker {
     private SparseArray<HashSet<Integer>> checkBoxStates;
     private Map<String, String> hiddenFields;
     private SparseIntArray validationArray;
+    private SparseArray<String> dateFieldArray;
 
     public SparseArray<String> getTextFields() {
         return textFields;
@@ -54,5 +55,13 @@ public class KmFormStateModel extends JsonMarker {
 
     public void setValidationArray(SparseIntArray validationArray) {
         this.validationArray = validationArray;
+    }
+
+    public SparseArray<String> getDateFieldArray() {
+        return dateFieldArray;
+    }
+
+    public void setDateFieldArray(SparseArray<String> dateFieldArray) {
+        this.dateFieldArray = dateFieldArray;
     }
 }

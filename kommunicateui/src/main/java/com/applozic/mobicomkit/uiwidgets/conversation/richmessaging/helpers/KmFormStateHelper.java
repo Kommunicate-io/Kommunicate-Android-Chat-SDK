@@ -25,9 +25,7 @@ public class KmFormStateHelper {
     }
 
     public static void addFormState(String messageKey, KmFormStateModel formStateModel) {
-        if (formStateModelMap == null) {
-            formStateModelMap = new HashMap<>();
-        }
+        initFormState()
 
         formStateModelMap.put(messageKey, formStateModel);
     }

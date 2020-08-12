@@ -154,7 +154,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
                     formItemViewHolder.formItemLayout.setVisibility(View.VISIBLE);
 
-                    if (isTypeText(payloadModel.getType())) {
+                    if (payloadModel.isTypeText()) {
                         KmFormPayloadModel.Text textModel = payloadModel.getTextModel();
 
                         formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(textModel.getLabel()) ? View.VISIBLE : View.GONE);
@@ -234,10 +234,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         } else {
                             formItemViewHolder.flowLayout.setVisibility(View.GONE);
                         }
-                    } else if (KmFormPayloadModel.Type.DATE.getValue().equals(payloadModel.getType())
-                            || KmFormPayloadModel.Type.TIME.getValue().equals(payloadModel.getType())
-                            || KmFormPayloadModel.Type.DATE_TIME.getValue().equals(payloadModel.getType())) {
-
+                    } else if (payloadModel.isTypeDateTime()) {
                         KmFormPayloadModel.DateTimePicker dateTimePickerModel = payloadModel.getDatePickerModel();
                         if (dateTimePickerModel != null) {
                             formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(dateTimePickerModel.getLabel()) ? View.VISIBLE : View.GONE);
@@ -466,9 +463,5 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
             formEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
             return formEditText;
         }
-    }
-
-    private boolean isTypeText(String type) {
-        return KmFormPayloadModel.Type.TEXT.getValue().equals(type) || KmFormPayloadModel.Type.PASSWORD.getValue().equals(type);
     }
 }

@@ -28,6 +28,16 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         this.data = data;
     }
 
+    public boolean isTypeText() {
+        return KmFormPayloadModel.Type.TEXT.getValue().equals(type) || KmFormPayloadModel.Type.PASSWORD.getValue().equals(type);
+    }
+
+    public boolean isTypeDateTime() {
+        return KmFormPayloadModel.Type.DATE.getValue().equals(type)
+                || KmFormPayloadModel.Type.TIME.getValue().equals(type)
+                || KmFormPayloadModel.Type.DATE_TIME.getValue().equals(type);
+    }
+
     public static class Text extends JsonMarker {
         private String label;
         private String placeholder;

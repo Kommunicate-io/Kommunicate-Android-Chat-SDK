@@ -105,6 +105,14 @@ public class KmFormStateHelper {
             if (formStateModel.getHiddenFields() != null) {
                 formDataMap.putAll(formStateModel.getHiddenFields());
             }
+
+            if (formStateModel.getDateFieldArray() != null) {
+                for (int i = 0; i < formStateModel.getDateFieldArray().size(); i++) {
+                    int key = formStateModel.getDateFieldArray().keyAt(i);
+                    KmFormPayloadModel.DateTimePicker dateTimePicker = formPayloadModelList.get(key).getDatePickerModel();
+                    formDataMap.put(dateTimePicker.getLabel(), formStateModel.getDateFieldArray().get(key).toString());  //Might need to convert to formatted date
+                }
+            }
         }
 
         return formDataMap;

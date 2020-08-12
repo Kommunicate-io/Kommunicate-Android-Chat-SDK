@@ -153,6 +153,7 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
     public static class DateTimePicker extends JsonMarker {
         private String label;
+        private boolean amPm = true;
 
         public String getLabel() {
             return label;
@@ -160,6 +161,14 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
         public void setLabel(String label) {
             this.label = label;
+        }
+
+        public boolean isAmPm() {
+            return amPm;
+        }
+
+        public void setAmPm(boolean amPm) {
+            this.amPm = amPm;
         }
     }
 
@@ -169,6 +178,7 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         CHECKBOX("checkbox"),
         DATE("date"),
         TIME("time"),
+        DATE_TIME("datetime-local"),
         ACTION("action"),
         SUBMIT("submit");
 

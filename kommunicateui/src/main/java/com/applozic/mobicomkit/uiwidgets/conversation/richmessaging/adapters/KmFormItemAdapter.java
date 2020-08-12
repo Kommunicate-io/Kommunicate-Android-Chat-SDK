@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.InputType;
@@ -18,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,8 +32,10 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.json.GsonUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,7 +51,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private SparseArray<String> textFieldArray;
     private SparseArray<HashSet<Integer>> checkBoxStateArray;
     private SparseIntArray radioButtonSelectedIndices;
-    private SparseArray<String> dateFieldArray;
+    private SparseArray<Long> dateFieldArray;
     private Map<String, String> hiddenFields;
     private KmFormStateModel formStateModel;
     private String messageKey;
@@ -57,6 +61,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
     private static final int VIEW_TYPE_TEXT_FIELD = 1;
     private static final int VIEW_TYPE_SELECTION = 2;
+    private static final int VIEW_TYPE_DATETIME = 3;
 
     public KmFormItemAdapter(Context context, List<KmFormPayloadModel> payloadList, String messageKey) {
         this.context = context;
@@ -109,13 +114,8 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        if (viewType == VIEW_TYPE_TEXT_FIELD) {
-            View itemView = LayoutInflater.from(context).inflate(R.layout.km_form_item_layout, parent, false);
-            return new KmFormItemViewHolder(itemView);
-        } else if (viewType == VIEW_TYPE_SELECTION) {
-            View itemView = LayoutInflater.from(context).inflate(R.layout.km_form_item_layout, parent, false);
-            return new KmFormItemViewHolder(itemView);
+        if (viewType > 0) {
+            return new KmFormItemViewHolder(LayoutInflater.from(context).inflate(R.layout.km_form_item_layout, parent, false));
         }
 
         return new KmFormItemViewHolder(new View(context));
@@ -141,6 +141,10 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             }
                         }
                         return;
+                    }
+
+                    if(payloadModel.getType().equals("datetime-local")) {
+                        payloadModel.setType("time");
                     }
 
                     formItemViewHolder.formItemLayout.setVisibility(View.VISIBLE);
@@ -225,14 +229,22 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         } else {
                             formItemViewHolder.flowLayout.setVisibility(View.GONE);
                         }
-                    } else if (KmFormPayloadModel.Type.DATE.getValue().equals(payloadModel.getType()) || KmFormPayloadModel.Type.TIME.getValue().equals(payloadModel.getType())) {
+                    } else if (KmFormPayloadModel.Type.DATE.getValue().equals(payloadModel.getType())
+                            || KmFormPayloadModel.Type.TIME.getValue().equals(payloadModel.getType())
+                            || KmFormPayloadModel.Type.DATE_TIME.getValue().equals(payloadModel.getType())) {
+
                         KmFormPayloadModel.DateTimePicker dateTimePickerModel = payloadModel.getDatePickerModel();
                         if (dateTimePickerModel != null) {
                             formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(dateTimePickerModel.getLabel()) ? View.VISIBLE : View.GONE);
                             formItemViewHolder.formEditText.setVisibility(View.GONE);
                             formItemViewHolder.formLabel.setText(dateTimePickerModel.getLabel());
+                            formItemViewHolder.formDatePicker.setVisibility(View.VISIBLE);
 
-                            if()
+                            if (dateFieldArray.get(position) != null) {
+                                formItemViewHolder.formDatePicker.setText(getFormattedDateByType(payloadModel.getType(), dateFieldArray.get(position), dateTimePickerModel.isAmPm()));
+                            } else {
+                                formItemViewHolder.formDatePicker.setText("dd-mm-yyyy");
+                            }
                         }
                     }
                 }
@@ -242,23 +254,76 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         }
     }
 
-    private void openDateTimePickerDialog(final int position, final EditText editText) {
+    private void openDatePickerDialog(final int position, final boolean withTime, final boolean isAmPm) {
+        Calendar calendar = Calendar.getInstance();
+
+        if (dateFieldArray.get(position) != null) {
+            calendar.setTimeInMillis(dateFieldArray.get(position));
+        }
+
         new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Date date = new Date();
-                date.setYear(year);
-                date.setMonth(month);
-                date.setDate(dayOfMonth);
+                final Calendar selectedDate = Calendar.getInstance();
+                selectedDate.set(Calendar.YEAR, year);
+                selectedDate.set(Calendar.MONTH, month);
+                selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                editText.setText(new SimpleDateFormat("dd/mm/yyyy").format(date));
-                notifyItemChanged(position);
+                if (withTime) {
+                    openTimePickerDialog(position, isAmPm, selectedDate);
+                } else {
+                    dateFieldArray.put(position, selectedDate.getTimeInMillis());
+                    formStateModel.setDateFieldArray(dateFieldArray);
+                    KmFormStateHelper.addFormState(messageKey, formStateModel);
+                    notifyItemChanged(position);
+                }
             }
-        }, 0, 0, 0).show();
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private String getFormattedDate(Date date) {
+    private void openTimePickerDialog(final int position, boolean isAmPm, final Calendar selectedDate) {
+        Calendar calendar = Calendar.getInstance();
 
+        if (dateFieldArray.get(position) != null) {
+            calendar.setTimeInMillis(dateFieldArray.get(position));
+        }
+
+        new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                Calendar selectedTime = selectedDate == null ? Calendar.getInstance() : selectedDate;
+                selectedTime.set(Calendar.HOUR, hourOfDay);
+                selectedTime.set(Calendar.MINUTE, minute);
+
+                dateFieldArray.put(position, selectedTime.getTimeInMillis());
+                formStateModel.setDateFieldArray(dateFieldArray);
+                KmFormStateHelper.addFormState(messageKey, formStateModel);
+                notifyItemChanged(position);
+            }
+        }, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), !isAmPm).show();
+    }
+
+    private String getFormattedDate(Long timeInMillis) {
+        return new SimpleDateFormat("dd-MM-yyyy").format(new Date(timeInMillis));
+    }
+
+    private String getFormattedTime(Long timeInMillis, boolean isAmPm) {
+        return new SimpleDateFormat("hh:mm" + (isAmPm ? " aa" : "")).format(new Date(timeInMillis));
+    }
+
+    private String getFormattedDateTime(Long timeInMillis, boolean isAmPm) {
+        return new SimpleDateFormat("dd-MM-yyyy hh:mm" + (isAmPm ? " aa" : "")).format(new Date(timeInMillis));
+    }
+
+    private String getFormattedDateByType(String type, Long timeInMillis, boolean isAmPm) {
+        if (KmFormPayloadModel.Type.DATE.getValue().equals(type)) {
+            return getFormattedDate(timeInMillis);
+        } else if (KmFormPayloadModel.Type.TIME.getValue().equals(type)) {
+            return getFormattedTime(timeInMillis, isAmPm);
+        } else if (KmFormPayloadModel.Type.DATE_TIME.getValue().equals(type)) {
+            return getFormattedDateTime(timeInMillis, isAmPm);
+        }
+        return "";
     }
 
     public boolean isFormDataValid() {
@@ -304,10 +369,16 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         if (payloadList != null && !payloadList.isEmpty()) {
-            if (KmFormPayloadModel.Type.TEXT.getValue().equals(payloadList.get(position).getType()) || KmFormPayloadModel.Type.PASSWORD.getValue().equals(payloadList.get(position).getType())) {
+            if (KmFormPayloadModel.Type.TEXT.getValue().equals(payloadList.get(position).getType())
+                    || KmFormPayloadModel.Type.PASSWORD.getValue().equals(payloadList.get(position).getType())) {
                 return VIEW_TYPE_TEXT_FIELD;
-            } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(payloadList.get(position).getType()) || KmFormPayloadModel.Type.CHECKBOX.getValue().equals(payloadList.get(position).getType())) {
+            } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(payloadList.get(position).getType())
+                    || KmFormPayloadModel.Type.CHECKBOX.getValue().equals(payloadList.get(position).getType())) {
                 return VIEW_TYPE_SELECTION;
+            } else if (KmFormPayloadModel.Type.DATE.getValue().equals(payloadList.get(position).getType())
+                    || KmFormPayloadModel.Type.TIME.getValue().equals(payloadList.get(position).getType())
+                    || KmFormPayloadModel.Type.DATE_TIME.getValue().equals(payloadList.get(position).getType())) {
+                return VIEW_TYPE_DATETIME;
             }
         }
         return 0;
@@ -323,7 +394,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         EditText formEditText;
         LinearLayout formItemLayout;
         KmFlowLayout flowLayout;
-        EditText formDatePicker;
+        TextView formDatePicker;
 
         public KmFormItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -360,7 +431,19 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                 formDatePicker.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        openDateTimePickerDialog(getAdapterPosition(), formEditText);
+                        int position = getAdapterPosition();
+                        KmFormPayloadModel payloadModel = payloadList.get(position);
+                        KmFormPayloadModel.DateTimePicker dateTimePicker = payloadModel.getDatePickerModel();
+
+                        if (payloadModel != null) {
+                            if (KmFormPayloadModel.Type.DATE.getValue().equals(payloadModel.getType())) {
+                                openDatePickerDialog(position, false, dateTimePicker.isAmPm());
+                            } else if (KmFormPayloadModel.Type.TIME.getValue().equals(payloadModel.getType())) {
+                                openTimePickerDialog(position, dateTimePicker.isAmPm(), null);
+                            } else if (KmFormPayloadModel.Type.DATE_TIME.getValue().equals(payloadModel.getType())) {
+                                openDatePickerDialog(position, true, dateTimePicker.isAmPm());
+                            }
+                        }
                     }
                 });
             }

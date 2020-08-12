@@ -31,7 +31,7 @@
         android:layout_marginTop="5dp"
         android:visibility="gone" />
 
-    <EditText
+    <TextView
         android:id="@+id/kmFormDatePicker"
         android:layout_width="240dp"
         android:layout_height="32dp"
@@ -39,7 +39,6 @@
         android:background="@drawable/km_form_edit_text_background"
         android:maxLines="1"
         android:padding="5dp"
-        android:inputType="date"
         android:textSize="14sp"
         android:visibility="gone" />
 </LinearLayout>

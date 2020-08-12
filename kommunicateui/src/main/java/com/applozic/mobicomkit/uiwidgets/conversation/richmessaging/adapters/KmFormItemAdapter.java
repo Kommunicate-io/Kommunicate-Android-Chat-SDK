@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +32,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFor
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -42,6 +44,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class KmFormItemAdapter extends RecyclerView.Adapter {
 
@@ -339,15 +342,20 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             enteredText = KmFormStateHelper.getFormState(messageKey).getTextFields().get(i);
                         }
 
-                        if (textField.getValidation() != null
-                                && !TextUtils.isEmpty(textField.getValidation().getRegex())
-                                && !Pattern.compile(textField.getValidation().getRegex()).matcher(enteredText).matches()) {
-                            validationArray.put(i, INVALID_DATA);
-                            formStateModel.setValidationArray(validationArray);
-                            KmFormStateHelper.addFormState(messageKey, formStateModel);
-                            isValid = false;
-                        } else {
-                            validationArray.put(i, VALID_DATA);
+                        try {
+                            if (textField.getValidation() != null
+                                    && !TextUtils.isEmpty(textField.getValidation().getRegex())
+                                    && !Pattern.compile(textField.getValidation().getRegex()).matcher(enteredText).matches()) {
+                                validationArray.put(i, INVALID_DATA);
+                                formStateModel.setValidationArray(validationArray);
+                                KmFormStateHelper.addFormState(messageKey, formStateModel);
+                                isValid = false;
+                            } else {
+                                validationArray.put(i, VALID_DATA);
+                            }
+                        } catch (PatternSyntaxException exception) {
+                            exception.printStackTrace();
+                            KmToast.error(context, R.string.invalid_regex_error, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }

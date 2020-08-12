@@ -63,6 +63,12 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_SELECTION = 2;
     private static final int VIEW_TYPE_DATETIME = 3;
 
+    public static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy";
+    public static final String DEFAULT_TIME_FORMAT_24 = "HH:mm";
+    public static final String DEFAULT_TIME_FORMAT_12 = "hh:mm aa";
+    public static final String DEFAULT_DATE_TIME_FORMAT_24 = "dd-MM-yyyy HH:mm";
+    public static final String DEFAULT_DATE_TIME_FORMAT_12 = "dd-MM-yyyy hh:mm aa";
+
     public KmFormItemAdapter(Context context, List<KmFormPayloadModel> payloadList, String messageKey) {
         this.context = context;
         this.payloadList = payloadList;
@@ -141,10 +147,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             }
                         }
                         return;
-                    }
-
-                    if(payloadModel.getType().equals("datetime-local")) {
-                        payloadModel.setType("time");
                     }
 
                     formItemViewHolder.formItemLayout.setVisibility(View.VISIBLE);
@@ -240,11 +242,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             formItemViewHolder.formLabel.setText(dateTimePickerModel.getLabel());
                             formItemViewHolder.formDatePicker.setVisibility(View.VISIBLE);
 
-                            if (dateFieldArray.get(position) != null) {
-                                formItemViewHolder.formDatePicker.setText(getFormattedDateByType(payloadModel.getType(), dateFieldArray.get(position), dateTimePickerModel.isAmPm()));
-                            } else {
-                                formItemViewHolder.formDatePicker.setText("dd-mm-yyyy");
-                            }
+                            formItemViewHolder.formDatePicker.setText(getFormattedDateByType(payloadModel.getType(), dateFieldArray.get(position), dateTimePickerModel.isAmPm()));
                         }
                     }
                 }
@@ -304,24 +302,24 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     }
 
     private String getFormattedDate(Long timeInMillis) {
-        return new SimpleDateFormat("dd-MM-yyyy").format(new Date(timeInMillis));
+        return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(new Date(timeInMillis));
     }
 
     private String getFormattedTime(Long timeInMillis, boolean isAmPm) {
-        return new SimpleDateFormat("hh:mm" + (isAmPm ? " aa" : "")).format(new Date(timeInMillis));
+        return new SimpleDateFormat(isAmPm ? DEFAULT_TIME_FORMAT_12 : DEFAULT_TIME_FORMAT_24).format(new Date(timeInMillis));
     }
 
     private String getFormattedDateTime(Long timeInMillis, boolean isAmPm) {
-        return new SimpleDateFormat("dd-MM-yyyy hh:mm" + (isAmPm ? " aa" : "")).format(new Date(timeInMillis));
+        return new SimpleDateFormat(isAmPm ? DEFAULT_DATE_TIME_FORMAT_12 : DEFAULT_DATE_TIME_FORMAT_24).format(new Date(timeInMillis));
     }
 
     private String getFormattedDateByType(String type, Long timeInMillis, boolean isAmPm) {
         if (KmFormPayloadModel.Type.DATE.getValue().equals(type)) {
-            return getFormattedDate(timeInMillis);
+            return timeInMillis == null ? DEFAULT_DATE_FORMAT : getFormattedDate(timeInMillis);
         } else if (KmFormPayloadModel.Type.TIME.getValue().equals(type)) {
-            return getFormattedTime(timeInMillis, isAmPm);
+            return timeInMillis == null ? (isAmPm ? DEFAULT_TIME_FORMAT_12 : DEFAULT_TIME_FORMAT_24) : getFormattedTime(timeInMillis, isAmPm);
         } else if (KmFormPayloadModel.Type.DATE_TIME.getValue().equals(type)) {
-            return getFormattedDateTime(timeInMillis, isAmPm);
+            return timeInMillis == null ? (isAmPm ? DEFAULT_DATE_TIME_FORMAT_12 : DEFAULT_DATE_TIME_FORMAT_24) : getFormattedDateTime(timeInMillis, isAmPm);
         }
         return "";
     }

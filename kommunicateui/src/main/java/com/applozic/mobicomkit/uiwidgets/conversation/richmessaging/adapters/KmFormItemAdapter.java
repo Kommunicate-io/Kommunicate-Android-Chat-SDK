@@ -279,7 +279,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    private void openTimePickerDialog(final int position, boolean isAmPm, final Calendar selectedDate) {
+    private void openTimePickerDialog(final int position, final boolean isAmPm, final Calendar selectedDate) {
         Calendar calendar = Calendar.getInstance();
 
         if (dateFieldArray.get(position) != null) {
@@ -290,7 +290,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 Calendar selectedTime = selectedDate == null ? Calendar.getInstance() : selectedDate;
-                selectedTime.set(Calendar.HOUR, hourOfDay);
+                selectedTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 selectedTime.set(Calendar.MINUTE, minute);
 
                 dateFieldArray.put(position, selectedTime.getTimeInMillis());
@@ -298,7 +298,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                 KmFormStateHelper.addFormState(messageKey, formStateModel);
                 notifyItemChanged(position);
             }
-        }, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), !isAmPm).show();
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), !isAmPm).show();
     }
 
     private String getFormattedDate(Long timeInMillis) {

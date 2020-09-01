@@ -28,9 +28,20 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         this.data = data;
     }
 
+    public boolean isTypeText() {
+        return KmFormPayloadModel.Type.TEXT.getValue().equals(type) || KmFormPayloadModel.Type.PASSWORD.getValue().equals(type);
+    }
+
+    public boolean isTypeDateTime() {
+        return KmFormPayloadModel.Type.DATE.getValue().equals(type)
+                || KmFormPayloadModel.Type.TIME.getValue().equals(type)
+                || KmFormPayloadModel.Type.DATE_TIME.getValue().equals(type);
+    }
+
     public static class Text extends JsonMarker {
         private String label;
         private String placeholder;
+        private Validation validation;
 
         public String getLabel() {
             return label;
@@ -46,6 +57,14 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
         public void setPlaceholder(String placeholder) {
             this.placeholder = placeholder;
+        }
+
+        public Validation getValidation() {
+            return validation;
+        }
+
+        public void setValidation(Validation validation) {
+            this.validation = validation;
         }
     }
 
@@ -121,8 +140,57 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         }
     }
 
+    public static class Validation extends JsonMarker {
+        private String regex;
+        private String errorText;
+
+        public String getRegex() {
+            return regex;
+        }
+
+        public void setRegex(String regex) {
+            this.regex = regex;
+        }
+
+        public String getErrorText() {
+            return errorText;
+        }
+
+        public void setErrorText(String errorText) {
+            this.errorText = errorText;
+        }
+    }
+
+    public static class DateTimePicker extends JsonMarker {
+        private String label;
+        private boolean amPm = true;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public boolean isAmPm() {
+            return amPm;
+        }
+
+        public void setAmPm(boolean amPm) {
+            this.amPm = amPm;
+        }
+    }
+
     public enum Type {
-        TEXT("text"), PASSWORD("password"), HIDDEN("hidden"), RADIO("radio"), CHECKBOX("checkbox"), SUBMIT("submit"), ACTION("action");
+        TEXT("text"), PASSWORD("password"),
+        HIDDEN("hidden"), RADIO("radio"),
+        CHECKBOX("checkbox"),
+        DATE("date"),
+        TIME("time"),
+        DATE_TIME("datetime-local"),
+        ACTION("action"),
+        SUBMIT("submit");
 
         private String value;
 
@@ -152,6 +220,11 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
     public KmRMActionModel<KmRMActionModel.SubmitButton> getAction() {
         return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmRMActionModel<KmRMActionModel.SubmitButton>>() {
+        }.getType());
+    }
+
+    public KmFormPayloadModel.DateTimePicker getDatePickerModel() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmFormPayloadModel.DateTimePicker>() {
         }.getType());
     }
 

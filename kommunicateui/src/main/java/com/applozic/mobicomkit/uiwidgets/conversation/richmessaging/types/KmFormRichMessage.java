@@ -36,7 +36,7 @@ public class KmFormRichMessage extends AlRichMessage {
 
         LinearLayoutManager formLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         alFormLayoutRecycler.setLayoutManager(formLayoutManager);
-        KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString());
+        final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString());
         alFormLayoutRecycler.setAdapter(formItemAdapter);
 
         List<Object> actionModelList = new ArrayList<>();
@@ -44,7 +44,7 @@ public class KmFormRichMessage extends AlRichMessage {
         for (Object object : kmRichMessageModel.getFormModelList()) {
             if (object instanceof KmFormPayloadModel) {
                 KmFormPayloadModel formPayloadModel = (KmFormPayloadModel) object;
-                if (KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType()) || KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType())|| TextUtils.isEmpty(formPayloadModel.getType())) {
+                if (KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType()) || KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType()) || TextUtils.isEmpty(formPayloadModel.getType())) {
                     actionModelList.add(formPayloadModel.getAction());
                 }
             }
@@ -67,10 +67,12 @@ public class KmFormRichMessage extends AlRichMessage {
                 itemTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (submitButtonModel != null && TextUtils.isEmpty(submitButtonModel.getType())) {
-                            submitButtonModel.setType(KmFormPayloadModel.Type.SUBMIT.getValue());
+                        if (formItemAdapter != null && formItemAdapter.isFormDataValid()) {
+                            if (submitButtonModel != null && TextUtils.isEmpty(submitButtonModel.getType())) {
+                                submitButtonModel.setType(KmFormPayloadModel.Type.SUBMIT.getValue());
+                            }
+                            listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
                         }
-                        listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
                     }
                 });
                 flowLayout.addView(view);

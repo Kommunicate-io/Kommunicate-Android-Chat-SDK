@@ -3,6 +3,19 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.0.5
+1) Added date and time picker support in the form template
+2) Added support for text field validation in form template
+3) Added support for single conversation setting from the dashboard
+
+## Kommunicate Android SDK 2.0.4.1
+1) Fixed attachment download issue with AWS storage service setting
+
+## Kommunicate Android SDK 2.0.4
+1) Fixed issue where form data was being cleared on submit in Form type rich message
+2) Fixed record and send button visibility issue
+3) Fixed issue where send button was not visible after caption was removed from image attachment
+
 ## Kommunicate Android SDK 2.0.3
 1) Added support for language chnage bot
 2) MQTT security enhancement: Added support for JWT based authentication in MQTT connection

@@ -3,6 +3,7 @@ package io.kommunicate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 
@@ -722,7 +723,11 @@ public class KmConversationHelper {
             throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_conversation_builder_cannot_be_null));
         }
         if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
-            new KmGetAgentListTask(conversationBuilder.getContext(), MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()), getCallbackWithAppSettingsToCreateConversation(useSingleThreadedSettingFromServer, conversationBuilder, handler)).execute();
+            new KmGetAgentListTask(conversationBuilder.getContext(),
+                    MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()),
+                    getCallbackWithAppSettingsToCreateConversation(useSingleThreadedSettingFromServer,
+                            conversationBuilder,
+                            handler)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {

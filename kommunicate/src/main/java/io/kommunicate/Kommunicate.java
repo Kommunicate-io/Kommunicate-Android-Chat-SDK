@@ -21,8 +21,10 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
+import com.applozic.mobicommons.data.SecureSharedPreferences;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -76,12 +78,10 @@ public class Kommunicate {
     public static final String PLACEHOLDER_APP_ID = "<Your-APP-ID>";
 
     public static void init(Context context, String applicationKey) {
-        if (TextUtils.isEmpty(applicationKey)) {
+        if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
             KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
-        } else if (TextUtils.isEmpty(Applozic.getInstance(context).getApplicationKey()) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
+        } else {
             Applozic.init(context, applicationKey);
-        } else if (!applicationKey.equals(Applozic.getInstance(context).getApplicationKey())) {
-            KmUtils.showToastAndLog(context, R.string.km_clear_app_data);
         }
     }
 
@@ -167,7 +167,7 @@ public class Kommunicate {
             public void onSuccess(Context context) {
                 KmDatabaseHelper.getInstance(context).deleteDatabase();
                 KmPreference.getInstance(context).setFcmRegistrationCallDone(false);
-                AlPrefSettings.getInstance(context).setApplicationKey(null);
+                removeApplicationKey(context);
                 logoutHandler.onSuccess(context);
             }
 
@@ -653,5 +653,9 @@ public class Kommunicate {
 
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
         new KmAwayMessageTask(context, groupId, handler).execute();
+    }
+
+    public static void removeApplicationKey(Context context) {
+        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
     }
 }

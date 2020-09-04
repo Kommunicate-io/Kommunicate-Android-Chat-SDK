@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.setMessage("Please wait...");
                 progressDialog.setCancelable(false);
                 progressDialog.show();
+                Kommunicate.init(MainActivity.this, APP_ID);
                 Kommunicate.loginAsVisitor(MainActivity.this, new KMLoginHandler() {
                     @Override
                     public void onSuccess(RegistrationResponse registrationResponse, Context context) {

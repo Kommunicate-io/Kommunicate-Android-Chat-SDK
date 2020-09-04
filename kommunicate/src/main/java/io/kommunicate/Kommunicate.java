@@ -333,7 +333,7 @@ public class Kommunicate {
                 }
             };
 
-            new KmGetAgentListTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).execute();
+            new KmGetAgentListTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(chatBuilder.getClientConversationId()) ? chatBuilder.getClientConversationId() : (chatBuilder.isSingleChat() ? getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), chatBuilder.getAgentIds(), chatBuilder.getBotIds()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
@@ -428,7 +428,7 @@ public class Kommunicate {
             };
         }
 
-        new KmConversationCreateTask(chatBuilder.getContext(), channelInfo, handler).execute();
+        new KmConversationCreateTask(chatBuilder.getContext(), channelInfo, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void fetchAgentList(Context context, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
@@ -445,7 +445,7 @@ public class Kommunicate {
     }
 
     public static void fetchUserList(Context context, List<String> roleNameList, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
-        new GetUserListAsyncTask(context, roleNameList, startIndex, pageSize, orderBy, handler).execute();
+        new GetUserListAsyncTask(context, roleNameList, startIndex, pageSize, orderBy, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void getFaqs(Context context, String type, String helpDocsKey, String data, KmFaqTaskListener listener) {
@@ -459,11 +459,11 @@ public class Kommunicate {
         } else if ("getDashboardFaq".equals(type)) {
             task.forDashboardFaq();
         }
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void getHelpDocsKey(Context context, String type, KmFaqTaskListener listener) {
-        new KMHelpDocsKeyTask(context, type, listener).execute();
+        new KMHelpDocsKeyTask(context, type, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static boolean isLoggedIn(Context context) {
@@ -495,7 +495,7 @@ public class Kommunicate {
                         listener.onFailure(registrationResponse, exception);
                     }
                 }
-            }).execute();
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -545,7 +545,7 @@ public class Kommunicate {
             }
         };
 
-        new KmConversationInfoTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), conversationInfoCallback).execute();
+        new KmConversationInfoTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
@@ -652,7 +652,7 @@ public class Kommunicate {
     }
 
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
-        new KmAwayMessageTask(context, groupId, handler).execute();
+        new KmAwayMessageTask(context, groupId, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void removeApplicationKey(Context context) {

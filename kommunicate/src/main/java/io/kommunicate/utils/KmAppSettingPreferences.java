@@ -40,7 +40,7 @@ public class KmAppSettingPreferences {
     }
 
     public void setAppSetting(KmAppSettingModel appSetting) {
-        if (appSetting != null) {
+        if (appSetting != null && appSetting.getChatWidget() != null) {
             setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
             setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
         }

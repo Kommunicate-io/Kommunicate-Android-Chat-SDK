@@ -22,6 +22,7 @@ import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.data.AlPrefSettings;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -166,7 +167,7 @@ public class Kommunicate {
             public void onSuccess(Context context) {
                 KmDatabaseHelper.getInstance(context).deleteDatabase();
                 KmPreference.getInstance(context).setFcmRegistrationCallDone(false);
-                Applozic.getInstance(context).setApplicationKey(null);
+                AlPrefSettings.getInstance(context).setApplicationKey(null);
                 logoutHandler.onSuccess(context);
             }
 

@@ -89,7 +89,8 @@ public class ApplozicSetting {
 
     private ApplozicSetting(Context context) {
         this.context = ApplozicService.getContext(context);
-        sharedPreferences = ApplozicService.getContext(context).getSharedPreferences(MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context)), Context.MODE_PRIVATE);
+        MobiComUserPreference.renameSharedPrefFile(this.context);
+        sharedPreferences = this.context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
     }
 
     public static ApplozicSetting getInstance(Context context) {

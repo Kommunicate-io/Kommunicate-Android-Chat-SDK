@@ -82,7 +82,7 @@ public class KmConversationHelper {
                                         Kommunicate.openConversation(context, callback);
                                     }
                                 };
-                                new KmConversationInfoTask(context, message.getGroupId(), memberListener).execute();
+                                new KmConversationInfoTask(context, message.getGroupId(), memberListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             } else {
                                 Kommunicate.openConversation(context, callback);
                             }
@@ -568,7 +568,7 @@ public class KmConversationHelper {
             }
         };
 
-        new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).execute();
+        new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static void createConversation(KmConversationBuilder conversationBuilder, KmStartConversationHandler handler) throws KmException {
@@ -680,7 +680,7 @@ public class KmConversationHelper {
             };
         }
 
-        new KmConversationCreateTask(conversationBuilder.getContext(), channelInfo, handler).execute();
+        new KmConversationCreateTask(conversationBuilder.getContext(), channelInfo, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static KmCallback getCallbackWithAppSettingsToCreateConversation(final boolean useSingleThreadedSettingFromServer, final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) {
@@ -756,7 +756,7 @@ public class KmConversationHelper {
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).execute();
+        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
 
@@ -801,7 +801,7 @@ public class KmConversationHelper {
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).execute();
+        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static String getClientGroupId(List<String> userIds, List<String> agentIds, List<String> botIds, Context context) throws KmException {

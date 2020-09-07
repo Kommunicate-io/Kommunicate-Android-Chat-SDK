@@ -67,7 +67,6 @@ public class KmUserClientService extends UserClientService {
     private static final String USER_PASSWORD_RESET = "/users/password-reset";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String CREATE_CONVERSATION_URL = "/create";
-    private static final String GET_AGENT_LIST_URL = "/users/chat/plugin/settings";
     private static final String BOTS_BASE_URL = "https://bots.kommunicate.io";
     private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
@@ -98,7 +97,7 @@ public class KmUserClientService extends UserClientService {
     }
 
     private String getAgentListUrl() {
-        return getKmBaseUrl() + GET_AGENT_LIST_URL;
+        return getKmBaseUrl() + KmClientService.APP_SETTING_URL;
     }
 
     private String getApplicationListUrl() {
@@ -274,9 +273,7 @@ public class KmUserClientService extends UserClientService {
             if (TextUtils.isEmpty(appKey)) {
                 return null;
             }
-
-            String url = getAgentListUrl() + "?appId=" + appKey;
-            return httpRequestUtils.getResponse(url, "application/json", "application/json");
+            return httpRequestUtils.getResponse(getAgentListUrl() + appKey, "application/json", "application/json");
         } catch (Exception e) {
             throw new KmException(e.getMessage());
         }
@@ -294,7 +291,7 @@ public class KmUserClientService extends UserClientService {
 
     //gets the kommunicate api user details (with status away/online)
     public String getUserDetails(String userId, String applicationKey) {
-        if(TextUtils.isEmpty(userId) || TextUtils.isEmpty(applicationKey)) {
+        if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(applicationKey)) {
             Utils.printLog(context, TAG, "User Id or Application Key is null/empty.");
             return null;
         }
@@ -302,7 +299,7 @@ public class KmUserClientService extends UserClientService {
         try {
             String url = getKmBaseUrl() + GET_AGENT_DETAILS + "?applicationId=" + applicationKey.trim() + "&userName=" + URLEncoder.encode(userId, "UTF-8").trim();
             String response = getResponse(url, "application/json", "application/json, text/plain, */*");
-            Utils.printLog(context, TAG, "User details GET method response: "+response);
+            Utils.printLog(context, TAG, "User details GET method response: " + response);
             return response;
         } catch (Exception exception) {
             exception.printStackTrace();

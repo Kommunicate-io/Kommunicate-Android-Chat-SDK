@@ -1,6 +1,7 @@
 package io.kommunicate.services;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.account.user.User;
@@ -135,13 +136,13 @@ public class KmService {
                     listener.onFailure(response, e);
                 }
             };
-            new KmConversationRemoveMemberTask(context, channelKey, userId, i, recListener).execute();
+            new KmConversationRemoveMemberTask(context, channelKey, userId, i, recListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             i++;
         }
     }
 
     public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, KmUpdateConversationTask.KmConversationUpdateListener listener) {
-        new KmUpdateConversationTask(context, groupInfoUpdate, listener).execute();
+        new KmUpdateConversationTask(context, groupInfoUpdate, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -152,7 +153,7 @@ public class KmService {
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
     public static void getConversationFeedback(Context context, String conversationId, KmFeedbackCallback kmFeedbackCallback) {
-        new KmConversationFeedbackTask(context, conversationId, null, kmFeedbackCallback).execute();
+        new KmConversationFeedbackTask(context, conversationId, null, kmFeedbackCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -163,7 +164,7 @@ public class KmService {
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
     public static void setConversationFeedback(Context context, KmFeedback kmFeedback, KmFeedbackCallback kmFeedbackCallback) {
-        new KmConversationFeedbackTask(context, null, kmFeedback, kmFeedbackCallback).execute();
+        new KmConversationFeedbackTask(context, null, kmFeedback, kmFeedbackCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**

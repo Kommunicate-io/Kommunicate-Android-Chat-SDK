@@ -31,7 +31,7 @@ public class KmClientService extends MobiComKitClientService {
     public static final String KM_DASHBOARD = "km_dashboard_url";
     public static final String KM_HELPCENTER = "km_helpcenter_url";
     private static final String CONVERSATION_FEEDBACK_URL = "/feedback";
-    private static final String APP_SETTING_URL = "/users/v2/chat/plugin/settings?appId=";
+    public static final String APP_SETTING_URL = "/users/v2/chat/plugin/settings?appId=";
 
     private static final String TAG = "KmClientService";
 
@@ -108,7 +108,7 @@ public class KmClientService extends MobiComKitClientService {
      * @param feedbackComment the comment array of the inputs given by the user
      * @return the feedback response json string
      */
-    public String postConversationFeedback(int conversationId, int rating, String feedbackComment[]) throws Exception {
+    public String postConversationFeedback(int conversationId, int rating, String[] feedbackComment) throws Exception {
         JSONObject jsonObject = new JSONObject();
         JSONArray feedbackJsonArray = new JSONArray();
 

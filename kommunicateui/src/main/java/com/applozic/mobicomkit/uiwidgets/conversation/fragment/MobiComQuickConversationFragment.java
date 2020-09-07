@@ -346,6 +346,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     }
 
     public void updateLastMessage(String keyString, String userId) {
+        if (messageDatabaseService == null) {
+            return;
+        }
         for (Message message : messageList) {
             if (message.getKeyString() != null && message.getKeyString().equals(keyString)) {
                 List<Message> lastMessage;
@@ -365,7 +368,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     }
 
     public void updateLastMessage(Message message) {
-        if (message == null) {
+        if (message == null || messageDatabaseService == null) {
             return;
         }
         List<Message> lastMessage = new ArrayList<>();

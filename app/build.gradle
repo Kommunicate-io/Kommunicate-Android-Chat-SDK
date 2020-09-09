@@ -10,7 +10,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "APP_ID", '"<YOUR_APP_ID>"'
+        //buildConfigField "String", "APP_ID", '"130f4b2887b86bf4449c2dcade7155f33"'
+        buildConfigField "String", "APP_ID", '"22823b4a764f9944ad7913ddb3e43cae1"'
     }
     buildTypes {
         release {
@@ -30,8 +31,8 @@ allprojects {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api project(':kommunicateui')
-    //implementation 'io.kommunicate.sdk:kommunicateui:2.0.5'
+    //api project(':kommunicateui')
+    implementation 'io.kommunicate.sdk:kommunicateui:2.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.multidex:multidex:2.0.1'
     testImplementation 'junit:junit:4.12'

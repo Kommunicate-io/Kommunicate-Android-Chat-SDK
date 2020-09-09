@@ -3,6 +3,11 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.1.0
+1) Security improvement for secret keys in shared preferences. The secret keys are removed from the shared preferences and moved to secured storage.
+2) Security improvement for API calls using the user password. Removed user password and other secret keys and replaced them by a JWT token.
+3) Fixed issue where the conversation creation and load were taking a lot of time over some networks.
+
 ## Kommunicate Android SDK 2.0.5
 1) Added date and time picker support in the form template
 2) Added support for text field validation in form template

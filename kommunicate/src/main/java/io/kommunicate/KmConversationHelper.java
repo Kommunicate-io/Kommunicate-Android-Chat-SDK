@@ -3,6 +3,7 @@ package io.kommunicate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 
@@ -81,7 +82,7 @@ public class KmConversationHelper {
                                         Kommunicate.openConversation(context, callback);
                                     }
                                 };
-                                new KmConversationInfoTask(context, message.getGroupId(), memberListener).execute();
+                                new KmConversationInfoTask(context, message.getGroupId(), memberListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             } else {
                                 Kommunicate.openConversation(context, callback);
                             }
@@ -567,7 +568,7 @@ public class KmConversationHelper {
             }
         };
 
-        new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).execute();
+        new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static void createConversation(KmConversationBuilder conversationBuilder, KmStartConversationHandler handler) throws KmException {
@@ -679,7 +680,7 @@ public class KmConversationHelper {
             };
         }
 
-        new KmConversationCreateTask(conversationBuilder.getContext(), channelInfo, handler).execute();
+        new KmConversationCreateTask(conversationBuilder.getContext(), channelInfo, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static KmCallback getCallbackWithAppSettingsToCreateConversation(final boolean useSingleThreadedSettingFromServer, final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) {
@@ -722,7 +723,11 @@ public class KmConversationHelper {
             throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_conversation_builder_cannot_be_null));
         }
         if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
-            new KmGetAgentListTask(conversationBuilder.getContext(), MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()), getCallbackWithAppSettingsToCreateConversation(useSingleThreadedSettingFromServer, conversationBuilder, handler)).execute();
+            new KmGetAgentListTask(conversationBuilder.getContext(),
+                    MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()),
+                    getCallbackWithAppSettingsToCreateConversation(useSingleThreadedSettingFromServer,
+                            conversationBuilder,
+                            handler)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
@@ -751,7 +756,7 @@ public class KmConversationHelper {
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).execute();
+        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
 
@@ -796,7 +801,7 @@ public class KmConversationHelper {
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).execute();
+        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static String getClientGroupId(List<String> userIds, List<String> agentIds, List<String> botIds, Context context) throws KmException {

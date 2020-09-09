@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.services.KmUserService;
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 public class KmGetAgentListTask extends AsyncTask<Void, Void, KmAppSettingModel> {
 
@@ -42,6 +43,7 @@ public class KmGetAgentListTask extends AsyncTask<Void, Void, KmAppSettingModel>
                 callback.onFailure(exception);
             } else if (agentModel != null) {
                 if (agentModel.isSuccess()) {
+                    KmAppSettingPreferences.updateAppSetting(agentModel);
                     callback.onSuccess(agentModel.getResponse());
                 } else {
                     callback.onFailure(agentModel);

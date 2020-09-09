@@ -337,7 +337,7 @@ public class RichMessageActionProcessor implements ALRichMessageListener {
                         public void onFailure(Object error) {
                             Utils.printLog(context, TAG, "Submit post error : " + error);
                         }
-                    }).execute();
+                    }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 

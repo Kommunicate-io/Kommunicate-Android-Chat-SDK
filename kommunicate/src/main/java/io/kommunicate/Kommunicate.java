@@ -21,7 +21,10 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.data.AlPrefSettings;
+import com.applozic.mobicommons.data.SecureSharedPreferences;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -75,12 +78,10 @@ public class Kommunicate {
     public static final String PLACEHOLDER_APP_ID = "<Your-APP-ID>";
 
     public static void init(Context context, String applicationKey) {
-        if (TextUtils.isEmpty(applicationKey)) {
+        if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
             KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
-        } else if (TextUtils.isEmpty(Applozic.getInstance(context).getApplicationKey()) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
+        } else {
             Applozic.init(context, applicationKey);
-        } else if (!applicationKey.equals(Applozic.getInstance(context).getApplicationKey())) {
-            KmUtils.showToastAndLog(context, R.string.km_clear_app_data);
         }
     }
 
@@ -166,7 +167,7 @@ public class Kommunicate {
             public void onSuccess(Context context) {
                 KmDatabaseHelper.getInstance(context).deleteDatabase();
                 KmPreference.getInstance(context).setFcmRegistrationCallDone(false);
-                Applozic.getInstance(context).setApplicationKey(null);
+                removeApplicationKey(context);
                 logoutHandler.onSuccess(context);
             }
 
@@ -332,7 +333,7 @@ public class Kommunicate {
                 }
             };
 
-            new KmGetAgentListTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).execute();
+            new KmGetAgentListTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(chatBuilder.getClientConversationId()) ? chatBuilder.getClientConversationId() : (chatBuilder.isSingleChat() ? getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), chatBuilder.getAgentIds(), chatBuilder.getBotIds()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
@@ -427,7 +428,7 @@ public class Kommunicate {
             };
         }
 
-        new KmConversationCreateTask(chatBuilder.getContext(), channelInfo, handler).execute();
+        new KmConversationCreateTask(chatBuilder.getContext(), channelInfo, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void fetchAgentList(Context context, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
@@ -444,7 +445,7 @@ public class Kommunicate {
     }
 
     public static void fetchUserList(Context context, List<String> roleNameList, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
-        new GetUserListAsyncTask(context, roleNameList, startIndex, pageSize, orderBy, handler).execute();
+        new GetUserListAsyncTask(context, roleNameList, startIndex, pageSize, orderBy, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void getFaqs(Context context, String type, String helpDocsKey, String data, KmFaqTaskListener listener) {
@@ -458,11 +459,11 @@ public class Kommunicate {
         } else if ("getDashboardFaq".equals(type)) {
             task.forDashboardFaq();
         }
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void getHelpDocsKey(Context context, String type, KmFaqTaskListener listener) {
-        new KMHelpDocsKeyTask(context, type, listener).execute();
+        new KMHelpDocsKeyTask(context, type, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static boolean isLoggedIn(Context context) {
@@ -494,7 +495,7 @@ public class Kommunicate {
                         listener.onFailure(registrationResponse, exception);
                     }
                 }
-            }).execute();
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -544,7 +545,7 @@ public class Kommunicate {
             }
         };
 
-        new KmConversationInfoTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), conversationInfoCallback).execute();
+        new KmConversationInfoTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
@@ -651,6 +652,10 @@ public class Kommunicate {
     }
 
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
-        new KmAwayMessageTask(context, groupId, handler).execute();
+        new KmAwayMessageTask(context, groupId, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public static void removeApplicationKey(Context context) {
+        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
     }
 }

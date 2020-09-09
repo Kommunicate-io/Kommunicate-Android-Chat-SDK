@@ -40,13 +40,9 @@ public class KmAppSettingPreferences {
     }
 
     public void setAppSetting(KmAppSettingModel appSetting) {
-        if (appSetting != null) {
-            if (!TextUtils.isEmpty(appSetting.getChatWidget().getPrimaryColor())) {
-                setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
-            }
-            if (!TextUtils.isEmpty(appSetting.getChatWidget().getSecondaryColor())) {
-                setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
-            }
+        if (appSetting != null && appSetting.getChatWidget() != null) {
+            setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
+            setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
         }
     }
 
@@ -95,6 +91,13 @@ public class KmAppSettingPreferences {
             }
         }
         return null;
+    }
+
+    public static void updateAppSetting(KmAppSettingModel appSettingModel) {
+        if (appSettingModel != null && appSettingModel.isSuccess()) {
+            getInstance().clearInstance();
+            KmAppSettingPreferences.getInstance().setAppSetting(appSettingModel);
+        }
     }
 
     public void clearInstance() {

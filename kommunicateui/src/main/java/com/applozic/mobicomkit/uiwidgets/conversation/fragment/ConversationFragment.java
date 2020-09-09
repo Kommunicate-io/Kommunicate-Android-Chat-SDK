@@ -214,4 +214,9 @@ public class ConversationFragment extends MobiComConversationFragment implements
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onGroupMute(Integer groupId) {
+
+    }
 }

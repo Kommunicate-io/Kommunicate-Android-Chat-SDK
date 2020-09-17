@@ -159,6 +159,6 @@ public class KmClientService extends MobiComKitClientService {
 
         Utils.printLog(context, TAG, "Get feedback response: " + response);
 
-        return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+        return response;
     }
 }

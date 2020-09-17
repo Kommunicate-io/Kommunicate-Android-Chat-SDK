@@ -23,6 +23,7 @@ public class KmAppSettingPreferences {
     private static final String KM_THEME_PREFERENCES = "KM_THEME_PREFERENCES";
     private static final String KM_THEME_PRIMARY_COLOR = "KM_THEME_PRIMARY_COLOR";
     private static final String KM_THEME_SECONDARY_COLOR = "KM_THEME_SECONDARY_COLOR";
+    private static final String KM_COLLECT_FEEDBACK = "KM_COLLECT_FEEDBACK";
 
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
@@ -40,9 +41,15 @@ public class KmAppSettingPreferences {
     }
 
     public void setAppSetting(KmAppSettingModel appSetting) {
-        if (appSetting != null && appSetting.getChatWidget() != null) {
-            setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
-            setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
+        clearInstance();
+        if (appSetting != null) {
+            if (appSetting.getChatWidget() != null) {
+                setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
+                setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
+            }
+            if (appSetting.getResponse() != null) {
+                setCollectFeedback(appSetting.getResponse().isCollectFeedback());
+            }
         }
     }
 
@@ -62,6 +69,15 @@ public class KmAppSettingPreferences {
 
     public String getSecondaryColor() {
         return preferences.getString(KM_THEME_SECONDARY_COLOR, null);
+    }
+
+    public boolean isCollectFeedback() {
+        return preferences.getBoolean(KM_COLLECT_FEEDBACK, false);
+    }
+
+    public KmAppSettingPreferences setCollectFeedback(boolean collectFeedback) {
+        preferences.edit().putBoolean(KM_COLLECT_FEEDBACK, collectFeedback).commit();
+        return this;
     }
 
     public static void fetchAppSettingAsync(final Context context) {

@@ -36,6 +36,7 @@ public class KmAppSettingModel extends JsonMarker {
         private String userName;
         private String agentId;
         private String agentName;
+        private boolean collectFeedback;
         private KmChatWidget chatWidget;
 
         public String getUserName() {
@@ -60,6 +61,14 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setAgentName(String agentName) {
             this.agentName = agentName;
+        }
+
+        public boolean isCollectFeedback() {
+            return collectFeedback;
+        }
+
+        public void setCollectFeedback(boolean collectFeedback) {
+            this.collectFeedback = collectFeedback;
         }
 
         public KmChatWidget getChatWidget() {

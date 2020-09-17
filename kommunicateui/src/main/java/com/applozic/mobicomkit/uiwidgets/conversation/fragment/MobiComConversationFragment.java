@@ -503,12 +503,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmFeedbackView = list.findViewById(R.id.idKmFeedbackView);
 
         //what to do when Restart Conversation button is clicked
-        kmFeedbackView.setInteractionListener(new KmFeedbackView.KmFeedbackViewCallbacks() {
-            @Override
-            public void onRestartConversationPressed() {
-                setFeedbackDisplay(false);
-            }
-        });
+        if (themeHelper.isCollectFeedback()) {
+            kmFeedbackView.setInteractionListener(new KmFeedbackView.KmFeedbackViewCallbacks() {
+                @Override
+                public void onRestartConversationPressed() {
+                    setFeedbackDisplay(false);
+                }
+            });
+        }
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
 
@@ -1965,10 +1967,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         // check if conversation is a resolved one, and display the respective feedback layouts
         // also open the feedback input fragment if feedback isn't set
-        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
-            setFeedbackDisplay(true);
-        } else {
-            setFeedbackDisplay(false);
+        if (themeHelper.isCollectFeedback()) {
+            if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
+                setFeedbackDisplay(true);
+            } else {
+                setFeedbackDisplay(false);
+            }
         }
     }
 
@@ -4351,7 +4355,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
      * @param display true to display/ false to not
      */
     public void setFeedbackDisplay(boolean display) {
-        if (channel != null && !channel.isDeleted()) {
+        if (themeHelper.isCollectFeedback() && channel != null && !channel.isDeleted()) {
             if (display) {
                 kmFeedbackView.setVisibility(VISIBLE);
                 individualMessageSendLayout.setVisibility(View.GONE);

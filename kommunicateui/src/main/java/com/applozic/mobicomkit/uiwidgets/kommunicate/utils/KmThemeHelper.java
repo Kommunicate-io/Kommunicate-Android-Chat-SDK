@@ -17,6 +17,7 @@ public class KmThemeHelper implements KmCallback {
     private Context context;
     private KmAppSettingPreferences appSettingPreferences;
     private AlCustomizationSettings alCustomizationSettings;
+    private Boolean collectFeedback;
     private int primaryColor = -1;
     private int secondaryColor = -1;
     private int sentMessageBackgroundColor = -1;
@@ -56,6 +57,13 @@ public class KmThemeHelper implements KmCallback {
             sentMessageBackgroundColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.applozic_theme_color_primary);
         }
         return sentMessageBackgroundColor;
+    }
+
+    public boolean isCollectFeedback() {
+        if (collectFeedback == null) {
+            collectFeedback = appSettingPreferences.isCollectFeedback();
+        }
+        return collectFeedback;
     }
 
     public int getSentMessageBorderColor() {

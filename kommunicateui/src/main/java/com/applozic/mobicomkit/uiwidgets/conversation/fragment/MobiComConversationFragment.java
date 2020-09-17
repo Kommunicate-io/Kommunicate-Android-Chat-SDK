@@ -113,7 +113,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
-import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioRecordManager;
+import com.applozic.mobicomkit.uiwidgets.attachmentview.KmAudioRecordManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.DeleteConversationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
@@ -291,7 +291,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     ImageView imageViewForAttachmentType;
     RelativeLayout imageViewRLayout;
     Map<String, String> messageMetaData = new HashMap<>();
-    ApplozicAudioRecordManager applozicAudioRecordManager;
+    KmAudioRecordManager kmAudioRecordManager;
     ImageView slideImageView;
     private EmojiconHandler emojiIconHandler;
     private Bitmap previewThumbnail;
@@ -427,7 +427,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         };
         messageImageLoader.setImageFadeIn(false);
         messageImageLoader.addImageCache((getActivity()).getSupportFragmentManager(), 0.1f);
-        applozicAudioRecordManager = new ApplozicAudioRecordManager(getActivity());
+        kmAudioRecordManager = new KmAudioRecordManager(getActivity());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -4546,8 +4546,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 speechToText.startListening();
             }
         } else {
-            if (applozicAudioRecordManager != null) {
-                applozicAudioRecordManager.recordAudio();
+            if (kmAudioRecordManager != null) {
+                kmAudioRecordManager.recordAudio();
             }
         }
         toggleRecordViews(false);
@@ -4559,16 +4559,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (recordButton != null && getContext() != null) {
             KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_background);
         }
-        if (applozicAudioRecordManager != null) {
-            applozicAudioRecordManager.cancelAudio();
+        if (kmAudioRecordManager != null) {
+            kmAudioRecordManager.cancelAudio();
         }
     }
 
     @Override
     public void onRecordFinish(long recordTime) {
         toggleRecordViews(true);
-        if (applozicAudioRecordManager != null) {
-            applozicAudioRecordManager.sendAudio();
+        if (kmAudioRecordManager != null) {
+            kmAudioRecordManager.sendAudio();
         }
     }
 
@@ -4578,8 +4578,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (getContext() != null && !isSpeechToTextEnabled) {
             KmToast.makeText(getContext(), getContext().getString(R.string.km_audio_record_toast_message), Toast.LENGTH_SHORT).show();
         }
-        if (applozicAudioRecordManager != null) {
-            applozicAudioRecordManager.cancelAudio();
+        if (kmAudioRecordManager != null) {
+            kmAudioRecordManager.cancelAudio();
         }
     }
 

@@ -26,8 +26,6 @@ import android.os.Vibrator;
 import android.provider.OpenableColumns;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -1076,9 +1074,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         } else {
             //conversation is open
             //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
-            if (getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1).getName().equals(feedBackFragment.getTag())) {
-                getFragmentManager().popBackStack();
-            }
             setFeedbackDisplay(false);
         }
     }
@@ -1100,12 +1095,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void openFeedbackFragment() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(FeedbackInputFragment.getFragTag()) == null) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, feedBackFragment, FeedbackInputFragment.getFragTag());
-            fragmentTransaction.addToBackStack(FeedbackInputFragment.getFragTag());
-            fragmentTransaction.commit();
+        if (feedBackFragment == null) {
+            feedBackFragment = new FeedbackInputFragment();
+            feedBackFragment.setFeedbackFragmentListener(this);
+        }
+        if (!feedBackFragment.isAdded()) {
+            feedBackFragment.show(getActivity().getSupportFragmentManager(), FeedbackInputFragment.getFragTag());
         }
     }
 

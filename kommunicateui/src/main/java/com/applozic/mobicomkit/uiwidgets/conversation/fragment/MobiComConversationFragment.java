@@ -503,14 +503,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmFeedbackView = list.findViewById(R.id.idKmFeedbackView);
 
         //what to do when Restart Conversation button is clicked
-        if (themeHelper.isCollectFeedback()) {
-            kmFeedbackView.setInteractionListener(new KmFeedbackView.KmFeedbackViewCallbacks() {
-                @Override
-                public void onRestartConversationPressed() {
-                    setFeedbackDisplay(false);
-                }
-            });
-        }
+        kmFeedbackView.setInteractionListener(new KmFeedbackView.KmFeedbackViewCallbacks() {
+            @Override
+            public void onRestartConversationPressed() {
+                setFeedbackDisplay(false);
+            }
+        });
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
 
@@ -1967,12 +1965,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         // check if conversation is a resolved one, and display the respective feedback layouts
         // also open the feedback input fragment if feedback isn't set
-        if (themeHelper.isCollectFeedback()) {
-            if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
-                setFeedbackDisplay(true);
-            } else {
-                setFeedbackDisplay(false);
-            }
+        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
+            setFeedbackDisplay(true);
+        } else {
+            setFeedbackDisplay(false);
         }
     }
 
@@ -4355,36 +4351,38 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
      * @param display true to display/ false to not
      */
     public void setFeedbackDisplay(boolean display) {
-        if (themeHelper.isCollectFeedback() && channel != null && !channel.isDeleted()) {
+        if (channel != null && !channel.isDeleted()) {
             if (display) {
                 kmFeedbackView.setVisibility(VISIBLE);
                 individualMessageSendLayout.setVisibility(View.GONE);
                 mainDivider.setVisibility(View.GONE);
 
-                frameLayoutProgressbar.setVisibility(VISIBLE);
 
-                KmService.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
-                    @Override
-                    public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+                if (themeHelper.isCollectFeedback()) {
+                    frameLayoutProgressbar.setVisibility(VISIBLE);
+                    KmService.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
+                        @Override
+                        public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
 
-                        frameLayoutProgressbar.setVisibility(View.GONE);
+                            frameLayoutProgressbar.setVisibility(View.GONE);
 
-                        if (response.getData() != null) { //i.e if feedback found
-                            //show the feedback based on the data given
-                            kmFeedbackView.showFeedback(context, response.getData());
-                        } else {
-                            //if feedback not found (null)
-                            //open the feedback input fragment
-                            openFeedbackFragment();
+                            if (response.getData() != null) { //i.e if feedback found
+                                //show the feedback based on the data given
+                                kmFeedbackView.showFeedback(context, response.getData());
+                            } else {
+                                //if feedback not found (null)
+                                //open the feedback input fragment
+                                openFeedbackFragment();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Context context, Exception e, String response) {
-                        frameLayoutProgressbar.setVisibility(View.GONE);
-                        Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
-                    }
-                });
+                        @Override
+                        public void onFailure(Context context, Exception e, String response) {
+                            frameLayoutProgressbar.setVisibility(View.GONE);
+                            Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
+                        }
+                    });
+                }
             } else {
                 kmFeedbackView.setVisibility(View.GONE);
                 individualMessageSendLayout.setVisibility(VISIBLE);

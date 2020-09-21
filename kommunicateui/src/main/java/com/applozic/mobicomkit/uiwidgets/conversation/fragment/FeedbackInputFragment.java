@@ -3,19 +3,23 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
 import androidx.annotation.IdRes;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -27,7 +31,7 @@ import java.util.List;
  * @author shubham
  * @date july '19
  */
-public class FeedbackInputFragment extends Fragment implements View.OnClickListener {
+public class FeedbackInputFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private static final String TAG = "FeedbackInputFragment";
 
@@ -46,9 +50,11 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
     //using IntDef to replace enum
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({RATING_POOR, RATING_AVERAGE, RATING_GOOD})
-    private  @interface Rating { }
+    private @interface Rating {
+    }
 
-    private static final @Rating List<Integer> FEEDBACK_RATING_VALUES = Arrays.asList(RATING_POOR, RATING_AVERAGE, RATING_GOOD);
+    private static final @Rating
+    List<Integer> FEEDBACK_RATING_VALUES = Arrays.asList(RATING_POOR, RATING_AVERAGE, RATING_GOOD);
 
     @Rating
     private int ratingValue;
@@ -121,14 +127,14 @@ public class FeedbackInputFragment extends Fragment implements View.OnClickListe
             public void onClick(View view) {
                 String feedbackComment = editTextFeedbackComment.getText().toString().trim();
                 feedbackFragmentListener.onFeedbackFragmentSubmitButtonPressed(getRatingValue(), feedbackComment);
-                getFragmentManager().popBackStack();
+                dismissAllowingStateLoss();
             }
         });
 
         buttonCloseFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getFragmentManager().popBackStack();
+                dismissAllowingStateLoss();
             }
         });
 

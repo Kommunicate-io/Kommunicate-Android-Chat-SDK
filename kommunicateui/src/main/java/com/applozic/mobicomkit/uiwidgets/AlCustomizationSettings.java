@@ -20,6 +20,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private String editTextBackgroundColorOrDrawable;
     private String editTextLayoutBackgroundColorOrDrawable;
     private String channelCustomMessageBgColor = "#cccccc";
+    private String toolbarTitleColor = "#ffffff";
+    private String toolbarSubtitleColor = "#ffffff";
 
     private String sentContactMessageTextColor = "#5fba7d";
     private String receivedContactMessageTextColor = "#646262";
@@ -639,6 +641,22 @@ public class AlCustomizationSettings extends JsonMarker {
         return restrictedWordRegex;
     }
 
+    public String getToolbarTitleColor() {
+        return toolbarTitleColor;
+    }
+
+    public void setToolbarTitleColor(String toolbarTitleColor) {
+        this.toolbarTitleColor = toolbarTitleColor;
+    }
+
+    public String getToolbarSubtitleColor() {
+        return toolbarSubtitleColor;
+    }
+
+    public void setToolbarSubtitleColor(String toolbarSubtitleColor) {
+        this.toolbarSubtitleColor = toolbarSubtitleColor;
+    }
+
     @Override
     public String toString() {
         return "AlCustomizationSettings{" +
@@ -695,6 +713,8 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", maxAttachmentAllowed=" + maxAttachmentAllowed +
                 ", maxAttachmentSizeAllowed=" + maxAttachmentSizeAllowed +
                 ", totalOnlineUsers=" + totalOnlineUsers +
+                ", toolbarTitleColor=" + toolbarTitleColor +
+                ", toolbarSubtitleColor=" + toolbarSubtitleColor +
                 '}';
     }
 }

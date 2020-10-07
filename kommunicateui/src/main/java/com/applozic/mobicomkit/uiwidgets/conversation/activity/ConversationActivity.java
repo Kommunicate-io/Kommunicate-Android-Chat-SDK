@@ -365,6 +365,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getSecondaryColor());
         customToolbarLayout = myToolbar.findViewById(R.id.custom_toolbar_root_layout);
         setSupportActionBar(myToolbar);
+        setToolbarTitleSubtitleColorFromSettings();
         baseContactService = new AppContactService(this);
         conversationUIService = new ConversationUIService(this);
         mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);
@@ -679,6 +680,29 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int parseColorWithDefaultWhite(String color) {
+        try {
+            return Color.parseColor(color);
+        } catch (Exception invalidColorException) {
+            return Color.WHITE;
+        }
+    }
+
+    public void setToolbarTitleSubtitleColorFromSettings() {
+        if(customToolbarLayout == null) {
+            return;
+        }
+
+        int titleColor = parseColorWithDefaultWhite(alCustomizationSettings.getToolbarTitleColor());
+        int subtitleColor = parseColorWithDefaultWhite(alCustomizationSettings.getToolbarSubtitleColor());
+
+        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_title)).setTextColor(titleColor);
+        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_subtitle)).setTextColor(subtitleColor);
+        ((TextView) customToolbarLayout.findViewById(R.id.offlineTextView)).setTextColor(subtitleColor);
+        ((TextView) customToolbarLayout.findViewById(R.id.onlineTextView)).setTextColor(subtitleColor);
+        ((TextView) customToolbarLayout.findViewById(R.id.awayTextView)).setTextColor(subtitleColor);
     }
 
     @Override

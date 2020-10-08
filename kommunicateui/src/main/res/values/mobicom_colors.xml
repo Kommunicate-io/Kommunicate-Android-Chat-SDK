@@ -36,6 +36,8 @@
     <color name="incoming_call">#ff0099cc</color>
     <color name="outgoing_call">#ff008000</color>
 
+    <color name="toolbar_title_color">#FFFFFFFF</color>
+    <color name="toolbar_subtitle_color">#FFFFFFFF</color>
 
     <color name="contact_name_text_color">#ff000000</color>
     <color name="contact_userId_text_color">#838b83</color>

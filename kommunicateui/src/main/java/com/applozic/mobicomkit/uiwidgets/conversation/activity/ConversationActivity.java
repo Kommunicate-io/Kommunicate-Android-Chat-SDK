@@ -365,6 +365,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getSecondaryColor());
         customToolbarLayout = myToolbar.findViewById(R.id.custom_toolbar_root_layout);
         setSupportActionBar(myToolbar);
+        setToolbarTitleSubtitleColorFromSettings();
         baseContactService = new AppContactService(this);
         conversationUIService = new ConversationUIService(this);
         mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);
@@ -679,6 +680,16 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setToolbarTitleSubtitleColorFromSettings() {
+        if(customToolbarLayout == null) {
+            return;
+        }
+
+        KmThemeHelper kmThemeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
+        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_title)).setTextColor(kmThemeHelper.getToolbarTitleColor());
+        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_subtitle)).setTextColor(kmThemeHelper.getToolbarSubtitleColor());
     }
 
     @Override

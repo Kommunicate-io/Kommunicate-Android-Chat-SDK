@@ -682,27 +682,14 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
     }
 
-    public int parseColorWithDefaultWhite(String color) {
-        try {
-            return Color.parseColor(color);
-        } catch (Exception invalidColorException) {
-            return Color.WHITE;
-        }
-    }
-
     public void setToolbarTitleSubtitleColorFromSettings() {
         if(customToolbarLayout == null) {
             return;
         }
 
-        int titleColor = parseColorWithDefaultWhite(alCustomizationSettings.getToolbarTitleColor());
-        int subtitleColor = parseColorWithDefaultWhite(alCustomizationSettings.getToolbarSubtitleColor());
-
-        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_title)).setTextColor(titleColor);
-        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_subtitle)).setTextColor(subtitleColor);
-        ((TextView) customToolbarLayout.findViewById(R.id.offlineTextView)).setTextColor(subtitleColor);
-        ((TextView) customToolbarLayout.findViewById(R.id.onlineTextView)).setTextColor(subtitleColor);
-        ((TextView) customToolbarLayout.findViewById(R.id.awayTextView)).setTextColor(subtitleColor);
+        KmThemeHelper kmThemeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
+        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_title)).setTextColor(kmThemeHelper.getToolbarTitleColor());
+        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_subtitle)).setTextColor(kmThemeHelper.getToolbarSubtitleColor());
     }
 
     @Override

@@ -71,7 +71,11 @@ public class KmFormRichMessage extends AlRichMessage {
                             if (submitButtonModel != null && TextUtils.isEmpty(submitButtonModel.getType())) {
                                 submitButtonModel.setType(KmFormPayloadModel.Type.SUBMIT.getValue());
                             }
-                            listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                            if (context != null && context.getApplicationContext() instanceof ALRichMessageListener) {
+                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                            } else {
+                                listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                            }
                         }
                     }
                 });

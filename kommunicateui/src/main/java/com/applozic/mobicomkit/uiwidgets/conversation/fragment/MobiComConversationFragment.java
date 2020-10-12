@@ -26,8 +26,6 @@ import android.os.Vibrator;
 import android.provider.OpenableColumns;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -113,7 +111,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.async.AlMessageMetadataUpdateTask;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
-import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioRecordManager;
+import com.applozic.mobicomkit.uiwidgets.attachmentview.KmAudioRecordManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.DeleteConversationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
@@ -291,7 +289,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     ImageView imageViewForAttachmentType;
     RelativeLayout imageViewRLayout;
     Map<String, String> messageMetaData = new HashMap<>();
-    ApplozicAudioRecordManager applozicAudioRecordManager;
+    KmAudioRecordManager kmAudioRecordManager;
     ImageView slideImageView;
     private EmojiconHandler emojiIconHandler;
     private Bitmap previewThumbnail;
@@ -427,7 +425,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         };
         messageImageLoader.setImageFadeIn(false);
         messageImageLoader.addImageCache((getActivity()).getSupportFragmentManager(), 0.1f);
-        applozicAudioRecordManager = new ApplozicAudioRecordManager(getActivity());
+        kmAudioRecordManager = new KmAudioRecordManager(getActivity());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -1076,9 +1074,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         } else {
             //conversation is open
             //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
-            if (getFragmentManager().getBackStackEntryAt(getFragmentManager().getBackStackEntryCount() - 1).getName().equals(feedBackFragment.getTag())) {
-                getFragmentManager().popBackStack();
-            }
             setFeedbackDisplay(false);
         }
     }
@@ -1100,12 +1095,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void openFeedbackFragment() {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        if (fragmentManager.findFragmentByTag(FeedbackInputFragment.getFragTag()) == null) {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.idFrameLayoutFeedbackContainer, feedBackFragment, FeedbackInputFragment.getFragTag());
-            fragmentTransaction.addToBackStack(FeedbackInputFragment.getFragTag());
-            fragmentTransaction.commit();
+        if (feedBackFragment == null) {
+            feedBackFragment = new FeedbackInputFragment();
+            feedBackFragment.setFeedbackFragmentListener(this);
+        }
+        if (!feedBackFragment.isAdded()) {
+            feedBackFragment.show(getActivity().getSupportFragmentManager(), FeedbackInputFragment.getFragTag());
         }
     }
 
@@ -4356,30 +4351,32 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 individualMessageSendLayout.setVisibility(View.GONE);
                 mainDivider.setVisibility(View.GONE);
 
-                frameLayoutProgressbar.setVisibility(VISIBLE);
 
-                KmService.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
-                    @Override
-                    public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+                if (themeHelper.isCollectFeedback()) {
+                    frameLayoutProgressbar.setVisibility(VISIBLE);
+                    KmService.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
+                        @Override
+                        public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
 
-                        frameLayoutProgressbar.setVisibility(View.GONE);
+                            frameLayoutProgressbar.setVisibility(View.GONE);
 
-                        if (response.getData() != null) { //i.e if feedback found
-                            //show the feedback based on the data given
-                            kmFeedbackView.showFeedback(context, response.getData());
-                        } else {
-                            //if feedback not found (null)
-                            //open the feedback input fragment
-                            openFeedbackFragment();
+                            if (response.getData() != null) { //i.e if feedback found
+                                //show the feedback based on the data given
+                                kmFeedbackView.showFeedback(context, response.getData());
+                            } else {
+                                //if feedback not found (null)
+                                //open the feedback input fragment
+                                openFeedbackFragment();
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Context context, Exception e, String response) {
-                        frameLayoutProgressbar.setVisibility(View.GONE);
-                        Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
-                    }
-                });
+                        @Override
+                        public void onFailure(Context context, Exception e, String response) {
+                            frameLayoutProgressbar.setVisibility(View.GONE);
+                            Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
+                        }
+                    });
+                }
             } else {
                 kmFeedbackView.setVisibility(View.GONE);
                 individualMessageSendLayout.setVisibility(VISIBLE);
@@ -4541,8 +4538,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 speechToText.startListening();
             }
         } else {
-            if (applozicAudioRecordManager != null) {
-                applozicAudioRecordManager.recordAudio();
+            if (kmAudioRecordManager != null) {
+                kmAudioRecordManager.recordAudio();
             }
         }
         toggleRecordViews(false);
@@ -4554,16 +4551,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (recordButton != null && getContext() != null) {
             KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_background);
         }
-        if (applozicAudioRecordManager != null) {
-            applozicAudioRecordManager.cancelAudio();
+        if (kmAudioRecordManager != null) {
+            kmAudioRecordManager.cancelAudio();
         }
     }
 
     @Override
     public void onRecordFinish(long recordTime) {
         toggleRecordViews(true);
-        if (applozicAudioRecordManager != null) {
-            applozicAudioRecordManager.sendAudio();
+        if (kmAudioRecordManager != null) {
+            kmAudioRecordManager.sendAudio();
         }
     }
 
@@ -4573,8 +4570,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (getContext() != null && !isSpeechToTextEnabled) {
             KmToast.makeText(getContext(), getContext().getString(R.string.km_audio_record_toast_message), Toast.LENGTH_SHORT).show();
         }
-        if (applozicAudioRecordManager != null) {
-            applozicAudioRecordManager.cancelAudio();
+        if (kmAudioRecordManager != null) {
+            kmAudioRecordManager.cancelAudio();
         }
     }
 

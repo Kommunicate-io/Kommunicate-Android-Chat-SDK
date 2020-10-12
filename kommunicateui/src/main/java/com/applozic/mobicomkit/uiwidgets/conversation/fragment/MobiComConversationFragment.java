@@ -228,7 +228,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     private static final String TAG = "MobiComConversation";
     private static final int CHAR_LIMIT_FOR_DIALOG_FLOW_BOT = 256;
-    private static final int CHAR_LIMIT_WARNING_FOR_DIALOG_FLOW_BOT = 55;
+    private static final int CHAR_LIMIT_WARNING = 55;
 
     protected List<Conversation> conversations;
     protected String title = "Conversations";
@@ -356,7 +356,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private KmSpeechToText speechToText;
     private KmThemeHelper themeHelper;
     private TextView textViewCharLimitMessage;
-    private TextWatcher dialogFlowCharLimitTextWatcher;
+    private TextWatcher messageCharacterLimitTextWatcher;
     private boolean isAssigneeDialogFlowBot;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
@@ -950,14 +950,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         });
 
-        dialogFlowCharLimitTextWatcher = new TextWatcher() {
+        messageCharacterLimitTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                setCharLimitExceededMessage(isAssigneeDialogFlowBot, charSequence.length());
+                toggleCharLimitExceededMessage(isAssigneeDialogFlowBot, charSequence.length());
             }
 
             @Override
@@ -1718,9 +1718,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         KmUtils.setGradientSolidColor(sendButton, enabled ? themeHelper.getSendButtonBackgroundColor() : requireActivity().getResources().getColor(R.color.km_disabled_view_color));
     }
 
-    private void showCharLimitMessage(boolean exceeded, int deltaCharacterCount) {
-        textViewCharLimitMessage.setText(requireActivity().getString(R.string.bot_char_limit,
-                CHAR_LIMIT_FOR_DIALOG_FLOW_BOT,
+    private void showCharLimitMessage(boolean isDialogFlowLimitMessage, boolean exceeded, int deltaCharacterCount, int charLimit) {
+        textViewCharLimitMessage.setText(requireActivity().getString(isDialogFlowLimitMessage ? R.string.bot_char_limit : R.string.char_limit,
+                charLimit,
                 requireActivity().getString(exceeded ? R.string.remove_char_message : R.string.remaining_char_message, deltaCharacterCount)));
         textViewCharLimitMessage.setVisibility(VISIBLE);
         setSendButtonState(!exceeded);
@@ -1731,29 +1731,32 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setSendButtonState(true);
     }
 
-    private void setCharLimitExceededMessage(boolean isDialogFlowBot, int characterCount) {
+    private void setVisibilityOfCharLimitMessage(final boolean isDialogFlowLimitMessage, final int messageCharacterLimit, int characterCount) {
+        new KmInputTextLimitUtil(messageCharacterLimit, CHAR_LIMIT_WARNING).checkCharacterLimit(characterCount, new KmCharLimitCallback() {
+            @Override
+            public void onCrossed(boolean exceeded, boolean warning, int deltaCharacterCount) {
+                showCharLimitMessage(isDialogFlowLimitMessage, exceeded, deltaCharacterCount, messageCharacterLimit);
+            }
+
+            @Override
+            public void onNormal() {
+                hideCharLimitMessage();
+            }
+        });
+    }
+
+    private void toggleCharLimitExceededMessage(boolean isDialogFlowBot, int characterCount) {
         if (textViewCharLimitMessage == null || sendButton == null || messageEditText == null) {
             return;
         }
 
-        if (isDialogFlowBot) {
-            new KmInputTextLimitUtil(CHAR_LIMIT_FOR_DIALOG_FLOW_BOT, CHAR_LIMIT_WARNING_FOR_DIALOG_FLOW_BOT).checkCharacterLimit(characterCount, new KmCharLimitCallback() {
-                @Override
-                public void onCrossed(boolean exceeded, boolean warning, int deltaCharacterCount) {
-                    showCharLimitMessage(exceeded, deltaCharacterCount);
-                }
+        int settingsMessageCharacterLimit = alCustomizationSettings != null ? alCustomizationSettings.getMessageCharacterLimit() : AlCustomizationSettings.DEFAULT_MESSAGE_CHAR_LIMIT;
+        int messageCharacterLimit = isDialogFlowBot ? Math.min(CHAR_LIMIT_FOR_DIALOG_FLOW_BOT, settingsMessageCharacterLimit) : settingsMessageCharacterLimit;
 
-                @Override
-                public void onNormal() {
-                    hideCharLimitMessage();
-                }
-            });
-        } else {
-            hideCharLimitMessage();
-        }
+        setVisibilityOfCharLimitMessage(isDialogFlowBot, messageCharacterLimit, characterCount);
     }
 
-    private void watchMessageTextChangeForDialogFlowBotAssignee(Contact assignee, Channel channel, AppContactService appContactService, int loggedInUserRole) {
+    private void fetchBotTypeAndToggleCharLimitExceededMessage(Contact assignee, Channel channel, AppContactService appContactService, int loggedInUserRole) {
         if (assignee == null) {
             assignee = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
         }
@@ -1761,35 +1764,27 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (assignee != null) {
             if (!User.RoleType.BOT.getValue().equals(assignee.getRoleType())) {
                 isAssigneeDialogFlowBot = false;
-                messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
-                hideCharLimitMessage();
+                toggleCharLimitExceededMessage(false, messageEditText.getText().length());
             } else {
                 fetchBotType(assignee, new KmCallback() {
                     @Override
                     public void onSuccess(Object botTypeResponseString) {
                         if (messageEditText != null) {
                             isAssigneeDialogFlowBot = KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(botTypeResponseString);
-                            if (isAssigneeDialogFlowBot) {
-                                setCharLimitExceededMessage(true, messageEditText.getText().length());
-                                messageEditText.addTextChangedListener(dialogFlowCharLimitTextWatcher);
-                            } else {
-                                messageEditText.removeTextChangedListener(dialogFlowCharLimitTextWatcher);
-                                hideCharLimitMessage();
-                            }
+                            toggleCharLimitExceededMessage(isAssigneeDialogFlowBot, messageEditText.getText().length());
                         }
                     }
 
                     @Override
-                    public void onFailure(Object error) {
-                    }
+                    public void onFailure(Object error) { }
                 });
             }
         }
     }
 
-    public void watchMessageTextChangeForDialogFlowBotAssignee() {
+    public void fetchBotTypeAndToggleCharLimitExceededMessage() {
         if (channel != null && appContactService != null) {
-            watchMessageTextChangeForDialogFlowBotAssignee(conversationAssignee, channel, appContactService, loggedInUserRole);
+            fetchBotTypeAndToggleCharLimitExceededMessage(conversationAssignee, channel, appContactService, loggedInUserRole);
         }
     }
 
@@ -1945,6 +1940,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             UserIntentService.enqueueWork(getActivity(), intent);
         }
 
+        //initialize code for text limit on messageEditText
+        messageEditText.addTextChangedListener(messageCharacterLimitTextWatcher);
+        toggleCharLimitExceededMessage(false, messageEditText.getText().length());
+
         if (channel != null) {
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                 String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
@@ -1958,7 +1957,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             //for char limit for the message sent to a dialog flow bot
-            watchMessageTextChangeForDialogFlowBotAssignee(conversationAssignee, channel, appContactService, loggedInUserRole);
+            fetchBotTypeAndToggleCharLimitExceededMessage(conversationAssignee, channel, appContactService, loggedInUserRole);
         }
 
         InstructionUtil.showInstruction(getActivity(), R.string.instruction_go_back_to_recent_conversation_list, MobiComKitActivityInterface.INSTRUCTION_DELAY, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());

@@ -10,6 +10,7 @@ import java.util.Map;
  * Created by sunil on 10/10/16.
  */
 public class AlCustomizationSettings extends JsonMarker {
+    public static final int DEFAULT_MESSAGE_CHAR_LIMIT = 2000;
 
     private String customMessageBackgroundColor = "#e6e5ec";
     private String sentMessageBackgroundColor = "";
@@ -91,6 +92,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private int totalRegisteredUserToFetch = 100;
     private int maxAttachmentAllowed = 5;
     private int maxAttachmentSizeAllowed = 30;
+    private int messageCharacterLimit = DEFAULT_MESSAGE_CHAR_LIMIT;
     private int totalOnlineUsers = 0;
     private String themeColorPrimary;
     private String themeColorPrimaryDark;
@@ -533,6 +535,10 @@ public class AlCustomizationSettings extends JsonMarker {
         this.messageTemplate = messageTemplate;
     }
 
+    public int getMessageCharacterLimit() {
+        return messageCharacterLimit;
+    }
+
     public MobicomMessageTemplate getMessageTemplate() {
         return messageTemplate;
     }
@@ -713,6 +719,7 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", maxAttachmentAllowed=" + maxAttachmentAllowed +
                 ", maxAttachmentSizeAllowed=" + maxAttachmentSizeAllowed +
                 ", totalOnlineUsers=" + totalOnlineUsers +
+                ", messageCharacterLimit" + messageCharacterLimit +
                 ", toolbarTitleColor=" + toolbarTitleColor +
                 ", toolbarSubtitleColor=" + toolbarSubtitleColor +
                 '}';

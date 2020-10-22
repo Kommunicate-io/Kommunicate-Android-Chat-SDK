@@ -114,6 +114,7 @@ import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.KmAudioRecordManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.DeleteConversationAsyncTask;
+import com.applozic.mobicomkit.uiwidgets.conversation.KmBotTypingDelayManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
@@ -207,6 +208,7 @@ import io.kommunicate.models.KmFeedback;
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
 
@@ -218,7 +220,7 @@ import static java.util.Collections.disjoint;
  * reg
  * Created by devashish on 10/2/15.
  */
-public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, ALRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener, KmSpeechToText.KmTextListener {
+public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, ALRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener, KmSpeechToText.KmTextListener, KmBotTypingDelayManager.MessageDispatcher {
 
     public FrameLayout emoticonsFrameLayout,
             contextFrameLayout;
@@ -356,6 +358,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private TextView textViewCharLimitMessage;
     private TextWatcher messageCharacterLimitTextWatcher;
     private boolean isAssigneeDialogFlowBot;
+    private int botMessageDelayInterval;
+    private KmBotTypingDelayManager botTypingDelayManager;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -387,6 +391,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         isSpeechToTextEnabled = KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled();
         isTextToSpeechEnabled = KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
         isSendOnSpeechEnd = KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
+        botMessageDelayInterval = KmAppSettingPreferences.getInstance().getKmBotMessageDelayInterval();
+        botTypingDelayManager = new KmBotTypingDelayManager(getContext(), this);
 
         if (isTextToSpeechEnabled) {
             textToSpeech = new KmTextToSpeech(getContext());
@@ -1491,6 +1497,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             ((KmOnMessageListener) ApplozicService.getContext(getContext())).onNewMessage(message, channel, contact);
         }
 
+        if (botMessageDelayInterval > 0 && message.getGroupId() != null && message.getGroupId() != 0 && !TextUtils.isEmpty(message.getTo())) {
+            Contact contact = appContactService.getContactById(message.getTo());
+            if (contact != null && User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
+                botTypingDelayManager.addMessage(message);
+                return;
+            }
+        }
+        handleAddMessage(message);
+    }
+
+    protected void handleAddMessage(final Message message) {
         if (message.getGroupId() != null) {
             if (channel != null && channel.getKey().equals(message.getGroupId())) {
                 if (message.getTo() != null) {
@@ -1771,7 +1788,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
 
                     @Override
-                    public void onFailure(Object error) { }
+                    public void onFailure(Object error) {
+                    }
                 });
             }
         }
@@ -4760,5 +4778,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onLoaderReset(Loader loader) {
         kmAutoSuggestionAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onMessageQueued(Message message) {
+        updateTypingStatus(message.getTo(), true);
+    }
+
+    @Override
+    public void onMessageDispatched(Message message) {
+        handleAddMessage(message);
     }
 }

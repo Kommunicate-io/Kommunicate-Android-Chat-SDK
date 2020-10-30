@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views;
 
 import android.content.Context;
 import android.util.SparseIntArray;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
@@ -32,6 +33,7 @@ public class KmRadioGroup {
                 final int index = options.indexOf(option);
                 RadioButton radioButton = new RadioButton(context);
                 radioButton.setChecked(checkedIndex == index);
+                radioButton.setGravity(Gravity.FILL);
 
                 radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override

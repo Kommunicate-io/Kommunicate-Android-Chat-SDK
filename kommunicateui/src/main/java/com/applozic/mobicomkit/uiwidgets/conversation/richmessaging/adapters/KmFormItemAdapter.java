@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -216,6 +217,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             for (KmFormPayloadModel.Options option : options) {
                                 final int index = options.indexOf(option);
                                 final CheckBox checkBox = new CheckBox(context);
+                                checkBox.setGravity(Gravity.FILL);
                                 checkBox.setChecked(checkedBoxes.contains(index));
                                 checkBox.setText(option.getLabel());
 

@@ -597,7 +597,7 @@ public class ConversationUIService {
         }
         if (BroadcastService.isIndividual()) {
             getConversationFragment().updateChannelTitleAndSubTitle();
-            getConversationFragment().watchMessageTextChangeForDialogFlowBotAssignee();
+            getConversationFragment().fetchBotTypeAndToggleCharLimitExceededMessage();
         }
     }
 

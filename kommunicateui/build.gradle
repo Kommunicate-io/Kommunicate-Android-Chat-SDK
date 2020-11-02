@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.1.0"
+        versionName "2.1.1"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -27,6 +27,7 @@ dependencies {
     api 'com.google.android.gms:play-services-location:17.0.0'
     api 'de.hdodenhof:circleimageview:2.2.0'
     api 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android:flexbox:2.0.1'
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
     api 'com.github.bumptech.glide:glide:4.9.0'
     api 'androidx.cardview:cardview:1.0.0'
@@ -48,7 +49,7 @@ dependencies {
     artifact = 'kommunicateui'
 
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '2.1.0'
+    libraryVersion = '2.1.1'
     developerId = 'kommunicate'
     developerName = 'Kommunicate'
     developerEmail = 'devashish.mamgain@gmail.com'

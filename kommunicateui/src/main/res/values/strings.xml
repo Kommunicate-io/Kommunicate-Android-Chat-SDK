@@ -277,6 +277,7 @@
     <string name="km_no_agents_found">No matching agents found</string>
     <string name="km_no_bots_found">No matching bots found</string>
     <string name="invalid_message_matching_pattern">The Regex to match message is invalid</string>
+    <string name="char_limit">Keep your message within %1$d characters | (%2$s)</string>
     <string name="bot_char_limit">Keep your message within %1$d characters to help the bot understand easily | (%2$s)</string>
     <string name="remove_char_message">Remove %1$d characters</string>
     <string name="remaining_char_message">%1$d characters remaining</string>

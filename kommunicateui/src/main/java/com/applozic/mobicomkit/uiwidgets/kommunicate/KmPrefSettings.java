@@ -2,9 +2,8 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.MobiComKitClientService;
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicommons.ApplozicService;
 
 public class KmPrefSettings {
@@ -19,18 +18,14 @@ public class KmPrefSettings {
     private static final String TEXT_TO_SPEECH_LANGUAGE = "TEXT_TO_SPEECH_LANGUAGE";
 
     private KmPrefSettings(Context context) {
-        if (!TextUtils.isEmpty(MobiComKitClientService.getApplicationKey(context))) {
-            sharedPreferences = context.getSharedPreferences(MobiComKitClientService.getApplicationKey(context), Context.MODE_PRIVATE);
-        }
+        sharedPreferences = context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
     }
 
     public static KmPrefSettings getInstance(Context context) {
         if (kmPrefSettings == null) {
             kmPrefSettings = new KmPrefSettings(ApplozicService.getContext(context));
         } else {
-            if (!TextUtils.isEmpty(MobiComKitClientService.getApplicationKey(context))) {
-                sharedPreferences = context.getSharedPreferences(MobiComKitClientService.getApplicationKey(context), Context.MODE_PRIVATE);
-            }
+            sharedPreferences = context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         }
         return kmPrefSettings;
     }

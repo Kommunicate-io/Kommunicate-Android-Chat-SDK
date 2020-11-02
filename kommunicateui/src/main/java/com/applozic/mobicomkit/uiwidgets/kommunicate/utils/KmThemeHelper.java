@@ -17,12 +17,15 @@ public class KmThemeHelper implements KmCallback {
     private Context context;
     private KmAppSettingPreferences appSettingPreferences;
     private AlCustomizationSettings alCustomizationSettings;
+    private Boolean collectFeedback;
     private int primaryColor = -1;
     private int secondaryColor = -1;
     private int sentMessageBackgroundColor = -1;
     private int sendButtonBackgroundColor = -1;
     private int sentMessageBorderColor = -1;
     private int messageStatusIconColor = -1;
+    private int toolbarTitleColor = -1;
+    private int toolbarSubtitleColor = -1;
 
     public static KmThemeHelper getInstance(Context context, AlCustomizationSettings alCustomizationSettings) {
         if (kmThemeHelper == null) {
@@ -38,12 +41,33 @@ public class KmThemeHelper implements KmCallback {
         appSettingPreferences.setCallback(this);
     }
 
+    public int parseColorWithDefault(String color, int defaultColor) {
+        try {
+            return Color.parseColor(color);
+        } catch (Exception invalidColorException) {
+            return defaultColor;
+        }
+    }
+
     public int getPrimaryColor() {
         if (primaryColor == -1) {
-            String colorStr = appSettingPreferences.getPrimaryColor();
-            primaryColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.applozic_theme_color_primary);
+            primaryColor = parseColorWithDefault(appSettingPreferences.getPrimaryColor(), context.getResources().getColor(R.color.applozic_theme_color_primary));
         }
         return primaryColor;
+    }
+
+    public int getToolbarTitleColor() {
+        if (toolbarTitleColor == -1) {
+            toolbarTitleColor = parseColorWithDefault(alCustomizationSettings.getToolbarTitleColor(), context.getResources().getColor(R.color.toolbar_title_color));
+        }
+        return toolbarTitleColor;
+    }
+
+    public int getToolbarSubtitleColor() {
+        if (toolbarSubtitleColor == -1) {
+            toolbarSubtitleColor = parseColorWithDefault(alCustomizationSettings.getToolbarSubtitleColor(), context.getResources().getColor(R.color.toolbar_subtitle_color));
+        }
+        return toolbarSubtitleColor;
     }
 
     public int getSentMessageBackgroundColor() {
@@ -53,19 +77,26 @@ public class KmThemeHelper implements KmCallback {
             if (TextUtils.isEmpty(colorStr)) {
                 colorStr = appSettingPreferences.getPrimaryColor();
             }
-            sentMessageBackgroundColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.applozic_theme_color_primary);
+            sentMessageBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
         }
         return sentMessageBackgroundColor;
     }
 
+    public boolean isCollectFeedback() {
+        if (collectFeedback == null) {
+            collectFeedback = appSettingPreferences.isCollectFeedback();
+        }
+        return collectFeedback;
+    }
+
     public int getSentMessageBorderColor() {
-        if (sentMessageBackgroundColor == -1) {
+        if (sentMessageBorderColor == -1) {
             String colorStr = alCustomizationSettings.getSentMessageBorderColor();
 
             if (TextUtils.isEmpty(colorStr)) {
                 colorStr = appSettingPreferences.getPrimaryColor();
             }
-            sentMessageBorderColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.applozic_theme_color_primary);
+            sentMessageBorderColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
         }
         return sentMessageBorderColor;
     }
@@ -77,7 +108,7 @@ public class KmThemeHelper implements KmCallback {
             if (TextUtils.isEmpty(colorStr)) {
                 colorStr = appSettingPreferences.getPrimaryColor();
             }
-            sendButtonBackgroundColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.applozic_theme_color_primary);
+            sendButtonBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
         }
         return sendButtonBackgroundColor;
     }
@@ -90,15 +121,14 @@ public class KmThemeHelper implements KmCallback {
                 colorStr = appSettingPreferences.getPrimaryColor();
             }
 
-            messageStatusIconColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.message_status_icon_colors);
+            messageStatusIconColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.message_status_icon_colors));
         }
         return messageStatusIconColor;
     }
 
     public int getSecondaryColor() {
         if (secondaryColor == -1) {
-            String colorStr = appSettingPreferences.getSecondaryColor();
-            secondaryColor = !TextUtils.isEmpty(colorStr) ? Color.parseColor(colorStr) : context.getResources().getColor(R.color.applozic_theme_color_primary_dark);
+            secondaryColor = parseColorWithDefault(appSettingPreferences.getSecondaryColor(), context.getResources().getColor(R.color.applozic_theme_color_primary_dark));
         }
         return secondaryColor;
     }
@@ -118,7 +148,5 @@ public class KmThemeHelper implements KmCallback {
     }
 
     @Override
-    public void onFailure(Object error) {
-
-    }
+    public void onFailure(Object error) { }
 }

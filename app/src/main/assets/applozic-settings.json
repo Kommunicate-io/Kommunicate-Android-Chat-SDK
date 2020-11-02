@@ -80,6 +80,8 @@
   "enableAwayMessage": true,
   "awayMessageTextColor": "#A9A4A4",
   "hideGroupSubtitle": false,
+  "toolbarTitleColor": "#ffffff",
+  "toolbarSubtitleColor": "#ffffff",
   "enableFaqOption": [
     true,
     false

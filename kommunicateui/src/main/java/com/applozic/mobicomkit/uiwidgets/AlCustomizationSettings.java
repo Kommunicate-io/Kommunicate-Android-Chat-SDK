@@ -10,6 +10,7 @@ import java.util.Map;
  * Created by sunil on 10/10/16.
  */
 public class AlCustomizationSettings extends JsonMarker {
+    public static final int DEFAULT_MESSAGE_CHAR_LIMIT = 2000;
 
     private String customMessageBackgroundColor = "#e6e5ec";
     private String sentMessageBackgroundColor = "";
@@ -20,6 +21,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private String editTextBackgroundColorOrDrawable;
     private String editTextLayoutBackgroundColorOrDrawable;
     private String channelCustomMessageBgColor = "#cccccc";
+    private String toolbarTitleColor = "#ffffff";
+    private String toolbarSubtitleColor = "#ffffff";
 
     private String sentContactMessageTextColor = "#5fba7d";
     private String receivedContactMessageTextColor = "#646262";
@@ -89,6 +92,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private int totalRegisteredUserToFetch = 100;
     private int maxAttachmentAllowed = 5;
     private int maxAttachmentSizeAllowed = 30;
+    private int messageCharacterLimit = DEFAULT_MESSAGE_CHAR_LIMIT;
     private int totalOnlineUsers = 0;
     private String themeColorPrimary;
     private String themeColorPrimaryDark;
@@ -531,6 +535,10 @@ public class AlCustomizationSettings extends JsonMarker {
         this.messageTemplate = messageTemplate;
     }
 
+    public int getMessageCharacterLimit() {
+        return messageCharacterLimit;
+    }
+
     public MobicomMessageTemplate getMessageTemplate() {
         return messageTemplate;
     }
@@ -639,6 +647,22 @@ public class AlCustomizationSettings extends JsonMarker {
         return restrictedWordRegex;
     }
 
+    public String getToolbarTitleColor() {
+        return toolbarTitleColor;
+    }
+
+    public void setToolbarTitleColor(String toolbarTitleColor) {
+        this.toolbarTitleColor = toolbarTitleColor;
+    }
+
+    public String getToolbarSubtitleColor() {
+        return toolbarSubtitleColor;
+    }
+
+    public void setToolbarSubtitleColor(String toolbarSubtitleColor) {
+        this.toolbarSubtitleColor = toolbarSubtitleColor;
+    }
+
     @Override
     public String toString() {
         return "AlCustomizationSettings{" +
@@ -695,6 +719,9 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", maxAttachmentAllowed=" + maxAttachmentAllowed +
                 ", maxAttachmentSizeAllowed=" + maxAttachmentSizeAllowed +
                 ", totalOnlineUsers=" + totalOnlineUsers +
+                ", messageCharacterLimit" + messageCharacterLimit +
+                ", toolbarTitleColor=" + toolbarTitleColor +
+                ", toolbarSubtitleColor=" + toolbarSubtitleColor +
                 '}';
     }
 }

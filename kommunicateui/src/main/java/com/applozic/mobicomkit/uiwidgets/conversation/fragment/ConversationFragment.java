@@ -216,6 +216,11 @@ public class ConversationFragment extends MobiComConversationFragment implements
     }
 
     @Override
+    public void onUserActivated(boolean isActivated) {
+
+    }
+
+    @Override
     public void onGroupMute(Integer groupId) {
 
     }

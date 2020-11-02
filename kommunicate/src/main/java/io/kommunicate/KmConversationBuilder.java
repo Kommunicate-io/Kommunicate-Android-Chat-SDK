@@ -16,6 +16,7 @@ public class KmConversationBuilder extends JsonMarker {
     private transient Context context;
     private boolean isSingleConversation = true;
     private boolean withPreChat = false;
+    private String preFilledMessage;
     private KMUser kmUser;
     private String appId;
     private List<String> agentIds;
@@ -74,6 +75,15 @@ public class KmConversationBuilder extends JsonMarker {
 
     public String getAppId() {
         return appId;
+    }
+
+    public KmConversationBuilder setPreFilledMessage(String messageString) {
+        preFilledMessage = messageString;
+        return this;
+    }
+
+    public String getPreFilledMessage() {
+        return preFilledMessage;
     }
 
     public KmConversationBuilder setAppId(String appId) {

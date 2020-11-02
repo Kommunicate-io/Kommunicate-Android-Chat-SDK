@@ -220,6 +220,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 checkBox.setGravity(Gravity.FILL);
                                 checkBox.setChecked(checkedBoxes.contains(index));
                                 checkBox.setText(option.getLabel());
+                                checkBox.setPadding(12, 0, 12, 0);
 
                                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                     @Override

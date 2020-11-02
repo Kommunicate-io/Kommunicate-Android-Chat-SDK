@@ -34,7 +34,7 @@ public class KmRadioGroup {
                 RadioButton radioButton = new RadioButton(context);
                 radioButton.setChecked(checkedIndex == index);
                 radioButton.setGravity(Gravity.FILL);
-                radioButton.setPadding(12, 0, 12, 0);
+                radioButton.setPaddingRelative(0, 0, 20, 0);
 
                 radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override

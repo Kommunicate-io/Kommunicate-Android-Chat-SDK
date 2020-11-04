@@ -409,9 +409,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 currentConversationId = savedInstanceState.getInt(CONVERSATION_ID);
                 if (contact != null || channel != null) {
                     if (channel != null) {
-                        conversation = ConversationUIService.getConversationFragment(this, null, channel, currentConversationId, null, null);
+                        conversation = ConversationUIService.getConversationFragment(this, null, channel, currentConversationId, null, null, null);
                     } else {
-                        conversation = ConversationUIService.getConversationFragment(this, contact, null, currentConversationId, null, null);
+                        conversation = ConversationUIService.getConversationFragment(this, contact, null, currentConversationId, null, null, null);
                     }
                     addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
                 }
@@ -908,7 +908,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     public void onQuickConversationFragmentItemClick(View view, Contact contact, Channel channel, Integer conversationId, String searchString) {
-        conversation = ConversationUIService.getConversationFragment(this, contact, channel, conversationId, searchString, null);
+        conversation = ConversationUIService.getConversationFragment(this, contact, channel, conversationId, searchString, null, null);
         addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
         this.channel = channel;
         this.contact = contact;

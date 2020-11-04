@@ -271,6 +271,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected Message messageToForward;
     protected String searchString;
     protected AlCustomizationSettings alCustomizationSettings;
+    protected String preFilledMessage;
     LinearLayout userNotAbleToChatLayout;
     List<ChannelUserMapper> channelUserMapperList;
     AdapterView.OnItemSelectedListener adapterView;

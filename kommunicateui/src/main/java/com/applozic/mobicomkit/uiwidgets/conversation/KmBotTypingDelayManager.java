@@ -27,7 +27,7 @@ public class KmBotTypingDelayManager {
         void onMessageDispatched(Message message);
     }
 
-    public static class BotDelayAsyncTask extends AsyncTask<Void, Void, Void> {
+    public static class BotDelayAsyncTask extends AsyncTask<Void, Integer, Void> {
 
         private final Message message;
         private final MessageDispatcher messageDispatcher;
@@ -40,8 +40,8 @@ public class KmBotTypingDelayManager {
         }
 
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
             if (messageDispatcher != null) {
                 messageDispatcher.onMessageQueued(message);
             }
@@ -50,6 +50,7 @@ public class KmBotTypingDelayManager {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
+                publishProgress(0);
                 Thread.sleep(botMessageDelay);
             } catch (InterruptedException e) {
                 e.printStackTrace();

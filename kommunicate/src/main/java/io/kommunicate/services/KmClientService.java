@@ -46,7 +46,7 @@ public class KmClientService extends MobiComKitClientService {
     }
 
     private String getFeedbackPostUrl() {
-        return getKmBaseUrl() + CONVERSATION_FEEDBACK_URL + "/v2";
+        return getKmBaseUrl() + CONVERSATION_FEEDBACK_URL + "/v2?sendAsMessage=true";
     }
 
     public String getConversationShareUrl() {

@@ -134,9 +134,9 @@ public class KmClientService extends MobiComKitClientService {
             jsonObject.put("rating", rating);
             jsonObject.put("applicationId", Applozic.getInstance(context).getApplicationKey());
             jsonObject.put("supportAgentName", supportAgentId); //not a mistake or typo
-            jsonObject.put("userInfo", feedbackUserJson);
             feedbackUserJson.put("name", userName);
             feedbackUserJson.put("userId", userId);
+            jsonObject.put("userInfo", feedbackUserJson);
         } catch (JSONException j) {
             j.printStackTrace();
         }

@@ -194,6 +194,7 @@ import java.util.regex.PatternSyntaxException;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmBotPreference;
 import io.kommunicate.Kommunicate;
+import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmGetBotTypeTask;
 import io.kommunicate.async.AgentGetStatusTask;
 import io.kommunicate.async.KmUpdateConversationTask;
@@ -4373,7 +4374,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                 if (themeHelper.isCollectFeedback()) {
                     frameLayoutProgressbar.setVisibility(VISIBLE);
-                    KmService.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
+                    KmService.getConversationFeedback(getActivity(), new KmConversationFeedbackTask.KmFeedbackDetails(String.valueOf(channel.getKey()), null, null, null), new KmFeedbackCallback() {
                         @Override
                         public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
 
@@ -4762,7 +4763,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         kmFeedback.setRating(ratingValue);
 
-        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmFeedbackCallback() {
+        Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
+        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
             @Override
             public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
                 kmFeedbackView.showFeedback(context, kmFeedback);

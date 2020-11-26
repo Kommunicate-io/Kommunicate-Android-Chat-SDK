@@ -28,7 +28,7 @@
         android:layout_margin="5dp"
         android:gravity="center"
         android:padding="5dp"
-        android:src="@drawable/applozic_ic_contact_picture_180_holo_light"
+        android:src="@drawable/km_ic_contact_picture_180_holo_light"
         android:visibility="visible" />
 
 

@@ -60,7 +60,7 @@ public class UserProfileFragment extends Fragment {
                 return baseContactService.downloadContactImage(context, (Contact) data);
             }
         };
-        contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_180_holo_light);
+        contactImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_180_holo_light);
         contactImageLoader.addImageCache((getActivity()).getSupportFragmentManager(), 0.1f);
         contactImageLoader.setImageFadeIn(false);
     }

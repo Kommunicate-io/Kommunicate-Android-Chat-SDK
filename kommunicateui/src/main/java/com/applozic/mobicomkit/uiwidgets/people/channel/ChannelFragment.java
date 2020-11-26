@@ -88,7 +88,7 @@ public class ChannelFragment extends ListFragment implements
             }
         };
         // Set a placeholder loading image for the image loader
-        mChannelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+        mChannelImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
         // Add a cache to the image loader
         mChannelImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
         mChannelImageLoader.setImageFadeIn(false);
@@ -306,7 +306,7 @@ public class ChannelFragment extends ListFragment implements
         @Override
         public View newView(Context context, Cursor cursor, ViewGroup parent) {
             final View itemLayout =
-                    mInflater.inflate(R.layout.applozic_groups_list_layout, parent, false);
+                    mInflater.inflate(R.layout.km_groups_list_layout, parent, false);
 
             final ViewHolder holder = new ViewHolder();
             holder.groupName = (TextView) itemLayout.findViewById(R.id.applozic_group_name);
@@ -331,9 +331,9 @@ public class ChannelFragment extends ListFragment implements
             if (!TextUtils.isEmpty(channel.getImageUrl())) {
                 mChannelImageLoader.loadImage(channel, holder.groupIcon);
             } else if (channel.isBroadcastMessage()) {
-                holder.groupIcon.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+                holder.groupIcon.setImageResource(R.drawable.km_ic_applozic_broadcast);
             } else {
-                holder.groupIcon.setImageResource(R.drawable.applozic_group_icon);
+                holder.groupIcon.setImageResource(R.drawable.km_group_icon);
             }
 
             // Returns the item layout view

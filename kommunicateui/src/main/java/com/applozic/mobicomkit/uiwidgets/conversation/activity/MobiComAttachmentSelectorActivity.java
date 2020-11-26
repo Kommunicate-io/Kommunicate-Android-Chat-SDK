@@ -23,7 +23,7 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobiComAttachmentGridViewAdapter;
@@ -191,7 +191,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             @Override
             public void preTaskUIMethod() {
                 progressDialog = ProgressDialog.show(MobiComAttachmentSelectorActivity.this, MobiComAttachmentSelectorActivity.this.getString(R.string.wait),
-                        MobiComAttachmentSelectorActivity.this.getString(R.string.applozic_contacts_loading_info), true);
+                        MobiComAttachmentSelectorActivity.this.getString(R.string.km_contacts_loading_info), true);
             }
 
             @Override
@@ -219,7 +219,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             boolean restrictedWordMatches;
 
             try {
-                String dynamicRegex = ApplozicSetting.getInstance(this).getRestrictedWordsRegex();
+                String dynamicRegex = KommunicateSetting.getInstance(this).getRestrictedWordsRegex();
                 String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (alCustomizationSettings != null
                         && !TextUtils.isEmpty(alCustomizationSettings.getRestrictedWordRegex()) ? alCustomizationSettings.getRestrictedWordRegex() : "");
 

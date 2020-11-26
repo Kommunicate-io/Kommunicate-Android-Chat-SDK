@@ -61,14 +61,14 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
-import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicDocumentView;
+import com.applozic.mobicomkit.uiwidgets.attachmentview.KmDocumentView;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessageFactory;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessageFactory;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
@@ -140,7 +140,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private TextAppearanceSpan highlightTextSpan;
     private View view;
     private ContextMenuClickListener contextMenuClickListener;
-    private ALRichMessageListener listener;
+    private KmRichMessageListener listener;
     private KmStoragePermissionListener storagePermissionListener;
     private String geoApiKey;
     private float[] sentMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -180,7 +180,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this.contextMenuClickListener = contextMenuClickListener;
     }
 
-    public void setRichMessageCallbackListener(ALRichMessageListener listener) {
+    public void setRichMessageCallbackListener(KmRichMessageListener listener) {
         this.listener = listener;
     }
 
@@ -217,7 +217,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 return contactService.downloadContactImage(context, (Contact) data);
             }
         };
-        contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_180_holo_light);
+        contactImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_180_holo_light);
         contactImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         contactImageLoader.setImageFadeIn(false);
 
@@ -258,13 +258,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             View v2 = layoutInflater.inflate(R.layout.mobicom_date_layout, parent, false);
             return new MyViewHolder2(v2);
         } else if (viewType == 3) {
-            View v3 = layoutInflater.inflate(R.layout.applozic_custom_message_layout, parent, false);
+            View v3 = layoutInflater.inflate(R.layout.km_custom_message_layout, parent, false);
             return new MyViewHolder3(v3);
         } else if (viewType == 4) {
-            View v4 = layoutInflater.inflate(R.layout.applozic_channel_custom_message_layout, parent, false);
+            View v4 = layoutInflater.inflate(R.layout.km_channel_custom_message_layout, parent, false);
             return new MyViewHolder4(v4);
         } else if (viewType == 5) {
-            View v5 = layoutInflater.inflate(R.layout.applozic_call_layout, parent, false);
+            View v5 = layoutInflater.inflate(R.layout.km_call_layout, parent, false);
             return new MyViewHolder5(v5);
         } else if (viewType == 0) {
             View v0 = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
@@ -328,7 +328,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (VideoCallNotificationHelper.isAudioCall(message)) {
-                        myViewHolder5.imageView.setImageResource(R.drawable.applozic_ic_action_call);
+                        myViewHolder5.imageView.setImageResource(R.drawable.km_ic_action_call);
                     } else {
                         myViewHolder5.imageView.setImageResource(R.drawable.ic_videocam_white_24px);
                     }
@@ -433,7 +433,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 FileMeta fileMeta = msg.getFileMetas();
                                 myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
                                 if (fileMeta.getContentType().contains("image")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_image_camera_alt);
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_image_camera_alt);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.photo_string));
                                     } else {
@@ -443,7 +443,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                                     imageThumbnailLoader.loadImage(msg, myHolder.imageViewPhoto);
                                 } else if (fileMeta.getContentType().contains("video")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_action_video);
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_action_video);
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                                         if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
                                             myHolder.imageViewForAttachmentType.setScaleX(-1);
@@ -465,7 +465,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                         }
                                     }
                                 } else if (fileMeta.getContentType().contains("audio")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_music_note);
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_music_note);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.audio_string));
                                     } else {
@@ -478,18 +478,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     try {
                                         VCFContactData data = parser.parseCVFContactData(msg.getFilePaths().get(0));
                                         if (data != null) {
-                                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_person_white);
+                                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_person_white);
                                             myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
                                             myHolder.replyMessageTextView.append(" " + data.getName());
                                         }
                                     } catch (Exception e) {
-                                        myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_person_white);
+                                        myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_person_white);
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
                                     }
                                     myHolder.imageViewPhoto.setVisibility(View.GONE);
                                     myHolder.imageViewRLayout.setVisibility(View.GONE);
                                 } else {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_action_attachment);
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_action_attachment);
                                     if (TextUtils.isEmpty(msg.getMessage())) {
                                         myHolder.replyMessageTextView.setText(context.getString(R.string.attachment_string));
                                     } else {
@@ -505,8 +505,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                                 myHolder.replyMessageTextView.setText(context.getString(R.string.al_location_string));
                                 myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
-                                myHolder.imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_location_on_white_24dp);
-                                loadImage.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
+                                myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_location_on_white_24dp);
+                                loadImage.setLoadingImage(R.drawable.km_map_offline_thumbnail);
                                 loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage(), geoApiKey), myHolder.imageViewPhoto);
                             } else {
                                 myHolder.imageViewForAttachmentType.setVisibility(View.GONE);
@@ -635,7 +635,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         if ((!message.isCall()) || message.isDummyEmptyMessage()) {
                             myHolder.sentOrReceived.setVisibility(View.GONE);
                         } else if (message.isCall()) {
-                            myHolder.sentOrReceived.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+                            myHolder.sentOrReceived.setImageResource(R.drawable.km_ic_action_call_holo_light);
                         } else if (getItemViewType(position) == 0) {
                             myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
                         } else {
@@ -698,7 +698,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     if (!message.isTypeOutbox()) {
                         loadProfileImage(receiverContact != null ? receiverContact : contactDisplayName, myHolder.contactImage, myHolder.alphabeticTextView, hideRecursiveImages);
                     }
-                    ApplozicDocumentView audioView = new ApplozicDocumentView(this.context, storagePermissionListener);
+                    KmDocumentView audioView = new KmDocumentView(this.context, storagePermissionListener);
                     audioView.inflateViewWithMessage(myHolder.view, message);
                     audioView.hideView(true);
 
@@ -832,7 +832,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     return;
                                 }
 
-                                KmToast.success(context, context.getString(R.string.applozic_resending_attachment), Toast.LENGTH_LONG).show();
+                                KmToast.success(context, context.getString(R.string.km_resending_attachment), Toast.LENGTH_LONG).show();
                                 myHolder.mediaUploadProgressBar.setVisibility(View.VISIBLE);
                                 myHolder.attachmentRetry.setVisibility(View.GONE);
                                 //updating Cancel Flag to smListItem....
@@ -955,7 +955,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.chatLocation.setVisibility(View.VISIBLE);
                             loadImage.setImageFadeIn(false);
                             myHolder.mapImageView.setVisibility(View.VISIBLE);
-                            loadImage.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
+                            loadImage.setLoadingImage(R.drawable.km_map_offline_thumbnail);
                             loadImage.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), myHolder.mapImageView);
                             myHolder.messageTextView.setVisibility(View.GONE);
                             myHolder.preview.setVisibility(View.GONE);
@@ -974,7 +974,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         } else if ((message.getContentType() == Message.ContentType.VIDEO_MSG.getValue()) && !message.isAttachmentDownloaded()) {
                             myHolder.preview.setVisibility(View.VISIBLE);
                             myHolder.mapImageView.setVisibility(View.GONE);
-                            myHolder.preview.setImageResource(R.drawable.applozic_video_default_thumbnail);
+                            myHolder.preview.setImageResource(R.drawable.km_video_default_thumbnail);
                         } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
                             myHolder.mapImageView.setVisibility(View.GONE);
                             setMessageText(myHolder.messageTextView, message);
@@ -1029,7 +1029,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
 
                         try {
-                            AlRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
+                            KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
                         } catch (Exception e) {
                             e.printStackTrace();
                             myHolder.richMessageLayout.setVisibility(View.GONE);

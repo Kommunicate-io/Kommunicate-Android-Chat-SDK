@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@drawable/applozic_sent_message"
+            android:background="@drawable/km_sent_message"
             android:minHeight="40dp"
             android:minWidth="94dp"
             android:orientation="vertical"
@@ -53,9 +53,9 @@
                 android:id="@+id/attached_file"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/applozic_ic_action_attachment"
+                android:drawableLeft="@drawable/km_ic_action_attachment"
                 android:drawablePadding="8dp"
-                android:drawableStart="@drawable/applozic_ic_action_attachment"
+                android:drawableStart="@drawable/km_ic_action_attachment"
                 android:textAlignment="gravity"
                 android:textColor="@color/white"
                 android:textDirection="locale"
@@ -68,7 +68,7 @@
 
             <include layout="@layout/mobicom_chat_location_view" />
 
-            <include layout="@layout/applozic_document_attachment" />
+            <include layout="@layout/km_document_attachment" />
 
             <TextView
                 android:id="@+id/message"
@@ -149,7 +149,7 @@
         </FrameLayout>
     </LinearLayout>
 
-    <include layout="@layout/al_rich_message_sender_layout" />
+    <include layout="@layout/km_rich_message_sender_layout" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/statusMainLayout"

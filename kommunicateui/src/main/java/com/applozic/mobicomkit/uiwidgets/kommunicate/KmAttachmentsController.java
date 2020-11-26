@@ -11,7 +11,7 @@ import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.FileTaskAsync;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
@@ -106,7 +106,7 @@ public class KmAttachmentsController {
         if (alCustomizationSettings.getFilterGallery() != null) {
             filterOptions = alCustomizationSettings.getFilterGallery();
         } else {
-            filterOptions = ApplozicSetting.getInstance(context.getApplicationContext()).getGalleryFilterOptions();
+            filterOptions = KommunicateSetting.getInstance(context.getApplicationContext()).getGalleryFilterOptions();
         }
 
         FileUtils.GalleryFilterOptions choosenOption = FileUtils.GalleryFilterOptions.ALL_FILES;

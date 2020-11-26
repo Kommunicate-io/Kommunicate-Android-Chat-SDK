@@ -38,7 +38,7 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_toRightOf="@+id/alphabeticImage"
-            android:src="@drawable/applozic_ic_contact_picture_holo_light"
+            android:src="@drawable/km_ic_contact_picture_holo_light"
             android:visibility="visible"
             android:layout_toEndOf="@+id/alphabeticImage" />
 

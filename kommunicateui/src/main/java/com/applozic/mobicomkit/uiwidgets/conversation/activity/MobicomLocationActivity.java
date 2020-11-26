@@ -35,7 +35,7 @@ import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
+import com.applozic.mobicomkit.uiwidgets.instruction.KmPermissions;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -72,13 +72,13 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     private ConnectivityReceiver connectivityReceiver;
     AlCustomizationSettings alCustomizationSettings;
     Marker myLocationMarker;
-    ApplozicPermissions applozicPermissions;
+    KmPermissions kmPermissions;
     static final String TAG = "MobicomLocationActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_applozic_location);
+        setContentView(R.layout.activity_km_location);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_screen);
         toolbar.setTitle(getResources().getString(R.string.send_location));
@@ -104,7 +104,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         layout = (LinearLayout) findViewById(R.id.footerAd);
         sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        applozicPermissions = new ApplozicPermissions(MobicomLocationActivity.this, layout);
+        kmPermissions = new KmPermissions(MobicomLocationActivity.this, layout);
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -219,7 +219,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     public void processLocation() {
         if (Utils.hasMarshmallow()) {
-            applozicPermissions.checkRuntimePermissionForLocationActivity();
+            kmPermissions.checkRuntimePermissionForLocationActivity();
         } else {
             processingLocation();
         }

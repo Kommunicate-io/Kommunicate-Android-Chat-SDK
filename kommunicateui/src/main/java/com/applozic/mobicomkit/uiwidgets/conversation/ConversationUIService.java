@@ -41,10 +41,10 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelDeleteTask;
-import com.applozic.mobicomkit.uiwidgets.async.ApplozicChannelLeaveMember;
+import com.applozic.mobicomkit.uiwidgets.async.KmChannelDeleteTask;
+import com.applozic.mobicomkit.uiwidgets.async.KmChannelLeaveMember;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
@@ -319,7 +319,7 @@ public class ConversationUIService {
 
                         final ProgressDialog progressDialog = ProgressDialog.show(fragmentActivity, "",
                                 fragmentActivity.getString(R.string.deleting_channel_user), true);
-                        ApplozicChannelDeleteTask.TaskListener channelDeleteTask = new ApplozicChannelDeleteTask.TaskListener() {
+                        KmChannelDeleteTask.TaskListener channelDeleteTask = new KmChannelDeleteTask.TaskListener() {
                             @Override
                             public void onSuccess(String response) {
                                 Log.i(TAG, "Channel deleted response:" + response);
@@ -328,7 +328,7 @@ public class ConversationUIService {
 
                             @Override
                             public void onFailure(String response, Exception exception) {
-                                showToastMessage(fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.applozic_server_error : R.string.you_dont_have_any_network_access_info));
+                                showToastMessage(fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.km_server_error : R.string.you_dont_have_any_network_access_info));
                             }
 
                             @Override
@@ -339,8 +339,8 @@ public class ConversationUIService {
 
                             }
                         };
-                        ApplozicChannelDeleteTask applozicChannelDeleteTask = new ApplozicChannelDeleteTask(fragmentActivity, channelDeleteTask, channel);
-                        applozicChannelDeleteTask.execute((Void) null);
+                        KmChannelDeleteTask kmChannelDeleteTask = new KmChannelDeleteTask(fragmentActivity, channelDeleteTask, channel);
+                        kmChannelDeleteTask.execute((Void) null);
                     }
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -362,19 +362,19 @@ public class ConversationUIService {
                 setPositiveButton(R.string.channel_exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        ApplozicChannelLeaveMember.ChannelLeaveMemberListener applozicLeaveMemberListener = new ApplozicChannelLeaveMember.ChannelLeaveMemberListener() {
+                        KmChannelLeaveMember.ChannelLeaveMemberListener applozicLeaveMemberListener = new KmChannelLeaveMember.ChannelLeaveMemberListener() {
                             @Override
                             public void onSuccess(String response, Context context) {
                             }
 
                             @Override
                             public void onFailure(String response, Exception e, Context context) {
-                                showToastMessage(fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.applozic_server_error : R.string.you_dont_have_any_network_access_info));
+                                showToastMessage(fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.km_server_error : R.string.you_dont_have_any_network_access_info));
                             }
                         };
-                        ApplozicChannelLeaveMember applozicChannelLeaveMember = new ApplozicChannelLeaveMember(fragmentActivity, channel.getKey(), MobiComUserPreference.getInstance(fragmentActivity).getUserId(), applozicLeaveMemberListener);
-                        applozicChannelLeaveMember.setEnableProgressDialog(true);
-                        applozicChannelLeaveMember.execute((Void) null);
+                        KmChannelLeaveMember kmChannelLeaveMember = new KmChannelLeaveMember(fragmentActivity, channel.getKey(), MobiComUserPreference.getInstance(fragmentActivity).getUserId(), applozicLeaveMemberListener);
+                        kmChannelLeaveMember.setEnableProgressDialog(true);
+                        kmChannelLeaveMember.execute((Void) null);
 
                     }
                 });
@@ -675,7 +675,7 @@ public class ConversationUIService {
         }
         if (alCustomizationSettings.getTotalOnlineUsers() > 0 && Utils.isInternetAvailable(fragmentActivity)) {
             processLoadUsers(false, message, messageContent, alCustomizationSettings.getTotalRegisteredUserToFetch(), alCustomizationSettings.getTotalOnlineUsers());
-        } else if (alCustomizationSettings.getTotalRegisteredUserToFetch() > 0 && (alCustomizationSettings.isRegisteredUserContactListCall() || ApplozicSetting.getInstance(fragmentActivity).isRegisteredUsersContactCall()) && !userPreference.getWasContactListServerCallAlreadyDone()) {
+        } else if (alCustomizationSettings.getTotalRegisteredUserToFetch() > 0 && (alCustomizationSettings.isRegisteredUserContactListCall() || KommunicateSetting.getInstance(fragmentActivity).isRegisteredUsersContactCall()) && !userPreference.getWasContactListServerCallAlreadyDone()) {
             if (Utils.isInternetAvailable(fragmentActivity)) {
                 processLoadUsers(true, message, messageContent, alCustomizationSettings.getTotalRegisteredUserToFetch(), alCustomizationSettings.getTotalOnlineUsers());
             }
@@ -916,7 +916,7 @@ public class ConversationUIService {
     public void processLoadUsers(boolean isRegisteredUserCall, final Message message, final String messageContent, int totalRegisteredUsers, int totalOnlineUser) {
 
         final ProgressDialog progressDialog = ProgressDialog.show(fragmentActivity, "",
-                fragmentActivity.getString(R.string.applozic_contacts_loading_info), true);
+                fragmentActivity.getString(R.string.km_contacts_loading_info), true);
 
         RegisteredUsersAsyncTask.TaskListener usersAsyncTaskTaskListener = new RegisteredUsersAsyncTask.TaskListener() {
             @Override
@@ -945,7 +945,7 @@ public class ConversationUIService {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                String error = fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.applozic_server_error : R.string.you_need_network_access_for_block_or_unblock);
+                String error = fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.km_server_error : R.string.you_need_network_access_for_block_or_unblock);
                 Toast toast = KmToast.error(fragmentActivity, error, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();

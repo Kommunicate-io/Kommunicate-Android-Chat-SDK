@@ -58,7 +58,7 @@ import com.applozic.mobicomkit.feed.ErrorResponseFeed;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
@@ -207,7 +207,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 return baseContactService.downloadContactImage(getApplicationContext(), (Contact) data);
             }
         };
-        contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+        contactImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
         contactImageLoader.addImageCache(this.getSupportFragmentManager(), 0.1f);
         contactImageLoader.setImageFadeIn(false);
         channelImageLoader = new ImageLoader(getApplicationContext(), getListPreferredItemHeight()) {
@@ -217,14 +217,14 @@ public class ChannelInfoActivity extends AppCompatActivity {
             }
         };
 
-        channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+        channelImageLoader.setLoadingImage(R.drawable.km_group_icon);
         channelImageLoader.addImageCache(this.getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
 
         if (channelImage != null && !channel.isBroadcastMessage()) {
             channelImageLoader.loadImage(channel, channelImage);
         } else {
-            channelImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+            channelImage.setImageResource(R.drawable.km_ic_applozic_broadcast);
         }
 
         channelUserMapperList = ChannelService.getInstance(this).getListOfUsersFromChannelUserMapper(channel.getKey());
@@ -287,9 +287,9 @@ public class ChannelInfoActivity extends AppCompatActivity {
             Channel newChannel = ChannelService.getInstance(this).getChannelByChannelKey(channel.getKey());
             if (newChannel != null && TextUtils.isEmpty(newChannel.getImageUrl())) {
                 if (!channel.isBroadcastMessage()) {
-                    channelImage.setImageResource(R.drawable.applozic_group_icon);
+                    channelImage.setImageResource(R.drawable.km_group_icon);
                 } else {
-                    channelImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+                    channelImage.setImageResource(R.drawable.km_ic_applozic_broadcast);
                 }
             }
         }
@@ -427,7 +427,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
         if (id == R.id.add_member_to_channel) {
             if (isUserPresent) {
                 Utils.toggleSoftKeyBoard(ChannelInfoActivity.this, true);
-                if (alCustomizationSettings.getTotalRegisteredUserToFetch() > 0 && (alCustomizationSettings.isRegisteredUserContactListCall() || ApplozicSetting.getInstance(this).isRegisteredUsersContactCall()) && !userPreference.getWasContactListServerCallAlreadyDone()) {
+                if (alCustomizationSettings.getTotalRegisteredUserToFetch() > 0 && (alCustomizationSettings.isRegisteredUserContactListCall() || KommunicateSetting.getInstance(this).isRegisteredUsersContactCall()) && !userPreference.getWasContactListServerCallAlreadyDone()) {
                     processLoadRegisteredUsers();
                 } else {
                     Intent addMemberIntent = new Intent(ChannelInfoActivity.this, ContactSelectionActivity.class);
@@ -456,7 +456,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
 
     public void processLoadRegisteredUsers() {
         final ProgressDialog progressDialog = ProgressDialog.show(ChannelInfoActivity.this, "",
-                getString(R.string.applozic_contacts_loading_info), true);
+                getString(R.string.km_contacts_loading_info), true);
 
         RegisteredUsersAsyncTask.TaskListener usersAsyncTaskTaskListener = new RegisteredUsersAsyncTask.TaskListener() {
             @Override
@@ -476,7 +476,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                String error = getString(Utils.isInternetAvailable(ChannelInfoActivity.this) ? R.string.applozic_server_error : R.string.you_need_network_access_for_block_or_unblock);
+                String error = getString(Utils.isInternetAvailable(ChannelInfoActivity.this) ? R.string.km_server_error : R.string.you_need_network_access_for_block_or_unblock);
                 Toast toast = Toast.makeText(ChannelInfoActivity.this, error, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
@@ -888,7 +888,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                             if (MobiComKitConstants.GROUP_USER_LIMIT_EXCEED.equalsIgnoreCase(errorDescription)) {
                                 Toast.makeText(context, R.string.group_members_limit_exceeds, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(context, R.string.applozic_server_error, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, R.string.km_server_error, Toast.LENGTH_SHORT).show();
                             }
                         }
                     }

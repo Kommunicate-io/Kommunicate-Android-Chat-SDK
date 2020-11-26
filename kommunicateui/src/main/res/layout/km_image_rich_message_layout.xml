@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:padding="6dp"
+    android:background="@drawable/km_received_message"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/km_rich_message_border">
+
+        <ImageView
+            android:id="@+id/alImageView"
+            android:layout_width="288dp"
+            android:layout_height="200dp"
+            android:src="@drawable/mobicom_attachment_file"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/alCaptionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:maxLines="3"
+        android:visibility="gone"
+        android:text="" />
+</LinearLayout>

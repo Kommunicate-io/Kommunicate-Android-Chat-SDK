@@ -88,7 +88,7 @@
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/circle"
-                android:src="@drawable/applozic_ic_action_add"
+                android:src="@drawable/km_ic_action_add"
                 android:visibility="gone" />
 
             <Button
@@ -157,7 +157,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/applozic_ic_action_cancel" />
+                android:src="@drawable/km_ic_action_cancel" />
 
         </RelativeLayout>
 
@@ -340,7 +340,7 @@
                 android:background="#5B5959"
                 android:gravity="center"
                 android:padding="1dp"
-                android:text="@string/powered_by_applozic_message"
+                android:text="@string/powered_by_kommunicate_message"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 android:visibility="gone" />
@@ -394,7 +394,7 @@
                                 android:paddingEnd="20dp"
                                 android:paddingRight="20dp"
                                 android:scaleType="center"
-                                android:src="@drawable/applozic_ic_action_attachment"
+                                android:src="@drawable/km_ic_action_attachment"
                                 android:visibility="gone" />
 
                             <ImageButton
@@ -410,7 +410,7 @@
                                 android:paddingEnd="20dp"
                                 android:paddingRight="20dp"
                                 android:scaleType="center"
-                                android:src="@drawable/applozic_ic_action_attachment"
+                                android:src="@drawable/km_ic_action_attachment"
                                 android:visibility="gone" />
 
                             <ImageButton

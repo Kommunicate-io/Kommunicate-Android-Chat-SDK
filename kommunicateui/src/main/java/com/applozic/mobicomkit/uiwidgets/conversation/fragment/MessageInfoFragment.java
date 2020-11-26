@@ -44,16 +44,13 @@ import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.contact.Contact;
-import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -88,7 +85,7 @@ public class MessageInfoFragment extends Fragment {
 
         init();
 
-        View view = inflater.inflate(R.layout.applozic_message_info, container, false);
+        View view = inflater.inflate(R.layout.km_message_info, container, false);
         Bundle bundle = getArguments();
         String messageJson = bundle.getString(MESSAGE_ARGUMENT_KEY);
         message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
@@ -138,7 +135,7 @@ public class MessageInfoFragment extends Fragment {
             defaultRelativeLayout.setVisibility(View.GONE);
             chatLocation.setVisibility(View.VISIBLE);
             locationImageLoader.setImageFadeIn(false);
-            locationImageLoader.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
+            locationImageLoader.setLoadingImage(R.drawable.km_map_offline_thumbnail);
             locationImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), locationImageView);
             textView.setVisibility(View.GONE);
         } else {
@@ -172,7 +169,7 @@ public class MessageInfoFragment extends Fragment {
                     return null;
                 }
             };
-            contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+            contactImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
             contactImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
         }
 
@@ -192,7 +189,7 @@ public class MessageInfoFragment extends Fragment {
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(false);
-        toolbar.setTitle(getString(R.string.applozic_message_info));
+        toolbar.setTitle(getString(R.string.km_message_info));
         toolbar.setSubtitle("");
 
     }
@@ -328,7 +325,7 @@ public class MessageInfoFragment extends Fragment {
                 return;
             }
             if (messageInfoResponse == null) {
-                KmToast.error(getContext(), getString(R.string.applozic_message_info_no_network), Toast.LENGTH_SHORT).show();
+                KmToast.error(getContext(), getString(R.string.km_message_info_no_network), Toast.LENGTH_SHORT).show();
                 return;
             }
             if (messageInfoResponse.getReadByUserList() != null) {

@@ -247,13 +247,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 } else {
                     String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler));
-
-                    if (showConversationTypeIcon(channel)) {
-                        myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                        myholder.attachmentIcon.setImageResource(R.drawable.ic_facebook_icon);
-                    } else {
-                        myholder.attachmentIcon.setVisibility(View.GONE);
-                    }
+                    showConversationSourceIcon(channel, myholder.attachmentIcon);
                 }
 
                 if (myholder.sentOrReceived != null) {
@@ -597,11 +591,17 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         }
     }
 
-    private boolean showConversationTypeIcon(Channel channel) {
-        return (channel != null
+    private void showConversationSourceIcon(Channel channel, ImageView attachmentIcon) {
+        if (channel != null
                 && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())
                 && channel.getMetadata() != null
-                && channel.getMetadata().containsKey(CONVERSATION_SOURCE)
-                && SOURCE_FACEBOOK.equals(channel.getMetadata().get(CONVERSATION_SOURCE)));
+                && channel.getMetadata().containsKey(CONVERSATION_SOURCE)) {
+            attachmentIcon.setVisibility(View.VISIBLE);
+            if (SOURCE_FACEBOOK.equals(channel.getMetadata().get(CONVERSATION_SOURCE))) {
+                attachmentIcon.setImageResource(R.drawable.ic_facebook_icon);
+            }
+        } else {
+            attachmentIcon.setVisibility(View.GONE);
+        }
     }
 }

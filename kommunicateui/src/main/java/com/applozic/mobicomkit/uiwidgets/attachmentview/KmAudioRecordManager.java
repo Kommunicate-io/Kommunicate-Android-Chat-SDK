@@ -1,9 +1,12 @@
 package com.applozic.mobicomkit.uiwidgets.attachmentview;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
@@ -12,6 +15,7 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmAudioSampler;
+import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.io.File;
@@ -70,17 +74,25 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
                 stopRecording();
             }
 
-            prepareDefaultFileData();
-            audioRecorder = new AudioRecord(AUDIO_SOURCE,
-                    SAMPLING_RATE, CHANNEL_IN_CONFIG,
-                    AUDIO_FORMAT, bufferElements2Rec * bytesPerElement);
+            if (PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+                prepareDefaultFileData();
+                audioRecorder = new AudioRecord(AUDIO_SOURCE,
+                        SAMPLING_RATE, CHANNEL_IN_CONFIG,
+                        AUDIO_FORMAT, bufferElements2Rec * bytesPerElement);
 
-            audioData = new byte[BUFFER_SIZE];
-            audioRecorder.startRecording();
-            isRecording = true;
+                audioData = new byte[BUFFER_SIZE];
+                audioRecorder.startRecording();
+                isRecording = true;
 
-            createRecordingThread();
-            recordingThread.start();
+                createRecordingThread();
+                recordingThread.start();
+            } else {
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.RECORD_AUDIO},
+                            10);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

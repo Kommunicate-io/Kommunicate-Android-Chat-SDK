@@ -53,12 +53,12 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.feed.ErrorResponseFeed;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
-import com.applozic.mobicomkit.uiwidgets.async.AlChannelCreateAsyncTask;
-import com.applozic.mobicomkit.uiwidgets.async.AlGetMembersFromContactGroupListTask;
-import com.applozic.mobicomkit.uiwidgets.async.ApplozicGetMemberFromContactGroupTask;
+import com.applozic.mobicomkit.uiwidgets.async.KmChannelCreateAsyncTask;
+import com.applozic.mobicomkit.uiwidgets.async.KmGetMembersFromContactGroupListTask;
+import com.applozic.mobicomkit.uiwidgets.async.KmGetMemberFromContactGroupTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelCreateActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity;
@@ -156,7 +156,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             }
         };
         // Set a placeholder loading image for the image loader
-        mImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+        mImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
         // Add a cache to the image loader
         mImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
         mImageLoader.setImageFadeIn(false);
@@ -164,7 +164,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             ChannelDatabaseService channelDatabaseService = ChannelDatabaseService.getInstance(context);
             groupContacts = channelDatabaseService.getChannelMemberByName(contactsGroupId, String.valueOf(Channel.GroupType.CONTACT_GROUP.getValue()));
             if (Utils.isInternetAvailable(getContext())) {
-                ApplozicGetMemberFromContactGroupTask.GroupMemberListener eventMemberListener = new ApplozicGetMemberFromContactGroupTask.GroupMemberListener() {
+                KmGetMemberFromContactGroupTask.GroupMemberListener eventMemberListener = new KmGetMemberFromContactGroupTask.GroupMemberListener() {
                     @Override
                     public void onSuccess(String[] userIdArray, Context context) {
                         if (isAdded()) {
@@ -179,8 +179,8 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
                     }
                 };
-                ApplozicGetMemberFromContactGroupTask applozicGetMemberFromContactGroupTask = new ApplozicGetMemberFromContactGroupTask(getActivity(), contactsGroupId, String.valueOf(Channel.GroupType.CONTACT_GROUP.getValue()), eventMemberListener);        // pass GroupId whose contact Members you want to show, contactGroupType
-                applozicGetMemberFromContactGroupTask.execute();
+                KmGetMemberFromContactGroupTask kmGetMemberFromContactGroupTask = new KmGetMemberFromContactGroupTask(getActivity(), contactsGroupId, String.valueOf(Channel.GroupType.CONTACT_GROUP.getValue()), eventMemberListener);        // pass GroupId whose contact Members you want to show, contactGroupType
+                kmGetMemberFromContactGroupTask.execute();
             } else if (groupContacts != null) {
                 getLoaderManager().initLoader(ContactsQuery.QUERY_ID, null, ContactSelectionFragment.this);
             }
@@ -192,7 +192,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             progressBar.setMessage(getContext().getResources().getString(R.string.processing_please_wait));
             progressBar.show();
 
-            AlGetMembersFromContactGroupListTask.GetMembersFromGroupIdListListener listener = new AlGetMembersFromContactGroupListTask.GetMembersFromGroupIdListListener() {
+            KmGetMembersFromContactGroupListTask.GetMembersFromGroupIdListListener listener = new KmGetMembersFromContactGroupListTask.GetMembersFromGroupIdListListener() {
                 @Override
                 public void onSuccess(Context context, String response, String[] contactList) {
                     progressBar.dismiss();
@@ -208,9 +208,9 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             };
 
             if (MobiComUserPreference.getInstance(getContext()).isContactGroupNameList()) {
-                new AlGetMembersFromContactGroupListTask(getContext(), listener, null, groupList, "9").execute();
+                new KmGetMembersFromContactGroupListTask(getContext(), listener, null, groupList, "9").execute();
             } else {
-                new AlGetMembersFromContactGroupListTask(getContext(), listener, groupList, null, "9").execute();
+                new KmGetMembersFromContactGroupListTask(getContext(), listener, groupList, null, "9").execute();
             }
         }
     }
@@ -252,7 +252,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
 
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemsCount) {
-                if ((alCustomizationSettings.isRegisteredUserContactListCall() || ApplozicSetting.getInstance(getActivity()).isRegisteredUsersContactCall()) && Utils.isInternetAvailable(getActivity().getApplicationContext()) && TextUtils.isEmpty(userPreference.getContactsGroupId()) && userPreference.getContactGroupIdList() == null) {
+                if ((alCustomizationSettings.isRegisteredUserContactListCall() || KommunicateSetting.getInstance(getActivity()).isRegisteredUsersContactCall()) && Utils.isInternetAvailable(getActivity().getApplicationContext()) && TextUtils.isEmpty(userPreference.getContactsGroupId()) && userPreference.getContactGroupIdList() == null) {
 
                     if (totalItemsCount < previousTotalItemCount) {
                         currentPage = startingPageIndex;
@@ -309,7 +309,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
     public void processDownloadRegisteredUsers() {
 
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "",
-                getActivity().getString(R.string.applozic_contacts_loading_info), true);
+                getActivity().getString(R.string.km_contacts_loading_info), true);
 
         RegisteredUsersAsyncTask.TaskListener usersAsyncTaskTaskListener = new RegisteredUsersAsyncTask.TaskListener() {
             @Override
@@ -320,7 +320,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                 if (registeredUsersApiResponse != null) {
                     try {
                         if (!Utils.isInternetAvailable(getActivity())) {
-                            Toast toast = Toast.makeText(getActivity(), getActivity().getString(R.string.applozic_contacts_loading_error), Toast.LENGTH_SHORT);
+                            Toast toast = Toast.makeText(getActivity(), getActivity().getString(R.string.km_contacts_loading_error), Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();
                         }
@@ -341,7 +341,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                String error = getString(Utils.isInternetAvailable(getActivity()) ? R.string.applozic_server_error : R.string.you_need_network_access_for_block_or_unblock);
+                String error = getString(Utils.isInternetAvailable(getActivity()) ? R.string.km_server_error : R.string.you_need_network_access_for_block_or_unblock);
                 Toast toast = Toast.makeText(getActivity(), error, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
@@ -400,7 +400,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             } else {
                 final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "",
                         getActivity().getString(TextUtils.isEmpty(channelName) ? R.string.broadcast_creating_info : R.string.group_creating_info), true);
-                AlChannelCreateAsyncTask.TaskListenerInterface taskListenerInterface = new AlChannelCreateAsyncTask.TaskListenerInterface() {
+                KmChannelCreateAsyncTask.TaskListenerInterface taskListenerInterface = new KmChannelCreateAsyncTask.TaskListenerInterface() {
                     @Override
                     public void onSuccess(Channel channel, Context context) {
                         if (progressDialog != null && progressDialog.isShowing()) {
@@ -438,12 +438,12 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                                     if (MobiComKitConstants.GROUP_USER_LIMIT_EXCEED.equalsIgnoreCase(errorDescription)) {
                                         Toast.makeText(context, R.string.group_members_limit_exceeds, Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(context, R.string.applozic_server_error, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, R.string.km_server_error, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
                         } else {
-                            Toast.makeText(context, Utils.isInternetAvailable(context) ? R.string.applozic_server_error : R.string.you_dont_have_any_network_access_info, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, Utils.isInternetAvailable(context) ? R.string.km_server_error : R.string.you_dont_have_any_network_access_info, Toast.LENGTH_SHORT).show();
                         }
                     }
                 };
@@ -475,8 +475,8 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                     } else {
                         channelInfo.setType(groupType);
                     }
-                    AlChannelCreateAsyncTask alChannelCreateAsyncTask = new AlChannelCreateAsyncTask(getActivity(), channelInfo, taskListenerInterface);
-                    alChannelCreateAsyncTask.execute((Void) null);
+                    KmChannelCreateAsyncTask kmChannelCreateAsyncTask = new KmChannelCreateAsyncTask(getActivity(), channelInfo, taskListenerInterface);
+                    kmChannelCreateAsyncTask.execute((Void) null);
                 }
             }
             return true;
@@ -617,7 +617,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                 isUserPresnt = ChannelService.getInstance(context).isUserAlreadyPresentInChannel(channel.getKey(), contact.getContactIds());
                 if (isUserPresnt) {
                     holder.textView1.setVisibility(View.VISIBLE);
-                    holder.textView1.setText(getString(R.string.applozic_user_already_in_a_group).replace(getString(R.string.groupType_info), Channel.GroupType.BROADCAST.getValue().equals(channel.getType()) ? getString(R.string.broadcast_string) : getString(R.string.group_string)));
+                    holder.textView1.setText(getString(R.string.km_user_already_in_a_group).replace(getString(R.string.groupType_info), Channel.GroupType.BROADCAST.getValue().equals(channel.getType()) ? getString(R.string.broadcast_string) : getString(R.string.group_string)));
                     holder.contactNumberTextView.setVisibility(View.GONE);
                     holder.textView1.setTextColor(ContextCompat.getColor(context, R.color.applozic_lite_black_color));
                     holder.textView2.setTextColor(ContextCompat.getColor(context, R.color.applozic_lite_black_color));

@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -63,6 +65,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class QuickConversationAdapter extends RecyclerView.Adapter implements Filterable {
 
     private static Map<Short, Integer> messageTypeColorMap = new HashMap<Short, Integer>();
+    private static final String CONVERSATION_SOURCE = "source";
+    private static final String SOURCE_FACEBOOK = "FACEBOOK";
 
     static {
         messageTypeColorMap.put(Message.MessageType.INBOX.getValue(), R.color.message_type_inbox);
@@ -159,56 +163,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                 myholder.contactImage.setVisibility(View.GONE);
                 myholder.alphabeticTextView.setVisibility(View.GONE);
-
-                if (contactReceiver != null) {
-                    String contactInfo = contactReceiver.getDisplayName();
-                    if (items != null && items.size() > 1) {
-                        Contact contact2 = contactService.getContactById(items.get(1));
-                        contactInfo = TextUtils.isEmpty(contactReceiver.getFirstName()) ? contactReceiver.getContactNumber() : contactReceiver.getFirstName() + ", "
-                                + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
-                    }
-                    myholder.smReceivers.setText(contactInfo);
-                    contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
-                    processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
-                } else if (message.getGroupId() != null && channel != null) {
-                    if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                        contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
-                        Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
-                        if (withUserContact != null) {
-                            myholder.smReceivers.setText(withUserContact.getDisplayName());
-                            processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
-                        }
-                    } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                        myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
-                        channelImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
-                        myholder.contactImage.setImageResource(R.drawable.applozic_ic_contact_picture_holo_light);
-                        loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
-                    } else {
-                        myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
-                        channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
-                        myholder.contactImage.setImageResource(R.drawable.applozic_group_icon);
-
-                        myholder.alphabeticTextView.setVisibility(View.GONE);
-                        myholder.contactImage.setVisibility(View.VISIBLE);
-                        myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
-
-                        if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
-                            channelImageLoader.loadImage(channel, myholder.contactImage);
-                            myholder.alphabeticTextView.setVisibility(View.GONE);
-                            myholder.contactImage.setVisibility(View.VISIBLE);
-                        } else if (channel != null && channel.isBroadcastMessage()) {
-                            myholder.contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
-                            myholder.alphabeticTextView.setVisibility(View.GONE);
-                            myholder.contactImage.setVisibility(View.VISIBLE);
-                        } else {
-                            channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
-                            myholder.alphabeticTextView.setVisibility(View.GONE);
-                            myholder.contactImage.setVisibility(View.VISIBLE);
-                        }
-                    }
-                }
-
                 myholder.onlineTextView.setVisibility(View.GONE);
+
                 if (alCustomizationSettings.isOnlineStatusMasterList() && message.getGroupId() == null) {
                     myholder.onlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.VISIBLE : View.GONE);
                     myholder.offlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.GONE : View.VISIBLE);
@@ -219,9 +175,54 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.attachedFile.setVisibility(View.GONE);
                 }
 
-                if (myholder.attachmentIcon != null) {
-                    myholder.attachmentIcon.setVisibility(View.GONE);
+                if (contactReceiver != null) {
+                    String contactInfo = contactReceiver.getDisplayName();
+                    if (items != null && items.size() > 1) {
+                        Contact contact2 = contactService.getContactById(items.get(1));
+                        contactInfo = TextUtils.isEmpty(contactReceiver.getFirstName()) ? contactReceiver.getContactNumber() : contactReceiver.getFirstName() + ", "
+                                + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
+                    }
+                    myholder.smReceivers.setText(contactInfo);
+                    contactImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
+                    processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
+                } else if (message.getGroupId() != null && channel != null) {
+                    if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                        contactImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
+                        Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
+                        if (withUserContact != null) {
+                            myholder.smReceivers.setText(withUserContact.getDisplayName());
+                            processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
+                        }
+                    } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                        myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
+                        channelImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
+                        myholder.contactImage.setImageResource(R.drawable.km_ic_contact_picture_holo_light);
+                        loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
+                    } else {
+                        myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
+                        channelImageLoader.setLoadingImage(R.drawable.km_group_icon);
+                        myholder.contactImage.setImageResource(R.drawable.km_group_icon);
+
+                        myholder.alphabeticTextView.setVisibility(View.GONE);
+                        myholder.contactImage.setVisibility(View.VISIBLE);
+                        myholder.smReceivers.setText(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
+
+                        if (channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
+                            channelImageLoader.loadImage(channel, myholder.contactImage);
+                            myholder.alphabeticTextView.setVisibility(View.GONE);
+                            myholder.contactImage.setVisibility(View.VISIBLE);
+                        } else if (channel != null && channel.isBroadcastMessage()) {
+                            myholder.contactImage.setImageResource(R.drawable.km_ic_applozic_broadcast);
+                            myholder.alphabeticTextView.setVisibility(View.GONE);
+                            myholder.contactImage.setVisibility(View.VISIBLE);
+                        } else {
+                            channelImageLoader.setLoadingImage(R.drawable.km_group_icon);
+                            myholder.alphabeticTextView.setVisibility(View.GONE);
+                            myholder.contactImage.setVisibility(View.VISIBLE);
+                        }
+                    }
                 }
+
                 if (message.isVideoCallMessage()) {
                     createVideoCallView(message, myholder.attachmentIcon, myholder.messageTextView);
                 } else if (message.hasAttachment() && myholder.attachmentIcon != null && !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
@@ -229,7 +230,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     String filePath = message.getFileMetas() == null && message.getFilePaths() != null ? message.getFilePaths().get(0).substring(message.getFilePaths().get(0).lastIndexOf("/") + 1) :
                             message.getFileMetas() != null ? message.getFileMetas().getName() : "";
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                    myholder.attachmentIcon.setImageResource(R.drawable.applozic_ic_action_attachment);
+                    myholder.attachmentIcon.setImageResource(R.drawable.km_ic_action_attachment);
                     myholder.messageTextView.setText(filePath);
                 } else if (myholder.attachmentIcon != null && message.getContentType() == Message.ContentType.LOCATION.getValue()) {
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
@@ -240,23 +241,18 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
                     myholder.messageTextView.setText(Html.fromHtml(message.getMessage()));
                     if (DetailedConversationAdapter.isEmailTypeMessage(message)) {
-                        if (myholder.attachmentIcon != null) {
-                            myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                            myholder.attachmentIcon.setImageResource(R.drawable.email);
-                        }
-                    } else {
-                        if (myholder.attachmentIcon != null) {
-                            myholder.attachmentIcon.setVisibility(View.GONE);
-                        }
+                        myholder.attachmentIcon.setVisibility(View.VISIBLE);
+                        myholder.attachmentIcon.setImageResource(R.drawable.email);
                     }
                 } else {
                     String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler));
+                    showConversationSourceIcon(channel, myholder.attachmentIcon);
                 }
 
                 if (myholder.sentOrReceived != null) {
                     if (message.isCall()) {
-                        myholder.sentOrReceived.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+                        myholder.sentOrReceived.setImageResource(R.drawable.km_ic_action_call_holo_light);
                         myholder.messageTextView.setTextColor(context.getResources().getColor(message.isIncomingCall() ? R.color.incoming_call : R.color.outgoing_call));
                     } else if (getItemViewType(position) == 0) {
                         myholder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
@@ -359,7 +355,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         };
     }
 
-    public void createVideoCallView(Message message, ImageView attachmentIcon, TextView messageTextView) {
+    public void createVideoCallView(Message message, ImageView attachmentIcon, TextView
+            messageTextView) {
         if (message.getMetadata() == null || message.getMetadata().isEmpty()) {
             if (attachmentIcon != null) {
                 attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
@@ -377,7 +374,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             if (VideoCallNotificationHelper.isMissedCall(message)) {
                 attachmentIcon.setImageResource(R.drawable.ic_communication_call_missed);
             } else if (VideoCallNotificationHelper.isAudioCall(message)) {
-                attachmentIcon.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+                attachmentIcon.setImageResource(R.drawable.km_ic_action_call_holo_light);
             } else {
                 attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
                 attachmentIcon.setColorFilter(R.color.applozic_green_color);
@@ -385,7 +382,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         }
     }
 
-    private void processContactImage(Contact contact, TextView textView, TextView offlineTv, TextView alphabeticTextView, CircleImageView contactImage) {
+    private void processContactImage(Contact contact, TextView textView, TextView
+            offlineTv, TextView alphabeticTextView, CircleImageView contactImage) {
         try {
             String contactNumber = "";
             char firstLetter = 0;
@@ -419,7 +417,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         }
     }
 
-    private void loadSupportGroupImage(String imageUrl, String displayName, TextView alphabeticTextView, CircleImageView contactImage) {
+    private void loadSupportGroupImage(String imageUrl, String displayName, TextView
+            alphabeticTextView, CircleImageView contactImage) {
         if (!TextUtils.isEmpty(imageUrl)) {
             alphabeticTextView.setVisibility(View.GONE);
             contactImage.setVisibility(View.VISIBLE);
@@ -589,6 +588,20 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             super(itemView);
             infoBroadCast = (TextView) itemView.findViewById(R.id.info_broadcast);
             loadMoreProgressBar = (ProgressBar) itemView.findViewById(R.id.load_more_progressbar);
+        }
+    }
+
+    private void showConversationSourceIcon(Channel channel, ImageView attachmentIcon) {
+        if (channel != null
+                && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())
+                && channel.getMetadata() != null
+                && channel.getMetadata().containsKey(CONVERSATION_SOURCE)) {
+            attachmentIcon.setVisibility(View.VISIBLE);
+            if (SOURCE_FACEBOOK.equals(channel.getMetadata().get(CONVERSATION_SOURCE))) {
+                attachmentIcon.setImageResource(R.drawable.ic_facebook_icon);
+            }
+        } else {
+            attachmentIcon.setVisibility(View.GONE);
         }
     }
 }

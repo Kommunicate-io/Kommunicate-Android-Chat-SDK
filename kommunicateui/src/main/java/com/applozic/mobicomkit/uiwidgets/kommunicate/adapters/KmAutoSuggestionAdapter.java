@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAutoSuggestionModel;
@@ -19,14 +19,14 @@ import io.kommunicate.models.KmAutoSuggestionModel;
 public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
 
     private Context context;
-    private ALRichMessageListener listener;
+    private KmRichMessageListener listener;
     public static final String KM_AUTO_SUGGESTION_ACTION = "KM_AUTO_SUGGESTION_ACTION";
     public static final String KM_AUTO_SUGGESTION_TYPED_TEXT = "TYPED_TEXT";
     private Cursor mCursor;
     private boolean mDataValid;
     private int mRowIDColumn;
 
-    public KmAutoSuggestionAdapter(Context context, ALRichMessageListener listener) {
+    public KmAutoSuggestionAdapter(Context context, KmRichMessageListener listener) {
         this.context = context;
         this.listener = listener;
     }

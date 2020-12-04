@@ -34,7 +34,7 @@
             android:layout_height="30dp"
             android:layout_toEndOf="@+id/alphabeticImage"
             android:layout_toRightOf="@+id/alphabeticImage"
-            android:src="@drawable/applozic_ic_contact_picture_180_holo_light"
+            android:src="@drawable/km_ic_contact_picture_180_holo_light"
             android:visibility="gone" />
     </RelativeLayout>
 
@@ -46,7 +46,7 @@
         android:layout_marginRight="43dp"
         android:layout_toEndOf="@+id/profileImageLayout"
         android:layout_toRightOf="@+id/profileImageLayout"
-        android:background="@drawable/applozic_received_message"
+        android:background="@drawable/km_received_message"
         android:elevation="1dp"
         android:gravity="center_vertical"
         android:minWidth="94dp"
@@ -105,8 +105,8 @@
                 android:id="@+id/attached_file"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/applozic_ic_action_attachment"
-                android:drawableLeft="@drawable/applozic_ic_action_attachment"
+                android:drawableStart="@drawable/km_ic_action_attachment"
+                android:drawableLeft="@drawable/km_ic_action_attachment"
                 android:drawablePadding="8dp"
                 android:textAlignment="gravity"
                 android:textColor="@color/black"
@@ -120,7 +120,7 @@
 
             <include layout="@layout/mobicom_chat_location_view" />
 
-            <include layout="@layout/applozic_document_attachment" />
+            <include layout="@layout/km_document_attachment" />
 
             <TextView
                 android:id="@+id/message"
@@ -178,7 +178,7 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <include layout="@layout/al_rich_message_receiver_layout" />
+    <include layout="@layout/km_rich_message_receiver_layout" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"

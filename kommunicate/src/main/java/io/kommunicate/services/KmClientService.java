@@ -3,6 +3,7 @@ package io.kommunicate.services;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.HttpRequestUtils;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -40,8 +41,12 @@ public class KmClientService extends MobiComKitClientService {
         httpRequestUtils = new HttpRequestUtils(context);
     }
 
-    private String getFeedbackUrl() {
+    private String getFeedbackGetUrl() {
         return getKmBaseUrl() + CONVERSATION_FEEDBACK_URL;
+    }
+
+    private String getFeedbackPostUrl() {
+        return getKmBaseUrl() + CONVERSATION_FEEDBACK_URL + "/v2?sendAsMessage=true";
     }
 
     public String getConversationShareUrl() {
@@ -108,8 +113,9 @@ public class KmClientService extends MobiComKitClientService {
      * @param feedbackComment the comment array of the inputs given by the user
      * @return the feedback response json string
      */
-    public String postConversationFeedback(int conversationId, int rating, String[] feedbackComment) throws Exception {
+    public String postConversationFeedback(int conversationId, int rating, String[] feedbackComment, String userName, String userId, String supportAgentId) throws Exception {
         JSONObject jsonObject = new JSONObject();
+        JSONObject feedbackUserJson = new JSONObject();
         JSONArray feedbackJsonArray = new JSONArray();
 
         if (feedbackComment != null) {
@@ -126,12 +132,17 @@ public class KmClientService extends MobiComKitClientService {
                 }
             }
             jsonObject.put("rating", rating);
+            jsonObject.put("applicationId", Applozic.getInstance(context).getApplicationKey());
+            jsonObject.put("supportAgentName", supportAgentId); //not a mistake or typo
+            feedbackUserJson.put("name", userName);
+            feedbackUserJson.put("userId", userId);
+            jsonObject.put("userInfo", feedbackUserJson);
         } catch (JSONException j) {
             j.printStackTrace();
         }
 
         try {
-            String response = httpRequestUtils.postData(getFeedbackUrl(), "application/json", "application/json", jsonObject.toString());
+            String response = httpRequestUtils.postData(getFeedbackPostUrl(), "application/json", "application/json", jsonObject.toString());
 
             Utils.printLog(context, TAG, "Post feedback response : " + response);
 
@@ -149,7 +160,7 @@ public class KmClientService extends MobiComKitClientService {
      * @return the response (feedback json)
      */
     public String getConversationFeedback(String conversationId) {
-        StringBuilder urlBuilder = new StringBuilder(getFeedbackUrl());
+        StringBuilder urlBuilder = new StringBuilder(getFeedbackGetUrl());
         if (!TextUtils.isEmpty(conversationId)) {
             urlBuilder.append("/");
             urlBuilder.append(conversationId);

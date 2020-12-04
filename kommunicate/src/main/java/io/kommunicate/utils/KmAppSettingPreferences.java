@@ -24,6 +24,7 @@ public class KmAppSettingPreferences {
     private static final String KM_THEME_PRIMARY_COLOR = "KM_THEME_PRIMARY_COLOR";
     private static final String KM_THEME_SECONDARY_COLOR = "KM_THEME_SECONDARY_COLOR";
     private static final String KM_COLLECT_FEEDBACK = "KM_COLLECT_FEEDBACK";
+    private static final String KM_BOT_MESSAGE_DELAY_INTERVAL = "KM_BOT_MESSAGE_DELAY_INTERVAL";
 
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
@@ -46,6 +47,7 @@ public class KmAppSettingPreferences {
             if (appSetting.getChatWidget() != null) {
                 setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
                 setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
+                setKmBotMessageDelayInterval(appSetting.getChatWidget().getBotMessageDelayInterval());
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());
@@ -114,6 +116,14 @@ public class KmAppSettingPreferences {
             getInstance().clearInstance();
             KmAppSettingPreferences.getInstance().setAppSetting(appSettingModel);
         }
+    }
+
+    public void setKmBotMessageDelayInterval(int delayInterval) {
+        preferences.edit().putInt(KM_BOT_MESSAGE_DELAY_INTERVAL, delayInterval).commit();
+    }
+
+    public int getKmBotMessageDelayInterval() {
+        return preferences.getInt(KM_BOT_MESSAGE_DELAY_INTERVAL, 0);
     }
 
     public void clearInstance() {

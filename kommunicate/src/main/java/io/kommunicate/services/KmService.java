@@ -149,11 +149,11 @@ public class KmService {
      * This method will get the conversation feedback using a async task for the given conversation id
      *
      * @param context            the context
-     * @param conversationId     of which we need to get the feed back
+     * @param kmFeedbackDetails  the feedback details
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
-    public static void getConversationFeedback(Context context, String conversationId, KmFeedbackCallback kmFeedbackCallback) {
-        new KmConversationFeedbackTask(context, conversationId, null, kmFeedbackCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public static void getConversationFeedback(Context context, KmConversationFeedbackTask.KmFeedbackDetails kmFeedbackDetails, KmFeedbackCallback kmFeedbackCallback) {
+        new KmConversationFeedbackTask(context, null, kmFeedbackDetails, kmFeedbackCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -161,10 +161,11 @@ public class KmService {
      *
      * @param context            the context
      * @param kmFeedback         will have the feedback and the conversation id of the conversation
+     * @param kmFeedbackDetails  the feedback details
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
-    public static void setConversationFeedback(Context context, KmFeedback kmFeedback, KmFeedbackCallback kmFeedbackCallback) {
-        new KmConversationFeedbackTask(context, null, kmFeedback, kmFeedbackCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public static void setConversationFeedback(Context context, KmFeedback kmFeedback, KmConversationFeedbackTask.KmFeedbackDetails kmFeedbackDetails, KmFeedbackCallback kmFeedbackCallback) {
+        new KmConversationFeedbackTask(context, kmFeedback, kmFeedbackDetails, kmFeedbackCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
@@ -183,8 +184,7 @@ public class KmService {
      * @param kmFeedback the feedback object (has groupId, rating and comments data members)
      * @return string response of the post request
      */
-    public synchronized String postConversationFeedback(KmFeedback kmFeedback) throws Exception {
-        return clientService.postConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments());
+    public synchronized String postConversationFeedback(KmFeedback kmFeedback, KmConversationFeedbackTask.KmFeedbackDetails kmFeedbackDetails) throws Exception {
+        return clientService.postConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments(), kmFeedbackDetails.getUserName(), kmFeedbackDetails.getUserId(), kmFeedbackDetails.getSupportAgentId());
     }
-
 }

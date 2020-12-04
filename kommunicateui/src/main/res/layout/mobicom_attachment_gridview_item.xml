@@ -19,7 +19,7 @@
         android:background="@color/applozic_transparent_color"
         android:drawablePadding="6dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/applozic_ic_action_attachment"
+        android:src="@drawable/km_ic_action_attachment"
         android:visibility="gone" />
 
     <TextView

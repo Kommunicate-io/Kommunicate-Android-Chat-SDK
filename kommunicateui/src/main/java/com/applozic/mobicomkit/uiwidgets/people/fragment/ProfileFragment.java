@@ -38,10 +38,10 @@ import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.PictureUploadPopUpFragment;
-import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
+import com.applozic.mobicomkit.uiwidgets.instruction.KmPermissions;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
@@ -76,11 +76,11 @@ public class ProfileFragment extends Fragment {
     private String changedStatusString;
     private String displayName;
     private String contactNumber;
-    private ApplozicPermissions applozicPermissions;
+    private KmPermissions kmPermissions;
     private RelativeLayout applozicProfileContactLayout;
 
-    public void setApplozicPermissions(ApplozicPermissions applozicPermissions) {
-        this.applozicPermissions = applozicPermissions;
+    public void setKmPermissions(KmPermissions kmPermissions) {
+        this.kmPermissions = kmPermissions;
     }
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
@@ -91,7 +91,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.al_activity_profile, container, false);
+        View view = inflater.inflate(R.layout.km_activity_profile, container, false);
         img_profile = (ImageView) view.findViewById(R.id.applozic_user_profile);
         statusEdit = (ImageView) view.findViewById(R.id.status_edit_btn);
         displayNameEdit = (ImageView) view.findViewById(R.id.displayName_edit_btn);
@@ -109,7 +109,7 @@ public class ProfileFragment extends Fragment {
 
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(false);
-        toolbar.setTitle(getString(R.string.applozic_user_profile_heading));
+        toolbar.setTitle(getString(R.string.km_user_profile_heading));
         toolbar.setSubtitle("");
         setHasOptionsMenu(true);
 
@@ -148,7 +148,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 try {
-                    final String logoutActivity = ApplozicSetting.getInstance(getActivity()).getActivityCallback(ApplozicSetting.RequestCode.USER_LOOUT);
+                    final String logoutActivity = KommunicateSetting.getInstance(getActivity()).getActivityCallback(KommunicateSetting.RequestCode.USER_LOOUT);
                     if (!TextUtils.isEmpty(logoutActivity)) {
                         new UserClientService(getActivity()).logout();
                         Intent intent = new Intent(getActivity(), Class.forName(logoutActivity));
@@ -258,7 +258,7 @@ public class ProfileFragment extends Fragment {
         });
 
         mImageLoader.setImageFadeIn(false);
-        mImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_180_holo_light);
+        mImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_180_holo_light);
         mImageLoader.loadImage(userContact, img_profile);
         return view;
     }
@@ -315,9 +315,9 @@ public class ProfileFragment extends Fragment {
             } else {
                 if (Utils.hasMarshmallow()) {
                     if (PermissionsUtils.checkSelfForCameraPermission(getActivity())) {
-                        applozicPermissions.requestCameraPermissionForProfilePhoto();
+                        kmPermissions.requestCameraPermissionForProfilePhoto();
                     } else {
-                        applozicPermissions.requestStoragePermissionsForProfilePhoto();
+                        kmPermissions.requestStoragePermissionsForProfilePhoto();
                     }
                 } else {
                     processPhotoOption();
@@ -341,7 +341,7 @@ public class ProfileFragment extends Fragment {
             File file = FileClientService.getFilePath(DEFAULT_CONATCT_IMAGE, getContext(), "image", true);
             if (file == null || !file.exists()) {
                 Utils.printLog(getActivity(), TAG, "file not found,exporting it from drawable");
-                Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.applozic_ic_contact_picture_180_holo_light);
+                Bitmap bm = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.km_ic_contact_picture_180_holo_light);
                 String filePath = ImageUtils.saveImageToInternalStorage(FileClientService.getFilePath(DEFAULT_CONATCT_IMAGE, getActivity().getApplicationContext(), "image", true), bm);
                 file = new File(filePath);
             }
@@ -395,7 +395,7 @@ public class ProfileFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = ProgressDialog.show(context, "",
-                    context.getString(R.string.applozic_contacts_loading_info), true);
+                    context.getString(R.string.km_contacts_loading_info), true);
         }
 
         @Override

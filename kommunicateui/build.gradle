@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.1.1"
+        versionName "2.1.2"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -49,7 +49,7 @@ dependencies {
     artifact = 'kommunicateui'
 
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '2.1.1'
+    libraryVersion = '2.1.2'
     developerId = 'kommunicate'
     developerName = 'Kommunicate'
     developerEmail = 'devashish.mamgain@gmail.com'

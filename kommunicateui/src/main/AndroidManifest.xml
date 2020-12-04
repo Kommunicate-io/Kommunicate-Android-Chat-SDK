@@ -8,14 +8,14 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <provider
-            android:name="com.applozic.mobicomkit.uiwidgets.ALFileProvider"
+            android:name="com.applozic.mobicomkit.uiwidgets.KmFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true"
             tools:node="merge">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/applozic_provider_paths" />
+                android:resource="@xml/km_provider_paths" />
         </provider>
 
         <service
@@ -97,7 +97,7 @@
         </activity>
 
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity"
+            android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
             android:launchMode="singleTop"

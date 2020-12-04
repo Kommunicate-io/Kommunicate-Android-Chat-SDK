@@ -67,6 +67,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 import java.io.File;
 import java.util.ArrayList;
 
+import io.kommunicate.utils.KmConstants;
 
 public class ConversationUIService {
 
@@ -136,7 +137,7 @@ public class ConversationUIService {
             Contact contact = ((ConversationActivity) fragmentActivity).getContact();
             Channel channel = ((ConversationActivity) fragmentActivity).getChannel();
             Integer conversationId = ((ConversationActivity) fragmentActivity).getConversationId();
-            conversationFragment = getConversationFragment(fragmentActivity, contact, channel, conversationId, null, null);
+            conversationFragment = getConversationFragment(fragmentActivity, contact, channel, conversationId, null, null, null);
             ConversationActivity.addFragment(fragmentActivity, conversationFragment, CONVERSATION_FRAGMENT);
         }
         return conversationFragment;
@@ -154,7 +155,7 @@ public class ConversationUIService {
             public void run() {
                 ConversationFragment conversationFragment = (ConversationFragment) UIService.getFragmentByTag(fragmentActivity, CONVERSATION_FRAGMENT);
                 if (conversationFragment == null) {
-                    conversationFragment = getConversationFragment(fragmentActivity, contact, null, conversationId, searchString, messageSearchString);
+                    conversationFragment = getConversationFragment(fragmentActivity, contact, null, conversationId, searchString, messageSearchString, null);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                 } else {
                     UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
@@ -170,13 +171,13 @@ public class ConversationUIService {
         });
     }
 
-    public void openConversationFragment(final Channel channel, final Integer conversationId, final String searchString, final String messageSearchString) {
+    public void openConversationFragment(final Channel channel, final Integer conversationId, final String searchString, final String messageSearchString, final String preFilledMessage) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 ConversationFragment conversationFragment = (ConversationFragment) UIService.getFragmentByTag(fragmentActivity, CONVERSATION_FRAGMENT);
                 if (conversationFragment == null) {
-                    conversationFragment = getConversationFragment(fragmentActivity, null, channel, conversationId, searchString, messageSearchString);
+                    conversationFragment = getConversationFragment(fragmentActivity, null, channel, conversationId, searchString, messageSearchString, preFilledMessage);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                 } else {
                     UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
@@ -866,8 +867,9 @@ public class ConversationUIService {
             openConversationFragment(contact, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING));
         }
 
+        String preFilledMessage = intent.getStringExtra(KmConstants.KM_PREFILLED_MESSAGE);
         if (channel != null) {
-            openConversationFragment(channel, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING));
+            openConversationFragment(channel, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING), preFilledMessage);
         }
         String productTopicId = intent.getStringExtra(ConversationUIService.PRODUCT_TOPIC_ID);
         String productImageUrl = intent.getStringExtra(ConversationUIService.PRODUCT_IMAGE_URL);
@@ -965,10 +967,10 @@ public class ConversationUIService {
         usersAsyncTask.execute((Void) null);
     }
 
-    public static ConversationFragment getConversationFragment(Context context, Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString) {
+    public static ConversationFragment getConversationFragment(Context context, Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString, String preFilledMessage) {
         if (context != null && context.getApplicationContext() instanceof KmFragmentGetter) {
             return ((KmFragmentGetter) context.getApplicationContext()).getConversationFragment(contact, channel, conversationId, searchString, messageSearchString);
         }
-        return ConversationFragment.newInstance(contact, channel, conversationId, searchString, messageSearchString);
+        return ConversationFragment.newInstance(contact, channel, conversationId, searchString, messageSearchString, preFilledMessage);
     }
 }

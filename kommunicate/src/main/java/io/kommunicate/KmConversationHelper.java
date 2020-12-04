@@ -71,7 +71,7 @@ public class KmConversationHelper {
                                     @Override
                                     public void onSuccess(Channel channel, Context context) {
                                         if (channel != null) {
-                                            openParticularConversation(context, skipConversationList, channel.getKey(), callback);
+                                            openParticularConversation(context, skipConversationList, channel.getKey(), null, callback);
                                         } else {
                                             Kommunicate.openConversation(context, callback);
                                         }
@@ -95,15 +95,18 @@ public class KmConversationHelper {
                 }
             });
         } else {
-            openParticularConversation(context, skipConversationList, conversationId, callback);
+            openParticularConversation(context, skipConversationList, conversationId, null, callback);
         }
     }
 
-    private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, KmCallback callback) {
+    private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, String preFilledMessage, KmCallback callback) {
         try {
             Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
             intent.putExtra(KmConstants.GROUP_ID, conversationId);
             intent.putExtra(KmConstants.TAKE_ORDER, skipConversationList);
+            if(!TextUtils.isEmpty(preFilledMessage)) {
+                intent.putExtra(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
+            }
             context.startActivity(intent);
             if (callback != null) {
                 callback.onSuccess(conversationId);
@@ -356,7 +359,7 @@ public class KmConversationHelper {
             KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
             try {
                 startConversation(true, conversationBuilder,
-                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, callback));
+                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null, callback));
             } catch (KmException e) {
                 if (callback != null) {
                     callback.onFailure(e);
@@ -385,7 +388,7 @@ public class KmConversationHelper {
         if (Kommunicate.isLoggedIn(conversationBuilder.getContext())) {
             try {
                 startConversation(false, conversationBuilder,
-                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, null, callback));
+                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(),null, callback));
             } catch (KmException e) {
                 if (callback != null) {
                     callback.onFailure(e);
@@ -407,7 +410,7 @@ public class KmConversationHelper {
                     Kommunicate.launchPrechatWithResult(conversationBuilder.getContext(), new KmPrechatCallback<KMUser>() {
                         @Override
                         public void onReceive(KMUser user, Context context, ResultReceiver finishActivityReceiver) {
-                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, finishActivityReceiver, callback), callback));
+                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), finishActivityReceiver, callback), callback));
                         }
 
                         @Override
@@ -429,7 +432,7 @@ public class KmConversationHelper {
                     kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(conversationBuilder.getContext(), kmUser, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, null, callback), callback));
+                Kommunicate.login(conversationBuilder.getContext(), kmUser, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(),null, callback), callback));
             }
         }
     }
@@ -467,7 +470,7 @@ public class KmConversationHelper {
                         conversationBuilder.setSkipConversationList(false);
                         conversationBuilder.launchConversation(callback);
                     } else if (messageList.size() == 1) {
-                        openParticularConversation(conversationBuilder.getContext(), false, messageList.get(0).getGroupId(), callback);
+                        openParticularConversation(conversationBuilder.getContext(), false, messageList.get(0).getGroupId(), conversationBuilder.getPreFilledMessage(), callback);
                     } else {
                         Kommunicate.openConversation(conversationBuilder.getContext(), callback);
                     }
@@ -476,7 +479,7 @@ public class KmConversationHelper {
         });
     }
 
-    private static KmStartConversationHandler getStartConversationHandler(final boolean isSkipConversationList, final boolean launchConversation, final ResultReceiver resultReceiver, final KmCallback callback) {
+    private static KmStartConversationHandler getStartConversationHandler(final boolean isSkipConversationList, final boolean launchConversation, final String preFilledMessage, final ResultReceiver resultReceiver, final KmCallback callback) {
         return new KmStartConversationHandler() {
             @Override
             public void onSuccess(Channel channel, Context context) {
@@ -489,7 +492,7 @@ public class KmConversationHelper {
                     }
                     if (callback != null) {
                         if (launchConversation) {
-                            openParticularConversation(context, isSkipConversationList, channel.getKey(), callback);
+                            openParticularConversation(context, isSkipConversationList, channel.getKey(), preFilledMessage, callback);
                         } else {
                             callback.onSuccess(channel.getKey());
                         }

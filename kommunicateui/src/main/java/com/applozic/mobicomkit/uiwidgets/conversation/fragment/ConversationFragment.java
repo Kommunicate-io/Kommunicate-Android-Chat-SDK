@@ -27,6 +27,8 @@ import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 
+import io.kommunicate.utils.KmConstants;
+
 public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment {
 
     private static final String TAG = "ConversationFragment";
@@ -37,7 +39,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
     private InputMethodManager inputMethodManager;
     private Bundle bundle;
 
-    public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString) {
+    public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString, String preFilledMessage) {
         ConversationFragment f = new ConversationFragment();
         Bundle args = new Bundle();
         if (contact != null) {
@@ -48,6 +50,9 @@ public class ConversationFragment extends MobiComConversationFragment implements
         }
         if (conversationId != null) {
             args.putInt(CONVERSATION_ID, conversationId);
+        }
+        if(!TextUtils.isEmpty(preFilledMessage)) {
+            args.putString(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
         }
         args.putString(SEARCH_STRING, searchString);
         args.putString(ConversationUIService.MESSAGE_SEARCH_STRING, messageSearchString);
@@ -66,6 +71,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
             currentConversationId = bundle.getInt(CONVERSATION_ID);
             searchString = bundle.getString(SEARCH_STRING);
             messageSearchString = bundle.getString(ConversationUIService.MESSAGE_SEARCH_STRING);
+            preFilledMessage = bundle.getString(KmConstants.KM_PREFILLED_MESSAGE);
             if (searchString != null) {
                 SyncCallService.refreshView = true;
             }
@@ -98,6 +104,10 @@ public class ConversationFragment extends MobiComConversationFragment implements
         sendType.setSelection(1);
 
         messageEditText.setHint(R.string.enter_message_hint);
+
+        if(!TextUtils.isEmpty(preFilledMessage)) {
+           messageEditText.setText(preFilledMessage);
+        }
 
         multimediaPopupGrid.setVisibility(View.GONE);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),

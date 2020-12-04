@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -63,6 +65,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class QuickConversationAdapter extends RecyclerView.Adapter implements Filterable {
 
     private static Map<Short, Integer> messageTypeColorMap = new HashMap<Short, Integer>();
+    private static final String CONVERSATION_SOURCE = "source";
+    private static final String SOURCE_FACEBOOK = "FACEBOOK";
 
     static {
         messageTypeColorMap.put(Message.MessageType.INBOX.getValue(), R.color.message_type_inbox);
@@ -159,6 +163,17 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                 myholder.contactImage.setVisibility(View.GONE);
                 myholder.alphabeticTextView.setVisibility(View.GONE);
+                myholder.onlineTextView.setVisibility(View.GONE);
+
+                if (alCustomizationSettings.isOnlineStatusMasterList() && message.getGroupId() == null) {
+                    myholder.onlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.VISIBLE : View.GONE);
+                    myholder.offlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.GONE : View.VISIBLE);
+                }
+
+                if (myholder.attachedFile != null) {
+                    myholder.attachedFile.setText("");
+                    myholder.attachedFile.setVisibility(View.GONE);
+                }
 
                 if (contactReceiver != null) {
                     String contactInfo = contactReceiver.getDisplayName();
@@ -208,20 +223,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     }
                 }
 
-                myholder.onlineTextView.setVisibility(View.GONE);
-                if (alCustomizationSettings.isOnlineStatusMasterList() && message.getGroupId() == null) {
-                    myholder.onlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.VISIBLE : View.GONE);
-                    myholder.offlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.GONE : View.VISIBLE);
-                }
-
-                if (myholder.attachedFile != null) {
-                    myholder.attachedFile.setText("");
-                    myholder.attachedFile.setVisibility(View.GONE);
-                }
-
-                if (myholder.attachmentIcon != null) {
-                    myholder.attachmentIcon.setVisibility(View.GONE);
-                }
                 if (message.isVideoCallMessage()) {
                     createVideoCallView(message, myholder.attachmentIcon, myholder.messageTextView);
                 } else if (message.hasAttachment() && myholder.attachmentIcon != null && !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
@@ -240,18 +241,13 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
                     myholder.messageTextView.setText(Html.fromHtml(message.getMessage()));
                     if (DetailedConversationAdapter.isEmailTypeMessage(message)) {
-                        if (myholder.attachmentIcon != null) {
-                            myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                            myholder.attachmentIcon.setImageResource(R.drawable.email);
-                        }
-                    } else {
-                        if (myholder.attachmentIcon != null) {
-                            myholder.attachmentIcon.setVisibility(View.GONE);
-                        }
+                        myholder.attachmentIcon.setVisibility(View.VISIBLE);
+                        myholder.attachmentIcon.setImageResource(R.drawable.email);
                     }
                 } else {
                     String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler));
+                    showConversationSourceIcon(channel, myholder.attachmentIcon);
                 }
 
                 if (myholder.sentOrReceived != null) {
@@ -359,7 +355,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         };
     }
 
-    public void createVideoCallView(Message message, ImageView attachmentIcon, TextView messageTextView) {
+    public void createVideoCallView(Message message, ImageView attachmentIcon, TextView
+            messageTextView) {
         if (message.getMetadata() == null || message.getMetadata().isEmpty()) {
             if (attachmentIcon != null) {
                 attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
@@ -385,7 +382,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         }
     }
 
-    private void processContactImage(Contact contact, TextView textView, TextView offlineTv, TextView alphabeticTextView, CircleImageView contactImage) {
+    private void processContactImage(Contact contact, TextView textView, TextView
+            offlineTv, TextView alphabeticTextView, CircleImageView contactImage) {
         try {
             String contactNumber = "";
             char firstLetter = 0;
@@ -419,7 +417,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         }
     }
 
-    private void loadSupportGroupImage(String imageUrl, String displayName, TextView alphabeticTextView, CircleImageView contactImage) {
+    private void loadSupportGroupImage(String imageUrl, String displayName, TextView
+            alphabeticTextView, CircleImageView contactImage) {
         if (!TextUtils.isEmpty(imageUrl)) {
             alphabeticTextView.setVisibility(View.GONE);
             contactImage.setVisibility(View.VISIBLE);
@@ -589,6 +588,20 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             super(itemView);
             infoBroadCast = (TextView) itemView.findViewById(R.id.info_broadcast);
             loadMoreProgressBar = (ProgressBar) itemView.findViewById(R.id.load_more_progressbar);
+        }
+    }
+
+    private void showConversationSourceIcon(Channel channel, ImageView attachmentIcon) {
+        if (channel != null
+                && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())
+                && channel.getMetadata() != null
+                && channel.getMetadata().containsKey(CONVERSATION_SOURCE)) {
+            attachmentIcon.setVisibility(View.VISIBLE);
+            if (SOURCE_FACEBOOK.equals(channel.getMetadata().get(CONVERSATION_SOURCE))) {
+                attachmentIcon.setImageResource(R.drawable.ic_facebook_icon);
+            }
+        } else {
+            attachmentIcon.setVisibility(View.GONE);
         }
     }
 }

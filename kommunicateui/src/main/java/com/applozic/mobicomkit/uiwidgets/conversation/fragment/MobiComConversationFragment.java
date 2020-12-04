@@ -114,6 +114,7 @@ import com.applozic.mobicomkit.uiwidgets.attachmentview.KommunicateAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.KmAudioRecordManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.DeleteConversationAsyncTask;
+import com.applozic.mobicomkit.uiwidgets.conversation.KmBotTypingDelayManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
@@ -193,6 +194,7 @@ import java.util.regex.PatternSyntaxException;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmBotPreference;
 import io.kommunicate.Kommunicate;
+import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmGetBotTypeTask;
 import io.kommunicate.async.AgentGetStatusTask;
 import io.kommunicate.async.KmUpdateConversationTask;
@@ -207,6 +209,7 @@ import io.kommunicate.models.KmFeedback;
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
 
@@ -218,7 +221,7 @@ import static java.util.Collections.disjoint;
  * reg
  * Created by devashish on 10/2/15.
  */
-public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, KmRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener, KmSpeechToText.KmTextListener {
+public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, ALRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener, KmSpeechToText.KmTextListener, KmBotTypingDelayManager.MessageDispatcher {
 
     public FrameLayout emoticonsFrameLayout,
             contextFrameLayout;
@@ -271,6 +274,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected Message messageToForward;
     protected String searchString;
     protected AlCustomizationSettings alCustomizationSettings;
+    protected String preFilledMessage;
     LinearLayout userNotAbleToChatLayout;
     List<ChannelUserMapper> channelUserMapperList;
     AdapterView.OnItemSelectedListener adapterView;
@@ -356,6 +360,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private TextView textViewCharLimitMessage;
     private TextWatcher messageCharacterLimitTextWatcher;
     private boolean isAssigneeDialogFlowBot;
+    private int botMessageDelayInterval;
+    private KmBotTypingDelayManager botTypingDelayManager;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -387,6 +393,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         isSpeechToTextEnabled = KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled();
         isTextToSpeechEnabled = KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
         isSendOnSpeechEnd = KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
+        botMessageDelayInterval = KmAppSettingPreferences.getInstance().getKmBotMessageDelayInterval();
+        botTypingDelayManager = new KmBotTypingDelayManager(getContext(), this);
 
         if (isTextToSpeechEnabled) {
             textToSpeech = new KmTextToSpeech(getContext());
@@ -1491,6 +1499,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             ((KmOnMessageListener) ApplozicService.getContext(getContext())).onNewMessage(message, channel, contact);
         }
 
+        if (botMessageDelayInterval > 0 && message.getGroupId() != null && message.getGroupId() != 0 && !TextUtils.isEmpty(message.getTo())) {
+            Contact contact = appContactService.getContactById(message.getTo());
+            if (contact != null && User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
+                botTypingDelayManager.addMessage(message);
+                return;
+            }
+        }
+        handleAddMessage(message);
+    }
+
+    protected void handleAddMessage(final Message message) {
         if (message.getGroupId() != null) {
             if (channel != null && channel.getKey().equals(message.getGroupId())) {
                 if (message.getTo() != null) {
@@ -1771,7 +1790,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
 
                     @Override
-                    public void onFailure(Object error) { }
+                    public void onFailure(Object error) {
+                    }
                 });
             }
         }
@@ -4354,7 +4374,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                 if (themeHelper.isCollectFeedback()) {
                     frameLayoutProgressbar.setVisibility(VISIBLE);
-                    KmService.getConversationFeedback(getActivity(), String.valueOf(channel.getKey()), new KmFeedbackCallback() {
+                    KmService.getConversationFeedback(getActivity(), new KmConversationFeedbackTask.KmFeedbackDetails(String.valueOf(channel.getKey()), null, null, null), new KmFeedbackCallback() {
                         @Override
                         public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
 
@@ -4743,7 +4763,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         kmFeedback.setRating(ratingValue);
 
-        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmFeedbackCallback() {
+        Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
+        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
             @Override
             public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
                 kmFeedbackView.showFeedback(context, kmFeedback);
@@ -4760,5 +4781,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onLoaderReset(Loader loader) {
         kmAutoSuggestionAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onMessageQueued(Message message) {
+        updateTypingStatus(message.getTo(), true);
+    }
+
+    @Override
+    public void onMessageDispatched(Message message) {
+        handleAddMessage(message);
     }
 }

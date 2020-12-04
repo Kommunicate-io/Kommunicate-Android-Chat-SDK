@@ -12,6 +12,7 @@ public class KmConstants {
     public static final String LOGOUT_CALL = "logoutCall";
     public static final String PRECHAT_LOGIN_CALL = "prechatLogin";
     public static final String KM_USER_DATA = "kmUserData";
+    public static final String KM_PREFILLED_MESSAGE = "kmPreFilledMessage";
     public static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
     public static final String KM_CONVERSATION_TITLE = "KM_CONVERSATION_TITLE";
     public static final String KM_HELPCENTER_URL = "KM_HELPCENTER_URL";

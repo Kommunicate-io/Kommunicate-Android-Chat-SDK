@@ -25,27 +25,28 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
 
     private WeakReference<Context> contextWeakReference;
     private KmFeedback kmFeedback; //will pe passed null if getting the feedback
-    private String conversationId;
+    private KmFeedbackDetails kmFeedbackDetails;
     private KmFeedbackCallback kmFeedbackCallback;
     Exception e;
 
-    public KmConversationFeedbackTask(Context context, String conversationId, KmFeedback kmFeedback, KmFeedbackCallback kmFeedbackCallback) {
+    public KmConversationFeedbackTask(Context context, KmFeedback kmFeedback, KmFeedbackDetails kmFeedbackDetails, KmFeedbackCallback kmFeedbackCallback) {
         contextWeakReference = new WeakReference<>(context);
         this.kmFeedback = kmFeedback;
-        this.conversationId = conversationId;
+        this.kmFeedbackDetails = kmFeedbackDetails;
         this.kmFeedbackCallback = kmFeedbackCallback;
     }
 
     @Override
     protected String doInBackground(Void... voids) {
         try {
+            String conversationId = kmFeedbackDetails.getConversationId();
             if (kmFeedback == null) {
                 if (conversationId == null || TextUtils.isEmpty(conversationId)) {
                     throw new Exception("KmFeedback and conversation id parameters null");
                 }
                 return new KmService(contextWeakReference.get()).getConversationFeedback(conversationId);
             } else {
-                return new KmService(contextWeakReference.get()).postConversationFeedback(kmFeedback);
+                return new KmService(contextWeakReference.get()).postConversationFeedback(kmFeedback, kmFeedbackDetails);
             }
         } catch (Exception i) {
             e = i;
@@ -78,5 +79,35 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
     @Override
     protected void onCancelled() {
         kmFeedbackCallback.onFailure(contextWeakReference.get(), e, "Task cancelled.");
+    }
+
+    public static class KmFeedbackDetails {
+        private String conversationId;
+        private String userName;
+        private String userId;
+        private String supportAgentId;
+
+        public KmFeedbackDetails(String conversationId, String userName, String userId, String supportAgentId) {
+            this.conversationId = conversationId;
+            this.userName = userName;
+            this.userId = userId;
+            this.supportAgentId = supportAgentId;
+        }
+
+        public String getConversationId() {
+            return conversationId;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public String getSupportAgentId() {
+            return supportAgentId;
+        }
     }
 }

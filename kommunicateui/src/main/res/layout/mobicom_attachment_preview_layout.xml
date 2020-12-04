@@ -33,7 +33,7 @@
         android:background="#50000000"
         android:gravity="center"
         android:padding="40dp"
-        android:src="@drawable/applozic_video_play_icon"
+        android:src="@drawable/km_video_play_icon"
         android:visibility="gone" />
 
     <LinearLayout
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/applozic_ic_action_cancel" />
+            android:src="@drawable/km_ic_action_cancel" />
 
         <ProgressBar
             android:id="@+id/media_download_progress_bar"

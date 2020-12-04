@@ -44,7 +44,7 @@
                     android:layout_height="25dp"
                     android:gravity="end"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/applozic_group_icon"
+                    android:src="@drawable/km_group_icon"
                     android:visibility="gone" />
 
                 <TextView

@@ -85,7 +85,7 @@ public class AudioMessageFragment extends DialogFragment {
                         audioRecorder.prepare();
                         audioRecorder.start();
                         isRecordring = true;
-                        record.setImageResource(R.drawable.applozic_audio_mic_inverted);
+                        record.setImageResource(R.drawable.km_audio_mic_inverted);
                         t.cancel();
                         t.start();
                         cnt = 0;
@@ -171,7 +171,7 @@ public class AudioMessageFragment extends DialogFragment {
                 audioRecorder.release();
                 audioRecorder = null;
                 isRecordring = false;
-                record.setImageResource(R.drawable.applozic_audio_normal);
+                record.setImageResource(R.drawable.km_audio_normal);
                 audioRecordingText.setText(getResources().getText(R.string.start_text));
                 t.cancel();
             }

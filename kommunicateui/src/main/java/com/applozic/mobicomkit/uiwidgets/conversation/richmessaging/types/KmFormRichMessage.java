@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmFormItemAdapter;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.ALRichMessageListener;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
@@ -24,9 +24,9 @@ import java.util.List;
 
 import io.kommunicate.utils.KmUtils;
 
-public class KmFormRichMessage extends AlRichMessage {
+public class KmFormRichMessage extends KmRichMessage {
 
-    public KmFormRichMessage(Context context, LinearLayout containerView, Message message, ALRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
+    public KmFormRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         super(context, containerView, message, listener, alCustomizationSettings);
     }
 
@@ -54,7 +54,7 @@ public class KmFormRichMessage extends AlRichMessage {
             if (flowLayout != null) {
                 flowLayout.setVisibility(View.VISIBLE);
                 flowLayout.removeAllViews();
-                View view = LayoutInflater.from(context).inflate(R.layout.al_rich_message_single_text_item, null);
+                View view = LayoutInflater.from(context).inflate(R.layout.km_rich_message_single_text_item, null);
                 TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
                 KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
@@ -71,8 +71,8 @@ public class KmFormRichMessage extends AlRichMessage {
                             if (submitButtonModel != null && TextUtils.isEmpty(submitButtonModel.getType())) {
                                 submitButtonModel.setType(KmFormPayloadModel.Type.SUBMIT.getValue());
                             }
-                            if (context != null && context.getApplicationContext() instanceof ALRichMessageListener) {
-                                ((ALRichMessageListener) context.getApplicationContext()).onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                            if (context != null && context.getApplicationContext() instanceof KmRichMessageListener) {
+                                ((KmRichMessageListener) context.getApplicationContext()).onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
                             } else {
                                 listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
                             }

@@ -42,7 +42,7 @@ import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.PictureUploadPopUpFragment;
-import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
+import com.applozic.mobicomkit.uiwidgets.instruction.KmPermissions;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
@@ -81,7 +81,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
     private LinearLayout layout;
     private Uri imageChangeUri;
     private Snackbar snackbar;
-    private ApplozicPermissions applozicPermissions;
+    private KmPermissions kmPermissions;
     private AlCustomizationSettings alCustomizationSettings;
     private ConnectivityReceiver connectivityReceiver;
 
@@ -93,7 +93,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
         setSupportActionBar(toolbar);
         mActionBar = getSupportActionBar();
         layout = (LinearLayout) findViewById(R.id.footerAd);
-        applozicPermissions = new ApplozicPermissions(this, layout);
+        kmPermissions = new KmPermissions(this, layout);
         mActionBar.setTitle(getString(R.string.update_channel_title_name));
         selectImageProfileIcon = (CircleImageView) findViewById(R.id.applozic_group_profile_camera);
         applozicGroupProfileIcon = (ImageView) findViewById(R.id.applozic_group_profile);
@@ -127,7 +127,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 applozicGroupProfileIcon.setImageURI(uri);
             }
         } else {
-            applozicGroupProfileIcon.setImageResource(R.drawable.applozic_group_icon);
+            applozicGroupProfileIcon.setImageResource(R.drawable.km_group_icon);
 
         }
         channelName = (EditText) findViewById(R.id.newChannelName);
@@ -221,7 +221,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                     fileClientService.writeFile(imageChangeUri, profilePhotoFile);
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Utils.printLog(this,ChannelNameActivity.class.getName(),this.getString(R.string.applozic_Cropping_failed)+result.getError());
+                Utils.printLog(this,ChannelNameActivity.class.getName(),this.getString(R.string.km_cropping_failed)+result.getError());
             }
         }
         if (resultCode == Activity.RESULT_OK) {
@@ -296,9 +296,9 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
         } else {
             if (Utils.hasMarshmallow()) {
                 if (PermissionsUtils.checkSelfForCameraPermission(this)) {
-                    applozicPermissions.requestCameraPermission();
+                    kmPermissions.requestCameraPermission();
                 } else {
-                    applozicPermissions.requestStoragePermissions();
+                    kmPermissions.requestStoragePermissions();
                 }
             } else {
                 processImagePicker();
@@ -350,7 +350,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = ProgressDialog.show(context, "",
-                    context.getString(R.string.applozic_contacts_loading_info), true);
+                    context.getString(R.string.km_contacts_loading_info), true);
         }
 
         @Override
@@ -379,7 +379,7 @@ public class ChannelNameActivity extends AppCompatActivity implements ActivityCo
                 if (imageView != null) {
                     imageChangeUri = null;
                     imageView.setImageDrawable(null); // <--- added to force redraw of ImageView
-                    imageView.setImageResource(R.drawable.applozic_group_icon);
+                    imageView.setImageResource(R.drawable.km_group_icon);
                 }
             }
         }

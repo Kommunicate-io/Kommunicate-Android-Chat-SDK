@@ -3,7 +3,7 @@
 
     <string name="internet_connection_not_available">No internet connection.</string>
     <string name="you_need_network_access_for_delete">You need to have network access for deleting conversation.</string>
-    <string name="applozic_server_error">Oops! You caught an error, try again later.</string>
+    <string name="km_server_error">Oops! You caught an error, try again later.</string>
     <string name="you_need_network_access_for_block_or_unblock">You need to have network access for block/unblock a user.</string>
     <string name="internet_connection_for_group_name_info">Your phone needs an internet connection to change the group name.</string>
     <string name="you_dont_have_any_network_access_info">You don\'t have any network access now.</string>
@@ -31,13 +31,13 @@
     <string name="zero_groups_on_app">Groups were not found.</string>
     <string name="delete_thread_text">Deleting..</string>
     <string name="search_title">Search</string>
-    <string name="applozic_user_already_in_a_group">Already added to the [groupType].</string>
-    <string name="applozic_contacts_loading_info">Loading please wait..</string>
-    <string name="applozic_contacts_loading_error">You need to have network access for loading contacts.</string>
-    <string name="applozic_enter_group_name">Please enter a group name to proceed..</string>
+    <string name="km_user_already_in_a_group">Already added to the [groupType].</string>
+    <string name="km_contacts_loading_info">Loading please wait..</string>
+    <string name="km_contacts_loading_error">You need to have network access for loading contacts.</string>
+    <string name="km_enter_group_name">Please enter a group name to proceed..</string>
     <string name="snap_text">Oh Snap!</string>
     <string name="account_disconnection_message">We’re sorry but messaging is not \navailable at the moment,\nPlease contact support for more details.</string>
-    <string name="powered_by_applozic_message">We are powered by Kommunicate.</string>
+    <string name="powered_by_kommunicate_message">We are powered by Kommunicate.</string>
     <string name="share_using">Share using</string>
     <string name="warning">Warning</string>
     <string name="cancel_transaction">Do you want to cancel this transaction?</string>
@@ -92,10 +92,10 @@
     <string name="mobicom_max_attachment_warning">Max attachment limit reached.</string>
     <string name="mobicom_select_attachment_text">Select at least one attachment.</string>
     <string name="audio_recording_send_text">Tap on Start to record audio.</string>
-    <string name="applozic_audio_permission_missing">Unable to launch audio recorder.</string>
-    <string name="applozic_message_info">Message Info</string>
-    <string name="applozic_message_info_no_network">Not able to fetch message info.</string>
-    <string name="applozic_user_profile_heading">Profile</string>
+    <string name="km_audio_permission_missing">Unable to launch audio recorder.</string>
+    <string name="km_message_info">Message Info</string>
+    <string name="km_message_info_no_network">Not able to fetch message info.</string>
+    <string name="km_user_profile_heading">Profile</string>
     <string name="send_message_to">Send to..</string>
     <string name="info_attachment_max_allowed_file_size_exceeded">Can\'t send maximum uploading file size limit exceeded </string>
     <string name="group_members_limit_exceeds">Limit reached, remove someone from the Group first</string>
@@ -189,9 +189,9 @@
     <string name="no_groups">No Groups</string>
     <string name="contacts_not_found">No Contacts Found</string>
     <string name="remove_image">Remove image</string>
-    <string name="applozic_failed_to_load_contact">Failed to load Contact</string>
-    <string name="applozic_Cropping_failed">Cropping failed</string>
-    <string name="applozic_resending_attachment">Resending attachment..</string>
+    <string name="km_failed_to_load_contact">Failed to load Contact</string>
+    <string name="km_cropping_failed">Cropping failed</string>
+    <string name="km_resending_attachment">Resending attachment..</string>
     <string name="Location">Location</string>
     <string name="processing_please_wait">Processing.. please wait..</string>
     <string name="success">success</string>

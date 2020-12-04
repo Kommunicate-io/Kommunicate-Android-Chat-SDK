@@ -36,7 +36,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
                 android:background="@color/applozic_transparent_color"
-                android:src="@drawable/applozic_audio_normal" />
+                android:src="@drawable/km_audio_normal" />
 
             <TextView
                 android:id="@+id/txtcount"

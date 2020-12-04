@@ -24,7 +24,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 
 import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.AlWebViewActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.google.android.material.snackbar.Snackbar;
@@ -72,7 +72,7 @@ import com.applozic.mobicomkit.channel.database.ChannelDatabaseService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
@@ -81,7 +81,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragm
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
-import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
+import com.applozic.mobicomkit.uiwidgets.instruction.KmPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
@@ -178,7 +178,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private LocationRequest locationRequest;
     private Channel channel;
     private BaseContactService baseContactService;
-    private ApplozicPermissions applozicPermission;
+    private KmPermissions applozicPermission;
     private Uri videoFileUri;
     private Uri imageUri;
     private ConversationUIService conversationUIService;
@@ -310,7 +310,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public boolean onSupportNavigateUp() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-                Intent upIntent = ApplozicSetting.getInstance(this).getParentActivityIntent(this);
+                Intent upIntent = KommunicateSetting.getInstance(this).getParentActivityIntent(this);
                 if (upIntent != null && isTaskRoot()) {
                     TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
                 }
@@ -320,7 +320,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
             if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
                 try {
-                    String parentActivity = ApplozicSetting.getInstance(this).getParentActivityName(this);
+                    String parentActivity = KommunicateSetting.getInstance(this).getParentActivityName(this);
                     if (parentActivity != null) {
                         Intent intent = new Intent(this, Class.forName(parentActivity));
                         startActivity(intent);
@@ -374,7 +374,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         geoApiKey = Applozic.getInstance(this).getGeoApiKey();
         activityToOpenOnClickOfCallButton = Utils.getMetaDataValue(getApplicationContext(), ACTIVITY_TO_OPEN_ONCLICK_OF_CALL_BUTTON_META_DATA);
         layout = (LinearLayout) findViewById(R.id.footerAd);
-        applozicPermission = new ApplozicPermissions(this, layout);
+        applozicPermission = new KmPermissions(this, layout);
         childFragmentLayout = (RelativeLayout) findViewById(R.id.layout_child_activity);
         profilefragment = new ProfileFragment();
         profilefragment.setAlCustomizationSettings(alCustomizationSettings);
@@ -703,7 +703,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 showSnackBar(R.string.storage_permission_not_granted);
             }
-        } else if (requestCode == ApplozicPermissions.REQUEST_STORAGE_ATTACHMENT) {
+        } else if (requestCode == KmPermissions.REQUEST_STORAGE_ATTACHMENT) {
             if (alStoragePermission != null) {
                 alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));
             }
@@ -713,7 +713,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 showSnackBar(R.string.storage_permission_not_granted);
             }
-        } else if (requestCode == ApplozicPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY) {
+        } else if (requestCode == KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY) {
             if (alStoragePermission != null) {
                 alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));
             }
@@ -743,14 +743,14 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 showSnackBar(R.string.record_audio_permission_not_granted);
             }
-        } else if (requestCode == ApplozicPermissions.REQUEST_CAMERA_PHOTO) {
+        } else if (requestCode == KmPermissions.REQUEST_CAMERA_PHOTO) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showSnackBar(R.string.phone_camera_permission_granted);
                 processCameraAction();
             } else {
                 showSnackBar(R.string.phone_camera_permission_not_granted);
             }
-        } else if (requestCode == ApplozicPermissions.REQUEST_CAMERA_VIDEO) {
+        } else if (requestCode == KmPermissions.REQUEST_CAMERA_VIDEO) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showSnackBar(R.string.phone_camera_permission_granted);
                 processVideoRecording();
@@ -836,7 +836,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void processLocation() {
         if (Utils.hasMarshmallow()) {
-            new ApplozicPermissions(ConversationActivity.this, layout).checkRuntimePermissionForLocation();
+            new KmPermissions(ConversationActivity.this, layout).checkRuntimePermissionForLocation();
         } else {
             processingLocation();
         }
@@ -882,7 +882,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             startActivity(Intent.createChooser(intent, "Share Via"));
             return super.onOptionsItemSelected(item);
         } else if (id == R.id.applozicUserProfile) {
-            profilefragment.setApplozicPermissions(applozicPermission);
+            profilefragment.setKmPermissions(applozicPermission);
             addFragment(this, profilefragment, ProfileFragment.ProfileFragmentTag);
         } else if (id == R.id.logout) {
             LocalBroadcastManager.getInstance(this).sendBroadcastSync(new Intent("KmLogoutOption"));
@@ -931,7 +931,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
             try {
-                Intent upIntent = ApplozicSetting.getInstance(this).getParentActivityIntent(this);
+                Intent upIntent = KommunicateSetting.getInstance(this).getParentActivityIntent(this);
                 if (upIntent != null && isTaskRoot()) {
                     TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
                 }
@@ -949,7 +949,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
-            Intent upIntent = ApplozicSetting.getInstance(this).getParentActivityIntent(this);
+            Intent upIntent = KommunicateSetting.getInstance(this).getParentActivityIntent(this);
             if (upIntent != null && isTaskRoot()) {
                 TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
             }
@@ -1076,7 +1076,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public void showAudioRecordingDialog() {
 
         if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfPermissionForAudioRecording(this)) {
-            new ApplozicPermissions(this, layout).requestAudio();
+            new KmPermissions(this, layout).requestAudio();
         } else if (PermissionsUtils.isAudioRecordingPermissionGranted(this)) {
 
             FragmentManager supportFragmentManager = getSupportFragmentManager();
@@ -1091,7 +1091,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else {
 
             if (alCustomizationSettings.getAudioPermissionNotFoundMsg() == null) {
-                showSnackBar(R.string.applozic_audio_permission_missing);
+                showSnackBar(R.string.km_audio_permission_missing);
             } else {
                 snackbar = Snackbar.make(layout, alCustomizationSettings.getAudioPermissionNotFoundMsg(),
                         Snackbar.LENGTH_SHORT);
@@ -1109,7 +1109,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     applozicPermission.checkRuntimePermissionForCameraAndAudioRecording();
                     return;
                 }
-                String activityName = ApplozicSetting.getInstance(this).getActivityCallback(ApplozicSetting.RequestCode.VIDEO_CALL);
+                String activityName = KommunicateSetting.getInstance(this).getActivityCallback(KommunicateSetting.RequestCode.VIDEO_CALL);
                 Class activityToOpen = Class.forName(activityName);
                 Intent intent = new Intent(this, activityToOpen);
                 intent.putExtra("CONTACT_ID", contact.getUserId());
@@ -1132,7 +1132,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     return;
                 }
                 //Audio Call
-                String activityName = ApplozicSetting.getInstance(this).getActivityCallback(ApplozicSetting.RequestCode.AUDIO_CALL);
+                String activityName = KommunicateSetting.getInstance(this).getActivityCallback(KommunicateSetting.RequestCode.AUDIO_CALL);
                 Class activityToOpen = Class.forName(activityName);
                 Intent intent = new Intent(this, activityToOpen);
                 intent.putExtra("CONTACT_ID", contact.getUserId());
@@ -1161,7 +1161,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 imageCapture();
             } else {
                 if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForCameraPermission(this)) {
-                    applozicPermission.requestCameraPermission(ApplozicPermissions.REQUEST_CAMERA_PHOTO);
+                    applozicPermission.requestCameraPermission(KmPermissions.REQUEST_CAMERA_PHOTO);
                 } else {
                     imageCapture();
                 }
@@ -1178,7 +1178,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 showVideoCapture();
             } else {
                 if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForCameraPermission(this)) {
-                    applozicPermission.requestCameraPermission(ApplozicPermissions.REQUEST_CAMERA_VIDEO);
+                    applozicPermission.requestCameraPermission(KmPermissions.REQUEST_CAMERA_VIDEO);
                 } else {
                     showVideoCapture();
                 }
@@ -1238,7 +1238,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void processAttachment() {
         if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForStoragePermission(this)) {
-            applozicPermission.requestStoragePermissions(ApplozicPermissions.REQUEST_STORAGE_ATTACHMENT);
+            applozicPermission.requestStoragePermissions(KmPermissions.REQUEST_STORAGE_ATTACHMENT);
         } else {
             Intent intentPick = new Intent(this, MobiComAttachmentSelectorActivity.class);
             startActivityForResult(intentPick, MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT);
@@ -1247,7 +1247,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void processMultiSelectGallery() {
         if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForStoragePermission(this)) {
-            applozicPermission.requestStoragePermissions(ApplozicPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
+            applozicPermission.requestStoragePermissions(KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
         } else {
             Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager());
             contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -1469,10 +1469,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public static void openFaq(Activity activity, String url) {
         if (activity != null) {
-            Intent faqIntent = new Intent(activity, AlWebViewActivity.class);
+            Intent faqIntent = new Intent(activity, KmWebViewActivity.class);
             Bundle urlBundle = new Bundle();
             urlBundle.putString(KmConstants.KM_HELPCENTER_URL, url);
-            faqIntent.putExtra(AlWebViewActivity.Al_WEB_VIEW_BUNDLE, urlBundle);
+            faqIntent.putExtra(KmWebViewActivity.Al_WEB_VIEW_BUNDLE, urlBundle);
             activity.startActivity(faqIntent);
         }
     }

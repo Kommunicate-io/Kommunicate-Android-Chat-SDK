@@ -42,10 +42,10 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.PictureUploadPopUpFragment;
-import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
+import com.applozic.mobicomkit.uiwidgets.instruction.KmPermissions;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.ProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
@@ -90,7 +90,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
     private int groupType;
     private LinearLayout layout;
     private Snackbar snackbar;
-    private ApplozicPermissions applozicPermissions;
+    private KmPermissions kmPermissions;
     private FinishActivityReceiver finishActivityReceiver;
 
     @Override
@@ -120,7 +120,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
         finishActivityReceiver = new FinishActivityReceiver();
         registerReceiver(finishActivityReceiver, new IntentFilter(ACTION_FINISH_CHANNEL_CREATE));
         layout = (LinearLayout) findViewById(R.id.footerAd);
-        applozicPermissions = new ApplozicPermissions(this, layout);
+        kmPermissions = new KmPermissions(this, layout);
         channelName = (EditText) findViewById(R.id.channelName);
         circleImageView = (CircleImageView) findViewById(R.id.channelIcon);
         uploadImageButton = (CircleImageView) findViewById(R.id.applozic_channel_profile_camera);
@@ -161,14 +161,14 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
         if (id == R.id.Next) {
             boolean check = true;
             if (channelName.getText().toString().trim().length() == 0 || TextUtils.isEmpty(channelName.getText().toString())) {
-                Toast.makeText(this, getResources().getString(R.string.applozic_enter_group_name), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.km_enter_group_name), Toast.LENGTH_SHORT).show();
                 focus = channelName;
                 focus.requestFocus();
                 check = false;
             }
             if (check) {
                 Utils.toggleSoftKeyBoard(ChannelCreateActivity.this, true);
-                if (alCustomizationSettings.getTotalRegisteredUserToFetch() > 0 && (alCustomizationSettings.isRegisteredUserContactListCall() || ApplozicSetting.getInstance(this).isRegisteredUsersContactCall()) && !userPreference.getWasContactListServerCallAlreadyDone()) {
+                if (alCustomizationSettings.getTotalRegisteredUserToFetch() > 0 && (alCustomizationSettings.isRegisteredUserContactListCall() || KommunicateSetting.getInstance(this).isRegisteredUsersContactCall()) && !userPreference.getWasContactListServerCallAlreadyDone()) {
                     processDownloadRegisteredUsers();
                 } else {
                     Intent intent = new Intent(ChannelCreateActivity.this, ContactSelectionActivity.class);
@@ -188,7 +188,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
 
     public void processDownloadRegisteredUsers() {
         final ProgressDialog progressDialog = ProgressDialog.show(ChannelCreateActivity.this, "",
-                getString(R.string.applozic_contacts_loading_info), true);
+                getString(R.string.km_contacts_loading_info), true);
 
         RegisteredUsersAsyncTask.TaskListener usersAsyncTaskTaskListener = new RegisteredUsersAsyncTask.TaskListener() {
             @Override
@@ -212,7 +212,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
-                String error = getString(Utils.isInternetAvailable(ChannelCreateActivity.this) ? R.string.applozic_server_error : R.string.you_need_network_access_for_block_or_unblock);
+                String error = getString(Utils.isInternetAvailable(ChannelCreateActivity.this) ? R.string.km_server_error : R.string.you_need_network_access_for_block_or_unblock);
                 Toast toast = Toast.makeText(ChannelCreateActivity.this, error, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
@@ -254,7 +254,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
                         new ProfilePictureUpload(true, profilePhotoFile, imageChangeUri, ChannelCreateActivity.this).execute((Void[]) null);
                     }
                 } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                    Toast.makeText(this, this.getString(R.string.applozic_Cropping_failed) + result.getError(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, this.getString(R.string.km_cropping_failed) + result.getError(), Toast.LENGTH_LONG).show();
                 }
             }
             if (resultCode == Activity.RESULT_OK) {
@@ -301,7 +301,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
             imageChangeUri = null;
             groupIconImageLink = null;
             circleImageView.setImageDrawable(null); // <--- added to force redraw of ImageView
-            circleImageView.setImageResource(R.drawable.applozic_group_icon);
+            circleImageView.setImageResource(R.drawable.km_group_icon);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -366,9 +366,9 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
         } else {
             if (Utils.hasMarshmallow()) {
                 if (PermissionsUtils.checkSelfForCameraPermission(this)) {
-                    applozicPermissions.requestCameraPermission();
+                    kmPermissions.requestCameraPermission();
                 } else {
-                    applozicPermissions.requestStoragePermissions();
+                    kmPermissions.requestStoragePermissions();
                 }
             } else {
                 processImagePicker();
@@ -408,7 +408,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = ProgressDialog.show(context, "",
-                    context.getString(R.string.applozic_contacts_loading_info), true);
+                    context.getString(R.string.km_contacts_loading_info), true);
         }
 
         @Override

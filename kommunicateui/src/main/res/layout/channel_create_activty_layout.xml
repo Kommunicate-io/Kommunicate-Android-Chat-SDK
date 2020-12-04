@@ -24,7 +24,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp"
-        android:src="@drawable/applozic_group_icon" />
+        android:src="@drawable/km_group_icon" />
 
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -36,7 +36,7 @@
         android:layout_alignRight="@+id/channelIcon"
         android:background="@color/applozic_transparent_color"
         android:clickable="true"
-        android:src="@drawable/applozic_ic_action_camera_new" />
+        android:src="@drawable/km_ic_action_camera_new" />
 
     <EditText
         android:id="@+id/channelName"

@@ -27,7 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.helpers.KmFormStateHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFormStateModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
@@ -35,7 +35,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlow
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -391,7 +390,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     }
 
     public boolean isViewTypeField(String type) {
-        return !(KmFormPayloadModel.Type.HIDDEN.getValue().equals(type) || AlRichMessage.SUBMIT_BUTTON.equals(type));
+        return !(KmFormPayloadModel.Type.HIDDEN.getValue().equals(type) || KmRichMessage.SUBMIT_BUTTON.equals(type));
     }
 
     public class KmFormItemViewHolder extends RecyclerView.ViewHolder {

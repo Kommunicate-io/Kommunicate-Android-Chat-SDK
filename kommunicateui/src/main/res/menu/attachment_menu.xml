@@ -7,7 +7,7 @@
     <item
         android:id="@+id/forward"
         android:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"
-        android:icon="@drawable/applozic_ic_action_forward"
+        android:icon="@drawable/km_ic_action_forward"
         android:orderInCategory="1"
         android:showAsAction="always"
         android:title="@string/shareOptions"

@@ -34,8 +34,8 @@ import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.uiwidgets.R;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.TouchImageView;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.ALRichMessageModel;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -71,11 +71,11 @@ public class FullScreenImageActivity extends AppCompatActivity {
         mediaImageView = (TouchImageView) findViewById(R.id.full_screen_image);
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.full_screen_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
-        String payload = getIntent().getStringExtra(AlRichMessage.TEMPLATE_ID + 9);
+        String payload = getIntent().getStringExtra(KmRichMessage.TEMPLATE_ID + 9);
 
         if (payload != null) {
             TextView captionText = findViewById(R.id.captionText);
-            ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) GsonUtils.getObjectFromJson(payload, ALRichMessageModel.ALPayloadModel.class);
+            KmRichMessageModel.KmPayloadModel payloadModel = (KmRichMessageModel.KmPayloadModel) GsonUtils.getObjectFromJson(payload, KmRichMessageModel.KmPayloadModel.class);
 
             Glide.with(this)
                     .asBitmap()

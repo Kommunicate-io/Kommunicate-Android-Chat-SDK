@@ -38,7 +38,7 @@
             android:layout_gravity="center"
             android:layout_toEndOf="@+id/alphabeticImage"
             android:layout_toRightOf="@+id/alphabeticImage"
-            android:src="@drawable/applozic_group_icon"
+            android:src="@drawable/km_group_icon"
             android:visibility="visible" />
 
     </RelativeLayout>
@@ -133,7 +133,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
             android:gravity="center_vertical"
-            android:src="@drawable/applozic_ic_action_attachment"
+            android:src="@drawable/km_ic_action_attachment"
             android:visibility="gone" />
 
         <TextView

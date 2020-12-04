@@ -7,7 +7,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.1.1"
+        versionName "2.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -40,7 +40,7 @@ dependencies {
     // module. The artifact name needs to match the name of the library.
     artifact = 'kommunicate'
     libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '2.1.1'
+    libraryVersion = '2.1.2'
     developerId = 'kommunicate'
     developerName = 'Kommunicate'
     developerEmail = 'devashish.mamgain@gmail.com'

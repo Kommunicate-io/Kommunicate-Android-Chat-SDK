@@ -36,8 +36,8 @@ public class ConversationFragment extends MobiComConversationFragment implements
     protected static final String CHANNEL = "CHANNEL";
     protected static final String CONVERSATION_ID = "CONVERSATION_ID";
     protected static final String SEARCH_STRING = "SEARCH_STRING";
-    private InputMethodManager inputMethodManager;
-    private Bundle bundle;
+    protected InputMethodManager inputMethodManager;
+    protected Bundle bundle;
 
     public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString, String preFilledMessage) {
         ConversationFragment f = new ConversationFragment();

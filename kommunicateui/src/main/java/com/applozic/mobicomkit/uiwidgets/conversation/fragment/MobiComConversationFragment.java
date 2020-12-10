@@ -275,93 +275,93 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected String searchString;
     protected AlCustomizationSettings alCustomizationSettings;
     protected String preFilledMessage;
-    LinearLayout userNotAbleToChatLayout;
-    List<ChannelUserMapper> channelUserMapperList;
-    AdapterView.OnItemSelectedListener adapterView;
-    MessageDatabaseService messageDatabaseService;
-    AppContactService appContactService;
-    ConversationUIService conversationUIService;
-    long millisecond;
-    MuteNotificationRequest muteNotificationRequest;
-    List<String> restrictedWords;
-    RelativeLayout replayRelativeLayout;
-    ImageButton attachReplyCancelLayout;
-    TextView nameTextView, messageTextView;
-    ImageView galleryImageView;
-    FileClientService fileClientService;
-    ImageLoader imageThumbnailLoader, messageImageLoader;
-    ImageView imageViewForAttachmentType;
-    RelativeLayout imageViewRLayout;
-    Map<String, String> messageMetaData = new HashMap<>();
-    KmAudioRecordManager kmAudioRecordManager;
-    ImageView slideImageView;
-    private EmojiconHandler emojiIconHandler;
-    private Bitmap previewThumbnail;
+    protected LinearLayout userNotAbleToChatLayout;
+    protected List<ChannelUserMapper> channelUserMapperList;
+    protected AdapterView.OnItemSelectedListener adapterView;
+    protected MessageDatabaseService messageDatabaseService;
+    protected AppContactService appContactService;
+    protected ConversationUIService conversationUIService;
+    protected long millisecond;
+    protected MuteNotificationRequest muteNotificationRequest;
+    protected List<String> restrictedWords;
+    protected RelativeLayout replayRelativeLayout;
+    protected ImageButton attachReplyCancelLayout;
+    protected TextView nameTextView, messageTextView;
+    protected ImageView galleryImageView;
+    protected FileClientService fileClientService;
+    protected ImageLoader imageThumbnailLoader, messageImageLoader;
+    protected ImageView imageViewForAttachmentType;
+    protected RelativeLayout imageViewRLayout;
+    protected Map<String, String> messageMetaData = new HashMap<>();
+    protected KmAudioRecordManager kmAudioRecordManager;
+    protected ImageView slideImageView;
+    protected EmojiconHandler emojiIconHandler;
+    protected Bitmap previewThumbnail;
     protected TextView isTyping, bottomlayoutTextView;
-    private String defaultText;
-    private boolean typingStarted;
-    private Integer channelKey;
-    private Toolbar toolbar;
-    private Menu menu;
-    private Spinner contextSpinner;
-    private boolean onSelected;
-    private ImageCache imageCache;
-    private RecyclerView messageTemplateView;
-    private ImageButton cameraButton, locationButton, fileAttachmentButton, multiSelectGalleryButton;
-    WeakReference<KmRecordButton> recordButtonWeakReference;
-    RecyclerView recyclerView;
-    RecyclerViewPositionHelper recyclerViewPositionHelper;
+    protected String defaultText;
+    protected boolean typingStarted;
+    protected Integer channelKey;
+    protected Toolbar toolbar;
+    protected Menu menu;
+    protected Spinner contextSpinner;
+    protected boolean onSelected;
+    protected ImageCache imageCache;
+    protected RecyclerView messageTemplateView;
+    protected ImageButton cameraButton, locationButton, fileAttachmentButton, multiSelectGalleryButton;
+    protected WeakReference<KmRecordButton> recordButtonWeakReference;
+    protected RecyclerView recyclerView;
+    protected RecyclerViewPositionHelper recyclerViewPositionHelper;
     protected LinearLayoutManager linearLayoutManager;
-    DetailedConversationAdapter recyclerDetailConversationAdapter;
-    MobicomMessageTemplate messageTemplate;
-    MobicomMessageTemplateAdapter templateAdapter;
-    DashedLineView awayMessageDivider;
-    TextView awayMessageTv;
-    TextView applozicLabel;
-    RelativeLayout customToolbarLayout;
-    CircleImageView toolbarImageView;
-    TextView toolbarTitleText;
-    TextView toolbarSubtitleText;
-    TextView toolbarOnlineColorDot;
-    TextView toolbarOfflineColorDot;
-    TextView toolbarAwayColorDot;
-    TextView toolbarAlphabeticImage;
-    private String geoApiKey;
-    private FrameLayout emailReplyReminderLayout;
-    private Contact conversationAssignee;
-    private Boolean agentStatus;
+    protected DetailedConversationAdapter recyclerDetailConversationAdapter;
+    protected MobicomMessageTemplate messageTemplate;
+    protected MobicomMessageTemplateAdapter templateAdapter;
+    protected DashedLineView awayMessageDivider;
+    protected TextView awayMessageTv;
+    protected TextView applozicLabel;
+    protected RelativeLayout customToolbarLayout;
+    protected CircleImageView toolbarImageView;
+    protected TextView toolbarTitleText;
+    protected TextView toolbarSubtitleText;
+    protected TextView toolbarOnlineColorDot;
+    protected TextView toolbarOfflineColorDot;
+    protected TextView toolbarAwayColorDot;
+    protected TextView toolbarAlphabeticImage;
+    protected String geoApiKey;
+    protected FrameLayout emailReplyReminderLayout;
+    protected Contact conversationAssignee;
+    protected Boolean agentStatus;
     public static final int TYPING_STOP_TIME = 30;
     public static final String KM_CONVERSATION_SUBJECT = "KM_CONVERSATION_SUBJECT";
     public Map<String, CountDownTimer> typingTimerMap;
     public int loggedInUserRole;
     public static final String AUDIO_RECORD_OPTION = ":audio";
     public static final String MULTI_SELECT_GALLERY_OPTION = ":multiSelectGalleryItems";
-    KmRecordView recordView;
-    FrameLayout recordLayout;
-    boolean isRecording = false;
-    private KmFontManager fontManager;
-    private RelativeLayout takeOverFromBotLayout;
-    private KmRecyclerView kmAutoSuggestionRecycler;
-    private KmAutoSuggestionAdapter kmAutoSuggestionAdapter;
-    private View kmAutoSuggestionDivider;
-    private String loggedInUserId;
-    String messageSearchString;
-    private FeedbackInputFragment feedBackFragment;
-    private KmFeedbackView kmFeedbackView;
-    private View mainDivider;
-    private FrameLayout frameLayoutProgressbar;
-    private RichMessageActionProcessor richMessageActionProcessor;
-    private boolean isTextToSpeechEnabled;
-    private boolean isSpeechToTextEnabled;
-    private boolean isSendOnSpeechEnd;
-    private KmTextToSpeech textToSpeech;
-    private KmSpeechToText speechToText;
-    private KmThemeHelper themeHelper;
-    private TextView textViewCharLimitMessage;
-    private TextWatcher messageCharacterLimitTextWatcher;
-    private boolean isAssigneeDialogFlowBot;
-    private int botMessageDelayInterval;
-    private KmBotTypingDelayManager botTypingDelayManager;
+    protected KmRecordView recordView;
+    protected FrameLayout recordLayout;
+    protected boolean isRecording = false;
+    protected KmFontManager fontManager;
+    protected RelativeLayout takeOverFromBotLayout;
+    protected KmRecyclerView kmAutoSuggestionRecycler;
+    protected KmAutoSuggestionAdapter kmAutoSuggestionAdapter;
+    protected View kmAutoSuggestionDivider;
+    protected String loggedInUserId;
+    protected String messageSearchString;
+    protected FeedbackInputFragment feedBackFragment;
+    protected KmFeedbackView kmFeedbackView;
+    protected View mainDivider;
+    protected FrameLayout frameLayoutProgressbar;
+    protected RichMessageActionProcessor richMessageActionProcessor;
+    protected boolean isTextToSpeechEnabled;
+    protected boolean isSpeechToTextEnabled;
+    protected boolean isSendOnSpeechEnd;
+    protected KmTextToSpeech textToSpeech;
+    protected KmSpeechToText speechToText;
+    protected KmThemeHelper themeHelper;
+    protected TextView textViewCharLimitMessage;
+    protected TextWatcher messageCharacterLimitTextWatcher;
+    protected boolean isAssigneeDialogFlowBot;
+    protected int botMessageDelayInterval;
+    protected KmBotTypingDelayManager botTypingDelayManager;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -1113,7 +1113,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     @SuppressLint("MissingPermission")
-    private void vibrate() {
+    protected void vibrate() {
         try {
             if (getActivity() != null) {
                 Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
@@ -1287,7 +1287,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    private void createInvalidPatternExceptionDialog() {
+    protected void createInvalidPatternExceptionDialog() {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
                 setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
                     @Override
@@ -1726,13 +1726,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         return false;
     }
 
-    private void setSendButtonState(boolean enabled) {
+    protected void setSendButtonState(boolean enabled) {
         sendButton.setEnabled(enabled);
         sendButton.setClickable(enabled);
         KmUtils.setGradientSolidColor(sendButton, enabled ? themeHelper.getSendButtonBackgroundColor() : requireActivity().getResources().getColor(R.color.km_disabled_view_color));
     }
 
-    private void showCharLimitMessage(boolean isDialogFlowLimitMessage, boolean exceeded, int deltaCharacterCount, int charLimit) {
+    protected void showCharLimitMessage(boolean isDialogFlowLimitMessage, boolean exceeded, int deltaCharacterCount, int charLimit) {
         textViewCharLimitMessage.setText(requireActivity().getString(isDialogFlowLimitMessage ? R.string.bot_char_limit : R.string.char_limit,
                 charLimit,
                 requireActivity().getString(exceeded ? R.string.remove_char_message : R.string.remaining_char_message, deltaCharacterCount)));
@@ -1740,12 +1740,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setSendButtonState(!exceeded);
     }
 
-    private void hideCharLimitMessage() {
+    protected void hideCharLimitMessage() {
         textViewCharLimitMessage.setVisibility(GONE);
         setSendButtonState(true);
     }
 
-    private void setVisibilityOfCharLimitMessage(final boolean isDialogFlowLimitMessage, final int messageCharacterLimit, int characterCount) {
+    protected void setVisibilityOfCharLimitMessage(final boolean isDialogFlowLimitMessage, final int messageCharacterLimit, int characterCount) {
         new KmInputTextLimitUtil(messageCharacterLimit, CHAR_LIMIT_WARNING).checkCharacterLimit(characterCount, new KmCharLimitCallback() {
             @Override
             public void onCrossed(boolean exceeded, boolean warning, int deltaCharacterCount) {
@@ -1759,7 +1759,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-    private void toggleCharLimitExceededMessage(boolean isDialogFlowBot, int characterCount) {
+    protected void toggleCharLimitExceededMessage(boolean isDialogFlowBot, int characterCount) {
         if (textViewCharLimitMessage == null || sendButton == null || messageEditText == null) {
             return;
         }
@@ -1770,7 +1770,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setVisibilityOfCharLimitMessage(isDialogFlowBot, messageCharacterLimit, characterCount);
     }
 
-    private void fetchBotTypeAndToggleCharLimitExceededMessage(Contact assignee, Channel channel, AppContactService appContactService, int loggedInUserRole) {
+    protected void fetchBotTypeAndToggleCharLimitExceededMessage(Contact assignee, Channel channel, AppContactService appContactService, int loggedInUserRole) {
         if (assignee == null) {
             assignee = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
         }
@@ -2149,14 +2149,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    private void setToolbarTitle(String title) {
+    protected void setToolbarTitle(String title) {
         if (getActivity() == null) {
             return;
         }
         ((CustomToolbarListener) getActivity()).setToolbarTitle(title);
     }
 
-    private void setToolbarSubtitle(String subtitle) {
+    protected void setToolbarSubtitle(String subtitle) {
         if (getActivity() == null) {
             return;
         }
@@ -2490,7 +2490,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     }
 
-    private void sendForwardMessage(Message messageToForward) {
+    protected void sendForwardMessage(Message messageToForward) {
         MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(getActivity());
 
         if (channel != null) {
@@ -2543,7 +2543,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         filePath = null;
     }
 
-    private Map<String, String> getMessageMetadata(Map<String, String> newMetadata) {
+    protected Map<String, String> getMessageMetadata(Map<String, String> newMetadata) {
         Map<String, String> mergedMetaData = new HashMap<>();
         Map<String, String> existingMetadata = null;
 
@@ -2591,7 +2591,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         return mergedMetaData;
     }
 
-    private Map<String, String> getDataMap(String data) {
+    protected Map<String, String> getDataMap(String data) {
         if (!TextUtils.isEmpty(data)) {
             try {
                 return (Map<String, String>) GsonUtils.getObjectFromJson(data, Map.class);
@@ -2675,7 +2675,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    private Integer getTimeToLive() {
+    protected Integer getTimeToLive() {
         if (selfDestructMessageSpinner == null || selfDestructMessageSpinner.getSelectedItemPosition() <= 1) {
             return null;
         }
@@ -3154,7 +3154,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    private void hideSendMessageLayout(boolean hide) {
+    protected void hideSendMessageLayout(boolean hide) {
         if (hide) {
             individualMessageSendLayout.setVisibility(View.GONE);
             userNotAbleToChatLayout.setVisibility(VISIBLE);
@@ -3270,7 +3270,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     //connected is for online/offline, agentStatus is online/away
-    private void setStatusDots(boolean connected, boolean agentStatus) {
+    protected void setStatusDots(boolean connected, boolean agentStatus) {
         boolean onlineDotVisibility = connected && agentStatus;
         boolean offlineDotVisibility = !connected;
         boolean awayDotVisibility = connected && !agentStatus;

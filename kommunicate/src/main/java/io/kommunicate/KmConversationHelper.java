@@ -31,6 +31,7 @@ import java.util.Map;
 
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
+import io.kommunicate.async.KmDeleteConversationTask;
 import io.kommunicate.async.KmGetAgentListTask;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
@@ -40,6 +41,7 @@ import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -552,11 +554,31 @@ public class KmConversationHelper {
     }
 
     private static void startOrGetConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler callback) throws KmException {
-
         KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
-                if (callback != null) {
+            public void onSuccess(final Channel channel, final Context context) {
+                if (KmAppSettingPreferences.getInstance().isSessionExpired() && !TextUtils.isEmpty(conversationBuilder.getClientConversationId())) {
+                    new KmDeleteConversationTask(context, channel.getKey(), new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            KmAppSettingPreferences.getInstance().setLoggedInAtTime(System.currentTimeMillis());
+                            try {
+                                createConversation(conversationBuilder, callback);
+                            } catch (KmException e1) {
+                                if (callback != null) {
+                                    callback.onFailure(null, conversationBuilder.getContext());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onSuccess(channel, context);
+                            }
+                        }
+                    }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                } else if (callback != null) {
                     callback.onSuccess(channel, context);
                 }
             }

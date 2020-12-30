@@ -3827,6 +3827,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             super.onPreExecute();
             emptyTextView.setVisibility(View.GONE);
 
+            onStartLoading(true);
             if (swipeLayout != null) {
                 swipeLayout.post(new Runnable() {
                     @Override
@@ -3947,15 +3948,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         @Override
         protected void onPostExecute(Long result) {
             super.onPostExecute(result);
-            //TODO: FIX ME
-            if (swipeLayout != null) {
-                swipeLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeLayout.setRefreshing(true);
-                    }
-                });
-            }
+
             if (nextMessageList.isEmpty()) {
                 linearLayoutManager.setStackFromEnd(true);
             }
@@ -4039,6 +4032,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (recyclerDetailConversationAdapter != null) {
                 recyclerDetailConversationAdapter.notifyDataSetChanged();
             }
+            onStartLoading(false);
             if (swipeLayout != null) {
                 swipeLayout.post(new Runnable() {
                     @Override
@@ -4792,4 +4786,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void onMessageDispatched(Message message) {
         handleAddMessage(message);
     }
+
+    public abstract void onStartLoading(boolean loadingStarted);
 }

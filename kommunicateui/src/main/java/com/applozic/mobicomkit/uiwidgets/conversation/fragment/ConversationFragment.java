@@ -188,6 +188,11 @@ public class ConversationFragment extends MobiComConversationFragment implements
         super.onResume();
     }
 
+    @Override
+    public void onStartLoading(boolean loadingStarted) {
+
+    }
+
     public void reload() {
 
         try {

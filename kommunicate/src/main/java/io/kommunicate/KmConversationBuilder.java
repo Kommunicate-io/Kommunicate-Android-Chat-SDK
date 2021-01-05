@@ -30,6 +30,7 @@ public class KmConversationBuilder extends JsonMarker {
     private String conversationAssignee;
     private String conversationTitle;
     private boolean useOriginalTitle = false;
+    private String teamId;
     private Map<String, String> messageMetadata;
     private Map<String, String> conversationMetadata;
 
@@ -229,5 +230,14 @@ public class KmConversationBuilder extends JsonMarker {
 
     public void launchAndCreateIfEmpty(KmCallback callback) {
         KmConversationHelper.launchAndCreateIfEmpty(this, callback);
+    }
+
+    public String getTeamId() {
+        return teamId;
+    }
+
+    public KmConversationBuilder setTeamId(String teamId) {
+        this.teamId = teamId;
+        return this;
     }
 }

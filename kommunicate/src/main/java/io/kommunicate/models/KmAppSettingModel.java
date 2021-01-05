@@ -80,7 +80,7 @@ public class KmAppSettingModel extends JsonMarker {
         }
     }
 
-    public class KmChatWidget extends JsonMarker {
+    public static class KmChatWidget extends JsonMarker {
         private String primaryColor;
         private String secondaryColor;
         private boolean showPoweredBy;
@@ -131,6 +131,36 @@ public class KmAppSettingModel extends JsonMarker {
 
         public boolean isSingleThreaded() {
             return singleThreaded;
+        }
+    }
+
+    public static class KmCompanySetting extends JsonMarker {
+        private int inactiveTime;
+        private boolean enableWaitingQueue;
+        private int conversationHandlingLimit;
+
+        public int getInactiveTime() {
+            return inactiveTime;
+        }
+
+        public void setInactiveTime(int inactiveTime) {
+            this.inactiveTime = inactiveTime;
+        }
+
+        public boolean isEnableWaitingQueue() {
+            return enableWaitingQueue;
+        }
+
+        public void setEnableWaitingQueue(boolean enableWaitingQueue) {
+            this.enableWaitingQueue = enableWaitingQueue;
+        }
+
+        public int getConversationHandlingLimit() {
+            return conversationHandlingLimit;
+        }
+
+        public void setConversationHandlingLimit(int conversationHandlingLimit) {
+            this.conversationHandlingLimit = conversationHandlingLimit;
         }
     }
 }

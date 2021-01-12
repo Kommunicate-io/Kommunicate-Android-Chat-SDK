@@ -26,6 +26,9 @@ public class KmThemeHelper implements KmCallback {
     private int messageStatusIconColor = -1;
     private int toolbarTitleColor = -1;
     private int toolbarSubtitleColor = -1;
+    private int toolbarColor = -1;
+    private int statusBarColor = -1;
+    private int richMessageThemeColor = -1;
 
     public static KmThemeHelper getInstance(Context context, AlCustomizationSettings alCustomizationSettings) {
         if (kmThemeHelper == null) {
@@ -133,6 +136,27 @@ public class KmThemeHelper implements KmCallback {
         return secondaryColor;
     }
 
+    public int getToolbarColor() {
+        if (toolbarColor == -1) {
+            toolbarColor = parseColorWithDefault(alCustomizationSettings.getToolbarColor(), getPrimaryColor());
+        }
+        return toolbarColor;
+    }
+
+    public int getStatusBarColor() {
+        if (statusBarColor == -1) {
+            statusBarColor = parseColorWithDefault(alCustomizationSettings.getStatusBarColor(), getSecondaryColor());
+        }
+        return statusBarColor;
+    }
+
+    public int getRichMessageThemeColor() {
+        if (richMessageThemeColor == -1) {
+            richMessageThemeColor = parseColorWithDefault(alCustomizationSettings.getRichMessageThemeColor(), getPrimaryColor());
+        }
+        return richMessageThemeColor;
+    }
+
     public static void clearInstance() {
         kmThemeHelper = null;
     }
@@ -148,5 +172,6 @@ public class KmThemeHelper implements KmCallback {
     }
 
     @Override
-    public void onFailure(Object error) { }
+    public void onFailure(Object error) {
+    }
 }

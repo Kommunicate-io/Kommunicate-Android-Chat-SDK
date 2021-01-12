@@ -361,11 +361,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         setContentView(R.layout.quickconversion_activity);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        myToolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
-        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getSecondaryColor());
+
         customToolbarLayout = myToolbar.findViewById(R.id.custom_toolbar_root_layout);
+        myToolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getToolbarColor());
+        customToolbarLayout.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getToolbarColor());
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
+
         setSupportActionBar(myToolbar);
         setToolbarTitleSubtitleColorFromSettings();
+
         baseContactService = new AppContactService(this);
         conversationUIService = new ConversationUIService(this);
         mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);
@@ -385,12 +389,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         mActionBar = getSupportActionBar();
-        if (!TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimary()) && !TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimaryDark())) {
-            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(alCustomizationSettings.getThemeColorPrimary())));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(Color.parseColor(alCustomizationSettings.getThemeColorPrimaryDark()));
-            }
-        }
+
         inviteMessage = Utils.getMetaDataValue(getApplicationContext(), SHARE_TEXT);
         retry = 0;
 
@@ -683,7 +682,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     public void setToolbarTitleSubtitleColorFromSettings() {
-        if(customToolbarLayout == null) {
+        if (customToolbarLayout == null) {
             return;
         }
 

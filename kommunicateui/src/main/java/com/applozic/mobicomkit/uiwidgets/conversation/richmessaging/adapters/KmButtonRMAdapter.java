@@ -55,8 +55,8 @@ public class KmButtonRMAdapter extends KmRichMessageAdapter {
             singleTextItem = itemView.findViewById(R.id.singleTextItem);
             rootLayout = itemView.findViewById(R.id.rootLayout);
 
-            KmUtils.setGradientStrokeColor(singleTextItem, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
-            singleTextItem.setTextColor(themeHelper.getPrimaryColor());
+            KmUtils.setGradientStrokeColor(singleTextItem, DimensionsUtils.convertDpToPx(1), themeHelper.getRichMessageThemeColor());
+            singleTextItem.setTextColor(themeHelper.getRichMessageThemeColor());
         }
     }
 

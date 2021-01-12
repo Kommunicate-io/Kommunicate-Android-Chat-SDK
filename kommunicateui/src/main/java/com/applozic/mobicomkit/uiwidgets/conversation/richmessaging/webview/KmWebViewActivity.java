@@ -16,8 +16,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicommons.json.GsonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +32,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import io.kommunicate.utils.KmConstants;
+import io.kommunicate.utils.KmUtils;
 
 public class KmWebViewActivity extends AppCompatActivity {
 
@@ -35,6 +40,7 @@ public class KmWebViewActivity extends AppCompatActivity {
     Toolbar toolbar;
     private Map<String, String> txnData;
     private boolean isPaymentRequest = false;
+    AlCustomizationSettings alCustomizationSettings;
     private ProgressBar loadingProgressBar;
     private static final String JS_INTERFACE_NAME = "AlWebViewScreen";
     public static final String SURL = "surl";
@@ -48,8 +54,17 @@ public class KmWebViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.km_activity_payment);
 
+        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
+        if (!TextUtils.isEmpty(jsonString)) {
+            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+        } else {
+            alCustomizationSettings = new AlCustomizationSettings();
+        }
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
 
         webView = findViewById(R.id.paymentWebView);
         loadingProgressBar = findViewById(R.id.loadingProgress);

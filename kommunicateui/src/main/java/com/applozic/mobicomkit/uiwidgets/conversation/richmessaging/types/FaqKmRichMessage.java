@@ -79,8 +79,8 @@ public class FaqKmRichMessage extends KmRichMessage {
         if (!TextUtils.isEmpty(actionModel.getName())) {
             actionTextView.setVisibility(View.VISIBLE);
             actionTextView.setText(actionModel.getName());
-            KmUtils.setGradientStrokeColor(actionTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
-            actionTextView.setTextColor(themeHelper.getPrimaryColor());
+            KmUtils.setGradientStrokeColor(actionTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getRichMessageThemeColor());
+            actionTextView.setTextColor(themeHelper.getRichMessageThemeColor());
             setActionListener(actionTextView, model, actionModel, payload);
         }
     }

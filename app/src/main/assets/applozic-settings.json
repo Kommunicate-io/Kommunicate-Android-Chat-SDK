@@ -82,6 +82,9 @@
   "hideGroupSubtitle": false,
   "toolbarTitleColor": "#ffffff",
   "toolbarSubtitleColor": "#ffffff",
+  "toolbarColor": "",
+  "statusBarColor": "",
+  "richMessageThemeColor": "",
   "enableFaqOption": [
     true,
     false

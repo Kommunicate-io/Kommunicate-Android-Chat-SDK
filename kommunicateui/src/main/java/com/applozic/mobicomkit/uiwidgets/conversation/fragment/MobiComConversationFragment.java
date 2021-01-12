@@ -3474,7 +3474,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         };
 
-        new UserBlockTask(getActivity(), listener, userId, block).execute((Void) null);
+        new UserBlockTask(getActivity(), listener, userId, block).execute();
     }
 
     public void userBlockDialog(final boolean block, final Contact withUserContact, final boolean isFromChannel) {
@@ -3542,7 +3542,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
                         MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-                        muteNotificationAsync.execute((Void) null);
+                        muteNotificationAsync.execute();
                         dialog.dismiss();
 
                     }
@@ -3576,7 +3576,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         };
         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
         MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-        muteNotificationAsync.execute((Void) null);
+        muteNotificationAsync.execute();
     }
 
     public void muteUserChat() {

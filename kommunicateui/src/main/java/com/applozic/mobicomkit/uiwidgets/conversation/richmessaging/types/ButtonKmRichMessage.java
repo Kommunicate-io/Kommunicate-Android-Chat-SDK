@@ -39,8 +39,8 @@ public class ButtonKmRichMessage extends KmRichMessage {
             View view = LayoutInflater.from(context).inflate(R.layout.km_rich_message_single_text_item, null);
             TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
-            KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
-            itemTextView.setTextColor(themeHelper.getPrimaryColor());
+            KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getRichMessageThemeColor());
+            itemTextView.setTextColor(themeHelper.getRichMessageThemeColor());
 
             //for 3 and 11 use name, for 6 use title
             String buttonTitle = (model.getTemplateId() == 3 || model.getTemplateId() == 11) ?

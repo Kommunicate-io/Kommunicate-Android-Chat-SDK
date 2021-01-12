@@ -52,7 +52,7 @@ public class KmUserLoginTask extends UserLoginTask {
     }
 
     @Override
-    protected Boolean doInBackground(Void... params) {
+    protected Boolean doInBackground() {
         try {
             if (isAgent) {
                 userClientService.clearDataAndPreference();

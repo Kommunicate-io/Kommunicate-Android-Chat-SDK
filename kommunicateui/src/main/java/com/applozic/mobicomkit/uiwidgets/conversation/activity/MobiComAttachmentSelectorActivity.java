@@ -9,7 +9,9 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +31,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobiComAttachmentGridViewAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -40,6 +43,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import io.kommunicate.utils.KmUtils;
 
 import static java.util.Collections.disjoint;
 
@@ -94,6 +99,8 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         }
 
         kmAttachmentsController = new KmAttachmentsController(this);
+
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
 
         restrictedWords = FileUtils.loadRestrictedWordsFile(this);
         fileClientService = new FileClientService(this);

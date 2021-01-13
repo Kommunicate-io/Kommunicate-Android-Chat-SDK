@@ -94,7 +94,7 @@ public class KmListRMAdapter extends KmRichMessageAdapter {
             rootLayout = itemView.findViewById(R.id.rootLayout);
             listImage = itemView.findViewById(R.id.listItemImage);
 
-            headerTv.setTextColor(themeHelper.getPrimaryColor());
+            headerTv.setTextColor(themeHelper.getRichMessageThemeColor());
             rootLayout.setOnClickListener(this);
         }
 

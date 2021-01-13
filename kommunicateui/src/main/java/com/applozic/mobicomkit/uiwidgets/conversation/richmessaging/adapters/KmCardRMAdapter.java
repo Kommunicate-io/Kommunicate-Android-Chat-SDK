@@ -92,7 +92,7 @@ public class KmCardRMAdapter extends KmRichMessageAdapter {
         viewHolder.bookActions[index].setVisibility(View.VISIBLE);
         viewHolder.viewActions[index].setVisibility(View.VISIBLE);
         viewHolder.bookActions[index].setText(actionsList.get(index).getName());
-        viewHolder.bookActions[index].setTextColor(themeHelper.getPrimaryColor());
+        viewHolder.bookActions[index].setTextColor(themeHelper.getRichMessageThemeColor());
         viewHolder.bookActions[index].setOnClickListener(getGenericCardClickListener(actionsList.get(index)));
     }
 

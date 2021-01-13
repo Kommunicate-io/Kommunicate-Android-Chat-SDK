@@ -84,7 +84,7 @@ public class ListKmRichMessage extends KmRichMessage {
     private void setActionTextView(TextView actionTextView, View actionDivider, KmRichMessageModel.KmButtonModel buttonModel, KmRichMessageModel.KmPayloadModel payload, KmRichMessageModel model) {
         actionTextView.setVisibility(View.VISIBLE);
         actionTextView.setText(buttonModel.getName());
-        actionTextView.setTextColor(themeHelper.getPrimaryColor());
+        actionTextView.setTextColor(themeHelper.getRichMessageThemeColor());
         setActionListener(actionTextView, model, buttonModel, payload);
 
         if (actionDivider != null) {

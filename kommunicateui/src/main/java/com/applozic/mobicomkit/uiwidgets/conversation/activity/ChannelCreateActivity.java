@@ -224,7 +224,7 @@ public class ChannelCreateActivity extends AppCompatActivity implements Activity
             }
         };
         RegisteredUsersAsyncTask usersAsyncTask = new RegisteredUsersAsyncTask(ChannelCreateActivity.this, usersAsyncTaskTaskListener, alCustomizationSettings.getTotalRegisteredUserToFetch(), userPreference.getRegisteredUsersLastFetchTime(), null, null, true);
-        usersAsyncTask.execute((Void) null);
+        usersAsyncTask.execute();
 
     }
 

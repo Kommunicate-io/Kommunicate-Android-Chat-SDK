@@ -154,7 +154,7 @@ public class Kommunicate {
             kmUser.setHideActionMessages(true);
             kmUser.setSkipDeletedGroups(true);
         }
-        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
     }
 
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {
@@ -495,7 +495,7 @@ public class Kommunicate {
                         listener.onFailure(registrationResponse, exception);
                     }
                 }
-            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }).execute();
         }
     }
 

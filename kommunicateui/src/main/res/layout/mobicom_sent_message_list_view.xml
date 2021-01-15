@@ -7,7 +7,7 @@
     android:longClickable="true"
     android:orientation="horizontal">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/messageTextLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:gravity="end|center_vertical"
         android:orientation="horizontal">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:id="@+id/messageTextInsideLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,10 +74,10 @@
                 android:id="@+id/message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:layout_marginEnd="3dp"
                 android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginEnd="3dp"
                 android:autoLink="all"
                 android:maxEms="14"
                 android:text="Hi"
@@ -164,17 +164,6 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
-        <!-- <TextView
-             android:id="@+id/createdAtTime"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:fontFamily="sans-serif"
-             android:gravity="center"
-             android:letterSpacing="0.01"
-             android:text="@string/created_at_time"
-             android:textColor="#a6a2a2"
-             android:textSize="12sp" />-->
-
         <TextView
             android:id="@+id/status"
             android:layout_width="wrap_content"
@@ -189,15 +178,4 @@
             android:textSize="12sp"
             android:visibility="gone" />
     </LinearLayout>
-
-    <!--
-    <ImageView
-        android:id="@+id/contactImage"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginLeft="4dp"
-        android:visibility="gone"
-        android:src="@drawable/applozic_ic_contact_picture_180_holo_light" />
-    -->
 </RelativeLayout>

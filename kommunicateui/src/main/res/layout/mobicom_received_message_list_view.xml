@@ -38,7 +38,7 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:id="@+id/messageTextLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,6 +55,8 @@
         android:paddingStart="6dp"
         android:paddingTop="6dp"
         android:paddingEnd="6dp">
+
+        <include layout="@layout/reply_message_layout" />
 
         <TextView
             android:id="@+id/via_email_text_view"
@@ -92,14 +94,12 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout
             android:id="@+id/messageTextInsideLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="94dp"
             android:orientation="vertical">
-
-            <include layout="@layout/reply_message_layout" />
 
             <TextView
                 android:id="@+id/attached_file"

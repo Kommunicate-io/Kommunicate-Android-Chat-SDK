@@ -479,9 +479,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             toolbarOnlineColorDot = customToolbarLayout.findViewById(R.id.onlineTextView);
             toolbarOfflineColorDot = customToolbarLayout.findViewById(R.id.offlineTextView);
             toolbarAwayColorDot = customToolbarLayout.findViewById(R.id.awayTextView);
-            KmUtils.setGradientStrokeColor(toolbarOnlineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
-            KmUtils.setGradientStrokeColor(toolbarOfflineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
-            KmUtils.setGradientStrokeColor(toolbarAwayColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
+            KmUtils.setGradientStrokeColor(toolbarOnlineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
+            KmUtils.setGradientStrokeColor(toolbarOfflineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
+            KmUtils.setGradientStrokeColor(toolbarAwayColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
 
             toolbarAlphabeticImage = customToolbarLayout.findViewById(R.id.toolbarAlphabeticImage);
 

@@ -4675,7 +4675,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                         Map<String, String> metadata = new HashMap<>();
                         metadata.put(KmService.KM_SKIP_BOT, Message.GroupMessageMetaData.TRUE.getValue());
-                        metadata.put(Message.KM_ASSIGN, MobiComUserPreference.getInstance(context).getUserId());
+                        metadata.put(Message.BOT_ASSIGN, MobiComUserPreference.getInstance(context).getUserId());
                         metadata.put(KmService.KM_NO_ALERT, Message.GroupMessageMetaData.TRUE.getValue());
                         metadata.put(KmService.KM_BADGE_COUNT, Message.GroupMessageMetaData.FALSE.getValue());
                         metadata.put(Message.MetaDataType.KEY.getValue(), Message.MetaDataType.ARCHIVE.getValue());

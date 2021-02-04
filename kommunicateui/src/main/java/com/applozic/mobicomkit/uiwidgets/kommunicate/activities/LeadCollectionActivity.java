@@ -12,12 +12,15 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter;
 
 import io.kommunicate.models.KmPrechatInputModel;
 
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import java.util.Map;
 
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
+import io.kommunicate.utils.KmUtils;
 
 public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
@@ -34,6 +38,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     private ResultReceiver prechatReceiver;
     private KmPrechatInputAdapter prechatInputAdapter;
     private List<KmPrechatInputModel> inputModelList;
+    private AlCustomizationSettings alCustomizationSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,14 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_km_lead_collection);
         ApplozicService.initWithContext(this);
 
+        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
+        if (!TextUtils.isEmpty(jsonString)) {
+            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+        } else {
+            alCustomizationSettings = new AlCustomizationSettings();
+        }
+
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);
 

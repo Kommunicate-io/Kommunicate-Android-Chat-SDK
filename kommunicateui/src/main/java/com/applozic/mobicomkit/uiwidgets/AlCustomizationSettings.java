@@ -121,7 +121,9 @@ public class AlCustomizationSettings extends JsonMarker {
     private KmFontModel fontModel;
     private boolean isFaqOptionEnabled = false;
     private boolean[] enableFaqOption = {true, false};
-
+    private String toolbarColor = "";
+    private String statusBarColor = "";
+    private String richMessageThemeColor = "";
     private Map<String, Boolean> attachmentOptions;
 
     public boolean isBroadcastOption() {
@@ -661,6 +663,18 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setToolbarSubtitleColor(String toolbarSubtitleColor) {
         this.toolbarSubtitleColor = toolbarSubtitleColor;
+    }
+
+    public String getToolbarColor() {
+        return toolbarColor;
+    }
+
+    public String getStatusBarColor() {
+        return statusBarColor;
+    }
+
+    public String getRichMessageThemeColor() {
+        return richMessageThemeColor;
     }
 
     @Override

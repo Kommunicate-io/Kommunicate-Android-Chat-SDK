@@ -57,8 +57,8 @@ public class KmFormRichMessage extends KmRichMessage {
                 View view = LayoutInflater.from(context).inflate(R.layout.km_rich_message_single_text_item, null);
                 TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
-                KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
-                itemTextView.setTextColor(themeHelper.getPrimaryColor());
+                KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getRichMessageThemeColor());
+                itemTextView.setTextColor(themeHelper.getRichMessageThemeColor());
 
                 final KmRMActionModel<KmRMActionModel.SubmitButton> submitButtonModel = (KmRMActionModel<KmRMActionModel.SubmitButton>) actionModelList.get(0);
                 itemTextView.setText(submitButtonModel.getName());

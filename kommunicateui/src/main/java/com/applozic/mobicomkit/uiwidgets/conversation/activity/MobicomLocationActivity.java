@@ -89,17 +89,12 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
-        if (!TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimary()) && !TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimaryDark())) {
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(alCustomizationSettings.getThemeColorPrimary())));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(Color.parseColor(alCustomizationSettings.getThemeColorPrimaryDark()));
-            }
-        }
-        toolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
+
+        toolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getToolbarColor());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
-        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getSecondaryColor());
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
 
         layout = (LinearLayout) findViewById(R.id.footerAd);
         sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);

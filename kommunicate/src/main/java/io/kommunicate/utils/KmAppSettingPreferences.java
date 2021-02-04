@@ -3,10 +3,10 @@ package io.kommunicate.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import io.kommunicate.async.KmAppSettingTask;
@@ -25,6 +25,8 @@ public class KmAppSettingPreferences {
     private static final String KM_THEME_SECONDARY_COLOR = "KM_THEME_SECONDARY_COLOR";
     private static final String KM_COLLECT_FEEDBACK = "KM_COLLECT_FEEDBACK";
     private static final String KM_BOT_MESSAGE_DELAY_INTERVAL = "KM_BOT_MESSAGE_DELAY_INTERVAL";
+    private static final String LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME";
+    private static final String CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME";
 
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
@@ -48,6 +50,7 @@ public class KmAppSettingPreferences {
                 setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
                 setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
                 setKmBotMessageDelayInterval(appSetting.getChatWidget().getBotMessageDelayInterval());
+                setChatSessionDeleteTime(appSetting.getChatWidget().getSessionTimeout());
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());
@@ -80,6 +83,31 @@ public class KmAppSettingPreferences {
     public KmAppSettingPreferences setCollectFeedback(boolean collectFeedback) {
         preferences.edit().putBoolean(KM_COLLECT_FEEDBACK, collectFeedback).commit();
         return this;
+    }
+
+    public KmAppSettingPreferences setLoggedInAtTime(long loggedInAtTime) {
+        preferences.edit().putLong(LOGGED_IN_AT_TIME, loggedInAtTime).commit();
+        return this;
+    }
+
+    public long getLoggedInAtTime() {
+        return preferences.getLong(LOGGED_IN_AT_TIME, 0);
+    }
+
+    public KmAppSettingPreferences setChatSessionDeleteTime(long chatSessionDeleteTime) {
+        preferences.edit().putLong(CHAT_SESSION_DELETE_TIME, chatSessionDeleteTime).commit();
+        return this;
+    }
+
+    public long getChatSessionDeleteTime() {
+        return preferences.getLong(CHAT_SESSION_DELETE_TIME, 0);
+    }
+
+    public boolean isSessionExpired() {
+        if (getChatSessionDeleteTime() > 0 && getLoggedInAtTime() == 0) {
+            setLoggedInAtTime(System.currentTimeMillis());
+        }
+        return getLoggedInAtTime() > 0 && getChatSessionDeleteTime() > 0 && System.currentTimeMillis() - getLoggedInAtTime() > getChatSessionDeleteTime();
     }
 
     public static void fetchAppSettingAsync(final Context context) {

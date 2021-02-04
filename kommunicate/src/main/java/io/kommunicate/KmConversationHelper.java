@@ -17,6 +17,7 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
+import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.listners.MessageListHandler;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -31,7 +32,9 @@ import java.util.Map;
 
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
+import io.kommunicate.async.KmDeleteConversationTask;
 import io.kommunicate.async.KmGetAgentListTask;
+import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmCallback;
@@ -40,6 +43,7 @@ import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -52,6 +56,7 @@ public class KmConversationHelper {
     public static final String KM_CONVERSATION_TITLE = "KM_CONVERSATION_TITLE";
     public static final String KM_BOT = "bot";
     public static final String CONVERSATION_STATUS = "CONVERSATION_STATUS";
+    public static final String KM_TEAM_ID = "KM_TEAM_ID";
     private static final String TAG = "KmConversationHelper";
 
     public static void openConversation(final Context context, final boolean skipConversationList, final Integer conversationId, final KmCallback callback) throws KmException {
@@ -104,7 +109,7 @@ public class KmConversationHelper {
             Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
             intent.putExtra(KmConstants.GROUP_ID, conversationId);
             intent.putExtra(KmConstants.TAKE_ORDER, skipConversationList);
-            if(!TextUtils.isEmpty(preFilledMessage)) {
+            if (!TextUtils.isEmpty(preFilledMessage)) {
                 intent.putExtra(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
             }
             context.startActivity(intent);
@@ -388,7 +393,7 @@ public class KmConversationHelper {
         if (Kommunicate.isLoggedIn(conversationBuilder.getContext())) {
             try {
                 startConversation(false, conversationBuilder,
-                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(),null, callback));
+                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), null, callback));
             } catch (KmException e) {
                 if (callback != null) {
                     callback.onFailure(e);
@@ -432,7 +437,7 @@ public class KmConversationHelper {
                     kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(conversationBuilder.getContext(), kmUser, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(),null, callback), callback));
+                Kommunicate.login(conversationBuilder.getContext(), kmUser, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), null, callback), callback));
             }
         }
     }
@@ -551,13 +556,43 @@ public class KmConversationHelper {
         };
     }
 
-    private static void startOrGetConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler callback) throws KmException {
+    private static String getTeamIdFromChannel(Channel channel) {
+        if (channel != null && channel.getMetadata() != null && channel.getMetadata().containsKey(KM_TEAM_ID)) {
+            return channel.getMetadata().get(KM_TEAM_ID);
+        }
+        return null;
+    }
 
+    private static void startOrGetConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler callback) throws KmException {
         KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
-                if (callback != null) {
-                    callback.onSuccess(channel, context);
+            public void onSuccess(final Channel channel, Context context) {
+                if (!TextUtils.isEmpty(conversationBuilder.getTeamId()) && !conversationBuilder.getTeamId().equals(getTeamIdFromChannel(channel))) {
+                    Map<String, String> metadata = channel.getMetadata();
+                    metadata.put(KM_TEAM_ID, conversationBuilder.getTeamId());
+                    GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(metadata, channel.getKey());
+
+                    KmUpdateConversationTask.KmConversationUpdateListener kmConversationUpdateListener = new KmUpdateConversationTask.KmConversationUpdateListener() {
+                        @Override
+                        public void onSuccess(Context context) {
+                            if (callback != null) {
+                                callback.onSuccess(channel, context);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Context context) {
+                            if (callback != null) {
+                                callback.onSuccess(channel, context);
+                            }
+                        }
+                    };
+
+                    new KmUpdateConversationTask(context, groupInfoUpdate, kmConversationUpdateListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                } else {
+                    if (callback != null) {
+                        callback.onSuccess(channel, context);
+                    }
                 }
             }
 
@@ -648,6 +683,10 @@ public class KmConversationHelper {
             channelInfo.setGroupName(conversationBuilder.getConversationTitle());
             metadata.put(KM_CONVERSATION_TITLE, conversationBuilder.getConversationTitle());
             metadata.put(KmConversationHelper.KM_ORIGINAL_TITLE, "true");
+        }
+
+        if (!TextUtils.isEmpty(conversationBuilder.getTeamId())) {
+            metadata.put(KM_TEAM_ID, conversationBuilder.getTeamId());
         }
 
         if (conversationBuilder.isUseOriginalTitle()) {

@@ -964,7 +964,7 @@ public class ConversationUIService {
         } else {
             usersAsyncTask = new RegisteredUsersAsyncTask(fragmentActivity, usersAsyncTaskTaskListener, totalOnlineUser, message, messageContent);
         }
-        usersAsyncTask.execute((Void) null);
+        usersAsyncTask.execute();
     }
 
     public static ConversationFragment getConversationFragment(Context context, Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString, String preFilledMessage) {

@@ -479,9 +479,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             toolbarOnlineColorDot = customToolbarLayout.findViewById(R.id.onlineTextView);
             toolbarOfflineColorDot = customToolbarLayout.findViewById(R.id.offlineTextView);
             toolbarAwayColorDot = customToolbarLayout.findViewById(R.id.awayTextView);
-            KmUtils.setGradientStrokeColor(toolbarOnlineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
-            KmUtils.setGradientStrokeColor(toolbarOfflineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
-            KmUtils.setGradientStrokeColor(toolbarAwayColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getPrimaryColor());
+            KmUtils.setGradientStrokeColor(toolbarOnlineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
+            KmUtils.setGradientStrokeColor(toolbarOfflineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
+            KmUtils.setGradientStrokeColor(toolbarAwayColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
 
             toolbarAlphabeticImage = customToolbarLayout.findViewById(R.id.toolbarAlphabeticImage);
 
@@ -3474,7 +3474,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         };
 
-        new UserBlockTask(getActivity(), listener, userId, block).execute((Void) null);
+        new UserBlockTask(getActivity(), listener, userId, block).execute();
     }
 
     public void userBlockDialog(final boolean block, final Contact withUserContact, final boolean isFromChannel) {
@@ -3542,7 +3542,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
                         MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-                        muteNotificationAsync.execute((Void) null);
+                        muteNotificationAsync.execute();
                         dialog.dismiss();
 
                     }
@@ -3576,7 +3576,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         };
         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
         MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-        muteNotificationAsync.execute((Void) null);
+        muteNotificationAsync.execute();
     }
 
     public void muteUserChat() {
@@ -3827,6 +3827,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             super.onPreExecute();
             emptyTextView.setVisibility(View.GONE);
 
+            onStartLoading(true);
             if (swipeLayout != null) {
                 swipeLayout.post(new Runnable() {
                     @Override
@@ -3947,15 +3948,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         @Override
         protected void onPostExecute(Long result) {
             super.onPostExecute(result);
-            //TODO: FIX ME
-            if (swipeLayout != null) {
-                swipeLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeLayout.setRefreshing(true);
-                    }
-                });
-            }
+
             if (nextMessageList.isEmpty()) {
                 linearLayoutManager.setStackFromEnd(true);
             }
@@ -4039,6 +4032,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (recyclerDetailConversationAdapter != null) {
                 recyclerDetailConversationAdapter.notifyDataSetChanged();
             }
+            onStartLoading(false);
             if (swipeLayout != null) {
                 swipeLayout.post(new Runnable() {
                     @Override
@@ -4681,7 +4675,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                         Map<String, String> metadata = new HashMap<>();
                         metadata.put(KmService.KM_SKIP_BOT, Message.GroupMessageMetaData.TRUE.getValue());
-                        metadata.put(Message.KM_ASSIGN, MobiComUserPreference.getInstance(context).getUserId());
+                        metadata.put(Message.BOT_ASSIGN, MobiComUserPreference.getInstance(context).getUserId());
                         metadata.put(KmService.KM_NO_ALERT, Message.GroupMessageMetaData.TRUE.getValue());
                         metadata.put(KmService.KM_BADGE_COUNT, Message.GroupMessageMetaData.FALSE.getValue());
                         metadata.put(Message.MetaDataType.KEY.getValue(), Message.MetaDataType.ARCHIVE.getValue());
@@ -4792,4 +4786,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void onMessageDispatched(Message message) {
         handleAddMessage(message);
     }
+
+    public abstract void onStartLoading(boolean loadingStarted);
 }

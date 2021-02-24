@@ -8,10 +8,12 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class KmFormStateHelper {
@@ -110,11 +112,40 @@ public class KmFormStateHelper {
                 for (int i = 0; i < formStateModel.getDateFieldArray().size(); i++) {
                     int key = formStateModel.getDateFieldArray().keyAt(i);
                     KmFormPayloadModel.DateTimePicker dateTimePicker = formPayloadModelList.get(key).getDatePickerModel();
-                    formDataMap.put(dateTimePicker.getLabel(), formStateModel.getDateFieldArray().get(key).toString());  //Might need to convert to formatted date
+
+                    if (KmFormPayloadModel.Type.DATE.getValue().equals(formPayloadModelList.get(key).getType())) {
+                        formDataMap.put(dateTimePicker.getLabel(), getFormattedDate(formStateModel.getDateFieldArray().get(key)));
+                    } else if (KmFormPayloadModel.Type.TIME.getValue().equals(formPayloadModelList.get(key).getType())) {
+                        formDataMap.put(dateTimePicker.getLabel(), getFormattedTime(formStateModel.getDateFieldArray().get(key)));
+                    } else {
+                        formDataMap.put(dateTimePicker.getLabel(), getFormattedDate(formStateModel.getDateFieldArray().get(key)) + "T" + getFormattedTime(formStateModel.getDateFieldArray().get(key)));
+                    }
+                }
+            }
+
+            if (formStateModel.getDropdownFieldArray() != null) {
+                for (int i = 0; i < formStateModel.getDropdownFieldArray().size(); i++) {
+                    formDataMap.put(formPayloadModelList.get(formStateModel.getDropdownFieldArray().keyAt(i)).getDropdownList().getName(), formStateModel.getDropdownFieldArray().valueAt(i).getValue());
                 }
             }
         }
 
         return formDataMap;
+    }
+
+    private static String getFormattedDate(Long timeStamp) {
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        calendar.setTimeInMillis(timeStamp);
+        return calendar.get(Calendar.YEAR) + "-" + getDoubleDigitTime(calendar.get(Calendar.MONTH) + 1) + "-" + getDoubleDigitTime(calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    private static String getFormattedTime(Long timeStamp) {
+        Calendar calendar = Calendar.getInstance(Locale.getDefault());
+        calendar.setTimeInMillis(timeStamp);
+        return getDoubleDigitTime(calendar.get(Calendar.HOUR_OF_DAY)) + ":" + getDoubleDigitTime(calendar.get(Calendar.MINUTE));
+    }
+
+    private static String getDoubleDigitTime(int time) {
+        return time < 10 ? "0" + time : String.valueOf(time);
     }
 }

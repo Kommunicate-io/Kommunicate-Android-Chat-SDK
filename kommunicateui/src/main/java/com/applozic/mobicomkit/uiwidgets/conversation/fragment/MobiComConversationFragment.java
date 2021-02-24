@@ -1077,13 +1077,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
 
-        if (channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext())) {
-            setFeedbackDisplay(true);
-        } else {
-            //conversation is open
-            //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
-            setFeedbackDisplay(false);
-        }
+        //conversation is open
+        //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
+        setFeedbackDisplay(channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext()));
     }
 
     @Override

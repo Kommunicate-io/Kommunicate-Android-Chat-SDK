@@ -14,11 +14,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -28,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.form.KmDropdownItemAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.helpers.KmFormStateHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFormStateModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
@@ -38,6 +42,7 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,19 +64,22 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private KmFormStateModel formStateModel;
     private String messageKey;
     private SparseIntArray validationArray;
+    private SparseArray<KmFormPayloadModel.Options> dropdownFieldArray;
     private static final int VALID_DATA = 2;
     private static final int INVALID_DATA = 1;
 
     private static final int VIEW_TYPE_TEXT_FIELD = 1;
     private static final int VIEW_TYPE_SELECTION = 2;
     private static final int VIEW_TYPE_DATETIME = 3;
+    private static final int VIEW_TYPE_DROPDOWN = 4;
 
-    public static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy";
+    public static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
     public static final String DEFAULT_TIME_FORMAT_24 = "HH:mm";
     public static final String DEFAULT_TIME_FORMAT_12 = "hh:mm aa";
-    public static final String DEFAULT_DATE_TIME_FORMAT_24 = "dd-MM-yyyy HH:mm";
-    public static final String DEFAULT_DATE_TIME_FORMAT_12 = "dd-MM-yyyy hh:mm aa";
+    public static final String DEFAULT_DATE_TIME_FORMAT_24 = "dd/MM/yyyy HH:mm";
+    public static final String DEFAULT_DATE_TIME_FORMAT_12 = "dd/MM/yyyy hh:mm aa";
 
+    //TODO: Create Adaptor Factory Pattern for this Form rich message type
     public KmFormItemAdapter(Context context, List<KmFormPayloadModel> payloadList, String messageKey) {
         this.context = context;
         this.payloadList = payloadList;
@@ -91,6 +99,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         hiddenFields = formStateModel.getHiddenFields();
         validationArray = formStateModel.getValidationArray();
         dateFieldArray = formStateModel.getDateFieldArray();
+        dropdownFieldArray = formStateModel.getDropdownFieldArray();
 
         if (textFieldArray == null) {
             textFieldArray = new SparseArray<>();
@@ -114,6 +123,10 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
         if (dateFieldArray == null) {
             dateFieldArray = new SparseArray<>();
+        }
+
+        if (dropdownFieldArray == null) {
+            dropdownFieldArray = new SparseArray<>();
         }
 
         formStateModel.setTextFields(textFieldArray);
@@ -140,8 +153,8 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                     final KmFormItemViewHolder formItemViewHolder = (KmFormItemViewHolder) holder;
 
                     if (!isViewTypeField(payloadModel.getType()) || getItemViewType(position) == 0) {
-                        if (formItemViewHolder.formItemLayout != null) {
-                            formItemViewHolder.formItemLayout.setVisibility(View.GONE);
+                        if (formItemViewHolder.formItemRootLayout != null) {
+                            formItemViewHolder.formItemRootLayout.setVisibility(View.GONE);
                         }
                         if (KmFormPayloadModel.Type.HIDDEN.getValue().equals(payloadModel.getType())) {
                             KmFormPayloadModel.Hidden hiddenModel = payloadModel.getHiddenModel();
@@ -152,40 +165,34 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         return;
                     }
 
-                    formItemViewHolder.formItemLayout.setVisibility(View.VISIBLE);
+                    formItemViewHolder.formItemRootLayout.setVisibility(View.VISIBLE);
 
                     if (payloadModel.isTypeText()) {
                         KmFormPayloadModel.Text textModel = payloadModel.getTextModel();
-
-                        formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(textModel.getLabel()) ? View.VISIBLE : View.GONE);
-                        formItemViewHolder.flowLayout.setVisibility(View.GONE);
-
+                        setFormLabelText(formItemViewHolder, textModel.getLabel());
+                        handleItemVisibility(formItemViewHolder, formItemViewHolder.formEditText);
                         EditText editText = KmFormPayloadModel.Type.PASSWORD.getValue().equals(payloadModel.getType()) ? formItemViewHolder.getPasswordTextField() : formItemViewHolder.getEditTextField();
-
-                        editText.setVisibility(View.VISIBLE);
-                        formItemViewHolder.formLabel.setText(textModel.getLabel());
                         editText.setHint(TextUtils.isEmpty(textModel.getPlaceholder()) ? "" : textModel.getPlaceholder());
 
                         String savedStr = textFieldArray.get(position, null);
 
-                        if (savedStr != null) {
-                            editText.setText(savedStr);
-                        } else {
-                            editText.setText(null);
-                        }
+                        editText.setText(savedStr);
 
                         if (validationArray.get(position) == 1) {
-                            editText.setError(textModel.getValidation() != null && !TextUtils.isEmpty(textModel.getValidation().getErrorText()) ? textModel.getValidation().getErrorText() : Utils.getString(context, R.string.default_form_validation_error_text));
+                            formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
+                            formItemViewHolder.formValidationText.setText(textModel.getValidation() != null
+                                    && !TextUtils.isEmpty(textModel.getValidation().getErrorText())
+                                    ? textModel.getValidation().getErrorText()
+                                    : Utils.getString(context, R.string.default_form_validation_error_text));
                         } else {
-                            editText.setError(null);
+                            formItemViewHolder.formValidationText.setVisibility(View.GONE);
                         }
+
                     } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(payloadModel.getType())) {
                         KmFormPayloadModel.Selections selectionModel = payloadModel.getSelectionModel();
 
-                        formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(selectionModel.getTitle()) ? View.VISIBLE : View.GONE);
-                        formItemViewHolder.formEditText.setVisibility(View.GONE);
-
-                        formItemViewHolder.formLabel.setText(selectionModel.getTitle());
+                        setFormLabelText(formItemViewHolder, selectionModel.getTitle());
+                        handleItemVisibility(formItemViewHolder, formItemViewHolder.formFlowLayout);
 
                         List<KmFormPayloadModel.Options> options = payloadModel.getSelectionModel().getOptions();
 
@@ -196,23 +203,20 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 formStateModel.setSelectedRadioButtonIndex(radioButtonSelectedIndices);
                                 KmFormStateHelper.addFormState(messageKey, formStateModel);
                             }
-                        }, formItemViewHolder.flowLayout, options).createLayout(radioButtonSelectedIndices.get(position, -1));
+                        }, formItemViewHolder.formFlowLayout, options).createLayout(radioButtonSelectedIndices.get(position, -1));
                     } else if (KmFormPayloadModel.Type.CHECKBOX.getValue().equals(payloadModel.getType())) {
                         KmFormPayloadModel.Selections selectionModel = payloadModel.getSelectionModel();
 
-                        formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(selectionModel.getTitle()) ? View.VISIBLE : View.GONE);
-                        formItemViewHolder.formEditText.setVisibility(View.GONE);
-
-                        formItemViewHolder.formLabel.setText(selectionModel.getTitle());
+                        setFormLabelText(formItemViewHolder, selectionModel.getTitle());
+                        handleItemVisibility(formItemViewHolder, formItemViewHolder.formFlowLayout);
 
                         List<KmFormPayloadModel.Options> options = payloadModel.getSelectionModel().getOptions();
 
                         final HashSet<Integer> checkedBoxes = checkBoxStateArray.get(position, new HashSet<Integer>());
 
                         if (options != null && !options.isEmpty()) {
-                            formItemViewHolder.flowLayout.setVisibility(View.VISIBLE);
 
-                            formItemViewHolder.flowLayout.removeAllViews();
+                            formItemViewHolder.formFlowLayout.removeAllViews();
                             for (KmFormPayloadModel.Options option : options) {
                                 final int index = options.indexOf(option);
                                 final CheckBox checkBox = new CheckBox(context);
@@ -231,26 +235,88 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                     }
                                 });
 
-                                formItemViewHolder.flowLayout.addView(checkBox);
+                                formItemViewHolder.formFlowLayout.addView(checkBox);
                             }
                         } else {
-                            formItemViewHolder.flowLayout.setVisibility(View.GONE);
+                            formItemViewHolder.formFlowLayout.setVisibility(View.GONE);
                         }
                     } else if (payloadModel.isTypeDateTime()) {
                         KmFormPayloadModel.DateTimePicker dateTimePickerModel = payloadModel.getDatePickerModel();
                         if (dateTimePickerModel != null) {
-                            formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(dateTimePickerModel.getLabel()) ? View.VISIBLE : View.GONE);
-                            formItemViewHolder.formEditText.setVisibility(View.GONE);
-                            formItemViewHolder.formLabel.setText(dateTimePickerModel.getLabel());
-                            formItemViewHolder.formDatePicker.setVisibility(View.VISIBLE);
-
+                            setFormLabelText(formItemViewHolder, dateTimePickerModel.getLabel());
+                            handleItemVisibility(formItemViewHolder, formItemViewHolder.formDatePicker);
+                            formItemViewHolder.formDatePicker.setCompoundDrawablesWithIntrinsicBounds(0, 0,
+                                    KmFormPayloadModel.Type.TIME.getValue().equals(payloadModel.getType())
+                                            ? R.drawable.ic_query_builder_black_18dp
+                                            : R.drawable.ic_calendar_today_black_18dp,
+                                    0);
                             formItemViewHolder.formDatePicker.setText(getFormattedDateByType(payloadModel.getType(), dateFieldArray.get(position), dateTimePickerModel.isAmPm()));
+                        }
+                    } else if (payloadModel.isTypeDropdown()) {
+                        final KmFormPayloadModel.DropdownList dropdownList = payloadModel.getDropdownList();
+                        if (dropdownList != null) {
+                            setFormLabelText(formItemViewHolder, dropdownList.getTitle());
+                            handleItemVisibility(formItemViewHolder, formItemViewHolder.formDropdownListContainer);
+                            if (dropdownList.getOptions() != null) {
+                                filterDropdownList(dropdownList.getOptions());
+
+                                if (validationArray.get(position) == 1) {
+                                    formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
+                                    formItemViewHolder.formValidationText.setText(dropdownList.getValidation().getErrorText());
+                                } else {
+                                    formItemViewHolder.formValidationText.setVisibility(View.GONE);
+                                }
+
+                                KmDropdownItemAdapter dropdownItemAdapter = new KmDropdownItemAdapter(context, android.R.layout.simple_spinner_item, dropdownList.getOptions());
+                                formItemViewHolder.formDropdownList.setAdapter(dropdownItemAdapter);
+                                dropdownItemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                                if (dropdownFieldArray.get(position) != null) {
+                                    formItemViewHolder.formDropdownList.setSelection(dropdownList.getOptions().indexOf(dropdownFieldArray.get(position)));
+                                } else {
+                                    formItemViewHolder.formDropdownList.setSelection(0);
+                                }
+
+                                formItemViewHolder.formDropdownList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int dropdownItemPosition, long id) {
+                                        dropdownFieldArray.put(position, dropdownList.getOptions().get(dropdownItemPosition));
+                                        formStateModel.setDropdownFieldArray(dropdownFieldArray);
+                                        KmFormStateHelper.addFormState(messageKey, formStateModel);
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+                                    }
+                                });
+                            }
                         }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    //Moves selected item to 1st position
+    private void filterDropdownList(List<KmFormPayloadModel.Options> dropdownList) {
+        for (int i = 0; i < dropdownList.size(); i++) {
+            if (i > 0 && dropdownList.get(i).isSelected()) {
+                Collections.swap(dropdownList, i, 0);
+            }
+        }
+    }
+
+    private void setFormLabelText(KmFormItemViewHolder formItemViewHolder, String text) {
+        formItemViewHolder.formLabel.setVisibility(!TextUtils.isEmpty(text) ? View.VISIBLE : View.GONE);
+        formItemViewHolder.formLabel.setText(text);
+    }
+
+    private void handleItemVisibility(KmFormItemViewHolder formItemViewHolder, View view) {
+        //starting from 1 as the item at 0 is the label text
+        for (int i = 1; i < formItemViewHolder.formItemRootLayout.getChildCount(); i++) {
+            formItemViewHolder.formItemRootLayout.getChildAt(i).setVisibility(view.getId() == formItemViewHolder.formItemRootLayout.getChildAt(i).getId() ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -346,8 +412,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                     && !TextUtils.isEmpty(textField.getValidation().getRegex())
                                     && !Pattern.compile(textField.getValidation().getRegex()).matcher(enteredText).matches()) {
                                 validationArray.put(i, INVALID_DATA);
-                                formStateModel.setValidationArray(validationArray);
-                                KmFormStateHelper.addFormState(messageKey, formStateModel);
                                 isValid = false;
                             } else {
                                 validationArray.put(i, VALID_DATA);
@@ -357,12 +421,22 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             KmToast.error(context, R.string.invalid_regex_error, Toast.LENGTH_SHORT).show();
                         }
                     }
+                } else if (KmFormPayloadModel.Type.DROPDOWN.getValue().equals(payloadList.get(i).getType())) {
+                    KmFormPayloadModel.DropdownList dropdownList = payloadList.get(i).getDropdownList();
+                    if (dropdownList != null && KmFormStateHelper.getFormState(messageKey) != null
+                            && KmFormStateHelper.getFormState(messageKey).getDropdownFieldArray().get(i) != null
+                            && KmFormStateHelper.getFormState(messageKey).getDropdownFieldArray().get(i).isDisabled()) {
+                        validationArray.put(i, INVALID_DATA);
+                        isValid = false;
+                    } else {
+                        validationArray.put(i, VALID_DATA);
+                    }
                 }
+                formStateModel.setValidationArray(validationArray);
+                KmFormStateHelper.addFormState(messageKey, formStateModel);
             }
         }
-        if (!isValid) {
-            notifyDataSetChanged();
-        }
+        notifyDataSetChanged();
         return isValid;
     }
 
@@ -384,6 +458,8 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                     || KmFormPayloadModel.Type.TIME.getValue().equals(payloadList.get(position).getType())
                     || KmFormPayloadModel.Type.DATE_TIME.getValue().equals(payloadList.get(position).getType())) {
                 return VIEW_TYPE_DATETIME;
+            } else if (KmFormPayloadModel.Type.DROPDOWN.getValue().equals(payloadList.get(position).getType())) {
+                return VIEW_TYPE_DROPDOWN;
             }
         }
         return 0;
@@ -397,18 +473,24 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
         TextView formLabel;
         EditText formEditText;
-        LinearLayout formItemLayout;
-        KmFlowLayout flowLayout;
+        LinearLayout formItemRootLayout;
+        KmFlowLayout formFlowLayout;
         TextView formDatePicker;
+        Spinner formDropdownList;
+        FrameLayout formDropdownListContainer;
+        TextView formValidationText;
 
         public KmFormItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            formLabel = itemView.findViewById(R.id.kmFormLabel);
-            formEditText = itemView.findViewById(R.id.kmFormEditText);
-            formItemLayout = itemView.findViewById(R.id.kmFormItemLayout);
-            flowLayout = itemView.findViewById(R.id.kmFormSelectionItems);
-            formDatePicker = itemView.findViewById(R.id.kmFormDatePicker);
+            formLabel = itemView.findViewById(R.id.km_form_label_text);
+            formEditText = itemView.findViewById(R.id.km_form_edit_text);
+            formItemRootLayout = itemView.findViewById(R.id.km_form_item_root_layout);
+            formFlowLayout = itemView.findViewById(R.id.km_form_selection_layout);
+            formDatePicker = itemView.findViewById(R.id.km_form_date_picker);
+            formDropdownList = itemView.findViewById(R.id.km_form_dropdown_list);
+            formDropdownListContainer = itemView.findViewById(R.id.km_form_dropdown_list_container);
+            formValidationText = itemView.findViewById(R.id.km_form_validation_text);
 
             if (formEditText != null) {
                 formEditText.addTextChangedListener(new TextWatcher() {

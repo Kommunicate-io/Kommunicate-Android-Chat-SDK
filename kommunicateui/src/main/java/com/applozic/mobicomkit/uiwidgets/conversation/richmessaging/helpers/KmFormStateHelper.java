@@ -8,13 +8,13 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+
+import io.kommunicate.utils.KmDateUtils;
 
 public class KmFormStateHelper {
 
@@ -114,11 +114,11 @@ public class KmFormStateHelper {
                     KmFormPayloadModel.DateTimePicker dateTimePicker = formPayloadModelList.get(key).getDatePickerModel();
 
                     if (KmFormPayloadModel.Type.DATE.getValue().equals(formPayloadModelList.get(key).getType())) {
-                        formDataMap.put(dateTimePicker.getLabel(), getFormattedDate(formStateModel.getDateFieldArray().get(key)));
+                        formDataMap.put(dateTimePicker.getLabel(), KmDateUtils.getFormSerialisedDateFormat(formStateModel.getDateFieldArray().get(key)));
                     } else if (KmFormPayloadModel.Type.TIME.getValue().equals(formPayloadModelList.get(key).getType())) {
-                        formDataMap.put(dateTimePicker.getLabel(), getFormattedTime(formStateModel.getDateFieldArray().get(key)));
+                        formDataMap.put(dateTimePicker.getLabel(), KmDateUtils.getFormSerialisedTimeFormat(formStateModel.getDateFieldArray().get(key)));
                     } else {
-                        formDataMap.put(dateTimePicker.getLabel(), getFormattedDate(formStateModel.getDateFieldArray().get(key)) + "T" + getFormattedTime(formStateModel.getDateFieldArray().get(key)));
+                        formDataMap.put(dateTimePicker.getLabel(), KmDateUtils.getFormSerialisedDateTimeFormat(formStateModel.getDateFieldArray().get(key)));
                     }
                 }
             }
@@ -131,21 +131,5 @@ public class KmFormStateHelper {
         }
 
         return formDataMap;
-    }
-
-    private static String getFormattedDate(Long timeStamp) {
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        calendar.setTimeInMillis(timeStamp);
-        return calendar.get(Calendar.YEAR) + "-" + getDoubleDigitTime(calendar.get(Calendar.MONTH) + 1) + "-" + getDoubleDigitTime(calendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-    private static String getFormattedTime(Long timeStamp) {
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        calendar.setTimeInMillis(timeStamp);
-        return getDoubleDigitTime(calendar.get(Calendar.HOUR_OF_DAY)) + ":" + getDoubleDigitTime(calendar.get(Calendar.MINUTE));
-    }
-
-    private static String getDoubleDigitTime(int time) {
-        return time < 10 ? "0" + time : String.valueOf(time);
     }
 }

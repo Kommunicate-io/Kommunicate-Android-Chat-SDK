@@ -40,16 +40,16 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadi
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
+import io.kommunicate.utils.KmDateUtils;
 
 public class KmFormItemAdapter extends RecyclerView.Adapter {
 
@@ -72,12 +72,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_SELECTION = 2;
     private static final int VIEW_TYPE_DATETIME = 3;
     private static final int VIEW_TYPE_DROPDOWN = 4;
-
-    public static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
-    public static final String DEFAULT_TIME_FORMAT_24 = "HH:mm";
-    public static final String DEFAULT_TIME_FORMAT_12 = "hh:mm aa";
-    public static final String DEFAULT_DATE_TIME_FORMAT_24 = "dd/MM/yyyy HH:mm";
-    public static final String DEFAULT_DATE_TIME_FORMAT_12 = "dd/MM/yyyy hh:mm aa";
 
     //TODO: Create Adaptor Factory Pattern for this Form rich message type
     public KmFormItemAdapter(Context context, List<KmFormPayloadModel> payloadList, String messageKey) {
@@ -187,7 +181,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         } else {
                             formItemViewHolder.formValidationText.setVisibility(View.GONE);
                         }
-
                     } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(payloadModel.getType())) {
                         KmFormPayloadModel.Selections selectionModel = payloadModel.getSelectionModel();
 
@@ -250,7 +243,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                             ? R.drawable.ic_query_builder_black_18dp
                                             : R.drawable.ic_calendar_today_black_18dp,
                                     0);
-                            formItemViewHolder.formDatePicker.setText(getFormattedDateByType(payloadModel.getType(), dateFieldArray.get(position), dateTimePickerModel.isAmPm()));
+                            formItemViewHolder.formDatePicker.setText(getFormattedDateByType(payloadModel.getType(), payloadModel.getDatePickerModel().getDateFormat(), dateFieldArray.get(position), dateTimePickerModel.isAmPm()));
                         }
                     } else if (payloadModel.isTypeDropdown()) {
                         final KmFormPayloadModel.DropdownList dropdownList = payloadModel.getDropdownList();
@@ -302,8 +295,11 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     //Moves selected item to 1st position
     private void filterDropdownList(List<KmFormPayloadModel.Options> dropdownList) {
         for (int i = 0; i < dropdownList.size(); i++) {
-            if (i > 0 && dropdownList.get(i).isSelected()) {
-                Collections.swap(dropdownList, i, 0);
+            if (dropdownList.get(i).isSelected()) {
+                if (i > 0) {
+                    Collections.swap(dropdownList, i, 0);
+                }
+                return;
             }
         }
     }
@@ -369,25 +365,13 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), !isAmPm).show();
     }
 
-    private String getFormattedDate(Long timeInMillis) {
-        return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(new Date(timeInMillis));
-    }
-
-    private String getFormattedTime(Long timeInMillis, boolean isAmPm) {
-        return new SimpleDateFormat(isAmPm ? DEFAULT_TIME_FORMAT_12 : DEFAULT_TIME_FORMAT_24).format(new Date(timeInMillis));
-    }
-
-    private String getFormattedDateTime(Long timeInMillis, boolean isAmPm) {
-        return new SimpleDateFormat(isAmPm ? DEFAULT_DATE_TIME_FORMAT_12 : DEFAULT_DATE_TIME_FORMAT_24).format(new Date(timeInMillis));
-    }
-
-    private String getFormattedDateByType(String type, Long timeInMillis, boolean isAmPm) {
+    private String getFormattedDateByType(String type, String dateFormat, Long timeInMillis, boolean isAmPm) {
         if (KmFormPayloadModel.Type.DATE.getValue().equals(type)) {
-            return timeInMillis == null ? DEFAULT_DATE_FORMAT : getFormattedDate(timeInMillis);
+            return timeInMillis == null ? KmDateUtils.getLocalisedDateFormat(dateFormat) : KmDateUtils.getFormattedDate(timeInMillis, dateFormat);
         } else if (KmFormPayloadModel.Type.TIME.getValue().equals(type)) {
-            return timeInMillis == null ? (isAmPm ? DEFAULT_TIME_FORMAT_12 : DEFAULT_TIME_FORMAT_24) : getFormattedTime(timeInMillis, isAmPm);
+            return timeInMillis == null ? KmDateUtils.getTimeFormat(isAmPm) : KmDateUtils.getFormattedTime(timeInMillis, isAmPm);
         } else if (KmFormPayloadModel.Type.DATE_TIME.getValue().equals(type)) {
-            return timeInMillis == null ? (isAmPm ? DEFAULT_DATE_TIME_FORMAT_12 : DEFAULT_DATE_TIME_FORMAT_24) : getFormattedDateTime(timeInMillis, isAmPm);
+            return timeInMillis == null ? KmDateUtils.getLocalisedDateTimeFormat(dateFormat, isAmPm) : KmDateUtils.getFormattedDateTime(timeInMillis, dateFormat, isAmPm);
         }
         return "";
     }

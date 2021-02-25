@@ -243,7 +243,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                             ? R.drawable.ic_query_builder_black_18dp
                                             : R.drawable.ic_calendar_today_black_18dp,
                                     0);
-                            formItemViewHolder.formDatePicker.setText(getFormattedDateByType(payloadModel.getType(), payloadModel.getDatePickerModel().getDateFormat(), dateFieldArray.get(position), dateTimePickerModel.isAmPm()));
+                            formItemViewHolder.formDatePicker.setText(getFormattedDateByType(payloadModel.getType(), dateFieldArray.get(position), dateTimePickerModel.isAmPm()));
                         }
                     } else if (payloadModel.isTypeDropdown()) {
                         final KmFormPayloadModel.DropdownList dropdownList = payloadModel.getDropdownList();
@@ -365,13 +365,13 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), !isAmPm).show();
     }
 
-    private String getFormattedDateByType(String type, String dateFormat, Long timeInMillis, boolean isAmPm) {
+    private String getFormattedDateByType(String type, Long timeInMillis, boolean isAmPm) {
         if (KmFormPayloadModel.Type.DATE.getValue().equals(type)) {
-            return timeInMillis == null ? KmDateUtils.getLocalisedDateFormat(dateFormat) : KmDateUtils.getFormattedDate(timeInMillis, dateFormat);
+            return timeInMillis == null ? KmDateUtils.getLocalisedDateFormat() : KmDateUtils.getFormattedDate(timeInMillis);
         } else if (KmFormPayloadModel.Type.TIME.getValue().equals(type)) {
             return timeInMillis == null ? KmDateUtils.getTimeFormat(isAmPm) : KmDateUtils.getFormattedTime(timeInMillis, isAmPm);
         } else if (KmFormPayloadModel.Type.DATE_TIME.getValue().equals(type)) {
-            return timeInMillis == null ? KmDateUtils.getLocalisedDateTimeFormat(dateFormat, isAmPm) : KmDateUtils.getFormattedDateTime(timeInMillis, dateFormat, isAmPm);
+            return timeInMillis == null ? KmDateUtils.getLocalisedDateTimeFormat(isAmPm) : KmDateUtils.getFormattedDateTime(timeInMillis, isAmPm);
         }
         return "";
     }

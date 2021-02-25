@@ -1,7 +1,6 @@
 package io.kommunicate.utils;
 
-import android.text.TextUtils;
-
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -16,39 +15,24 @@ public class KmDateUtils {
     private static final String FORM_SERIALISED_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
 
 
-    public static String getLocalisedDateFormat(String dateFormat) {
-        if (!TextUtils.isEmpty(dateFormat)) {
-            return dateFormat;
-        } else if (Locale.getDefault().equals(Locale.US)) {
-            return LocaleDateFormat.US;
-        }
+    public static String getLocalisedDateFormat() {
         return DEFAULT_DATE_FORMAT;
     }
 
-    public static String getLocalisedDateTimeFormat(String dateFormat, boolean isAmPm) {
-        return getLocalisedDateFormat(dateFormat) + " " + getTimeFormat(isAmPm);
+    public static String getLocalisedDateTimeFormat(boolean isAmPm) {
+        return getLocalisedDateFormat() + " " + getTimeFormat(isAmPm);
     }
 
-    public static String getFormattedDate(Long timeInMillis, String dateFormat) {
-        try {
-            return new SimpleDateFormat(getLocalisedDateFormat(dateFormat), Locale.getDefault()).format(new Date(timeInMillis));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-        return new SimpleDateFormat(getLocalisedDateFormat(null), Locale.getDefault()).format(new Date(timeInMillis));
+    public static String getFormattedDate(Long timeInMillis) {
+        return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(new Date(timeInMillis));
     }
 
     public static String getFormattedTime(Long timeInMillis, boolean isAmPm) {
         return new SimpleDateFormat(isAmPm ? DEFAULT_TIME_FORMAT_12 : DEFAULT_TIME_FORMAT_24, Locale.getDefault()).format(new Date(timeInMillis));
     }
 
-    public static String getFormattedDateTime(Long timeInMillis, String dateFormat, boolean isAmPm) {
-        try {
-            return new SimpleDateFormat(getLocalisedDateTimeFormat(dateFormat, isAmPm), Locale.getDefault()).format(new Date(timeInMillis));
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-        return new SimpleDateFormat(getLocalisedDateTimeFormat(null, isAmPm), Locale.getDefault()).format(new Date(timeInMillis));
+    public static String getFormattedDateTime(Long timeInMillis, boolean isAmPm) {
+        return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(new Date(timeInMillis)) + " " + getFormattedTime(timeInMillis, isAmPm);
     }
 
     public static String getTimeFormat(boolean isAmPm) {
@@ -65,9 +49,5 @@ public class KmDateUtils {
 
     public static String getFormSerialisedDateTimeFormat(Long timeStamp) {
         return new SimpleDateFormat(FORM_SERIALISED_DATE_TIME_FORMAT, Locale.getDefault()).format(new Date(timeStamp));
-    }
-
-    public static class LocaleDateFormat {
-        public static final String US = "MM/dd/yyyy";
     }
 }

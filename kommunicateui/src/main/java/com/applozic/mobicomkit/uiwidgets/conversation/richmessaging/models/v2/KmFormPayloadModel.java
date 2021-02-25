@@ -198,7 +198,6 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     public static class DateTimePicker extends JsonMarker {
         private String label;
         private boolean amPm = true;
-        private String dateFormat;
 
         public String getLabel() {
             return label;
@@ -214,14 +213,6 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
         public void setAmPm(boolean amPm) {
             this.amPm = amPm;
-        }
-
-        public String getDateFormat() {
-            return dateFormat;
-        }
-
-        public void setDateFormat(String dateFormat) {
-            this.dateFormat = dateFormat;
         }
     }
 

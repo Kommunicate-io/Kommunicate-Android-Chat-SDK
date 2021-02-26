@@ -14,6 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.utils.KmDateUtils;
+
 public class KmFormStateHelper {
 
     private static Map<String, KmFormStateModel> formStateModelMap;
@@ -110,7 +112,20 @@ public class KmFormStateHelper {
                 for (int i = 0; i < formStateModel.getDateFieldArray().size(); i++) {
                     int key = formStateModel.getDateFieldArray().keyAt(i);
                     KmFormPayloadModel.DateTimePicker dateTimePicker = formPayloadModelList.get(key).getDatePickerModel();
-                    formDataMap.put(dateTimePicker.getLabel(), formStateModel.getDateFieldArray().get(key).toString());  //Might need to convert to formatted date
+
+                    if (KmFormPayloadModel.Type.DATE.getValue().equals(formPayloadModelList.get(key).getType())) {
+                        formDataMap.put(dateTimePicker.getLabel(), KmDateUtils.getFormSerialisedDateFormat(formStateModel.getDateFieldArray().get(key)));
+                    } else if (KmFormPayloadModel.Type.TIME.getValue().equals(formPayloadModelList.get(key).getType())) {
+                        formDataMap.put(dateTimePicker.getLabel(), KmDateUtils.getFormSerialisedTimeFormat(formStateModel.getDateFieldArray().get(key)));
+                    } else {
+                        formDataMap.put(dateTimePicker.getLabel(), KmDateUtils.getFormSerialisedDateTimeFormat(formStateModel.getDateFieldArray().get(key)));
+                    }
+                }
+            }
+
+            if (formStateModel.getDropdownFieldArray() != null) {
+                for (int i = 0; i < formStateModel.getDropdownFieldArray().size(); i++) {
+                    formDataMap.put(formPayloadModelList.get(formStateModel.getDropdownFieldArray().keyAt(i)).getDropdownList().getName(), formStateModel.getDropdownFieldArray().valueAt(i).getValue());
                 }
             }
         }

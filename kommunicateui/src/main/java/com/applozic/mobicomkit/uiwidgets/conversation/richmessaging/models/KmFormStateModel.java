@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicommons.json.JsonMarker;
 
 import java.util.HashSet;
@@ -16,6 +17,7 @@ public class KmFormStateModel extends JsonMarker {
     private Map<String, String> hiddenFields;
     private SparseIntArray validationArray;
     private SparseArray<Long> dateFieldArray;
+    private SparseArray<KmFormPayloadModel.Options> dropdownFieldArray;
 
     public SparseArray<String> getTextFields() {
         return textFields;
@@ -63,5 +65,13 @@ public class KmFormStateModel extends JsonMarker {
 
     public void setDateFieldArray(SparseArray<Long> dateFieldArray) {
         this.dateFieldArray = dateFieldArray;
+    }
+
+    public SparseArray<KmFormPayloadModel.Options> getDropdownFieldArray() {
+        return dropdownFieldArray;
+    }
+
+    public void setDropdownFieldArray(SparseArray<KmFormPayloadModel.Options> dropdownFieldArray) {
+        this.dropdownFieldArray = dropdownFieldArray;
     }
 }

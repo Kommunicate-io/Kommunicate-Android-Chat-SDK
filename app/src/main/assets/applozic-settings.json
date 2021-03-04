@@ -85,6 +85,7 @@
   "toolbarColor": "",
   "statusBarColor": "",
   "richMessageThemeColor": "",
+  "hideKeyboardForBot": false,
   "enableFaqOption": [
     true,
     false
@@ -127,7 +128,6 @@
   "replyMessageLayoutReceivedMessageBackground": "#F5F5F5",
   "groupInfoScreenVisible": true,
   "forwardOption": false,
-  "recordButton": false,
   "disableGlobalStoragePermission": true,
   "messageTemplate": {
     "isEnabled": false,

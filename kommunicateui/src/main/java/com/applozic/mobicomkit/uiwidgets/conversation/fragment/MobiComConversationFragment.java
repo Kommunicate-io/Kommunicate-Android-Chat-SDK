@@ -362,6 +362,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isAssigneeDialogFlowBot;
     protected int botMessageDelayInterval;
     protected KmBotTypingDelayManager botTypingDelayManager;
+    protected boolean isRecordOptionEnabled;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -612,7 +613,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
         awayMessageTv = list.findViewById(R.id.awayMessageTV);
 
-        boolean isRecordOptionEnabled = (alCustomizationSettings != null
+        isRecordOptionEnabled = (alCustomizationSettings != null
                 && alCustomizationSettings.getAttachmentOptions() != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
                 && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) || isSpeechToTextEnabled;
@@ -909,18 +910,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         createTemplateMessages();
 
-        if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableAwayMessage()) {
-            Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
-                @Override
-                public void onSuccess(Context context, KmApiResponse.KmMessageResponse response) {
-                    showAwayMessage(true, response.getMessage());
-                }
-
-                @Override
-                public void onFailure(Context context, Exception e, String response) {
-                    Utils.printLog(context, TAG, "Response: " + response + " ----- Exception : " + e);
-                }
-            });
+        if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+            loadAwayMessage();
         }
 
         emoticonsBtn.setVisibility(View.GONE);
@@ -1083,18 +1074,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setFeedbackDisplay(channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext()));
 
         if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
-            Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
-                @Override
-                public void onSuccess(Context context, KmApiResponse.KmMessageResponse response) {
-                    showAwayMessage(true, response.getMessage());
-                }
-
-                @Override
-                public void onFailure(Context context, Exception e, String response) {
-                    showAwayMessage(false, response);
-                    Utils.printLog(context, TAG, "Response: " + response + "\nException : " + e);
-                }
-            });
+            loadAwayMessage();
         }
     }
 
@@ -1853,7 +1833,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 individualMessageSendLayout.setVisibility(View.GONE);
             } else {
                 userNotAbleToChatLayout.setVisibility(View.GONE);
-                individualMessageSendLayout.setVisibility(VISIBLE);
+                toggleMessageSendLayoutVisibility();
             }
         }
 
@@ -4405,7 +4385,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             } else {
                 kmFeedbackView.setVisibility(View.GONE);
-                individualMessageSendLayout.setVisibility(VISIBLE);
+                toggleMessageSendLayoutVisibility();
                 mainDivider.setVisibility(VISIBLE);
             }
         }
@@ -4800,4 +4780,38 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public abstract void onStartLoading(boolean loadingStarted);
+
+    protected void loadAwayMessage() {
+        if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()) {
+            Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
+                @Override
+                public void onSuccess(Context context, KmApiResponse.KmMessageResponse response) {
+                    showAwayMessage(true, response.getMessage());
+                }
+
+                @Override
+                public void onFailure(Context context, Exception e, String response) {
+                    showAwayMessage(false, response);
+                    Utils.printLog(context, TAG, "Response: " + response + "\nException : " + e);
+                }
+            });
+        }
+
+        toggleMessageSendLayoutVisibility();
+    }
+
+    protected void toggleMessageSendLayoutVisibility() {
+        if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()) {
+            Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
+
+            boolean hideLayout = alCustomizationSettings.isHideKeyboardForBot()
+                    && assigneeContact != null
+                    && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType());
+
+            individualMessageSendLayout.setVisibility(hideLayout ? GONE : VISIBLE);
+            recordLayout.setVisibility(hideLayout || !isRecordOptionEnabled ? GONE : VISIBLE);
+        } else {
+            individualMessageSendLayout.setVisibility(VISIBLE);
+        }
+    }
 }

@@ -4804,7 +4804,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()) {
             Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
 
-            boolean hideLayout = alCustomizationSettings.isHideKeyboardForBot()
+            boolean hideLayout = alCustomizationSettings.isRestrictMessageTypingWithBots()
                     && assigneeContact != null
                     && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType());
 

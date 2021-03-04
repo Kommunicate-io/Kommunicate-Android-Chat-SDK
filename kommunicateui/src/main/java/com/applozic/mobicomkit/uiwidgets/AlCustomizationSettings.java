@@ -124,7 +124,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String statusBarColor = "";
     private String richMessageThemeColor = "";
     private Map<String, Boolean> attachmentOptions;
-    private boolean hideKeyboardForBot = false;
+    private boolean restrictMessageTypingWithBots = false;
 
     public boolean isBroadcastOption() {
         return broadcastOption;
@@ -669,8 +669,8 @@ public class AlCustomizationSettings extends JsonMarker {
         return richMessageThemeColor;
     }
 
-    public boolean isHideKeyboardForBot() {
-        return hideKeyboardForBot;
+    public boolean isRestrictMessageTypingWithBots() {
+        return restrictMessageTypingWithBots;
     }
 
     @Override

@@ -85,7 +85,7 @@
   "toolbarColor": "",
   "statusBarColor": "",
   "richMessageThemeColor": "",
-  "hideKeyboardForBot": false,
+  "restrictMessageTypingWithBots": false,
   "enableFaqOption": [
     true,
     false

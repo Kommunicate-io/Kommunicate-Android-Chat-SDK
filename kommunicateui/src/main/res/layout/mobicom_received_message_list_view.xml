@@ -160,7 +160,7 @@
             android:letterSpacing="0.01"
             android:paddingTop="2dp"
             android:text=""
-            android:textColor="@color/km_message_created_at_time_text_color"
+            android:textColor="@color/km_received_message_created_at_time_text_color"
             android:textSize="10sp" />
 
         <TextView

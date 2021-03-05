@@ -58,7 +58,7 @@
         android:textAlignment="viewStart"
         android:layout_gravity="start"
         android:height="50dp"
-        android:background="@color/km_black_color"
+        android:background="@color/km_attachment_size_text_background_color"
         android:paddingLeft="10dp"
         android:paddingStart="10dp"
         android:text=""

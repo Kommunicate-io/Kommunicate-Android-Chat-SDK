@@ -20,8 +20,8 @@
         android:layout_height="200dp"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:minHeight="100dp"
         android:minWidth="100dp"
+        android:minHeight="100dp"
         android:scaleType="centerCrop"
         android:visibility="visible" />
 
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_centerInParent="true"
-        android:background="#50000000"
+        android:background="@color/km_image_preview_background_color"
         android:gravity="center"
         android:padding="40dp"
         android:src="@drawable/km_video_play_icon"
@@ -57,14 +57,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
             android:text="@string/mb_10"
-            android:textColor="@color/white"
+            android:textColor="@color/km_white_color"
             android:textSize="20sp" />
-
     </LinearLayout>
-
 
     <ProgressBar
         android:id="@+id/media_upload_progress_bar"
@@ -114,15 +112,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/attachment_retry"
             android:textAlignment="gravity"
-            android:textColor="@color/white"
+            android:textColor="@color/km_white_color"
             android:textDirection="locale"
             android:textSize="20sp" />
 

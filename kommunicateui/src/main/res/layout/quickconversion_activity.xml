@@ -35,7 +35,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="@string/conversations"
-                android:textColor="@color/white"
+                android:textColor="@color/km_white_color"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                 android:paddingRight="7dp"
                 android:paddingBottom="5dp"
                 android:text="@string/faq_option"
-                android:textColor="@color/white"
+                android:textColor="@color/km_white_color"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </RelativeLayout>

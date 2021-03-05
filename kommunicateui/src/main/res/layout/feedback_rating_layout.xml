@@ -31,7 +31,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="40dp"
         android:text="@string/rate_the_conversation"
-        android:textColor="@color/dark_black"
+        android:textColor="@color/km_black_color"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -153,5 +153,5 @@
         android:paddingRight="20dp"
         android:text="@string/submit_your_rating"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/km_white_color" />
 </LinearLayout>

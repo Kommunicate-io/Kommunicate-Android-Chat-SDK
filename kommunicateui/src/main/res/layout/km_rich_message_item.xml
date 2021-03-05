@@ -43,8 +43,8 @@
             android:paddingEnd="7dp"
             android:paddingRight="7dp"
             android:paddingBottom="7dp"
-            android:text="$5000"
-            android:textColor="#0d0d0e"
+            android:text=""
+            android:textColor="@color/km_rm_card_extension_text_color"
             android:textSize="16sp"
             android:textStyle="normal" />
     </FrameLayout>
@@ -67,8 +67,8 @@
             android:fontFamily="sans-serif-medium"
             android:letterSpacing="0.04"
             android:maxLines="1"
-            android:text="OYO Rooms Kodihalli (4.2/5)"
-            android:textColor="#393838"
+            android:text=""
+            android:textColor="@color/km_rm_card_title_text_color"
             android:textSize="16sp"
             android:textStyle="normal"
             android:visibility="gone" />
@@ -95,8 +95,8 @@
                 android:letterSpacing="0.04"
                 android:maxWidth="170dp"
                 android:maxLines="1"
-                android:text="OYO Rooms Kodihalli"
-                android:textColor="#393838"
+                android:text=""
+                android:textColor="@color/km_rm_card_title_text_color"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
@@ -119,8 +119,8 @@
                 android:fontFamily="sans-serif"
                 android:letterSpacing="-0.01"
                 android:maxLines="1"
-                android:text="2078"
-                android:textColor="#6a6868"
+                android:text=""
+                android:textColor="@color/km_rm_card_extension_2_text_color"
                 android:textSize="12sp"
                 android:textStyle="normal"
                 android:visibility="visible" />
@@ -140,8 +140,8 @@
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.04"
         android:maxLines="1"
-        android:text="Bangalore India"
-        android:textColor="#696767"
+        android:text=""
+        android:textColor="@color/km_rm_card_short_description_text_color"
         android:textSize="14sp"
         android:textStyle="normal" />
 
@@ -159,8 +159,8 @@
         android:letterSpacing="0.04"
         android:maxLines="3"
         android:paddingBottom="4dp"
-        android:text="This large room with hardwood floors features a sofa, city views, a piano with leather seats with a lot of"
-        android:textColor="#827e7e"
+        android:text=""
+        android:textColor="@color/km_rm_card_long_description_text_color"
         android:textSize="14sp"
         android:textStyle="normal" />
 
@@ -168,7 +168,7 @@
         android:id="@+id/viewAction1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#e7e4e4" />
+        android:background="@color/km_image_background_color" />
 
     <TextView
         android:id="@+id/bookingAction1"
@@ -178,9 +178,9 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.05"
         android:padding="5dp"
-        android:text="VIEW DETAILS"
+        android:text=""
         android:textAlignment="center"
-        android:textColor="#5c5aa7"
+        android:textColor="@color/km_list_item_header_text_color"
         android:textSize="12sp"
         android:textStyle="normal" />
 
@@ -188,7 +188,7 @@
         android:id="@+id/viewAction2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#e7e4e4" />
+        android:background="@color/km_image_background_color" />
 
     <TextView
         android:id="@+id/bookingAction2"
@@ -198,9 +198,9 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.05"
         android:padding="5dp"
-        android:text="BOOK NOW"
+        android:text=""
         android:textAlignment="center"
-        android:textColor="#5c5aa7"
+        android:textColor="@color/km_list_item_header_text_color"
         android:textSize="12sp"
         android:textStyle="normal"
         android:visibility="gone" />
@@ -209,7 +209,7 @@
         android:id="@+id/viewAction3"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#e7e4e4" />
+        android:background="@color/km_image_background_color" />
 
     <TextView
         android:id="@+id/bookingAction3"
@@ -219,9 +219,9 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.05"
         android:padding="5dp"
-        android:text="BOOK NOW OR NEVER"
+        android:text=""
         android:textAlignment="center"
-        android:textColor="#5c5aa7"
+        android:textColor="@color/km_list_item_header_text_color"
         android:textSize="12sp"
         android:textStyle="normal"
         android:visibility="gone" />

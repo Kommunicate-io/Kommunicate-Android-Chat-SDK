@@ -26,7 +26,7 @@
             android:background="@drawable/mobiframework_circular_text_view"
             android:gravity="center"
             android:text=""
-            android:textColor="#ffffff"
+            android:textColor="@color/km_white_color"
             android:textSize="15sp"
             android:visibility="visible" />
     </FrameLayout>
@@ -42,7 +42,7 @@
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/toolbar_online_circle"
-        android:textColor="#05bf50"
+        android:textColor="@color/km_online_dot_color"
         android:textSize="7sp"
         android:textStyle="bold"
         android:visibility="gone" />
@@ -58,7 +58,7 @@
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/toolbar_away_circle"
-        android:textColor="#BFBC05"
+        android:textColor="@color/km_away_status_dot_color"
         android:textSize="7sp"
         android:textStyle="bold"
         android:visibility="gone" />
@@ -74,7 +74,7 @@
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
         android:background="@drawable/toolbar_offline_circle"
-        android:textColor="#949896"
+        android:textColor="@color/km_offline_dot_color"
         android:textSize="7sp"
         android:textStyle="bold"
         android:visibility="visible" />
@@ -101,7 +101,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:text="@string/km_default_support_group_name"
-            android:textColor="#f7ffffff"
+            android:textColor="@color/km_white_color"
             android:textSize="16sp"
             android:textStyle="normal" />
 
@@ -113,7 +113,7 @@
             android:fontFamily="sans-serif-light"
             android:maxLines="1"
             android:text="@string/offline"
-            android:textColor="#f1ffffff"
+            android:textColor="@color/km_white_color"
             android:textSize="12sp"
             android:textStyle="normal" />
     </LinearLayout>
@@ -135,7 +135,7 @@
         android:paddingRight="7dp"
         android:paddingBottom="5dp"
         android:text="@string/faq_option"
-        android:textColor="@color/white"
+        android:textColor="@color/km_white_color"
         android:textSize="16sp"
         android:textStyle="bold" />
 </RelativeLayout>

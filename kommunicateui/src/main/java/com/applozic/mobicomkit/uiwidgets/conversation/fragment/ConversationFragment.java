@@ -51,7 +51,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
         if (conversationId != null) {
             args.putInt(CONVERSATION_ID, conversationId);
         }
-        if(!TextUtils.isEmpty(preFilledMessage)) {
+        if (!TextUtils.isEmpty(preFilledMessage)) {
             args.putString(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
         }
         args.putString(SEARCH_STRING, searchString);
@@ -105,8 +105,8 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
         messageEditText.setHint(R.string.enter_message_hint);
 
-        if(!TextUtils.isEmpty(preFilledMessage)) {
-           messageEditText.setText(preFilledMessage);
+        if (!TextUtils.isEmpty(preFilledMessage)) {
+            messageEditText.setText(preFilledMessage);
         }
 
         multimediaPopupGrid.setVisibility(View.GONE);

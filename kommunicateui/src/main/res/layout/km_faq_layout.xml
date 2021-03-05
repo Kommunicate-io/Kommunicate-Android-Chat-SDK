@@ -19,7 +19,7 @@
         android:fontFamily="sans-serif"
         android:letterSpacing="0.04"
         android:text=""
-        android:textColor="#646262"
+        android:textColor="@color/km_dropdown_background_color"
         android:textSize="14sp"
         android:textStyle="normal"
         android:visibility="gone" />
@@ -36,7 +36,7 @@
         android:fontFamily="sans-serif"
         android:letterSpacing="0.04"
         android:text=""
-        android:textColor="#646262"
+        android:textColor="@color/km_dropdown_background_color"
         android:textSize="14sp"
         android:textStyle="bold"
         android:visibility="gone"/>
@@ -54,7 +54,7 @@
         android:fontFamily="sans-serif"
         android:letterSpacing="0.04"
         android:text=""
-        android:textColor="#646262"
+        android:textColor="@color/km_dropdown_background_color"
         android:textSize="14sp"
         android:textStyle="normal"
         android:visibility="gone"/>

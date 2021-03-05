@@ -15,7 +15,7 @@
         android:layout_marginStart="9dp"
         android:layout_marginLeft="9dp"
         android:background="@drawable/take_over_from_bot_online_circle"
-        android:textColor="#57cc04" />
+        android:textColor="@color/km_online_dot_color" />
 
     <TextView
         android:id="@+id/kmAssignedText"
@@ -29,7 +29,7 @@
         android:fontFamily="sans-serif-light"
         android:letterSpacing="0.03"
         android:text="@string/km_active_bots_text"
-        android:textColor="#635f5f"
+        android:textColor="@color/km_take_over_from_bot_text_color"
         android:textSize="13sp"
         android:textStyle="normal" />
 
@@ -51,7 +51,7 @@
         android:letterSpacing="0.03"
         android:maxLines="1"
         android:text="@string/km_default_assigned_bot_name"
-        android:textColor="#3e3c3c"
+        android:textColor="@color/km_take_over_from_bot_name_color"
         android:textSize="13sp"
         android:textStyle="normal" />
 

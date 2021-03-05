@@ -3,12 +3,12 @@
     android:shape="rectangle">
 
     <!-- view background color -->
-    <solid android:color="#cccccc" />
+    <solid android:color="@color/km_channel_custom_message_color" />
 
     <!-- view border color and width -->
     <stroke
         android:width="3dp"
-        android:color="#cccccc" />
+        android:color="@color/km_channel_custom_message_color" />
 
     <!-- If you want to add some padding -->
     <padding

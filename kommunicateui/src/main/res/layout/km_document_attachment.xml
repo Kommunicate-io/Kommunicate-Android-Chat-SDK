@@ -50,7 +50,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:text="@string/kb45"
-                android:textColor="@color/white" />
+                android:textColor="@color/km_white_color" />
 
 
         </RelativeLayout>
@@ -76,7 +76,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:text="@string/attachment_retry"
-                android:textColor="@color/white"
+                android:textColor="@color/km_white_color"
                 android:textSize="10sp" />
 
 
@@ -128,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text=""
-            android:textColor="@color/white"
+            android:textColor="@color/km_white_color"
             android:visibility="gone" />
 
         <TextView
@@ -139,8 +139,8 @@
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:maxLines="3"
-            android:text=" "
-            android:textColor="@color/white"
+            android:text=""
+            android:textColor="@color/km_white_color"
             android:textSize="15sp" />
     </LinearLayout>
 </RelativeLayout>

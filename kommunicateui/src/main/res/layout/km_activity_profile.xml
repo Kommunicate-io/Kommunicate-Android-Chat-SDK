@@ -322,7 +322,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="10dp"
                     android:text="@string/notifications"
-                    android:textColor="@color/black"
+                    android:textColor="@color/km_black_color"
                     android:textSize="20sp" />
 
                 <TextView

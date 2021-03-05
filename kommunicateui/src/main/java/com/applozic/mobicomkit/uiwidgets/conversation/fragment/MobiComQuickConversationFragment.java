@@ -76,7 +76,6 @@ import java.util.Map;
 public class MobiComQuickConversationFragment extends Fragment implements SearchListFragment {
 
     protected RecyclerView recyclerView = null;
-    protected ImageButton fabButton;
     protected TextView emptyTextView;
     protected SwipeRefreshLayout swipeLayout;
     protected int listIndex;
@@ -170,7 +169,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         if (toolbarCustomLayout != null) {
             toolbarCustomLayout.setVisibility(View.GONE);
         }
-        fabButton = (ImageButton) list.findViewById(R.id.fab_start_new);
+
         loading = true;
         LinearLayout individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
         LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
@@ -199,8 +198,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
-
-        fabButton.setVisibility(alCustomizationSettings.isStartNewFloatingButton() ? View.VISIBLE : View.GONE);
 
         swipeLayout = (SwipeRefreshLayout) list.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
@@ -552,7 +549,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        fabButton.setOnClickListener(startNewConversation());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override

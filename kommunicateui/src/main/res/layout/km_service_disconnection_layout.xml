@@ -27,7 +27,7 @@
     <View
         android:layout_width="50dp"
         android:layout_height="4dp"
-        android:background="#ccc8c8"
+        android:background="@color/km_image_background_color"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="7dp" />
 
@@ -46,7 +46,7 @@
         android:minLines="3"
         android:text="@string/account_disconnection_message"
         android:gravity="center"
-        android:textColor="#737376"
+        android:textColor="@color/km_service_disconnection_text_color"
         android:textSize="14sp"
         android:textStyle="normal" />
 </LinearLayout>

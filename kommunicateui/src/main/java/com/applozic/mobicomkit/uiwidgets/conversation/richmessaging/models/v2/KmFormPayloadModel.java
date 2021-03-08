@@ -38,6 +38,14 @@ public class KmFormPayloadModel<T> extends JsonMarker {
                 || KmFormPayloadModel.Type.DATE_TIME.getValue().equals(type);
     }
 
+    public boolean isTypeDropdown() {
+        return Type.DROPDOWN.getValue().equals(type);
+    }
+
+    public boolean isTypeSelection() {
+        return Type.RADIO.getValue().equals(type) || Type.CHECKBOX.getValue().equals(type);
+    }
+
     public static class Text extends JsonMarker {
         private String label;
         private String placeholder;
@@ -122,6 +130,8 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     public static class Options extends JsonMarker {
         private String label;
         private String value;
+        private boolean selected;
+        private boolean disabled;
 
         public String getLabel() {
             return label;
@@ -137,6 +147,30 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
         public void setValue(String value) {
             this.value = value;
+        }
+
+        public boolean isSelected() {
+            return selected;
+        }
+
+        public void setSelected(boolean selected) {
+            this.selected = selected;
+        }
+
+        public boolean isDisabled() {
+            return disabled;
+        }
+
+        public void setDisabled(boolean disabled) {
+            this.disabled = disabled;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Options options = (Options) o;
+            return label.equals(options.label);
         }
     }
 
@@ -182,12 +216,25 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         }
     }
 
+    public static class DropdownList extends Selections {
+        private Validation validation;
+
+        public Validation getValidation() {
+            return validation;
+        }
+
+        public void setValidation(Validation validation) {
+            this.validation = validation;
+        }
+    }
+
     public enum Type {
         TEXT("text"), PASSWORD("password"),
         HIDDEN("hidden"), RADIO("radio"),
         CHECKBOX("checkbox"),
         DATE("date"),
         TIME("time"),
+        DROPDOWN("dropdown"),
         DATE_TIME("datetime-local"),
         ACTION("action"),
         SUBMIT("submit");
@@ -225,6 +272,11 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
     public KmFormPayloadModel.DateTimePicker getDatePickerModel() {
         return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmFormPayloadModel.DateTimePicker>() {
+        }.getType());
+    }
+
+    public KmFormPayloadModel.DropdownList getDropdownList() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmFormPayloadModel.DropdownList>() {
         }.getType());
     }
 

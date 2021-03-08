@@ -102,7 +102,6 @@ public class AlCustomizationSettings extends JsonMarker {
     private String replyMessageLayoutReceivedMessageBackground = "#F5F5F5";
     private boolean groupInfoScreenVisible = true;
     private boolean forwardOption = false;
-    private boolean recordButton = false;
     private String sentMessageCreatedAtTimeColor = "#ede6e6";
     private String receivedMessageCreatedAtTimeColor = "#8a8686";
     private boolean showStartNewConversation = true;
@@ -125,6 +124,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String statusBarColor = "";
     private String richMessageThemeColor = "";
     private Map<String, Boolean> attachmentOptions;
+    private boolean restrictMessageTypingWithBots = false;
 
     public boolean isBroadcastOption() {
         return broadcastOption;
@@ -517,14 +517,6 @@ public class AlCustomizationSettings extends JsonMarker {
         this.forwardOption = forwardOption;
     }
 
-    public boolean isRecordButton() {
-        return recordButton;
-    }
-
-    public void setRecordButton(boolean recordButton) {
-        this.recordButton = recordButton;
-    }
-
     public int getDefaultGroupType() {
         return defaultGroupType;
     }
@@ -675,6 +667,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public String getRichMessageThemeColor() {
         return richMessageThemeColor;
+    }
+
+    public boolean isRestrictMessageTypingWithBots() {
+        return restrictMessageTypingWithBots;
     }
 
     @Override

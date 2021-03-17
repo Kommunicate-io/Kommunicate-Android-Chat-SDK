@@ -35,7 +35,7 @@
             android:fontFamily="sans-serif"
             android:letterSpacing="0.04"
             android:text="@string/km_recording_text"
-            android:textColor="#e03919"
+            android:textColor="@color/km_record_circle_color"
             android:textSize="14sp"
             android:textStyle="normal" />
     </LinearLayout>
@@ -51,7 +51,7 @@
         android:gravity="center"
         android:letterSpacing="0.04"
         android:text="00:00"
-        android:textColor="#8f8b8b"
+        android:textColor="@color/km_audio_record_counter_text_color"
         android:textSize="12sp"
         android:textStyle="normal" />
 
@@ -80,7 +80,7 @@
             android:fontFamily="sans-serif"
             android:letterSpacing="0.04"
             android:text="@string/slide_to_cancel"
-            android:textColor="#a9a6a6"
+            android:textColor="@color/km_slide_to_cancel_text_color"
             android:textSize="12sp"
             android:textStyle="normal" />
     </LinearLayout>

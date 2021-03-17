@@ -107,7 +107,7 @@
         android:id="@+id/idFeedbackFooterContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f0f0f0">
+        android:background="@color/km_feedback_background_color">
 
         <TextView
             android:id="@+id/idFeedbackResolvedText"
@@ -142,7 +142,7 @@
             android:paddingLeft="5dp"
             android:paddingBottom="15dp"
             android:text="@string/restart_conversation_text"
-            android:textColor="#5451e2"
+            android:textColor="@color/km_conversation_restart_button_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/idTextQuestion"

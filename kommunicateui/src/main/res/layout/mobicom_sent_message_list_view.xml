@@ -57,7 +57,7 @@
                 android:drawablePadding="8dp"
                 android:drawableStart="@drawable/km_ic_action_attachment"
                 android:textAlignment="gravity"
-                android:textColor="@color/white"
+                android:textColor="@color/km_white_color"
                 android:textDirection="locale"
                 android:textSize="16sp"
                 android:visibility="gone" />
@@ -80,7 +80,7 @@
                 android:layout_marginEnd="3dp"
                 android:autoLink="all"
                 android:maxEms="14"
-                android:text="Hi"
+                android:text=""
                 android:textColor="@color/sent_message_text_color"
                 android:textDirection="locale"
                 android:textSize="14sp"
@@ -106,8 +106,8 @@
                 android:layout_marginBottom="3dp"
                 android:fontFamily="sans-serif"
                 android:letterSpacing="0.01"
-                android:text="12:34 PM"
-                android:textColor="#ede6e6"
+                android:text=""
+                android:textColor="@color/km_sent_message_created_at_time_text_color"
                 android:textSize="10sp" />
         </LinearLayout>
 

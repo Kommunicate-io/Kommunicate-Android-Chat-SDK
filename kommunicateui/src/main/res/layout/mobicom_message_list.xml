@@ -77,20 +77,6 @@
                 android:text="@string/no_conversation"
                 android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/fab_start_new"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/circle"
-                android:src="@drawable/km_ic_action_add"
-                android:visibility="gone" />
-
             <Button
                 android:id="@+id/start_new_conversation"
                 android:layout_width="256dp"

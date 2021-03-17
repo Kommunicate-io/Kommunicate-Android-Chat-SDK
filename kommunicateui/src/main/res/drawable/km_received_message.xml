@@ -3,11 +3,11 @@
     android:shape="rectangle">
 
     <!-- view background color -->
-    <solid android:color="@color/white" />
+    <solid android:color="@color/km_white_color" />
 
     <!-- view border color and width -->
     <stroke
-        android:color="@color/applozic_message_border_color" />
+        android:color="@color/km_white_color" />
 
     <!-- If you want to add some padding -->
     <!-- Here is the corner radius -->

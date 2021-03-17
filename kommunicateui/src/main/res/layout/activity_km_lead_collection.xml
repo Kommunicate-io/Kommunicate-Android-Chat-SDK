@@ -50,7 +50,7 @@
                 android:gravity="center_horizontal"
                 android:letterSpacing="0.05"
                 android:text="@string/prechat_screen_text"
-                android:textColor="#4e4e50"
+                android:textColor="@color/km_prechat_text_color"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 

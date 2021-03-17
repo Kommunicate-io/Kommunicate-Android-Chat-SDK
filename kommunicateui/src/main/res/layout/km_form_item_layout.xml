@@ -40,7 +40,7 @@
         android:maxLines="1"
         android:padding="5dp"
         android:textSize="14sp"
-        android:textColor="@color/black"
+        android:textColor="@color/km_black_color"
         android:visibility="gone" />
 
     <FrameLayout

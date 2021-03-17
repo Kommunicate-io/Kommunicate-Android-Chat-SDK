@@ -22,9 +22,11 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.applozic.communication.message:mobicomkit:5.96.1'
-    //api project(':mobicomkit')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+    api 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    api 'androidx.appcompat:appcompat:1.2.0'
+    api 'com.google.code.gson:gson:2.8.6'
 }
 
 /*ext {

@@ -24,19 +24,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
-
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.loader.content.Loader;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -67,6 +54,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
@@ -89,8 +88,8 @@ import com.applozic.mobicomkit.api.conversation.selfdestruct.DisappearingMessage
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.api.notification.MuteNotificationAsync;
 import com.applozic.mobicomkit.api.notification.MuteNotificationRequest;
-import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.api.notification.MuteUserNotificationAsync;
+import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
@@ -103,15 +102,15 @@ import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
+import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.async.KmMessageMetadataUpdateTask;
-import com.applozic.mobicomkit.uiwidgets.attachmentview.KommunicateAudioManager;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.KmAudioRecordManager;
+import com.applozic.mobicomkit.uiwidgets.attachmentview.KommunicateAudioManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.DeleteConversationAsyncTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmBotTypingDelayManager;
@@ -123,12 +122,12 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivi
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPositionHelper;
-import com.applozic.mobicomkit.uiwidgets.conversation.adapter.KmContextSpinnerAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.DetailedConversationAdapter;
+import com.applozic.mobicomkit.uiwidgets.conversation.adapter.KmContextSpinnerAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.MobicomMessageTemplateAdapter;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.RichMessageActionProcessor;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.helpers.KmFormStateHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmSpeechToText;
@@ -137,7 +136,6 @@ import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
-
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
@@ -193,10 +191,11 @@ import java.util.regex.PatternSyntaxException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmBotPreference;
+import io.kommunicate.KmCustomEventManager;
 import io.kommunicate.Kommunicate;
+import io.kommunicate.async.AgentGetStatusTask;
 import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmGetBotTypeTask;
-import io.kommunicate.async.AgentGetStatusTask;
 import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
@@ -329,7 +328,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected String geoApiKey;
     protected FrameLayout emailReplyReminderLayout;
     protected Contact conversationAssignee;
-    protected Boolean agentStatus;
+    protected int agentStatus;
     public static final int TYPING_STOP_TIME = 30;
     public static final String KM_CONVERSATION_SUBJECT = "KM_CONVERSATION_SUBJECT";
     public Map<String, CountDownTimer> typingTimerMap;
@@ -978,6 +977,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onStart() {
         super.onStart();
+        KmCustomEventManager.getInstance(getContext()).subscribeToAgentStatus(new KmCustomEventManager.AgentStatusListener() {
+            @Override
+            public void onStatusChanged(String agentId, int status) {
+                String currentUserId = User.RoleType.USER_ROLE.getValue() == loggedInUserRole
+                        ? conversationAssignee.getUserId()
+                        : KmChannelService.getInstance(getContext()).getUserInSupportGroup(channel.getKey());
+
+                if (agentId.equals(currentUserId)) {
+                    switchContactStatus(appContactService.getContactById(agentId), status);
+                }
+            }
+        });
 
         if (textToSpeech != null) {
             textToSpeech.initialize();
@@ -987,7 +998,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onStop() {
         super.onStop();
-
+        KmCustomEventManager.getInstance(getContext()).unsubscribeToAgentStatus();
         if (textToSpeech != null) {
             textToSpeech.destroy();
         }
@@ -2887,7 +2898,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                         toolbarSubtitleText.setVisibility(View.GONE);
                                     }
                                     if (conversationAssignee != null) {
-                                        switchContactStatus(conversationAssignee, null);
+                                        switchContactStatus(conversationAssignee, -1);
                                     } else {
                                         processSupportGroupDetails(channel);
                                     }
@@ -3212,7 +3223,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             toolbarTitleText.setText(name);
         }
 
-        setStatusDots(false, true); //setting the status dot as offline
+        setStatusDots(false, KmCustomEventManager.AGENT_OFFLINE_STATUS); //setting the status dot as offline
         if (toolbarSubtitleText != null) {
             toolbarSubtitleText.setVisibility(View.GONE);
         }
@@ -3221,14 +3232,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void retrieveAgentStatusAndSwitchContactStatusUI(final Contact contact) {
         new AgentGetStatusTask(getContext(), contact.getUserId(), new AgentGetStatusTask.KmAgentGetStatusHandler() {
             @Override
-            public void onFinished(boolean agentStatus) {
+            public void onFinished(int agentStatus) {
                 switchContactStatus(contact, agentStatus);
             }
 
             @Override
             public void onError(String error) {
                 Utils.printLog(getContext(), TAG, "Couldn't get agent status.");
-                switchContactStatus(contact, null);
+                switchContactStatus(contact, -1);
             }
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -3246,7 +3257,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-        switchContactStatus(contact, null);
+        switchContactStatus(contact, -1);
         conversationAssignee = contact;
 
         if (contact != null) {
@@ -3262,10 +3273,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     //connected is for online/offline, agentStatus is online/away
-    protected void setStatusDots(boolean connected, boolean agentStatus) {
-        boolean onlineDotVisibility = connected && agentStatus;
-        boolean offlineDotVisibility = !connected;
-        boolean awayDotVisibility = connected && !agentStatus;
+    protected void setStatusDots(boolean connected, int agentStatus) {
+        boolean onlineDotVisibility = connected && (agentStatus == KmCustomEventManager.AGENT_ONLINE_STATUS || agentStatus == KmCustomEventManager.USER_ONLINE_STATUS);
+        boolean offlineDotVisibility = !connected || agentStatus == KmCustomEventManager.AGENT_OFFLINE_STATUS;
+        boolean awayDotVisibility = connected && agentStatus == KmCustomEventManager.AGENT_AWAY_STATUS;
 
         if (toolbarOnlineColorDot != null && toolbarOfflineColorDot != null && toolbarAwayColorDot != null) {
             toolbarAwayColorDot.setVisibility(awayDotVisibility ? VISIBLE : View.GONE);
@@ -3274,13 +3285,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void switchContactStatus(Contact contact, Boolean agentStatus) {
+    public void switchContactStatus(Contact contact, int agentStatus) {
         if (contact == null) {
             return;
         }
 
-        if (agentStatus == null) {
-            agentStatus = this.agentStatus != null ? this.agentStatus : true; //default to true
+        if (agentStatus == -1) {
+            agentStatus = this.agentStatus == -1 ? this.agentStatus : KmCustomEventManager.AGENT_ONLINE_STATUS;
         } else {
             this.agentStatus = agentStatus;
         }
@@ -3294,14 +3305,22 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
                 toolbarSubtitleText.setText(ApplozicService.getContext(getContext()).getString(R.string.online));
                 toolbarSubtitleText.setVisibility(VISIBLE);
-                setStatusDots(true, true);
+                setStatusDots(true, KmCustomEventManager.AGENT_ONLINE_STATUS);
                 return;
             }
+
             if (contact.isConnected()) {
-                if (agentStatus) {
-                    toolbarSubtitleText.setText(R.string.online);
-                } else {
-                    toolbarSubtitleText.setText(R.string.away);
+                switch (agentStatus) {
+                    case KmCustomEventManager.USER_ONLINE_STATUS:
+                    case KmCustomEventManager.AGENT_ONLINE_STATUS:
+                        toolbarSubtitleText.setText(R.string.online);
+                        break;
+                    case KmCustomEventManager.AGENT_AWAY_STATUS:
+                        toolbarSubtitleText.setText(R.string.away);
+                        break;
+                    case KmCustomEventManager.AGENT_OFFLINE_STATUS:
+                        toolbarSubtitleText.setText(R.string.offline);
+                        break;
                 }
                 toolbarSubtitleText.setVisibility(VISIBLE);
             } else {

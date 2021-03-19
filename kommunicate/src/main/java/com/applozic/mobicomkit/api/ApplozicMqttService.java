@@ -44,8 +44,8 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
     private static final String TAG = "ApplozicMqttService";
     private static final String TYPINGTOPIC = "typing-";
     private static final String OPEN_GROUP = "group-";
-    private static final String MQTT_ENCRYPTION_TOPIC = "encr-";
-    private static final String SUPPORT_GROUP_TOPIC = "support-channel-";
+    public static final String MQTT_ENCRYPTION_TOPIC = "encr-";
+    public static final String SUPPORT_GROUP_TOPIC = "support-channel-";
     private static ApplozicMqttService applozicMqttService;
     private AlMqttClient client;
     private MemoryPersistence memoryPersistence;
@@ -279,7 +279,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
             }
             final MqttClient client = connect();
             if (client != null && client.isConnected()) {
-                String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + SUPPORT_GROUP_TOPIC + "-" + getApplicationKey(context);
+                String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + SUPPORT_GROUP_TOPIC + getApplicationKey(context);
                 Utils.printLog(context, TAG, "Subscribing to support group topic : " + topic);
                 client.subscribe(topic, 0);
             }
@@ -296,7 +296,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                     if (client == null || !client.isConnected()) {
                         return;
                     }
-                    String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + SUPPORT_GROUP_TOPIC + "-" + getApplicationKey(context);
+                    String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + SUPPORT_GROUP_TOPIC + getApplicationKey(context);
                     Utils.printLog(context, TAG, "UnSubscribing to support group topic : " + topic);
                     client.unsubscribe(topic);
                 } catch (Exception e) {
@@ -342,8 +342,10 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
 
     @Override
     public void messageArrived(final String s, final MqttMessage mqttMessage) throws Exception {
-        Utils.printLog(context, TAG, "Received MQTT message: " + new String(mqttMessage.getPayload()));
+        Utils.printLog(context, TAG, "Received MQTT message : " + s + " : " + mqttMessage);
         try {
+            AlEventManager.getInstance().postMqttEventData(s, new String(mqttMessage.getPayload()));
+
             if (!TextUtils.isEmpty(s) && s.startsWith(TYPINGTOPIC)) {
                 String[] typingResponse = mqttMessage.toString().split(",");
                 String applicationId = typingResponse[0];
@@ -366,11 +368,11 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 if (TextUtils.isEmpty(messageDataString.trim())) {
                                     return;
                                 }
-                                mqttMessageResponse = (MqttMessageResponse) GsonUtils.getObjectFromJson(messageDataString, MqttMessageResponse.class);
                             } else {
                                 messageDataString = mqttMessage.toString();
-                                mqttMessageResponse = (MqttMessageResponse) GsonUtils.getObjectFromJson(messageDataString, MqttMessageResponse.class);
                             }
+
+                            mqttMessageResponse = (MqttMessageResponse) GsonUtils.getObjectFromJson(messageDataString, MqttMessageResponse.class);
 
                             if (mqttMessageResponse != null) {
                                 if (MobiComPushReceiver.processPushNotificationId(mqttMessageResponse.getId())) {
@@ -379,9 +381,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 final SyncCallService syncCallService = SyncCallService.getInstance(context);
                                 MobiComPushReceiver.addPushNotificationId(mqttMessageResponse.getId());
 
-                                AlEventManager.getInstance().postMqttEventData(mqttMessageResponse);
-
-                                Utils.printLog(context, TAG, "MQTT message type: " + mqttMessageResponse.getType());
+                                Utils.printLog(context, TAG, "MQTT message type: " + s + " : " + mqttMessageResponse.getType());
                                 if (NOTIFICATION_TYPE.MESSAGE_RECEIVED.getValue().equals(mqttMessageResponse.getType()) || "MESSAGE_RECEIVED".equals(mqttMessageResponse.getType())) {
 
                                     GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);

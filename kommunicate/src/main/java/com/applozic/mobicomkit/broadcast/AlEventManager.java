@@ -8,6 +8,7 @@ import com.applozic.mobicomkit.feed.MqttMessageResponse;
 import com.applozic.mobicomkit.listners.AlMqttListener;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.google.gson.JsonSyntaxException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +19,13 @@ import java.util.Map;
  */
 public class AlEventManager {
     public static final String AL_EVENT = "AL_EVENT";
+    public static final String MQTT_EVENT = "MQTT_EVENT";
+    public static final String MQTT_TOPIC = "MQTT_TOPIC";
     private static AlEventManager eventManager;
     private Map<String, ApplozicUIListener> listenerMap;
     private Map<String, AlMqttListener> mqttListenerMap;
     private Handler uiHandler;
+    private Handler mqttHandler;
 
     public static AlEventManager getInstance() {
         if (eventManager == null) {
@@ -58,7 +62,32 @@ public class AlEventManager {
         if (mqttListenerMap == null) {
             mqttListenerMap = new HashMap<>();
         }
+        if (mqttHandler == null) {
+            mqttHandler = new Handler(new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message message) {
+                    if (message != null && mqttListenerMap != null && !mqttListenerMap.isEmpty()) {
+                        MqttMessageResponse mqttMessageResponse;
 
+                        String messageResponse = message.getData().getString(MQTT_EVENT);
+                        if (messageResponse != null) {
+                            try {
+                                mqttMessageResponse = (MqttMessageResponse) GsonUtils.getObjectFromJson(messageResponse, MqttMessageResponse.class);
+                            } catch (JsonSyntaxException e) {
+                                e.printStackTrace();
+                                mqttMessageResponse = new MqttMessageResponse();
+                                mqttMessageResponse.setMessage(messageResponse);
+                            }
+
+                            for (AlMqttListener alMqttListener : mqttListenerMap.values()) {
+                                alMqttListener.onMqttMessageReceived(message.getData().getString(MQTT_TOPIC), mqttMessageResponse);
+                            }
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
         if (!mqttListenerMap.containsKey(id)) {
             mqttListenerMap.put(id, mqttListener);
         }
@@ -80,11 +109,14 @@ public class AlEventManager {
         }
     }
 
-    public void postMqttEventData(MqttMessageResponse messageResponse) {
-        if (mqttListenerMap != null && !mqttListenerMap.isEmpty()) {
-            for (AlMqttListener alMqttListener : mqttListenerMap.values()) {
-                alMqttListener.onMqttMessageReceived(messageResponse);
-            }
+    public void postMqttEventData(String topic, String messageResponse) {
+        if (mqttHandler != null) {
+            Message message = new Message();
+            Bundle bundle = new Bundle();
+            bundle.putString(MQTT_EVENT, messageResponse);
+            bundle.putString(MQTT_TOPIC, topic);
+            message.setData(bundle);
+            mqttHandler.sendMessage(message);
         }
     }
 

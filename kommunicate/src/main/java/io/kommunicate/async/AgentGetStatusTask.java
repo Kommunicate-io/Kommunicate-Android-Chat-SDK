@@ -42,7 +42,7 @@ public class AgentGetStatusTask extends AsyncTask<Void, Void, String> {
             try {
                 AgentAPIResponse<AgentDetail> agentAPIResponse = (AgentAPIResponse<AgentDetail>) GsonUtils.getObjectFromJson(response, new TypeToken<AgentAPIResponse<AgentDetail>>() {}.getType());
                 if (agentAPIResponse != null && agentAPIResponse.getResponse() != null && !agentAPIResponse.getResponse().isEmpty()) {
-                    kmAgentGetStatusHandler.onFinished(agentAPIResponse.getResponse().get(0).status == 1);
+                    kmAgentGetStatusHandler.onFinished(agentAPIResponse.getResponse().get(0).status);
                 } else {
                     kmAgentGetStatusHandler.onError("Response object is null, but the response string isn't empty or null.");
                 }
@@ -56,7 +56,7 @@ public class AgentGetStatusTask extends AsyncTask<Void, Void, String> {
     }
 
     public interface KmAgentGetStatusHandler {
-        void onFinished(boolean status);
+        void onFinished(int status);
         void onError(String error);
     }
 

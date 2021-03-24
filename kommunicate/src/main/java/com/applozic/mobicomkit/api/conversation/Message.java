@@ -75,6 +75,7 @@ public class Message extends JsonMarker {
     public static final String FEEDBACK_METADATA_KEY = "feedback";
     public static final String SKIP_BOT = "skipBot";
     public static final String AL_DELETE_MESSAGE_FOR_ALL_KEY = "AL_DELETE_GROUP_MESSAGE_FOR_ALL";
+    public static final String AUTO_SUGGESTION_TYPE_MESSAGE = "KM_AUTO_SUGGESTION";
 
     public Message() {
 
@@ -673,6 +674,10 @@ public class Message extends JsonMarker {
 
     public boolean isActionMessage() {
         return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(FEEDBACK_METADATA_KEY));
+    }
+
+    public boolean isAutoSuggestion() {
+        return getMetadata() != null && getMetadata().containsKey(AUTO_SUGGESTION_TYPE_MESSAGE);
     }
 
     public String getConversationStatus() {

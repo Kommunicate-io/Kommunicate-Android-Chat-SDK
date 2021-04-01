@@ -36,220 +36,136 @@ public class HttpRequestUtils {
     public static String DEVICE_KEY_HEADER = "Device-Key";
     private static final String APZ_PRODUCT_APP_HEADER = "Apz-Product-App";
     public static boolean isRefreshTokenInProgress = false;
+    private String encryptionKey;
     private Context context;
 
 
     public HttpRequestUtils(Context context) {
         this.context = ApplozicService.getContext(context);
+        this.encryptionKey = MobiComUserPreference.getInstance(context).getEncryptionKey();
+    }
+
+    public String postData(String urlString, String data) throws Exception {
+        return postData(urlString, data, null, false, false, null, null);
+    }
+
+    public String postData(String urlString, String data, String userId) throws Exception {
+        return postData(urlString, data, userId, false, false, null, null);
     }
 
     public String postData(String urlString, String contentType, String accept, String data) throws Exception {
-        return postData(urlString, contentType, accept, data, null);
-    }
-
-    public String postDataForAuthToken(String urlString, String contentType, String accept, String data, String userId) throws Exception {
-        Utils.printLog(context, TAG, "Calling url: " + urlString);
-        HttpURLConnection connection;
-        URL url;
-        try {
-            if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                data = EncryptionUtils.encrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), data);
-            }
-            url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-
-            if (!TextUtils.isEmpty(contentType)) {
-                connection.setRequestProperty("Content-Type", contentType);
-            }
-            if (!TextUtils.isEmpty(accept)) {
-                connection.setRequestProperty("Accept", accept);
-            }
-            addHeadersForAuthToken(connection, userId);
-            connection.connect();
-
-            if (connection == null) {
-                return null;
-            }
-            if (data != null) {
-                byte[] dataBytes = data.getBytes("UTF-8");
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-                os.write(dataBytes);
-                os.flush();
-                os.close();
-            }
-            BufferedReader br = null;
-            if (connection.getResponseCode() == 200 || connection.getResponseCode() == 201) {
-                InputStream inputStream = connection.getInputStream();
-                br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-            }
-            StringBuilder sb = new StringBuilder();
-            try {
-                String line;
-                if (br != null) {
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (br != null) {
-                    br.close();
-                }
-            }
-            Utils.printLog(context, TAG, "Response : " + sb.toString());
-            if (!TextUtils.isEmpty(sb.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    return EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
-                }
-            }
-            return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            isRefreshTokenInProgress = false;
-        }
-        Utils.printLog(context, TAG, "Http call failed");
-        return null;
-    }
-
-    public String postData(String urlString, String contentType, String accept, String data, String userId) throws Exception {
-        Utils.printLog(context, TAG, "Calling url: " + urlString);
-        HttpURLConnection connection;
-        URL url;
-        try {
-            if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                data = EncryptionUtils.encrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), data);
-            }
-            url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-
-            if (!TextUtils.isEmpty(contentType)) {
-                connection.setRequestProperty("Content-Type", contentType);
-            }
-            if (!TextUtils.isEmpty(accept)) {
-                connection.setRequestProperty("Accept", accept);
-            }
-            addGlobalHeaders(connection, userId);
-            connection.connect();
-
-            if (connection == null) {
-                return null;
-            }
-            if (data != null) {
-                byte[] dataBytes = data.getBytes("UTF-8");
-                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-                os.write(dataBytes);
-                os.flush();
-                os.close();
-            }
-            BufferedReader br = null;
-            if (connection.getResponseCode() == 200 || connection.getResponseCode() == 201) {
-                InputStream inputStream = connection.getInputStream();
-                br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-            }
-            StringBuilder sb = new StringBuilder();
-            try {
-                String line;
-                if (br != null) {
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line);
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (br != null) {
-                    br.close();
-                }
-            }
-            Utils.printLog(context, TAG, "Response : " + sb.toString());
-            if (!TextUtils.isEmpty(sb.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    return EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
-                }
-            }
-            return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            isRefreshTokenInProgress = false;
-        }
-        Utils.printLog(context, TAG, "Http call failed");
-        return null;
+        return postData(urlString, data, null, false, false, accept, contentType);
     }
 
     public String postJsonToServer(String stringUrl, String data) throws Exception {
-        return postJsonToServer(stringUrl, data, null);
+        return postData(stringUrl, data, null, false, false, null, null);
     }
 
-    public String postJsonToServer(String stringUrl, String data, String userId) throws Exception {
-        HttpURLConnection connection;
-        URL url = new URL(stringUrl);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        addGlobalHeaders(connection, userId);
-        connection.connect();
-
-        byte[] dataBytes = data.getBytes("UTF-8");
-        DataOutputStream os = new DataOutputStream(connection.getOutputStream());
-        os.write(dataBytes);
-        os.flush();
-        os.close();
-        BufferedReader br = null;
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            InputStream inputStream = connection.getInputStream();
-            br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-        } else {
-            Utils.printLog(context, TAG, "Response code for post json is :" + connection.getResponseCode());
-        }
-        StringBuilder sb = new StringBuilder();
-        try {
-            String line;
-            if (br != null) {
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (Throwable e) {
-        } finally {
-            if (br != null) {
-                br.close();
-            }
-        }
-        Utils.printLog(context, TAG, "Response: " + sb.toString());
-        return sb.toString();
+    public String makePatchRequest(String url, String data) throws Exception {
+        return postData(url, data, null, true, false, null, null);
     }
 
     public String getResponse(String urlString, String contentType, String accept) {
-        return getResponse(urlString, contentType, accept, false, null);
+        try {
+            return getResponseWithException(urlString, contentType, accept, false, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getResponse(String urlString, String contentType, String accept, boolean isFileUpload) {
-        return getResponse(urlString, contentType, accept, isFileUpload, null);
+        try {
+            return getResponseWithException(urlString, contentType, accept, isFileUpload, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getResponse(String urlString) throws Exception {
+        return getResponseWithException(urlString, null, null, false, null);
+    }
+
+    public String postDataForAuthToken(String urlString, String data, String userId) throws Exception {
+        return postData(urlString, data, userId, false, true, null, null);
+    }
+
+    public String postData(String urlString, String data, String userId, boolean isPatchRequest, boolean isForAuth, String accept, String contentType) throws Exception {
+        Utils.printLog(context, TAG, (isPatchRequest ? "\n\n** Patching data ** : " : "\n\n** Posting data **: ") + data + "\nTo URL: " + urlString + "\n\n");
+        HttpURLConnection connection;
+        URL url;
+        try {
+            if (!TextUtils.isEmpty(encryptionKey)) {
+                data = EncryptionUtils.encrypt(encryptionKey, data);
+            }
+            url = new URL(urlString);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(isPatchRequest ? "PATCH" : "POST");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+            connection.setRequestProperty("Content-Type", !TextUtils.isEmpty(contentType) ? contentType : "application/json");
+            connection.setRequestProperty("Accept", !TextUtils.isEmpty(accept) ? accept : "application/json");
+
+            if (isForAuth) {
+                addHeadersForAuthToken(connection, userId);
+            } else {
+                addGlobalHeaders(connection, userId);
+            }
+            connection.connect();
+
+            if (data != null) {
+                byte[] dataBytes = data.getBytes("UTF-8");
+                DataOutputStream os = new DataOutputStream(connection.getOutputStream());
+                os.write(dataBytes);
+                os.flush();
+                os.close();
+            }
+            BufferedReader br = null;
+            if (connection.getResponseCode() == 200 || connection.getResponseCode() == 201) {
+                InputStream inputStream = connection.getInputStream();
+                br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            } else {
+                Utils.printLog(context, TAG, "\n\nResponse code for url: " + urlString + "\n** Code ** : " + connection.getResponseCode() + "\n\n");
+            }
+            StringBuilder sb = new StringBuilder();
+            try {
+                String line;
+                if (br != null) {
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw e;
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            } finally {
+                if (br != null) {
+                    br.close();
+                }
+            }
+            Utils.printLog(context, TAG, "\n\nResponse for url: " + urlString + "\n** Response** : " + sb.toString() + "\n\n");
+            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
+                return EncryptionUtils.decrypt(encryptionKey, sb.toString());
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            isRefreshTokenInProgress = false;
+        }
     }
 
     public String getResponseWithException(String urlString, String contentType, String accept, boolean isFileUpload, String userId) throws Exception {
-        Utils.printLog(context, TAG, "Calling url: " + urlString);
+        Utils.printLog(context, TAG, "Calling url **[GET]** : " + urlString);
 
         HttpURLConnection connection = null;
         URL url;
@@ -271,15 +187,12 @@ public class HttpRequestUtils {
             addGlobalHeaders(connection, userId);
             connection.connect();
 
-            if (connection == null) {
-                return null;
-            }
             BufferedReader br = null;
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = connection.getInputStream();
                 br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
             } else {
-                Utils.printLog(context, TAG, "Response code for getResponse is  :" + connection.getResponseCode());
+                Utils.printLog(context, TAG, "\n\nResponse code for url: " + urlString + "\n** Code ** : " + connection.getResponseCode() + "\n\n");
             }
 
             StringBuilder sb = new StringBuilder();
@@ -299,12 +212,10 @@ public class HttpRequestUtils {
                 }
             }
 
-            Utils.printLog(context, TAG, "Response :" + sb.toString());
+            Utils.printLog(context, TAG, "\n\nGET Response for url: " + urlString + "\n** Response **: " + sb.toString() + "\n\n");
 
-            if (!TextUtils.isEmpty(sb.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
-                }
+            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
+                return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(encryptionKey, sb.toString());
             }
             return sb.toString();
         } catch (ConnectException e) {
@@ -318,140 +229,9 @@ public class HttpRequestUtils {
         } finally {
             isRefreshTokenInProgress = false;
             if (connection != null) {
-                try {
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw e;
-                }
+                connection.disconnect();
             }
         }
-    }
-
-    public String getResponse(String urlString, String contentType, String accept, boolean isFileUpload, String userId) {
-        Utils.printLog(context, TAG, "Calling url: " + urlString);
-
-        HttpURLConnection connection = null;
-        URL url;
-
-        try {
-            url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setInstanceFollowRedirects(true);
-            connection.setRequestMethod("GET");
-            connection.setUseCaches(false);
-            connection.setDoInput(true);
-
-            if (!TextUtils.isEmpty(contentType)) {
-                connection.setRequestProperty("Content-Type", contentType);
-            }
-            if (!TextUtils.isEmpty(accept)) {
-                connection.setRequestProperty("Accept", accept);
-            }
-            addGlobalHeaders(connection, userId);
-            connection.connect();
-
-            if (connection == null) {
-                return null;
-            }
-            BufferedReader br = null;
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                InputStream inputStream = connection.getInputStream();
-                br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-            } else {
-                Utils.printLog(context, TAG, "Response code for getResponse is  :" + connection.getResponseCode());
-            }
-
-            StringBuilder sb = new StringBuilder();
-            try {
-                String line;
-                if (br != null) {
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (br != null) {
-                    br.close();
-                }
-            }
-
-            Utils.printLog(context, TAG, "Response :" + sb.toString());
-
-            if (!TextUtils.isEmpty(sb.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
-                }
-            }
-            return sb.toString();
-        } catch (ConnectException e) {
-            Utils.printLog(context, TAG, "failed to connect Internet is not working");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } catch (Throwable e) {
-
-        } finally {
-            isRefreshTokenInProgress = false;
-            if (connection != null) {
-                try {
-                    connection.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-
-    public String makePatchRequest(String stringUrl, String data) throws Exception {
-        HttpURLConnection connection;
-        URL url = new URL(stringUrl);
-        connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("PATCH");
-        connection.setRequestProperty("Content-Type", "application/json");
-        if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getDeviceKeyString())) {
-            connection.setRequestProperty(DEVICE_KEY_HEADER, MobiComUserPreference.getInstance(context).getDeviceKeyString());
-        }
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-
-        addGlobalHeaders(connection, null);
-        connection.connect();
-
-        if (data != null) {
-            byte[] dataBytes = data.getBytes("UTF-8");
-            DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-            dataOutputStream.write(dataBytes);
-            dataOutputStream.flush();
-            dataOutputStream.close();
-        }
-
-        BufferedReader bufferedReader = null;
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            InputStream inputStream = connection.getInputStream();
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-        } else {
-            Utils.printLog(context, TAG, "Response code for " + stringUrl + " : " + connection.getResponseCode());
-        }
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            String line;
-            if (bufferedReader != null) {
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(line);
-                }
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        } finally {
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
-        }
-        Utils.printLog(context, TAG, "Response for " + stringUrl + " : " + stringBuilder.toString());
-        return stringBuilder.toString();
     }
 
     public void addGlobalHeaders(HttpURLConnection connection, String userId) {

@@ -1,14 +1,14 @@
 package io.kommunicate.async;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
+import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
-public class KmUpdateConversationTask extends AsyncTask<Void, Void, String> {
+public class KmUpdateConversationTask extends AlAsyncTask<Void, String> {
 
     private WeakReference<Context> context;
     private GroupInfoUpdate groupInfoUpdate;
@@ -22,7 +22,7 @@ public class KmUpdateConversationTask extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... voids) {
+    protected String doInBackground() {
         return ChannelService.getInstance(context.get()).updateChannel(groupInfoUpdate);
     }
 

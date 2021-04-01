@@ -405,6 +405,55 @@ public class HttpRequestUtils {
         return null;
     }
 
+    public String makePatchRequest(String stringUrl, String data) throws Exception {
+        HttpURLConnection connection;
+        URL url = new URL(stringUrl);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("PATCH");
+        connection.setRequestProperty("Content-Type", "application/json");
+        if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getDeviceKeyString())) {
+            connection.setRequestProperty(DEVICE_KEY_HEADER, MobiComUserPreference.getInstance(context).getDeviceKeyString());
+        }
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+
+        addGlobalHeaders(connection, null);
+        connection.connect();
+
+        if (data != null) {
+            byte[] dataBytes = data.getBytes("UTF-8");
+            DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
+            dataOutputStream.write(dataBytes);
+            dataOutputStream.flush();
+            dataOutputStream.close();
+        }
+
+        BufferedReader bufferedReader = null;
+        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            InputStream inputStream = connection.getInputStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+        } else {
+            Utils.printLog(context, TAG, "Response code for " + stringUrl + " : " + connection.getResponseCode());
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            String line;
+            if (bufferedReader != null) {
+                while ((line = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+        }
+        Utils.printLog(context, TAG, "Response for " + stringUrl + " : " + stringBuilder.toString());
+        return stringBuilder.toString();
+    }
+
     public void addGlobalHeaders(HttpURLConnection connection, String userId) {
         try {
             if (MobiComKitClientService.getAppModuleName(context) != null) {

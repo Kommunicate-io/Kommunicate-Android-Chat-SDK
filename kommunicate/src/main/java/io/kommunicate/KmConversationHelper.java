@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.async.KmAssigneeUpdateTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.async.KmGetAgentListTask;
@@ -558,33 +559,9 @@ public class KmConversationHelper {
         KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
             @Override
             public void onSuccess(final Channel channel, Context context) {
-                Map<String, String> metadataForUpdate = getMetadataForUpdate(conversationBuilder, channel);
-                if (!metadataForUpdate.isEmpty()) {
-                    Utils.printLog(context, TAG, "Updating conversation metadata : " + GsonUtils.getJsonFromObject(metadataForUpdate, Map.class));
-
-                    GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(metadataForUpdate, channel.getKey());
-
-                    KmUpdateConversationTask.KmConversationUpdateListener kmConversationUpdateListener = new KmUpdateConversationTask.KmConversationUpdateListener() {
-                        @Override
-                        public void onSuccess(Context context) {
-                            if (callback != null) {
-                                callback.onSuccess(channel, context);
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Context context) {
-                            if (callback != null) {
-                                callback.onSuccess(channel, context);
-                            }
-                        }
-                    };
-
-                    new KmUpdateConversationTask(context, groupInfoUpdate, kmConversationUpdateListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else {
-                    if (callback != null) {
-                        callback.onSuccess(channel, context);
-                    }
+                checkForConversationUpdates(context, conversationBuilder, channel, null);
+                if (callback != null) {
+                    callback.onSuccess(channel, context);
                 }
             }
 
@@ -599,6 +576,62 @@ public class KmConversationHelper {
         };
 
         new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Checks for any updates in the existing conversation like metadata, assignee and team.
+     * If any updates are found, this method updates them.
+     *
+     * Let these things run in background, we don't need to wait for them to finish in order to launch the conversation.
+     * If they fail due to network issues, it can happen in the next call.
+     **/
+    private static void checkForConversationUpdates(final Context context, KmConversationBuilder conversationBuilder, final Channel channel, final KmStartConversationHandler callback) {
+        Map<String, String> metadataForUpdate = getMetadataForUpdate(conversationBuilder, channel);
+        if (!metadataForUpdate.isEmpty()) {
+            Utils.printLog(context, TAG, "Updating conversation metadata for : " + channel.getKey() + "\nMetadata : " + GsonUtils.getJsonFromObject(metadataForUpdate, Map.class));
+
+            GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(metadataForUpdate, channel.getKey());
+
+            KmSettings.updateConversation(context, groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
+                @Override
+                public void onSuccess(Context context) {
+                    Utils.printLog(context, TAG, "Successfully updated conversation metadata for : " + channel.getKey());
+                    if (callback != null) {
+                        callback.onSuccess(channel, context);
+                    }
+                }
+
+                @Override
+                public void onFailure(Context context) {
+                    Utils.printLog(context, TAG, "Failed to update conversation metadata for : " + channel.getKey());
+                    if (callback != null) {
+                        callback.onFailure(null, context);
+                    }
+                }
+            });
+        }
+
+        if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee()) && !conversationBuilder.getConversationAssignee().equals(channel.getConversationAssignee())) {
+            Utils.printLog(context, TAG, "Updating conversation assignee for : " + channel.getKey() + "\nAssignee : " + conversationBuilder.getConversationAssignee());
+
+            new KmAssigneeUpdateTask(channel.getKey(), conversationBuilder.getConversationAssignee(), new KmCallback() {
+                @Override
+                public void onSuccess(Object message) {
+                    Utils.printLog(context, TAG, "Successfully updated conversation assignee for : " + channel.getKey());
+                    if (callback != null) {
+                        callback.onSuccess(channel, context);
+                    }
+                }
+
+                @Override
+                public void onFailure(Object error) {
+                    Utils.printLog(context, TAG, "Failed to update conversation assignee for : " + channel.getKey());
+                    if (callback != null) {
+                        callback.onFailure(null, context);
+                    }
+                }
+            }).execute();
+        }
     }
 
     private static void createConversation(KmConversationBuilder conversationBuilder, KmStartConversationHandler handler) throws KmException {
@@ -900,13 +933,6 @@ public class KmConversationHelper {
 
         if (!TextUtils.isEmpty(conversationBuilder.getTeamId()) && !conversationBuilder.getTeamId().equals(channel.getTeamId())) {
             newMetadata.put(KM_TEAM_ID, conversationBuilder.getTeamId());
-        }
-
-        if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee()) && !conversationBuilder.getConversationAssignee().equals(channel.getConversationAssignee())) {
-            /*newMetadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getConversationAssignee());
-            newMetadata.put(SKIP_ROUTING, "true");*/
-
-            //TODO: Need to call conversationAssignee update API here
         }
 
         return newMetadata;

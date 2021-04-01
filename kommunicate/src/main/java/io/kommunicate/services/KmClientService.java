@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class KmClientService extends MobiComKitClientService {
     public static final String KM_HELPCENTER = "km_helpcenter_url";
     private static final String CONVERSATION_FEEDBACK_URL = "/feedback";
     public static final String APP_SETTING_URL = "/users/v2/chat/plugin/settings?appId=";
+    private static final String CHANGE_CONVERSATION_ASSIGNEE_URL = "/rest/ws/group/assignee/change?groupId=";
 
     private static final String TAG = "KmClientService";
 
@@ -76,6 +78,21 @@ public class KmClientService extends MobiComKitClientService {
         }
 
         return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+    }
+
+    public String switchConversationAssignee(Integer groupId, String assigneeId, boolean switchAssignee, boolean sendNotifyMessage, boolean takeOverFromBot) {
+        try {
+            String url = getBaseUrl() + CHANGE_CONVERSATION_ASSIGNEE_URL + groupId
+                    + "&assignee=" + URLEncoder.encode(assigneeId, "UTF-8").trim()
+                    + "&switchAssignee=" + switchAssignee
+                    + "&sendNotifyMessage=" + sendNotifyMessage
+                    + "&takeOverFromBot=" + takeOverFromBot;
+
+            return httpRequestUtils.makePatchRequest(url, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public String getKmAutoSuggestions() {

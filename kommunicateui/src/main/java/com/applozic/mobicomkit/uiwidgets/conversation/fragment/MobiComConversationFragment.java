@@ -194,6 +194,7 @@ import java.util.regex.PatternSyntaxException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmBotPreference;
+import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.async.AgentGetStatusTask;
 import io.kommunicate.async.KmConversationFeedbackTask;
@@ -4636,7 +4637,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
                 metadata.put(Channel.CONVERSATION_ASSIGNEE, loggedInUserId);
                 groupInfoUpdate.setMetadata(metadata);
-                KmService.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
+                KmSettings.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
                     @Override
                     public void onSuccess(Context context) {
                         Message message = new Message();

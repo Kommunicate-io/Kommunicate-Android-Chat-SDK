@@ -32,7 +32,6 @@ import java.util.Map;
 
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
-import io.kommunicate.async.KmDeleteConversationTask;
 import io.kommunicate.async.KmGetAgentListTask;
 import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KMLoginHandler;
@@ -43,7 +42,6 @@ import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.users.KMUser;
-import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -556,21 +554,15 @@ public class KmConversationHelper {
         };
     }
 
-    private static String getTeamIdFromChannel(Channel channel) {
-        if (channel != null && channel.getMetadata() != null && channel.getMetadata().containsKey(KM_TEAM_ID)) {
-            return channel.getMetadata().get(KM_TEAM_ID);
-        }
-        return null;
-    }
-
     private static void startOrGetConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler callback) throws KmException {
         KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
             @Override
             public void onSuccess(final Channel channel, Context context) {
-                if (!TextUtils.isEmpty(conversationBuilder.getTeamId()) && !conversationBuilder.getTeamId().equals(getTeamIdFromChannel(channel))) {
-                    Map<String, String> metadata = channel.getMetadata();
-                    metadata.put(KM_TEAM_ID, conversationBuilder.getTeamId());
-                    GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(metadata, channel.getKey());
+                Map<String, String> metadataForUpdate = getMetadataForUpdate(conversationBuilder, channel);
+                if (!metadataForUpdate.isEmpty()) {
+                    Utils.printLog(context, TAG, "Updating conversation metadata : " + GsonUtils.getJsonFromObject(metadataForUpdate, Map.class));
+
+                    GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(metadataForUpdate, channel.getKey());
 
                     KmUpdateConversationTask.KmConversationUpdateListener kmConversationUpdateListener = new KmUpdateConversationTask.KmConversationUpdateListener() {
                         @Override
@@ -897,5 +889,44 @@ public class KmConversationHelper {
         }
 
         return sb.toString();
+    }
+
+    private static Map<String, String> getMetadataForUpdate(KmConversationBuilder conversationBuilder, Channel channel) {
+        Map<String, String> newMetadata = getChangedConversationMetadata(conversationBuilder.getConversationMetadata(), channel.getMetadata());
+
+        if (newMetadata == null) {
+            newMetadata = new HashMap<>();
+        }
+
+        if (!TextUtils.isEmpty(conversationBuilder.getTeamId()) && !conversationBuilder.getTeamId().equals(channel.getTeamId())) {
+            newMetadata.put(KM_TEAM_ID, conversationBuilder.getTeamId());
+        }
+
+        if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee()) && !conversationBuilder.getConversationAssignee().equals(channel.getConversationAssignee())) {
+            /*newMetadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getConversationAssignee());
+            newMetadata.put(SKIP_ROUTING, "true");*/
+
+            //TODO: Need to call conversationAssignee update API here
+        }
+
+        return newMetadata;
+    }
+
+    private static Map<String, String> getChangedConversationMetadata(Map<String, String> newMetadata, Map<String, String> existingMetadata) {
+        if (newMetadata == null || newMetadata.isEmpty()) {
+            return null;
+        }
+
+        Iterator<String> iterator = newMetadata.keySet().iterator();
+
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            String value = newMetadata.get(key);
+
+            if (value != null && value.equals(existingMetadata.get(key))) {
+                iterator.remove();
+            }
+        }
+        return newMetadata;
     }
 }

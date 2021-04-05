@@ -12,7 +12,6 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -24,6 +23,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
@@ -274,11 +274,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onResume() {
         super.onResume();
         Applozic.connectPublishWithVerifyToken(this, getString(R.string.please_wait_info));
-
+        syncMessages();
         if (!Utils.isInternetAvailable(getApplicationContext())) {
             String errorMessage = getResources().getString(R.string.internet_connection_not_available);
             showErrorMessageView(errorMessage);
         }
+    }
+
+    protected void syncMessages() {
+        SyncCallService.getInstance(this).syncMessages(null);
     }
 
     @Override

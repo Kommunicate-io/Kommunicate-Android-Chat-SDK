@@ -41,6 +41,7 @@ public class Channel extends JsonMarker {
     public static final String AL_CATEGORY = "AL_CATEGORY";
     public static final String CONVERSATION_STATUS = "CONVERSATION_STATUS";
     public static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
+    public static final String KM_TEAM_ID = "KM_TEAM_ID";
     public static final int CLOSED_CONVERSATIONS = 3;
     public static final int ASSIGNED_CONVERSATIONS = 1;
     public static final int ALL_CONVERSATIONS = 2;
@@ -273,6 +274,10 @@ public class Channel extends JsonMarker {
 
     public String getConversationAssignee() {
         return (GroupType.SUPPORT_GROUP.getValue().equals(getType()) && getMetadata() != null && !TextUtils.isEmpty(getMetadata().get(CONVERSATION_ASSIGNEE))) ? getMetadata().get(CONVERSATION_ASSIGNEE) : null;
+    }
+
+    public String getTeamId() {
+        return (GroupType.SUPPORT_GROUP.getValue().equals(getType()) && getMetadata() != null && !TextUtils.isEmpty(getMetadata().get(KM_TEAM_ID))) ? getMetadata().get(KM_TEAM_ID) : null;
     }
 
     public boolean isOpenGroup() {

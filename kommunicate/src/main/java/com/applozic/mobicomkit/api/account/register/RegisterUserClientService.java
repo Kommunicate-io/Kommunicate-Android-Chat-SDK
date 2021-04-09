@@ -205,7 +205,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
             Map<String, String> tokenRefreshBodyMap = new HashMap<>();
             tokenRefreshBodyMap.put("applicationId", applicationId);
             tokenRefreshBodyMap.put("userId", userId);
-            String response = httpRequestUtils.postDataForAuthToken(getRefreshTokenUrl(), "application/json", "application/json", GsonUtils.getJsonFromObject(tokenRefreshBodyMap, Map.class), userId);
+            String response = httpRequestUtils.postDataForAuthToken(getRefreshTokenUrl(), GsonUtils.getJsonFromObject(tokenRefreshBodyMap, Map.class), userId);
             if (!TextUtils.isEmpty(response)) {
                 ApiResponse<String> jwtTokenResponse = (ApiResponse<String>) GsonUtils.getObjectFromJson(response, ApiResponse.class);
                 if (jwtTokenResponse != null && !TextUtils.isEmpty(jwtTokenResponse.getResponse())) {

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -20,7 +19,6 @@ import java.util.Set;
 
 import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmConversationRemoveMemberTask;
-import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
@@ -139,10 +137,6 @@ public class KmService {
             new KmConversationRemoveMemberTask(context, channelKey, userId, i, recListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             i++;
         }
-    }
-
-    public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, KmUpdateConversationTask.KmConversationUpdateListener listener) {
-        new KmUpdateConversationTask(context, groupInfoUpdate, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**

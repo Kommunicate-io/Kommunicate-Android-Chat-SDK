@@ -4,10 +4,13 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.kommunicate.async.KmUpdateConversationTask;
 
 public class KmSettings {
 
@@ -69,5 +72,9 @@ public class KmSettings {
 
         existingMetadata.putAll(metadata);
         ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+    }
+
+    public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, KmUpdateConversationTask.KmConversationUpdateListener listener) {
+        new KmUpdateConversationTask(context, groupInfoUpdate, listener).execute();
     }
 }

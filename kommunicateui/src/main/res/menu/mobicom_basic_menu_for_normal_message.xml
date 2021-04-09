@@ -15,25 +15,6 @@
         mobicomkit:iconifiedByDefault="true"
         mobicomkit:showAsAction="always" />
 
-
-    <item
-        android:id="@+id/conversations"
-        android:icon="@drawable/km_ic_action_chat"
-        android:orderInCategory="2"
-        android:showAsAction="ifRoom"
-        android:title="@string/conversation"
-        android:visible="false"
-        mobicomkit:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/start_new"
-        android:icon="@drawable/km_ic_action_add"
-        android:orderInCategory="3"
-        android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/start_New"
-        android:visible="false"
-        mobicomkit:showAsAction="ifRoom|collapseActionView" />
-
     <item
         android:id="@+id/dial"
         android:icon="@drawable/km_ic_action_call"
@@ -99,14 +80,6 @@
         android:orderInCategory="2"
         android:showAsAction="collapseActionView"
         android:title="@string/applozic_my_profile_option_info"
-        android:visible="false"
-        mobicomkit:showAsAction="collapseActionView" />
-
-    <item
-        android:id="@+id/broadcast"
-        android:orderInCategory="8"
-        android:showAsAction="ifRoom"
-        android:title="@string/new_broadcast_name_info"
         android:visible="false"
         mobicomkit:showAsAction="collapseActionView" />
 

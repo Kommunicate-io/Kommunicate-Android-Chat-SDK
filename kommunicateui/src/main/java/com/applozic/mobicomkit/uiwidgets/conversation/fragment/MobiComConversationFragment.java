@@ -118,8 +118,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.KmBotTypingDelayManager;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmCustomDialog;
 import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
-import com.applozic.mobicomkit.uiwidgets.conversation.UIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.RecyclerViewPositionHelper;
@@ -147,7 +145,6 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.CustomToolbarListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
@@ -808,47 +805,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             public void onClick(View v) {
                 if (ApplozicService.getContext(getContext()) != null && ApplozicService.getContext(getContext()) instanceof KmToolbarClickListener) {
                     ((KmToolbarClickListener) ApplozicService.getContext(getContext())).onClick(getActivity(), channel, contact);
-                    return;
-                }
-
-                if (channel != null) {
-                    if (channel.isDeleted()) {
-                        return;
-                    }
-                    if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())
-                            && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(ApplozicService.getContext(getContext())).getUserRoleType())) {
-                        return;
-                    }
-                    if (alCustomizationSettings.isGroupInfoScreenVisible() && !Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                        Intent channelInfo = new Intent(getActivity(), ChannelInfoActivity.class);
-                        channelInfo.putExtra(ChannelInfoActivity.CHANNEL_KEY, channel.getKey());
-                        startActivity(channelInfo);
-                    } else if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) && alCustomizationSettings.isUserProfileFragment()) {
-                        UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(getActivity(), ConversationUIService.USER_PROFILE_FRAMENT);
-                        if (userProfileFragment == null) {
-                            String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
-                            if (!TextUtils.isEmpty(userId)) {
-                                Contact newcContact = appContactService.getContactById(userId);
-                                userProfileFragment = new UserProfileFragment();
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable(ConversationUIService.CONTACT, newcContact);
-                                userProfileFragment.setArguments(bundle);
-                                ConversationActivity.addFragment(getActivity(), userProfileFragment, ConversationUIService.USER_PROFILE_FRAMENT);
-                            }
-                        }
-                    }
-                } else {
-                    if (alCustomizationSettings.isUserProfileFragment()) {
-                        UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(getActivity(), ConversationUIService.USER_PROFILE_FRAMENT);
-                        if (userProfileFragment == null) {
-                            userProfileFragment = new UserProfileFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable(ConversationUIService.CONTACT, contact);
-                            userProfileFragment.setArguments(bundle);
-                            ConversationActivity.addFragment(getActivity(), userProfileFragment, ConversationUIService.USER_PROFILE_FRAMENT);
-                        }
-                    }
-
                 }
             }
         });
@@ -1099,7 +1055,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             feedBackFragment = new FeedbackInputFragment();
             feedBackFragment.setFeedbackFragmentListener(this);
         }
-        if (!feedBackFragment.isAdded()) {
+        if (!feedBackFragment.isVisible() && !feedBackFragment.isAdded()) {
+            getActivity().getSupportFragmentManager().executePendingTransactions();
             feedBackFragment.show(getActivity().getSupportFragmentManager(), FeedbackInputFragment.getFragTag());
         }
     }
@@ -1558,7 +1515,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (contact != null && contact.isDeleted()) {
             menu.findItem(R.id.dial).setVisible(false);
             menu.findItem(R.id.refresh).setVisible(false);
-            menu.removeItem(R.id.conversations);
             menu.findItem(R.id.userBlock).setVisible(false);
             menu.findItem(R.id.userUnBlock).setVisible(false);
             menu.findItem(R.id.dial).setVisible(false);
@@ -1619,7 +1575,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         menu.removeItem(R.id.menu_search);
-        menu.removeItem(R.id.start_new);
 
         if (channel != null && channel.isDeleted()) {
             menu.findItem(R.id.refresh).setVisible(false);
@@ -1629,11 +1584,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             menu.findItem(R.id.deleteConversation).setVisible(alCustomizationSettings.isDeleteOption());
         }
 
-        menu.removeItem(R.id.conversations);
-
         menu.findItem(R.id.dial).setVisible(false);
         menu.findItem(R.id.refresh).setVisible(false);
-        menu.removeItem(R.id.conversations);
         menu.findItem(R.id.userBlock).setVisible(false);
         menu.findItem(R.id.userUnBlock).setVisible(false);
         menu.findItem(R.id.dial).setVisible(false);
@@ -4058,9 +4010,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if (clipboard != null) {
                     clipboard.setPrimaryClip(clip);
                 }
-                break;
-            case 1:
-                conversationUIService.startContactActivityForResult(message, null);
                 break;
             case 2:
                 messageDatabaseService.deleteMessageFromDb(message);

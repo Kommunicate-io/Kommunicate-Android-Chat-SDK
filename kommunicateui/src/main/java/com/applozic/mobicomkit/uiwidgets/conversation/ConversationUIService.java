@@ -12,24 +12,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-
-import androidx.fragment.app.FragmentActivity;
-
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.RegisteredUsersAsyncTask;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
@@ -39,9 +32,6 @@ import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
-import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.KmChannelDeleteTask;
 import com.applozic.mobicomkit.uiwidgets.async.KmChannelLeaveMember;
@@ -53,8 +43,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MessageInfoFragme
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
-import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmFragmentGetter;
 import com.applozic.mobicommons.commons.core.utils.LocationInfo;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -105,14 +93,12 @@ public class ConversationUIService {
     private FileClientService fileClientService;
     private FragmentActivity fragmentActivity;
     private BaseContactService baseContactService;
-    private MobiComUserPreference userPreference;
     private NotificationManager notificationManager;
     private boolean isActionMessageHidden;
 
     public ConversationUIService(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
         this.baseContactService = new AppContactService(fragmentActivity);
-        this.userPreference = MobiComUserPreference.getInstance(fragmentActivity);
         this.notificationManager = (NotificationManager) fragmentActivity.getSystemService(Context.NOTIFICATION_SERVICE);
         this.fileClientService = new FileClientService(fragmentActivity);
         isActionMessageHidden = ApplozicClient.getInstance(fragmentActivity).isActionMessagesHidden();
@@ -143,12 +129,6 @@ public class ConversationUIService {
         return conversationFragment;
     }
 
-    public void onQuickConversationFragmentItemClick(View view, Contact contact) {
-        TextView textView = (TextView) view.findViewById(R.id.unreadSmsCount);
-        textView.setVisibility(View.GONE);
-        openConversationFragment(contact, null, null, null);
-    }
-
     public void openConversationFragment(final Contact contact, final Integer conversationId, final String searchString, final String messageSearchString) {
         new Handler().post(new Runnable() {
             @Override
@@ -158,9 +138,8 @@ public class ConversationUIService {
                     conversationFragment = getConversationFragment(fragmentActivity, contact, null, conversationId, searchString, messageSearchString, null);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                 } else {
-                    UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
                     MessageInfoFragment messageInfoFragment = (MessageInfoFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.MESSGAE_INFO_FRAGMENT);
-                    if (userProfileFragment != null || messageInfoFragment != null) {
+                    if (messageInfoFragment != null) {
                         if (fragmentActivity.getSupportFragmentManager() != null) {
                             fragmentActivity.getSupportFragmentManager().popBackStackImmediate();
                         }
@@ -180,12 +159,9 @@ public class ConversationUIService {
                     conversationFragment = getConversationFragment(fragmentActivity, null, channel, conversationId, searchString, messageSearchString, preFilledMessage);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                 } else {
-                    UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
                     MessageInfoFragment messageInfoFragment = (MessageInfoFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.MESSGAE_INFO_FRAGMENT);
-                    if (userProfileFragment != null || messageInfoFragment != null) {
-                        if (fragmentActivity.getSupportFragmentManager() != null) {
-                            fragmentActivity.getSupportFragmentManager().popBackStackImmediate();
-                        }
+                    if (messageInfoFragment != null && fragmentActivity.getSupportFragmentManager() != null) {
+                        fragmentActivity.getSupportFragmentManager().popBackStackImmediate();
                     }
                     conversationFragment.loadConversation(channel, conversationId, messageSearchString);
                 }
@@ -620,12 +596,6 @@ public class ConversationUIService {
             getQuickConversationFragment().updateUserInfo(userId);
             return;
         }
-        if (userId.equals(BroadcastService.currentUserProfileUserId)) {
-            UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.USER_PROFILE_FRAMENT);
-            if (userProfileFragment != null && userId.equals(BroadcastService.currentUserProfileUserId)) {
-                userProfileFragment.refreshContactData();
-            }
-        }
         if (BroadcastService.isIndividual()) {
             ConversationFragment conversationFragment = getConversationFragment();
             if (conversationFragment.getContact() != null && userId.equals(conversationFragment.getContact().getContactIds()) || conversationFragment.getChannel() != null) {
@@ -646,84 +616,6 @@ public class ConversationUIService {
         if (BroadcastService.isQuick()) {
             getQuickConversationFragment().updateConversationRead(currentId, isGroup);
         }
-    }
-
-    public void startContactActivityForResult(Intent intent, Message message, String messageContent, String[] userIdArray) {
-        if (message != null) {
-            intent.putExtra(MobiComKitPeopleActivity.FORWARD_MESSAGE, GsonUtils.getJsonFromObject(message, message.getClass()));
-        }
-        if (messageContent != null) {
-            intent.putExtra(MobiComKitPeopleActivity.SHARED_TEXT, messageContent);
-        }
-        if (userIdArray != null) {
-            intent.putExtra(MobiComKitPeopleActivity.USER_ID_ARRAY, userIdArray);
-        }
-
-        fragmentActivity.startActivityForResult(intent, REQUEST_CODE_CONTACT_GROUP_SELECTION);
-    }
-
-    public void startContactActivityForResult() {
-        startContactActivityForResult(null, null);
-    }
-
-    public void startContactActivityForResult(final Message message, final String messageContent) {
-        AlCustomizationSettings alCustomizationSettings;
-        String jsonString = FileUtils.loadSettingsJsonFile(fragmentActivity.getApplicationContext());
-        if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
-        } else {
-            alCustomizationSettings = new AlCustomizationSettings();
-        }
-        if (alCustomizationSettings.getTotalOnlineUsers() > 0 && Utils.isInternetAvailable(fragmentActivity)) {
-            processLoadUsers(false, message, messageContent, alCustomizationSettings.getTotalRegisteredUserToFetch(), alCustomizationSettings.getTotalOnlineUsers());
-        } else if (alCustomizationSettings.getTotalRegisteredUserToFetch() > 0 && (alCustomizationSettings.isRegisteredUserContactListCall() || KommunicateSetting.getInstance(fragmentActivity).isRegisteredUsersContactCall()) && !userPreference.getWasContactListServerCallAlreadyDone()) {
-            if (Utils.isInternetAvailable(fragmentActivity)) {
-                processLoadUsers(true, message, messageContent, alCustomizationSettings.getTotalRegisteredUserToFetch(), alCustomizationSettings.getTotalOnlineUsers());
-            }
-        } else {
-            Intent intent = new Intent(fragmentActivity, MobiComKitPeopleActivity.class);
-            startContactActivityForResult(intent, message, messageContent, null);
-        }
-    }
-
-    public void sendPriceMessage() {
-
-        try {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity);
-            alertDialog.setTitle("Price");
-            alertDialog.setMessage("Enter your amount");
-
-            final EditText inputText = new EditText(fragmentActivity);
-            inputText.setInputType(InputType.TYPE_CLASS_NUMBER);
-            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT);
-            inputText.setLayoutParams(linearParams);
-            alertDialog.setView(inputText);
-
-            alertDialog.setPositiveButton(fragmentActivity.getString(R.string.send_text),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (!TextUtils.isEmpty(inputText.getText().toString())) {
-                                getConversationFragment().sendMessage(inputText.getText().toString(), Message.ContentType.PRICE.getValue());
-                            }
-                        }
-                    });
-
-            alertDialog.setNegativeButton(fragmentActivity.getString(R.string.cancel_text),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-            if (!fragmentActivity.isFinishing()) {
-                alertDialog.show();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     public void sendAudioMessage(String selectedFilePath) {
@@ -762,17 +654,6 @@ public class ConversationUIService {
         Contact contact = null;
         Channel channel = null;
         Integer conversationId = null;
-
-        if (Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null) {
-            if ("text/plain".equals(intent.getType())) {
-                String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
-                if (sharedText != null) {
-                    startContactActivityForResult(null, sharedText);
-                }
-            } else if (intent.getType().startsWith("image/")) {
-                //Todo: use this for image forwarding
-            }
-        }
 
         final Uri uri = intent.getData();
         if (uri != null) {
@@ -857,12 +738,6 @@ public class ConversationUIService {
             getConversationFragment().setDefaultText(defaultText);
         }
 
-        String forwardMessage = intent.getStringExtra(MobiComKitPeopleActivity.FORWARD_MESSAGE);
-        if (!TextUtils.isEmpty(forwardMessage)) {
-            Message messageToForward = (Message) GsonUtils.getObjectFromJson(forwardMessage, Message.class);
-            getConversationFragment().forwardMessage(messageToForward, contact, channel);
-        }
-
         if (contact != null) {
             openConversationFragment(contact, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING));
         }
@@ -882,12 +757,6 @@ public class ConversationUIService {
             } catch (Exception e) {
             }
         }
-
-        String sharedText = intent.getStringExtra(MobiComKitPeopleActivity.SHARED_TEXT);
-        if (!TextUtils.isEmpty(sharedText)) {
-            getConversationFragment().sendMessage(sharedText);
-        }
-
     }
 
     void showToastMessage(final String messageToShow) {
@@ -913,58 +782,6 @@ public class ConversationUIService {
 
     public void sendLocation(String position) {
         getConversationFragment().sendMessage(position, Message.ContentType.LOCATION.getValue());
-    }
-
-    public void processLoadUsers(boolean isRegisteredUserCall, final Message message, final String messageContent, int totalRegisteredUsers, int totalOnlineUser) {
-
-        final ProgressDialog progressDialog = ProgressDialog.show(fragmentActivity, "",
-                fragmentActivity.getString(R.string.km_contacts_loading_info), true);
-
-        RegisteredUsersAsyncTask.TaskListener usersAsyncTaskTaskListener = new RegisteredUsersAsyncTask.TaskListener() {
-            @Override
-            public void onSuccess(RegisteredUsersApiResponse registeredUsersApiResponse, String[] userIdArray) {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-                try {
-                    if (registeredUsersApiResponse != null) {
-                        userPreference.setWasContactListServerCallAlreadyDone(true);
-                        Intent intent = new Intent(fragmentActivity, MobiComKitPeopleActivity.class);
-                        startContactActivityForResult(intent, message, messageContent, null);
-                    }
-
-                    if (userIdArray != null && userIdArray.length > 0) {
-                        Intent intent = new Intent(fragmentActivity, MobiComKitPeopleActivity.class);
-                        startContactActivityForResult(intent, message, messageContent, userIdArray);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(RegisteredUsersApiResponse registeredUsersApiResponse, String[] userIdArray, Exception exception) {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-                String error = fragmentActivity.getString(Utils.isInternetAvailable(fragmentActivity) ? R.string.km_server_error : R.string.you_need_network_access_for_block_or_unblock);
-                Toast toast = KmToast.error(fragmentActivity, error, Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-            }
-
-            @Override
-            public void onCompletion() {
-
-            }
-        };
-        RegisteredUsersAsyncTask usersAsyncTask;
-        if (isRegisteredUserCall) {
-            usersAsyncTask = new RegisteredUsersAsyncTask(fragmentActivity, usersAsyncTaskTaskListener, totalRegisteredUsers, 0l, message, messageContent, true);
-        } else {
-            usersAsyncTask = new RegisteredUsersAsyncTask(fragmentActivity, usersAsyncTaskTaskListener, totalOnlineUser, message, messageContent);
-        }
-        usersAsyncTask.execute();
     }
 
     public static ConversationFragment getConversationFragment(Context context, Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString, String preFilledMessage) {

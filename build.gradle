@@ -5,28 +5,55 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.2'
         classpath 'com.google.gms:google-services:3.1.1'
 
-        /*classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath 'com.github.dcendents:android-maven-plugin:1.2'
-        classpath 'com.novoda:bintray-release:0.3.4'*/
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.15.2"
     }
 }
 
 allprojects {
+    /*apply plugin: 'com.jfrog.artifactory'
+    apply plugin: 'maven-publish'*/
+
     repositories {
         google()
         mavenCentral()
         jcenter()
+        maven {
+            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
+        }
     }
 }
+
+/*artifactoryPublish.skip = true
+artifactory {
+    contextUrl = 'https://kommunicate.jfrog.io/artifactory';
+    Properties localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+    publish {
+        repository {
+            repoKey = 'kommunicate-android-sdk'
+            username = localProperties['artifactory.username']
+            password = localProperties['artifactory.password']
+        }
+        defaults {
+            // Reference to Gradle publications defined in the build script.
+            // This is how we tell the Artifactory Plugin which artifacts should be
+            // published to Artifactory.
+            publications('aar')
+            publishArtifacts = true
+            // Properties to be attached to the published artifacts.
+            properties = ['qa.level': 'basic', 'dev.team': 'core']
+            publishPom = true // Publish generated POM files to Artifactory (true by default)
+        }
+    }
+}*/
 
 task clean(type: Delete) {
     delete rootProject.buildDir

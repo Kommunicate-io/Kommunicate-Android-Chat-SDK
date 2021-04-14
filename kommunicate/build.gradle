@@ -3,11 +3,15 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 28
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
-        versionName "2.1.5"
+        versionName "2.1.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -18,7 +22,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
@@ -29,29 +32,7 @@ dependencies {
     api 'com.google.code.gson:gson:2.8.6'
 }
 
-/*ext {
-    // Where you will see your artifact in Bintray's web interface
-    // The "bintrayName" should match the name of the Bintray repro.
-    bintrayRepo = 'Kommunicate-Android-Chat-SDK'
-    bintrayName = 'kommunicate-android-chat-sdk'
-    bintrayOrg = 'kommunicate'
-    // Maven metadata
-    publishedGroupId = 'io.kommunicate.sdk'
-    libraryName = 'kommunicate'
-    // Save yourself a head ache, and set this equal to the name of the Android Studio library
-    // module. The artifact name needs to match the name of the library.
-    artifact = 'kommunicate'
-    libraryDescription = 'Kommunicate android chat SDK for cutomer support'
-    libraryVersion = '2.1.5'
-    developerId = 'kommunicate'
-    developerName = 'Kommunicate'
-    developerEmail = 'devashish.mamgain@gmail.com'
-}
-
-apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
-apply plugin: 'com.jfrog.bintray'
-version = libraryVersion
-task sourcesJar(type: Jar) {
+/*task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
@@ -65,31 +46,63 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-// Bintray
-Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
-    configurations = ['archives']
-    pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        userOrg = bintrayOrg
-        desc = libraryDescription
-        publish = true
-        publicDownloadNumbers = true
-        version {
-            desc = libraryDescription
-            // Optional. The passphrase for GPG signing'
-            // gpg {
-            //    sign = true //Determines whether to GPG sign the files. The default is false
-            //    passphrase = properties.getProperty("bintray.gpg.password")
-            //}
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId = 'io.kommunicate.sdk'
+            artifactId = project.getName()
+            version = android.defaultConfig.versionName
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+            artifact(javadocJar)
+            artifact(sourcesJar)
+            //generate POM
+            pom.withXml {
+                def node = asNode()
+                def dependenciesNode = node.appendNode('dependencies')
+                def dependencies = { Dependency dep ->
+                    if (dep.group == null || dep.name == null || dep.name == "unspecified") {
+                        return
+                    }
+                    def dependencyGroup
+                    if (dep.group == "") { //
+                        dependencyGroup = groupId
+                    } else {
+                        dependencyGroup = dep.group
+                    }
+                    def dependencyVersion
+                    //"fix" for compile projects
+                    if (dep.version == "unspecified" || dep.version == null) {
+                        dependencyVersion = version
+                    } else {
+                        dependencyVersion = dep.version
+                    }
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', dependencyGroup)
+                    dependencyNode.appendNode('artifactId', dep.name)
+                    dependencyNode.appendNode('version', dependencyVersion)
+                    if (!dep.transitive) {
+                        // If this dependency is transitive, we should force exclude all its dependencies them from the POM
+                        def exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
+                        exclusionNode.appendNode('groupId', '*')
+                        exclusionNode.appendNode('artifactId', '*')
+                    } else if (!dep.properties.excludeRules.empty) {
+                        // Otherwise add specified exclude rules
+                        def exclusionsNode = dependencyNode.appendNode('exclusions')
+                        dep.properties.excludeRules.each { ExcludeRule rule ->
+                            def exclusion = exclusionsNode.appendNode('exclusion')
+                            exclusion.appendNode('groupId', rule.group ?: '*')
+                            exclusion.appendNode('artifactId', rule.module ?: '*')
+                        }
+                    }
+                }
+                // List all dependencies and write to POM
+                configurations.api.getAllDependencies().each dependencies
+                configurations.implementation.getAllDependencies().each dependencies
+            }
         }
     }
+}
+artifactoryPublish {
+    publications(publishing.publications.aar)
 }*/
+

@@ -3,6 +3,19 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.1.6
+1) Moved Kommunicate dependency to JFrog. From this version onwards, add the below repository url to your project level build.grade file inside repositories:
+   ```
+   maven {
+            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
+         }
+   ```
+2) Added away messages changes in real time
+3) Added support for autosuggestion type rich messages
+4) Added support to update conversationAssignee and conversationMetadata from KmConversationBuilder
+5) Added support to sync messages on conversation screen launch. Push notification is not a mandatory step now.
+6) Some crash fixes and optimisations
+
 ## Kommunicate Android SDK 2.1.0
 1) Security improvement for secret keys in shared preferences. The secret keys are removed from the shared preferences and moved to secured storage.
 2) Security improvement for API calls using the user password. Removed user password and other secret keys and replaced them by a JWT token.

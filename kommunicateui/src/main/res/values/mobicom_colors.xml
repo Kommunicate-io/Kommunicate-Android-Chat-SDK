@@ -43,7 +43,6 @@
     <color name="contact_userId_text_color">#838b83</color>
     <color name="applozic_multimedia_grid_view_background_color">#F0F0F0</color>
 
-    <color name="applozic_theme_color">#FFB3E5FC</color>
     <color name="applozic_theme_color_primary">#5c5aa7</color>
     <color name="applozic_theme_color_primary_dark">#27256d</color>
     <color name="applozic_theme_color_accent">#FF607D8B</color>
@@ -52,15 +51,6 @@
     <color name="default_start_new_button_text_color">#ffffff</color>
     <color name="prechat_lead_collection_image_background">#e9e9e9</color>
     <color name="prechat_edittext_text_color">#444446</color>
-    <color name="km_list_item_header_text_color">#5c5aa7</color>
-    <color name="km_list_item_text_color">#646262</color>
-    <color name="km_list_item_divider_color">#e5e5e5</color>
-    <color name="km_header_text_background">#e6e5ec</color>
-    <color name="km_list_item_action_color">#504db0</color>
-    <color name="km_list_item_main_header_text_color">#686464</color>
-    <color name="km_via_email_text_color">#414243</color>
-    <color name="km_faq_button_background_color">#24ffffff</color>
-    <color name="km_take_over_from_bot_button_background_color">#5553b7</color>
 
     <color name="applozic_theme_color_app">#ff0099cc</color>
     <color name="applozic_theme_color_control_activated">#ff0099cc</color>
@@ -88,16 +78,4 @@
     <color name="applozic_custom_channel_message_text_color">#cccccc</color>
     <color name="applozic_reply_sent_message_bg_color">#C0C0C0</color>
     <color name="applozic_reply_received_message_bg_color">#F5F5F5</color>
-    <color name="km_custom_toast_background_color">#636262</color>
-    <color name="km_audio_button_background_color">#d8d8d8</color>
-    <color name="km_take_over_from_bot_layout_background_color">#f2f0f0</color>
-    <color name="km_received_message_text_color">#646262</color>
-    <color name="km_form_rich_message_background_color">#e6e5ec</color>
-    <color name="km_resolved_conversation_background">#f2f0f1</color>
-    <color name="km_spam_status_color">#FE7C3A</color>
-    <color name="km_resolve_status_color">#64D9A8</color>
-    <color name="km_reopen_status_color">#ED495C</color>
-    <color name="km_toast_success_color">#F23B7D5F</color>
-    <color name="km_toast_error_color">#F2C93F50</color>
-    <color name="km_disabled_view_color">#CFCFCF</color>
 </resources>

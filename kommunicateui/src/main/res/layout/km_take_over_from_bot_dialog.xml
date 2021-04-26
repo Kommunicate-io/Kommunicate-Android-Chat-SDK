@@ -19,7 +19,7 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.04"
         android:text="@string/km_take_over_from_bot_dialog_title"
-        android:textColor="#191919"
+        android:textColor="@color/km_take_over_from_bot_dialog_title_color"
         android:textSize="18sp"
         android:textStyle="normal" />
 
@@ -38,7 +38,7 @@
         android:gravity="center_horizontal"
         android:letterSpacing="0.04"
         android:text="@string/km_take_over_from_bot_dialog_message"
-        android:textColor="#191818"
+        android:textColor="@color/km_take_over_from_bot_dialog_message_color"
         android:textSize="14sp"
         android:textStyle="normal" />
 
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/kmDialogMessage"
-        android:background="#f2f2f2"
+        android:background="@color/km_take_over_from_bot_button_layout_color"
         android:orientation="horizontal">
 
         <TextView
@@ -64,7 +64,7 @@
             android:paddingRight="10dp"
             android:paddingBottom="15dp"
             android:text="@string/km_dialog_cancel_button"
-            android:textColor="#98989f"
+            android:textColor="@color/km_take_over_from_bot_dialog_negative_button_color"
             android:textSize="16sp"
             android:textStyle="normal" />
 
@@ -85,7 +85,7 @@
             android:paddingRight="10dp"
             android:paddingBottom="15dp"
             android:text="@string/km_dialog_positive_button_text"
-            android:textColor="#5553b7"
+            android:textColor="@color/km_take_over_from_bot_dialog_positive_button_color"
             android:textSize="16sp"
             android:textStyle="normal" />
     </FrameLayout>

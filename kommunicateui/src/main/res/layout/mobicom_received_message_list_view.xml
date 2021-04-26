@@ -24,7 +24,7 @@
             android:background="@drawable/mobiframework_circular_text_view"
             android:gravity="center"
             android:text=""
-            android:textColor="#ffffff"
+            android:textColor="@color/km_white_color"
             android:textSize="20sp"
             android:visibility="gone" />
 
@@ -109,7 +109,7 @@
                 android:drawableLeft="@drawable/km_ic_action_attachment"
                 android:drawablePadding="8dp"
                 android:textAlignment="gravity"
-                android:textColor="@color/black"
+                android:textColor="@color/km_black_color"
                 android:textDirection="locale"
                 android:textSize="16sp"
                 android:visibility="gone" />
@@ -132,8 +132,8 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginEnd="3dp"
                 android:autoLink="all"
-                android:text="Hi"
-                android:textColor="#646262"
+                android:text=""
+                android:textColor="@color/km_received_message_text_color"
                 android:textDirection="locale"
                 android:textSize="14sp" />
 
@@ -159,8 +159,8 @@
             android:fontFamily="sans-serif"
             android:letterSpacing="0.01"
             android:paddingTop="2dp"
-            android:text="12:34 PM"
-            android:textColor="#8a8686"
+            android:text=""
+            android:textColor="@color/km_received_message_created_at_time_text_color"
             android:textSize="10sp" />
 
         <TextView

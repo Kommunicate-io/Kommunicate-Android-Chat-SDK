@@ -126,18 +126,6 @@ public class AlCustomizationSettings extends JsonMarker {
     private Map<String, Boolean> attachmentOptions;
     private boolean restrictMessageTypingWithBots = false;
 
-    public boolean isBroadcastOption() {
-        return broadcastOption;
-    }
-
-    public boolean isStartNewFloatingButton() {
-        return startNewFloatingButton;
-    }
-
-    public boolean isStartNewButton() {
-        return startNewButton;
-    }
-
     public String getNoConversationLabel() {
         return noConversationLabel;
     }
@@ -165,10 +153,6 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public String getSendButtonBackgroundColor() {
         return sendButtonBackgroundColor;
-    }
-
-    public boolean isStartNewGroup() {
-        return startNewGroup;
     }
 
     public boolean isImageCompression() {

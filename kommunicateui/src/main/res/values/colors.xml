@@ -5,4 +5,72 @@
     <color name="km_resolve_status_list_heading">#112222</color>
     <color name="km_resolve_status_item_divider_color">#E7EAF2</color>
     <color name="km_assignee_icon_tint_color">#57C6F7</color>
+    <color name="km_grey_rectangle_background">#b8000000</color>
+    <color name="km_black_color">#000000</color>
+    <color name="km_cancel_icon_color">#7E7B7B</color>
+    <color name="km_white_color">#ffffff</color>
+    <color name="km_channel_custom_message_color">#cccccc</color>
+    <color name="km_dropdown_background_color">#646262</color>
+    <color name="km_image_background_color">#e7e4e4</color>
+    <color name="km_custom_toast_background_color">#636262</color>
+    <color name="km_audio_button_background_color">#d8d8d8</color>
+    <color name="km_received_message_text_color">#646262</color>
+    <color name="km_form_rich_message_background_color">#e6e5ec</color>
+    <color name="km_resolved_conversation_background">#f2f0f1</color>
+    <color name="km_spam_status_color">#FE7C3A</color>
+    <color name="km_resolve_status_color">#64D9A8</color>
+    <color name="km_reopen_status_color">#ED495C</color>
+    <color name="km_toast_success_color">#F23B7D5F</color>
+    <color name="km_toast_error_color">#F2C93F50</color>
+    <color name="km_disabled_view_color">#CFCFCF</color>
+    <color name="km_list_item_header_text_color">#5c5aa7</color>
+    <color name="km_list_item_text_color">#646262</color>
+    <color name="km_list_item_divider_color">#e5e5e5</color>
+    <color name="km_header_text_background">#e6e5ec</color>
+    <color name="km_list_item_action_color">#504db0</color>
+    <color name="km_list_item_main_header_text_color">#686464</color>
+    <color name="km_via_email_text_color">#414243</color>
+    <color name="km_faq_button_background_color">#24ffffff</color>
+    <color name="km_record_circle_color">#e03919</color>
+    <color name="km_offline_dot_stroke_color">#f5f2f2</color>
+    <color name="km_offline_dot_color">#949896</color>
+    <color name="km_online_dot_color">#05bf50</color>
+    <color name="km_audio_delete_basket_color">#e03919</color>
+    <color name="km_away_status_dot_color">#FFCC66</color>
+    <color name="km_unread_message_background_color">#FFCC66</color>
+    <color name="km_prechat_text_color">#4e4e50</color>
+    <color name="km_conversation_restart_button_color">#5451e2</color>
+    <color name="km_feedback_background_color">#f0f0f0</color>
+    <color name="km_autosuggestion_title_color">#29292a</color>
+    <color name="km_autosuggestion_message_color">#949498</color>
+    <color name="km_audio_record_counter_text_color">#8f8b8b</color>
+    <color name="km_slide_to_cancel_text_color">#a9a6a6</color>
+    <color name="km_rm_card_extension_text_color">#0d0d0e</color>
+    <color name="km_rm_card_title_text_color">#393838</color>
+    <color name="km_rm_card_extension_2_text_color">#6a6868</color>
+    <color name="km_rm_card_short_description_text_color">#696767</color>
+    <color name="km_rm_card_long_description_text_color">#827e7e</color>
+    <color name="km_service_disconnection_text_color">#737376</color>
+    <color name="km_image_preview_background_color">#50000000</color>
+    <color name="km_conversation_list_item_title_text_color">#565658</color>
+    <color name="km_conversation_list_item_created_at_time_text_color">#0e0e0f</color>
+    <color name="km_conversation_list_message_text_color">#848388</color>
+    <color name="km_received_message_created_at_time_text_color">#8a8686</color>
+    <color name="km_sent_message_created_at_time_text_color">#ede6e6</color>
+    <color name="km_user_profile_text_color">#7F000000</color>
+    <color name="km_attachment_size_text_background_color">#80000000</color>
+
+    <!--take over from bot dialog colors-->
+    <color name="km_take_over_from_bot_dialog_title_color">#191919</color>
+    <color name="km_take_over_from_bot_dialog_message_color">#191818</color>
+    <color name="km_take_over_from_bot_button_layout_color">#f2f2f2</color>
+    <color name="km_take_over_from_bot_dialog_negative_button_color">#98989f</color>
+    <color name="km_take_over_from_bot_dialog_positive_button_color">#5553b7</color>
+
+    <!--take over from bot layout colors-->
+    <color name="km_take_over_from_bot_button_background_color">#5553b7</color>
+    <color name="km_take_over_from_bot_layout_background_color">#f2f0f0</color>
+    <color name="km_take_over_from_bot_text_color">#635f5f</color>
+    <color name="km_take_over_from_bot_name_color">#3e3c3c</color>
+
 </resources>

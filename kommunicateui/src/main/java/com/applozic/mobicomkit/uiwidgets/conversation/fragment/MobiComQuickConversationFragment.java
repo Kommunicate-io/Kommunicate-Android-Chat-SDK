@@ -6,12 +6,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
-
-import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,12 +13,18 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
@@ -35,11 +35,6 @@ import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
-
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -48,10 +43,6 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
-
-import io.kommunicate.services.KmClientService;
-import io.kommunicate.utils.KmUtils;
-
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
@@ -70,13 +61,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.services.KmClientService;
+import io.kommunicate.utils.KmUtils;
+
 /**
  * Created by devashish on 10/2/15.
  */
 public class MobiComQuickConversationFragment extends Fragment implements SearchListFragment {
 
     protected RecyclerView recyclerView = null;
-    protected ImageButton fabButton;
     protected TextView emptyTextView;
     protected SwipeRefreshLayout swipeLayout;
     protected int listIndex;
@@ -170,7 +163,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         if (toolbarCustomLayout != null) {
             toolbarCustomLayout.setVisibility(View.GONE);
         }
-        fabButton = (ImageButton) list.findViewById(R.id.fab_start_new);
+
         loading = true;
         LinearLayout individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
         LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
@@ -200,8 +193,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
 
-        fabButton.setVisibility(alCustomizationSettings.isStartNewFloatingButton() ? View.VISIBLE : View.GONE);
-
         swipeLayout = (SwipeRefreshLayout) list.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -229,13 +220,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-
-        if (alCustomizationSettings.isStartNewButton() || KommunicateSetting.getInstance(getContext()).isStartNewButtonVisible()) {
-            menu.findItem(R.id.start_new).setVisible(true);
-        }
-        if (alCustomizationSettings.isStartNewGroup() || KommunicateSetting.getInstance(getContext()).isStartNewGroupButtonVisible()) {
-            menu.findItem(R.id.conversations).setVisible(true);
-        }
         if (alCustomizationSettings.isRefreshOption()) {
             menu.findItem(R.id.refresh).setVisible(true);
         }
@@ -244,9 +228,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         }
         if (alCustomizationSettings.isMessageSearchOption()) {
             menu.findItem(R.id.menu_search).setVisible(true);
-        }
-        if (alCustomizationSettings.isBroadcastOption()) {
-            menu.findItem(R.id.broadcast).setVisible(true);
         }
         if (alCustomizationSettings.isLogoutOption()) {
             menu.findItem(R.id.logout).setVisible(true);
@@ -552,7 +533,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        fabButton.setOnClickListener(startNewConversation());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override

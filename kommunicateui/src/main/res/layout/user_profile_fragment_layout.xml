@@ -11,13 +11,13 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
+        android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/mobiframework_circular_text_view"
         android:gravity="center"
-        android:textColor="#ffffff"
+        android:textColor="@color/km_white_color"
         android:textSize="20sp"
-        android:layout_marginStart="8dp"
         android:visibility="gone" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -52,26 +52,26 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="20dp"
                     android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
                     android:paddingTop="10dp"
-                    android:textAlignment="gravity"
-                    android:textDirection="locale"
+                    android:paddingBottom="5dp"
                     android:text="@string/name"
-                    android:textColor="@color/black"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_black_color"
+                    android:textDirection="locale"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/userName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
                     android:paddingBottom="10dp"
                     android:textAlignment="gravity"
+                    android:textColor="@color/km_user_profile_text_color"
                     android:textDirection="locale"
-                    android:paddingLeft="20dp"
-                    android:paddingStart="20dp"
-                    android:textColor="#7F000000"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -96,26 +96,26 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="20dp"
                     android:paddingStart="20dp"
-                    android:textAlignment="gravity"
-                    android:textDirection="locale"
+                    android:paddingLeft="20dp"
                     android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
                     android:text="@string/status"
-                    android:textColor="@color/black"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_black_color"
+                    android:textDirection="locale"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/applozic_user_status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="20dp"
-                    android:textAlignment="gravity"
-                    android:textDirection="locale"
                     android:paddingStart="20dp"
-                    android:textColor="#7F000000"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_user_profile_text_color"
+                    android:textDirection="locale"
                     android:textSize="14sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -138,26 +138,26 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="20dp"
                     android:paddingStart="20dp"
-                    android:textAlignment="gravity"
-                    android:textDirection="locale"
+                    android:paddingLeft="20dp"
                     android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
                     android:text="@string/email"
+                    android:textAlignment="gravity"
                     android:textColor="@color/black"
+                    android:textDirection="locale"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
                     android:paddingBottom="10dp"
                     android:textAlignment="gravity"
+                    android:textColor="@color/km_user_profile_text_color"
                     android:textDirection="locale"
-                    android:paddingLeft="20dp"
-                    android:paddingStart="20dp"
-                    android:textColor="#7F000000"
                     android:textSize="14sp" />
             </LinearLayout>
 
@@ -181,26 +181,26 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
-                    android:textAlignment="gravity"
-                    android:textDirection="locale"
-                    android:paddingLeft="20dp"
                     android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
                     android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
                     android:text="@string/phone"
-                    android:textColor="@color/black"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_black_color"
+                    android:textDirection="locale"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
                     android:paddingBottom="10dp"
                     android:textAlignment="gravity"
+                    android:textColor="@color/km_user_profile_text_color"
                     android:textDirection="locale"
-                    android:paddingLeft="20dp"
-                    android:paddingStart="20dp"
-                    android:textColor="#7F000000"
                     android:textSize="14sp" />
             </LinearLayout>
 

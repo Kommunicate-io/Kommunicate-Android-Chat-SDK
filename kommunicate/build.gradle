@@ -1,5 +1,12 @@
 apply plugin: 'com.android.library'
 
+rootProject.allprojects {
+    repositories {
+        maven {
+            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
+        }
+    }
+}
 android {
     compileSdkVersion 28
 

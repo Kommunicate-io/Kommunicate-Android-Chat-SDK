@@ -70,6 +70,7 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
                     kmApiResponse = (KmApiResponse<KmFeedback>) GsonUtils.getObjectFromJson(response, type);
                     kmFeedbackCallback.onSuccess(contextWeakReference.get(), kmApiResponse);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     kmFeedbackCallback.onFailure(contextWeakReference.get(), e, response);
                 }
             }

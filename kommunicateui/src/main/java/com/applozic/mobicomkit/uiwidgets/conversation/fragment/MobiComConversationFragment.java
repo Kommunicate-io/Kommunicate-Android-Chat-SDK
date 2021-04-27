@@ -4294,10 +4294,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
 
                             frameLayoutProgressbar.setVisibility(View.GONE);
-
                             if (response.getData() != null) { //i.e if feedback found
                                 //show the feedback based on the data given
-                                kmFeedbackView.showFeedback(context, response.getData());
+                                Message message = messageDatabaseService.getLatestStatusMessage(channel.getKey());
+
+                                //If Conversation was resolved and feedback was submitted given
+                                if (message != null && message.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(message.getCreatedAtTime())) {
+                                    kmFeedbackView.showFeedback(context, response.getData());
+                                } else {
+                                    openFeedbackFragment();
+                                }
                             } else {
                                 //if feedback not found (null)
                                 //open the feedback input fragment

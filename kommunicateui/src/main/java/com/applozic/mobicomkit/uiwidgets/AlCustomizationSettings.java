@@ -124,6 +124,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private String statusBarColor = "";
     private String richMessageThemeColor = "";
     private Map<String, Boolean> attachmentOptions;
+    private KmSpeechSetting textToSpeech;
+    private KmSpeechSetting speechToText;
     private boolean restrictMessageTypingWithBots = false;
 
     public String getNoConversationLabel() {
@@ -655,6 +657,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isRestrictMessageTypingWithBots() {
         return restrictMessageTypingWithBots;
+    }
+
+    public KmSpeechSetting getTextToSpeech() {
+        return textToSpeech == null ? new KmSpeechSetting() : textToSpeech;
+    }
+
+    public KmSpeechSetting getSpeechToText() {
+        return speechToText == null ? new KmSpeechSetting() : speechToText;
     }
 
     @Override

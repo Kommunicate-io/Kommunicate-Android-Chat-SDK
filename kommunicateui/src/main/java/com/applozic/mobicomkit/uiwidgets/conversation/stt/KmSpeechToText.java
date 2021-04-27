@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -27,11 +26,13 @@ public class KmSpeechToText implements RecognitionListener {
     private KmTextListener listener;
     private SpeechRecognizer speechRecognizer;
     private boolean isStopped;
+    private String languageCode;
 
-    public KmSpeechToText(Activity context, KmRecordButton recordButton, KmTextListener listener) {
+    public KmSpeechToText(Activity context, KmRecordButton recordButton, String languageCode, KmTextListener listener) {
         this.context = context;
         this.listener = listener;
         this.recordButton = recordButton;
+        this.languageCode = languageCode;
     }
 
     public void startListening() {
@@ -41,7 +42,7 @@ public class KmSpeechToText implements RecognitionListener {
 
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, TextUtils.isEmpty(KmPrefSettings.getInstance(context).getSpeechToTextLanguage()) ? Locale.getDefault() : KmPrefSettings.getInstance(context).getSpeechToTextLanguage());
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, TextUtils.isEmpty(languageCode) ? Locale.getDefault() : languageCode);
             intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
             intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
             intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.getPackageName());

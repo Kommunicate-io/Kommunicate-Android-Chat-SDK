@@ -106,6 +106,7 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
+import com.applozic.mobicomkit.uiwidgets.KmSpeechSetting;
 import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
@@ -390,14 +391,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
-        isSpeechToTextEnabled = KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled();
-        isTextToSpeechEnabled = KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
-        isSendOnSpeechEnd = KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
+        isSpeechToTextEnabled = alCustomizationSettings.getSpeechToText().isEnabled() || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled();
+        isTextToSpeechEnabled = alCustomizationSettings.getTextToSpeech().isEnabled() || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
+        isSendOnSpeechEnd = alCustomizationSettings.getSpeechToText().isSendMessageOnSpeechEnd() || KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
         botMessageDelayInterval = KmAppSettingPreferences.getInstance().getKmBotMessageDelayInterval();
         botTypingDelayManager = new KmBotTypingDelayManager(getContext(), this);
 
         if (isTextToSpeechEnabled) {
-            textToSpeech = new KmTextToSpeech(getContext());
+            textToSpeech = new KmTextToSpeech(getContext(), KmSpeechSetting.getTextToSpeechLanguageCode(getContext(), alCustomizationSettings));
         }
 
         richMessageActionProcessor = new RichMessageActionProcessor(this);
@@ -532,7 +533,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (isSpeechToTextEnabled) {
             recordView.enableSpeechToText(true);
             recordView.setLessThanSecondAllowed(true);
-            speechToText = new KmSpeechToText(getActivity(), recordButton, this);
+            speechToText = new KmSpeechToText(getActivity(), recordButton, KmSpeechSetting.getSpeechToTextLanguageCode(getContext(), alCustomizationSettings), this);
         }
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);

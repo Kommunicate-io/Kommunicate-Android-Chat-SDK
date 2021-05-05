@@ -283,6 +283,24 @@ public class MessageDatabaseService {
         return messageList;
     }
 
+    public Message getLatestStatusMessage(Integer channelKey) {
+        if (channelKey == null) {
+            return null;
+        }
+        try {
+            Cursor cursor = dbHelper.getReadableDatabase().rawQuery("select * from sms where channelKey = ? and metadata like '%" + Message.CONVERSATION_STATUS + "%' order by createdAt DESC limit 1", new String[]{channelKey.toString()});
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                return getMessage(cursor);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
+        return null;
+    }
+
     public List<Message> getPendingDeleteMessages() {
         String structuredNameWhere = "";
         List<String> structuredNameParamsList = new ArrayList<String>();

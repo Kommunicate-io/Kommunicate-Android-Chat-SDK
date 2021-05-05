@@ -1056,8 +1056,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             feedBackFragment = new FeedbackInputFragment();
             feedBackFragment.setFeedbackFragmentListener(this);
         }
+
+        getActivity().getSupportFragmentManager().executePendingTransactions();
         if (!feedBackFragment.isVisible() && !feedBackFragment.isAdded()) {
-            getActivity().getSupportFragmentManager().executePendingTransactions();
             feedBackFragment.show(getActivity().getSupportFragmentManager(), FeedbackInputFragment.getFragTag());
         }
     }

@@ -149,5 +149,6 @@
     "enabled": false,
     "sendMessageOnSpeechEnd": true,
     "languageCode": "en-US"
-  }
+  },
+  "hidePostCTA": false
 }

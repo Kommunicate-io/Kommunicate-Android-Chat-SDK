@@ -10,12 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -40,6 +34,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
@@ -147,6 +146,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private float[] receivedMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
     private KmFontManager fontManager;
     private KmThemeHelper themeHelper;
+    private Message unProcessedRichMessage;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -194,6 +194,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, Contact contact, Class messageIntentClass, EmojiconHandler emojiconHandler) {
         this(context, textViewResourceId, messageList, contact, null, messageIntentClass, emojiconHandler);
+    }
+
+    public void setUnProcessedRichMessage(Message message) {
+        this.unProcessedRichMessage = message;
     }
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, final Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler) {
@@ -1019,19 +1023,22 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     myHolder.messageTextLayout.setVisibility(View.VISIBLE);
 
-                    if (message.getMetadata() != null && "300".equals(message.getMetadata().get("contentType"))) {
-                        myHolder.richMessageLayout.setVisibility(View.VISIBLE);
-
+                    if (message.isRichMessage()) {
                         if (!TextUtils.isEmpty(message.getMessage())) {
                             myHolder.messageTextLayout.setVisibility(View.VISIBLE);
                         } else {
                             myHolder.messageTextLayout.setVisibility(GONE);
                         }
 
-                        try {
-                            KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        if (showRichMessage(message)) {
+                            myHolder.richMessageLayout.setVisibility(View.VISIBLE);
+                            try {
+                                KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                myHolder.richMessageLayout.setVisibility(View.GONE);
+                            }
+                        } else {
                             myHolder.richMessageLayout.setVisibility(View.GONE);
                         }
                     } else {
@@ -1063,6 +1070,23 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean showRichMessage(Message message) {
+        if (themeHelper.isHidePostCTA() && unProcessedRichMessage != null) {
+            return unProcessedRichMessage.getKeyString().equals(message.getKeyString());
+        }
+        return !themeHelper.isHidePostCTA();
+    }
+
+    public void updateLastRichMessage(Message message) {
+        if (themeHelper.isHidePostCTA()) {
+            if (message.isTypeOutbox() && unProcessedRichMessage != null) {
+                unProcessedRichMessage = null;
+            } else if (message.isRichMessage()) {
+                unProcessedRichMessage = message;
+            }
         }
     }
 

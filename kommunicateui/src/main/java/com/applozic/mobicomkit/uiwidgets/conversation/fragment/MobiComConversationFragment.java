@@ -4765,9 +4765,4 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             individualMessageSendLayout.setVisibility(VISIBLE);
         }
     }
-
-    protected void checkMessageIndex(Message message) {
-        int index = messageList.indexOf(message);
-
-    }
 }

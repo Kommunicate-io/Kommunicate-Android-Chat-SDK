@@ -25,9 +25,6 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
-        maven {
-            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
-        }
     }
 }
 

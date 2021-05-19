@@ -76,6 +76,7 @@ public class Message extends JsonMarker {
     public static final String SKIP_BOT = "skipBot";
     public static final String AL_DELETE_MESSAGE_FOR_ALL_KEY = "AL_DELETE_GROUP_MESSAGE_FOR_ALL";
     public static final String AUTO_SUGGESTION_TYPE_MESSAGE = "KM_AUTO_SUGGESTION";
+    public static final String STATUS_CLOSED = "closed";
 
     public Message() {
 
@@ -678,6 +679,10 @@ public class Message extends JsonMarker {
 
     public boolean isAutoSuggestion() {
         return getMetadata() != null && getMetadata().containsKey(AUTO_SUGGESTION_TYPE_MESSAGE);
+    }
+
+    public boolean isTypeResolved() {
+        return getMetadata() != null && STATUS_CLOSED.equalsIgnoreCase(getMetadata().get(CONVERSATION_STATUS));
     }
 
     public String getConversationStatus() {

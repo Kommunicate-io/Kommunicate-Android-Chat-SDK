@@ -29,6 +29,7 @@ public class KmThemeHelper implements KmCallback {
     private int toolbarColor = -1;
     private int statusBarColor = -1;
     private int richMessageThemeColor = -1;
+    private Boolean hidePostCTA;
 
     public static KmThemeHelper getInstance(Context context, AlCustomizationSettings alCustomizationSettings) {
         if (kmThemeHelper == null) {
@@ -90,6 +91,16 @@ public class KmThemeHelper implements KmCallback {
             collectFeedback = appSettingPreferences.isCollectFeedback();
         }
         return collectFeedback;
+    }
+
+    public boolean isHidePostCTA() {
+        if (hidePostCTA == null) {
+            hidePostCTA = alCustomizationSettings.isHidePostCTA();
+            if (hidePostCTA == null) {
+                hidePostCTA = appSettingPreferences.isHidePostCTA();
+            }
+        }
+        return hidePostCTA;
     }
 
     public int getSentMessageBorderColor() {

@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import io.kommunicate.async.KmAppSettingTask;
@@ -27,6 +26,7 @@ public class KmAppSettingPreferences {
     private static final String KM_BOT_MESSAGE_DELAY_INTERVAL = "KM_BOT_MESSAGE_DELAY_INTERVAL";
     private static final String LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME";
     private static final String CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME";
+    private static final String HIDE_POST_CTA = "HIDE_POST_CTA";
 
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
@@ -54,6 +54,7 @@ public class KmAppSettingPreferences {
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());
+                setHidePostCTA(appSetting.getResponse().isHidePostCTA());
             }
         }
     }
@@ -82,6 +83,15 @@ public class KmAppSettingPreferences {
 
     public KmAppSettingPreferences setCollectFeedback(boolean collectFeedback) {
         preferences.edit().putBoolean(KM_COLLECT_FEEDBACK, collectFeedback).commit();
+        return this;
+    }
+
+    public boolean isHidePostCTA() {
+        return preferences.getBoolean(HIDE_POST_CTA, false);
+    }
+
+    public KmAppSettingPreferences setHidePostCTA(boolean hidePostCTA) {
+        preferences.edit().putBoolean(HIDE_POST_CTA, hidePostCTA).commit();
         return this;
     }
 

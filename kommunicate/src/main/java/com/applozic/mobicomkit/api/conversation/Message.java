@@ -717,6 +717,10 @@ public class Message extends JsonMarker {
         return ((ApplozicClient.getInstance(context).isActionMessagesHidden() && isActionMessage()) || hasHideKey());
     }
 
+    public boolean isRichMessage() {
+        return metadata != null && "300".equals(metadata.get("contentType"));
+    }
+
     public enum Source {
 
         DEVICE_NATIVE_APP(Short.valueOf("0")), WEB(Short.valueOf("1")), MT_MOBILE_APP(Short.valueOf("2")), API(Short.valueOf("3"));

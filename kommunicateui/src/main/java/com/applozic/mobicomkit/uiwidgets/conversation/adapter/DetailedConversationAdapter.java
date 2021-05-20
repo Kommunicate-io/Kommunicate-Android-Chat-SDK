@@ -146,7 +146,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private float[] receivedMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
     private KmFontManager fontManager;
     private KmThemeHelper themeHelper;
-    private Message unProcessedRichMessage;
+    private Message lastSentMessage;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -196,8 +196,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this(context, textViewResourceId, messageList, contact, null, messageIntentClass, emojiconHandler);
     }
 
-    public void setUnProcessedRichMessage(Message message) {
-        this.unProcessedRichMessage = message;
+    public void setLastSentMessage(Message message) {
+        this.lastSentMessage = message;
     }
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, final Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler) {
@@ -1074,19 +1074,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     private boolean showRichMessage(Message message) {
-        if (themeHelper.isHidePostCTA() && unProcessedRichMessage != null) {
-            return unProcessedRichMessage.getKeyString().equals(message.getKeyString());
+        if (themeHelper.isHidePostCTA()) {
+            return message.getCreatedAtTime() > (lastSentMessage != null ? lastSentMessage.getCreatedAtTime() : 0);
         }
-        return !themeHelper.isHidePostCTA();
+        return true;
     }
 
-    public void updateLastRichMessage(Message message) {
-        if (themeHelper.isHidePostCTA()) {
-            if (message.isTypeOutbox() && unProcessedRichMessage != null) {
-                unProcessedRichMessage = null;
-            } else if (message.isRichMessage()) {
-                unProcessedRichMessage = message;
-            }
+    public void updateLastSentMessage(Message message) {
+        if (themeHelper.isHidePostCTA() && message.isTypeOutbox()) {
+            lastSentMessage = message;
         }
     }
 

@@ -31,13 +31,17 @@ public class KmFormRichMessage extends KmRichMessage {
     }
 
     @Override
-    public void createRichMessage() {
-        super.createRichMessage();
+    public void createRichMessage(boolean isMessageProcessed) {
+        super.createRichMessage(isMessageProcessed);
 
         LinearLayoutManager formLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         alFormLayoutRecycler.setLayoutManager(formLayoutManager);
         final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString());
         alFormLayoutRecycler.setAdapter(formItemAdapter);
+
+        if (isMessageProcessed && themeHelper.hideSubmitButtonsPostCTA()) {
+            return;
+        }
 
         List<Object> actionModelList = new ArrayList<>();
 

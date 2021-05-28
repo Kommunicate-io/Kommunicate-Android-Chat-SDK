@@ -26,8 +26,8 @@ public class FaqKmRichMessage extends KmRichMessage {
     }
 
     @Override
-    public void createRichMessage() {
-        super.createRichMessage();
+    public void createRichMessage(boolean isMessageProcessed) {
+        super.createRichMessage(isMessageProcessed);
 
         if (model != null) {
             TextView headerText = faqLayout.findViewById(R.id.headerText);

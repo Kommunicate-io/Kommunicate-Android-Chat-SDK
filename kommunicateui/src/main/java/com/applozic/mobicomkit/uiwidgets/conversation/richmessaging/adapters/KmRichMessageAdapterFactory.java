@@ -33,9 +33,9 @@ public class KmRichMessageAdapterFactory {
         return RMFactoryHelper.INSTANCE;
     }
 
-    public KmRichMessageAdapter getRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper) {
+    public KmRichMessageAdapter getRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed) {
         if (model.getTemplateId() == KmRichMessageFactory.CARD_RICH_MESSAGE) {
-            return new KmCardRMAdapter(context, model, listener, message, themeHelper);
+            return new KmCardRMAdapter(context, model, listener, message, themeHelper, isMessageProcessed);
         } else if (model.getTemplateId() == KmRichMessageFactory.BUTTON_RICH_MESSAGE || model.getTemplateId() == KmRichMessageFactory.REPLY_RICH_MESSAGE || model.getTemplateId() == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new KmButtonRMAdapter(context, model, listener, message, themeHelper);
         } else return null;
@@ -45,7 +45,7 @@ public class KmRichMessageAdapterFactory {
         return new KmImageRMAdapter(context, model, listener, message, alCustomizationSettings);
     }
 
-    public KmRichMessageAdapter getListRMAdapter(Context context, Message message, List<KmRichMessageModel.KmElementModel> elementList, Map<String, Object> replyMetadata, KmRichMessageListener messageListener, AlCustomizationSettings alCustomizationSettings) {
+    public KmRichMessageAdapter getListRMAdapter(Context context, Message message, List<KmRichMessageModel.KmElementModel> elementList, Map<String, Object> replyMetadata, KmRichMessageListener messageListener, AlCustomizationSettings alCustomizationSettings, boolean isMessageProcessed) {
         return new KmListRMAdapter(context, message, elementList, replyMetadata, messageListener, KmThemeHelper.getInstance(context, alCustomizationSettings));
     }
 }

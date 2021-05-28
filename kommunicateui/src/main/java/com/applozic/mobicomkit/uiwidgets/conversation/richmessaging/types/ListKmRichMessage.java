@@ -32,8 +32,8 @@ public class ListKmRichMessage extends KmRichMessage {
     }
 
     @Override
-    public void createRichMessage() {
-        super.createRichMessage();
+    public void createRichMessage(boolean isMessageProcessed) {
+        super.createRichMessage(isMessageProcessed);
 
         if (model != null) {
             if (model.getPayload() != null) {
@@ -44,7 +44,7 @@ public class ListKmRichMessage extends KmRichMessage {
                     RecyclerView listRecycler = listItemLayout.findViewById(R.id.alListItemRecycler);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                     listRecycler.setLayoutManager(layoutManager);
-                    KmListRMAdapter adapter = (KmListRMAdapter) KmRichMessageAdapterFactory.getInstance().getListRMAdapter(context, message, payload.getElements(), payload.getReplyMetadata(), listener, alCustomizationSettings);
+                    KmListRMAdapter adapter = (KmListRMAdapter) KmRichMessageAdapterFactory.getInstance().getListRMAdapter(context, message, payload.getElements(), payload.getReplyMetadata(), listener, alCustomizationSettings, isMessageProcessed);
                     listRecycler.setAdapter(adapter);
 
                     if (!TextUtils.isEmpty(payload.getHeaderText())) {

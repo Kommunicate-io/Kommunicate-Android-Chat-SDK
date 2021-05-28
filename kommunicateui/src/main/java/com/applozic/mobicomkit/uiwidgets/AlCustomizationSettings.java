@@ -127,7 +127,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private KmSpeechSetting textToSpeech;
     private KmSpeechSetting speechToText;
     private boolean restrictMessageTypingWithBots = false;
-    private Boolean hidePostCTA;
+    private Map<String, Boolean> hidePostCTA;
 
     public String getNoConversationLabel() {
         return noConversationLabel;
@@ -668,7 +668,7 @@ public class AlCustomizationSettings extends JsonMarker {
         return speechToText == null ? new KmSpeechSetting() : speechToText;
     }
 
-    public Boolean isHidePostCTA() {
+    public Map<String, Boolean> isHidePostCTA() {
         return hidePostCTA;
     }
 

@@ -8,15 +8,22 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.ApplozicService;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.utils.KmAppSettingPreferences;
 
 public class KmThemeHelper implements KmCallback {
 
+    private static final String SUBMIT_BUTTON = "submit";
+    private static final String LINK_BUTTON = "link";
+    private static final String QUICK_REPLIES = "quick-reply";
     private static KmThemeHelper kmThemeHelper;
-    private Context context;
-    private KmAppSettingPreferences appSettingPreferences;
-    private AlCustomizationSettings alCustomizationSettings;
+    private final Context context;
+    private final KmAppSettingPreferences appSettingPreferences;
+    private final AlCustomizationSettings alCustomizationSettings;
     private Boolean collectFeedback;
     private int primaryColor = -1;
     private int secondaryColor = -1;
@@ -29,7 +36,7 @@ public class KmThemeHelper implements KmCallback {
     private int toolbarColor = -1;
     private int statusBarColor = -1;
     private int richMessageThemeColor = -1;
-    private Boolean hidePostCTA;
+    private Map<String, Boolean> hidePostCTA = new HashMap<>();
 
     public static KmThemeHelper getInstance(Context context, AlCustomizationSettings alCustomizationSettings) {
         if (kmThemeHelper == null) {
@@ -93,14 +100,35 @@ public class KmThemeHelper implements KmCallback {
         return collectFeedback;
     }
 
-    public boolean isHidePostCTA() {
+    public Map<String, Boolean> getHidePostCTA() {
+        hidePostCTA = alCustomizationSettings.isHidePostCTA();
         if (hidePostCTA == null) {
-            hidePostCTA = alCustomizationSettings.isHidePostCTA();
-            if (hidePostCTA == null) {
-                hidePostCTA = appSettingPreferences.isHidePostCTA();
-            }
+            hidePostCTA = new HashMap<>();
         }
         return hidePostCTA;
+    }
+
+    public boolean isHidePostCTA() {
+        if (getHidePostCTA().isEmpty()) {
+            return false;
+        }
+        HashSet<Boolean> values = new HashSet<>(getHidePostCTA().values());
+        return !(values.size() == 1 && values.contains(false));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public boolean hideSubmitButtonsPostCTA() {
+        return getHidePostCTA().get(SUBMIT_BUTTON) != null ? getHidePostCTA().get(SUBMIT_BUTTON) : false;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public boolean hideLinkButtonsPostCTA() {
+        return getHidePostCTA().get(LINK_BUTTON) != null ? getHidePostCTA().get(LINK_BUTTON) : false;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public boolean hideQuickRepliesPostCTA() {
+        return getHidePostCTA().get(QUICK_REPLIES) != null ? getHidePostCTA().get(QUICK_REPLIES) : false;
     }
 
     public int getSentMessageBorderColor() {
@@ -174,11 +202,8 @@ public class KmThemeHelper implements KmCallback {
 
     @Override
     public void onSuccess(Object message) {
-        if (message instanceof String) {
-            switch ((String) message) {
-                case KmAppSettingPreferences.CLEAR_THEME_INSTANCE:
-                    clearInstance();
-            }
+        if (message instanceof String && KmAppSettingPreferences.CLEAR_THEME_INSTANCE.equals((String) message)) {
+            clearInstance();
         }
     }
 

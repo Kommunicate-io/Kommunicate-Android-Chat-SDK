@@ -1030,15 +1030,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.messageTextLayout.setVisibility(GONE);
                         }
 
-                        if (showRichMessage(message)) {
-                            myHolder.richMessageLayout.setVisibility(View.VISIBLE);
-                            try {
-                                KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                myHolder.richMessageLayout.setVisibility(View.GONE);
-                            }
-                        } else {
+                        myHolder.richMessageLayout.setVisibility(View.VISIBLE);
+                        try {
+                            KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage(isMessageProcessed(message));
+                        } catch (Exception e) {
+                            e.printStackTrace();
                             myHolder.richMessageLayout.setVisibility(View.GONE);
                         }
                     } else {
@@ -1073,11 +1069,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    private boolean showRichMessage(Message message) {
+    private boolean isMessageProcessed(Message message) {
         if (themeHelper.isHidePostCTA()) {
-            return message.getCreatedAtTime() > (lastSentMessage != null ? lastSentMessage.getCreatedAtTime() : 0);
+            return lastSentMessage != null && lastSentMessage.getCreatedAtTime() > message.getCreatedAtTime();
         }
-        return true;
+        return false;
     }
 
     public void updateLastSentMessage(Message message) {
@@ -1403,7 +1399,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             protected FilterResults performFiltering(CharSequence constraint) {
 
                 final FilterResults oReturn = new FilterResults();
-                final List<Message> results = new ArrayList<Message>();
+                final List<Message> results = new ArrayList<>();
                 if (originalList == null)
                     originalList = messageList;
                 if (constraint != null) {
@@ -1438,7 +1434,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private int indexOfSearchQuery(String message) {
         if (!TextUtils.isEmpty(searchString)) {
             return message.toLowerCase(Locale.getDefault()).indexOf(
-                    searchString.toString().toLowerCase(Locale.getDefault()));
+                    searchString.toLowerCase(Locale.getDefault()));
         }
         return -1;
     }
@@ -1672,7 +1668,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         };
     }
 
-    class MyViewHolder2 extends RecyclerView.ViewHolder {
+    static class MyViewHolder2 extends RecyclerView.ViewHolder {
         TextView dateView;
         TextView dayTextView;
 
@@ -1683,7 +1679,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder3 extends RecyclerView.ViewHolder {
+    static class MyViewHolder3 extends RecyclerView.ViewHolder {
         TextView customContentTextView;
 
         public MyViewHolder3(View itemView) {
@@ -1692,7 +1688,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder4 extends RecyclerView.ViewHolder {
+    static class MyViewHolder4 extends RecyclerView.ViewHolder {
         TextView channelMessageTextView;
 
         public MyViewHolder4(View itemView) {
@@ -1701,7 +1697,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder5 extends RecyclerView.ViewHolder {
+    static class MyViewHolder5 extends RecyclerView.ViewHolder {
         TextView statusTextView;
         TextView timeTextView;
         TextView durationTextView;

@@ -19,8 +19,8 @@ public class ImageKmRichMessage extends KmRichMessage {
     }
 
     @Override
-    public void createRichMessage() {
-        super.createRichMessage();
+    public void createRichMessage(boolean isMessageProcessed) {
+        super.createRichMessage(isMessageProcessed);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         imageListRecycler.setLayoutManager(layoutManager);

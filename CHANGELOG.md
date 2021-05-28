@@ -3,6 +3,10 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.1.7
+1) Added support for submitting feedback multiple times.
+2) Added STT and TTS setting in json file for Hybrid platforms
+
 ## Kommunicate Android SDK 2.1.6
 1) Moved Kommunicate dependency to JFrog. From this version onwards, add the below repository url to your project level build.grade file inside repositories:
    ```

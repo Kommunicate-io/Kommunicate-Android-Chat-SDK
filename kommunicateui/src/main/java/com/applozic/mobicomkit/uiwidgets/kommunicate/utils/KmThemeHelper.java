@@ -19,7 +19,7 @@ public class KmThemeHelper implements KmCallback {
 
     private static final String SUBMIT_BUTTON = "submit";
     private static final String LINK_BUTTON = "link";
-    private static final String QUICK_REPLIES = "quick-reply";
+    private static final String QUICK_REPLIES = "quickReply";
     private static KmThemeHelper kmThemeHelper;
     private final Context context;
     private final KmAppSettingPreferences appSettingPreferences;

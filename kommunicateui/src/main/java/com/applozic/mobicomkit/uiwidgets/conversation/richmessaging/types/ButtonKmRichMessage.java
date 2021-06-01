@@ -25,6 +25,8 @@ import io.kommunicate.utils.KmUtils;
 
 public class ButtonKmRichMessage extends KmRichMessage {
 
+    public static final int QUICK_REPLY_TEMPLATE_ID = 6;
+
     public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         super(context, containerView, message, listener, alCustomizationSettings);
     }
@@ -37,7 +39,7 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
         flowLayout.removeAllViews();
         for (final KmRichMessageModel.KmPayloadModel payloadModel : payloadList) {
-            if (isMessageProcessed && hideMessage(themeHelper, getActionType(payloadModel))) {
+            if (isMessageProcessed && hideMessage(themeHelper, getActionType(payloadModel, model.getTemplateId()))) {
                 continue;
             }
             View view = LayoutInflater.from(context).inflate(R.layout.km_rich_message_single_text_item, null);
@@ -63,7 +65,7 @@ public class ButtonKmRichMessage extends KmRichMessage {
                         if (payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) || !TextUtils.isEmpty(payloadModel.getType())) {
                             listener.onAction(context, actionType, message, payloadModel, payloadModel.getReplyMetadata());
                         } else {
-                            listener.onAction(context, model.getTemplateId() == 6 ? QUICK_REPLY : SUBMIT_BUTTON, message, model.getTemplateId() == 6 ? payloadModel : model, payloadModel.getReplyMetadata());
+                            listener.onAction(context, model.getTemplateId() == QUICK_REPLY_TEMPLATE_ID ? QUICK_REPLY : SUBMIT_BUTTON, message, model.getTemplateId() == 6 ? payloadModel : model, payloadModel.getReplyMetadata());
                         }
                     }
                 }
@@ -99,7 +101,10 @@ public class ButtonKmRichMessage extends KmRichMessage {
         }
     }
 
-    public String getActionType(KmRichMessageModel.KmPayloadModel payloadModel) {
+    public String getActionType(KmRichMessageModel.KmPayloadModel payloadModel, Short templateId) {
+        if (payloadModel.getAction() == null) {
+            return templateId == QUICK_REPLY_TEMPLATE_ID ? QUICK_REPLY : SUBMIT_BUTTON;
+        }
         return payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) ? payloadModel.getAction().getType() : payloadModel.getType();
     }
 

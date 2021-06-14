@@ -154,5 +154,6 @@
     "submit": false,
     "link": false,
     "quickReply": false
-  }
+  },
+  "receiverNameTextColor": "#5C6677"
 }

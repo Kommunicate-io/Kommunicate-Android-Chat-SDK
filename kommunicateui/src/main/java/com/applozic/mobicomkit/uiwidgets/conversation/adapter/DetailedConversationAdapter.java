@@ -579,15 +579,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     });
                 }
-
-                String userId = contactDisplayName.getDisplayName();
-                char firstLetter = contactDisplayName.getDisplayName().charAt(0);
-                if (userId.length() > 0) {
-                    myHolder.nameTextView.setText(String.valueOf(userId));
-                }
-
-                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-                myHolder.nameTextView.setTextColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+                myHolder.nameTextView.setText(contactDisplayName.getDisplayName());
+                myHolder.nameTextView.setTextColor(Color.parseColor(alCustomizationSettings.getReceiverNameTextColor()));
             }
 
             if (message.isTypeOutbox()) {

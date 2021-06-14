@@ -1,21 +1,30 @@
 package io.kommunicate;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import io.kommunicate.async.KmAssigneeUpdateTask;
+import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.async.KmUpdateConversationTask;
+import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 
 public class KmSettings {
 
+    public static final String TAG = "KmSettings";
     public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
     public static final String KM_LANGUAGE_UPDATE_KEY = "kmUserLanguageCode";
+    public static final String KM_CONVERSATION_METADATA = "conversationMetadata";
 
     /**
      * will update the metadata object with the KM_CHAT_CONTEXT field
@@ -76,5 +85,112 @@ public class KmSettings {
 
     public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, KmUpdateConversationTask.KmConversationUpdateListener listener) {
         new KmUpdateConversationTask(context, groupInfoUpdate, listener).execute();
+    }
+
+    public static void updateConversationAssignee(Context context, Integer conversationId, String clientConversationId, final String assigneeId, final KmCallback callback) {
+        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+            @Override
+            public void onSuccess(final Channel channel, Context context) {
+                Utils.printLog(context, TAG, "Updating conversation assignee for : " + channel.getKey() + "\nAssignee : " + assigneeId);
+                new KmAssigneeUpdateTask(channel.getKey(), assigneeId, new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        Utils.printLog(null, TAG, "Successfully updated conversation assignee for : " + channel.getKey());
+                        if (callback != null) {
+                            callback.onSuccess(assigneeId);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Object error) {
+                        Utils.printLog(null, TAG, "Failed to update conversation assignee for : " + channel.getKey());
+                        if (callback != null) {
+                            callback.onFailure(new KmException("Unable to update"));
+                        }
+                    }
+                }).execute();
+            }
+
+            @Override
+            public void onFailure(Exception e, Context context) {
+                callback.onFailure(e);
+            }
+        };
+
+        new KmConversationInfoTask(context, conversationId, clientConversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public static void updateTeamId(Context context, Integer conversationId, String clientConversationId, String teamId, KmCallback callback) {
+        updateConversationInfo(context, conversationId, clientConversationId, teamId, null, callback);
+    }
+
+    public static void updateConversationInfo(Context context, Integer conversationId, String clientConversationId, Map<String, String> conversationMetadata, KmCallback callback) {
+        updateConversationInfo(context, conversationId, clientConversationId, null, conversationMetadata, callback);
+    }
+
+    public static void updateConversationInfo(Context context, Integer conversationId, String clientConversationId, final String teamId, final Map<String, String> conversationMetadata, final KmCallback callback) {
+        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+            @Override
+            public void onSuccess(final Channel channel, Context context) {
+                if (channel != null) {
+                    Map<String, String> metadataForUpdate = channel.getMetadata();
+
+                    if (!TextUtils.isEmpty(teamId)) {
+                        metadataForUpdate.put(KmConversationHelper.KM_TEAM_ID, teamId);
+                    }
+                    if (conversationMetadata != null) {
+                        metadataForUpdate = getChannelMetadataWithConversationInfo(metadataForUpdate, conversationMetadata);
+                    }
+
+                    GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(metadataForUpdate, channel.getKey());
+
+                    updateConversation(context, groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
+                        @Override
+                        public void onSuccess(Context context) {
+                            Utils.printLog(context, TAG, "Successfully updated conversation metadata for : " + channel.getKey());
+                            if (callback != null) {
+                                callback.onSuccess(channel.getClientGroupId());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Context context) {
+                            Utils.printLog(context, TAG, "Failed to update conversation metadata for : " + channel.getKey());
+                            if (callback != null) {
+                                callback.onFailure(new KmException("Unable to update"));
+                            }
+                        }
+                    });
+                }
+                if (callback != null) {
+                    callback.onSuccess(channel);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e, Context context) {
+                callback.onFailure(e);
+            }
+        };
+
+        new KmConversationInfoTask(context, conversationId, clientConversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private static Map<String, String> getChannelMetadataWithConversationInfo(Map<String, String> channelMetadata, Map<String, String> conversationInfo) {
+        if (channelMetadata == null) {
+            channelMetadata = new HashMap<>();
+        }
+
+        Map<String, String> conversationMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(channelMetadata.get(KM_CONVERSATION_METADATA), Map.class);
+
+        if (conversationMetadata == null) {
+            conversationMetadata = new HashMap<>();
+        }
+
+        conversationMetadata.putAll(conversationInfo);
+
+        channelMetadata.put(KM_CONVERSATION_METADATA, GsonUtils.getJsonFromObject(conversationMetadata, Map.class));
+
+        return channelMetadata;
     }
 }

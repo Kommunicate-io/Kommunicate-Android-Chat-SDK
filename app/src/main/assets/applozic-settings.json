@@ -150,5 +150,9 @@
     "sendMessageOnSpeechEnd": true,
     "languageCode": "en-US"
   },
-  "hidePostCTA": false
+  "hidePostCTA": {
+    "submit": false,
+    "link": false,
+    "quickReply": false
+  }
 }

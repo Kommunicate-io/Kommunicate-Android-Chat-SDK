@@ -19,18 +19,20 @@ public class KmConversationInfoTask extends AsyncTask<Object, Object, Channel> {
     private String clientConversationId;
     private Integer conversationId;
 
-    public KmConversationInfoTask(Context context, String clientConversationId, KmGetConversationInfoCallback conversationInfoCallback) {
+    public KmConversationInfoTask(Context context, Integer conversationId, String clientConversationId, KmGetConversationInfoCallback conversationInfoCallback) {
         this.context = new WeakReference<>(context);
         this.channelService = ChannelService.getInstance(context);
         this.clientConversationId = clientConversationId;
+        this.conversationId = conversationId;
         this.conversationInfoCallback = conversationInfoCallback;
     }
 
+    public KmConversationInfoTask(Context context, String clientConversationId, KmGetConversationInfoCallback conversationInfoCallback) {
+        this(context, null, clientConversationId, conversationInfoCallback);
+    }
+
     public KmConversationInfoTask(Context context, Integer conversationId, KmGetConversationInfoCallback conversationInfoCallback) {
-        this.context = new WeakReference<>(context);
-        this.channelService = ChannelService.getInstance(context);
-        this.conversationId = conversationId;
-        this.conversationInfoCallback = conversationInfoCallback;
+        this(context, conversationId, null, conversationInfoCallback);
     }
 
     @Override

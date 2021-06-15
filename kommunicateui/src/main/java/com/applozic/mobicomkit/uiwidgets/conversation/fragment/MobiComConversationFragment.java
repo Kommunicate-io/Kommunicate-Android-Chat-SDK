@@ -1457,6 +1457,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 return;
             }
         }
+
         handleAddMessage(message);
     }
 
@@ -1483,6 +1484,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if (added) {
                     //Todo: update unread count
                     linearLayoutManager.setStackFromEnd(true);
+                    recyclerDetailConversationAdapter.updateLastSentMessage(message);
                     recyclerDetailConversationAdapter.notifyDataSetChanged();
                     linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
                     emptyTextView.setVisibility(View.GONE);
@@ -3871,10 +3873,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             conversationService.read(contact, channel);
+            Message lastSentMessage = null;
 
             if (!messageList.isEmpty()) {
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     Message message = messageList.get(i);
+                    if (lastSentMessage == null && message.isTypeOutbox()) {
+                        lastSentMessage = message;
+                    }
                     if (!message.isRead() && !message.isTempDateType() && !message.isCustom()) {
                         if (message.getMessageId() != null) {
                             message.setRead(Boolean.TRUE);
@@ -3882,6 +3888,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
                     }
                 }
+            }
+
+            if (recyclerDetailConversationAdapter != null) {
+                recyclerDetailConversationAdapter.setLastSentMessage(lastSentMessage);
             }
 
             if (conversations != null && conversations.size() > 0) {

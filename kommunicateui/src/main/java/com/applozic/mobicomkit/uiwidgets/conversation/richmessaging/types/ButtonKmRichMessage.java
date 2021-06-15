@@ -15,6 +15,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.Arrays;
@@ -24,18 +25,23 @@ import io.kommunicate.utils.KmUtils;
 
 public class ButtonKmRichMessage extends KmRichMessage {
 
+    public static final int QUICK_REPLY_TEMPLATE_ID = 6;
+
     public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
         super(context, containerView, message, listener, alCustomizationSettings);
     }
 
     @Override
-    public void createRichMessage() {
-        super.createRichMessage();
+    public void createRichMessage(boolean isMessageProcessed) {
+        super.createRichMessage(isMessageProcessed);
         final List<KmRichMessageModel.KmPayloadModel> payloadList = Arrays.asList((KmRichMessageModel.KmPayloadModel[])
                 GsonUtils.getObjectFromJson(model.getPayload(), KmRichMessageModel.KmPayloadModel[].class));
 
         flowLayout.removeAllViews();
         for (final KmRichMessageModel.KmPayloadModel payloadModel : payloadList) {
+            if (isMessageProcessed && hideMessage(themeHelper, getActionType(payloadModel, model.getTemplateId()))) {
+                continue;
+            }
             View view = LayoutInflater.from(context).inflate(R.layout.km_rich_message_single_text_item, null);
             TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
@@ -59,7 +65,7 @@ public class ButtonKmRichMessage extends KmRichMessage {
                         if (payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) || !TextUtils.isEmpty(payloadModel.getType())) {
                             listener.onAction(context, actionType, message, payloadModel, payloadModel.getReplyMetadata());
                         } else {
-                            listener.onAction(context, model.getTemplateId() == 6 ? QUICK_REPLY : SUBMIT_BUTTON, message, model.getTemplateId() == 6 ? payloadModel : model, payloadModel.getReplyMetadata());
+                            listener.onAction(context, model.getTemplateId() == QUICK_REPLY_TEMPLATE_ID ? QUICK_REPLY : SUBMIT_BUTTON, message, model.getTemplateId() == 6 ? payloadModel : model, payloadModel.getReplyMetadata());
                         }
                     }
                 }
@@ -93,5 +99,18 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
             flowLayout.addView(view);
         }
+    }
+
+    public String getActionType(KmRichMessageModel.KmPayloadModel payloadModel, Short templateId) {
+        if (payloadModel.getAction() == null) {
+            return templateId == QUICK_REPLY_TEMPLATE_ID ? QUICK_REPLY : SUBMIT_BUTTON;
+        }
+        return payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) ? payloadModel.getAction().getType() : payloadModel.getType();
+    }
+
+    public static boolean hideMessage(KmThemeHelper themeHelper, String action) {
+        return (themeHelper.hideLinkButtonsPostCTA() && KmRichMessage.WEB_LINK.equals(action))
+                || (themeHelper.hideQuickRepliesPostCTA() && KmRichMessage.QUICK_REPLY.equals(action))
+                || (themeHelper.hideSubmitButtonsPostCTA() && KmRichMessage.SUBMIT_BUTTON.equals(action));
     }
 }

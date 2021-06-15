@@ -10,12 +10,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -40,6 +34,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
@@ -147,6 +146,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private float[] receivedMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
     private KmFontManager fontManager;
     private KmThemeHelper themeHelper;
+    private Message lastSentMessage;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -194,6 +194,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, Contact contact, Class messageIntentClass, EmojiconHandler emojiconHandler) {
         this(context, textViewResourceId, messageList, contact, null, messageIntentClass, emojiconHandler);
+    }
+
+    public void setLastSentMessage(Message message) {
+        this.lastSentMessage = message;
     }
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, final Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler) {
@@ -1019,17 +1023,16 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     myHolder.messageTextLayout.setVisibility(View.VISIBLE);
 
-                    if (message.getMetadata() != null && "300".equals(message.getMetadata().get("contentType"))) {
-                        myHolder.richMessageLayout.setVisibility(View.VISIBLE);
-
+                    if (message.isRichMessage()) {
                         if (!TextUtils.isEmpty(message.getMessage())) {
                             myHolder.messageTextLayout.setVisibility(View.VISIBLE);
                         } else {
                             myHolder.messageTextLayout.setVisibility(GONE);
                         }
 
+                        myHolder.richMessageLayout.setVisibility(View.VISIBLE);
                         try {
-                            KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
+                            KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage(isMessageProcessed(message));
                         } catch (Exception e) {
                             e.printStackTrace();
                             myHolder.richMessageLayout.setVisibility(View.GONE);
@@ -1063,6 +1066,19 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean isMessageProcessed(Message message) {
+        if (themeHelper.isHidePostCTA()) {
+            return lastSentMessage != null && lastSentMessage.getCreatedAtTime() > message.getCreatedAtTime();
+        }
+        return false;
+    }
+
+    public void updateLastSentMessage(Message message) {
+        if (themeHelper.isHidePostCTA() && message.isTypeOutbox()) {
+            lastSentMessage = message;
         }
     }
 
@@ -1383,7 +1399,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             protected FilterResults performFiltering(CharSequence constraint) {
 
                 final FilterResults oReturn = new FilterResults();
-                final List<Message> results = new ArrayList<Message>();
+                final List<Message> results = new ArrayList<>();
                 if (originalList == null)
                     originalList = messageList;
                 if (constraint != null) {
@@ -1418,7 +1434,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private int indexOfSearchQuery(String message) {
         if (!TextUtils.isEmpty(searchString)) {
             return message.toLowerCase(Locale.getDefault()).indexOf(
-                    searchString.toString().toLowerCase(Locale.getDefault()));
+                    searchString.toLowerCase(Locale.getDefault()));
         }
         return -1;
     }
@@ -1652,7 +1668,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         };
     }
 
-    class MyViewHolder2 extends RecyclerView.ViewHolder {
+    static class MyViewHolder2 extends RecyclerView.ViewHolder {
         TextView dateView;
         TextView dayTextView;
 
@@ -1663,7 +1679,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder3 extends RecyclerView.ViewHolder {
+    static class MyViewHolder3 extends RecyclerView.ViewHolder {
         TextView customContentTextView;
 
         public MyViewHolder3(View itemView) {
@@ -1672,7 +1688,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder4 extends RecyclerView.ViewHolder {
+    static class MyViewHolder4 extends RecyclerView.ViewHolder {
         TextView channelMessageTextView;
 
         public MyViewHolder4(View itemView) {
@@ -1681,7 +1697,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder5 extends RecyclerView.ViewHolder {
+    static class MyViewHolder5 extends RecyclerView.ViewHolder {
         TextView statusTextView;
         TextView timeTextView;
         TextView durationTextView;

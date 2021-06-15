@@ -77,6 +77,7 @@ public class Message extends JsonMarker {
     public static final String AL_DELETE_MESSAGE_FOR_ALL_KEY = "AL_DELETE_GROUP_MESSAGE_FOR_ALL";
     public static final String AUTO_SUGGESTION_TYPE_MESSAGE = "KM_AUTO_SUGGESTION";
     public static final String STATUS_CLOSED = "closed";
+    public static final String RICH_MESSAGE_CONTENT_TYPE = "300";
 
     public Message() {
 
@@ -715,6 +716,10 @@ public class Message extends JsonMarker {
             return (subGroupFlag || categoryFlag || ApplozicClient.getInstance(context).isSubGroupEnabled() || !TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getCategoryName()));
         }
         return ((ApplozicClient.getInstance(context).isActionMessagesHidden() && isActionMessage()) || hasHideKey());
+    }
+
+    public boolean isRichMessage() {
+        return metadata != null && RICH_MESSAGE_CONTENT_TYPE.equals(metadata.get("contentType"));
     }
 
     public enum Source {

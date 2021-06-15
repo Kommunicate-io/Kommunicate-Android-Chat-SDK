@@ -20,11 +20,11 @@ public class CardTypeKmRichMessage extends KmRichMessage {
     }
 
     @Override
-    public void createRichMessage() {
-        super.createRichMessage();
+    public void createRichMessage(boolean isMessageProcessed) {
+        super.createRichMessage(isMessageProcessed);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         genericCardRecycler.setLayoutManager(layoutManager);
-        KmCardRMAdapter adapter = (KmCardRMAdapter) KmRichMessageAdapterFactory.getInstance().getRMAdapter(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings));
+        KmCardRMAdapter adapter = (KmCardRMAdapter) KmRichMessageAdapterFactory.getInstance().getRMAdapter(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings), isMessageProcessed);
         genericCardRecycler.setAdapter(adapter);
     }
 }

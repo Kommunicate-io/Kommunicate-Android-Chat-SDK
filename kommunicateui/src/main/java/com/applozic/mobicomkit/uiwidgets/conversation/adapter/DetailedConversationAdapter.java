@@ -15,6 +15,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -997,10 +998,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
 
                     if (bgShape != null) {
-                        bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() :
-                                (isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
-                        bgShape.setStroke(3, message.isTypeOutbox() ? themeHelper.getSentMessageBorderColor() :
-                                Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
+                        Pair<Integer, Integer> receivedMessageColorPair = getReceivedMessageBgColors(contactDisplayName, message);
+                        bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() : receivedMessageColorPair.first);
+                        bgShape.setStroke(3, message.isTypeOutbox() ? themeHelper.getSentMessageBorderColor() : receivedMessageColorPair.second);
                         if (alCustomizationSettings.getSentMessageCornerRadii() != null && message.isTypeOutbox()) {
                             bgShape.setCornerRadii(sentMessageCornerRadii);
                         } else if (alCustomizationSettings.getReceivedMessageCornerRadii() != null) {
@@ -1063,6 +1063,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 myHolder.messageTextView.setText(highlightedName);
             }
         }
+    }
+
+    protected Pair<Integer, Integer> getReceivedMessageBgColors(Contact contact, Message message) {
+        return new Pair<>(isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()), Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
     }
 
     private boolean isMessageProcessed(Message message) {

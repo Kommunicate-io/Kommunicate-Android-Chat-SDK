@@ -1,9 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.views;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +9,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+
 import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.FeedbackInputFragment;
+
 import io.kommunicate.models.KmFeedback;
 
 /**
@@ -123,9 +126,9 @@ public class KmFeedbackView extends LinearLayout {
 
         }
 
-        if (feedback.getComments() != null) {
+        if (feedback.getComments() != null && feedback.getComments().length > 0) {
             scrollViewFeedbackCommentWrap.setVisibility(VISIBLE);
-            textViewFeedbackComment.setText("\"" + feedback.getComments()[0] + "\"");
+            textViewFeedbackComment.setText("\"" + feedback.getComments()[feedback.getComments().length - 1] + "\"");
         }
     }
 

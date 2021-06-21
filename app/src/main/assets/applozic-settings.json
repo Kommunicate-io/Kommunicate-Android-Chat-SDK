@@ -140,5 +140,14 @@
       "Platform?": "Is this related to Android, iOS, or web?",
       "Doc?": "Did you follow our doc?"
     }
+  },
+  "textToSpeech": {
+    "enabled": false,
+    "languageCode": "en-US"
+  },
+  "speechToText": {
+    "enabled": false,
+    "sendMessageOnSpeechEnd": true,
+    "languageCode": "en-US"
   }
 }

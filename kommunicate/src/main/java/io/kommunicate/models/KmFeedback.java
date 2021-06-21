@@ -1,5 +1,10 @@
 package io.kommunicate.models;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * model class for the feedback response
  *
@@ -8,7 +13,8 @@ package io.kommunicate.models;
  */
 public class KmFeedback {
 
-    public KmFeedback() { }
+    public KmFeedback() {
+    }
 
     private int groupId;
     private int id;
@@ -61,6 +67,19 @@ public class KmFeedback {
 
     public String getUpdatedAt() {
         return updatedAt;
+    }
+
+    public boolean isLatestFeedbackSubmitted(long messageTimeStamp) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+            calendar.setTime(dateFormat.parse(getUpdatedAt()));
+            long messageTimeOffset = new Date(messageTimeStamp - Calendar.getInstance().getTimeZone().getOffset(messageTimeStamp)).getTime();
+            return calendar.getTimeInMillis() > messageTimeOffset;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void setUpdatedAt(String updatedAt) {

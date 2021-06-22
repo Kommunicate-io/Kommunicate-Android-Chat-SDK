@@ -23,6 +23,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String channelCustomMessageBgColor = "#cccccc";
     private String toolbarTitleColor = "#ffffff";
     private String toolbarSubtitleColor = "#ffffff";
+    private String receiverNameTextColor = "#5C6677";
 
     private String sentContactMessageTextColor = "#5fba7d";
     private String receivedContactMessageTextColor = "#646262";
@@ -666,6 +667,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public KmSpeechSetting getSpeechToText() {
         return speechToText == null ? new KmSpeechSetting() : speechToText;
+    }
+
+    public String getReceiverNameTextColor() {
+        return receiverNameTextColor;
     }
 
     public Map<String, Boolean> isHidePostCTA() {

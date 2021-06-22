@@ -379,6 +379,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
+    protected DetailedConversationAdapter getConversationAdapter(Activity activity,
+                                                                 int rowViewId, List<Message> messageList, Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiIconHandler) {
+        return new DetailedConversationAdapter(activity, rowViewId, messageList, contact, channel, messageIntentClass, emojiIconHandler);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1848,15 +1853,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (selfDestructMessageSpinner != null) {
             selfDestructMessageSpinner.setSelection(0);
         }
-
-        if (contact != null) {
-            recyclerDetailConversationAdapter = new DetailedConversationAdapter(getActivity(),
-                    R.layout.mobicom_message_row_view, messageList, contact, messageIntentClass, emojiIconHandler);
-        } else if (channel != null) {
-            recyclerDetailConversationAdapter = new DetailedConversationAdapter(getActivity(),
-                    R.layout.mobicom_message_row_view, messageList, channel, messageIntentClass, emojiIconHandler);
-        }
-
+        recyclerDetailConversationAdapter = getConversationAdapter(getActivity(),
+                R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler);
         recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
         recyclerDetailConversationAdapter.setContextMenuClickListener(this);
         recyclerDetailConversationAdapter.setRichMessageCallbackListener(richMessageActionProcessor.getRichMessageListener());

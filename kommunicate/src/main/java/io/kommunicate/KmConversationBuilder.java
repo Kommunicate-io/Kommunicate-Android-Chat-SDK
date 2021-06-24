@@ -32,7 +32,7 @@ public class KmConversationBuilder extends JsonMarker {
     private boolean useOriginalTitle = false;
     private String teamId;
     private Map<String, String> messageMetadata;
-    private Map<String, String> conversationMetadata;
+    private Map<String, String> conversationInfo;
 
     public KmConversationBuilder(Context context) {
         this.context = context;
@@ -193,12 +193,12 @@ public class KmConversationBuilder extends JsonMarker {
         return this;
     }
 
-    public Map<String, String> getConversationMetadata() {
-        return conversationMetadata;
+    public Map<String, String> getConversationInfo() {
+        return conversationInfo;
     }
 
-    public KmConversationBuilder setConversationMetadata(Map<String, String> conversationMetadata) {
-        this.conversationMetadata = conversationMetadata;
+    public KmConversationBuilder setConversationInfo(Map<String, String> conversationInfo) {
+        this.conversationInfo = conversationInfo;
         return this;
     }
 

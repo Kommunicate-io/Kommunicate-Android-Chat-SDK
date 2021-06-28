@@ -82,7 +82,7 @@ public abstract class KmRichMessage {
     }
 
     //bind views and set the visibilities according to the type of message
-    public void createRichMessage() {
+    public void createRichMessage(boolean isMessageProcessed) {
         if (model.getTemplateId() <= 0) {
             containerView.setVisibility(View.GONE);
             return;

@@ -11,7 +11,7 @@ rootProject.allprojects {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     buildToolsVersion '28.0.3'
 
     lintOptions {
@@ -19,9 +19,9 @@ android {
     }
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
-        versionName "2.1.7"
+        versionName "2.1.8"
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
     }
@@ -36,7 +36,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicate')
-    //api 'io.kommunicate.sdk:kommunicate:2.1.7'
+    //api 'io.kommunicate.sdk:kommunicate:2.1.8'
     api 'com.google.firebase:firebase-messaging:20.1.0'
     api 'com.google.android.gms:play-services-maps:17.0.0'
     api 'com.google.android.gms:play-services-location:17.0.0'

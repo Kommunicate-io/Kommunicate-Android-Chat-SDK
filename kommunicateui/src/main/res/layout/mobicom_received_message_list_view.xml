@@ -35,13 +35,24 @@
             android:layout_toEndOf="@+id/alphabeticImage"
             android:layout_toRightOf="@+id/alphabeticImage"
             android:src="@drawable/km_ic_contact_picture_180_holo_light"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/profileImageLayout"
+        android:layout_toRightOf="@+id/profileImageLayout"
+        android:textSize="14sp"
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/messageTextLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/name_textView"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="43dp"
         android:layout_marginRight="43dp"
         android:layout_toEndOf="@+id/profileImageLayout"
@@ -84,13 +95,6 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:background="@drawable/online_circle"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/name_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
                 android:visibility="gone" />
         </LinearLayout>
 

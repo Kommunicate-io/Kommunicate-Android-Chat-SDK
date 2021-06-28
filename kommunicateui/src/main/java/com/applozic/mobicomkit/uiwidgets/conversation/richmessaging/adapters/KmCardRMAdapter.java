@@ -18,6 +18,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ButtonKmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
@@ -31,10 +32,12 @@ public class KmCardRMAdapter extends KmRichMessageAdapter {
 
     private List<KmRichMessageModel.KmPayloadModel> payloadList;
     private KmThemeHelper themeHelper;
+    private boolean isMessageProcessed;
 
-    KmCardRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper) {
+    KmCardRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed) {
         super(context, model, listener, message, themeHelper);
         this.themeHelper = themeHelper;
+        this.isMessageProcessed = isMessageProcessed;
         this.payloadList = Arrays.asList((KmRichMessageModel.KmPayloadModel[])
                 GsonUtils.getObjectFromJson(model.getPayload(), KmRichMessageModel.KmPayloadModel[].class));
     }
@@ -165,6 +168,9 @@ public class KmCardRMAdapter extends KmRichMessageAdapter {
                 try {
                     List<KmRichMessageModel.KmButtonModel> actionsList = payloadModel.getButtons();
                     for (int i = 0; i < actionsList.size(); i++) {
+                        if (isMessageProcessed && ButtonKmRichMessage.hideMessage(themeHelper, actionsList.get(i).getType())) {
+                            continue;
+                        }
                         setupBookActions(viewHolder, i, actionsList);
                     }
                 } catch (Exception e) {

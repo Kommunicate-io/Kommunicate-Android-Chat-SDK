@@ -379,6 +379,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
+    protected DetailedConversationAdapter getConversationAdapter(Activity activity,
+                                                                 int rowViewId, List<Message> messageList, Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiIconHandler) {
+        return new DetailedConversationAdapter(activity, rowViewId, messageList, contact, channel, messageIntentClass, emojiIconHandler);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -1457,6 +1462,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 return;
             }
         }
+
         handleAddMessage(message);
     }
 
@@ -1483,6 +1489,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if (added) {
                     //Todo: update unread count
                     linearLayoutManager.setStackFromEnd(true);
+                    recyclerDetailConversationAdapter.updateLastSentMessage(message);
                     recyclerDetailConversationAdapter.notifyDataSetChanged();
                     linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
                     emptyTextView.setVisibility(View.GONE);
@@ -1846,15 +1853,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (selfDestructMessageSpinner != null) {
             selfDestructMessageSpinner.setSelection(0);
         }
-
-        if (contact != null) {
-            recyclerDetailConversationAdapter = new DetailedConversationAdapter(getActivity(),
-                    R.layout.mobicom_message_row_view, messageList, contact, messageIntentClass, emojiIconHandler);
-        } else if (channel != null) {
-            recyclerDetailConversationAdapter = new DetailedConversationAdapter(getActivity(),
-                    R.layout.mobicom_message_row_view, messageList, channel, messageIntentClass, emojiIconHandler);
-        }
-
+        recyclerDetailConversationAdapter = getConversationAdapter(getActivity(),
+                R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler);
         recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
         recyclerDetailConversationAdapter.setContextMenuClickListener(this);
         recyclerDetailConversationAdapter.setRichMessageCallbackListener(richMessageActionProcessor.getRichMessageListener());
@@ -3871,10 +3871,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             conversationService.read(contact, channel);
+            Message lastSentMessage = null;
 
             if (!messageList.isEmpty()) {
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     Message message = messageList.get(i);
+                    if (lastSentMessage == null && message.isTypeOutbox()) {
+                        lastSentMessage = message;
+                    }
                     if (!message.isRead() && !message.isTempDateType() && !message.isCustom()) {
                         if (message.getMessageId() != null) {
                             message.setRead(Boolean.TRUE);
@@ -3882,6 +3886,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
                     }
                 }
+            }
+
+            if (recyclerDetailConversationAdapter != null) {
+                recyclerDetailConversationAdapter.setLastSentMessage(lastSentMessage);
             }
 
             if (conversations != null && conversations.size() > 0) {

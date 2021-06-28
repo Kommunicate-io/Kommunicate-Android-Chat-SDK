@@ -149,5 +149,11 @@
     "enabled": false,
     "sendMessageOnSpeechEnd": true,
     "languageCode": "en-US"
-  }
+  },
+  "hidePostCTA": {
+    "submit": false,
+    "link": false,
+    "quickReply": false
+  },
+  "receiverNameTextColor": "#5C6677"
 }

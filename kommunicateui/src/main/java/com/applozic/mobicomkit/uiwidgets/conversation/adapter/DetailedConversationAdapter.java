@@ -10,17 +10,12 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.content.FileProvider;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -40,6 +35,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
@@ -147,6 +147,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private float[] receivedMessageCornerRadii = {0, 0, 0, 0, 0, 0, 0, 0};
     private KmFontManager fontManager;
     private KmThemeHelper themeHelper;
+    private Message lastSentMessage;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -194,6 +195,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, Contact contact, Class messageIntentClass, EmojiconHandler emojiconHandler) {
         this(context, textViewResourceId, messageList, contact, null, messageIntentClass, emojiconHandler);
+    }
+
+    public void setLastSentMessage(Message message) {
+        this.lastSentMessage = message;
     }
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, final Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler) {
@@ -347,722 +352,733 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                 }
             } else {
-                final MyViewHolder myHolder = (MyViewHolder) holder;
-                if (message != null) {
-
-                    Contact receiverContact = null;
-                    Contact contactDisplayName = null;
-
-                    int index = messageList.indexOf(message);
-                    boolean hideRecursiveImages = false;
-
-                    RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
-
-                    if (!message.isTypeOutbox()) {
-                        if (index != 0 && !messageList.get(index - 1).isTypeOutbox()
-                                && messageList.get(index - 1).getContentType() != 10
-                                && messageList.get(index - 1).getContentType() != 103
-                                && messageList.get(index - 1).getTo() != null
-                                && message.getTo() != null
-                                && messageList.get(index - 1).getTo().equals(message.getTo())) {
-
-                            hideRecursiveImages = true;
-                            params.setMargins(0, DimensionsUtils.convertDpToPx(3), 0, 0);
-                        } else {
-                            params.setMargins(0, DimensionsUtils.convertDpToPx(8), 0, 0);
-                        }
-                    } else {
-                        if (index != 0 && !messageList.get(index - 1).isTypeOutbox()) {
-                            params.setMargins(0, DimensionsUtils.convertDpToPx(8), 0, 0);
-                        } else {
-                            params.setMargins(0, DimensionsUtils.convertDpToPx(3), 0, 0);
-                        }
-                    }
-
-                    if (message.getGroupId() == null) {
-                        List<String> items = Arrays.asList(message.getContactIds().split("\\s*,\\s*"));
-                        List<String> userIds = null;
-                        if (!TextUtils.isEmpty(message.getContactIds())) {
-                            userIds = Arrays.asList(message.getContactIds().split("\\s*,\\s*"));
-                        }
-                        if (individual) {
-                            receiverContact = contact;
-                            contact.setContactNumber(items.get(0));
-                            if (userIds != null) {
-                                contact.setUserId(userIds.get(0));
-                            }
-                        } else {
-                            receiverContact = contactService.getContactReceiver(items, userIds);
-                        }
-                    } else {
-                        if (!TextUtils.isEmpty(message.getContactIds())) {
-                            contactDisplayName = contactService.getContactById(message.getContactIds());
-                        }
-                    }
-                    Configuration config = context.getResources().getConfiguration();
-                    if (message.getMetadata() != null && !message.getMetadata().isEmpty() && message.getMetadata().containsKey(Message.MetaDataType.AL_REPLY.getValue())) {
-                        final Message msg = messageDatabaseService.getMessage(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()));
-                        if (msg != null) {
-                            String displayName;
-
-                            myHolder.replyRelativeLayout.setBackgroundColor(message.isTypeOutbox() ?
-                                    Color.parseColor(alCustomizationSettings.getReplyMessageLayoutSentMessageBackground()) : Color.parseColor(alCustomizationSettings.getReplyMessageLayoutReceivedMessageBackground()));
-
-                            myHolder.replyNameTextView.setTextColor(message.isTypeOutbox() ?
-                                    Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
-
-                            myHolder.replyMessageTextView.setTextColor(message.isTypeOutbox() ?
-                                    Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
-
-                            if (msg.getGroupId() != null) {
-                                if (MobiComUserPreference.getInstance(context).getUserId().equals(msg.getContactIds()) || TextUtils.isEmpty(msg.getContactIds())) {
-                                    displayName = context.getString(R.string.you_string);
-                                } else {
-                                    displayName = contactService.getContactById(msg.getContactIds()).getDisplayName();
-                                }
-                            } else {
-                                if (msg.isTypeOutbox()) {
-                                    displayName = context.getString(R.string.you_string);
-                                } else {
-                                    displayName = contactService.getContactById(msg.getContactIds()).getDisplayName();
-                                }
-                            }
-
-                            myHolder.replyNameTextView.setText(displayName);
-                            if (msg.hasAttachment()) {
-                                FileMeta fileMeta = msg.getFileMetas();
-                                myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
-                                if (fileMeta.getContentType().contains("image")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_image_camera_alt);
-                                    if (TextUtils.isEmpty(msg.getMessage())) {
-                                        myHolder.replyMessageTextView.setText(context.getString(R.string.photo_string));
-                                    } else {
-                                        myHolder.replyMessageTextView.setText(msg.getMessage());
-                                    }
-                                    myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
-                                    myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
-                                    imageThumbnailLoader.loadImage(msg, myHolder.imageViewPhoto);
-                                } else if (fileMeta.getContentType().contains("video")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_action_video);
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                                        if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-                                            myHolder.imageViewForAttachmentType.setScaleX(-1);
-                                        }
-                                    }
-                                    if (TextUtils.isEmpty(msg.getMessage())) {
-                                        myHolder.replyMessageTextView.setText(context.getString(R.string.video_string));
-                                    } else {
-                                        myHolder.replyMessageTextView.setText(msg.getMessage());
-                                    }
-                                    myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
-                                    myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
-                                    if (msg.getFilePaths() != null && msg.getFilePaths().size() > 0) {
-                                        if (imageCache.getBitmapFromMemCache(msg.getKeyString()) != null) {
-                                            myHolder.imageViewPhoto.setImageBitmap(imageCache.getBitmapFromMemCache(msg.getKeyString()));
-                                        } else {
-                                            imageCache.addBitmapToCache(message.getKeyString(), fileClientService.createAndSaveVideoThumbnail(msg.getFilePaths().get(0)));
-                                            myHolder.imageViewPhoto.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(msg.getFilePaths().get(0)));
-                                        }
-                                    }
-                                } else if (fileMeta.getContentType().contains("audio")) {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_music_note);
-                                    if (TextUtils.isEmpty(msg.getMessage())) {
-                                        myHolder.replyMessageTextView.setText(context.getString(R.string.audio_string));
-                                    } else {
-                                        myHolder.replyMessageTextView.setText(msg.getMessage());
-                                    }
-                                    myHolder.imageViewPhoto.setVisibility(View.GONE);
-                                    myHolder.imageViewRLayout.setVisibility(View.GONE);
-                                } else if (msg.isContactMessage()) {
-                                    MobiComVCFParser parser = new MobiComVCFParser();
-                                    try {
-                                        VCFContactData data = parser.parseCVFContactData(msg.getFilePaths().get(0));
-                                        if (data != null) {
-                                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_person_white);
-                                            myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
-                                            myHolder.replyMessageTextView.append(" " + data.getName());
-                                        }
-                                    } catch (Exception e) {
-                                        myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_person_white);
-                                        myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
-                                    }
-                                    myHolder.imageViewPhoto.setVisibility(View.GONE);
-                                    myHolder.imageViewRLayout.setVisibility(View.GONE);
-                                } else {
-                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_action_attachment);
-                                    if (TextUtils.isEmpty(msg.getMessage())) {
-                                        myHolder.replyMessageTextView.setText(context.getString(R.string.attachment_string));
-                                    } else {
-                                        myHolder.replyMessageTextView.setText(msg.getMessage());
-                                    }
-                                    myHolder.imageViewPhoto.setVisibility(View.GONE);
-                                    myHolder.imageViewRLayout.setVisibility(View.GONE);
-                                }
-                                myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
-                            } else if (msg.getContentType() == Message.ContentType.LOCATION.getValue()) {
-                                myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
-                                myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
-                                myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
-                                myHolder.replyMessageTextView.setText(context.getString(R.string.al_location_string));
-                                myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
-                                myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_location_on_white_24dp);
-                                loadImage.setLoadingImage(R.drawable.km_map_offline_thumbnail);
-                                loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage(), geoApiKey), myHolder.imageViewPhoto);
-                            } else {
-                                myHolder.imageViewForAttachmentType.setVisibility(View.GONE);
-                                myHolder.imageViewRLayout.setVisibility(View.GONE);
-                                myHolder.imageViewPhoto.setVisibility(View.GONE);
-                                myHolder.replyMessageTextView.setText(msg.getMessage());
-                            }
-                            myHolder.replyRelativeLayout.setVisibility(View.VISIBLE);
-                            myHolder.replyRelativeLayout.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    ((OnClickReplyInterface) context).onClickOnMessageReply(msg);
-                                }
-                            });
-                        }
-                    } else {
-                        myHolder.replyRelativeLayout.setVisibility(GONE);
-                    }
-
-                    if (TextUtils.isEmpty(message.getMessage())) {
-                        myHolder.messageTextView.setVisibility(View.GONE);
-                    } else {
-                        myHolder.messageTextView.setVisibility((message.getContentType() == Message.ContentType.LOCATION.getValue() || isHtmlTypeMessage(message)) ? View.GONE : View.VISIBLE);
-                    }
-
-                    myHolder.mapImageView.setVisibility(GONE);
-
-                    if (channel != null) {
-                        if (!message.hasAttachment() && TextUtils.isEmpty(message.getMessage()) && message.getMetadata() == null) {
-                            myHolder.messageTextView.setText("");
-                        }
-                    }
-
-                    if (myHolder.chatLocation != null) {
-                        myHolder.chatLocation.setVisibility(View.GONE);
-                    }
-
-                    if (myHolder.attachedFile != null) {
-                        //myHolder.attachedFile.setText("");
-                        myHolder.attachedFile.setVisibility(View.GONE);
-                    }
-
-                    if (myHolder.attachmentIcon != null) {
-                        myHolder.attachmentIcon.setVisibility(View.GONE);
-                    }
-
-                    if (channel != null && myHolder.nameTextView != null && contactDisplayName != null) {
-                        myHolder.nameTextView.setVisibility(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || hideRecursiveImages ? View.GONE : View.VISIBLE);
-                        if (alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
-                            myHolder.nameTextView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    Intent intent = new Intent(context, ConversationActivity.class);
-                                    intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
-                                    if (message.getConversationId() != null) {
-                                        intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
-                                    }
-                                    context.startActivity(intent);
-                                }
-                            });
-                        }
-
-                        String userId = contactDisplayName.getDisplayName();
-                        char firstLetter = contactDisplayName.getDisplayName().charAt(0);
-                        if (userId.length() > 0) {
-                            myHolder.nameTextView.setText(String.valueOf(userId));
-                        }
-
-                        Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-                        myHolder.nameTextView.setTextColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
-                    }
-
-                    if (message.isTypeOutbox()) {
-                        myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getSentMessageCreatedAtTimeColor()));
-                    } else {
-                        myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
-                    }
-
-                    if (isHtmlTypeMessage(message)) {
-                        if (myHolder.viaEmailView != null) {
-                            myHolder.viaEmailView.setVisibility(isEmailTypeMessage(message) ? View.VISIBLE : GONE);
-
-                            if (message.isTypeOutbox()) {
-                                myHolder.viaEmailView.setTextColor(context.getResources().getColor(R.color.white));
-                            } else {
-                                myHolder.viaEmailView.setTextColor(context.getResources().getColor(R.color.km_via_email_text_color));
-                            }
-                        }
-                        if (myHolder.emailLayout != null) {
-                            myHolder.emailLayout.setVisibility(View.VISIBLE);
-                        }
-                        loadHtml(myHolder.emailLayout, message);
-                    } else {
-                        if (myHolder.viaEmailView != null) {
-                            myHolder.viaEmailView.setVisibility(GONE);
-                        }
-                        if (myHolder.emailLayout != null) {
-                            myHolder.emailLayout.setVisibility(View.GONE);
-                        }
-                    }
-
-                    myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
-                    myHolder.attachmentView.setVisibility(View.GONE);
-
-                    if (message.isTypeOutbox() && !message.isCanceled()) {
-                        myHolder.mediaUploadProgressBar.setVisibility(View.GONE);
-                        myHolder.mediaUploadProgressBar.setVisibility(message.isAttachmentUploadInProgress() ? View.VISIBLE : View.GONE);
-                    } else {
-                        myHolder.mediaUploadProgressBar.setVisibility(View.GONE);
-                    }
-
-                    if (myHolder.attachedFile != null) {
-                        myHolder.attachedFile.setVisibility(message.hasAttachment() ? View.VISIBLE : View.GONE);
-                    }
-
-                    if (individual && message.getTimeToLive() != null) {
-                        myHolder.selfDestruct
-                                .setText("Self destruct in " + message.getTimeToLive() + " mins");
-                        myHolder.selfDestruct.setVisibility(View.VISIBLE);
-                    } else {
-                        myHolder.selfDestruct.setText("");
-                        myHolder.selfDestruct.setVisibility(View.GONE);
-                    }
-
-                    if (myHolder.sentOrReceived != null) {
-                        if ((!message.isCall()) || message.isDummyEmptyMessage()) {
-                            myHolder.sentOrReceived.setVisibility(View.GONE);
-                        } else if (message.isCall()) {
-                            myHolder.sentOrReceived.setImageResource(R.drawable.km_ic_action_call_holo_light);
-                        } else if (getItemViewType(position) == 0) {
-                            myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
-                        } else {
-                            myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_reply);
-                        }
-
-                        if (message.isCall()) {
-                            myHolder.messageTextView.setTextColor(context.getResources().getColor(message.isIncomingCall() ? R.color.incoming_call : R.color.outgoing_call));
-                        }
-                    }
-
-                    if (myHolder.nameTextLayout != null && contact != null && hideRecursiveImages) {
-                        myHolder.nameTextLayout.setVisibility(View.GONE);
-                    }
-
-                    if (message.isCall() || message.isDummyEmptyMessage()) {
-                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-                    } else if (!message.isSentToServer() && message.isTypeOutbox()) {
-                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(pendingIcon, null, null, null);
-                    } else if (message.getKeyString() != null && message.isTypeOutbox() && message.isSentToServer()) {
-                        Drawable statusIcon;
-                        if (message.isDeliveredAndRead()) {
-                            statusIcon = readIcon;
-                        } else {
-                            statusIcon = (message.getDelivered() ? deliveredIcon : sentIcon);
-                        }
-                        myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
-                    }
-
-                    if (message.isCall()) {
-                        myHolder.deliveryStatus.setText("");
-                    }
-
-                    if (contactDisplayName != null && myHolder.contactImage != null && alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
-                        myHolder.contactImage.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(context, ConversationActivity.class);
-                                intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
-                                if (message.getConversationId() != null) {
-                                    intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
-                                }
-                                context.startActivity(intent);
-                            }
-                        });
-
-                        myHolder.alphabeticTextView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(context, ConversationActivity.class);
-                                intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
-                                if (message.getConversationId() != null) {
-                                    intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
-                                }
-                                context.startActivity(intent);
-                            }
-                        });
-                    }
-
-                    if (!message.isTypeOutbox()) {
-                        loadProfileImage(receiverContact != null ? receiverContact : contactDisplayName, myHolder.contactImage, myHolder.alphabeticTextView, hideRecursiveImages);
-                    }
-                    KmDocumentView audioView = new KmDocumentView(this.context, storagePermissionListener);
-                    audioView.inflateViewWithMessage(myHolder.view, message);
-                    audioView.hideView(true);
-
-                    if (message.hasAttachment() && myHolder.attachedFile != null & !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
-                        myHolder.mainAttachmentLayout.setLayoutParams(getImageLayoutParam(false));
-                        myHolder.mainAttachmentLayout.setVisibility(View.VISIBLE);
-                        if (message.getFileMetas() != null && (message.getFileMetas().getContentType().contains("image") || message.getFileMetas().getContentType().contains("video"))) {
-                            myHolder.attachedFile.setVisibility(View.GONE);
-                        }
-                        if (message.isAttachmentDownloaded()) {
-                            myHolder.mapImageView.setVisibility(View.GONE);
-                            //myHolder.preview.setVisibility(View.GONE);
-                            String[] filePaths = new String[message.getFilePaths().size()];
-                            int i = 0;
-                            for (final String filePath : message.getFilePaths()) {
-                                filePaths[i++] = filePath;
-                                final String mimeType = FileUtils.getMimeType(filePath);
-                                if (mimeType != null && mimeType.startsWith("image")) {
-                                    myHolder.attachmentView.setVisibility(View.GONE);
-                                    myHolder.videoIcon.setVisibility(View.GONE);
-                                    myHolder.preview.setVisibility(View.VISIBLE);
-                                    myHolder.preview.setImageBitmap(null);
-                                    myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
-                                    myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
-                                    Glide.with(context).load(new File(filePath)).into(myHolder.preview);
-                                    myHolder.attachmentView.setMessage(message);
-                                    myHolder.mediaDownloadProgressBar.setVisibility(View.GONE);
-                                    myHolder.attachedFile.setVisibility(View.GONE);
-                                    myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
-                                    myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
-                                } else if (mimeType != null && mimeType.startsWith("video")) {
-                                    myHolder.preview.setVisibility(View.VISIBLE);
-                                    myHolder.videoIcon.setVisibility(View.VISIBLE);
-                                    myHolder.mediaDownloadProgressBar.setVisibility(View.GONE);
-                                    myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
-                                    myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
-                                    myHolder.attachedFile.setVisibility(View.GONE);
-                                    if (imageCache.getBitmapFromMemCache(message.getKeyString()) != null) {
-                                        myHolder.preview.setImageBitmap(imageCache.getBitmapFromMemCache(message.getKeyString()));
-                                    } else {
-                                        imageCache.addBitmapToCache(message.getKeyString(), fileClientService.createAndSaveVideoThumbnail(filePath));
-                                        myHolder.preview.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(filePath));
-                                    }
-                                } else {
-                                    myHolder.preview.setVisibility(View.GONE);
-                                    myHolder.mediaDownloadProgressBar.setVisibility(View.GONE);
-                                    myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
-                                    myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
-                                    showAttachmentIconAndText(myHolder.attachedFile, message, mimeType);
-                                }
-                            }
-                        } else if (message.isAttachmentUploadInProgress()) {
-                            //showPreview(smListItem, preview, attachmentDownloadLayout);
-                            myHolder.preview.setImageDrawable(null);
-                            myHolder.preview.setImageBitmap(null);
-                            myHolder.attachmentDownloadProgressLayout.setVisibility(View.VISIBLE);
-                            myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
-                            myHolder.videoIcon.setVisibility(GONE);
-                            myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
-                            myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
-                            myHolder.attachmentView.setMessage(message);
-                            myHolder.attachmentView.setVisibility(View.VISIBLE);
-                            myHolder.attachedFile.setVisibility(GONE);
-                            myHolder.attachmentIcon.setVisibility(GONE);
-                        } else if (AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
-                            //ondraw is called and thread is assigned to the attachment view...
-                            myHolder.preview.setImageDrawable(null);
-                            myHolder.preview.setImageBitmap(null);
-                            myHolder.attachmentView.setMessage(message);
-                            myHolder.attachmentView.setVisibility(View.VISIBLE);
-                            myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
-                            myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
-                            myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
-                            myHolder.preview.setVisibility(View.VISIBLE);
-                            showPreview(message, myHolder.preview, myHolder.attachmentDownloadLayout);
-                            FileMeta fileMeta = message.getFileMetas();
-                            final String mimeType = FileUtils.getMimeType(fileMeta.getName());
-                            if (!fileMeta.getContentType().contains("image") && !fileMeta.getContentType().contains("video")) {
-                                showAttachmentIconAndText(myHolder.attachedFile, message, mimeType);
-                            }
-                            myHolder.downloadSizeTextView.setText(fileMeta.getSizeInReadableFormat());
-                            myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
-                            myHolder.attachmentDownloadProgressLayout.setVisibility(View.VISIBLE);
-                        } else {
-                            String fileKeys = message.getFileMetaKeyStrings();
-                            int i = 0;
-                            myHolder.preview.setVisibility(View.GONE);
-                            //showPreview(null, myHolder.preview, myHolder.attachmentDownloadLayout);
-                            showPreview(message, myHolder.preview, myHolder.attachmentDownloadLayout);
-                            myHolder.preview.setVisibility(View.VISIBLE);
-                            myHolder.videoIcon.setVisibility(View.GONE);
-                            //TODO: while doing multiple image support in single sms ...we might improve this
-                            // for (String fileKey : message.getFileMetaKeyStrings()) {
-                            if (message.getFileMetas() != null) {
-                                FileMeta fileMeta = message.getFileMetas();
-                                myHolder.attachmentDownloadLayout.setVisibility(View.VISIBLE);
-                                myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
-                                myHolder.downloadSizeTextView.setText(fileMeta.getSizeInReadableFormat());
-                                final String mimeType = FileUtils.getMimeType(fileMeta.getName());
-                                if (!fileMeta.getContentType().contains("image") && !fileMeta.getContentType().contains("video")) {
-                                    showAttachmentIconAndText(myHolder.attachedFile, message, mimeType);
-                                }
-                            }
-                        }
-                        if (isNormalAttachment(message)) {
-                            myHolder.videoIcon.setVisibility(View.GONE);
-                            myHolder.attachedFile.setVisibility(View.GONE);
-                            myHolder.mainAttachmentLayout.setVisibility(View.GONE);
-                            myHolder.mainContactShareLayout.setVisibility(View.GONE);
-                            myHolder.chatLocation.setVisibility(View.GONE);
-                            myHolder.preview.setVisibility(View.GONE);
-                            audioView.hideView(false);
-                            myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
-                        }
-                    }
-                    if (message.isCanceled()) {
-                        myHolder.attachmentRetry.setVisibility(View.VISIBLE);
-                    } else {
-                        myHolder.attachmentRetry.setVisibility(View.GONE);
-                    }
-                    myHolder.attachmentRetry.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (Utils.isInternetAvailable(context)) {
-                                File file = null;
-                                if (message != null && message.getFilePaths() != null) {
-                                    file = new File(message.getFilePaths().get(0));
-                                }
-                                if (file != null && !file.exists()) {
-                                    KmToast.error(context, context.getString(R.string.file_does_not_exist), Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                KmToast.success(context, context.getString(R.string.km_resending_attachment), Toast.LENGTH_LONG).show();
-                                myHolder.mediaUploadProgressBar.setVisibility(View.VISIBLE);
-                                myHolder.attachmentRetry.setVisibility(View.GONE);
-                                //updating Cancel Flag to smListItem....
-                                message.setCanceled(false);
-                                messageDatabaseService.updateCanceledFlag(message.getMessageId(), 0);
-                                conversationService.sendMessage(message, messageIntentClass);
-                            } else {
-                                KmToast.error(context, context.getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
-                    myHolder.attachmentDownloadProgressLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            myHolder.attachmentView.setVisibility(View.GONE);
-                            myHolder.attachmentView.cancelDownload();
-                            myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
-                            message.setAttDownloadInProgress(false);
-                        }
-                    });
-                    //final ProgressBar mediaDownloadProgressBar = mediaDownloadProgressBar;
-                    myHolder.preview.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //TODO: 1. get the image Size and decide if we can download directly
-                            //2. if already downloaded to ds card show it directly ....
-                            //3. if deleted from sd crad only ...ask user to download it again or skip ...
-                            if (message.getContentType() == Message.ContentType.TEXT_URL.getValue()) {
-                                return;
-                            }
-                            if (message.isAttachmentDownloaded()) {
-                                if (storagePermissionListener.isPermissionGranted()) {
-                                    showFullView(message);
-                                } else {
-                                    storagePermissionListener.checkPermission(new KmStoragePermission() {
-                                        @Override
-                                        public void onAction(boolean didGrant) {
-                                            if (didGrant) {
-                                                showFullView(message);
-                                            }
-                                        }
-                                    });
-                                }
-                            } else {
-                                if (storagePermissionListener.isPermissionGranted()) {
-                                    myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
-                                    myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
-                                    myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
-                                    myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
-                                    myHolder.attachmentView.setMessage(message);
-                                    myHolder.attachmentView.setVisibility(View.VISIBLE);
-                                    myHolder.attachmentDownloadProgressLayout.setVisibility(View.VISIBLE);
-                                } else {
-                                    storagePermissionListener.checkPermission(new KmStoragePermission() {
-                                        @Override
-                                        public void onAction(boolean didGrant) {
-                                            if (didGrant) {
-                                                myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
-                                                myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
-                                                myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
-                                                myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
-                                                myHolder.attachmentView.setMessage(message);
-                                                myHolder.attachmentView.setVisibility(View.VISIBLE);
-                                                myHolder.attachmentDownloadProgressLayout.setVisibility(View.VISIBLE);
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    });
-
-                    myHolder.attachmentView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (storagePermissionListener.isPermissionGranted()) {
-                                showFullView(message);
-                            } else {
-                                storagePermissionListener.checkPermission(new KmStoragePermission() {
-                                    @Override
-                                    public void onAction(boolean didGrant) {
-                                        if (didGrant) {
-                                            showFullView(message);
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-
-
-                    if (message.getScheduledAt() != null) {
-                        myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));
-                    } else if (myHolder.createdAtTime != null && message.isDummyEmptyMessage()) {
-                        myHolder.createdAtTime.setText("");
-                    } else if (myHolder.createdAtTime != null) {
-                        myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
-                    }
-
-                    if (myHolder.messageTextView != null) {
-                        myHolder.messageTextView.setTextColor(message.isTypeOutbox() ?
-                                Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
-                        myHolder.messageTextView.setLinkTextColor(message.isTypeOutbox() ?
-                                Color.parseColor(alCustomizationSettings.getSentMessageLinkTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageLinkTextColor()));
-
-                        if (message.getContentType() == Message.ContentType.TEXT_URL.getValue()) {
-                            try {
-                                myHolder.mapImageView.setVisibility(View.GONE);
-                                myHolder.attachedFile.setVisibility(View.GONE);
-                                myHolder.preview.setVisibility(View.VISIBLE);
-                                setMessageText(myHolder.messageTextView, message);
-                                loadImage.setImageFadeIn(false);
-                                loadImage.loadImage(message.getFileMetas().getBlobKeyString(), myHolder.preview);
-                                myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
-                            } catch (Exception e) {
-                            }
-                        } else if (message.getContentType() == Message.ContentType.LOCATION.getValue()) {
-                            myHolder.chatLocation.setLayoutParams(getImageLayoutParam(false));
-                            myHolder.chatLocation.setVisibility(View.VISIBLE);
-                            loadImage.setImageFadeIn(false);
-                            myHolder.mapImageView.setVisibility(View.VISIBLE);
-                            loadImage.setLoadingImage(R.drawable.km_map_offline_thumbnail);
-                            loadImage.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), myHolder.mapImageView);
-                            myHolder.messageTextView.setVisibility(View.GONE);
-                            myHolder.preview.setVisibility(View.GONE);
-
-                            myHolder.mapImageView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=" + LocationUtils.getLocationFromMessage(message.getMessage()));
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                                    context.startActivity(intent);
-                                }
-                            });
-                        } else if (message.getContentType() == Message.ContentType.PRICE.getValue()) {
-                            myHolder.mapImageView.setVisibility(View.GONE);
-                            myHolder.messageTextView.setText(ConversationUIService.FINAL_PRICE_TEXT + message.getMessage());
-                        } else if ((message.getContentType() == Message.ContentType.VIDEO_MSG.getValue()) && !message.isAttachmentDownloaded()) {
-                            myHolder.preview.setVisibility(View.VISIBLE);
-                            myHolder.mapImageView.setVisibility(View.GONE);
-                            myHolder.preview.setImageResource(R.drawable.km_video_default_thumbnail);
-                        } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
-                            myHolder.mapImageView.setVisibility(View.GONE);
-                            setMessageText(myHolder.messageTextView, message);
-                        } else {
-                            myHolder.mapImageView.setVisibility(View.GONE);
-                            myHolder.chatLocation.setVisibility(View.GONE);
-                            myHolder.messageTextView.setText(EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler));
-                        }
-
-                        if (myHolder.messageTextLayout != null) {
-                            GradientDrawable bgShape;
-                            if (message.isTypeOutbox()) {
-                                bgShape = (GradientDrawable) myHolder.messageTextInsideLayout.getBackground();
-                            } else {
-                                bgShape = (GradientDrawable) myHolder.messageTextLayout.getBackground();
-                            }
-
-                            if (bgShape != null) {
-                                bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() :
-                                        (isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor())));
-                                bgShape.setStroke(3, message.isTypeOutbox() ? themeHelper.getSentMessageBorderColor() :
-                                        Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
-                                if (alCustomizationSettings.getSentMessageCornerRadii() != null && message.isTypeOutbox()) {
-                                    bgShape.setCornerRadii(sentMessageCornerRadii);
-                                } else if (alCustomizationSettings.getReceivedMessageCornerRadii() != null) {
-                                    bgShape.setCornerRadii(receivedMessageCornerRadii);
-                                }
-                            }
-                        }
-                    }
-
-                    if (!message.hasAttachment()) {
-                        myHolder.preview.setVisibility(View.GONE);
-                        myHolder.attachedFile.setVisibility(View.GONE);
-                        myHolder.mainAttachmentLayout.setVisibility(View.GONE);
-                        myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
-                        myHolder.attachmentView.setVisibility(View.GONE);
-                        myHolder.videoIcon.setVisibility(View.GONE);
-                        myHolder.attachedFile.setVisibility(View.GONE);
-                        myHolder.mainContactShareLayout.setVisibility(View.GONE);
-                    }
-
-                    myHolder.messageTextLayout.setVisibility(View.VISIBLE);
-
-                    if (message.getMetadata() != null && "300".equals(message.getMetadata().get("contentType"))) {
-                        myHolder.richMessageLayout.setVisibility(View.VISIBLE);
-
-                        if (!TextUtils.isEmpty(message.getMessage())) {
-                            myHolder.messageTextLayout.setVisibility(View.VISIBLE);
-                        } else {
-                            myHolder.messageTextLayout.setVisibility(GONE);
-                        }
-
-                        try {
-                            KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            myHolder.richMessageLayout.setVisibility(View.GONE);
-                        }
-                    } else {
-                        myHolder.richMessageLayout.setVisibility(View.GONE);
-                        myHolder.messageTextLayout.setVisibility(View.VISIBLE);
-                    }
-
-                    //Handling contact share
-                    if (message.isContactMessage()) {
-                        myHolder.attachedFile.setVisibility(View.GONE);
-                        myHolder.mainAttachmentLayout.setVisibility(View.GONE);
-                        setupContactShareView(message, myHolder);
-                    } else {
-                        myHolder.mainContactShareLayout.setVisibility(View.GONE);
-                    }
-
-                    int startIndex = indexOfSearchQuery(message.getMessage());
-                    if (startIndex != -1) {
-                        final SpannableString highlightedName = new SpannableString(message.getMessage());
-
-                        // Sets the span to start at the starting point of the match and end at "length"
-                        // characters beyond the starting point
-                        highlightedName.setSpan(highlightTextSpan, startIndex,
-                                startIndex + searchString.toString().length(), 0);
-
-                        myHolder.messageTextView.setText(highlightedName);
-                    }
-                }
+                bindMessageView(holder, message, position);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    protected void bindMessageView(RecyclerView.ViewHolder holder, final Message message, int position) {
+        final MyViewHolder myHolder = (MyViewHolder) holder;
+        if (message != null) {
+            Contact receiverContact = null;
+            Contact contactDisplayName = null;
+
+            int index = messageList.indexOf(message);
+            boolean hideRecursiveImages = false;
+
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
+
+            if (!message.isTypeOutbox()) {
+                if (index != 0 && !messageList.get(index - 1).isTypeOutbox()
+                        && messageList.get(index - 1).getContentType() != 10
+                        && messageList.get(index - 1).getContentType() != 103
+                        && messageList.get(index - 1).getTo() != null
+                        && message.getTo() != null
+                        && messageList.get(index - 1).getTo().equals(message.getTo())) {
+
+                    hideRecursiveImages = true;
+                    params.setMargins(0, DimensionsUtils.convertDpToPx(3), 0, 0);
+                } else {
+                    params.setMargins(0, DimensionsUtils.convertDpToPx(8), 0, 0);
+                }
+            } else {
+                if (index != 0 && !messageList.get(index - 1).isTypeOutbox()) {
+                    params.setMargins(0, DimensionsUtils.convertDpToPx(8), 0, 0);
+                } else {
+                    params.setMargins(0, DimensionsUtils.convertDpToPx(3), 0, 0);
+                }
+            }
+
+            if (message.getGroupId() == null) {
+                List<String> items = Arrays.asList(message.getContactIds().split("\\s*,\\s*"));
+                List<String> userIds = null;
+                if (!TextUtils.isEmpty(message.getContactIds())) {
+                    userIds = Arrays.asList(message.getContactIds().split("\\s*,\\s*"));
+                }
+                if (individual) {
+                    receiverContact = contact;
+                    contact.setContactNumber(items.get(0));
+                    if (userIds != null) {
+                        contact.setUserId(userIds.get(0));
+                    }
+                } else {
+                    receiverContact = contactService.getContactReceiver(items, userIds);
+                }
+            } else {
+                if (!TextUtils.isEmpty(message.getContactIds())) {
+                    contactDisplayName = contactService.getContactById(message.getContactIds());
+                }
+            }
+            Configuration config = context.getResources().getConfiguration();
+            if (message.getMetadata() != null && !message.getMetadata().isEmpty() && message.getMetadata().containsKey(Message.MetaDataType.AL_REPLY.getValue())) {
+                final Message msg = messageDatabaseService.getMessage(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()));
+                if (msg != null) {
+                    String displayName;
+
+                    myHolder.replyRelativeLayout.setBackgroundColor(message.isTypeOutbox() ?
+                            Color.parseColor(alCustomizationSettings.getReplyMessageLayoutSentMessageBackground()) : Color.parseColor(alCustomizationSettings.getReplyMessageLayoutReceivedMessageBackground()));
+
+                    myHolder.replyNameTextView.setTextColor(message.isTypeOutbox() ?
+                            Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+
+                    myHolder.replyMessageTextView.setTextColor(message.isTypeOutbox() ?
+                            Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+
+                    if (msg.getGroupId() != null) {
+                        if (MobiComUserPreference.getInstance(context).getUserId().equals(msg.getContactIds()) || TextUtils.isEmpty(msg.getContactIds())) {
+                            displayName = context.getString(R.string.you_string);
+                        } else {
+                            displayName = contactService.getContactById(msg.getContactIds()).getDisplayName();
+                        }
+                    } else {
+                        if (msg.isTypeOutbox()) {
+                            displayName = context.getString(R.string.you_string);
+                        } else {
+                            displayName = contactService.getContactById(msg.getContactIds()).getDisplayName();
+                        }
+                    }
+
+                    myHolder.replyNameTextView.setText(displayName);
+                    if (msg.hasAttachment()) {
+                        FileMeta fileMeta = msg.getFileMetas();
+                        myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
+                        if (fileMeta.getContentType().contains("image")) {
+                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_image_camera_alt);
+                            if (TextUtils.isEmpty(msg.getMessage())) {
+                                myHolder.replyMessageTextView.setText(context.getString(R.string.photo_string));
+                            } else {
+                                myHolder.replyMessageTextView.setText(msg.getMessage());
+                            }
+                            myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
+                            myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
+                            imageThumbnailLoader.loadImage(msg, myHolder.imageViewPhoto);
+                        } else if (fileMeta.getContentType().contains("video")) {
+                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_action_video);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+                                    myHolder.imageViewForAttachmentType.setScaleX(-1);
+                                }
+                            }
+                            if (TextUtils.isEmpty(msg.getMessage())) {
+                                myHolder.replyMessageTextView.setText(context.getString(R.string.video_string));
+                            } else {
+                                myHolder.replyMessageTextView.setText(msg.getMessage());
+                            }
+                            myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
+                            myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
+                            if (msg.getFilePaths() != null && msg.getFilePaths().size() > 0) {
+                                if (imageCache.getBitmapFromMemCache(msg.getKeyString()) != null) {
+                                    myHolder.imageViewPhoto.setImageBitmap(imageCache.getBitmapFromMemCache(msg.getKeyString()));
+                                } else {
+                                    imageCache.addBitmapToCache(message.getKeyString(), fileClientService.createAndSaveVideoThumbnail(msg.getFilePaths().get(0)));
+                                    myHolder.imageViewPhoto.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(msg.getFilePaths().get(0)));
+                                }
+                            }
+                        } else if (fileMeta.getContentType().contains("audio")) {
+                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_music_note);
+                            if (TextUtils.isEmpty(msg.getMessage())) {
+                                myHolder.replyMessageTextView.setText(context.getString(R.string.audio_string));
+                            } else {
+                                myHolder.replyMessageTextView.setText(msg.getMessage());
+                            }
+                            myHolder.imageViewPhoto.setVisibility(View.GONE);
+                            myHolder.imageViewRLayout.setVisibility(View.GONE);
+                        } else if (msg.isContactMessage()) {
+                            MobiComVCFParser parser = new MobiComVCFParser();
+                            try {
+                                VCFContactData data = parser.parseCVFContactData(msg.getFilePaths().get(0));
+                                if (data != null) {
+                                    myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_person_white);
+                                    myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
+                                    myHolder.replyMessageTextView.append(" " + data.getName());
+                                }
+                            } catch (Exception e) {
+                                myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_person_white);
+                                myHolder.replyMessageTextView.setText(context.getString(R.string.contact_string));
+                            }
+                            myHolder.imageViewPhoto.setVisibility(View.GONE);
+                            myHolder.imageViewRLayout.setVisibility(View.GONE);
+                        } else {
+                            myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_action_attachment);
+                            if (TextUtils.isEmpty(msg.getMessage())) {
+                                myHolder.replyMessageTextView.setText(context.getString(R.string.attachment_string));
+                            } else {
+                                myHolder.replyMessageTextView.setText(msg.getMessage());
+                            }
+                            myHolder.imageViewPhoto.setVisibility(View.GONE);
+                            myHolder.imageViewRLayout.setVisibility(View.GONE);
+                        }
+                        myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                    } else if (msg.getContentType() == Message.ContentType.LOCATION.getValue()) {
+                        myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
+                        myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
+                        myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
+                        myHolder.replyMessageTextView.setText(context.getString(R.string.al_location_string));
+                        myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                        myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_location_on_white_24dp);
+                        loadImage.setLoadingImage(R.drawable.km_map_offline_thumbnail);
+                        loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage(), geoApiKey), myHolder.imageViewPhoto);
+                    } else {
+                        myHolder.imageViewForAttachmentType.setVisibility(View.GONE);
+                        myHolder.imageViewRLayout.setVisibility(View.GONE);
+                        myHolder.imageViewPhoto.setVisibility(View.GONE);
+                        myHolder.replyMessageTextView.setText(msg.getMessage());
+                    }
+                    myHolder.replyRelativeLayout.setVisibility(View.VISIBLE);
+                    myHolder.replyRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ((OnClickReplyInterface) context).onClickOnMessageReply(msg);
+                        }
+                    });
+                }
+            } else {
+                myHolder.replyRelativeLayout.setVisibility(GONE);
+            }
+
+            if (TextUtils.isEmpty(message.getMessage())) {
+                myHolder.messageTextView.setVisibility(View.GONE);
+            } else {
+                myHolder.messageTextView.setVisibility((message.getContentType() == Message.ContentType.LOCATION.getValue() || isHtmlTypeMessage(message)) ? View.GONE : View.VISIBLE);
+            }
+
+            myHolder.mapImageView.setVisibility(GONE);
+
+            if (channel != null) {
+                if (!message.hasAttachment() && TextUtils.isEmpty(message.getMessage()) && message.getMetadata() == null) {
+                    myHolder.messageTextView.setText("");
+                }
+            }
+
+            if (myHolder.chatLocation != null) {
+                myHolder.chatLocation.setVisibility(View.GONE);
+            }
+
+            if (myHolder.attachedFile != null) {
+                //myHolder.attachedFile.setText("");
+                myHolder.attachedFile.setVisibility(View.GONE);
+            }
+
+            if (myHolder.attachmentIcon != null) {
+                myHolder.attachmentIcon.setVisibility(View.GONE);
+            }
+
+            if (channel != null && myHolder.nameTextView != null && contactDisplayName != null) {
+                myHolder.nameTextView.setVisibility(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || hideRecursiveImages ? View.GONE : View.VISIBLE);
+                if (alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
+                    myHolder.nameTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, ConversationActivity.class);
+                            intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
+                            if (message.getConversationId() != null) {
+                                intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
+                            }
+                            context.startActivity(intent);
+                        }
+                    });
+                }
+                myHolder.nameTextView.setText(contactDisplayName.getDisplayName());
+                myHolder.nameTextView.setTextColor(Color.parseColor(alCustomizationSettings.getReceiverNameTextColor()));
+            }
+
+            if (message.isTypeOutbox()) {
+                myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getSentMessageCreatedAtTimeColor()));
+            } else {
+                myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
+            }
+
+            if (isHtmlTypeMessage(message)) {
+                if (myHolder.viaEmailView != null) {
+                    myHolder.viaEmailView.setVisibility(isEmailTypeMessage(message) ? View.VISIBLE : GONE);
+
+                    if (message.isTypeOutbox()) {
+                        myHolder.viaEmailView.setTextColor(context.getResources().getColor(R.color.white));
+                    } else {
+                        myHolder.viaEmailView.setTextColor(context.getResources().getColor(R.color.km_via_email_text_color));
+                    }
+                }
+                if (myHolder.emailLayout != null) {
+                    myHolder.emailLayout.setVisibility(View.VISIBLE);
+                }
+                loadHtml(myHolder.emailLayout, message);
+            } else {
+                if (myHolder.viaEmailView != null) {
+                    myHolder.viaEmailView.setVisibility(GONE);
+                }
+                if (myHolder.emailLayout != null) {
+                    myHolder.emailLayout.setVisibility(View.GONE);
+                }
+            }
+
+            myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
+            myHolder.attachmentView.setVisibility(View.GONE);
+
+            if (message.isTypeOutbox() && !message.isCanceled()) {
+                myHolder.mediaUploadProgressBar.setVisibility(View.GONE);
+                myHolder.mediaUploadProgressBar.setVisibility(message.isAttachmentUploadInProgress() ? View.VISIBLE : View.GONE);
+            } else {
+                myHolder.mediaUploadProgressBar.setVisibility(View.GONE);
+            }
+
+            if (myHolder.attachedFile != null) {
+                myHolder.attachedFile.setVisibility(message.hasAttachment() ? View.VISIBLE : View.GONE);
+            }
+
+            if (individual && message.getTimeToLive() != null) {
+                myHolder.selfDestruct
+                        .setText("Self destruct in " + message.getTimeToLive() + " mins");
+                myHolder.selfDestruct.setVisibility(View.VISIBLE);
+            } else {
+                myHolder.selfDestruct.setText("");
+                myHolder.selfDestruct.setVisibility(View.GONE);
+            }
+
+            if (myHolder.sentOrReceived != null) {
+                if ((!message.isCall()) || message.isDummyEmptyMessage()) {
+                    myHolder.sentOrReceived.setVisibility(View.GONE);
+                } else if (message.isCall()) {
+                    myHolder.sentOrReceived.setImageResource(R.drawable.km_ic_action_call_holo_light);
+                } else if (getItemViewType(position) == 0) {
+                    myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
+                } else {
+                    myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_reply);
+                }
+
+                if (message.isCall()) {
+                    myHolder.messageTextView.setTextColor(context.getResources().getColor(message.isIncomingCall() ? R.color.incoming_call : R.color.outgoing_call));
+                }
+            }
+
+            if (myHolder.nameTextLayout != null && contact != null && hideRecursiveImages) {
+                myHolder.nameTextLayout.setVisibility(View.GONE);
+            }
+
+            if (message.isCall() || message.isDummyEmptyMessage()) {
+                myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+            } else if (!message.isSentToServer() && message.isTypeOutbox()) {
+                myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(pendingIcon, null, null, null);
+            } else if (message.getKeyString() != null && message.isTypeOutbox() && message.isSentToServer()) {
+                Drawable statusIcon;
+                if (message.isDeliveredAndRead()) {
+                    statusIcon = readIcon;
+                } else {
+                    statusIcon = (message.getDelivered() ? deliveredIcon : sentIcon);
+                }
+                myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
+            }
+
+            if (message.isCall()) {
+                myHolder.deliveryStatus.setText("");
+            }
+
+            if (contactDisplayName != null && myHolder.contactImage != null && alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
+                myHolder.contactImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ConversationActivity.class);
+                        intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
+                        if (message.getConversationId() != null) {
+                            intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
+                        }
+                        context.startActivity(intent);
+                    }
+                });
+
+                myHolder.alphabeticTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ConversationActivity.class);
+                        intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
+                        if (message.getConversationId() != null) {
+                            intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
+                        }
+                        context.startActivity(intent);
+                    }
+                });
+            }
+
+            if (!message.isTypeOutbox()) {
+                loadProfileImage(receiverContact != null ? receiverContact : contactDisplayName, myHolder.contactImage, myHolder.alphabeticTextView, hideRecursiveImages);
+            }
+            KmDocumentView audioView = new KmDocumentView(this.context, storagePermissionListener);
+            audioView.inflateViewWithMessage(myHolder.view, message);
+            audioView.hideView(true);
+
+            if (message.hasAttachment() && myHolder.attachedFile != null & !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
+                myHolder.mainAttachmentLayout.setLayoutParams(getImageLayoutParam(false));
+                myHolder.mainAttachmentLayout.setVisibility(View.VISIBLE);
+                if (message.getFileMetas() != null && (message.getFileMetas().getContentType().contains("image") || message.getFileMetas().getContentType().contains("video"))) {
+                    myHolder.attachedFile.setVisibility(View.GONE);
+                }
+                if (message.isAttachmentDownloaded()) {
+                    myHolder.mapImageView.setVisibility(View.GONE);
+                    //myHolder.preview.setVisibility(View.GONE);
+                    String[] filePaths = new String[message.getFilePaths().size()];
+                    int i = 0;
+                    for (final String filePath : message.getFilePaths()) {
+                        filePaths[i++] = filePath;
+                        final String mimeType = FileUtils.getMimeType(filePath);
+                        if (mimeType != null && mimeType.startsWith("image")) {
+                            myHolder.attachmentView.setVisibility(View.GONE);
+                            myHolder.videoIcon.setVisibility(View.GONE);
+                            myHolder.preview.setVisibility(View.VISIBLE);
+                            myHolder.preview.setImageBitmap(null);
+                            myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
+                            myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
+                            Glide.with(context).load(new File(filePath)).into(myHolder.preview);
+                            myHolder.attachmentView.setMessage(message);
+                            myHolder.mediaDownloadProgressBar.setVisibility(View.GONE);
+                            myHolder.attachedFile.setVisibility(View.GONE);
+                            myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
+                            myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
+                        } else if (mimeType != null && mimeType.startsWith("video")) {
+                            myHolder.preview.setVisibility(View.VISIBLE);
+                            myHolder.videoIcon.setVisibility(View.VISIBLE);
+                            myHolder.mediaDownloadProgressBar.setVisibility(View.GONE);
+                            myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
+                            myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
+                            myHolder.attachedFile.setVisibility(View.GONE);
+                            if (imageCache.getBitmapFromMemCache(message.getKeyString()) != null) {
+                                myHolder.preview.setImageBitmap(imageCache.getBitmapFromMemCache(message.getKeyString()));
+                            } else {
+                                imageCache.addBitmapToCache(message.getKeyString(), fileClientService.createAndSaveVideoThumbnail(filePath));
+                                myHolder.preview.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(filePath));
+                            }
+                        } else {
+                            myHolder.preview.setVisibility(View.GONE);
+                            myHolder.mediaDownloadProgressBar.setVisibility(View.GONE);
+                            myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
+                            myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
+                            showAttachmentIconAndText(myHolder.attachedFile, message, mimeType);
+                        }
+                    }
+                } else if (message.isAttachmentUploadInProgress()) {
+                    //showPreview(smListItem, preview, attachmentDownloadLayout);
+                    myHolder.preview.setImageDrawable(null);
+                    myHolder.preview.setImageBitmap(null);
+                    myHolder.attachmentDownloadProgressLayout.setVisibility(View.VISIBLE);
+                    myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
+                    myHolder.videoIcon.setVisibility(GONE);
+                    myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
+                    myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
+                    myHolder.attachmentView.setMessage(message);
+                    myHolder.attachmentView.setVisibility(View.VISIBLE);
+                    myHolder.attachedFile.setVisibility(GONE);
+                    myHolder.attachmentIcon.setVisibility(GONE);
+                } else if (AttachmentManager.isAttachmentInProgress(message.getKeyString())) {
+                    //ondraw is called and thread is assigned to the attachment view...
+                    myHolder.preview.setImageDrawable(null);
+                    myHolder.preview.setImageBitmap(null);
+                    myHolder.attachmentView.setMessage(message);
+                    myHolder.attachmentView.setVisibility(View.VISIBLE);
+                    myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
+                    myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
+                    myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
+                    myHolder.preview.setVisibility(View.VISIBLE);
+                    showPreview(message, myHolder.preview, myHolder.attachmentDownloadLayout);
+                    FileMeta fileMeta = message.getFileMetas();
+                    final String mimeType = FileUtils.getMimeType(fileMeta.getName());
+                    if (!fileMeta.getContentType().contains("image") && !fileMeta.getContentType().contains("video")) {
+                        showAttachmentIconAndText(myHolder.attachedFile, message, mimeType);
+                    }
+                    myHolder.downloadSizeTextView.setText(fileMeta.getSizeInReadableFormat());
+                    myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
+                    myHolder.attachmentDownloadProgressLayout.setVisibility(View.VISIBLE);
+                } else {
+                    String fileKeys = message.getFileMetaKeyStrings();
+                    int i = 0;
+                    myHolder.preview.setVisibility(View.GONE);
+                    //showPreview(null, myHolder.preview, myHolder.attachmentDownloadLayout);
+                    showPreview(message, myHolder.preview, myHolder.attachmentDownloadLayout);
+                    myHolder.preview.setVisibility(View.VISIBLE);
+                    myHolder.videoIcon.setVisibility(View.GONE);
+                    //TODO: while doing multiple image support in single sms ...we might improve this
+                    // for (String fileKey : message.getFileMetaKeyStrings()) {
+                    if (message.getFileMetas() != null) {
+                        FileMeta fileMeta = message.getFileMetas();
+                        myHolder.attachmentDownloadLayout.setVisibility(View.VISIBLE);
+                        myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
+                        myHolder.downloadSizeTextView.setText(fileMeta.getSizeInReadableFormat());
+                        final String mimeType = FileUtils.getMimeType(fileMeta.getName());
+                        if (!fileMeta.getContentType().contains("image") && !fileMeta.getContentType().contains("video")) {
+                            showAttachmentIconAndText(myHolder.attachedFile, message, mimeType);
+                        }
+                    }
+                }
+                if (isNormalAttachment(message)) {
+                    myHolder.videoIcon.setVisibility(View.GONE);
+                    myHolder.attachedFile.setVisibility(View.GONE);
+                    myHolder.mainAttachmentLayout.setVisibility(View.GONE);
+                    myHolder.mainContactShareLayout.setVisibility(View.GONE);
+                    myHolder.chatLocation.setVisibility(View.GONE);
+                    myHolder.preview.setVisibility(View.GONE);
+                    audioView.hideView(false);
+                    myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
+                }
+            }
+            if (message.isCanceled()) {
+                myHolder.attachmentRetry.setVisibility(View.VISIBLE);
+            } else {
+                myHolder.attachmentRetry.setVisibility(View.GONE);
+            }
+            myHolder.attachmentRetry.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (Utils.isInternetAvailable(context)) {
+                        File file = null;
+                        if (message != null && message.getFilePaths() != null) {
+                            file = new File(message.getFilePaths().get(0));
+                        }
+                        if (file != null && !file.exists()) {
+                            KmToast.error(context, context.getString(R.string.file_does_not_exist), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        KmToast.success(context, context.getString(R.string.km_resending_attachment), Toast.LENGTH_LONG).show();
+                        myHolder.mediaUploadProgressBar.setVisibility(View.VISIBLE);
+                        myHolder.attachmentRetry.setVisibility(View.GONE);
+                        //updating Cancel Flag to smListItem....
+                        message.setCanceled(false);
+                        messageDatabaseService.updateCanceledFlag(message.getMessageId(), 0);
+                        conversationService.sendMessage(message, messageIntentClass);
+                    } else {
+                        KmToast.error(context, context.getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            myHolder.attachmentDownloadProgressLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    myHolder.attachmentView.setVisibility(View.GONE);
+                    myHolder.attachmentView.cancelDownload();
+                    myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
+                    message.setAttDownloadInProgress(false);
+                }
+            });
+            //final ProgressBar mediaDownloadProgressBar = mediaDownloadProgressBar;
+            myHolder.preview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //TODO: 1. get the image Size and decide if we can download directly
+                    //2. if already downloaded to ds card show it directly ....
+                    //3. if deleted from sd crad only ...ask user to download it again or skip ...
+                    if (message.getContentType() == Message.ContentType.TEXT_URL.getValue()) {
+                        return;
+                    }
+                    if (message.isAttachmentDownloaded()) {
+                        if (storagePermissionListener.isPermissionGranted()) {
+                            showFullView(message);
+                        } else {
+                            storagePermissionListener.checkPermission(new KmStoragePermission() {
+                                @Override
+                                public void onAction(boolean didGrant) {
+                                    if (didGrant) {
+                                        showFullView(message);
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        if (storagePermissionListener.isPermissionGranted()) {
+                            myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
+                            myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
+                            myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
+                            myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
+                            myHolder.attachmentView.setMessage(message);
+                            myHolder.attachmentView.setVisibility(View.VISIBLE);
+                            myHolder.attachmentDownloadProgressLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            storagePermissionListener.checkPermission(new KmStoragePermission() {
+                                @Override
+                                public void onAction(boolean didGrant) {
+                                    if (didGrant) {
+                                        myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
+                                        myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
+                                        myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
+                                        myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
+                                        myHolder.attachmentView.setMessage(message);
+                                        myHolder.attachmentView.setVisibility(View.VISIBLE);
+                                        myHolder.attachmentDownloadProgressLayout.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+
+            myHolder.attachmentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (storagePermissionListener.isPermissionGranted()) {
+                        showFullView(message);
+                    } else {
+                        storagePermissionListener.checkPermission(new KmStoragePermission() {
+                            @Override
+                            public void onAction(boolean didGrant) {
+                                if (didGrant) {
+                                    showFullView(message);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+
+            if (message.getScheduledAt() != null) {
+                myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));
+            } else if (myHolder.createdAtTime != null && message.isDummyEmptyMessage()) {
+                myHolder.createdAtTime.setText("");
+            } else if (myHolder.createdAtTime != null) {
+                myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
+            }
+
+            if (myHolder.messageTextView != null) {
+                myHolder.messageTextView.setTextColor(message.isTypeOutbox() ?
+                        Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+                myHolder.messageTextView.setLinkTextColor(message.isTypeOutbox() ?
+                        Color.parseColor(alCustomizationSettings.getSentMessageLinkTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageLinkTextColor()));
+
+                if (message.getContentType() == Message.ContentType.TEXT_URL.getValue()) {
+                    try {
+                        myHolder.mapImageView.setVisibility(View.GONE);
+                        myHolder.attachedFile.setVisibility(View.GONE);
+                        myHolder.preview.setVisibility(View.VISIBLE);
+                        setMessageText(myHolder.messageTextView, message);
+                        loadImage.setImageFadeIn(false);
+                        loadImage.loadImage(message.getFileMetas().getBlobKeyString(), myHolder.preview);
+                        myHolder.attachmentDownloadLayout.setVisibility(View.GONE);
+                    } catch (Exception e) {
+                    }
+                } else if (message.getContentType() == Message.ContentType.LOCATION.getValue()) {
+                    myHolder.chatLocation.setLayoutParams(getImageLayoutParam(false));
+                    myHolder.chatLocation.setVisibility(View.VISIBLE);
+                    loadImage.setImageFadeIn(false);
+                    myHolder.mapImageView.setVisibility(View.VISIBLE);
+                    loadImage.setLoadingImage(R.drawable.km_map_offline_thumbnail);
+                    loadImage.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), myHolder.mapImageView);
+                    myHolder.messageTextView.setVisibility(View.GONE);
+                    myHolder.preview.setVisibility(View.GONE);
+
+                    myHolder.mapImageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=" + LocationUtils.getLocationFromMessage(message.getMessage()));
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                            context.startActivity(intent);
+                        }
+                    });
+                } else if (message.getContentType() == Message.ContentType.PRICE.getValue()) {
+                    myHolder.mapImageView.setVisibility(View.GONE);
+                    myHolder.messageTextView.setText(ConversationUIService.FINAL_PRICE_TEXT + message.getMessage());
+                } else if ((message.getContentType() == Message.ContentType.VIDEO_MSG.getValue()) && !message.isAttachmentDownloaded()) {
+                    myHolder.preview.setVisibility(View.VISIBLE);
+                    myHolder.mapImageView.setVisibility(View.GONE);
+                    myHolder.preview.setImageResource(R.drawable.km_video_default_thumbnail);
+                } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
+                    myHolder.mapImageView.setVisibility(View.GONE);
+                    setMessageText(myHolder.messageTextView, message);
+                } else {
+                    myHolder.mapImageView.setVisibility(View.GONE);
+                    myHolder.chatLocation.setVisibility(View.GONE);
+                    myHolder.messageTextView.setText(EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler));
+                }
+
+                if (myHolder.messageTextLayout != null) {
+                    GradientDrawable bgShape;
+                    if (message.isTypeOutbox()) {
+                        bgShape = (GradientDrawable) myHolder.messageTextInsideLayout.getBackground();
+                    } else {
+                        bgShape = (GradientDrawable) myHolder.messageTextLayout.getBackground();
+                    }
+
+                    if (bgShape != null) {
+                        Pair<Integer, Integer> receivedMessageColorPair = getReceivedMessageBgColors(contactDisplayName, message);
+                        bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() : receivedMessageColorPair.first);
+                        bgShape.setStroke(3, message.isTypeOutbox() ? themeHelper.getSentMessageBorderColor() : receivedMessageColorPair.second);
+                        if (alCustomizationSettings.getSentMessageCornerRadii() != null && message.isTypeOutbox()) {
+                            bgShape.setCornerRadii(sentMessageCornerRadii);
+                        } else if (alCustomizationSettings.getReceivedMessageCornerRadii() != null) {
+                            bgShape.setCornerRadii(receivedMessageCornerRadii);
+                        }
+                    }
+                }
+            }
+
+            if (!message.hasAttachment()) {
+                myHolder.preview.setVisibility(View.GONE);
+                myHolder.attachedFile.setVisibility(View.GONE);
+                myHolder.mainAttachmentLayout.setVisibility(View.GONE);
+                myHolder.mediaDownloadProgressBar.setVisibility(View.VISIBLE);
+                myHolder.attachmentView.setVisibility(View.GONE);
+                myHolder.videoIcon.setVisibility(View.GONE);
+                myHolder.attachedFile.setVisibility(View.GONE);
+                myHolder.mainContactShareLayout.setVisibility(View.GONE);
+            }
+
+            myHolder.messageTextLayout.setVisibility(View.VISIBLE);
+
+            if (message.isRichMessage()) {
+                if (!TextUtils.isEmpty(message.getMessage())) {
+                    myHolder.messageTextLayout.setVisibility(View.VISIBLE);
+                } else {
+                    myHolder.messageTextLayout.setVisibility(GONE);
+                }
+
+                myHolder.richMessageLayout.setVisibility(View.VISIBLE);
+                try {
+                    KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage(isMessageProcessed(message));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    myHolder.richMessageLayout.setVisibility(View.GONE);
+                }
+            } else {
+                myHolder.richMessageLayout.setVisibility(View.GONE);
+                myHolder.messageTextLayout.setVisibility(View.VISIBLE);
+            }
+
+            //Handling contact share
+            if (message.isContactMessage()) {
+                myHolder.attachedFile.setVisibility(View.GONE);
+                myHolder.mainAttachmentLayout.setVisibility(View.GONE);
+                setupContactShareView(message, myHolder);
+            } else {
+                myHolder.mainContactShareLayout.setVisibility(View.GONE);
+            }
+
+            int startIndex = indexOfSearchQuery(message.getMessage());
+            if (startIndex != -1) {
+                final SpannableString highlightedName = new SpannableString(message.getMessage());
+
+                // Sets the span to start at the starting point of the match and end at "length"
+                // characters beyond the starting point
+                highlightedName.setSpan(highlightTextSpan, startIndex,
+                        startIndex + searchString.toString().length(), 0);
+
+                myHolder.messageTextView.setText(highlightedName);
+            }
+        }
+    }
+
+    protected Pair<Integer, Integer> getReceivedMessageBgColors(Contact contact, Message message) {
+        return new Pair<>(isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()), Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
+    }
+
+    private boolean isMessageProcessed(Message message) {
+        if (themeHelper.isHidePostCTA()) {
+            return lastSentMessage != null && lastSentMessage.getCreatedAtTime() > message.getCreatedAtTime();
+        }
+        return false;
+    }
+
+    public void updateLastSentMessage(Message message) {
+        if (themeHelper.isHidePostCTA() && message.isTypeOutbox()) {
+            lastSentMessage = message;
         }
     }
 
@@ -1383,7 +1399,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             protected FilterResults performFiltering(CharSequence constraint) {
 
                 final FilterResults oReturn = new FilterResults();
-                final List<Message> results = new ArrayList<Message>();
+                final List<Message> results = new ArrayList<>();
                 if (originalList == null)
                     originalList = messageList;
                 if (constraint != null) {
@@ -1418,7 +1434,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private int indexOfSearchQuery(String message) {
         if (!TextUtils.isEmpty(searchString)) {
             return message.toLowerCase(Locale.getDefault()).indexOf(
-                    searchString.toString().toLowerCase(Locale.getDefault()));
+                    searchString.toLowerCase(Locale.getDefault()));
         }
         return -1;
     }
@@ -1652,7 +1668,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         };
     }
 
-    class MyViewHolder2 extends RecyclerView.ViewHolder {
+    static class MyViewHolder2 extends RecyclerView.ViewHolder {
         TextView dateView;
         TextView dayTextView;
 
@@ -1663,7 +1679,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder3 extends RecyclerView.ViewHolder {
+    static class MyViewHolder3 extends RecyclerView.ViewHolder {
         TextView customContentTextView;
 
         public MyViewHolder3(View itemView) {
@@ -1672,7 +1688,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder4 extends RecyclerView.ViewHolder {
+    static class MyViewHolder4 extends RecyclerView.ViewHolder {
         TextView channelMessageTextView;
 
         public MyViewHolder4(View itemView) {
@@ -1681,7 +1697,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    class MyViewHolder5 extends RecyclerView.ViewHolder {
+    static class MyViewHolder5 extends RecyclerView.ViewHolder {
         TextView statusTextView;
         TextView timeTextView;
         TextView durationTextView;

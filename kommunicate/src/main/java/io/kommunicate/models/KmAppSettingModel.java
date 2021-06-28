@@ -37,6 +37,7 @@ public class KmAppSettingModel extends JsonMarker {
         private String agentId;
         private String agentName;
         private boolean collectFeedback;
+        private boolean hidePostCTA;
         private KmChatWidget chatWidget;
 
         public String getUserName() {
@@ -65,6 +66,10 @@ public class KmAppSettingModel extends JsonMarker {
 
         public boolean isCollectFeedback() {
             return collectFeedback;
+        }
+
+        public boolean isHidePostCTA() {
+            return hidePostCTA;
         }
 
         public void setCollectFeedback(boolean collectFeedback) {

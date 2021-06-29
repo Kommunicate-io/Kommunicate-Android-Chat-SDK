@@ -162,9 +162,6 @@ public class KmSettings {
                         }
                     });
                 }
-                if (callback != null) {
-                    callback.onSuccess(channel);
-                }
             }
 
             @Override

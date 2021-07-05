@@ -21,28 +21,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
-
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.conversation.SyncCallService;
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.app.TaskStackBuilder;
-import androidx.core.content.FileProvider;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.core.view.MenuItemCompat;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -54,6 +32,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.FileProvider;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
@@ -63,8 +56,10 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComMessageService;
+import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.contact.AppContactService;
@@ -78,16 +73,14 @@ import com.applozic.mobicomkit.uiwidgets.conversation.MobiComKitBroadcastReceive
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
-import com.applozic.mobicomkit.uiwidgets.instruction.KmPermissions;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.instruction.KmPermissions;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
-
-import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
-import io.kommunicate.utils.KmConstants;
-import io.kommunicate.utils.KmUtils;
-
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.CustomToolbarListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
@@ -108,6 +101,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -118,6 +112,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
+import io.kommunicate.utils.KmConstants;
+import io.kommunicate.utils.KmUtils;
 
 import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.REQUEST_CODE_MULTI_SELECT_GALLERY;
 
@@ -478,6 +476,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 conversationUIService.sendAttachments(new ArrayList<>(Arrays.asList(Uri.parse(file.getAbsolutePath()))), "");
             }
         };
+
+        AlEventManager.getInstance().sendOnPluginLaunchEvent();
     }
 
     @Override
@@ -1199,6 +1199,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } catch (Exception e) {
             e.printStackTrace();
         }
+        AlEventManager.getInstance().sendOnPluginDismissedEvent();
     }
 
     @Override

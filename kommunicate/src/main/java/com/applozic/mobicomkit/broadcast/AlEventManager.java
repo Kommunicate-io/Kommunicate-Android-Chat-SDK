@@ -12,6 +12,8 @@ import com.applozic.mobicommons.json.GsonUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.kommunicate.callbacks.KmPluginEventListener;
+
 /**
  * Handles real time update events that are registered to listen for.
  * multiple listeners can be registered by unique id
@@ -21,6 +23,7 @@ public class AlEventManager {
     private static AlEventManager eventManager;
     private Map<String, ApplozicUIListener> listenerMap;
     private Map<String, AlMqttListener> mqttListenerMap;
+    private KmPluginEventListener kmPluginEventListener;
     private Handler uiHandler;
 
     public static AlEventManager getInstance() {
@@ -88,6 +91,44 @@ public class AlEventManager {
         }
     }
 
+    public void registerPluginEventListener(KmPluginEventListener kmPluginEventListener) {
+        this.kmPluginEventListener = kmPluginEventListener;
+    }
+
+    public void unregisterPluginEventListener() {
+        this.kmPluginEventListener = null;
+    }
+
+    public void sendOnPluginLaunchEvent() {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onPluginLaunch();
+        }
+    }
+
+    public void sendOnPluginDismissedEvent() {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onPluginDismiss();
+        }
+    }
+
+    public void sendOnConversationResolvedEvent(com.applozic.mobicomkit.api.conversation.Message message) {
+        if (kmPluginEventListener != null && message.isTypeResolved() && message.getGroupId() != null) {
+            kmPluginEventListener.onConversationResolved(message.getGroupId());
+        }
+    }
+
+    public void sendOnConversationRestartedEvent(com.applozic.mobicomkit.api.conversation.Message message) {
+        if (kmPluginEventListener != null && message.isTypeOpen() && message.getGroupId() != null) {
+            kmPluginEventListener.onConversationRestarted(message.getGroupId());
+        }
+    }
+
+    public void sendOnRichMessageButtonClickEvent(Integer conversationId, String actionType, Object action) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onRichMessageButtonClick(conversationId, actionType, action);
+        }
+    }
+
     private void handleState(Message message) {
         if (message != null && listenerMap != null && !listenerMap.isEmpty()) {
             Bundle bundle = message.getData();
@@ -105,6 +146,8 @@ public class AlEventManager {
                         break;
                     case AlMessageEvent.ActionType.MESSAGE_RECEIVED:
                         listener.onMessageReceived(messageEvent.getMessage());
+                        sendOnConversationResolvedEvent(messageEvent.getMessage());
+                        sendOnConversationRestartedEvent(messageEvent.getMessage());
                         break;
                     case AlMessageEvent.ActionType.MESSAGE_SYNC:
                         listener.onMessageSync(messageEvent.getMessage(), messageEvent.getMessageKey());

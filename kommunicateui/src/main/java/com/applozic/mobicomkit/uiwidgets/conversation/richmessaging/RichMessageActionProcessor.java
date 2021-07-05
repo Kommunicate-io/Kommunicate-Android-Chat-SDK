@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
@@ -53,6 +54,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
     @Override
     public void onAction(Context context, String action, Message message, Object object, Map<String, Object> replyMetadata) {
+        AlEventManager.getInstance().sendOnRichMessageButtonClickEvent(message.getGroupId(), action, object);
         switch (action) {
             case KmRichMessage.SEND_GUEST_LIST:
                 List<KmGuestCountModel> guestCountModels = (List<KmGuestCountModel>) object;

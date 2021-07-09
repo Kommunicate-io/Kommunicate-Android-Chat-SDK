@@ -37,15 +37,7 @@ public class AlEventManager {
         if (listenerMap == null) {
             listenerMap = new HashMap<>();
         }
-        if (uiHandler == null) {
-            uiHandler = new Handler(new Handler.Callback() {
-                @Override
-                public boolean handleMessage(Message msg) {
-                    handleState(msg);
-                    return false;
-                }
-            });
-        }
+        initHandler();
         if (!listenerMap.containsKey(id)) {
             listenerMap.put(id, listener);
         }
@@ -93,6 +85,19 @@ public class AlEventManager {
 
     public void registerPluginEventListener(KmPluginEventListener kmPluginEventListener) {
         this.kmPluginEventListener = kmPluginEventListener;
+        initHandler();
+    }
+
+    private void initHandler() {
+        if (uiHandler == null) {
+            uiHandler = new Handler(new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message msg) {
+                    handleState(msg);
+                    return false;
+                }
+            });
+        }
     }
 
     public void unregisterPluginEventListener() {
@@ -130,7 +135,7 @@ public class AlEventManager {
     }
 
     private void handleState(Message message) {
-        if (message != null && listenerMap != null && !listenerMap.isEmpty()) {
+        if (message != null) {
             Bundle bundle = message.getData();
             AlMessageEvent messageEvent = null;
             if (bundle != null) {
@@ -139,75 +144,80 @@ public class AlEventManager {
             if (messageEvent == null) {
                 return;
             }
-            for (ApplozicUIListener listener : listenerMap.values()) {
-                switch (messageEvent.getAction()) {
-                    case AlMessageEvent.ActionType.MESSAGE_SENT:
-                        listener.onMessageSent(messageEvent.getMessage());
-                        break;
-                    case AlMessageEvent.ActionType.MESSAGE_RECEIVED:
-                        listener.onMessageReceived(messageEvent.getMessage());
-                        sendOnConversationResolvedEvent(messageEvent.getMessage());
-                        sendOnConversationRestartedEvent(messageEvent.getMessage());
-                        break;
-                    case AlMessageEvent.ActionType.MESSAGE_SYNC:
-                        listener.onMessageSync(messageEvent.getMessage(), messageEvent.getMessageKey());
-                        break;
-                    case AlMessageEvent.ActionType.LOAD_MORE:
-                        listener.onLoadMore(messageEvent.isLoadMore());
-                        break;
-                    case AlMessageEvent.ActionType.MESSAGE_DELETED:
-                        listener.onMessageDeleted(messageEvent.getMessageKey(), messageEvent.getUserId());
-                        break;
-                    case AlMessageEvent.ActionType.MESSAGE_DELIVERED:
-                        listener.onMessageDelivered(messageEvent.getMessage(), messageEvent.getUserId());
-                        break;
-                    case AlMessageEvent.ActionType.ALL_MESSAGES_DELIVERED:
-                        listener.onAllMessagesDelivered(messageEvent.getUserId());
-                        break;
-                    case AlMessageEvent.ActionType.ALL_MESSAGES_READ:
-                        listener.onAllMessagesRead(messageEvent.getUserId());
-                        break;
-                    case AlMessageEvent.ActionType.CONVERSATION_DELETED:
-                        listener.onConversationDeleted(messageEvent.getUserId(), messageEvent.getGroupId(), messageEvent.getResponse());
-                        break;
-                    case AlMessageEvent.ActionType.UPDATE_TYPING_STATUS:
-                        listener.onUpdateTypingStatus(messageEvent.getUserId(), messageEvent.isTyping());
-                        break;
-                    case AlMessageEvent.ActionType.UPDATE_LAST_SEEN:
-                        listener.onUpdateLastSeen(messageEvent.getUserId());
-                        break;
-                    case AlMessageEvent.ActionType.MQTT_DISCONNECTED:
-                        listener.onMqttDisconnected();
-                        break;
-                    case AlMessageEvent.ActionType.MQTT_CONNECTED:
-                        listener.onMqttConnected();
-                        break;
-                    case AlMessageEvent.ActionType.CURRENT_USER_OFFLINE:
-                        listener.onUserOffline();
-                        break;
-                    case AlMessageEvent.ActionType.CURRENT_USER_ONLINE:
-                        listener.onUserOnline();
-                        break;
-                    case AlMessageEvent.ActionType.CHANNEL_UPDATED:
-                        listener.onChannelUpdated();
-                        break;
-                    case AlMessageEvent.ActionType.CONVERSATION_READ:
-                        listener.onConversationRead(messageEvent.getUserId(), messageEvent.isGroup());
-                        break;
-                    case AlMessageEvent.ActionType.USER_DETAILS_UPDATED:
-                        listener.onUserDetailUpdated(messageEvent.getUserId());
-                        break;
-                    case AlMessageEvent.ActionType.USER_ACTIVATED:
-                        listener.onUserActivated(true);
-                        break;
-                    case AlMessageEvent.ActionType.USER_DEACTIVATED:
-                        listener.onUserActivated(false);
-                        break;
-                    case AlMessageEvent.ActionType.MESSAGE_METADATA_UPDATED:
-                        listener.onMessageMetadataUpdated(messageEvent.getMessageKey());
-                        break;
-                    case AlMessageEvent.ActionType.GROUP_MUTE:
-                        listener.onGroupMute(messageEvent.getGroupId());
+            if (kmPluginEventListener != null && AlMessageEvent.ActionType.MESSAGE_SYNC.equals(messageEvent.getAction())) {
+                sendOnConversationResolvedEvent(messageEvent.getMessage());
+                sendOnConversationRestartedEvent(messageEvent.getMessage());
+            }
+
+            if (listenerMap != null && !listenerMap.isEmpty()) {
+                for (ApplozicUIListener listener : listenerMap.values()) {
+                    switch (messageEvent.getAction()) {
+                        case AlMessageEvent.ActionType.MESSAGE_SENT:
+                            listener.onMessageSent(messageEvent.getMessage());
+                            break;
+                        case AlMessageEvent.ActionType.MESSAGE_RECEIVED:
+                            listener.onMessageReceived(messageEvent.getMessage());
+                            break;
+                        case AlMessageEvent.ActionType.MESSAGE_SYNC:
+                            listener.onMessageSync(messageEvent.getMessage(), messageEvent.getMessageKey());
+                            break;
+                        case AlMessageEvent.ActionType.LOAD_MORE:
+                            listener.onLoadMore(messageEvent.isLoadMore());
+                            break;
+                        case AlMessageEvent.ActionType.MESSAGE_DELETED:
+                            listener.onMessageDeleted(messageEvent.getMessageKey(), messageEvent.getUserId());
+                            break;
+                        case AlMessageEvent.ActionType.MESSAGE_DELIVERED:
+                            listener.onMessageDelivered(messageEvent.getMessage(), messageEvent.getUserId());
+                            break;
+                        case AlMessageEvent.ActionType.ALL_MESSAGES_DELIVERED:
+                            listener.onAllMessagesDelivered(messageEvent.getUserId());
+                            break;
+                        case AlMessageEvent.ActionType.ALL_MESSAGES_READ:
+                            listener.onAllMessagesRead(messageEvent.getUserId());
+                            break;
+                        case AlMessageEvent.ActionType.CONVERSATION_DELETED:
+                            listener.onConversationDeleted(messageEvent.getUserId(), messageEvent.getGroupId(), messageEvent.getResponse());
+                            break;
+                        case AlMessageEvent.ActionType.UPDATE_TYPING_STATUS:
+                            listener.onUpdateTypingStatus(messageEvent.getUserId(), messageEvent.isTyping());
+                            break;
+                        case AlMessageEvent.ActionType.UPDATE_LAST_SEEN:
+                            listener.onUpdateLastSeen(messageEvent.getUserId());
+                            break;
+                        case AlMessageEvent.ActionType.MQTT_DISCONNECTED:
+                            listener.onMqttDisconnected();
+                            break;
+                        case AlMessageEvent.ActionType.MQTT_CONNECTED:
+                            listener.onMqttConnected();
+                            break;
+                        case AlMessageEvent.ActionType.CURRENT_USER_OFFLINE:
+                            listener.onUserOffline();
+                            break;
+                        case AlMessageEvent.ActionType.CURRENT_USER_ONLINE:
+                            listener.onUserOnline();
+                            break;
+                        case AlMessageEvent.ActionType.CHANNEL_UPDATED:
+                            listener.onChannelUpdated();
+                            break;
+                        case AlMessageEvent.ActionType.CONVERSATION_READ:
+                            listener.onConversationRead(messageEvent.getUserId(), messageEvent.isGroup());
+                            break;
+                        case AlMessageEvent.ActionType.USER_DETAILS_UPDATED:
+                            listener.onUserDetailUpdated(messageEvent.getUserId());
+                            break;
+                        case AlMessageEvent.ActionType.USER_ACTIVATED:
+                            listener.onUserActivated(true);
+                            break;
+                        case AlMessageEvent.ActionType.USER_DEACTIVATED:
+                            listener.onUserActivated(false);
+                            break;
+                        case AlMessageEvent.ActionType.MESSAGE_METADATA_UPDATED:
+                            listener.onMessageMetadataUpdated(messageEvent.getMessageKey());
+                            break;
+                        case AlMessageEvent.ActionType.GROUP_MUTE:
+                            listener.onGroupMute(messageEvent.getGroupId());
+                    }
                 }
             }
         }

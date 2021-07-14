@@ -76,6 +76,15 @@ public class Kommunicate {
     public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
     public static final String KM_ALREADY_LOGGED_IN_STATUS = "ALREADY_LOGGED_IN";
     public static final String PLACEHOLDER_APP_ID = "<Your-APP-ID>";
+    static private String faqPageName;
+
+    public static void setFaqPageName(String faqPageName) {
+        Kommunicate.faqPageName = faqPageName;
+    }
+
+    public static String getFaqPageName() {
+        return faqPageName;
+    }
 
     public static void init(Context context, String applicationKey) {
         if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {

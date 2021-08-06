@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
@@ -67,7 +68,7 @@ public class KmUserClientService extends UserClientService {
     private static final String USER_PASSWORD_RESET = "/users/password-reset";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String CREATE_CONVERSATION_URL = "/create";
-    private static final String BOTS_BASE_URL = "https://bots.kommunicate.io";
+    private static final String BOTS_BASE_URL = "https://api.kommunicate.io";
     private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
 
@@ -286,6 +287,7 @@ public class KmUserClientService extends UserClientService {
     public String getBotDetail(String applicationId, String botId) {
         String response = getResponse(getBotDetailUrl(applicationId, botId), "application/json", "application/json");
         Utils.printLog(context, TAG, "Bot detail response: " + response);
+        Log.e("bot:", response);
         return response;
     }
 

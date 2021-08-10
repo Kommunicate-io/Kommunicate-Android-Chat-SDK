@@ -45,7 +45,7 @@ dependencies {
     api 'androidx.cardview:cardview:1.0.0'
     api 'com.google.android.material:material:1.3.0'
     api "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    implementation 'com.google.android:flexbox:2.0.1'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     //Note: use this in case customization is not required
 }

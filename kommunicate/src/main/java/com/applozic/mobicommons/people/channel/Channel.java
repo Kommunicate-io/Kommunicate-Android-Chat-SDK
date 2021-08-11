@@ -45,6 +45,7 @@ public class Channel extends JsonMarker {
     public static final int CLOSED_CONVERSATIONS = 3;
     public static final int ASSIGNED_CONVERSATIONS = 1;
     public static final int ALL_CONVERSATIONS = 2;
+    public static final int NOTSTARTED_CONVERSATIONS = -1;
     public static final String AL_BLOCK = "AL_BLOCK";
 
     public Channel() {
@@ -257,6 +258,10 @@ public class Channel extends JsonMarker {
 
         if (getMetadata().containsKey(CONVERSATION_STATUS) && ("2".equals(getMetadata().get(CONVERSATION_STATUS)) || "3".equals(getMetadata().get(CONVERSATION_STATUS)))) {
             return CLOSED_CONVERSATIONS;
+        }
+
+        if(getMetadata().containsKey(CONVERSATION_STATUS) && ("-1".equals(getMetadata().get(CONVERSATION_STATUS)))) {
+            return NOTSTARTED_CONVERSATIONS;
         }
 
         if (getMetadata().containsKey(CONVERSATION_ASSIGNEE) && !TextUtils.isEmpty(getMetadata().get(CONVERSATION_ASSIGNEE))) {

@@ -67,7 +67,7 @@ public class KmUserClientService extends UserClientService {
     private static final String USER_PASSWORD_RESET = "/users/password-reset";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String CREATE_CONVERSATION_URL = "/create";
-    private static final String BOTS_BASE_URL = "https://api.kommunicate.io";
+    private static final String BOTS_BASE_URL = "https://api.kommunicate.io/rest/ws/botdetails/";
     private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
 
@@ -279,12 +279,12 @@ public class KmUserClientService extends UserClientService {
         }
     }
 
-    private String getBotDetailUrl(String applicationId, String botId) {
-        return BOTS_BASE_URL + "/application/" + applicationId + "/bot/" + botId;
+    private String getBotDetailUrl(String botId) {
+        return BOTS_BASE_URL + botId;
     }
 
-    public String getBotDetail(String applicationId, String botId) {
-        String response = getResponse(getBotDetailUrl(applicationId, botId), "application/json", "application/json");
+    public String getBotDetail(String botId) {
+        String response = httpRequestUtils.getResponse(getBotDetailUrl(botId), "application/json", "application/json");
         Utils.printLog(context, TAG, "Bot detail response: " + response);
         return response;
     }

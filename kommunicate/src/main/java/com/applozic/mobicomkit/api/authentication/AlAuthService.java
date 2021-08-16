@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -70,7 +71,7 @@ public class AlAuthService {
         }
     }
 
-    public static void refreshToken(Context context, String loadingMessage, final AlCallback callback) {
+    public static void refreshToken(final Context context, String loadingMessage, final AlCallback callback) {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(context));
         progressDialog.setMessage(loadingMessage);
         progressDialog.setCancelable(false);
@@ -79,8 +80,14 @@ public class AlAuthService {
         refreshToken(context, new AlCallback() {
             @Override
             public void onSuccess(Object response) {
-                if (progressDialog != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    if(progressDialog != null && (!getActivity(context).isDestroyed())) {
+                        progressDialog.dismiss();
+                    }
+                }
+                if (progressDialog != null && (!getActivity(context).isFinishing())) {
                     progressDialog.dismiss();
+
                 }
                 if (callback != null) {
                     callback.onSuccess(response);
@@ -89,7 +96,12 @@ public class AlAuthService {
 
             @Override
             public void onError(Object error) {
-                if (progressDialog != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    if(progressDialog != null && (!getActivity(context).isDestroyed())) {
+                        progressDialog.dismiss();
+                    }
+                }
+                if (progressDialog != null && (!getActivity(context).isFinishing())) {
                     progressDialog.dismiss();
                 }
                 if (callback != null) {

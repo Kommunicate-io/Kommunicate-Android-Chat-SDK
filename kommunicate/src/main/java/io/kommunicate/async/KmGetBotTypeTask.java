@@ -18,14 +18,12 @@ import io.kommunicate.services.KmUserService;
 
 public class KmGetBotTypeTask extends AsyncTask<Void, Void, String> {
 
-    private String applicationId;
     private String botId;
     private KmUserService userService;
     private KmCallback callback;
     private WeakReference<Context> weakReference;
 
-    public KmGetBotTypeTask(Context context, String applicationId, String botId, KmCallback callback) {
-        this.applicationId = applicationId;
+    public KmGetBotTypeTask(Context context, String botId, KmCallback callback) {
         this.botId = botId;
         this.callback = callback;
         weakReference = new WeakReference<>(context);
@@ -34,7 +32,7 @@ public class KmGetBotTypeTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-        return userService.getBotDetailResponse(applicationId, botId);
+        return userService.getBotDetailResponse(botId);
     }
 
     @Override

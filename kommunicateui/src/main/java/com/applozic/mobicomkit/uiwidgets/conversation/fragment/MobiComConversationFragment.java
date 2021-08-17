@@ -374,7 +374,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (!TextUtils.isEmpty(botTypeLocal)) {
                 kmCallback.onSuccess(botTypeLocal);
             } else {
-                new KmGetBotTypeTask(getContext(), MobiComKitClientService.getApplicationKey(ApplozicService.getContext(getContext())), contact.getUserId(), kmCallback).execute();
+                new KmGetBotTypeTask(getContext(), contact.getUserId(), kmCallback).execute();
             }
         }
     }

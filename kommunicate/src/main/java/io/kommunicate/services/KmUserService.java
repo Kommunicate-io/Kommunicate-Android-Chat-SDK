@@ -77,11 +77,11 @@ public class KmUserService {
         return userResponse;
     }
 
-    public synchronized String getBotDetailResponse(String applicationId, String botId) {
-        if(TextUtils.isEmpty(applicationId) || TextUtils.isEmpty(botId)) {
+    public synchronized String getBotDetailResponse(String botId) {
+        if(TextUtils.isEmpty(botId)) {
             return null;
         }
-        return userClientService.getBotDetail(applicationId, botId);
+        return userClientService.getBotDetail(botId);
     }
 
     public synchronized String createConversation(Integer groupId, String userId, String agentId, String applicationId) {

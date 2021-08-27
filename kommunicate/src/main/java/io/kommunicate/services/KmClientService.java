@@ -28,7 +28,7 @@ public class KmClientService extends MobiComKitClientService {
     private HttpRequestUtils httpRequestUtils;
     public static final String CONVERSATION_SHARE_ENDPOINT = "/conversations/";
     public static final String HELCENTER_APPID_ENDPOINT = "/?appId=";
-    public static final String FAQ_PAGE_ENDPORINT = "/category/";
+    public static final String FAQ_PAGE_ENDPOINT = "/category/";
     public static final String KM_AUTO_SUGGESTION_URL = "/autosuggest/message/";
     public static final String KM_AUTO_SUGGESTION_ENDPOINT = "?type=shortcut";
     public static final String KM_DASHBOARD = "km_dashboard_url";
@@ -111,7 +111,7 @@ public class KmClientService extends MobiComKitClientService {
 
     public String getHelpCenterUrl() {
         if(faqPageName!=null)
-            return getKmMappedUrl(KM_HELPCENTER) +FAQ_PAGE_ENDPORINT + faqPageName+ HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context);
+            return getKmMappedUrl(KM_HELPCENTER) + FAQ_PAGE_ENDPOINT + faqPageName+ HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context);
         else
             return getKmMappedUrl(KM_HELPCENTER) + HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context);
     }

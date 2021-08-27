@@ -9,6 +9,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 
 import io.kommunicate.users.KMUser;
 import io.kommunicate.app.R;
+import kommunicate.io.sample.pushnotification.Listeners;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -18,6 +19,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        Listeners listeners = new Listeners();
+        listeners.register();
 
 
         new Handler().postDelayed(new Runnable() {

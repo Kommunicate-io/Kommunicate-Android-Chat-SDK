@@ -61,6 +61,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.Kommunicate;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.utils.KmUtils;
 
@@ -144,7 +145,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ConversationActivity.openFaq(getActivity(), new KmClientService(getContext()).getHelpCenterUrl());
+                        ConversationActivity.openFaq(getActivity(), new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl());
                     }
                 });
             }

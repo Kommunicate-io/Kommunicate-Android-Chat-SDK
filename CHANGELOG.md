@@ -3,6 +3,13 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.2.1
+1) Added Plugin Listeners
+2) Added support for adding FAQ name at runtime
+3) Fix for initial conversations showing up in Agent app
+4) API Endpoints and url change
+5) Double callback bug fix and minor fix
+
 ## Kommunicate Android SDK 2.1.7
 1) Added support for submitting feedback multiple times.
 2) Added STT and TTS setting in json file for Hybrid platforms

@@ -161,13 +161,19 @@ public class BroadcastService {
 
             if (MobiComUserPreference.getInstance(context).isLoggedIn()) {
                 Channel channel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());
-                Contact contact = null;
+                Contact contact = new AppContactService(context).getContactById(message.getContactIds());
+
+                //Do not send BOT and Agent message notification to agents, roletype 3 = user
+                if(MobiComUserPreference.getInstance(context).getUserRoleType() != 3) {
+                        if(contact.getRoleType() != 3) {
+                            return;
+                        }
+                }
+
                 if (message.getConversationId() != null) {
                     ConversationService.getInstance(context).getConversation(message.getConversationId());
                 }
-                if (message.getGroupId() == null) {
-                    contact = new AppContactService(context).getContactById(message.getContactIds());
-                }
+
                 if (ApplozicClient.getInstance(context).isNotificationStacking()) {
                     notificationService.notifyUser(contact, channel, message, index);
                 } else {

@@ -186,6 +186,10 @@ public class MobiComMessageService {
             message.setHidden(true);
         }
 
+        if(message.isFeedbackMessage()) {
+            message.setHidden(true);
+        }
+
         messageDatabaseService.createMessage(message);
 
         //Check if we are........container is already opened...don't send broadcast

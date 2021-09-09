@@ -219,6 +219,7 @@
     <string name="km_take_over_from_bot_button_text">Take over from bot</string>
     <string name="rating_status_text">r</string>
     <string name="conversation_rated_info">You rated this conversation</string>
+    <string name="user_rating_text">User rated this conversation</string>
     <string name="have_other_queries">Have other queries?</string>
     <string name="resolved_info_text">This conversation has been marked as resolved.</string>
     <string name="restart_conversation_text">Restart conversation</string>

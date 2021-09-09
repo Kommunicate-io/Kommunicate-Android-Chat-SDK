@@ -33,10 +33,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,6 +69,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActiv
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.FeedbackInputFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessageFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
@@ -93,6 +96,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -271,6 +276,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } else if (viewType == 5) {
             View v5 = layoutInflater.inflate(R.layout.km_call_layout, parent, false);
             return new MyViewHolder5(v5);
+        } else if (viewType == 6) {
+            View v6 = layoutInflater.inflate(R.layout.km_feedback_agent_layout, parent, false);
+            return new MyViewHolder6(v6);
         } else if (viewType == 0) {
             View v0 = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
             return new MyViewHolder(v0);
@@ -351,7 +359,38 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     }
                 }
-            } else {
+            } else if (type == 6) {
+                MyViewHolder6 myViewholder6 = (MyViewHolder6) holder;
+                if(message != null) {
+                    JSONObject jsonObject = new JSONObject(message.getMetadata().get("feedback"));
+                    int ratingValue = (int) jsonObject.get("rating");
+                    String comment = String.valueOf(jsonObject.get("comments"));
+
+                    switch (ratingValue) {
+                        case FeedbackInputFragment.RATING_POOR:
+                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_sad_1));
+                            break;
+                        case FeedbackInputFragment.RATING_AVERAGE:
+                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
+                            break;
+                        case FeedbackInputFragment.RATING_GOOD:
+                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_happy));
+                            break;
+                        default:
+                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
+
+                    }
+                    if(comment.isEmpty()) {
+                        myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
+                    }
+                    else {
+                        myViewholder6.textViewFeedbackComment.setText(comment);
+                    }
+                    return;
+                }
+            }
+
+            else {
                 bindMessageView(holder, message, position);
             }
         } catch (Exception e) {
@@ -1348,6 +1387,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         if (message.isTempDateType()) {
             return 2;
         }
+        //feedback is also a custom message, so check it before
+        if(message.isFeedbackMessage()) {
+            return 6;
+        }
         if (message.isCustom()) {
             return 3;
         }
@@ -1357,6 +1400,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         if (message.isVideoCallMessage()) {
             return 5;
         }
+
         return message.isTypeOutbox() ? 1 : 0;
     }
 
@@ -1709,6 +1753,20 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             timeTextView = (TextView) itemView.findViewById(R.id.applozic_call_timing);
             durationTextView = (TextView) itemView.findViewById(R.id.applozic_call_duration);
             imageView = (ImageView) itemView.findViewById(R.id.applozic_call_image_type);
+        }
+    }
+
+    static class MyViewHolder6 extends RecyclerView.ViewHolder {
+        TextView textViewFeedbackComment;
+        ImageView imageViewFeedbackRating;
+        ScrollView scrollViewFeedbackCommentWrap;
+
+
+        public MyViewHolder6(View itemView) {
+            super(itemView);
+            textViewFeedbackComment = itemView.findViewById(R.id.idFeedbackComment);
+            imageViewFeedbackRating = itemView.findViewById(R.id.idRatingImage);
+            scrollViewFeedbackCommentWrap = itemView.findViewById(R.id.idCommentScrollView);
         }
     }
 }

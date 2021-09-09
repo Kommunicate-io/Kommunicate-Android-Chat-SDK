@@ -182,9 +182,10 @@ public class MobiComMessageService {
             message.setMessage(PersonalizedMessage.prepareMessageFromTemplate(message.getMessage(), receiverContact));
         }
 
-        //set message hidden if isHideActionMessage = true and if message is action message OR message is a feedback message
-        //isHideActionMessage = true for customer, false for agents
-        message.setHidden((isHideActionMessage && message.isActionMessage()) || message.isFeedbackMessage());
+        //Hide action message for customer, show for agents
+        if (isHideActionMessage && message.isActionMessage()) {
+            message.setHidden(true);
+        }
 
         messageDatabaseService.createMessage(message);
 

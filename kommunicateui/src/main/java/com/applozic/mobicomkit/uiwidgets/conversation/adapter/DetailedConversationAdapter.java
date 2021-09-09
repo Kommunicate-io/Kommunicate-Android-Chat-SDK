@@ -361,11 +361,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 }
             } else if (type == 6) {
                 MyViewHolder6 myViewholder6 = (MyViewHolder6) holder;
-                if(message != null) {
+                if(message.getMetadata() != null) {
                     JSONObject jsonObject = new JSONObject(message.getMetadata().get("feedback"));
                     int ratingValue = (int) jsonObject.get("rating");
-                    String comment = String.valueOf(jsonObject.get("comments"));
-
                     switch (ratingValue) {
                         case FeedbackInputFragment.RATING_POOR:
                             myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_sad_1));
@@ -380,13 +378,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
 
                     }
-                    if(comment.isEmpty()) {
+                    if(!jsonObject.has("comments")) {
                         myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
+                        return;
                     }
-                    else {
-                        myViewholder6.textViewFeedbackComment.setText(comment);
-                    }
-                    return;
+                    String comment = String.valueOf(jsonObject.get("comments"));
+                    myViewholder6.textViewFeedbackComment.setText(comment);
                 }
             }
 

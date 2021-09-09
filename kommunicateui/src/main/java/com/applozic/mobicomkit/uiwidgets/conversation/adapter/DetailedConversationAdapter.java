@@ -383,6 +383,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         return;
                     }
                     String comment = String.valueOf(jsonObject.get("comments"));
+                    myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
                     myViewholder6.textViewFeedbackComment.setText(comment);
                 }
             }

@@ -679,6 +679,10 @@ public class Message extends JsonMarker {
         return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(FEEDBACK_METADATA_KEY));
     }
 
+    public boolean isFeedbackMessage() {
+        return getMetadata() != null && getMetadata().containsKey(FEEDBACK_METADATA_KEY);
+    }
+
     public boolean isAutoSuggestion() {
         return getMetadata() != null && getMetadata().containsKey(AUTO_SUGGESTION_TYPE_MESSAGE);
     }

@@ -164,9 +164,13 @@ public class BroadcastService {
                 Contact contact = new AppContactService(context).getContactById(message.getContactIds());
 
                 //Do not send BOT and Agent message notification to agents, roletype 3 = user
+                //TODO: Notification should be handled from server side. Change this code when server side changes is done
                 if(MobiComUserPreference.getInstance(context).getUserRoleType() != 3) {
                         if(contact.getRoleType() != 3) {
                             return;
+                        }
+                        if(!channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId())) {
+                             return;
                         }
                 }
 

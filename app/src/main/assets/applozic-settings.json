@@ -118,7 +118,7 @@
     ":file": true,
     ":audio": true
   },
-  "editTextHintText:": "Type your message...",
+  "editTextHintText": "Type your message...",
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",
   "replyMessageLayoutReceivedMessageBackground": "#F5F5F5",
   "groupInfoScreenVisible": true,

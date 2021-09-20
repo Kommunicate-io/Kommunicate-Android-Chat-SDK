@@ -3994,7 +3994,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 });
             } else {
                 autoCompleteTextView.setAdapter(null);
-                messageEditText.setHint(R.string.enter_message_hint);
+                messageEditText.setHint(!TextUtils.isEmpty(alCustomizationSettings.getEditTextHintText()) ? alCustomizationSettings.getEditTextHintText() : getString(R.string.enter_message_hint));
             }
         }
     }

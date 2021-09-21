@@ -78,7 +78,7 @@ public class Message extends JsonMarker {
     public static final String AUTO_SUGGESTION_TYPE_MESSAGE = "KM_AUTO_SUGGESTION";
     public static final String STATUS_CLOSED = "closed";
     public static final String STATUS_OPEN = "open";
-    public static final String RICH_MESSAGE_CONTENT_TYPE = "300";
+    public static final String  RICH_MESSAGE_CONTENT_TYPE = "300";
 
     public Message() {
 

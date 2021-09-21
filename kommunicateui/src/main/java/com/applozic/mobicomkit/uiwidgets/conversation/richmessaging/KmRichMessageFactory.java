@@ -5,6 +5,7 @@ import android.widget.LinearLayout;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmVideoRMAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ButtonKmRichMessage;
@@ -31,6 +32,7 @@ public class KmRichMessageFactory {
     public final static int BUTTON_RICH_MESSAGE = 3;
     public final static int REPLY_RICH_MESSAGE = 6;
     public final static int MIXED_BUTTON_RICH_MESSAGE = 11;
+    public final static int VIDEO_RICH_MESSAGE = 14;
 
     //factory class is a singleton
     private KmRichMessageFactory() {
@@ -63,7 +65,9 @@ public class KmRichMessageFactory {
             return new KmFormRichMessage(context, containerView, message, listener, alCustomizationSettings);
         } else if (type == KmRichMessageFactory.BUTTON_RICH_MESSAGE || type == KmRichMessageFactory.REPLY_RICH_MESSAGE || type == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new ButtonKmRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        } else {
+        }else if (type == KmRichMessageFactory.CARD_RICH_MESSAGE){
+            return new KmVideoRMAdapter(context,containerView,message,listener,alCustomizationSettings);
+        }else {
             return null;
         }
     }

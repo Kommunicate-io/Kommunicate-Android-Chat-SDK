@@ -31,8 +31,8 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
 
     private List<KmRichMessageModel.KmPayloadModel> payloadList;
 
-    KmVideoRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, AlCustomizationSettings alCustomizationSettings) {
-        super(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings));
+    KmVideoRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed) {
+        super(context, model, listener, message, themeHelper);
 //        this.alCustomizationSettings = alCustomizationSettings;
 
         if (model.getPayload() != null) {
@@ -50,12 +50,20 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-
+        bindItems(viewHolder, i);
     }
 
     @Override
     void bindItems(RecyclerView.ViewHolder viewHolder, int position) {
         super.bindItems(viewHolder, position);
+        OtherSourceVideoViewHolder holder = (OtherSourceVideoViewHolder) viewHolder;
+        holder.captionText.setText("Video Item");
+        MediaController mc = new MediaController(context);
+        mc.setMediaPlayer(holder.videoView);
+        holder.videoView.setMediaController(mc);
+        holder.videoView.setVideoURI(Uri.parse("https://s3-migration-dot-applozic.appspot.com/rest/ws/aws/file/AMIfv95BPKLnhNtiYz0SNJYXTDhUkvhPYQikSjFaoL1hbg1zCcK8n6KZZfZC5Z42bfxOLaNeKSbKrt4o9pI0_ICb1fKKY8HqtcCeEuUZU8b18u8sr"));
+//        holder.videoView.start();
+
     }
 
     @Override
@@ -73,7 +81,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
             super(itemView);
 
 //            imageView = itemView.findViewById(R.id.alImageView);
-//            captionText = itemView.findViewById(R.id.alCaptionText);
+            captionText = itemView.findViewById(R.id.tv_caption);
 //            rootLayout = itemView.findViewById(R.id.rootLayout);
 //
 //            if (listener != null) {
@@ -98,12 +106,8 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
             super(itemView);
 
             videoView = itemView.findViewById(R.id.km_rm_video_view);
-            MediaController mc = new MediaController(context);
-            mc.setMediaPlayer(videoView);
-            videoView.setMediaController(mc);
-            videoView.setVideoURI(Uri.parse("https://s3-migration-dot-applozic.appspot.com/rest/ws/aws/file/AMIfv95BPKLnhNtiYz0SNJYXTDhUkvhPYQikSjFaoL1hbg1zCcK8n6KZZfZC5Z42bfxOLaNeKSbKrt4o9pI0_ICb1fKKY8HqtcCeEuUZU8b18u8sr"));
-            videoView.start();
-//            captionText = itemView.findViewById(R.id.alCaptionText);
+//
+            captionText = itemView.findViewById(R.id.tv_caption);
 //            rootLayout = itemView.findViewById(R.id.rootLayout);
 //
 //            if (listener != null) {

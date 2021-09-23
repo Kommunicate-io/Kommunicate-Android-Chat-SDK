@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:maxLines="3"
-        android:visibility="gone"
-        android:text="" />
+        android:visibility="visible"
+        android:text="sathyan" />
 
 
 </LinearLayout>

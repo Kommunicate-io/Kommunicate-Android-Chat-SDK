@@ -39,7 +39,7 @@ public class KmRichMessageAdapterFactory {
         } else if (model.getTemplateId() == KmRichMessageFactory.BUTTON_RICH_MESSAGE || model.getTemplateId() == KmRichMessageFactory.REPLY_RICH_MESSAGE || model.getTemplateId() == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new KmButtonRMAdapter(context, model, listener, message, themeHelper);
         } else if (model.getTemplateId() ==  KmRichMessageFactory.VIDEO_RICH_MESSAGE){
-            return new KmVideoRMAdapter(context,model,listener,message)
+            return new KmVideoRMAdapter(context,model,listener,message,themeHelper,isMessageProcessed);
         }
         else{
             return null;

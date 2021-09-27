@@ -24,6 +24,11 @@ android {
         versionName "2.2.1"
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     buildTypes {
         release {
@@ -31,6 +36,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
@@ -47,6 +53,15 @@ dependencies {
     api "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+    implementation 'com.google.android.exoplayer:exoplayer:2.15.0'
+
+//    implementation 'com.github.JarvanMo:ExoVideoView:2.1.6'
+
+    def exoPlayerVersion = "2.8.4"  // 2.9.0 has min sdk 26
+//    implementation "com.google.android.exoplayer:exoplayer:$exoPlayerVersion"
+
+
     //Note: use this in case customization is not required
 }
 

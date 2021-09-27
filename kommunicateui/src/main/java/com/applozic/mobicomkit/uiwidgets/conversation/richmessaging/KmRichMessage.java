@@ -6,6 +6,7 @@ import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -61,6 +62,7 @@ public abstract class KmRichMessage {
     protected RecyclerView genericCardRecycler;
     protected RecyclerView imageListRecycler;
     protected RecyclerView alFormLayoutRecycler;
+    protected RecyclerView videoTemplateRecycler;
     protected KmFlowLayout flowLayout;
     protected AlCustomizationSettings alCustomizationSettings;
     protected KmRichMessageModel model;
@@ -93,6 +95,8 @@ public abstract class KmRichMessage {
         faqLayout = containerView.findViewById(R.id.alFaqLayout);
         genericCardRecycler = containerView.findViewById(R.id.alGenericCardContainer);
         imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
+        videoTemplateRecycler = containerView.findViewById(R.id.video_template_container);
+        Log.i("Video","Reached supr createRichMessage");
         flowLayout = containerView.findViewById(R.id.kmFlowLayout);
         alFormLayoutRecycler = containerView.findViewById(R.id.alFormLayoutRecycler);
 
@@ -105,8 +109,11 @@ public abstract class KmRichMessage {
         faqLayout.setVisibility(templateId == 8 ? View.VISIBLE : View.GONE);
         faqReplyLayout.setVisibility(templateId == 8 ? View.VISIBLE : View.GONE);
         imageListRecycler.setVisibility(templateId == 9 ? View.VISIBLE : View.GONE);
+//        videoTemplateRecycler.setVisibility(templateId == 14 ? View.VISIBLE : View.GONE);
         alFormLayoutRecycler.setVisibility(templateId == 12 ? View.VISIBLE : View.GONE);
         flowLayout.setVisibility((templateId == 3 || templateId == 6 || templateId == 11 || templateId == 12) ? View.VISIBLE : View.GONE);
+        Log.i("Video","Reached supr handle visibility");
+
     }
 
     private String getActionType(KmRichMessageModel model, KmRichMessageModel.KmButtonModel buttonModel) {

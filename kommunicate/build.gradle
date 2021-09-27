@@ -22,6 +22,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     buildTypes {
         release {
@@ -38,6 +42,7 @@ dependencies {
     api 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     api 'androidx.appcompat:appcompat:1.2.0'
     api 'com.google.code.gson:gson:2.8.6'
+
 }
 
 /*task sourcesJar(type: Jar) {

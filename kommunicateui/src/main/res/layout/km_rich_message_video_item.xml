@@ -4,6 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:padding="6dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 <!--    <VideoView-->
@@ -16,7 +18,7 @@
         android:focusable="true"
         android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="200dp">
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -25,16 +27,18 @@
             android:visibility="gone"/>
 
     </com.google.android.exoplayer2.ui.PlayerView>
-<!--    <com.jarvanmo.exoplayerview.ui.ExoVideoView-->
-<!--        android:id="@+id/videoView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="300dp"/>-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
 
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
         android:background="@color/black"
-        android:layout_height="200dp"/>
+        />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tv_caption"
@@ -42,7 +46,8 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:maxLines="3"
+        android:layout_marginTop="6dp"
         android:gravity="center_horizontal"
         android:visibility="visible"
-        android:text="sathyan" />
+        android:text="" />
 </LinearLayout>

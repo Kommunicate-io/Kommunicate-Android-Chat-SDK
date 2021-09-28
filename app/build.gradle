@@ -10,8 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        buildConfigField "String", "APP_ID", '"18ae6ce9d4f469f95c9c095fb5b0bda44"'
-    }
+        buildConfigField "String", "APP_ID", '"<YOUR_APP_ID>"'    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -82,12 +83,12 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
             if (!TextUtils.isEmpty(payloadModel.getSource())) {
                 holder.player.setVisibility(View.GONE);
                 holder.captionText.setVisibility(View.GONE);
-                holder.webview.setVisibility(View.VISIBLE);
+                holder.webViewRoot.setVisibility(View.VISIBLE);
                 String currentUrl = "<iframe width=\"100%\" height=\"100%\" src=\"" + payloadModel.getUrl() + "\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
                 holder.webview.loadData(currentUrl, "text/html", "utf-8");
             } else if (!TextUtils.isEmpty(payloadModel.getUrl())) {
                 holder.player.setVisibility(View.VISIBLE);
-                holder.webview.setVisibility(View.GONE);
+                holder.webViewRoot.setVisibility(View.GONE);
                 if (!TextUtils.isEmpty(payloadModel.getCaption())){
                     holder.captionText.setVisibility(View.VISIBLE);
                     holder.captionText.setText(payloadModel.getCaption());
@@ -123,10 +124,11 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
                     }
                 });
 
+
             }else{
                 holder.player.setVisibility(View.GONE);
                 holder.captionText.setVisibility(View.GONE);
-                holder.webview.setVisibility(View.GONE);
+                holder.webViewRoot.setVisibility(View.GONE);
 
             }
         }
@@ -143,6 +145,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         TextView captionText;
         WebView webview;
         PlayerView player;
+        FrameLayout webViewRoot;
 
 
         public RichMessageVideoHolder(View itemView) {
@@ -151,6 +154,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
             webview = itemView.findViewById(R.id.webview);
             captionText = itemView.findViewById(R.id.tv_caption);
             player = itemView.findViewById(R.id.playerView);
+            webViewRoot = itemView.findViewById(R.id.web_frame_layout);
         }
     }
 }

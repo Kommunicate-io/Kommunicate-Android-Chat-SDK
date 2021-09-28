@@ -449,7 +449,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 }
             }
             Configuration config = context.getResources().getConfiguration();
-
             if (message.getMetadata() != null && !message.getMetadata().isEmpty() && message.getMetadata().containsKey(Message.MetaDataType.AL_REPLY.getValue())) {
                 final Message msg = messageDatabaseService.getMessage(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()));
                 if (msg != null) {

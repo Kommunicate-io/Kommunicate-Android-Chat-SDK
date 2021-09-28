@@ -18,7 +18,7 @@
         android:id="@+id/alGenericCardContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-    <!--ES -->
+    <!--Video Template -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/video_template_container"
         android:layout_width="wrap_content"

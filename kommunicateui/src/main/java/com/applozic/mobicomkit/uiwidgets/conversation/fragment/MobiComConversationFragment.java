@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -28,6 +29,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -363,6 +365,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected int botMessageDelayInterval;
     protected KmBotTypingDelayManager botTypingDelayManager;
     protected boolean isRecordOptionEnabled;
+    protected RelativeLayout conversationRootLayout;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -442,9 +445,28 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmAudioRecordManager = new KmAudioRecordManager(getActivity());
     }
 
+    private void setupChatBackground(){
+        // && alCustomizationSettings.getChatBackgroundColorOrDrawable().length() >= 7
+        if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundColorOrDrawable())){
+            String customChatBackground = alCustomizationSettings.getChatBackgroundColorOrDrawable();
+
+            if (customChatBackground.contains("#") && customChatBackground.length() >= 7){
+                conversationRootLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getChatBackgroundColorOrDrawable()));
+            }else{
+                Resources resources = getResources();
+                int resourceId = resources.getIdentifier(customChatBackground, "drawable",getContext().getPackageName());
+                if (resourceId != 0){
+                    conversationRootLayout.setBackgroundResource(resourceId);
+                }
+            }
+        }
+
+    }
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
+        conversationRootLayout = (RelativeLayout) list.findViewById(R.id.rl_conversation_layout);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
         linearLayoutManager = new KmLinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -460,6 +482,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(true);
+        setupChatBackground();
 
         frameLayoutProgressbar = list.findViewById(R.id.idProgressBarLayout);
 
@@ -470,6 +493,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (faqButtonLayout != null) {
             faqButtonLayout.setVisibility(View.GONE);
         }
+
 
         if (customToolbarLayout != null) {
             customToolbarLayout.setVisibility(View.GONE);

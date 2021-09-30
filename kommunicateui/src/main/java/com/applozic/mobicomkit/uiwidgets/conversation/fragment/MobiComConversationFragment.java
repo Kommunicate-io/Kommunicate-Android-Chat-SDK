@@ -29,7 +29,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -446,7 +445,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void setupChatBackground(){
-        // && alCustomizationSettings.getChatBackgroundColorOrDrawable().length() >= 7
+
         if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundColorOrDrawable())){
             String customChatBackground = alCustomizationSettings.getChatBackgroundColorOrDrawable();
 

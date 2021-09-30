@@ -3,6 +3,12 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.2.2
+1) Notification changes for Agent app
+2) Show feedback for Agent app
+3) Customization settings: Message Hint text can be changed using: EditTextHintText
+4) Some Crash fix
+
 ## Kommunicate Android SDK 2.2.1
 1) Added Plugin Listeners
 2) Added support for adding FAQ name at runtime

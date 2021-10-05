@@ -444,23 +444,25 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmAudioRecordManager = new KmAudioRecordManager(getActivity());
     }
 
-    private void setupChatBackground(){
+    private void setupChatBackground() {
 
-        if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundColorOrDrawable())){
+        if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundColorOrDrawable())) {
             String customChatBackground = alCustomizationSettings.getChatBackgroundColorOrDrawable();
-
-            if (customChatBackground.contains("#") && customChatBackground.length() >= 7){
-                conversationRootLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getChatBackgroundColorOrDrawable()));
-            }else{
+            if (customChatBackground.contains("#")) {
+                if(customChatBackground.length() == 7 || customChatBackground.length() == 9){
+                    conversationRootLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getChatBackgroundColorOrDrawable()));
+                }
+            } else {
                 Resources resources = getResources();
-                int resourceId = resources.getIdentifier(customChatBackground, "drawable",getContext().getPackageName());
-                if (resourceId != 0){
+                int resourceId = resources.getIdentifier(customChatBackground, "drawable", getContext().getPackageName());
+                if (resourceId != 0) {
                     conversationRootLayout.setBackgroundResource(resourceId);
                 }
             }
         }
 
     }
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 

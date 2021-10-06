@@ -427,7 +427,6 @@ public class MessageClientService extends MobiComKitClientService {
                         BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.UPLOAD_ATTACHMENT_FAILED.toString(), message);
                         return;
                     }
-                    if (ApplozicClient.getInstance(context).isS3StorageServiceEnabled()) {
                         if (!TextUtils.isEmpty(fileMetaResponse)) {
                             message.setFileMetas((FileMeta) GsonUtils.getObjectFromJson(fileMetaResponse, FileMeta.class));
                             if (handler != null) {
@@ -438,21 +437,6 @@ public class MessageClientService extends MobiComKitClientService {
                                 msg.sendToTarget();
                             }
                         }
-                    } else {
-                        JsonParser jsonParser = new JsonParser();
-                        JsonObject jsonObject = jsonParser.parse(fileMetaResponse).getAsJsonObject();
-                        if (jsonObject.has(FILE_META)) {
-                            Gson gson = new Gson();
-                            message.setFileMetas(gson.fromJson(jsonObject.get(FILE_META), FileMeta.class));
-                            if (handler != null) {
-                                android.os.Message msg = handler.obtainMessage();
-                                msg.what = MobiComConversationService.UPLOAD_COMPLETED;
-                                msg.getData().putString(MobiComKitConstants.OLD_MESSAGE_KEY_INTENT_EXTRA, oldMessageKey);
-                                msg.getData().putString("error", null);
-                                msg.sendToTarget();
-                            }
-                        }
-                    }
                 } catch (Exception ex) {
                     Utils.printLog(context, TAG, "Error uploading file to server: " + filePath);
                     if (handler != null) {

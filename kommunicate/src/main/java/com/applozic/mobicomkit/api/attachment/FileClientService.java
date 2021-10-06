@@ -264,7 +264,7 @@ public class FileClientService extends MobiComKitClientService {
     }
 
     public String getUploadURL() {
-        String fileUrl = new S3URLService(context).getFileUploadUrl();
+        String fileUrl = new URLServiceProvider(context).getFileUploadUrl();
         return fileUrl;
     }
 

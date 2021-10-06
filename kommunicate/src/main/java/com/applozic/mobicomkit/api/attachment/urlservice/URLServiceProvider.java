@@ -48,7 +48,12 @@ public class URLServiceProvider {
         HttpURLConnection connection;
 
         try {
-            connection = getUrlService(context).getAttachmentConnection(message);
+            if(message.isAttachmentEncrypted()) {
+                connection = new S3URLService(context).getAttachmentConnection(message);
+            }
+            else {
+                connection = getUrlService(context).getAttachmentConnection(message);
+            }
         } catch (Exception e) {
             throw new IOException("Error connecting");
         }
@@ -57,14 +62,20 @@ public class URLServiceProvider {
 
     public String getThumbnailURL(Message message) throws IOException {
         try {
-            return getUrlService(context).getThumbnailURL(message);
+            if(message.isAttachmentEncrypted()) {
+                return new S3URLService(context).getThumbnailURL(message);
+            }
+            else {
+                return getUrlService(context).getThumbnailURL(message);
+            }
         } catch (Exception e) {
             throw new IOException("Error connecting");
         }
     }
 
+    //Upload to only S3 but download from any service
     public String getFileUploadUrl() {
-        return getUrlService(context).getFileUploadUrl();
+        return new S3URLService(context).getFileUploadUrl();
     }
 
     public String getImageURL(Message message) {

@@ -79,6 +79,7 @@ public class Message extends JsonMarker {
     public static final String STATUS_CLOSED = "closed";
     public static final String STATUS_OPEN = "open";
     public static final String RICH_MESSAGE_CONTENT_TYPE = "300";
+    private static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
 
     public Message() {
 
@@ -729,6 +730,10 @@ public class Message extends JsonMarker {
 
     public boolean isRichMessage() {
         return metadata != null && RICH_MESSAGE_CONTENT_TYPE.equals(metadata.get("contentType"));
+    }
+
+    public boolean isAttachmentEncrypted() {
+        return getFileMetas().getName().startsWith(AWS_ENCRYPTED);
     }
 
     public enum Source {

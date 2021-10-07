@@ -46,6 +46,14 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         return Type.RADIO.getValue().equals(type) || Type.CHECKBOX.getValue().equals(type);
     }
 
+    public boolean isTypeHidden(){
+        return Type.HIDDEN.getValue().equals(type);
+    }
+
+    public boolean isTypeAction(){
+        return Type.ACTION.getValue().equals(type) || Type.SUBMIT.getValue().equals(type);
+    }
+
     public static class Text extends JsonMarker {
         private String label;
         private String placeholder;

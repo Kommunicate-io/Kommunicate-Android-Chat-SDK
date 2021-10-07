@@ -733,7 +733,7 @@ public class Message extends JsonMarker {
     }
 
     public boolean isAttachmentEncrypted() {
-        return getFileMetas().getName().startsWith(AWS_ENCRYPTED);
+        return fileMeta != null && fileMeta.getName().startsWith(AWS_ENCRYPTED);
     }
 
     public enum Source {

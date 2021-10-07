@@ -15,6 +15,7 @@ public class URLServiceProvider {
 
     private Context context;
     private URLService urlService;
+    private URLService S3UrlService;
     private MobiComKitClientService mobiComKitClientService;
 
     public URLServiceProvider(Context context) {
@@ -43,13 +44,21 @@ public class URLServiceProvider {
         return urlService;
     }
 
+    private URLService getS3UrlService(Context context) {
+        if (S3UrlService != null) {
+            return S3UrlService;
+        }
+        S3UrlService = new S3URLService(context);
+        return S3UrlService;
+    }
+
 
     public HttpURLConnection getDownloadConnection(Message message) throws IOException {
         HttpURLConnection connection;
 
         try {
             if(message.isAttachmentEncrypted()) {
-                connection = new S3URLService(context).getAttachmentConnection(message);
+                connection = getS3UrlService(context).getAttachmentConnection(message);
             }
             else {
                 connection = getUrlService(context).getAttachmentConnection(message);
@@ -63,7 +72,7 @@ public class URLServiceProvider {
     public String getThumbnailURL(Message message) throws IOException {
         try {
             if(message.isAttachmentEncrypted()) {
-                return new S3URLService(context).getThumbnailURL(message);
+                return getS3UrlService(context).getThumbnailURL(message);
             }
             else {
                 return getUrlService(context).getThumbnailURL(message);
@@ -73,9 +82,8 @@ public class URLServiceProvider {
         }
     }
 
-    //Upload to only S3 but download from any service
     public String getFileUploadUrl() {
-        return new S3URLService(context).getFileUploadUrl();
+        return getS3UrlService(context).getFileUploadUrl();
     }
 
     public String getImageURL(Message message) {

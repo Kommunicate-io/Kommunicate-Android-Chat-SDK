@@ -14,7 +14,7 @@ import java.net.HttpURLConnection;
 public class URLServiceProvider {
 
     private Context context;
-    private URLService urlService;
+    private URLService defaultUrlService;
     private URLService S3UrlService;
     private MobiComKitClientService mobiComKitClientService;
 
@@ -34,11 +34,11 @@ public class URLServiceProvider {
             S3UrlService = new S3URLService(context);
             return S3UrlService;
         }
-        if (urlService != null) {
-            return urlService;
+        if (defaultUrlService != null) {
+            return defaultUrlService;
         }
-        urlService = new DefaultURLService(context);
-        return urlService;
+        defaultUrlService = new DefaultURLService(context);
+        return defaultUrlService;
     }
 
     private URLService getS3UrlService(Context context) {

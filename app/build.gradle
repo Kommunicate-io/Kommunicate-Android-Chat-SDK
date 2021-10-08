@@ -4,13 +4,14 @@ android {
     compileSdkVersion 30
     defaultConfig {
         applicationId "io.kommunicate.app"
-        minSdkVersion 16
+        minSdkVersion 14
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "APP_ID", '"<YOUR_APP_ID>"'
+        multiDexEnabled true
     }
 
     buildTypes {

@@ -254,7 +254,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 //            }
 //        }
         if (submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
-            sendFormDataAsMessage(context,message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
+            sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
 
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
@@ -284,88 +284,88 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                     }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
-//TO SEND FORM DATA AS MESSAGE IMPLEMENTED FOR TD-2216
-    private void sendFormDataAsMessage(final Context context,Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
+
+    //TO SEND FORM DATA AS MESSAGE
+    private void sendFormDataAsMessage(final Context context, Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
         if (message.getMetadata() != null) {
-            com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
-            }.getType());
+            com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {}.getType());
 
             StringBuilder messageToSend = new StringBuilder(message.getMessage()).append("\n");
 
             List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
 
-            for(KmFormPayloadModel model : formPayloadModelList){
-               //Submit Button
-                if(model.isTypeAction()){
+            for (KmFormPayloadModel model : formPayloadModelList) {
+                //Submit Button
+                if (model.isTypeAction()) {
                     continue;
                 }
                 //TextFiled
-                if (model.isTypeText()){
+                if (model.isTypeText()) {
                     KmFormPayloadModel.Text textModel = model.getTextModel();
-                    if (formSelectedData.containsKey(textModel.getLabel())){
+                    if (formSelectedData.containsKey(textModel.getLabel())) {
                         messageToSend.append(textModel.getLabel()).append(" : ").append(formSelectedData.get(textModel.getLabel()).toString()).append("\n");
-                    }else{
+                    } else {
                         messageToSend.append(textModel.getLabel()).append(" : ").append("\n");
 
                     }
                 }
                 //Radio Button or Check Boxes
-                else if (model.isTypeSelection()){
+                else if (model.isTypeSelection()) {
                     KmFormPayloadModel.Selections selectionModel = model.getSelectionModel();
-                    if (formSelectedData.containsKey(selectionModel.getName())){
+                    if (formSelectedData.containsKey(selectionModel.getName())) {
 
-                        if( formSelectedData.get(selectionModel.getName()) instanceof Object[] &&  ((Object[]) formSelectedData.get(selectionModel.getName())).length > 0 ){
-                           String[] valueList = (String[]) formSelectedData.get(selectionModel.getName());
-                           String valueString = "";
-                           if (valueList != null && valueList.length > 0){
-                               for(int i =0;i< valueList.length;i++){
+                        if (formSelectedData.get(selectionModel.getName()) instanceof Object[] && ((Object[]) formSelectedData.get(selectionModel.getName())).length > 0) {
+                            String[] valueList = (String[]) formSelectedData.get(selectionModel.getName());
+                            String valueString = "";
+                            if (valueList != null && valueList.length > 0) {
+                                for (int i = 0; i < valueList.length; i++) {
 
-                                   valueString += valueList[i];
-                                   if(i< valueList.length-1){
-                                       valueString += ", ";
-                                   }
-                               }
-                           }
+                                    valueString += valueList[i];
+                                    if (i < valueList.length - 1) {
+                                        valueString += ", ";
+                                    }
+                                }
+                            }
 
-                           messageToSend.append(selectionModel.getName()).append(" : ").append(valueString).append("\n");
-                        }else{
+                            messageToSend.append(selectionModel.getName()).append(" : ").append(valueString).append("\n");
+                        } else {
                             messageToSend.append(selectionModel.getName()).append(" : ").append(formSelectedData.get(selectionModel.getName()).toString()).append("\n");
 
                         }
-                    }else{
+                    } else {
                         messageToSend.append(selectionModel.getName()).append(" : ").append("\n");
 
                     }
                 }
                 //Date or Time Picker
-                else if (model.isTypeDateTime()){
+                else if (model.isTypeDateTime()) {
                     KmFormPayloadModel.DateTimePicker datePickerModel = model.getDatePickerModel();
-                    if (formSelectedData.containsKey(datePickerModel.getLabel())){
+                    if (formSelectedData.containsKey(datePickerModel.getLabel())) {
                         messageToSend.append(datePickerModel.getLabel()).append(" : ").append(formSelectedData.get(datePickerModel.getLabel()).toString()).append("\n");
-                    }else{
+                    } else {
                         messageToSend.append(datePickerModel.getLabel()).append(" : ").append("\n");
 
                     }
                 }
-                 //Drop Down
-                else if (model.isTypeDropdown()){
+                //Drop Down
+                else if (model.isTypeDropdown()) {
                     KmFormPayloadModel.DropdownList dropdownList = model.getDropdownList();
-                    if (formSelectedData.containsKey(dropdownList.getName())){
+                    if (formSelectedData.containsKey(dropdownList.getName())) {
                         messageToSend.append(dropdownList.getName()).append(" : ").append(formSelectedData.get(dropdownList.getName()).toString()).append("\n");
-                    }else{
+                    } else {
                         messageToSend.append(dropdownList.getName()).append(" : ").append("\n");
 
                     }
                 }
                 // Hidden
-                else if(model.isTypeHidden()){
+                else if (model.isTypeHidden()) {
                     KmFormPayloadModel.Hidden hiddenModel = model.getHiddenModel();
-                        messageToSend.append(hiddenModel.getName()).append( " : ").append(hiddenModel.getValue()).append("\n");
+                    messageToSend.append(hiddenModel.getName()).append(" : ").append(hiddenModel.getValue()).append("\n");
 
                 }
             }
 
-            sendMessage(messageToSend.toString(),replyMetadata);
+            sendMessage(messageToSend.toString(), replyMetadata);
         }
     }
 

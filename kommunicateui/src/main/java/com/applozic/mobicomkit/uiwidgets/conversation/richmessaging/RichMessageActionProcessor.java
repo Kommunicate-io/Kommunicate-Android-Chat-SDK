@@ -288,7 +288,8 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     //TO SEND FORM DATA AS MESSAGE
     private void sendFormDataAsMessage(final Context context, Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
         if (message.getMetadata() != null) {
-            com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {}.getType());
+            com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
+            }.getType());
 
             StringBuilder messageToSend = new StringBuilder(message.getMessage()).append("\n");
 

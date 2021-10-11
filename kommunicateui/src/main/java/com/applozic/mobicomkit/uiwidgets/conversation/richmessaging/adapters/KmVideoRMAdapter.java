@@ -101,14 +101,11 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
 
                 MediaSourceFactory mediaSourceFactory = new DefaultMediaSourceFactory(mediaDataSourceFactory);
 
-
                 simpleExoPlayer = new SimpleExoPlayer.Builder(context)
                         .setMediaSourceFactory(mediaSourceFactory)
                         .build();
-
                 simpleExoPlayer.addMediaSource(mediaSource);
                 holder.player.setShutterBackgroundColor(Color.TRANSPARENT);
-
                 simpleExoPlayer.setPlayWhenReady(true);
                 holder.player.setPlayer(simpleExoPlayer);
                 holder.player.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -123,7 +120,6 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
 
                     }
                 });
-
 
             }else{
                 holder.player.setVisibility(View.GONE);

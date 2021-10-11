@@ -366,6 +366,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isRecordOptionEnabled;
     protected RelativeLayout conversationRootLayout;
 
+    public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
+    public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
+
+
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -449,7 +453,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundColorOrDrawable())) {
             String customChatBackground = alCustomizationSettings.getChatBackgroundColorOrDrawable();
             if (customChatBackground.contains("#")) {
-                if(customChatBackground.length() == 7 || customChatBackground.length() == 9){
+                if(customChatBackground.length() == STANDARD_HEX_COLOR_CODE_LENGTH || customChatBackground.length() == STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH){
                     conversationRootLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getChatBackgroundColorOrDrawable()));
                 }
             } else {

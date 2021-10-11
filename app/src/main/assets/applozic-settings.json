@@ -8,6 +8,7 @@
   "attachmentIconsBackgroundColor": "#FF03A9F4",
   "channelCustomMessageBgColor": "#cccccc",
   "sentContactMessageTextColor:": "#5fba7d",
+  "chatBackgroundColorOrDrawable": "#FFFFFF",
   "receivedContactMessageTextColor": "#646262",
   "messageStatusIconColor": "#5c5aa7",
   "sentMessageTextColor": "#FFFFFFFF",

@@ -67,9 +67,9 @@ public class KmRichMessageFactory {
             return new KmFormRichMessage(context, containerView, message, listener, alCustomizationSettings);
         } else if (type == KmRichMessageFactory.BUTTON_RICH_MESSAGE || type == KmRichMessageFactory.REPLY_RICH_MESSAGE || type == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new ButtonKmRichMessage(context, containerView, message, listener, alCustomizationSettings);
-        }else if (type == KmRichMessageFactory.VIDEO_RICH_MESSAGE){
-            return new VideoRichMessage(context,containerView,message,listener,alCustomizationSettings);
-        }else {
+        } else if (type == KmRichMessageFactory.VIDEO_RICH_MESSAGE) {
+            return new VideoRichMessage(context, containerView, message, listener, alCustomizationSettings);
+        } else {
             return null;
         }
     }

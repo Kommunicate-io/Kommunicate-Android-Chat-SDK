@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:id="@+id/layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="4dp"
-    android:padding="6dp"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:padding="6dp">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playerView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:focusable="true"
         android:visibility="visible"
-        app:show_buffering="always"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        app:show_buffering="always" />
 
 
     <FrameLayout
@@ -22,23 +22,22 @@
         android:layout_width="match_parent"
         android:layout_height="200dp">
 
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:background="@color/black"
-        />
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:scrollbars="none" />
     </FrameLayout>
 
     <TextView
         android:id="@+id/tv_caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="marquee"
-        android:maxLines="3"
         android:layout_marginTop="6dp"
+        android:ellipsize="marquee"
         android:gravity="center_horizontal"
-        android:visibility="visible"
-        android:text="" />
+        android:maxLines="3"
+        android:text=""
+        android:visibility="visible" />
 </LinearLayout>

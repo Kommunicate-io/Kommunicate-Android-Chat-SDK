@@ -89,11 +89,11 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
             } else if (!TextUtils.isEmpty(payloadModel.getUrl())) {
                 holder.player.setVisibility(View.VISIBLE);
                 holder.webViewRoot.setVisibility(View.GONE);
-                if (!TextUtils.isEmpty(payloadModel.getCaption())){
+                if (!TextUtils.isEmpty(payloadModel.getCaption())) {
                     holder.captionText.setVisibility(View.VISIBLE);
                     holder.captionText.setText(payloadModel.getCaption());
 
-                }else{
+                } else {
                     holder.captionText.setVisibility(View.GONE);
                 }
 
@@ -121,7 +121,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
                     }
                 });
 
-            }else{
+            } else {
                 holder.player.setVisibility(View.GONE);
                 holder.captionText.setVisibility(View.GONE);
                 holder.webViewRoot.setVisibility(View.GONE);

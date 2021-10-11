@@ -34,6 +34,7 @@ public class KmRichMessageFactory {
     public final static int REPLY_RICH_MESSAGE = 6;
     public final static int MIXED_BUTTON_RICH_MESSAGE = 11;
     public final static int VIDEO_RICH_MESSAGE = 14;
+    public final static int FORM_RICH_MESSAGE = 12;
 
     //factory class is a singleton
     private KmRichMessageFactory() {

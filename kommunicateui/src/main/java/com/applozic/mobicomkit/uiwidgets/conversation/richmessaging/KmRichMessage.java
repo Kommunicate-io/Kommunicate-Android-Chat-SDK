@@ -102,14 +102,15 @@ public abstract class KmRichMessage {
     }
 
     private void handleLayoutVisibilities(Short templateId) {
-        listItemLayout.setVisibility(templateId == 7 ? View.VISIBLE : View.GONE);
-        genericCardRecycler.setVisibility(templateId == 10 ? View.VISIBLE : View.GONE);
-        faqLayout.setVisibility(templateId == 8 ? View.VISIBLE : View.GONE);
-        faqReplyLayout.setVisibility(templateId == 8 ? View.VISIBLE : View.GONE);
-        imageListRecycler.setVisibility(templateId == 9 ? View.VISIBLE : View.GONE);
-        videoTemplateRecycler.setVisibility(templateId == 14 ? View.VISIBLE : View.GONE);
-        alFormLayoutRecycler.setVisibility(templateId == 12 ? View.VISIBLE : View.GONE);
-        flowLayout.setVisibility((templateId == 3 || templateId == 6 || templateId == 11 || templateId == 12) ? View.VISIBLE : View.GONE);
+        listItemLayout.setVisibility(templateId == KmRichMessageFactory.LIST_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        genericCardRecycler.setVisibility(templateId == KmRichMessageFactory.CARD_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        faqLayout.setVisibility(templateId == KmRichMessageFactory.FAQ_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        faqReplyLayout.setVisibility(templateId == KmRichMessageFactory.FAQ_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        imageListRecycler.setVisibility(templateId == KmRichMessageFactory.IMAGE_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        videoTemplateRecycler.setVisibility(templateId == KmRichMessageFactory.VIDEO_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+
+        alFormLayoutRecycler.setVisibility(templateId == KmRichMessageFactory.FORM_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        flowLayout.setVisibility((templateId == KmRichMessageFactory.BUTTON_RICH_MESSAGE || templateId == KmRichMessageFactory.REPLY_RICH_MESSAGE || templateId == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE || templateId == KmRichMessageFactory.FORM_RICH_MESSAGE) ? View.VISIBLE : View.GONE);
 
     }
 

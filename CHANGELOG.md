@@ -3,6 +3,10 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.2.0
+1) Up to date with version 2.2.2
+2) Downgraded minSDK to 14 (Use this version ONLY if you want to support users of sdk14, otherwise use latest version)
+
 ## Kommunicate Android SDK 2.2.2
 1) Notification changes for Agent app
 2) Show feedback for Agent app

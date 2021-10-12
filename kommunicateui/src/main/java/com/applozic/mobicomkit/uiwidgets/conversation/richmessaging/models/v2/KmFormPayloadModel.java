@@ -46,6 +46,10 @@ public class KmFormPayloadModel<T> extends JsonMarker {
         return Type.RADIO.getValue().equals(type) || Type.CHECKBOX.getValue().equals(type);
     }
 
+    public boolean isTypeTextArea(){
+        return Type.TEXTAREA.getValue().equals(type);
+    }
+
     public static class Text extends JsonMarker {
         private String label;
         private String placeholder;
@@ -75,6 +79,63 @@ public class KmFormPayloadModel<T> extends JsonMarker {
             this.validation = validation;
         }
     }
+    public static class TextArea extends JsonMarker {
+        private String title;
+        private String name;
+        private String placeholder;
+        private int cols;
+        private int rows;
+        private Validation validation;
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPlaceholder() {
+            return placeholder;
+        }
+
+        public void setPlaceholder(String placeholder) {
+            this.placeholder = placeholder;
+        }
+
+        public int getCols() {
+            return cols;
+        }
+
+        public void setCols(int cols) {
+            this.cols = cols;
+        }
+
+        public int getRows() {
+            return rows;
+        }
+
+        public void setRows(int rows) {
+            this.rows = rows;
+        }
+
+        public Validation getValidation() {
+            return validation;
+        }
+
+        public void setValidation(Validation validation) {
+            this.validation = validation;
+        }
+    }
+
 
     public static class Hidden extends JsonMarker {
         private String name;
@@ -96,6 +157,7 @@ public class KmFormPayloadModel<T> extends JsonMarker {
             this.value = value;
         }
     }
+
 
     public static class Selections extends JsonMarker {
         private String title;
@@ -229,7 +291,7 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     }
 
     public enum Type {
-        TEXT("text"), PASSWORD("password"),
+        TEXT("text"), PASSWORD("password"),TEXTAREA("textarea"),
         HIDDEN("hidden"), RADIO("radio"),
         CHECKBOX("checkbox"),
         DATE("date"),
@@ -251,6 +313,11 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     }
 
     public Text getTextModel() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<Text>() {
+        }.getType());
+    }
+
+    public TextArea getTextAreaModel(){
         return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<Text>() {
         }.getType());
     }

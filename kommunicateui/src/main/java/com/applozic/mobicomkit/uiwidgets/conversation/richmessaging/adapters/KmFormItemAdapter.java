@@ -181,6 +181,26 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         } else {
                             formItemViewHolder.formValidationText.setVisibility(View.GONE);
                         }
+                    }else if(payloadModel.isTypeTextArea()){
+                        KmFormPayloadModel.TextArea textAreaModel = payloadModel.getTextAreaModel();
+                        setFormLabelText(formItemViewHolder, textAreaModel.getTitle());
+                        handleItemVisibility(formItemViewHolder, formItemViewHolder.formEditText);
+                        EditText editText = formItemViewHolder.getTextAreaEditField();
+                        editText.setHint(TextUtils.isEmpty(textAreaModel.getPlaceholder()) ? "" : textAreaModel.getPlaceholder());
+                        editText.setLines(textAreaModel.getRows());
+//                        String savedStr = textFieldArray.get(position, null);
+
+                        editText.setText("savedStr");
+
+                        if (validationArray.get(position) == 1) {
+                            formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
+                            formItemViewHolder.formValidationText.setText(textAreaModel.getValidation() != null
+                                    && !TextUtils.isEmpty(textAreaModel.getValidation().getErrorText())
+                                    ? textAreaModel.getValidation().getErrorText()
+                                    : Utils.getString(context, R.string.default_form_validation_error_text));
+                        } else {
+                            formItemViewHolder.formValidationText.setVisibility(View.GONE);
+                        }
                     } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(payloadModel.getType())) {
                         KmFormPayloadModel.Selections selectionModel = payloadModel.getSelectionModel();
 
@@ -529,6 +549,11 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         public EditText getPasswordTextField() {
             formEditText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
             formEditText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            return formEditText;
+        }
+
+        public EditText getTextAreaEditField(){
+            formEditText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             return formEditText;
         }
     }

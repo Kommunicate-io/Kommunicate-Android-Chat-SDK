@@ -94,7 +94,7 @@ public abstract class KmRichMessage {
         faqLayout = containerView.findViewById(R.id.alFaqLayout);
         genericCardRecycler = containerView.findViewById(R.id.alGenericCardContainer);
         imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
-        videoTemplateRecycler = containerView.findViewById(R.id.video_template_container);
+        videoTemplateRecycler = containerView.findViewById(R.id.videoTemplateContainer);
         flowLayout = containerView.findViewById(R.id.kmFlowLayout);
         alFormLayoutRecycler = containerView.findViewById(R.id.alFormLayoutRecycler);
 

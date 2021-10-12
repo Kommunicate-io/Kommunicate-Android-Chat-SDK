@@ -20,7 +20,7 @@
         android:layout_height="wrap_content" />
     <!--Video Template -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/video_template_container"
+        android:id="@+id/videoTemplateContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

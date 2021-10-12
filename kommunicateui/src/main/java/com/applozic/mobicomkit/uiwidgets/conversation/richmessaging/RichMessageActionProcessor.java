@@ -246,13 +246,6 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         }
 
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
-
-//        if (KmRMActionModel.SubmitButton.KM_POST_DATA_TO_BOT_PLATFORM.equals(submitButtonModel.getRequestType())) {
-//            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
-//            if (richMessageListener != null) {
-//                richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
-//            }
-//        }
         if (submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
             sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
 
@@ -300,7 +293,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                 if (model.isTypeAction()) {
                     continue;
                 }
-                //TextFiled
+                //TextField
                 if (model.isTypeText()) {
                     KmFormPayloadModel.Text textModel = model.getTextModel();
                     if (formSelectedData.containsKey(textModel.getLabel())) {

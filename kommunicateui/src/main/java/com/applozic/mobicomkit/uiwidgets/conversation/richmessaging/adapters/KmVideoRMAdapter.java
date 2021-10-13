@@ -147,10 +147,10 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         public RichMessageVideoHolder(View itemView) {
             super(itemView);
 
-            webview = itemView.findViewById(R.id.webView);
-            captionText = itemView.findViewById(R.id.tvCaption);
-            player = itemView.findViewById(R.id.playerView);
-            webViewRoot = itemView.findViewById(R.id.webFrameLayout);
+            webview = itemView.findViewById(R.id.web_view);
+            captionText = itemView.findViewById(R.id.tv_caption);
+            player = itemView.findViewById(R.id.player_view);
+            webViewRoot = itemView.findViewById(R.id.web_frame_layout);
         }
     }
 }

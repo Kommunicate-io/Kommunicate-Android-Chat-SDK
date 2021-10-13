@@ -9,7 +9,7 @@
     android:padding="6dp">
 
     <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/playerView"
+        android:id="@+id/player_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:focusable="true"
@@ -18,12 +18,12 @@
 
 
     <FrameLayout
-        android:id="@+id/webFrameLayout"
+        android:id="@+id/web_frame_layout"
         android:layout_width="match_parent"
         android:layout_height="200dp">
 
         <WebView
-            android:id="@+id/webView"
+            android:id="@+id/web_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/black"
@@ -31,7 +31,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/tvCaption"
+        android:id="@+id/tv_caption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"

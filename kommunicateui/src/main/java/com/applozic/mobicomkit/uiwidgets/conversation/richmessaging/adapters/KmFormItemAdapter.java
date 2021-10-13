@@ -181,17 +181,16 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         } else {
                             formItemViewHolder.formValidationText.setVisibility(View.GONE);
                         }
-                    }else if(payloadModel.isTypeTextArea()){
+                    } else if (payloadModel.isTypeTextArea()) {
                         KmFormPayloadModel.TextArea textAreaModel = payloadModel.getTextAreaModel();
                         setFormLabelText(formItemViewHolder, textAreaModel.getTitle());
                         handleItemVisibility(formItemViewHolder, formItemViewHolder.formEditText);
                         EditText editText = formItemViewHolder.getTextAreaEditField();
-                        editText.setHint(TextUtils.isEmpty(textAreaModel.getPlaceholder()) ? "" : textAreaModel.getPlaceholder());
+                        editText.setHint(TextUtils.isEmpty(textAreaModel.getPlaceholder()) ? "sathya" : textAreaModel.getPlaceholder());
                         editText.setLines(textAreaModel.getRows());
 //                        String savedStr = textFieldArray.get(position, null);
-
-                        editText.setText("savedStr");
-
+//                        editText.setText(savedStr);
+//                        formItemViewHolder.formItemRootLayout.setVisibility(View.VISIBLE);
                         if (validationArray.get(position) == 1) {
                             formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
                             formItemViewHolder.formValidationText.setText(textAreaModel.getValidation() != null
@@ -453,7 +452,8 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         if (payloadList != null && !payloadList.isEmpty()) {
             if (KmFormPayloadModel.Type.TEXT.getValue().equals(payloadList.get(position).getType())
-                    || KmFormPayloadModel.Type.PASSWORD.getValue().equals(payloadList.get(position).getType())) {
+                    || KmFormPayloadModel.Type.PASSWORD.getValue().equals(payloadList.get(position).getType())
+                    || KmFormPayloadModel.Type.TEXTAREA.getValue().equals(payloadList.get(position).getType())) {
                 return VIEW_TYPE_TEXT_FIELD;
             } else if (KmFormPayloadModel.Type.RADIO.getValue().equals(payloadList.get(position).getType())
                     || KmFormPayloadModel.Type.CHECKBOX.getValue().equals(payloadList.get(position).getType())) {
@@ -552,7 +552,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
             return formEditText;
         }
 
-        public EditText getTextAreaEditField(){
+        public EditText getTextAreaEditField() {
             formEditText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             return formEditText;
         }

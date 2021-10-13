@@ -19,8 +19,8 @@
         android:layout_marginTop="5dp"
         android:width="240dp"
         android:height="32dp"
+        android:scrollbars="none"
         android:background="@drawable/km_form_edit_text_background"
-        android:maxLines="1"
         android:padding="5dp"
         android:textSize="14sp" />
 

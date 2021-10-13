@@ -318,7 +318,7 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     }
 
     public TextArea getTextAreaModel(){
-        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<Text>() {
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<TextArea>() {
         }.getType());
     }
 

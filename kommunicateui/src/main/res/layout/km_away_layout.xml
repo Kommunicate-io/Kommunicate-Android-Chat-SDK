@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp">
+
+        <com.applozic.mobicomkit.uiwidgets.DashedLineView
+            android:id="@+id/awayMessageDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="visible" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/awayMessageTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.05"
+        android:paddingStart="16dp"
+        android:paddingTop="11.5dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="11.5dp"
+        android:text=""
+        android:textSize="14sp"
+        android:visibility="visible" />
+
+</LinearLayout>

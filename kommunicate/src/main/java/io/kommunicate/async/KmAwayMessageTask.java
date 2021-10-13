@@ -45,11 +45,11 @@ public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
 
-        KmApiResponse<KmApiResponse.KmDataResposne> response = null;
+        KmApiResponse<KmApiResponse.KmDataResponse> response = null;
 
         if (s != null) {
             try {
-                Type type = new TypeToken<KmApiResponse<KmApiResponse.KmDataResposne>>() {
+                Type type = new TypeToken<KmApiResponse<KmApiResponse.KmDataResponse>>() {
                 }.getType();
                 response = new Gson().fromJson(s, type);
             } catch (Exception e) {
@@ -58,7 +58,7 @@ public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
 
             if (response != null) {
                 if ("SUCCESS".equals(response.getCode()) && !response.getData().getMessageList().isEmpty()) {
-                    handler.onSuccess(context.get(), response.getData().getMessageList().get(0));
+                    handler.onSuccess(context.get(), response.getData());
                 } else {
                     handler.onFailure(context.get(), exception, s);
                 }

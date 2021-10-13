@@ -245,28 +245,13 @@
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp">
-
-                <com.applozic.mobicomkit.uiwidgets.DashedLineView
-                    android:id="@+id/awayMessageDivider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:visibility="gone" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/awayMessageTV"
+            <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAwayView
+                android:id="@+id/idKmAwayView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:letterSpacing="0.05"
-                android:paddingStart="16dp"
-                android:paddingTop="11.5dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="11.5dp"
-                android:text=""
-                android:textSize="14sp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white"
+                android:orientation="vertical"
                 android:visibility="gone" />
 
             <TextView

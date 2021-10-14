@@ -57,6 +57,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private List<KmFormPayloadModel> payloadList;
 
     private SparseArray<String> textFieldArray;
+    private SparseArray<String> textAreaFieldArray;
     private SparseArray<HashSet<Integer>> checkBoxStateArray;
     private SparseIntArray radioButtonSelectedIndices;
     private SparseArray<Long> dateFieldArray;
@@ -88,6 +89,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         }
 
         textFieldArray = formStateModel.getTextFields();
+        textAreaFieldArray = formStateModel.getTextAreaFields();
         checkBoxStateArray = formStateModel.getCheckBoxStates();
         radioButtonSelectedIndices = formStateModel.getSelectedRadioButtonIndex();
         hiddenFields = formStateModel.getHiddenFields();
@@ -95,8 +97,12 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         dateFieldArray = formStateModel.getDateFieldArray();
         dropdownFieldArray = formStateModel.getDropdownFieldArray();
 
+
         if (textFieldArray == null) {
             textFieldArray = new SparseArray<>();
+        }
+        if (textAreaFieldArray == null) {
+            textAreaFieldArray = new SparseArray<>();
         }
 
         if (checkBoxStateArray == null) {
@@ -186,11 +192,13 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         setFormLabelText(formItemViewHolder, textAreaModel.getTitle());
                         handleItemVisibility(formItemViewHolder, formItemViewHolder.formEditText);
                         EditText editText = formItemViewHolder.getTextAreaEditField();
-                        editText.setHint(TextUtils.isEmpty(textAreaModel.getPlaceholder()) ? "sathya" : textAreaModel.getPlaceholder());
+                        editText.setHint(TextUtils.isEmpty(textAreaModel.getPlaceholder()) ? "" : textAreaModel.getPlaceholder());
                         editText.setLines(textAreaModel.getRows());
-//                        String savedStr = textFieldArray.get(position, null);
-//                        editText.setText(savedStr);
-//                        formItemViewHolder.formItemRootLayout.setVisibility(View.VISIBLE);
+                        editText.setVerticalScrollBarEnabled(true);
+
+                        String savedStr = textAreaFieldArray.get(position, null);
+                        editText.setText(savedStr);
+
                         if (validationArray.get(position) == 1) {
                             formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
                             formItemViewHolder.formValidationText.setText(textAreaModel.getValidation() != null
@@ -424,6 +432,31 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             KmToast.error(context, R.string.invalid_regex_error, Toast.LENGTH_SHORT).show();
                         }
                     }
+                } else if (KmFormPayloadModel.Type.TEXTAREA.getValue().equals(payloadList.get(i).getType())) {
+                    KmFormPayloadModel.TextArea textField = payloadList.get(i).getTextAreaModel();
+                    if (textField != null) {
+
+                        String enteredText;
+                        if (KmFormStateHelper.getFormState(messageKey) == null || TextUtils.isEmpty(KmFormStateHelper.getFormState(messageKey).getTextAreaFields().get(i))) {
+                            enteredText = "";
+                        } else {
+                            enteredText = KmFormStateHelper.getFormState(messageKey).getTextAreaFields().get(i);
+                        }
+
+                        try {
+                            if (textField.getValidation() != null
+                                    && !TextUtils.isEmpty(textField.getValidation().getRegex())
+                                    && !Pattern.compile(textField.getValidation().getRegex()).matcher(enteredText).matches()) {
+                                validationArray.put(i, INVALID_DATA);
+                                isValid = false;
+                            } else {
+                                validationArray.put(i, VALID_DATA);
+                            }
+                        } catch (PatternSyntaxException exception) {
+                            exception.printStackTrace();
+                            KmToast.error(context, R.string.invalid_regex_error, Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 } else if (KmFormPayloadModel.Type.DROPDOWN.getValue().equals(payloadList.get(i).getType())) {
                     KmFormPayloadModel.DropdownList dropdownList = payloadList.get(i).getDropdownList();
                     if (dropdownList != null && KmFormStateHelper.getFormState(messageKey) != null
@@ -510,8 +543,14 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                     public void afterTextChanged(Editable s) {
                         if (formEditText.hasFocus()) {
                             String text = s.toString().trim();
-                            textFieldArray.put(getAdapterPosition(), text);
-                            formStateModel.setTextFields(textFieldArray);
+                            if (payloadList.get(getAdapterPosition()).isTypeTextArea()) {
+                                textAreaFieldArray.put(getAdapterPosition(), text);
+                                formStateModel.setTextAreaFields(textAreaFieldArray);
+                            } else {
+                                textFieldArray.put(getAdapterPosition(), text);
+                                formStateModel.setTextFields(textFieldArray);
+                            }
+
                             KmFormStateHelper.addFormState(messageKey, formStateModel);
                         }
                     }
@@ -553,7 +592,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         }
 
         public EditText getTextAreaEditField() {
-            formEditText.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            formEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
             return formEditText;
         }
     }

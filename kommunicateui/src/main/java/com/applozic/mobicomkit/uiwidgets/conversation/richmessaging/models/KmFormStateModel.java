@@ -12,6 +12,7 @@ import java.util.Map;
 public class KmFormStateModel extends JsonMarker {
 
     private SparseArray<String> textFields;
+    private SparseArray<String> textAreaFields;
     private SparseIntArray selectedRadioButtonIndex;
     private SparseArray<HashSet<Integer>> checkBoxStates;
     private Map<String, String> hiddenFields;
@@ -21,6 +22,14 @@ public class KmFormStateModel extends JsonMarker {
 
     public SparseArray<String> getTextFields() {
         return textFields;
+    }
+
+    public SparseArray<String> getTextAreaFields() {
+        return textAreaFields;
+    }
+
+    public void setTextAreaFields(SparseArray<String> textAreaFields) {
+        this.textAreaFields = textAreaFields;
     }
 
     public void setTextFields(SparseArray<String> textFields) {

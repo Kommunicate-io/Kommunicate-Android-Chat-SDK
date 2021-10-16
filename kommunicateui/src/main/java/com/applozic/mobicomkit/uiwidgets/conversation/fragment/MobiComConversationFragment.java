@@ -1102,6 +1102,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         kmAwayView.showInvalidEmail();
                         return;
                     }
+                    isUserGivingEmail = false;
+                    
                 }
             }
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {

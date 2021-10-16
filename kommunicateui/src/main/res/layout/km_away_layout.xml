@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -26,6 +29,39 @@
         android:paddingBottom="11.5dp"
         android:text=""
         android:textSize="14sp"
-        android:visibility="visible" />
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/askEmailLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:weightSum="2">
+
+        <ImageView
+            android:id="@+id/askEmailImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.7"
+            app:srcCompat="@drawable/km_mail_default"/>
+
+        <TextView
+            android:id="@+id/askEmailTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.05"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/ask_for_email"
+            android:textSize="14sp"
+            android:visibility="visible" />
+
+
+    </LinearLayout>
 
 </LinearLayout>

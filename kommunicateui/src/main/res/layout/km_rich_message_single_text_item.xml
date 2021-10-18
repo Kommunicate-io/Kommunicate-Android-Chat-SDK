@@ -22,8 +22,10 @@
         android:paddingRight="12dp"
         android:paddingStart="12dp"
         android:paddingTop="8dp"
-        android:maxLines="1"
+        android:maxLines="3"
         android:ellipsize="end"
+        android:lineSpacingExtra="5dp"
+        android:gravity="center"
         android:text="5 Star"
         android:textColor="@color/applozic_theme_color_primary"
         android:textSize="15sp" />

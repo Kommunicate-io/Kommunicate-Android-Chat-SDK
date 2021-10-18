@@ -20,7 +20,7 @@ public class S3URLService implements URLService {
     private static final String GET_SIGNED_URL = "/rest/ws/file/url?key=";
 
 
-    S3URLService(Context context) {
+    public S3URLService(Context context) {
         mobiComKitClientService = new MobiComKitClientService(context);
         httpRequestUtils = new HttpRequestUtils(context);
     }

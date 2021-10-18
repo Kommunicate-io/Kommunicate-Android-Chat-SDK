@@ -11,25 +11,28 @@ import android.widget.TextView;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.listners.AlCallback;
-import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.people.contact.Contact;
+import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.people.channel.Channel;
 
 import androidx.annotation.Nullable;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+import io.kommunicate.Kommunicate;
+import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.models.KmApiResponse;
 
 public class KmAwayView extends LinearLayout {
-    LinearLayout rootLinearLayout;
-    //DashedLineView awayMessageDivider;
-    TextView awayMessageTv;
-    LinearLayout askEmailLinearLayout;
-    ImageView askEmailImageView;
-    TextView askEmailTextView;
-    boolean isUserAnonymous;
-    boolean isCollectEmailOnAwayEnabled;
-    String awayMessage;
-    protected AlCustomizationSettings alCustomizationSettings;
+
+    private static final String TAG = "KmAwayView";
+    private LinearLayout rootLinearLayout;
+    private TextView awayMessageTv;
+    private LinearLayout askEmailLinearLayout;
+    private ImageView askEmailImageView;
+    private TextView askEmailTextView;
+    private String awayMessage;
+    private Channel channel;
+    private boolean isUserAnonymous;
+    private boolean isCollectEmailOnAwayEnabled;
 
     public LinearLayout inflateView(Context context) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -53,31 +56,29 @@ public class KmAwayView extends LinearLayout {
     }
 
     private void init(View view) {
-        //awayMessageDivider = view.findViewById(R.id.awayMessageDivider);
         awayMessageTv = view.findViewById(R.id.awayMessageTV);
         askEmailLinearLayout = view.findViewById(R.id.askEmailLinearLayout);
         askEmailImageView = view.findViewById(R.id.askEmailImageView);
         askEmailTextView = view.findViewById(R.id.askEmailTextView);
     }
 
-    public void setupAwayMessage(KmApiResponse.KmDataResponse response) {
+    public void setupAwayMessage(KmApiResponse.KmDataResponse response, Channel channel) {
+        if(!response.getMessageList().isEmpty()) {
+            awayMessage = response.getMessageList().get(0).getMessage();
+            handleAwayMessage(true);
+        }
+        else {
+            handleAwayMessage(false);
+        }
         isUserAnonymous = response.isUserAnonymous();
         isCollectEmailOnAwayEnabled = response.isCollectEmailOnAwayMessage();
-        awayMessage = response.getMessageList().get(0).getMessage();
-        handleAwayMessage(true);
+        this.channel = channel;
     }
 
     public void handleAwayMessage(boolean show) {
-        if(show) {
-            awayMessageTv.setVisibility(View.VISIBLE);
+            awayMessageTv.setVisibility(show ? VISIBLE : GONE);
             awayMessageTv.setText(awayMessage);
             askEmailLinearLayout.setVisibility(View.GONE);
-        }
-        else {
-            awayMessageTv.setVisibility(View.GONE);
-            //awayMessageTv.setText(message);
-        }
-
     }
 
     public void askForEmail() {
@@ -86,34 +87,52 @@ public class KmAwayView extends LinearLayout {
     }
 
     public void showInvalidEmail() {
-        askEmailTextView.setText("Invalid email");
-        askEmailImageView.setImageDrawable(getResources().getDrawable(R.drawable.km_mail_error));
+        askEmailTextView.setText(rootLinearLayout.getContext().getString(R.string.invalid_email));
+        askEmailImageView.setImageDrawable(VectorDrawableCompat.create(getResources(), getResources().getIdentifier("km_mail_error", "drawable", rootLinearLayout.getContext().getPackageName()), null));
+    }
+
+    public TextView getAwayMessageTv() {
+        return awayMessageTv;
     }
 
     public boolean isUserAnonymous() {
         return isUserAnonymous;
     }
+
     public boolean isCollectEmailOnAwayEnabled() {
         return isCollectEmailOnAwayEnabled;
     }
 
     public boolean isAwayMessageVisible() {
-        return (awayMessageTv != null && awayMessageTv.getVisibility() == View.VISIBLE);
+        return (awayMessageTv != null && awayMessageTv.getVisibility() == View.VISIBLE) || (askEmailLinearLayout != null && askEmailLinearLayout.getVisibility() == View.VISIBLE);
     }
 
     public void handleUserEmail(String inputMessage) {
-        isUserAnonymous = false;
         User user = new User();
         user.setEmail(inputMessage);
+        handleAwayMessage(false);
+        isUserAnonymous = false;
         UserService.getInstance(rootLinearLayout.getContext()).updateUser(user, true, new AlCallback() {
             @Override
             public void onSuccess(Object response) {
-                Log.e("email", String.valueOf(response));
+                Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
+                    @Override
+                    public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
+                        awayMessage = response.getMessageList().get(0).getMessage();
+                        handleAwayMessage(true);
+                    }
+
+                    @Override
+                    public void onFailure(Context context, Exception e, String response) {
+                        handleAwayMessage(false);
+                        Utils.printLog(context, TAG, "Response: " + response + "\nException : " + e);
+                    }
+                });
             }
 
             @Override
             public void onError(Object error) {
-                Log.e("emailerr", String.valueOf(error));
+                 Utils.printLog(rootLinearLayout.getContext(), TAG, "Error: " + error);
             }
         });
     }

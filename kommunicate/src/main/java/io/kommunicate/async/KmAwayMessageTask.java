@@ -57,7 +57,7 @@ public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
             }
 
             if (response != null) {
-                if ("SUCCESS".equals(response.getCode()) && !response.getData().getMessageList().isEmpty()) {
+                if ("SUCCESS".equals(response.getCode())) {
                     handler.onSuccess(context.get(), response.getData());
                 } else {
                     handler.onFailure(context.get(), exception, s);

@@ -56,7 +56,7 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     public boolean isTypeAction() {
         return Type.ACTION.getValue().equals(type) || Type.SUBMIT.getValue().equals(type);
     }
-}
+
     public static class Text extends JsonMarker {
         private String label;
         private String placeholder;

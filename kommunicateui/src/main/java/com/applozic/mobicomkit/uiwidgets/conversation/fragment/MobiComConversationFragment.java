@@ -762,9 +762,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                           public void onClick(View view) {
                                               emoticonsFrameLayout.setVisibility(View.GONE);
                                               sendMessage();
-//                                              if (contact != null && !contact.isBlocked() || channel != null) {
-//                                                  handleSendAndRecordButtonView(false);
-//                                              }
                                           }
                                       }
         );

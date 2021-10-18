@@ -769,9 +769,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                           public void onClick(View view) {
                                               emoticonsFrameLayout.setVisibility(View.GONE);
                                               sendMessage();
-                                              if (contact != null && !contact.isBlocked() || channel != null) {
-                                                  handleSendAndRecordButtonView(false);
-                                              }
+//                                              if (contact != null && !contact.isBlocked() || channel != null) {
+//                                                  handleSendAndRecordButtonView(false);
+//                                              }
                                           }
                                       }
         );
@@ -1094,15 +1094,20 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     protected void sendMessage() {
         if (channel != null) {
-            if(isUserGivingEmail) {
+            if(isUserGivingEmail && kmAwayView.isUserAnonymous() && kmAwayView.isCollectEmailOnAwayEnabled()) {
                 if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
+
                     String inputMessage = messageEditText.getText().toString();
                     handleSendAndRecordButtonView(true);
                     if (!Pattern.compile(LeadCollectionActivity.EMAIL_VALIDATION_REGEX).matcher(inputMessage).matches()) {
                         kmAwayView.showInvalidEmail();
                         return;
                     }
+                    kmAwayView.handleUserEmail(inputMessage);
                     isUserGivingEmail = false;
+                    //send email to server
+                    //kmAwayView.handlewayMessage();
+                    //isUserGivingEmail = false;
                     
                 }
             }
@@ -1124,6 +1129,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             } else {
                 processSendMessage();
+            }
+            if(kmAwayView.isUserAnonymous() && kmAwayView.isCollectEmailOnAwayEnabled()) {
+                kmAwayView.askForEmail();
+                isUserGivingEmail = true;
+                //isAgentAway = false;
             }
         } else if (contact != null) {
             if (contact.isBlocked()) {
@@ -4295,10 +4305,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 //            if (alCustomizationSettings.getAwayMessageTextColor() != null) {
 //                awayMessageTv.setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
 //            }
-                isUserGivingEmail = true;
+                //isUserGivingEmail = true;
+                //isAgentAway = true;
                 kmAwayView.setVisibility(VISIBLE);
 
-                kmAwayView.showAwayMessage(show, response);
+                kmAwayView.setupAwayMessage(response);
             }
         }
 //        if (awayMessageTv != null) {
@@ -4373,6 +4384,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (isAwayMessageVisible() && message.getMetadata() != null) {
             if (message.getMetadata().isEmpty()) {
                 showAwayMessage(false, null);
+                kmAwayView.handleAwayMessage(false);
                 return;
             }
             boolean isValidMetadata = message.getMetadata().containsKey("category") && !"HIDDEN".equals(message.getMetadata().get("category"))
@@ -4382,6 +4394,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             if (isValidMetadata || isSentByBot) {
                 showAwayMessage(false, null);
+                kmAwayView.handleAwayMessage(false);
                 return;
             }
         }

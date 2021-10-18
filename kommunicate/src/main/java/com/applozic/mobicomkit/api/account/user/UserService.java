@@ -321,10 +321,14 @@ public class UserService {
         return response.getStatus();
     }
 
-    public ApiResponse updateUserWithResponse(String displayName, String profileImageLink, String localURL, String status, String contactNumber, String emailId, Map<String, String> metadata, String userId) {
-
-        ApiResponse response = userClientService.updateDisplayNameORImageLink(displayName, profileImageLink, status, contactNumber, emailId, metadata, userId);
-
+    public ApiResponse updateUserWithResponse(String displayName, String profileImageLink, String localURL, String status, String contactNumber, String emailId, Map<String, String> metadata, String userId, boolean isForEmail) {
+        ApiResponse response;
+        if(isForEmail) {
+            response = userClientService.updateEmail(emailId, userId);
+        }
+        else {
+            response = userClientService.updateDisplayNameORImageLink(displayName, profileImageLink, status, contactNumber, emailId, metadata, userId);
+        }
         if (response == null) {
             return null;
         }
@@ -360,8 +364,8 @@ public class UserService {
         return response;
     }
 
-    public ApiResponse updateUserWithResponse(User user) {
-        return updateUserWithResponse(user.getDisplayName(), user.getImageLink(), user.getLocalImageUri(), user.getStatus(), user.getContactNumber(), user.getEmail(), user.getMetadata(), user.getUserId());
+    public ApiResponse updateUserWithResponse(User user, boolean isForEmail) {
+        return updateUserWithResponse(user.getDisplayName(), user.getImageLink(), user.getLocalImageUri(), user.getStatus(), user.getContactNumber(), user.getEmail(), user.getMetadata(), user.getUserId(), isForEmail);
     }
 
     public String updateLoggedInUser(User user) {
@@ -426,8 +430,8 @@ public class UserService {
         return null;
     }
 
-    public void updateUser(User user, AlCallback callback) {
-        AlTask.execute(new AlUserUpdateTask(context, user, callback));
+    public void updateUser(User user, boolean isForEmail,  AlCallback callback) {
+        AlTask.execute(new AlUserUpdateTask(context, user, isForEmail, callback));
     }
 
     public ApiResponse updateUserDisplayName(String userId, String userDisplayName) {

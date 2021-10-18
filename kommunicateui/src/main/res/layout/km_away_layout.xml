@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
         android:paddingTop="10dp"
+        android:visibility="gone"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
         android:weightSum="2">

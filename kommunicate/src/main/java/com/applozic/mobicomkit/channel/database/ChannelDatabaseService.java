@@ -294,21 +294,38 @@ public class ChannelDatabaseService {
     }
 
     public void updateChannel(Channel channel) {
-        ContentValues contentValues = prepareChannelValues(channel);
-        dbHelper.getWritableDatabase().update(CHANNEL, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?", new String[]{String.valueOf(channel.getKey())});
-        dbHelper.close();
+        try {
+            ContentValues contentValues = prepareChannelValues(channel);
+            dbHelper.getWritableDatabase().update(CHANNEL, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?", new String[]{String.valueOf(channel.getKey())});
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
     }
 
     public void updateNotificationAfterTime(Integer id, Long notificationAfterTime) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MobiComDatabaseHelper.NOTIFICATION_AFTER_TIME, notificationAfterTime);
-        dbHelper.getWritableDatabase().update(CHANNEL, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?", new String[]{String.valueOf(id)});
+        try {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MobiComDatabaseHelper.NOTIFICATION_AFTER_TIME, notificationAfterTime);
+            dbHelper.getWritableDatabase().update(CHANNEL, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?", new String[]{String.valueOf(id)});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
     }
 
     public void updateChannelUserMapper(ChannelUserMapper channelUserMapper) {
-        ContentValues contentValues = prepareChannelUserMapperValues(channelUserMapper);
-        dbHelper.getWritableDatabase().update(CHANNEL_USER_X, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?  and " + MobiComDatabaseHelper.USERID + "=?", new String[]{String.valueOf(channelUserMapper.getKey()), String.valueOf(channelUserMapper.getUserKey())});
-        dbHelper.close();
+        try {
+            ContentValues contentValues = prepareChannelUserMapperValues(channelUserMapper);
+            dbHelper.getWritableDatabase().update(CHANNEL_USER_X, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?  and " + MobiComDatabaseHelper.USERID + "=?", new String[]{String.valueOf(channelUserMapper.getKey()), String.valueOf(channelUserMapper.getUserKey())});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
     }
 
     public boolean isChannelPresent(Integer channelKey) {
@@ -328,9 +345,15 @@ public class ChannelDatabaseService {
     }
 
     public void updateChannelLocalImageURI(Integer channelKey, String channelLocalURI) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MobiComDatabaseHelper.CHANNEL_IMAGE_LOCAL_URI, channelLocalURI);
-        dbHelper.getWritableDatabase().update(CHANNEL, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?", new String[]{String.valueOf(channelKey)});
+        try {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MobiComDatabaseHelper.CHANNEL_IMAGE_LOCAL_URI, channelLocalURI);
+            dbHelper.getWritableDatabase().update(CHANNEL, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?", new String[]{String.valueOf(channelKey)});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
     }
 
     public boolean isChannelUserPresent(Integer channelKey, String userId) {
@@ -365,6 +388,8 @@ public class ChannelDatabaseService {
             deleteUser = dbHelper.getWritableDatabase().delete(MobiComDatabaseHelper.CHANNEL_USER_X, "channelKey=? AND userId= ?", new String[]{String.valueOf(channelKey), userId});
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            dbHelper.close();
         }
         return deleteUser;
     }
@@ -515,9 +540,15 @@ public class ChannelDatabaseService {
     }
 
     public void updateRoleInChannelUserMapper(Integer channelKey, String userId, Integer role) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MobiComDatabaseHelper.ROLE, role);
-        dbHelper.getWritableDatabase().update(CHANNEL_USER_X, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=? AND " + MobiComDatabaseHelper.USERID + "=?", new String[]{String.valueOf(channelKey), userId});
+        try {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MobiComDatabaseHelper.ROLE, role);
+            dbHelper.getWritableDatabase().update(CHANNEL_USER_X, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=? AND " + MobiComDatabaseHelper.USERID + "=?", new String[]{String.valueOf(channelKey), userId});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
     }
 
     public ChannelUserMapper getChannelUserByChannelKey(final Integer channelKey) {
@@ -602,9 +633,15 @@ public class ChannelDatabaseService {
     }
 
     public void updateParentGroupKeyInUserMapper(Integer channelKey, Integer parentGroupKey) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(MobiComDatabaseHelper.PARENT_GROUP_KEY, parentGroupKey);
-        dbHelper.getWritableDatabase().update(CHANNEL_USER_X, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?", new String[]{String.valueOf(channelKey)});
+        try {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MobiComDatabaseHelper.PARENT_GROUP_KEY, parentGroupKey);
+            dbHelper.getWritableDatabase().update(CHANNEL_USER_X, contentValues, MobiComDatabaseHelper.CHANNEL_KEY + "=?", new String[]{String.valueOf(channelKey)});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
     }
 
 

@@ -118,8 +118,13 @@ public class KmAwayView extends LinearLayout {
                 Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                     @Override
                     public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
-                        awayMessage = response.getMessageList().get(0).getMessage();
-                        handleAwayMessage(true);
+                        if(!response.getMessageList().isEmpty()) {
+                            awayMessage = response.getMessageList().get(0).getMessage();
+                            handleAwayMessage(true);
+                        }
+                        else {
+                            handleAwayMessage(false);
+                        }
                     }
 
                     @Override

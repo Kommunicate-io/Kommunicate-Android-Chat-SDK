@@ -230,7 +230,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     }
 
     private boolean isInvalidData(Map<String, Object> dataMap, KmRMActionModel.SubmitButton submitButton) {
-        return (dataMap == null || dataMap.isEmpty()) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
+        return (dataMap == null) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
     }
 
     public void handleKmSubmitButton(final Context context, final Message message, final KmRMActionModel.SubmitButton submitButtonModel) {

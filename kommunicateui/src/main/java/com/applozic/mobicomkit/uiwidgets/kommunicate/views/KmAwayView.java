@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.listners.AlCallback;
+import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
@@ -29,6 +30,7 @@ public class KmAwayView extends LinearLayout {
     private LinearLayout askEmailLinearLayout;
     private ImageView askEmailImageView;
     private TextView askEmailTextView;
+    private DashedLineView dashedLineView;
     private String awayMessage;
     private Channel channel;
     private boolean isUserAnonymous;
@@ -60,6 +62,7 @@ public class KmAwayView extends LinearLayout {
         askEmailLinearLayout = view.findViewById(R.id.askEmailLinearLayout);
         askEmailImageView = view.findViewById(R.id.askEmailImageView);
         askEmailTextView = view.findViewById(R.id.askEmailTextView);
+        dashedLineView = view.findViewById(R.id.awayMessageDivider);
     }
 
     public void setupAwayMessage(KmApiResponse.KmDataResponse response, Channel channel) {
@@ -78,6 +81,7 @@ public class KmAwayView extends LinearLayout {
     public void handleAwayMessage(boolean show) {
             awayMessageTv.setVisibility(show ? VISIBLE : GONE);
             awayMessageTv.setText(awayMessage);
+            dashedLineView.setVisibility(show ? VISIBLE : GONE);
             askEmailLinearLayout.setVisibility(View.GONE);
     }
 

@@ -246,7 +246,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         }
 
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
-        if (submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
+        if (submitButtonModel.getPostFormDataAsMessage() != null && submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
             sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
 
             if (richMessageListener != null) {
@@ -303,6 +303,15 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
                     }
                 }
+                //TextArea
+                if (model.isTypeTextArea()) {
+                    KmFormPayloadModel.TextArea textAreaModel = model.getTextAreaModel();
+                    if (formSelectedData.containsKey(textAreaModel.getTitle())) {
+                        messageToSend.append(textAreaModel.getTitle()).append(" : ").append(formSelectedData.get(textAreaModel.getTitle()).toString()).append("\n");
+                    } else {
+                        messageToSend.append(textAreaModel.getTitle()).append(" : ").append("\n");
+                    }
+                }
                 //Radio Button or Check Boxes
                 else if (model.isTypeSelection()) {
                     KmFormPayloadModel.Selections selectionModel = model.getSelectionModel();
@@ -320,7 +329,6 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                                     }
                                 }
                             }
-
                             messageToSend.append(selectionModel.getName()).append(" : ").append(valueString).append("\n");
                         } else {
                             messageToSend.append(selectionModel.getName()).append(" : ").append(formSelectedData.get(selectionModel.getName()).toString()).append("\n");

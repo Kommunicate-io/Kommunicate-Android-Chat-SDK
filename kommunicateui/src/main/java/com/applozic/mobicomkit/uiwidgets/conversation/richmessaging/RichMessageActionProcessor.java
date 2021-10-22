@@ -247,7 +247,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
         if (submitButtonModel.getPostFormDataAsMessage() != null && submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
-            sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
+            sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getMessage());
 
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
@@ -279,12 +279,12 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     }
 
     //TO SEND FORM DATA AS MESSAGE
-    private void sendFormDataAsMessage(final Context context, Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
+    private void sendFormDataAsMessage(final Context context, Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, String submitButtonMessage) {
         if (message.getMetadata() != null) {
             com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
             }.getType());
 
-            StringBuilder messageToSend = new StringBuilder(message.getMessage()).append("\n");
+            StringBuilder messageToSend = new StringBuilder(submitButtonMessage).append("\n");
 
             List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
 

@@ -130,6 +130,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         }
 
         formStateModel.setTextFields(textFieldArray);
+        formStateModel.setTextAreaFields(textAreaFieldArray);
     }
 
 

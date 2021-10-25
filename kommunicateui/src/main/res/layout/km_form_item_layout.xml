@@ -20,8 +20,9 @@
         android:width="240dp"
         android:height="32dp"
         android:background="@drawable/km_form_edit_text_background"
-        android:maxLines="1"
+        android:gravity="start"
         android:padding="5dp"
+        android:scrollbars="vertical"
         android:textSize="14sp" />
 
     <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout
@@ -39,16 +40,16 @@
         android:background="@drawable/km_form_edit_text_background"
         android:maxLines="1"
         android:padding="5dp"
-        android:textSize="14sp"
         android:textColor="@color/km_black_color"
+        android:textSize="14sp"
         android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/km_form_dropdown_list_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/km_form_edit_text_background"
         android:layout_marginTop="5dp"
+        android:background="@drawable/km_form_edit_text_background"
         android:visibility="gone">
 
         <Spinner

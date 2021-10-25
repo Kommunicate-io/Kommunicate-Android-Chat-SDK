@@ -230,7 +230,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     }
 
     private boolean isInvalidData(Map<String, Object> dataMap, KmRMActionModel.SubmitButton submitButton) {
-        return (dataMap == null || dataMap.isEmpty()) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
+        return (dataMap == null) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
     }
 
     public void handleKmSubmitButton(final Context context, final Message message, final KmRMActionModel.SubmitButton submitButtonModel) {
@@ -246,8 +246,8 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         }
 
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
-        if (submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
-            sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
+        if (submitButtonModel.getPostFormDataAsMessage() != null && submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
+            sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getMessage());
 
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
@@ -279,12 +279,12 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     }
 
     //TO SEND FORM DATA AS MESSAGE
-    private void sendFormDataAsMessage(final Context context, Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
+    private void sendFormDataAsMessage(final Context context, Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, String submitButtonMessage) {
         if (message.getMetadata() != null) {
             com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
             }.getType());
 
-            StringBuilder messageToSend = new StringBuilder(message.getMessage()).append("\n");
+            StringBuilder messageToSend = new StringBuilder(submitButtonMessage).append("\n");
 
             List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
 
@@ -301,6 +301,15 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                     } else {
                         messageToSend.append(textModel.getLabel()).append(" : ").append("\n");
 
+                    }
+                }
+                //TextArea
+                if (model.isTypeTextArea()) {
+                    KmFormPayloadModel.TextArea textAreaModel = model.getTextAreaModel();
+                    if (formSelectedData.containsKey(textAreaModel.getTitle())) {
+                        messageToSend.append(textAreaModel.getTitle()).append(" : ").append(formSelectedData.get(textAreaModel.getTitle()).toString()).append("\n");
+                    } else {
+                        messageToSend.append(textAreaModel.getTitle()).append(" : ").append("\n");
                     }
                 }
                 //Radio Button or Check Boxes
@@ -320,7 +329,6 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                                     }
                                 }
                             }
-
                             messageToSend.append(selectionModel.getName()).append(" : ").append(valueString).append("\n");
                         } else {
                             messageToSend.append(selectionModel.getName()).append(" : ").append(formSelectedData.get(selectionModel.getName()).toString()).append("\n");

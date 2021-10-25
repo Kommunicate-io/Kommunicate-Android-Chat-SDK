@@ -71,6 +71,15 @@ public class KmFormStateHelper {
                 }
             }
 
+            if (formStateModel.getTextAreaFields() != null) {
+                int size = formStateModel.getTextAreaFields().size();
+                for (int i = 0; i < size; i++) {
+                    int key = formStateModel.getTextAreaFields().keyAt(i);
+                    KmFormPayloadModel.TextArea textModel = formPayloadModelList.get(key).getTextAreaModel();
+                    formDataMap.put(textModel.getTitle(), formStateModel.getTextAreaFields().get(key));
+                }
+            }
+
             if (formStateModel.getCheckBoxStates() != null) {
                 int size = formStateModel.getCheckBoxStates().size();
                 for (int i = 0; i < size; i++) {

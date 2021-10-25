@@ -404,15 +404,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             int index = messageList.indexOf(message);
             boolean hideRecursiveImages = false;
-            boolean showTimestamp = true;
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
-            if (!message.isTypeOutbox()) {
-                if(index != messageList.size() -1 && message.isRichMessage() && messageList.get( index + 1).isRichMessage()) {
-                    showTimestamp = false;
-                }
-                }
-
             if (!message.isTypeOutbox()) {
                 if (index != 0 && !messageList.get(index - 1).isTypeOutbox()
                         && messageList.get(index - 1).getContentType() != 10
@@ -1072,6 +1065,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 } else {
                     myHolder.messageTextLayout.setVisibility(GONE);
                 }
+                boolean showTimestamp = message.isTypeOutbox() || index == messageList.size() - 1 || !messageList.get(index + 1).isRichMessage();
 
                 myHolder.richMessageLayout.setVisibility(View.VISIBLE);
                 try {

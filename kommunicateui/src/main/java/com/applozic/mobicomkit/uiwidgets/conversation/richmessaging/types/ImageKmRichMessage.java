@@ -14,8 +14,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.Km
 
 public class ImageKmRichMessage extends KmRichMessage {
 
-    public ImageKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
-        super(context, containerView, message, listener, alCustomizationSettings);
+    public ImageKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
     }
 
     @Override

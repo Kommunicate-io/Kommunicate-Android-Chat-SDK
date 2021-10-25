@@ -70,14 +70,17 @@ public abstract class KmRichMessage {
     protected KmThemeHelper themeHelper;
     protected Gson gson;
     protected TextView createdAtTime;
+    protected boolean showTimestamp;
 
-    public KmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
+
+    public KmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
         this.context = context;
         this.message = message;
         this.listener = listener;
         this.containerView = containerView;
         this.alCustomizationSettings = alCustomizationSettings;
         this.gson = new Gson();
+        this.showTimestamp = showTimestamp;
         this.model = (KmRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), KmRichMessageModel.class);
         this.kmRichMessageModel = gson.fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
         }.getType());
@@ -99,6 +102,7 @@ public abstract class KmRichMessage {
         flowLayout = containerView.findViewById(R.id.kmFlowLayout);
         alFormLayoutRecycler = containerView.findViewById(R.id.alFormLayoutRecycler);
         createdAtTime = containerView.findViewById(R.id.createdAt);
+        createdAtTime.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
         createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
 
         handleLayoutVisibilities(model.getTemplateId());

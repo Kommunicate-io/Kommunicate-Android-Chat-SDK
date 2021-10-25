@@ -26,8 +26,8 @@ import io.kommunicate.utils.KmUtils;
 
 public class KmFormRichMessage extends KmRichMessage {
 
-    public KmFormRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
-        super(context, containerView, message, listener, alCustomizationSettings);
+    public KmFormRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
     }
 
     @Override

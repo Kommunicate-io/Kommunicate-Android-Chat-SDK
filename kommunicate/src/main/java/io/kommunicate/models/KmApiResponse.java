@@ -29,8 +29,36 @@ public class KmApiResponse<T> extends JsonMarker {
         this.data = data;
     }
 
-    public static class KmDataResposne extends JsonMarker {
+    public static class KmDataResponse extends JsonMarker {
         private List<KmMessageResponse> messageList;
+        private boolean collectEmail;
+        private boolean collectEmailOnAwayMessage;
+        private boolean anonymousUser;
+
+        public void setCollectEmail(boolean collectEmail) {
+            this.collectEmail = collectEmail;
+        }
+
+        public boolean isCollectEmailOnAwayMessage() {
+            return collectEmailOnAwayMessage;
+        }
+
+        public void setCollectEmailOnAwayMessage(boolean collectEmailOnAwayMessage) {
+            this.collectEmailOnAwayMessage = collectEmailOnAwayMessage;
+        }
+
+        public void setAnonymousUser(boolean anonymousUser) {
+            this.anonymousUser = anonymousUser;
+        }
+
+
+        public boolean isUserAnonymous() {
+            return anonymousUser;
+        }
+
+        public boolean isCollectEmailEnabled() {
+            return collectEmail;
+        }
 
         public List<KmMessageResponse> getMessageList() {
             return messageList;

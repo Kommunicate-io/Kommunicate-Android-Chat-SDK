@@ -394,7 +394,7 @@ public class ApplozicClient {
 
         User user = new User();
         user.setMetadata(userMetadata);
-        UserService.getInstance(context).updateUser(user, new AlCallback() {
+        UserService.getInstance(context).updateUser(user, true, new AlCallback() {
             @Override
             public void onSuccess(Object response) {
                 sharedPreferences.edit().putBoolean(Contact.DISABLE_CHAT_WITH_USER, disable).commit();

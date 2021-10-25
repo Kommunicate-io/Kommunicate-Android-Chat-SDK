@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp">
+
+        <com.applozic.mobicomkit.uiwidgets.DashedLineView
+            android:id="@+id/awayMessageDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="visible" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/awayMessageTV"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.05"
+        android:paddingStart="16dp"
+        android:paddingTop="11.5dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="11.5dp"
+        android:text=""
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/askEmailLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:visibility="gone"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:weightSum="2">
+
+        <ImageView
+            android:id="@+id/askEmailImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.7"
+            app:srcCompat="@drawable/km_mail_default"/>
+
+        <TextView
+            android:id="@+id/askEmailTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0.05"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/ask_for_email"
+            android:textSize="14sp"
+            android:visibility="visible" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

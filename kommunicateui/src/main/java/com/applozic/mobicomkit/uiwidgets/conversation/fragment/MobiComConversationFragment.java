@@ -70,7 +70,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
@@ -104,7 +103,6 @@ import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
-import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
 import com.applozic.mobicomkit.uiwidgets.KmSpeechSetting;
@@ -137,11 +135,13 @@ import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmSpeechToText;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmTextToSpeech;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAwayView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
@@ -316,8 +316,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected DetailedConversationAdapter recyclerDetailConversationAdapter;
     protected MobicomMessageTemplate messageTemplate;
     protected MobicomMessageTemplateAdapter templateAdapter;
-    protected DashedLineView awayMessageDivider;
-    protected TextView awayMessageTv;
+    protected KmAwayView kmAwayView;
     protected TextView applozicLabel;
     protected RelativeLayout customToolbarLayout;
     protected CircleImageView toolbarImageView;
@@ -364,6 +363,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected int botMessageDelayInterval;
     protected KmBotTypingDelayManager botTypingDelayManager;
     protected boolean isRecordOptionEnabled;
+    protected boolean isUserGivingEmail;
     protected RelativeLayout conversationRootLayout;
 
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
@@ -644,8 +644,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
         pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
 
-        awayMessageDivider = list.findViewById(R.id.awayMessageDivider);
-        awayMessageTv = list.findViewById(R.id.awayMessageTV);
+        kmAwayView = list.findViewById(R.id.idKmAwayView);
 
         isRecordOptionEnabled = (alCustomizationSettings != null
                 && alCustomizationSettings.getAttachmentOptions() != null
@@ -792,9 +791,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                           public void onClick(View view) {
                                               emoticonsFrameLayout.setVisibility(View.GONE);
                                               sendMessage();
-                                              if (contact != null && !contact.isBlocked() || channel != null) {
-                                                  handleSendAndRecordButtonView(false);
-                                              }
                                           }
                                       }
         );
@@ -1117,6 +1113,20 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     protected void sendMessage() {
         if (channel != null) {
+            if(isUserGivingEmail && kmAwayView.isUserAnonymous() && kmAwayView.isCollectEmailOnAwayEnabled()) {
+                if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
+
+                    String inputMessage = messageEditText.getText().toString();
+                    handleSendAndRecordButtonView(true);
+                    if (!Pattern.compile(LeadCollectionActivity.EMAIL_VALIDATION_REGEX).matcher(inputMessage).matches()) {
+                        kmAwayView.showInvalidEmail();
+                        return;
+                    }
+                    isUserGivingEmail = false;
+                    kmAwayView.handleUserEmail(inputMessage);
+
+                }
+            }
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                 String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
                 if (!TextUtils.isEmpty(userId)) {
@@ -1136,12 +1146,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 processSendMessage();
             }
+            if(kmAwayView.isUserAnonymous() && kmAwayView.isCollectEmailOnAwayEnabled() && alCustomizationSettings.isEnableAwayMessage()) {
+                kmAwayView.askForEmail();
+                isUserGivingEmail = true;
+            }
         } else if (contact != null) {
             if (contact.isBlocked()) {
                 userBlockDialog(false, contact, false);
             } else {
                 processSendMessage();
             }
+        }
+        if (contact != null && !contact.isBlocked() || channel != null) {
+            handleSendAndRecordButtonView(false);
         }
     }
 
@@ -4293,23 +4310,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-    public void showAwayMessage(boolean show, String message) {
-        if (message != null) {
-            awayMessageTv.setText(message);
+    public void showAwayMessage(boolean show, KmApiResponse.KmDataResponse response) {
+        if (response != null) {
+            kmAwayView.setupAwayMessage(response, channel);
             if (alCustomizationSettings.getAwayMessageTextColor() != null) {
-                awayMessageTv.setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
+                kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
             }
         }
-        if (awayMessageTv != null) {
-            awayMessageTv.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-        if (awayMessageDivider != null) {
-            awayMessageDivider.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
+        kmAwayView.setVisibility(show && alCustomizationSettings.isEnableAwayMessage()? VISIBLE : GONE);
     }
 
     public boolean isAwayMessageVisible() {
-        return (awayMessageTv != null && awayMessageDivider != null && awayMessageTv.getVisibility() == View.VISIBLE && awayMessageDivider.getVisibility() == View.VISIBLE);
+        return kmAwayView.isAwayMessageVisible();
     }
 
     /**
@@ -4758,13 +4770,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()) {
             Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
-                public void onSuccess(Context context, KmApiResponse.KmMessageResponse response) {
-                    showAwayMessage(true, response.getMessage());
+                public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
+                    showAwayMessage(true, response);
                 }
 
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
-                    showAwayMessage(false, response);
+                    showAwayMessage(false, null);
                     Utils.printLog(context, TAG, "Response: " + response + "\nException : " + e);
                 }
             });

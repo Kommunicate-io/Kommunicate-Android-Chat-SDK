@@ -285,4 +285,6 @@
     <string name="away">Away</string>
     <string name="default_form_validation_error_text">Please enter valid data</string>
     <string name="invalid_regex_error">Invalid validation regex</string>
+    <string name="ask_for_email">How may we reach you?</string>
+    <string name="invalid_email">Enter a valid email</string>
 </resources>

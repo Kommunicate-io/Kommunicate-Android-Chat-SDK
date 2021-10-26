@@ -404,6 +404,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             int index = messageList.indexOf(message);
             boolean hideRecursiveImages = false;
+            boolean showTimestamp = message.isTypeOutbox() || index == messageList.size() - 1 || !messageList.get(index + 1).isRichMessage();
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
             if (!message.isTypeOutbox()) {
@@ -964,7 +965,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                 }
             });
-
+            myHolder.createdAtTime.setVisibility(showTimestamp ? View.VISIBLE : GONE);
 
             if (message.getScheduledAt() != null) {
                 myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));
@@ -1065,7 +1066,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 } else {
                     myHolder.messageTextLayout.setVisibility(GONE);
                 }
-                boolean showTimestamp = message.isTypeOutbox() || index == messageList.size() - 1 || !messageList.get(index + 1).isRichMessage();
 
                 myHolder.richMessageLayout.setVisibility(View.VISIBLE);
                 try {

@@ -19,6 +19,7 @@ import java.util.TimeZone;
  */
 public class Channel extends JsonMarker {
 
+    private static final long serialVersionUID = 200L;
     private Map<String, String> metadata = new HashMap<>();
     private Integer key;
     private Integer parentKey;

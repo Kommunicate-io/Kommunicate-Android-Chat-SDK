@@ -965,7 +965,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                 }
             });
-            myHolder.createdAtTime.setVisibility(showTimestamp ? View.VISIBLE : GONE);
+            myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
 
             if (message.getScheduledAt() != null) {
                 myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));

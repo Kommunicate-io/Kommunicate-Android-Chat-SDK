@@ -16,6 +16,7 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter;
 
+import io.kommunicate.Kommunicate;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
@@ -77,11 +78,9 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         if (prechatInputAdapter != null && prechatInputAdapter.areFieldsValid()) {
-            if (inputModelList != null) {
-                sendPrechatData(prechatInputAdapter.getDataMap());
-            } else {
-                sendPrechatUser(prechatInputAdapter.getDataMap());
-            }
+
+            sendPrechatUser(prechatInputAdapter.getDataMap());
+
         }
     }
 
@@ -146,6 +145,10 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             KMUser user = new KMUser();
 
             user.setUserName(!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD)) ? dataMap.get(EMAIL_FIELD) : dataMap.get(CONTACT_NUMBER_FILED));
+
+            if (TextUtils.isEmpty(user.getUserId())){
+                user = Kommunicate.getVisitor();
+            }
 
             if (!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD))) {
                 user.setEmail(dataMap.get(EMAIL_FIELD));

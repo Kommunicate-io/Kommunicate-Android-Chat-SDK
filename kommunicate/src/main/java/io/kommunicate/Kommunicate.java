@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
@@ -41,6 +42,7 @@ import java.util.Map;
 import io.kommunicate.async.GetUserListAsyncTask;
 import io.kommunicate.async.KMFaqTask;
 import io.kommunicate.async.KMHelpDocsKeyTask;
+import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.async.KmAwayMessageTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
@@ -125,6 +127,7 @@ public class Kommunicate {
                 });
             }
         } else {
+
             login(context, kmUser, getKmLoginHandlerWithPush(handler), null);
         }
     }
@@ -158,12 +161,81 @@ public class Kommunicate {
         };
     }
 
-    public static void login(Context context, KMUser kmUser, KMLoginHandler handler, ResultReceiver prechatReceiver) {
+    public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler, ResultReceiver prechatReceiver) {
         if (kmUser != null) {
             kmUser.setHideActionMessages(true);
             kmUser.setSkipDeletedGroups(true);
         }
-        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
+//
+
+        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                KmAppSettingModel model = (KmAppSettingModel) message;
+                if (model != null && model.getResponse() != null){
+                    if (model.getResponse().isCollectLead()) {
+                        try{
+                            launchLeadCollection(context,model.getResponse().getLeadCollection(), new KmPrechatCallback<KMUser>() {
+                                @Override
+                                public void onReceive(KMUser data, Context context, ResultReceiver finishActivityReceiver) {
+                                    new KmUserLoginTask(data, false, handler, context, null).execute();
+                                }
+
+                                @Override
+                                public void onError(String error) {
+                                    handler.onFailure(null, null);
+                                }
+                            });
+                        }catch (Exception e){
+                            Utils.printLog(context,TAG,"Failed to launch the Lead Collection Screen");
+                            handler.onFailure(null,e);
+                        }
+
+
+                    } else {
+                        new KmUserLoginTask(kmUser, false, handler, context, null).execute();
+                    }
+                }else{
+                    Utils.printLog(context, TAG, "Failed to fetch the app settings!!");
+
+                    new KmUserLoginTask(kmUser, false, handler, context, null).execute();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                Log.i(TAG, "Failed to fetch the Lead Collection");
+                handler.onFailure(null, (Exception) error);
+            }
+        }).execute();
+    }
+
+    public static void launchLeadCollection(final Context context, List<KmPrechatInputModel> inputModelList,final KmPrechatCallback<KMUser> callback) throws KmException {
+        if (!(context instanceof Activity)) {
+            throw new KmException("This method needs Activity context");
+        }
+
+        ResultReceiver resultReceiver = new ResultReceiver(null) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                if (KmConstants.PRECHAT_RESULT_CODE == resultCode) {
+                    KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(KmConstants.KM_USER_DATA), KMUser.class);
+                    if (callback != null) {
+                        callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
+                    }
+                }
+            }
+        };
+
+        try {
+            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.PRECHAT_ACTIVITY_NAME));
+            intent.putExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST, GsonUtils.getJsonFromObject(inputModelList, List.class));
+            intent.putExtra(KmConstants.PRECHAT_RESULT_RECEIVER, resultReceiver);
+            context.startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            throw new KmException(e.getMessage());
+        }
     }
 
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {
@@ -214,6 +286,7 @@ public class Kommunicate {
 
     public static void openConversation(Context context, KmCallback callback) {
         try {
+
             Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
             context.startActivity(intent);
             if (callback != null) {
@@ -226,7 +299,7 @@ public class Kommunicate {
         }
     }
 
-    public static void launchPrechatWithResult(final Context context, final KmPrechatCallback<KMUser> callback) throws KmException {
+    public static void launchPrechatWithResult(final Context context,final KmPrechatCallback<KMUser> callback) throws KmException {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
         }
@@ -282,6 +355,7 @@ public class Kommunicate {
             }
         }
     }
+
 
     public static void notifiyPrechatActivity(ResultReceiver finishActivityReceiver) {
         if (finishActivityReceiver != null) {

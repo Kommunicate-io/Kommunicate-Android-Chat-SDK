@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
@@ -189,16 +188,12 @@ public class Kommunicate {
                             Utils.printLog(context, TAG, "Failed to launch the Lead Collection Screen");
                             handler.onFailure(null, e);
                         }
-
-
                     } else {
                         Utils.printLog(context, TAG, "Failed to fetch the App setting model.So redirecting to login as visitor.");
-
                         new KmUserLoginTask(kmUser, false, handler, context, null).execute();
                     }
                 } else {
                     Utils.printLog(context, TAG, "Failed to fetch the app settings!!.Redirecting to Login As Visitor");
-
                     new KmUserLoginTask(kmUser, false, handler, context, null).execute();
                 }
 
@@ -206,7 +201,7 @@ public class Kommunicate {
 
             @Override
             public void onFailure(Object error) {
-                Log.i(TAG, "Failed to fetch the Lead Collection");
+                Utils.printLog(context, TAG, "Failed to fetch the Lead Collection");
                 handler.onFailure(null, (Exception) error);
             }
         }).execute();

@@ -146,7 +146,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
 
             user.setUserName(!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD)) ? dataMap.get(EMAIL_FIELD) : dataMap.get(CONTACT_NUMBER_FILED));
 
-            if (TextUtils.isEmpty(user.getUserId())){
+            if (TextUtils.isEmpty(user.getUserId())) {
                 user = Kommunicate.getVisitor();
             }
 

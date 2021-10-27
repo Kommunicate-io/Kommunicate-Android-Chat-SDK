@@ -166,16 +166,15 @@ public class Kommunicate {
             kmUser.setHideActionMessages(true);
             kmUser.setSkipDeletedGroups(true);
         }
-//
 
         new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 KmAppSettingModel model = (KmAppSettingModel) message;
-                if (model != null && model.getResponse() != null){
+                if (model != null && model.getResponse() != null) {
                     if (model.getResponse().isCollectLead()) {
-                        try{
-                            launchLeadCollection(context,model.getResponse().getLeadCollection(), new KmPrechatCallback<KMUser>() {
+                        try {
+                            launchLeadCollection(context, model.getResponse().getLeadCollection(), new KmPrechatCallback<KMUser>() {
                                 @Override
                                 public void onReceive(KMUser data, Context context, ResultReceiver finishActivityReceiver) {
                                     new KmUserLoginTask(data, false, handler, context, null).execute();
@@ -186,17 +185,19 @@ public class Kommunicate {
                                     handler.onFailure(null, null);
                                 }
                             });
-                        }catch (Exception e){
-                            Utils.printLog(context,TAG,"Failed to launch the Lead Collection Screen");
-                            handler.onFailure(null,e);
+                        } catch (Exception e) {
+                            Utils.printLog(context, TAG, "Failed to launch the Lead Collection Screen");
+                            handler.onFailure(null, e);
                         }
 
 
                     } else {
+                        Utils.printLog(context, TAG, "Failed to fetch the App setting model.So redirecting to login as visitor.");
+
                         new KmUserLoginTask(kmUser, false, handler, context, null).execute();
                     }
-                }else{
-                    Utils.printLog(context, TAG, "Failed to fetch the app settings!!");
+                } else {
+                    Utils.printLog(context, TAG, "Failed to fetch the app settings!!.Redirecting to Login As Visitor");
 
                     new KmUserLoginTask(kmUser, false, handler, context, null).execute();
                 }
@@ -211,7 +212,7 @@ public class Kommunicate {
         }).execute();
     }
 
-    public static void launchLeadCollection(final Context context, List<KmPrechatInputModel> inputModelList,final KmPrechatCallback<KMUser> callback) throws KmException {
+    public static void launchLeadCollection(final Context context, List<KmPrechatInputModel> inputModelList, final KmPrechatCallback<KMUser> callback) throws KmException {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
         }
@@ -299,7 +300,7 @@ public class Kommunicate {
         }
     }
 
-    public static void launchPrechatWithResult(final Context context,final KmPrechatCallback<KMUser> callback) throws KmException {
+    public static void launchPrechatWithResult(final Context context, final KmPrechatCallback<KMUser> callback) throws KmException {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
         }

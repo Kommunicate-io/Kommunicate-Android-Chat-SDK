@@ -402,9 +402,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             int index = messageList.indexOf(message);
             boolean hideRecursiveImages = false;
+            boolean showTimestamp = message.isTypeOutbox() || index == messageList.size() - 1 || !messageList.get(index + 1).isRichMessage();
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
-
             if (!message.isTypeOutbox()) {
                 if (index != 0 && !messageList.get(index - 1).isTypeOutbox()
                         && messageList.get(index - 1).getContentType() != 10
@@ -963,7 +963,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                 }
             });
-
+            myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
 
             if (message.getScheduledAt() != null) {
                 myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));
@@ -1067,7 +1067,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                 myHolder.richMessageLayout.setVisibility(View.VISIBLE);
                 try {
-                    KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage(isMessageProcessed(message));
+                    KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings, showTimestamp).createRichMessage(isMessageProcessed(message));
                 } catch (Exception e) {
                     e.printStackTrace();
                     myHolder.richMessageLayout.setVisibility(View.GONE);

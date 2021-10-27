@@ -28,8 +28,8 @@ public class ListKmRichMessage extends KmRichMessage {
 
     public static final int MAX_ACTIONS_LIMIT = 3;
 
-    public ListKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
-        super(context, containerView, message, listener, alCustomizationSettings);
+    public ListKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
     }
 
     @Override

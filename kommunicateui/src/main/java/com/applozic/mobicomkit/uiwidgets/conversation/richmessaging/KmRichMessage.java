@@ -8,6 +8,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +19,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -67,14 +69,18 @@ public abstract class KmRichMessage {
     protected com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel kmRichMessageModel;
     protected KmThemeHelper themeHelper;
     protected Gson gson;
+    protected TextView createdAtTime;
+    protected boolean showTimestamp;
 
-    public KmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
+
+    public KmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
         this.context = context;
         this.message = message;
         this.listener = listener;
         this.containerView = containerView;
         this.alCustomizationSettings = alCustomizationSettings;
         this.gson = new Gson();
+        this.showTimestamp = showTimestamp;
         this.model = (KmRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), KmRichMessageModel.class);
         this.kmRichMessageModel = gson.fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
         }.getType());
@@ -95,6 +101,9 @@ public abstract class KmRichMessage {
         imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
         flowLayout = containerView.findViewById(R.id.kmFlowLayout);
         alFormLayoutRecycler = containerView.findViewById(R.id.alFormLayoutRecycler);
+        createdAtTime = containerView.findViewById(R.id.createdAt);
+        createdAtTime.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
+        createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
 
         handleLayoutVisibilities(model.getTemplateId());
     }

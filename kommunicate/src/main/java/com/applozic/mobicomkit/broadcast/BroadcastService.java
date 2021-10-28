@@ -339,6 +339,14 @@ public class BroadcastService {
         sendBroadcast(context, intent);
     }
 
+    public static void sendAgentStatusBroadcast(Context context, String action, String userId, Integer status) {
+        Intent intent = new Intent();
+        intent.setAction(action);
+        intent.putExtra("userId", userId);
+        intent.putExtra("status", status);
+        sendBroadcast(context, intent);
+    }
+
     public static IntentFilter getIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(INTENT_ACTIONS.FIRST_TIME_SYNC_COMPLETE.toString());
@@ -371,6 +379,7 @@ public class BroadcastService {
         intentFilter.addAction(INTENT_ACTIONS.GROUP_MUTE.toString());
         intentFilter.addAction(INTENT_ACTIONS.CONTACT_PROFILE_CLICK.toString());
         intentFilter.addAction(INTENT_ACTIONS.LOGGED_USER_DELETE.toString());
+        intentFilter.addAction(INTENT_ACTIONS.AGENT_STATUS.toString());
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
         return intentFilter;
     }
@@ -389,6 +398,7 @@ public class BroadcastService {
         UPLOAD_ATTACHMENT_FAILED, MESSAGE_ATTACHMENT_DOWNLOAD_DONE, MESSAGE_ATTACHMENT_DOWNLOAD_FAILD,
         UPDATE_LAST_SEEN_AT_TIME, UPDATE_TYPING_STATUS, MESSAGE_READ_AND_DELIVERED, MESSAGE_READ_AND_DELIVERED_FOR_CONTECT, CHANNEL_SYNC,
         CONTACT_VERIFIED, NOTIFY_USER, MQTT_DISCONNECTED, UPDATE_CHANNEL_NAME, UPDATE_TITLE_SUBTITLE, CONVERSATION_READ, UPDATE_USER_DETAIL,
-        MESSAGE_METADATA_UPDATE, MUTE_USER_CHAT, MQTT_CONNECTED, USER_ONLINE, USER_OFFLINE, GROUP_MUTE, CONTACT_PROFILE_CLICK, LOGGED_USER_DELETE
+        MESSAGE_METADATA_UPDATE, MUTE_USER_CHAT, MQTT_CONNECTED, USER_ONLINE, USER_OFFLINE, GROUP_MUTE, CONTACT_PROFILE_CLICK, LOGGED_USER_DELETE,
+        AGENT_STATUS
     }
 }

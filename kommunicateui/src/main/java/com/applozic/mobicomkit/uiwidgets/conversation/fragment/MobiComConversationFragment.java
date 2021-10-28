@@ -898,7 +898,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-            loadAwayMessage();
+            showAwayMessage(true, null);
         }
 
         emoticonsBtn.setVisibility(View.GONE);
@@ -1061,7 +1061,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setFeedbackDisplay(channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext()));
 
         if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
-            loadAwayMessage();
+            showAwayMessage(true, null);
         }
     }
 
@@ -4309,13 +4309,21 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         });
     }
-
+    /**
+     * displays/hides the away layout
+     *
+     * @param show true to display/ false to not, if response is null, then fetch from cache
+     */
     public void showAwayMessage(boolean show, KmApiResponse.KmDataResponse response) {
         if (response != null) {
             kmAwayView.setupAwayMessage(response, channel);
-            if (alCustomizationSettings.getAwayMessageTextColor() != null) {
-                kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
-            }
+        } else if(show && response == null && kmAwayView.getAwayMessage() != null) {
+                kmAwayView.handleAwayMessage(show);
+        } else if (show){
+            loadAwayMessage();
+        }
+        if (alCustomizationSettings.getAwayMessageTextColor() != null) {
+            kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
         }
         kmAwayView.setVisibility(show && alCustomizationSettings.isEnableAwayMessage()? VISIBLE : GONE);
     }

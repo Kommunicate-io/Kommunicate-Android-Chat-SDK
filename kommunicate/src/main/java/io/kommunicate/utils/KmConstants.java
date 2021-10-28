@@ -18,4 +18,6 @@ public class KmConstants {
     public static final String KM_HELPCENTER_URL = "KM_HELPCENTER_URL";
     public static final String PRECHAT_ACTIVITY_NAME = "com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity";
     public static final String CONVERSATION_ACTIVITY_NAME = "com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity";
+    public static final int STATUS_AWAY = 2;
+    public static final int STATUS_ONLINE = 3;
 }

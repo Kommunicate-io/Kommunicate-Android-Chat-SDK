@@ -125,6 +125,8 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
             conversationUIService.updateMessageMetadata(keyString);
         } else if (BroadcastService.INTENT_ACTIONS.MUTE_USER_CHAT.toString().equals(action)) {
             conversationUIService.muteUserChat(intent.getBooleanExtra("mute", false), intent.getStringExtra("userId"));
+        } else if(BroadcastService.INTENT_ACTIONS.AGENT_STATUS.toString().equals(action)) {
+            conversationUIService.updateAgentStatus(intent.getStringExtra("userId"), intent.getIntExtra("status", 3));
         }
     }
 }

@@ -115,6 +115,18 @@ public class MainActivity extends AppCompatActivity {
                         createLoginErrorDialog(registrationResponse, exception);
                     }
                 });
+//                Kommunicate.loginAsVisitorV2(MainActivity.this, new KmCallback() {
+//                    @Override
+//                    public void onSuccess(Object message) {
+//                        finish();
+//                        progressDialog.dismiss();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Object error) {
+//
+//                    }
+//                });
             }
         });
     }

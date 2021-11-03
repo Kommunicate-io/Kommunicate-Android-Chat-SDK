@@ -95,7 +95,7 @@ public class Kommunicate {
         }
     }
 
-    public static void login(Context context, final KMUser kmUser, final KMLoginHandler handler) {
+    public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
             if (loggedInUserId.equals(kmUser.getUserId())) {
@@ -166,45 +166,7 @@ public class Kommunicate {
             kmUser.setSkipDeletedGroups(true);
         }
 
-        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
-            @Override
-            public void onSuccess(Object message) {
-                KmAppSettingModel model = (KmAppSettingModel) message;
-                if (model != null && model.getResponse() != null) {
-                    if (model.getResponse().isCollectLead()) {
-                        try {
-                            launchLeadCollection(context, model.getResponse().getLeadCollection(), new KmPrechatCallback<KMUser>() {
-                                @Override
-                                public void onReceive(KMUser data, Context context, ResultReceiver finishActivityReceiver) {
-                                    new KmUserLoginTask(data, false, handler, context, null).execute();
-                                }
-
-                                @Override
-                                public void onError(String error) {
-                                    handler.onFailure(null, null);
-                                }
-                            });
-                        } catch (Exception e) {
-                            Utils.printLog(context, TAG, "Failed to launch the Lead Collection Screen");
-                            handler.onFailure(null, e);
-                        }
-                    } else {
-                        Utils.printLog(context, TAG, "Failed to fetch the App setting model.So redirecting to login as visitor.");
-                        new KmUserLoginTask(kmUser, false, handler, context, null).execute();
-                    }
-                } else {
-                    Utils.printLog(context, TAG, "Failed to fetch the app settings!!.Redirecting to Login As Visitor");
-                    new KmUserLoginTask(kmUser, false, handler, context, null).execute();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Object error) {
-                Utils.printLog(context, TAG, "Failed to fetch the Lead Collection");
-                handler.onFailure(null, (Exception) error);
-            }
-        }).execute();
+        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
     }
 
     public static void launchLeadCollection(final Context context, List<KmPrechatInputModel> inputModelList, final KmPrechatCallback<KMUser> callback) throws KmException {
@@ -236,6 +198,115 @@ public class Kommunicate {
 
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {
         login(context, getVisitor(), handler);
+    }
+
+    public static void loginAsVisitorV2(final Context context, final KmCallback callback) {
+        final KMUser kmUser = getVisitor();
+        if (isLoggedIn(context)) {
+            String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
+            if (loggedInUserId.equals(kmUser.getUserId())) {
+                launchChatDirectly(context, callback);
+            } else {
+                logout(context, new KMLogoutHandler() {
+                    @Override
+                    public void onSuccess(Context context) {
+                        loginUserWithKmCallBack(context, kmUser, callback);
+                    }
+
+                    @Override
+                    public void onFailure(Exception exception) {
+                        callback.onFailure(exception);
+                    }
+                });
+            }
+        } else {
+            checkForLeadCollection(context, kmUser, callback);
+        }
+
+    }
+
+    public static void checkForLeadCollection(final Context context, final KMUser kmUser, final KmCallback callback) {
+        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
+                if (appSettingModel != null && appSettingModel.getResponse() != null) {
+                    if (appSettingModel.getResponse().isCollectLead()) {
+                        Utils.printLog(context, TAG, "Lead Collection is enabled..Launching Lead Collection");
+                        loginLeadUserAndOpenChat(context, appSettingModel, callback);
+                    } else {
+                        Utils.printLog(context, TAG, "Lead Collection is Disabled..Launching Random Login");
+                        loginUserWithKmCallBack(context, kmUser, callback);
+                    }
+                } else {
+                    Utils.printLog(context, TAG, "Failed to fetch App setting..Launching Random Login");
+                    loginUserWithKmCallBack(context, kmUser, callback);
+                }
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Failed to fetch AppSetting");
+                loginUserWithKmCallBack(context, kmUser, callback);
+
+            }
+        }).execute();
+    }
+
+    // To Login the user from Lead Collection Details and Launch the Chat directly
+    public static void loginLeadUserAndOpenChat(final Context context, KmAppSettingModel appSettingModel, final KmCallback callback) {
+        try {
+            launchLeadCollection(context, appSettingModel.getResponse().getLeadCollection(), new KmPrechatCallback<KMUser>() {
+                @Override
+                public void onReceive(KMUser data, final Context context, ResultReceiver finishActivityReceiver) {
+                    loginUserWithKmCallBack(context, data, callback);
+                    finishActivityReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
+                }
+
+                @Override
+                public void onError(String error) {
+                    Utils.printLog(context, TAG, "Failed to load Pre Chat Screen" + error);
+                    callback.onFailure(error);
+                }
+            });
+        } catch (Exception e) {
+            Utils.printLog(context, TAG, "Failed to launch the Lead Collection Screen");
+            callback.onFailure(e);
+        }
+    }
+
+    public static void loginUserWithKmCallBack(final Context context, KMUser kmUser, final KmCallback callback) {
+
+        new KmUserLoginTask(kmUser, false, new KMLoginHandler() {
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, final Context context) {
+                launchChatDirectly(context, callback);
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                Utils.printLog(context, TAG, "Registration Failure" + exception.getMessage());
+                callback.onFailure(exception);
+            }
+        }, context, null).execute();
+    }
+
+    public static void launchChatDirectly(final Context context, final KmCallback callback) {
+        KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
+        conversationBuilder.launchAndCreateIfEmpty(new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                callback.onSuccess(message);
+                Utils.printLog(context, TAG, message.toString());
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Failed to open chat" + error.toString());
+                callback.onFailure(error);
+
+            }
+        });
     }
 
     public static void logout(Context context, final KMLogoutHandler logoutHandler) {

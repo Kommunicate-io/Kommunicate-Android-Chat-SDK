@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 //                        createLoginErrorDialog(registrationResponse, exception);
 //                    }
 //                });
-                Kommunicate.loginAsVisitorV2(MainActivity.this, new KmCallback() {
+                Kommunicate.launchConversationWithPreChat(MainActivity.this, new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
                         finish();
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Object error) {
                         progressDialog.dismiss();
-                        createLoginErrorDialog(null,(Exception) error);
+                        createLoginErrorDialog(null, (Exception) error);
 
                     }
                 });

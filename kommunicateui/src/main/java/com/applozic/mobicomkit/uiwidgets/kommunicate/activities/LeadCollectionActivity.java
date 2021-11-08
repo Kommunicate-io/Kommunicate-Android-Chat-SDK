@@ -78,8 +78,8 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(prechatReceiver != null){
-            prechatReceiver.send(KmConstants.PRECHAT_RESULT_FAILURE,null);
+        if (prechatReceiver != null) {
+            prechatReceiver.send(KmConstants.PRECHAT_RESULT_FAILURE, null);
         }
 
     }

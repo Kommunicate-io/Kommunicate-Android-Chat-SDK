@@ -182,7 +182,7 @@ public class Kommunicate {
                     if (callback != null) {
                         callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
                     }
-                }else {
+                } else {
                     callback.onError("Failed to Load Pre Chat Lead Collection!!");
                 }
             }
@@ -202,7 +202,7 @@ public class Kommunicate {
         login(context, getVisitor(), handler);
     }
 
-    public static void loginAsVisitorV2(final Context context, final KmCallback callback) {
+    public static void launchConversationWithPreChat(final Context context, final KmCallback callback) {
         final KMUser kmUser = getVisitor();
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
@@ -288,7 +288,7 @@ public class Kommunicate {
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                Utils.printLog(context, TAG, "Registration Failure"+exception.getMessage());
+                Utils.printLog(context, TAG, "Registration Failure" + exception.getMessage());
                 callback.onFailure(exception);
             }
         }, context, null).execute();

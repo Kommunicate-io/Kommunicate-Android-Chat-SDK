@@ -65,6 +65,13 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             String preChatModelListJson = getIntent().getStringExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST);
             if (!TextUtils.isEmpty(preChatModelListJson)) {
                 inputModelList = Arrays.asList((KmPrechatInputModel[]) GsonUtils.getObjectFromJson(preChatModelListJson, KmPrechatInputModel[].class));
+                for (KmPrechatInputModel model : inputModelList) {
+                    if (model.getField().equals(getString(R.string.emailEt))) {
+                        model.setValidationRegex(EMAIL_VALIDATION_REGEX);
+                    } else if (model.getField().equals(getString(R.string.phoneNumberEt))) {
+                        model.setValidationRegex(PHONE_NUMBER_VALIDATION_REGEX);
+                    }
+                }
             }
             greetingMessage = getIntent().getStringExtra(KmAppSettingModel.PRE_CHAT_GREETINGS);
             if (TextUtils.isEmpty(greetingMessage)) {

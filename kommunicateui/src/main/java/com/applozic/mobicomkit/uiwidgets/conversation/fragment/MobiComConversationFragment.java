@@ -3100,6 +3100,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (isEmailConversation(channel)) {
             emailReplyReminderLayout.setVisibility(VISIBLE);
         }
+
+        loadAwayMessage();
     }
 
     public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {

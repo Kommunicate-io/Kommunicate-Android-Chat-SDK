@@ -1,6 +1,7 @@
 package io.kommunicate;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -169,7 +170,7 @@ public class Kommunicate {
         new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
     }
 
-    public static void launchLeadCollection(final Context context, List<KmPrechatInputModel> inputModelList, final KmPrechatCallback<KMUser> callback) throws KmException {
+    public static void launchLeadCollection(final Context context, final ProgressDialog progressDialog, List<KmPrechatInputModel> inputModelList, final String preChatGreetings, final KmPrechatCallback<KMUser> callback) throws KmException {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
         }
@@ -183,13 +184,17 @@ public class Kommunicate {
                         callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
                     }
                 } else {
-                    callback.onError("Failed to Load Pre Chat Lead Collection!!");
+                    progressDialog.dismiss();
                 }
             }
         };
 
+
         try {
             Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.PRECHAT_ACTIVITY_NAME));
+            if (!TextUtils.isEmpty(preChatGreetings)) {
+                intent.putExtra(KmAppSettingModel.PRE_CHAT_GREETINGS, preChatGreetings);
+            }
             intent.putExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST, GsonUtils.getJsonFromObject(inputModelList, List.class));
             intent.putExtra(KmConstants.PRECHAT_RESULT_RECEIVER, resultReceiver);
             context.startActivity(intent);
@@ -202,7 +207,7 @@ public class Kommunicate {
         login(context, getVisitor(), handler);
     }
 
-    public static void launchConversationWithPreChat(final Context context, final KmCallback callback) {
+    public static void launchConversationWithPreChat(final Context context, final ProgressDialog progressDialog, final KmCallback callback) {
         final KMUser kmUser = getVisitor();
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
@@ -222,20 +227,20 @@ public class Kommunicate {
                 });
             }
         } else {
-            checkForLeadCollection(context, kmUser, callback);
+            checkForLeadCollection(context, progressDialog, kmUser, callback);
         }
 
     }
 
-    public static void checkForLeadCollection(final Context context, final KMUser kmUser, final KmCallback callback) {
+    public static void checkForLeadCollection(final Context context, final ProgressDialog progressDialog, final KMUser kmUser, final KmCallback callback) {
         new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
-                if (appSettingModel != null && appSettingModel.getResponse() != null) {
+                if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
                     if (appSettingModel.getResponse().isCollectLead()) {
                         Utils.printLog(context, TAG, "Lead Collection is enabled..Launching Lead Collection");
-                        loginLeadUserAndOpenChat(context, appSettingModel, callback);
+                        loginLeadUserAndOpenChat(context, appSettingModel, progressDialog, callback);
                     } else {
                         Utils.printLog(context, TAG, "Lead Collection is Disabled..Launching Random Login");
                         loginUserWithKmCallBack(context, kmUser, callback);
@@ -256,9 +261,9 @@ public class Kommunicate {
     }
 
     // To Login the user from Lead Collection Details and Launch the Chat directly
-    public static void loginLeadUserAndOpenChat(final Context context, KmAppSettingModel appSettingModel, final KmCallback callback) {
+    public static void loginLeadUserAndOpenChat(final Context context, KmAppSettingModel appSettingModel, ProgressDialog progressDialog, final KmCallback callback) {
         try {
-            launchLeadCollection(context, appSettingModel.getResponse().getLeadCollection(), new KmPrechatCallback<KMUser>() {
+            launchLeadCollection(context, progressDialog, appSettingModel.getResponse().getLeadCollection(), appSettingModel.getChatWidget().getPreChatGreetingMsg(), new KmPrechatCallback<KMUser>() {
                 @Override
                 public void onReceive(KMUser data, final Context context, ResultReceiver finishActivityReceiver) {
                     loginUserWithKmCallBack(context, data, callback);

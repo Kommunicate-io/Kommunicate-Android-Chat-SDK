@@ -9,6 +9,7 @@ public class KmAppSettingModel extends JsonMarker {
     private String code;
     private KmResponse response;
     public static final String SUCCESS = "SUCCESS";
+    public static final String PRE_CHAT_GREETINGS = "PRE_CHAT_GREETINGS";
 
     public String getCode() {
         return code;
@@ -113,6 +114,15 @@ public class KmAppSettingModel extends JsonMarker {
         private int botMessageDelayInterval;
         @SerializedName("isSingleThreaded")
         private boolean singleThreaded;
+        private String preChatGreetingMsg;
+
+        public String getPreChatGreetingMsg() {
+            return preChatGreetingMsg;
+        }
+
+        public void setPreChatGreetingMsg(String preChatGreetingMsg) {
+            this.preChatGreetingMsg = preChatGreetingMsg;
+        }
 
         public String getPrimaryColor() {
             return primaryColor;

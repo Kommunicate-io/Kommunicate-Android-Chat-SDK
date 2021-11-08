@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter;
 
 import io.kommunicate.Kommunicate;
+import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
@@ -40,6 +42,8 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     private KmPrechatInputAdapter prechatInputAdapter;
     private List<KmPrechatInputModel> inputModelList;
     private AlCustomizationSettings alCustomizationSettings;
+    private TextView greetingText;
+    private String greetingMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +66,14 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             if (!TextUtils.isEmpty(preChatModelListJson)) {
                 inputModelList = Arrays.asList((KmPrechatInputModel[]) GsonUtils.getObjectFromJson(preChatModelListJson, KmPrechatInputModel[].class));
             }
-        }
+            greetingMessage = getIntent().getStringExtra(KmAppSettingModel.PRE_CHAT_GREETINGS);
+            if (TextUtils.isEmpty(greetingMessage)) {
+                greetingMessage = getString(R.string.prechat_screen_text);
+            }
 
+        }
+        greetingText = (TextView) findViewById(R.id.kmPreChatGreetingText);
+        setGreetingsText();
         RecyclerView kmPreChatRecyclerView = findViewById(R.id.kmPreChatRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -82,6 +92,10 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             prechatReceiver.send(KmConstants.PRECHAT_RESULT_FAILURE, null);
         }
 
+    }
+
+    private void setGreetingsText() {
+        greetingText.setText(greetingMessage);
     }
 
     @Override

@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
 //                        createLoginErrorDialog(registrationResponse, exception);
 //                    }
 //                });
-                Kommunicate.launchConversationWithPreChat(MainActivity.this, new KmCallback() {
+                Kommunicate.launchConversationWithPreChat(MainActivity.this, progressDialog, new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
                         finish();

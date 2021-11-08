@@ -101,32 +101,33 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 Kommunicate.init(MainActivity.this, APP_ID);
-                Kommunicate.loginAsVisitor(MainActivity.this, new KMLoginHandler() {
+//                Kommunicate.loginAsVisitor(MainActivity.this, new KMLoginHandler() {
+//                    @Override
+//                    public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+//                        finish();
+//                        progressDialog.dismiss();
+//                        Kommunicate.openConversation(context, null);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+//                        progressDialog.dismiss();
+//                        createLoginErrorDialog(registrationResponse, exception);
+//                    }
+//                });
+                Kommunicate.loginAsVisitorV2(MainActivity.this, new KmCallback() {
                     @Override
-                    public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                    public void onSuccess(Object message) {
                         finish();
                         progressDialog.dismiss();
-                        Kommunicate.openConversation(context, null);
                     }
 
                     @Override
-                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                        progressDialog.dismiss();
-                        createLoginErrorDialog(registrationResponse, exception);
+                    public void onFailure(Object error) {
+                        createLoginErrorDialog(null, (Exception) error);
+
                     }
                 });
-//                Kommunicate.loginAsVisitorV2(MainActivity.this, new KmCallback() {
-//                    @Override
-//                    public void onSuccess(Object message) {
-//                        finish();
-//                        progressDialog.dismiss();
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Object error) {
-//
-//                    }
-//                });
             }
         });
     }

@@ -124,7 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Object error) {
-                        createLoginErrorDialog(null, (Exception) error);
+                        progressDialog.dismiss();
+                        createLoginErrorDialog(null,(Exception) error);
 
                     }
                 });

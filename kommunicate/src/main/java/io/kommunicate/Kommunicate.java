@@ -182,6 +182,8 @@ public class Kommunicate {
                     if (callback != null) {
                         callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
                     }
+                }else {
+                    callback.onError("Failed to Load Pre Chat Lead Collection!!");
                 }
             }
         };
@@ -266,11 +268,12 @@ public class Kommunicate {
                 @Override
                 public void onError(String error) {
                     Utils.printLog(context, TAG, "Failed to load Pre Chat Screen" + error);
-                    callback.onFailure(error);
+                    callback.onFailure(new Exception(error));
                 }
             });
         } catch (Exception e) {
             Utils.printLog(context, TAG, "Failed to launch the Lead Collection Screen");
+
             callback.onFailure(e);
         }
     }
@@ -285,7 +288,7 @@ public class Kommunicate {
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                Utils.printLog(context, TAG, "Registration Failure" + exception.getMessage());
+                Utils.printLog(context, TAG, "Registration Failure"+exception.getMessage());
                 callback.onFailure(exception);
             }
         }, context, null).execute();

@@ -20,4 +20,6 @@ public class KmConstants {
     public static final String CONVERSATION_ACTIVITY_NAME = "com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity";
     public static final int STATUS_AWAY = 2;
     public static final int STATUS_ONLINE = 3;
+    public static final int STATUS_OFFLINE = 0;
+    public static final int STATUS_CONNECTED = 1;
 }

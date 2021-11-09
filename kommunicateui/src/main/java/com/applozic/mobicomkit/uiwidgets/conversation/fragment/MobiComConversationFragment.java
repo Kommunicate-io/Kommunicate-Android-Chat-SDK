@@ -3060,6 +3060,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     updateChannelSubTitle(channel);
                     ChannelService.isUpdateTitle = false;
                 }
+
+                loadAwayMessage();
+                processSupportGroupDetails(channel);
             }
 
             if (appContactService != null && contact != null) {
@@ -3101,7 +3104,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             emailReplyReminderLayout.setVisibility(VISIBLE);
         }
 
-        loadAwayMessage();
     }
 
     public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {
@@ -4319,9 +4321,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void showAwayMessage(boolean show, KmApiResponse.KmDataResponse response) {
         if (response != null) {
             kmAwayView.setupAwayMessage(response, channel);
-        } else if(show && response == null && kmAwayView.getAwayMessage() != null) {
-                kmAwayView.handleAwayMessage(show);
-        } else if (show){
+        } else if(show && kmAwayView.getAwayMessage() != null) {
+                kmAwayView.handleAwayMessage(true);
+        } else if(show){
             loadAwayMessage();
         }
         if (alCustomizationSettings.getAwayMessageTextColor() != null) {
@@ -4776,12 +4778,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public abstract void onStartLoading(boolean loadingStarted);
 
-    protected void loadAwayMessage() {
+    public void loadAwayMessage() {
         if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()) {
             Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
                     showAwayMessage(true, response);
+
                 }
 
                 @Override

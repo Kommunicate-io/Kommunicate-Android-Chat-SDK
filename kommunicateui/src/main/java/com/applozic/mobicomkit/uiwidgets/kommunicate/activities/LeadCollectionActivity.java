@@ -38,6 +38,7 @@ import io.kommunicate.utils.KmUtils;
 public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     public static final String PHONE_NUMBER_VALIDATION_REGEX = "^\\d{10}$";
+    public static final String NUMBER_VALIDATION_REGEX = "[0-9]+";
     private ResultReceiver prechatReceiver;
     private KmPrechatInputAdapter prechatInputAdapter;
     private List<KmPrechatInputModel> inputModelList;
@@ -69,7 +70,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
                     if (model.getField().equals(getString(R.string.emailEt))) {
                         model.setValidationRegex(EMAIL_VALIDATION_REGEX);
                     } else if (model.getField().equals(getString(R.string.phoneNumberEt))) {
-                        model.setValidationRegex(PHONE_NUMBER_VALIDATION_REGEX);
+                        model.setValidationRegex(NUMBER_VALIDATION_REGEX);
                     }
                 }
             }

@@ -99,6 +99,10 @@ public class KmAwayView extends LinearLayout {
         return awayMessageTv;
     }
 
+    public String getAwayMessage() {
+        return awayMessage;
+    }
+
     public boolean isUserAnonymous() {
         return isUserAnonymous;
     }

@@ -231,4 +231,10 @@ public class SyncCallService {
     public void processLoggedUserDelete() {
         messageClientService.processLoggedUserDeletedFromServer();
     }
+
+    public void updateAwayStatus(String userId, Integer status) {
+        if(userId != null && status != null) {
+            BroadcastService.sendAgentStatusBroadcast(context, BroadcastService.INTENT_ACTIONS.AGENT_STATUS.toString(), userId, status);
+        }
+    }
 }

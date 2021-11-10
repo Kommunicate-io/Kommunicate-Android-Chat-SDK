@@ -170,6 +170,16 @@ public class Kommunicate {
         new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
     }
 
+    /**
+     * To Launch the Pre Chat Lead Collection and get result from the Lead Collection Screen
+     *
+     * @param context          the context
+     * @param progressDialog   the loading progressbar if needed otherwise can pass null
+     * @param inputModelList   input model list to create the form in Lead Collection Screen
+     * @param preChatGreetings To set the Greetings Label on Lead Collection Screen.
+     * @param callback         To update the status
+     * @throws KmException
+     */
     public static void launchLeadCollection(final Context context, final ProgressDialog progressDialog, List<KmPrechatInputModel> inputModelList, final String preChatGreetings, final KmPrechatCallback<KMUser> callback) throws KmException {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
@@ -209,6 +219,14 @@ public class Kommunicate {
         login(context, getVisitor(), handler);
     }
 
+    /**
+     * To Check the Login status & launch the Pre Chat Lead Collection Screen
+     *
+     * @param context        the context
+     * @param progressDialog progress dialog if needed otherwise can pass null
+     * @param callback       the callback to update status
+     */
+
     public static void launchConversationWithPreChat(final Context context, final ProgressDialog progressDialog, final KmCallback callback) {
         final KMUser kmUser = getVisitor();
         if (isLoggedIn(context)) {
@@ -234,6 +252,14 @@ public class Kommunicate {
 
     }
 
+    /**
+     * To Check Lead Collection enabled or not by fetching the appsetting.
+     *
+     * @param context        the context
+     * @param progressDialog the progressDialog if needed otherwise can pass null
+     * @param kmUser         Randomly created KMUser Object for registration if lead collection is disabled
+     * @param callback       callback to update the status
+     */
     public static void checkForLeadCollection(final Context context, final ProgressDialog progressDialog, final KMUser kmUser, final KmCallback callback) {
         new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
             @Override
@@ -262,7 +288,14 @@ public class Kommunicate {
         }).execute();
     }
 
-    // To Login the user from Lead Collection Details and Launch the Chat directly
+    /**
+     * To Login the user from Lead Collection Details.
+     *
+     * @param context         the context
+     * @param appSettingModel appsetting model to get lead collection screen's input field & Greeting Message
+     * @param progressDialog  progressbar used in previous activities to close the progressbar if coming back from lead collection screeen
+     * @param callback        To update the status.
+     **/
     public static void loginLeadUserAndOpenChat(final Context context, KmAppSettingModel appSettingModel, ProgressDialog progressDialog, final KmCallback callback) {
         try {
             launchLeadCollection(context, progressDialog, appSettingModel.getResponse().getLeadCollection(), appSettingModel.getChatWidget().getPreChatGreetingMsg(), new KmPrechatCallback<KMUser>() {
@@ -285,6 +318,13 @@ public class Kommunicate {
         }
     }
 
+    /**
+     * To Log in the user with given KmUser object
+     *
+     * @param context  the context
+     * @param kmUser   kmUser to log in
+     * @param callback to update the status
+     */
     public static void loginUserWithKmCallBack(final Context context, KMUser kmUser, final KmCallback callback) {
 
         new KmUserLoginTask(kmUser, false, new KMLoginHandler() {
@@ -301,6 +341,12 @@ public class Kommunicate {
         }, context, null).execute();
     }
 
+    /**
+     * To launch the chat screen directly if the user is new or user has only one previous conversation.Otherwise widget will open Conversation List Screen.
+     *
+     * @param context  the context
+     * @param callback callback to update status
+     */
     public static void launchChatDirectly(final Context context, final KmCallback callback) {
         KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
         conversationBuilder.launchAndCreateIfEmpty(new KmCallback() {

@@ -79,8 +79,10 @@ public class KmUserLoginTask extends UserLoginTask {
             if (handler != null) {
                 if (response.isRegistrationSuccess()) {
                     handler.onSuccess(response, context.get());
-                } else {
+                } else if (e != null) {
                     handler.onFailure(response, e);
+                } else {
+                    handler.onFailure(response, new Exception(response.getMessage()));
                 }
             }
         } else {

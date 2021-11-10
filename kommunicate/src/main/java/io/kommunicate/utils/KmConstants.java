@@ -3,6 +3,7 @@ package io.kommunicate.utils;
 public class KmConstants {
 
     public static final int PRECHAT_RESULT_CODE = 100;
+    public static final int PRECHAT_RESULT_FAILURE = 111;
     public static final String PRECHAT_RESULT_RECEIVER = "kmPrechatReceiver";
     public static final String FINISH_ACTIVITY_RECEIVER = "kmFinishActivityReceiver";
     public static final String TAKE_ORDER = "takeOrder";

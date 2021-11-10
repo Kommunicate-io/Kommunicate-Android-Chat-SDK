@@ -11,11 +11,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter;
 
+import io.kommunicate.Kommunicate;
+import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
@@ -35,10 +38,13 @@ import io.kommunicate.utils.KmUtils;
 public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     public static final String PHONE_NUMBER_VALIDATION_REGEX = "^\\d{10}$";
+    public static final String NUMBER_VALIDATION_REGEX = "[0-9]+";
     private ResultReceiver prechatReceiver;
     private KmPrechatInputAdapter prechatInputAdapter;
     private List<KmPrechatInputModel> inputModelList;
     private AlCustomizationSettings alCustomizationSettings;
+    private TextView greetingText;
+    private String greetingMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +66,22 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             String preChatModelListJson = getIntent().getStringExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST);
             if (!TextUtils.isEmpty(preChatModelListJson)) {
                 inputModelList = Arrays.asList((KmPrechatInputModel[]) GsonUtils.getObjectFromJson(preChatModelListJson, KmPrechatInputModel[].class));
+                for (KmPrechatInputModel model : inputModelList) {
+                    if (model.getField().equals(getString(R.string.emailEt))) {
+                        model.setValidationRegex(EMAIL_VALIDATION_REGEX);
+                    } else if (model.getField().equals(getString(R.string.phoneNumberEt))) {
+                        model.setValidationRegex(NUMBER_VALIDATION_REGEX);
+                    }
+                }
             }
-        }
+            greetingMessage = getIntent().getStringExtra(KmAppSettingModel.PRE_CHAT_GREETINGS);
+            if (TextUtils.isEmpty(greetingMessage)) {
+                greetingMessage = getString(R.string.prechat_screen_text);
+            }
 
+        }
+        greetingText = (TextView) findViewById(R.id.kmPreChatGreetingText);
+        setGreetingsText();
         RecyclerView kmPreChatRecyclerView = findViewById(R.id.kmPreChatRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -75,13 +94,24 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (prechatReceiver != null) {
+            prechatReceiver.send(KmConstants.PRECHAT_RESULT_FAILURE, null);
+        }
+
+    }
+
+    private void setGreetingsText() {
+        greetingText.setText(greetingMessage);
+    }
+
+    @Override
     public void onClick(View v) {
         if (prechatInputAdapter != null && prechatInputAdapter.areFieldsValid()) {
-            if (inputModelList != null) {
-                sendPrechatData(prechatInputAdapter.getDataMap());
-            } else {
-                sendPrechatUser(prechatInputAdapter.getDataMap());
-            }
+
+            sendPrechatUser(prechatInputAdapter.getDataMap());
+
         }
     }
 
@@ -146,6 +176,10 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             KMUser user = new KMUser();
 
             user.setUserName(!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD)) ? dataMap.get(EMAIL_FIELD) : dataMap.get(CONTACT_NUMBER_FILED));
+
+            if (TextUtils.isEmpty(user.getUserId())) {
+                user = Kommunicate.getVisitor();
+            }
 
             if (!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD))) {
                 user.setEmail(dataMap.get(EMAIL_FIELD));

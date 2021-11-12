@@ -3,10 +3,13 @@ package io.kommunicate.models;
 import com.applozic.mobicommons.json.JsonMarker;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class KmAppSettingModel extends JsonMarker {
     private String code;
     private KmResponse response;
     public static final String SUCCESS = "SUCCESS";
+    public static final String PRE_CHAT_GREETINGS = "PRE_CHAT_GREETINGS";
 
     public String getCode() {
         return code;
@@ -39,6 +42,24 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean collectFeedback;
         private boolean hidePostCTA;
         private KmChatWidget chatWidget;
+        private boolean collectLead;
+        private List<KmPrechatInputModel> leadCollection;
+
+        public List<KmPrechatInputModel> getLeadCollection() {
+            return leadCollection;
+        }
+
+        public void setLeadCollection(List<KmPrechatInputModel> leadCollection) {
+            this.leadCollection = leadCollection;
+        }
+
+        public boolean isCollectLead() {
+            return collectLead;
+        }
+
+        public void setCollectLead(boolean collectLead) {
+            this.collectLead = collectLead;
+        }
 
         public String getUserName() {
             return userName;
@@ -88,11 +109,52 @@ public class KmAppSettingModel extends JsonMarker {
     public static class KmChatWidget extends JsonMarker {
         private String primaryColor;
         private String secondaryColor;
+        private String position;
+        private String widgetImageLink;
+        private String iconIndex;
         private boolean showPoweredBy;
         private long sessionTimeout;
         private int botMessageDelayInterval;
+
+        public String getPosition() {
+            return position;
+        }
+
+        public void setWidgetImageLink(String widgetImageLink) {
+            this.widgetImageLink = widgetImageLink;
+        }
+
+        public String getIconIndex() {
+            return iconIndex;
+        }
+
+        public void setIconIndex(String iconIndex) {
+            this.iconIndex = iconIndex;
+        }
+
+        public String getWidgetImageLink() {
+            return widgetImageLink;
+        }
+
+        public void setPosition(String position) {
+            this.position = position;
+        }
+
+
+
+
+
         @SerializedName("isSingleThreaded")
         private boolean singleThreaded;
+        private String preChatGreetingMsg;
+
+        public String getPreChatGreetingMsg() {
+            return preChatGreetingMsg;
+        }
+
+        public void setPreChatGreetingMsg(String preChatGreetingMsg) {
+            this.preChatGreetingMsg = preChatGreetingMsg;
+        }
 
         public String getPrimaryColor() {
             return primaryColor;

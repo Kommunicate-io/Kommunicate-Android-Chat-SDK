@@ -28,7 +28,7 @@ public class FloatingViewConfig {
     public static class Builder {
         int paddingLeft, paddingTop, paddingRight, paddingBottom;
         int displayWidth = Integer.MAX_VALUE, displayHeight = Integer.MAX_VALUE;
-        GRAVITY gravity = GRAVITY.LEFT_CENTER;
+        GRAVITY gravity = GRAVITY.RIGHT_CENTER;
         Boolean movable = true;
         /**
          * @param paddingLeft unit is DP

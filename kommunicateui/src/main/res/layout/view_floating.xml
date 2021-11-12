@@ -5,7 +5,10 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        app:srcCompat="@drawable/ic_km_default_logo" />
+        android:id="@+id/km_floating_widget"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:scaleType="centerInside"
+        android:background="@drawable/km_chat_widget_background"
+        app:srcCompat="@drawable/km_icon_1" />
 </FrameLayout>

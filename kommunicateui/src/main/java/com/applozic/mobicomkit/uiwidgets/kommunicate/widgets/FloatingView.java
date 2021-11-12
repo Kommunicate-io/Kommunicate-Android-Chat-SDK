@@ -1,10 +1,26 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.widgets;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -12,10 +28,26 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
+import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.api.attachment.FileClientService;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.commons.image.ImageLoader;
+import com.applozic.mobicommons.commons.image.ImageUtils;
+
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import io.kommunicate.async.KmAppSettingTask;
+import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.models.KmAppSettingModel;
 
 
 public class FloatingView {
@@ -27,17 +59,81 @@ public class FloatingView {
     private View.OnClickListener onClickListener;
     private boolean isShowing = false;
     private TYPE type = TYPE.OVERLAY_SYSTEM;
-
+    private KmAppSettingModel.KmChatWidget kmChatWidget;
     private FloatingViewConfig config;
     private int width, height;
     private Boolean movable;
+    private ImageView KmFloatingView;
+    private FrameLayout frameLayout;
     private enum TYPE{
         OVERLAY_SYSTEM, OVERLAY_ACTIVITY, OVERLAY_VIEWGROUP
     }
+    public static final String LEFT = "left";
+    public static final String RIGHT = "right";
+    private static final String TAG = "KmFloatingIcon";
 
-    public FloatingView(Context context) {
+    //
+    public FloatingView(final Context context) {
+        this(context, new FloatingViewConfig.Builder().build());
+        mContext = context;
+        mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         LayoutInflater mInflater = LayoutInflater.from(context);
+        KmFloatingWidgetHelper kmFloatingWidgetHelper = new KmFloatingWidgetHelper(this);
+        AlEventManager.getInstance().registerUIListener("123", kmFloatingWidgetHelper);
         rootView = mInflater.inflate(R.layout.view_floating, null, false);
+        frameLayout = rootView.findViewById(R.id.circular_frame_layout);
+        KmFloatingView = (ImageView) rootView.findViewById(R.id.km_floating_widget);
+        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
+                if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
+                        kmChatWidget = appSettingModel.getResponse().getChatWidget();
+                        config.gravity =  kmChatWidget.getPosition().equals(LEFT) ?  FloatingViewConfig.GRAVITY.LEFT_BOTTOM : FloatingViewConfig.GRAVITY.RIGHT_BOTTOM;
+                        DrawableCompat.setTint(DrawableCompat.wrap(frameLayout.getBackground()), Color.parseColor(kmChatWidget.getPrimaryColor()));
+                        if(kmChatWidget.getIconIndex().equals("image")) {
+                            ImageLoader loadImage = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
+                                @Override
+                                protected Bitmap processBitmap(Object data) {
+                                    return new FileClientService(context).loadMessageImage(context, kmChatWidget.getWidgetImageLink());
+                                }
+                            };
+                            loadImage.loadImage(kmChatWidget.getWidgetImageLink(), KmFloatingView);
+                        }
+                        else {
+                            switch (kmChatWidget.getIconIndex()) {
+                                case ("1"):
+                                    KmFloatingView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.km_icon_1));
+                                    break;
+                                case ("2"):
+                                    KmFloatingView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.km_icon_2));
+                                    break;
+                                case ("3"):
+                                    KmFloatingView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.km_icon_3));
+                                    break;
+                                case ("4"):
+                                    KmFloatingView.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.km_icon_4));
+                                    break;
+                            }
+                        }
+                        measure();
+                        showOverlayActivity();
+                } else {
+                    Utils.printLog(context, TAG, "Failed to fetch App setting");
+                    //loginUserWithKmCallBack(context, kmUser, callback);
+                }
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Failed to fetch AppSetting");
+            }
+        }).execute();
+
+    }
+
+    public void showUnreadCount() {
+        Log.e("floatingview", "happens");
     }
 
     public FloatingView(Context context, int resource, FloatingViewConfig config) {
@@ -106,11 +202,7 @@ public class FloatingView {
 //                .start();
     }
 
-    /**
-     * 在当前Activity上方悬浮，可被其他Activity遮挡
-     * 无需跳转到系统设置中去同意在其他APP上方显示遮盖
-     * 需要等待当前Activity创建完成，如果在onCreate中直接调用会报错
-     */
+
     public void showOverlayActivity() {
         if (isShowing) {
             return;
@@ -181,6 +273,7 @@ public class FloatingView {
                 mParamsWindowManager = new WindowManager.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                         WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG,
+                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM |
                         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                         PixelFormat.TRANSLUCENT);
                 mParamsWindowManager.gravity = Gravity.LEFT | Gravity.TOP;
@@ -235,12 +328,12 @@ public class FloatingView {
             mParamsWindowManager.y = y;
         } else if (type == TYPE.OVERLAY_VIEWGROUP){
             int marginLeft = rootView.getLeft() + x;
-            marginLeft = marginLeft < 0? 0: marginLeft;
-            marginLeft = marginLeft > config.displayWidth - width? config.displayWidth - width: marginLeft;
+            marginLeft = Math.max(marginLeft, 0);
+            marginLeft = Math.min(marginLeft, config.displayWidth - width);
 
             int marginTop = rootView.getTop() + y;
-            marginTop = marginTop < 0? 0: marginTop;
-            marginTop = marginTop > config.displayHeight - height? config.displayHeight - height: marginTop;
+            marginTop = Math.max(marginTop, 0);
+            marginTop = Math.min(marginTop, config.displayHeight - height);
 
             mParamsViewGroup.setMargins(marginLeft, marginTop, 0, 0);
         }
@@ -300,16 +393,13 @@ public class FloatingView {
     private void moveWindow(int x, int y){
 
         if (type == TYPE.OVERLAY_VIEWGROUP) {
-            // 本方法界面刷新后会复位
-//            rootView.layout(rootView.getLeft() + x, rootView.getTop() + y, rootView.getRight() + x, rootView.getBottom() + y);
-
             int marginLeft = rootView.getLeft() + x;
-            marginLeft = marginLeft < 0? 0: marginLeft;
-            marginLeft = marginLeft > config.displayWidth - width? config.displayWidth - width: marginLeft;
+            marginLeft = Math.max(marginLeft, 0);
+            marginLeft = Math.min(marginLeft, config.displayWidth - width);
 
             int marginTop = rootView.getTop() + y;
-            marginTop = marginTop < 0? 0: marginTop;
-            marginTop = marginTop > config.displayHeight - height? config.displayHeight - height: marginTop;
+            marginTop = Math.max(marginTop, 0);
+            marginTop = Math.min(marginTop, config.displayHeight - height);
 
             mParamsViewGroup.setMargins(marginLeft, marginTop, 0, 0);
             rootView.requestLayout();

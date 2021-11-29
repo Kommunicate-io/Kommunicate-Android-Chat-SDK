@@ -27,7 +27,7 @@
             android:background="@android:color/transparent"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
 
 

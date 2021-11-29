@@ -23,7 +23,6 @@ android {
 
     }
 
-
     buildTypes {
         release {
             minifyEnabled false
@@ -39,7 +38,6 @@ dependencies {
     api 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     api 'androidx.appcompat:appcompat:1.2.0'
     api 'com.google.code.gson:gson:2.8.6'
-
 }
 
 /*task sourcesJar(type: Jar) {

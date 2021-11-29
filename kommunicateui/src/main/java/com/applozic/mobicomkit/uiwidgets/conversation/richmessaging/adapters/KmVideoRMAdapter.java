@@ -38,9 +38,6 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
 
 
     private List<KmRichMessageModel.KmPayloadModel> payloadList;
-//    SimpleExoPlayer simpleExoPlayer;
-//
-//    DataSource.Factory mediaDataSourceFactory;
     double currentPos, totalDuration;
 
 
@@ -49,7 +46,6 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         if (model.getPayload() != null) {
             this.payloadList = Arrays.asList((KmRichMessageModel.KmPayloadModel[])
                     GsonUtils.getObjectFromJson(model.getPayload(), KmRichMessageModel.KmPayloadModel[].class));
-//            mediaDataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "mediaPlayerSample"));
         }
     }
 
@@ -123,7 +119,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
                                     holder.tvCurrentSeconds.setText(timeConversion((long) currentPos));
                                     holder.seekBar.setProgress((int) currentPos);
                                     handler.postDelayed(this, 1000);
-                                } catch (IllegalStateException ed){
+                                } catch (IllegalStateException ed) {
                                     ed.printStackTrace();
                                 }
                             }
@@ -229,17 +225,17 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
     }
 
     public String timeConversion(long value) {
-        String songTime;
-        int dur = (int) value;
-        int hrs = (dur / 3600000);
-        int mns = (dur / 60000) % 60000;
-        int scs = dur % 60000 / 1000;
+        String videoTime;
+        int duration = (int) value;
+        int hrs = (duration / 3600000);
+        int mns = (duration / 60000) % 60000;
+        int scs = duration % 60000 / 1000;
 
         if (hrs > 0) {
-            songTime = String.format("%02d:%02d:%02d", hrs, mns, scs);
+            videoTime = String.format("%02d:%02d:%02d", hrs, mns, scs);
         } else {
-            songTime = String.format("%02d:%02d", mns, scs);
+            videoTime = String.format("%02d:%02d", mns, scs);
         }
-        return songTime;
+        return videoTime;
     }
 }

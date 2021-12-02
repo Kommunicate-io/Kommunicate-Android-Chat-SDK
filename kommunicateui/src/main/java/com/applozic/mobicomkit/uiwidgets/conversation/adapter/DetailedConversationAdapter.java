@@ -385,6 +385,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     String comment = String.valueOf(jsonObject.get("comments"));
                     myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
                     myViewholder6.textViewFeedbackComment.setText(comment);
+                    if (alCustomizationSettings.isAgentApp()) {
+                        myViewholder6.textViewFeedbackText.setText(context.getString(R.string.user_rating_text));
+                    } else {
+                        myViewholder6.textViewFeedbackText.setText(context.getString(R.string.rating_text));
+                    }
                 }
             } else {
                 bindMessageView(holder, message, position);
@@ -1756,6 +1761,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         TextView textViewFeedbackComment;
         ImageView imageViewFeedbackRating;
         ScrollView scrollViewFeedbackCommentWrap;
+        TextView textViewFeedbackText;
 
 
         public MyViewHolder6(View itemView) {
@@ -1763,6 +1769,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             textViewFeedbackComment = itemView.findViewById(R.id.idFeedbackComment);
             imageViewFeedbackRating = itemView.findViewById(R.id.idRatingImage);
             scrollViewFeedbackCommentWrap = itemView.findViewById(R.id.idCommentScrollView);
+            textViewFeedbackText = itemView.findViewById(R.id.idFeedbackRateText);
         }
     }
 }

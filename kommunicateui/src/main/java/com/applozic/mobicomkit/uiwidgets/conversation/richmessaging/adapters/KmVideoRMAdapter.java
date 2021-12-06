@@ -78,7 +78,14 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
             holder.webview.getSettings().setPluginState(WebSettings.PluginState.ON);
             if (!TextUtils.isEmpty(payloadModel.getSource())) {
                 holder.videoViewRoot.setVisibility(View.GONE);
-                holder.captionText.setVisibility(View.GONE);
+                if (!TextUtils.isEmpty(payloadModel.getCaption())) {
+                    holder.captionText.setVisibility(View.VISIBLE);
+                    holder.captionText.setText(payloadModel.getCaption());
+
+                } else {
+                    holder.captionText.setVisibility(View.GONE);
+                }
+
                 holder.webViewRoot.setVisibility(View.VISIBLE);
                 String currentUrl = "<iframe width=\"100%\" height=\"100%\" src=\"" + payloadModel.getUrl() + "\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
                 holder.webview.loadData(currentUrl, "text/html", "utf-8");

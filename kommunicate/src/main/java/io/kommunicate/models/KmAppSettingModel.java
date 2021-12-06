@@ -44,6 +44,15 @@ public class KmAppSettingModel extends JsonMarker {
         private KmChatWidget chatWidget;
         private boolean collectLead;
         private List<KmPrechatInputModel> leadCollection;
+        private KmCompanySetting companySetting;
+
+        public KmCompanySetting getCompanySetting() {
+            return companySetting;
+        }
+
+        public void setCompanySetting(KmCompanySetting companySetting) {
+            this.companySetting = companySetting;
+        }
 
         public List<KmPrechatInputModel> getLeadCollection() {
             return leadCollection;
@@ -115,15 +124,7 @@ public class KmAppSettingModel extends JsonMarker {
         @SerializedName("isSingleThreaded")
         private boolean singleThreaded;
         private String preChatGreetingMsg;
-        private KmCompanySetting companySetting;
 
-        public KmCompanySetting getCompanySetting() {
-            return companySetting;
-        }
-
-        public void setCompanySetting(KmCompanySetting companySetting) {
-            this.companySetting = companySetting;
-        }
 
         public String getPreChatGreetingMsg() {
             return preChatGreetingMsg;

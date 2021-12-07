@@ -63,6 +63,7 @@ public abstract class KmRichMessage {
     protected RecyclerView genericCardRecycler;
     protected RecyclerView imageListRecycler;
     protected RecyclerView alFormLayoutRecycler;
+    protected RecyclerView videoTemplateRecycler;
     protected KmFlowLayout flowLayout;
     protected AlCustomizationSettings alCustomizationSettings;
     protected KmRichMessageModel model;
@@ -99,6 +100,7 @@ public abstract class KmRichMessage {
         faqLayout = containerView.findViewById(R.id.alFaqLayout);
         genericCardRecycler = containerView.findViewById(R.id.alGenericCardContainer);
         imageListRecycler = containerView.findViewById(R.id.alImageListContainer);
+        videoTemplateRecycler = containerView.findViewById(R.id.videoTemplateContainer);
         flowLayout = containerView.findViewById(R.id.kmFlowLayout);
         alFormLayoutRecycler = containerView.findViewById(R.id.alFormLayoutRecycler);
         createdAtTime = containerView.findViewById(R.id.createdAt);
@@ -109,13 +111,16 @@ public abstract class KmRichMessage {
     }
 
     private void handleLayoutVisibilities(Short templateId) {
-        listItemLayout.setVisibility(templateId == 7 ? View.VISIBLE : View.GONE);
-        genericCardRecycler.setVisibility(templateId == 10 ? View.VISIBLE : View.GONE);
-        faqLayout.setVisibility(templateId == 8 ? View.VISIBLE : View.GONE);
-        faqReplyLayout.setVisibility(templateId == 8 ? View.VISIBLE : View.GONE);
-        imageListRecycler.setVisibility(templateId == 9 ? View.VISIBLE : View.GONE);
-        alFormLayoutRecycler.setVisibility(templateId == 12 ? View.VISIBLE : View.GONE);
-        flowLayout.setVisibility((templateId == 3 || templateId == 6 || templateId == 11 || templateId == 12) ? View.VISIBLE : View.GONE);
+        listItemLayout.setVisibility(templateId == KmRichMessageFactory.LIST_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        genericCardRecycler.setVisibility(templateId == KmRichMessageFactory.CARD_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        faqLayout.setVisibility(templateId == KmRichMessageFactory.FAQ_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        faqReplyLayout.setVisibility(templateId == KmRichMessageFactory.FAQ_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        imageListRecycler.setVisibility(templateId == KmRichMessageFactory.IMAGE_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        videoTemplateRecycler.setVisibility(templateId == KmRichMessageFactory.VIDEO_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+
+        alFormLayoutRecycler.setVisibility(templateId == KmRichMessageFactory.FORM_RICH_MESSAGE ? View.VISIBLE : View.GONE);
+        flowLayout.setVisibility((templateId == KmRichMessageFactory.BUTTON_RICH_MESSAGE || templateId == KmRichMessageFactory.REPLY_RICH_MESSAGE || templateId == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE || templateId == KmRichMessageFactory.FORM_RICH_MESSAGE) ? View.VISIBLE : View.GONE);
+
     }
 
     private String getActionType(KmRichMessageModel model, KmRichMessageModel.KmButtonModel buttonModel) {

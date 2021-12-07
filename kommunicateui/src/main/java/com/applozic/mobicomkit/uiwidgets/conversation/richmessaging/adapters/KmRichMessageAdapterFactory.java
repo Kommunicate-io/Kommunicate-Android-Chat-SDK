@@ -38,7 +38,11 @@ public class KmRichMessageAdapterFactory {
             return new KmCardRMAdapter(context, model, listener, message, themeHelper, isMessageProcessed);
         } else if (model.getTemplateId() == KmRichMessageFactory.BUTTON_RICH_MESSAGE || model.getTemplateId() == KmRichMessageFactory.REPLY_RICH_MESSAGE || model.getTemplateId() == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new KmButtonRMAdapter(context, model, listener, message, themeHelper);
-        } else return null;
+        } else if (model.getTemplateId() == KmRichMessageFactory.VIDEO_RICH_MESSAGE) {
+            return new KmVideoRMAdapter(context, model, listener, message, themeHelper, isMessageProcessed);
+        } else {
+            return null;
+        }
     }
 
     public KmRichMessageAdapter getImageRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, AlCustomizationSettings alCustomizationSettings) {

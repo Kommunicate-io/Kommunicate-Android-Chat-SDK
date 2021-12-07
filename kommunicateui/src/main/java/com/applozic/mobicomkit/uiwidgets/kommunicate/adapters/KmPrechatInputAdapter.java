@@ -92,7 +92,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter<KmPrechatInputAd
             if (inputModel != null) {
                 inputEditText.setInputType(KmPrechatInputModel.KmInputType.getInputType(inputModel.getType()));
                 inputEditText.setTransformationMethod(KmPrechatInputModel.KmInputType.PASSWORD.equals(inputModel.getType()) ? PasswordTransformationMethod.getInstance() : null);
-                textInputLayout.setHint(inputModel.getField());
+                textInputLayout.setHint(inputModel.getPlaceholder());
 
                 inputEditText.setText(inputTextMap != null && !TextUtils.isEmpty(inputTextMap.get(inputModel.getField())) ? inputTextMap.get(inputModel.getField()) : "");
                 inputEditText.setSelection(inputTextMap != null && inputTextMap.get(inputModel.getField()) != null ? inputTextMap.get(inputModel.getField()).length() : 0);

@@ -27,8 +27,8 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
     public static final int QUICK_REPLY_TEMPLATE_ID = 6;
 
-    public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
-        super(context, containerView, message, listener, alCustomizationSettings);
+    public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
     }
 
     @Override

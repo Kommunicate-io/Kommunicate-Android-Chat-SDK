@@ -8,7 +8,7 @@ import io.kommunicate.models.KmApiResponse;
  */
 
 public interface KmAwayMessageHandler {
-    void onSuccess(Context context, KmApiResponse.KmMessageResponse response);
+    void onSuccess(Context context, KmApiResponse.KmDataResponse response);
 
     void onFailure(Context context, Exception e, String response);
 }

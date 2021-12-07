@@ -49,24 +49,24 @@ public class KmRichMessageFactory {
         return RMFactoryHelper.INSTANCE;
     }
 
-    public KmRichMessage getRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings) {
+    public KmRichMessage getRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
         int type = -1;
         if (message.getMetadata().containsKey("templateId")) {
             type = Integer.parseInt(message.getMetadata().get("templateId"));
         }
 
         if (type == KmRichMessageFactory.CARD_RICH_MESSAGE) {
-            return new CardTypeKmRichMessage(context, containerView, message, listener, alCustomizationSettings);
+            return new CardTypeKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
         } else if (type == KmRichMessageFactory.IMAGE_RICH_MESSAGE) {
-            return new ImageKmRichMessage(context, containerView, message, listener, alCustomizationSettings);
+            return new ImageKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
         } else if (type == KmRichMessageFactory.LIST_RICH_MESSAGE) {
-            return new ListKmRichMessage(context, containerView, message, listener, alCustomizationSettings);
+            return new ListKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
         } else if (type == KmRichMessageFactory.FAQ_RICH_MESSAGE) {
-            return new FaqKmRichMessage(context, containerView, message, listener, alCustomizationSettings);
+            return new FaqKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
         } else if (type == KmRichMessageModel.TemplateId.FORM.getValue()) {
-            return new KmFormRichMessage(context, containerView, message, listener, alCustomizationSettings);
+            return new KmFormRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
         } else if (type == KmRichMessageFactory.BUTTON_RICH_MESSAGE || type == KmRichMessageFactory.REPLY_RICH_MESSAGE || type == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
-            return new ButtonKmRichMessage(context, containerView, message, listener, alCustomizationSettings);
+            return new ButtonKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
         } else if (type == KmRichMessageFactory.VIDEO_RICH_MESSAGE) {
             return new VideoRichMessage(context, containerView, message, listener, alCustomizationSettings);
         } else {

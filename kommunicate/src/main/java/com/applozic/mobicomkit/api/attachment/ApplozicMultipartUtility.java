@@ -21,6 +21,7 @@ import java.net.URLConnection;
 
 public class ApplozicMultipartUtility {
     private static final String LINE_FEED = "\r\n";
+    private static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     final String TAG = "AlMultipartUtility";
     private final String boundary;
     private HttpURLConnection httpConn;
@@ -53,7 +54,7 @@ public class ApplozicMultipartUtility {
         writer.append("--" + boundary).append(LINE_FEED);
         writer.append(
                 "Content-Disposition: form-data; name=\"" + fieldName
-                        + "\"; filename=\"" + fileName + "\"")
+                        + "\"; filename=\"" + AWS_ENCRYPTED + fileName + "\"")
                 .append(LINE_FEED);
         writer.append(
                 "Content-Type: "

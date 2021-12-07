@@ -636,6 +636,26 @@ public class ConversationUIService {
         }
     }
 
+    public void updateAgentStatus(String userId, Integer status) {
+        if(userId != null && status != null && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
+                if(status.equals(KmConstants.STATUS_AWAY)) {
+                    getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), false);
+                    getConversationFragment().showAwayMessage(true, null);
+                } else if(status.equals(KmConstants.STATUS_ONLINE)) {
+                    getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), true);
+                    getConversationFragment().showAwayMessage(false, null);
+                }
+                else if(status.equals(KmConstants.STATUS_OFFLINE)){
+                    getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
+                    getConversationFragment().showAwayMessage(true, null);
+                }
+                else if(status.equals(KmConstants.STATUS_CONNECTED)){
+                    getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
+                    getConversationFragment().loadAwayMessage();
+                }
+        }
+    }
+
 
     public void startMessageInfoFragment(String messageJson) {
 

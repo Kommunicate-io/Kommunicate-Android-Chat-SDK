@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.HttpRequestUtils;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
+import com.applozic.mobicomkit.api.attachment.urlservice.S3URLService;
 import com.applozic.mobicomkit.api.attachment.urlservice.URLServiceProvider;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
@@ -254,13 +255,8 @@ public class FileClientService extends MobiComKitClientService {
         try {
 
             ApplozicMultipartUtility multipart = new ApplozicMultipartUtility(getUploadURL(), "UTF-8", context);
-            if (ApplozicClient.getInstance(context).isS3StorageServiceEnabled()) {
-                multipart.addFilePart("file", new File(path), handler, oldMessageKey);
-            } else {
-                multipart.addFilePart("files[]", new File(path), handler, oldMessageKey);
-            }
+            multipart.addFilePart("file", new File(path), handler, oldMessageKey);
             return multipart.getResponse();
-//            return new URLServiceProvider(context).getMultipartFile(path, handler).getResponse();
         } catch (Exception e) {
             e.printStackTrace();
         }

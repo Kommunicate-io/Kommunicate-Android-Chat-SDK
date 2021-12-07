@@ -1,6 +1,7 @@
 package io.kommunicate;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -41,6 +42,7 @@ import java.util.Map;
 import io.kommunicate.async.GetUserListAsyncTask;
 import io.kommunicate.async.KMFaqTask;
 import io.kommunicate.async.KMHelpDocsKeyTask;
+import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.async.KmAwayMessageTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
@@ -94,7 +96,7 @@ public class Kommunicate {
         }
     }
 
-    public static void login(Context context, final KMUser kmUser, final KMLoginHandler handler) {
+    public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
             if (loggedInUserId.equals(kmUser.getUserId())) {
@@ -125,6 +127,7 @@ public class Kommunicate {
                 });
             }
         } else {
+
             login(context, kmUser, getKmLoginHandlerWithPush(handler), null);
         }
     }
@@ -158,16 +161,208 @@ public class Kommunicate {
         };
     }
 
-    public static void login(Context context, KMUser kmUser, KMLoginHandler handler, ResultReceiver prechatReceiver) {
+    public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler, ResultReceiver prechatReceiver) {
         if (kmUser != null) {
             kmUser.setHideActionMessages(true);
             kmUser.setSkipDeletedGroups(true);
         }
+
         new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
+    }
+
+    /**
+     * To Launch the Pre Chat Lead Collection and get result from the Lead Collection Screen
+     *
+     * @param context          the context
+     * @param progressDialog   the loading progressbar if needed otherwise can pass null
+     * @param inputModelList   input model list to create the form in Lead Collection Screen
+     * @param preChatGreetings To set the Greetings Label on Lead Collection Screen.
+     * @param callback         To update the status
+     * @throws KmException
+     */
+    public static void launchLeadCollection(final Context context, final ProgressDialog progressDialog, List<KmPrechatInputModel> inputModelList, final String preChatGreetings, final KmPrechatCallback<KMUser> callback) throws KmException {
+        if (!(context instanceof Activity)) {
+            throw new KmException("This method needs Activity context");
+        }
+
+        ResultReceiver resultReceiver = new ResultReceiver(null) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                if (KmConstants.PRECHAT_RESULT_CODE == resultCode) {
+                    KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(KmConstants.KM_USER_DATA), KMUser.class);
+                    if (callback != null) {
+                        callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
+                    }
+                } else {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                    }
+                }
+            }
+        };
+
+
+        try {
+            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.PRECHAT_ACTIVITY_NAME));
+            if (!TextUtils.isEmpty(preChatGreetings)) {
+                intent.putExtra(KmAppSettingModel.PRE_CHAT_GREETINGS, preChatGreetings);
+            }
+            intent.putExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST, GsonUtils.getJsonFromObject(inputModelList, List.class));
+            intent.putExtra(KmConstants.PRECHAT_RESULT_RECEIVER, resultReceiver);
+            context.startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            throw new KmException(e.getMessage());
+        }
     }
 
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {
         login(context, getVisitor(), handler);
+    }
+
+    /**
+     * To Check the Login status & launch the Pre Chat Lead Collection Screen
+     *
+     * @param context        the context
+     * @param progressDialog progress dialog if needed otherwise can pass null
+     * @param callback       the callback to update status
+     */
+
+    public static void launchConversationWithPreChat(final Context context, final ProgressDialog progressDialog, final KmCallback callback) {
+        final KMUser kmUser = getVisitor();
+        if (isLoggedIn(context)) {
+            String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
+            if (loggedInUserId.equals(kmUser.getUserId())) {
+                launchChatDirectly(context, callback);
+            } else {
+                logout(context, new KMLogoutHandler() {
+                    @Override
+                    public void onSuccess(Context context) {
+                        loginUserWithKmCallBack(context, kmUser, callback);
+                    }
+
+                    @Override
+                    public void onFailure(Exception exception) {
+                        callback.onFailure(exception);
+                    }
+                });
+            }
+        } else {
+            checkForLeadCollection(context, progressDialog, kmUser, callback);
+        }
+
+    }
+
+    /**
+     * To Check Lead Collection enabled or not by fetching the appsetting.
+     *
+     * @param context        the context
+     * @param progressDialog the progressDialog if needed otherwise can pass null
+     * @param kmUser         Randomly created KMUser Object for registration if lead collection is disabled
+     * @param callback       callback to update the status
+     */
+    public static void checkForLeadCollection(final Context context, final ProgressDialog progressDialog, final KMUser kmUser, final KmCallback callback) {
+        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
+                if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
+                    if (appSettingModel.getResponse().isCollectLead()) {
+                        Utils.printLog(context, TAG, "Lead Collection is enabled..Launching Lead Collection");
+                        loginLeadUserAndOpenChat(context, appSettingModel, progressDialog, callback);
+                    } else {
+                        Utils.printLog(context, TAG, "Lead Collection is Disabled..Launching Random Login");
+                        loginUserWithKmCallBack(context, kmUser, callback);
+                    }
+                } else {
+                    Utils.printLog(context, TAG, "Failed to fetch App setting..Launching Random Login");
+                    loginUserWithKmCallBack(context, kmUser, callback);
+                }
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Failed to fetch AppSetting");
+                loginUserWithKmCallBack(context, kmUser, callback);
+
+            }
+        }).execute();
+    }
+
+    /**
+     * To Login the user from Lead Collection Details.
+     *
+     * @param context         the context
+     * @param appSettingModel appsetting model to get lead collection screen's input field & Greeting Message
+     * @param progressDialog  progressbar used in previous activities to close the progressbar if coming back from lead collection screeen
+     * @param callback        To update the status.
+     **/
+    public static void loginLeadUserAndOpenChat(final Context context, KmAppSettingModel appSettingModel, ProgressDialog progressDialog, final KmCallback callback) {
+        try {
+            launchLeadCollection(context, progressDialog, appSettingModel.getResponse().getLeadCollection(), appSettingModel.getChatWidget().getPreChatGreetingMsg(), new KmPrechatCallback<KMUser>() {
+                @Override
+                public void onReceive(KMUser data, final Context context, ResultReceiver finishActivityReceiver) {
+                    loginUserWithKmCallBack(context, data, callback);
+                    finishActivityReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
+                }
+
+                @Override
+                public void onError(String error) {
+                    Utils.printLog(context, TAG, "Failed to load Pre Chat Screen" + error);
+                    callback.onFailure(new Exception(error));
+                }
+            });
+        } catch (Exception e) {
+            Utils.printLog(context, TAG, "Failed to launch the Lead Collection Screen");
+
+            callback.onFailure(e);
+        }
+    }
+
+    /**
+     * To Log in the user with given KmUser object
+     *
+     * @param context  the context
+     * @param kmUser   kmUser to log in
+     * @param callback to update the status
+     */
+    public static void loginUserWithKmCallBack(final Context context, KMUser kmUser, final KmCallback callback) {
+
+        new KmUserLoginTask(kmUser, false, new KMLoginHandler() {
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, final Context context) {
+                launchChatDirectly(context, callback);
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                Utils.printLog(context, TAG, "Registration Failure" + exception.getMessage());
+                callback.onFailure(exception);
+            }
+        }, context, null).execute();
+    }
+
+    /**
+     * To launch the chat screen directly if the user is new or user has only one previous conversation.Otherwise widget will open Conversation List Screen.
+     *
+     * @param context  the context
+     * @param callback callback to update status
+     */
+    public static void launchChatDirectly(final Context context, final KmCallback callback) {
+        KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
+        conversationBuilder.launchAndCreateIfEmpty(new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                callback.onSuccess(message);
+                Utils.printLog(context, TAG, message.toString());
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Failed to open chat" + error.toString());
+                callback.onFailure(error);
+
+            }
+        });
     }
 
     public static void logout(Context context, final KMLogoutHandler logoutHandler) {
@@ -214,6 +409,7 @@ public class Kommunicate {
 
     public static void openConversation(Context context, KmCallback callback) {
         try {
+
             Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
             context.startActivity(intent);
             if (callback != null) {
@@ -282,6 +478,7 @@ public class Kommunicate {
             }
         }
     }
+
 
     public static void notifiyPrechatActivity(ResultReceiver finishActivityReceiver) {
         if (finishActivityReceiver != null) {

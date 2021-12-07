@@ -102,8 +102,8 @@ public class ConversationFragment extends MobiComConversationFragment implements
             messageEditText.setPadding(20, 0, 0, 0);
         }
         sendType.setSelection(1);
-
-        messageEditText.setHint(R.string.enter_message_hint);
+        
+        messageEditText.setHint(!TextUtils.isEmpty(alCustomizationSettings.getEditTextHintText()) ? alCustomizationSettings.getEditTextHintText() : getString(R.string.enter_message_hint));
 
         if (!TextUtils.isEmpty(preFilledMessage)) {
             messageEditText.setText(preFilledMessage);

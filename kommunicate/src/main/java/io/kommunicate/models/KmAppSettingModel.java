@@ -3,10 +3,13 @@ package io.kommunicate.models;
 import com.applozic.mobicommons.json.JsonMarker;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class KmAppSettingModel extends JsonMarker {
     private String code;
     private KmResponse response;
     public static final String SUCCESS = "SUCCESS";
+    public static final String PRE_CHAT_GREETINGS = "PRE_CHAT_GREETINGS";
 
     public String getCode() {
         return code;
@@ -39,6 +42,24 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean collectFeedback;
         private boolean hidePostCTA;
         private KmChatWidget chatWidget;
+        private boolean collectLead;
+        private List<KmPrechatInputModel> leadCollection;
+
+        public List<KmPrechatInputModel> getLeadCollection() {
+            return leadCollection;
+        }
+
+        public void setLeadCollection(List<KmPrechatInputModel> leadCollection) {
+            this.leadCollection = leadCollection;
+        }
+
+        public boolean isCollectLead() {
+            return collectLead;
+        }
+
+        public void setCollectLead(boolean collectLead) {
+            this.collectLead = collectLead;
+        }
 
         public String getUserName() {
             return userName;
@@ -93,6 +114,15 @@ public class KmAppSettingModel extends JsonMarker {
         private int botMessageDelayInterval;
         @SerializedName("isSingleThreaded")
         private boolean singleThreaded;
+        private String preChatGreetingMsg;
+
+        public String getPreChatGreetingMsg() {
+            return preChatGreetingMsg;
+        }
+
+        public void setPreChatGreetingMsg(String preChatGreetingMsg) {
+            this.preChatGreetingMsg = preChatGreetingMsg;
+        }
 
         public String getPrimaryColor() {
             return primaryColor;

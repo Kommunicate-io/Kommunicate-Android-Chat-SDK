@@ -8,6 +8,7 @@
   "attachmentIconsBackgroundColor": "#FF03A9F4",
   "channelCustomMessageBgColor": "#cccccc",
   "sentContactMessageTextColor:": "#5fba7d",
+  "chatBackgroundColorOrDrawable": "#FFFFFF",
   "receivedContactMessageTextColor": "#646262",
   "messageStatusIconColor": "#5c5aa7",
   "sentMessageTextColor": "#FFFFFFFF",
@@ -118,7 +119,7 @@
     ":file": true,
     ":audio": true
   },
-  "editTextHintText:": "Type your message...",
+  "editTextHintText": "Type your message...",
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",
   "replyMessageLayoutReceivedMessageBackground": "#F5F5F5",
   "groupInfoScreenVisible": true,

@@ -27,6 +27,8 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 import java.util.List;
@@ -228,7 +230,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     }
 
     private boolean isInvalidData(Map<String, Object> dataMap, KmRMActionModel.SubmitButton submitButton) {
-        return (dataMap == null || dataMap.isEmpty()) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
+        return (dataMap == null) && (submitButton.getFormData() == null || submitButton.getFormData().isEmpty());
     }
 
     public void handleKmSubmitButton(final Context context, final Message message, final KmRMActionModel.SubmitButton submitButtonModel) {
@@ -244,9 +246,9 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         }
 
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
+        if (submitButtonModel.getPostFormDataAsMessage() != null && submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
+            sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getMessage());
 
-        if (KmRMActionModel.SubmitButton.KM_POST_DATA_TO_BOT_PLATFORM.equals(submitButtonModel.getRequestType())) {
-            sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
             }
@@ -273,6 +275,99 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                             Utils.printLog(context, TAG, "Submit post error : " + error);
                         }
                     }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+    }
+
+    //TO SEND FORM DATA AS MESSAGE
+    private void sendFormDataAsMessage(final Context context, Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, String submitButtonMessage) {
+        if (message.getMetadata() != null) {
+            com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
+            }.getType());
+
+            StringBuilder messageToSend = new StringBuilder(submitButtonMessage).append("\n");
+
+            List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
+
+            for (KmFormPayloadModel model : formPayloadModelList) {
+                //Submit Button
+                if (model.isTypeAction()) {
+                    continue;
+                }
+                //TextField
+                if (model.isTypeText()) {
+                    KmFormPayloadModel.Text textModel = model.getTextModel();
+                    if (formSelectedData.containsKey(textModel.getLabel())) {
+                        messageToSend.append(textModel.getLabel()).append(" : ").append(formSelectedData.get(textModel.getLabel()).toString()).append("\n");
+                    } else {
+                        messageToSend.append(textModel.getLabel()).append(" : ").append("\n");
+
+                    }
+                }
+                //TextArea
+                if (model.isTypeTextArea()) {
+                    KmFormPayloadModel.TextArea textAreaModel = model.getTextAreaModel();
+                    if (formSelectedData.containsKey(textAreaModel.getTitle())) {
+                        messageToSend.append(textAreaModel.getTitle()).append(" : ").append(formSelectedData.get(textAreaModel.getTitle()).toString()).append("\n");
+                    } else {
+                        messageToSend.append(textAreaModel.getTitle()).append(" : ").append("\n");
+                    }
+                }
+                //Radio Button or Check Boxes
+                else if (model.isTypeSelection()) {
+                    KmFormPayloadModel.Selections selectionModel = model.getSelectionModel();
+                    if (formSelectedData.containsKey(selectionModel.getName())) {
+
+                        if (formSelectedData.get(selectionModel.getName()) instanceof Object[] && ((Object[]) formSelectedData.get(selectionModel.getName())).length > 0) {
+                            String[] valueList = (String[]) formSelectedData.get(selectionModel.getName());
+                            String valueString = "";
+                            if (valueList != null && valueList.length > 0) {
+                                for (int i = 0; i < valueList.length; i++) {
+
+                                    valueString += valueList[i];
+                                    if (i < valueList.length - 1) {
+                                        valueString += ", ";
+                                    }
+                                }
+                            }
+                            messageToSend.append(selectionModel.getName()).append(" : ").append(valueString).append("\n");
+                        } else {
+                            messageToSend.append(selectionModel.getName()).append(" : ").append(formSelectedData.get(selectionModel.getName()).toString()).append("\n");
+
+                        }
+                    } else {
+                        messageToSend.append(selectionModel.getName()).append(" : ").append("\n");
+
+                    }
+                }
+                //Date or Time Picker
+                else if (model.isTypeDateTime()) {
+                    KmFormPayloadModel.DateTimePicker datePickerModel = model.getDatePickerModel();
+                    if (formSelectedData.containsKey(datePickerModel.getLabel())) {
+                        messageToSend.append(datePickerModel.getLabel()).append(" : ").append(formSelectedData.get(datePickerModel.getLabel()).toString()).append("\n");
+                    } else {
+                        messageToSend.append(datePickerModel.getLabel()).append(" : ").append("\n");
+
+                    }
+                }
+                //Drop Down
+                else if (model.isTypeDropdown()) {
+                    KmFormPayloadModel.DropdownList dropdownList = model.getDropdownList();
+                    if (formSelectedData.containsKey(dropdownList.getName())) {
+                        messageToSend.append(dropdownList.getName()).append(" : ").append(formSelectedData.get(dropdownList.getName()).toString()).append("\n");
+                    } else {
+                        messageToSend.append(dropdownList.getName()).append(" : ").append("\n");
+
+                    }
+                }
+                // Hidden
+                else if (model.isTypeHidden()) {
+                    KmFormPayloadModel.Hidden hiddenModel = model.getHiddenModel();
+                    messageToSend.append(hiddenModel.getName()).append(" : ").append(hiddenModel.getValue()).append("\n");
+
+                }
+            }
+
+            sendMessage(messageToSend.toString(), replyMetadata);
         }
     }
 

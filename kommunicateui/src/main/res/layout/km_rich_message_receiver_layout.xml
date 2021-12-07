@@ -159,4 +159,18 @@
             android:textStyle="normal"
             android:visibility="gone" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/createdAt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:text="time"
+        android:paddingStart="5dp"
+        android:paddingLeft="5dp"
+        android:paddingBottom="6dp"
+        android:textColor="@color/km_received_message_created_at_time_text_color"
+        android:textSize="10sp"
+         />
 </LinearLayout>

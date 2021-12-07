@@ -432,6 +432,26 @@ public class UserClientService extends MobiComKitClientService {
         return null;
     }
 
+    public ApiResponse updateEmail(String emailId, String userId) {
+        AlUserUpdate userUpdate = new AlUserUpdate();
+        try {
+            if (!TextUtils.isEmpty(emailId)) {
+                userUpdate.setEmail(emailId);
+            }
+
+            String url = getUserProfileUpdateUrl() + "?elasticUpdate=true&allowEmail=true";
+
+            String response = httpRequestUtils.postData(url, GsonUtils.getJsonFromObject(userUpdate, AlUserUpdate.class), userId);
+            Utils.printLog(context, TAG, response);
+            return ((ApiResponse) GsonUtils.getObjectFromJson(response, ApiResponse.class));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public ApiResponse muteUserNotifications(String userId, Long notificationAfterTime) {
         if (userId == null || notificationAfterTime == null) {
             return null;

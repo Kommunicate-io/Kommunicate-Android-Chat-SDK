@@ -4362,7 +4362,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                                 //If Conversation was resolved and feedback was submitted given
                                 if (message != null && message.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(message.getCreatedAtTime())) {
-                                    kmFeedbackView.showFeedback(context, response.getData());
+                                    //kmFeedbackView.showFeedback(context, response.getData());
                                 } else {
                                     openFeedbackFragment();
                                 }
@@ -4750,7 +4750,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
             @Override
             public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
-                kmFeedbackView.showFeedback(context, kmFeedback);
+                //kmFeedbackView.showFeedback(context, kmFeedback);
             }
 
             @Override

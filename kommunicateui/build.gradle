@@ -4,9 +4,6 @@ rootProject.allprojects {
         maven {
             url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
         }
-        maven {
-            url "https://google.bintray.com/flexbox-layout"
-        }
     }
 }
 

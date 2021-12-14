@@ -39,7 +39,8 @@ public class EncryptionUtils {
         cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(new byte[16]));
         byte[] decryptedValue64 = Base64.decode(encryptedText, Base64.DEFAULT);
         byte[] decryptedByteValue = cipher.doFinal(decryptedValue64);
-        return new String(decryptedByteValue, "UTF-8");
+        String decryptedValue = new String(decryptedByteValue, "UTF-8");
+        return TextUtils.isEmpty(decryptedValue) ? null: decryptedValue.trim();
     }
 
     //generateKey() is used to generate a secret key for AES algorithm

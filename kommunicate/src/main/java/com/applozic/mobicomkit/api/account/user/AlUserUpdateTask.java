@@ -21,6 +21,10 @@ public class AlUserUpdateTask extends AlAsyncTask<Void, ApiResponse> {
         this.callback = callback;
     }
 
+    public AlUserUpdateTask(Context context, User user, AlCallback callback) {
+        this(context, user, false, callback);
+    }
+
     @Override
     protected ApiResponse doInBackground() {
         return UserService.getInstance(context.get()).updateUserWithResponse(user, isForEmail);

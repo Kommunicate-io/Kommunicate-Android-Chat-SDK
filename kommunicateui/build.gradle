@@ -4,9 +4,6 @@ rootProject.allprojects {
         maven {
             url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
         }
-        maven {
-            url "https://google.bintray.com/flexbox-layout"
-        }
     }
 }
 
@@ -21,7 +18,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
-        versionName "2.2.5"
+        versionName "2.2.5.1"
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
     }

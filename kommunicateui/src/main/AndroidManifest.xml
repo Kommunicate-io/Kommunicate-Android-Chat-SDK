@@ -32,6 +32,7 @@
 
         <service
             android:name="com.applozic.mobicomkit.uiwidgets.KmFirebaseMessagingService"
+            android:exported="true"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

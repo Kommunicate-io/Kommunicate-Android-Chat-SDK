@@ -3,6 +3,12 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.3.0
+1) Added support for Android 12
+
+## Kommunicate Android SDK 2.2.6
+1) Removed encryption logic. This branch should only be used if Play Store is giving security warning.
+
 ## Kommunicate Android SDK 2.2.5
 1) Support for multi lines in RichMessage Action Button .
 2) Support for Custom Chat Background (either colour or local drawable) .

@@ -9,7 +9,6 @@ import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.authentication.AlAuthService;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.encryption.EncryptionUtils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -96,9 +95,9 @@ public class HttpRequestUtils {
         HttpURLConnection connection;
         URL url;
         try {
-            if (!TextUtils.isEmpty(encryptionKey)) {
+            /*if (!TextUtils.isEmpty(encryptionKey)) {
                 data = EncryptionUtils.encrypt(encryptionKey, data);
-            }
+            }*/
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(isPatchRequest ? "PATCH" : "POST");
@@ -149,9 +148,9 @@ public class HttpRequestUtils {
                 }
             }
             Utils.printLog(context, TAG, "\n\nResponse for url: " + urlString + "\n** Response** : " + sb.toString() + "\n\n");
-            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
-                return EncryptionUtils.decrypt(encryptionKey, sb.toString());
-            }
+//            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
+//                return EncryptionUtils.decrypt(encryptionKey, sb.toString());
+//            }
             return sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
@@ -214,9 +213,9 @@ public class HttpRequestUtils {
 
             Utils.printLog(context, TAG, "\n\nGET Response for url: " + urlString + "\n** Response **: " + sb.toString() + "\n\n");
 
-            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
-                return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(encryptionKey, sb.toString());
-            }
+//            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
+//                return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(encryptionKey, sb.toString());
+//            }
             return sb.toString();
         } catch (ConnectException e) {
             Utils.printLog(context, TAG, "failed to connect Internet is not working");

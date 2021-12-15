@@ -18,7 +18,6 @@ import com.applozic.mobicomkit.feed.InstantMessageResponse;
 import com.applozic.mobicomkit.feed.MqttMessageResponse;
 import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.encryption.EncryptionUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -360,9 +359,9 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
 
                             if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserEncryptionKey())
                                     && !TextUtils.isEmpty(s) && s.startsWith(MQTT_ENCRYPTION_TOPIC)) {
-                                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserEncryptionKey())) {
-                                    messageDataString = EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getUserEncryptionKey(), mqttMessage.toString());
-                                }
+//                                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserEncryptionKey())) {
+//                                    messageDataString = EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getUserEncryptionKey(), mqttMessage.toString());
+//                                }
                                 if (TextUtils.isEmpty(messageDataString.trim())) {
                                     return;
                                 }

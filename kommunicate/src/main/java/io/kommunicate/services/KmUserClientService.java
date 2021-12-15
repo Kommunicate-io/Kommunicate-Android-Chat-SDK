@@ -19,7 +19,6 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.exception.InvalidApplicationException;
 import com.applozic.mobicomkit.exception.UnAuthoriseException;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.encryption.EncryptionUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
@@ -453,11 +452,11 @@ public class KmUserClientService extends UserClientService {
 
             StringBuilder stringBuilder = getResponseForConnection(connection);
 
-            if (!TextUtils.isEmpty(stringBuilder.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    return isFileUpload ? stringBuilder.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), stringBuilder.toString());
-                }
-            }
+//            if (!TextUtils.isEmpty(stringBuilder.toString())) {
+//                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
+//                    return isFileUpload ? stringBuilder.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), stringBuilder.toString());
+//                }
+//            }
             return stringBuilder.toString();
         } catch (ConnectException e) {
             Utils.printLog(context, TAG, "Failed to connect Internet is not working");

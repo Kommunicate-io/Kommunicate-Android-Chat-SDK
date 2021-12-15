@@ -43,7 +43,7 @@ import javax.security.auth.x500.X500Principal;
 
 /**
  * Security utility functions, such as encryption and decryption of strings
- * Improvement on {@link EncryptionUtils}
+ * Improvement on { EncryptionUtils}
  *
  * @author shubhamtewari
  * 3rd February, 2020

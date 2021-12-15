@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.encryption.EncryptionUtils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -30,9 +29,9 @@ public class KmHttpClient {
         HttpURLConnection connection;
         URL url;
         try {
-            if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
+            /*if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
                 data = EncryptionUtils.encrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), data);
-            }
+            }*/
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -78,9 +77,9 @@ public class KmHttpClient {
             }
             Utils.printLog(context, TAG, "Response : " + sb.toString());
             if (!TextUtils.isEmpty(sb.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    return EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
-                }
+//                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
+//                    return EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
+//                }
             }
             return sb.toString();
         } catch (IOException e) {

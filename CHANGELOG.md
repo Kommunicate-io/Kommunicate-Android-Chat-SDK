@@ -3,6 +3,17 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.2.5
+1) Support for multi lines in RichMessage Action Button .
+2) Support for Custom Chat Background (either colour or local drawable) .
+3) Support for Post Submitted Form(Rich Message) Data as a Message .
+4) Support for Form Text area in Richmessage.
+5) Added feature for Pre Chat Collection & launch chat for anonymous users
+6) Added timestamp below Rich Messages.
+7) Optimised publishing Away/Online Status process.
+8) Collect email ID from user for Away Message for anonymous users.
+9) Fix for the Speech to Text issue in Android 11.
+
 ## Kommunicate Android SDK 2.2.2
 1) Notification changes for Agent app
 2) Show feedback for Agent app

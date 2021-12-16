@@ -154,18 +154,18 @@
             </FrameLayout>
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/createdAtTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|end|bottom"
-            android:layout_marginBottom="2dp"
-            android:fontFamily="sans-serif"
-            android:letterSpacing="0.01"
-            android:paddingTop="2dp"
-            android:text=""
-            android:textColor="@color/km_received_message_created_at_time_text_color"
-            android:textSize="10sp" />
+<!--        <TextView-->
+<!--            android:id="@+id/createdAtTime"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="end|end|bottom"-->
+<!--            android:layout_marginBottom="2dp"-->
+<!--            android:fontFamily="sans-serif"-->
+<!--            android:letterSpacing="0.01"-->
+<!--            android:paddingTop="2dp"-->
+<!--            android:text=""-->
+<!--            android:textColor="@color/km_received_message_created_at_time_text_color"-->
+<!--            android:textSize="10sp" />-->
 
         <TextView
             android:id="@+id/selfDestruct"
@@ -180,6 +180,32 @@
             android:textColor="@color/applozic_darker_gray_color"
             android:textSize="11sp"
             android:visibility="gone" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:minWidth="20dp"
+        android:orientation="vertical"
+        android:layout_below="@+id/messageTextLayout"
+        android:layout_toEndOf="@+id/profileImageLayout"
+        android:layout_toRightOf="@+id/profileImageLayout"
+        android:paddingStart="4dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="2dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="2dp">
+        <TextView
+            android:id="@+id/createdAtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|end|bottom"
+            android:layout_marginBottom="0dp"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.01"
+            android:text="time"
+            android:textColor="@color/km_received_message_created_at_time_text_color"
+            android:textSize="10sp" />
     </LinearLayout>
 
     <include layout="@layout/km_rich_message_receiver_layout" />

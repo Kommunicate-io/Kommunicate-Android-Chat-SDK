@@ -3,7 +3,7 @@
   "sentMessageBackgroundColor": "#5c5aa7",
   "receivedMessageBackgroundColor": "#e6e5ec",
   "sendButtonBackgroundColor": "#5c5aa7",
-  "sentMessageCreatedAtTimeColor": "#ede6e6",
+  "sentMessageCreatedAtTimeColor": "#8a8686",
   "receivedMessageCreatedAtTimeColor": "#8a8686",
   "attachmentIconsBackgroundColor": "#FF03A9F4",
   "channelCustomMessageBgColor": "#cccccc",

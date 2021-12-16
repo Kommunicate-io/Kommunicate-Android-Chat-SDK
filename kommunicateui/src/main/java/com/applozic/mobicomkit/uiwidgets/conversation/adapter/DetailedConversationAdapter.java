@@ -248,9 +248,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         imageThumbnailLoader.setImageFadeIn(false);
         imageThumbnailLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
 
-        sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon_c);
-        deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_c);
-        readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_c);
+        sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon);
+        deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon);
+        readIcon = context.getResources().getDrawable(R.drawable.km_read_icon);
         pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
         final String alphabet = context.getString(R.string.alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
@@ -1590,11 +1590,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             messageRootLayout = (RelativeLayout) customView.findViewById(R.id.messageLayout);
             emailLayout = customView.findViewById(R.id.emailLayout);
             viaEmailView = customView.findViewById(R.id.via_email_text_view);
-            statusIconBackground = customView.findViewById(R.id.statusIconBackground);
-
-            if (statusIconBackground != null) {
-                KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getMessageStatusIconColor());
-            }
+//            statusIconBackground = customView.findViewById(R.id.statusIconBackground);
+//
+//            if (statusIconBackground != null) {
+//                KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getMessageStatusIconColor());
+//            }
 
             shareContactImage = (ImageView) mainContactShareLayout.findViewById(R.id.contact_share_image);
             shareContactName = (TextView) mainContactShareLayout.findViewById(R.id.contact_share_tv_name);

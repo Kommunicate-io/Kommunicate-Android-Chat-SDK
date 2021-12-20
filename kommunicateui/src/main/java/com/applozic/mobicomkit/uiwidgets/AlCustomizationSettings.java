@@ -103,8 +103,9 @@ public class AlCustomizationSettings extends JsonMarker {
     private String replyMessageLayoutReceivedMessageBackground = "#F5F5F5";
     private boolean groupInfoScreenVisible = true;
     private boolean forwardOption = false;
-    private String sentMessageCreatedAtTimeColor = "#ede6e6";
-    private String receivedMessageCreatedAtTimeColor = "#8a8686";
+    private Boolean innerTimestampDesign = false;
+    private String sentMessageCreatedAtTimeColor;
+    private String receivedMessageCreatedAtTimeColor;
     private boolean showStartNewConversation = true;
     private boolean enableAwayMessage = true;
     private String awayMessageTextColor = "#A9A4A4";
@@ -129,6 +130,14 @@ public class AlCustomizationSettings extends JsonMarker {
     private KmSpeechSetting speechToText;
     private boolean restrictMessageTypingWithBots = false;
     private Map<String, Boolean> hidePostCTA;
+
+    public Boolean getInnerTimestampDesign() {
+        return innerTimestampDesign;
+    }
+
+    public void setInnerTimestampDesign(Boolean innerTimestampDesign) {
+        this.innerTimestampDesign = innerTimestampDesign;
+    }
 
     public String getNoConversationLabel() {
         return noConversationLabel;

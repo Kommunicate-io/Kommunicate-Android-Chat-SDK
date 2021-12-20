@@ -639,10 +639,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
         emoticonsBtn.setOnClickListener(this);
-        sentIcon = getResources().getDrawable(R.drawable.km_sent_icon);
-        deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon);
-        readIcon = getResources().getDrawable(R.drawable.km_read_icon);
-        pendingIcon = getResources().getDrawable(R.drawable.km_pending_message_icon);
+
+        if(alCustomizationSettings.getInnerTimestampDesign()) {
+            sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
+            deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
+            readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
+            pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
+        }
+        else {
+            sentIcon = getResources().getDrawable(R.drawable.km_sent_icon);
+            deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon);
+            readIcon = getResources().getDrawable(R.drawable.km_read_icon);
+            pendingIcon = getResources().getDrawable(R.drawable.km_pending_message_icon);
+        }
 
         kmAwayView = list.findViewById(R.id.idKmAwayView);
 
@@ -2272,8 +2281,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         if (view != null && !message.isCustom() && !message.isChannelCustomMessage()) {
                             TextView statusImage = view.findViewById(R.id.statusImage);
                             ImageView statusImageView = view.findViewById(R.id.statusImageView);
-                            statusImageView.setImageDrawable(statusIcon);
-                            //statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            if(alCustomizationSettings.getInnerTimestampDesign()) {
+                                statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            }
+                            else {
+                                statusImageView.setImageDrawable(statusIcon);
+                            }
                         }
                     }
                 } catch (Exception ex) {
@@ -2309,8 +2322,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 }
                                 TextView statusImage = view.findViewById(R.id.statusImage);
                                 ImageView statusImageView = view.findViewById(R.id.statusImageView);
-                                statusImageView.setImageDrawable(statusIcon);
-                                //statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                                if(alCustomizationSettings.getInnerTimestampDesign()) {
+                                    statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                                }
+                                else {
+                                    statusImageView.setImageDrawable(statusIcon);
+                                }
                             }
                         } else if (!message.isVideoNotificationMessage() && !message.isHidden()) {
                             messageList.add(message);
@@ -2737,8 +2754,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         ImageView statusImageView = view.findViewById(R.id.statusImageView);
 
                         if (statusTextView != null && messageListItem.getKeyString() != null && messageListItem.isTypeOutbox() && !messageListItem.isCall() && !messageListItem.getDelivered() && !messageListItem.isCustom() && !messageListItem.isChannelCustomMessage() && messageListItem.getScheduledAt() == null) {
-                            //statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, sentIcon, null);
-                            statusImageView.setImageDrawable(sentIcon);
+                            if(alCustomizationSettings.getInnerTimestampDesign()) {
+                                statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, sentIcon, null);
+                            }
+                            else {
+                                statusImageView.setImageDrawable(sentIcon);
+                            }
                         }
                     }
                 }

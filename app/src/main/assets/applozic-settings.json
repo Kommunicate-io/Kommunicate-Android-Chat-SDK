@@ -3,8 +3,8 @@
   "sentMessageBackgroundColor": "#5c5aa7",
   "receivedMessageBackgroundColor": "#e6e5ec",
   "sendButtonBackgroundColor": "#5c5aa7",
-  "sentMessageCreatedAtTimeColor": "#8a8686",
-  "receivedMessageCreatedAtTimeColor": "#8a8686",
+  "sentMessageCreatedAtTimeColor": "",
+  "receivedMessageCreatedAtTimeColor": "",
   "attachmentIconsBackgroundColor": "#FF03A9F4",
   "channelCustomMessageBgColor": "#cccccc",
   "sentContactMessageTextColor:": "#5fba7d",
@@ -156,5 +156,6 @@
     "link": false,
     "quickReply": false
   },
-  "receiverNameTextColor": "#5C6677"
+  "receiverNameTextColor": "#5C6677",
+  "innerTimestampDesign": false
 }

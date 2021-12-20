@@ -15,6 +15,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -108,6 +109,7 @@ import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.GONE;
@@ -251,7 +253,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon);
         deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon);
         readIcon = context.getResources().getDrawable(R.drawable.km_read_icon);
-        pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
+        pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_message_icon);
         final String alphabet = context.getString(R.string.alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
     }
@@ -407,8 +409,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             int index = messageList.indexOf(message);
             boolean hideRecursiveImages = false;
-            boolean showTimestamp = message.isTypeOutbox() || index == messageList.size() - 1 || !messageList.get(index + 1).isRichMessage();
-
+            boolean showTimestamp;
+            if(message.isTypeOutbox()) {
+                showTimestamp = index == messageList.size() - 1
+                        || messageList.get(index + 1).getCreatedAtTime() -  message.getCreatedAtTime() > KmConstants.MESSAGE_CLUBBING_TIME_FRAME
+                        || !messageList.get(index + 1).isTypeOutbox();
+            }
+            else {
+                showTimestamp = index == messageList.size() - 1
+                        || messageList.get(index + 1).getCreatedAtTime() -  message.getCreatedAtTime() > KmConstants.MESSAGE_CLUBBING_TIME_FRAME
+                        || messageList.get(index + 1).isTypeOutbox()
+                        || !message.getContactIds().equals(messageList.get(index + 1).getContactIds());
+            }
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
             if (!message.isTypeOutbox()) {
                 if (index != 0 && !messageList.get(index - 1).isTypeOutbox()
@@ -697,17 +709,24 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             }
 
             if (message.isCall() || message.isDummyEmptyMessage()) {
-                myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                //myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                myHolder.statusImageView.setImageDrawable(null);
             } else if (!message.isSentToServer() && message.isTypeOutbox()) {
-                myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(pendingIcon, null, null, null);
+                myHolder.statusImageView.setImageDrawable(pendingIcon);
+               // myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(pendingIcon, null, null, null);
             } else if (message.getKeyString() != null && message.isTypeOutbox() && message.isSentToServer()) {
                 Drawable statusIcon;
                 if (message.isDeliveredAndRead()) {
+                    Log.e("status", message.getMessage());
                     statusIcon = readIcon;
                 } else {
                     statusIcon = (message.getDelivered() ? deliveredIcon : sentIcon);
                 }
-                myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
+                myHolder.statusImageView.setImageDrawable(statusIcon);
+               // myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
+            }
+            else {
+                //donothing
             }
 
             if (message.isCall()) {
@@ -968,7 +987,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                 }
             });
-            myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
+           // myHolder.createdAtTime.setVisibility(showTimestamp  ? View.VISIBLE : GONE);
+            myHolder.timestampLayout.setVisibility(showTimestamp && !message.isRichMessage()? View.VISIBLE : GONE);
+            //myHolder.createdAtTime.setVisibility(showTimestamp  ? View.VISIBLE : GONE);
 
             if (message.getScheduledAt() != null) {
                 myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));
@@ -1547,6 +1568,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         FrameLayout emailLayout;
         TextView viaEmailView;
         View statusIconBackground;
+        LinearLayout timestampLayout;
+        ImageView statusImageView;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1590,6 +1613,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             messageRootLayout = (RelativeLayout) customView.findViewById(R.id.messageLayout);
             emailLayout = customView.findViewById(R.id.emailLayout);
             viaEmailView = customView.findViewById(R.id.via_email_text_view);
+            timestampLayout = customView.findViewById(R.id.timestampLayout);
+            statusImageView = customView.findViewById(R.id.statusImageView);
 //            statusIconBackground = customView.findViewById(R.id.statusIconBackground);
 //
 //            if (statusIconBackground != null) {
@@ -1603,7 +1628,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             addContactButton = (Button) mainContactShareLayout.findViewById(R.id.contact_share_add_btn);
 
             customView.setOnCreateContextMenuListener(this);
-
+            messageRootLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    timestampLayout.setVisibility(View.VISIBLE);
+                }
+            });
             mapImageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

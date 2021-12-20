@@ -1663,7 +1663,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             else {
                 timestampLayout = customView.findViewById(R.id.timestampLayout);
                 statusImageView = customView.findViewById(R.id.statusImageView);
-                messageRootLayout.setOnClickListener(new View.OnClickListener() {
+                messageTextLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         timestampLayout.setVisibility(View.VISIBLE);

@@ -267,6 +267,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
     }
 
+    /**
+     * Creates different view holder according to message type
+     * View type 0 : Main thread messages ( both sent and received)
+     * View type 2 : Date message viewholder
+     * View type 3 : Custom message viewholder
+     * View type 4 : Channel custom message viewholder
+     * View type 5 : Call message viewholder
+     * View type 6 : Feedback message viewholder
+     */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -276,29 +285,29 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
 
         if (viewType == 2) {
-            View v2 = layoutInflater.inflate(R.layout.mobicom_date_layout, parent, false);
-            return new MyViewHolder2(v2);
+            View view2 = layoutInflater.inflate(R.layout.mobicom_date_layout, parent, false);
+            return new MyViewHolder2(view2);
         } else if (viewType == 3) {
-            View v3 = layoutInflater.inflate(R.layout.km_custom_message_layout, parent, false);
-            return new MyViewHolder3(v3);
+            View view3 = layoutInflater.inflate(R.layout.km_custom_message_layout, parent, false);
+            return new MyViewHolder3(view3);
         } else if (viewType == 4) {
-            View v4 = layoutInflater.inflate(R.layout.km_channel_custom_message_layout, parent, false);
-            return new MyViewHolder4(v4);
+            View view4 = layoutInflater.inflate(R.layout.km_channel_custom_message_layout, parent, false);
+            return new MyViewHolder4(view4);
         } else if (viewType == 5) {
-            View v5 = layoutInflater.inflate(R.layout.km_call_layout, parent, false);
-            return new MyViewHolder5(v5);
+            View view5 = layoutInflater.inflate(R.layout.km_call_layout, parent, false);
+            return new MyViewHolder5(view5);
         } else if (viewType == 6) {
-            View v6 = layoutInflater.inflate(R.layout.km_feedback_agent_layout, parent, false);
-            return new MyViewHolder6(v6);
+            View view6 = layoutInflater.inflate(R.layout.km_feedback_agent_layout, parent, false);
+            return new MyViewHolder6(view6);
         } else if (viewType == 0) {
-            View v0;
+            View view0;
             if(useInnerTimeStampDesign) {
-                v0 = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
+                view0 = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
             }
             else {
-                v0 = layoutInflater.inflate(R.layout.km_received_message_list_view, parent, false);
+                view0 = layoutInflater.inflate(R.layout.km_received_message_list_view, parent, false);
             }
-            return new MyViewHolder(v0);
+            return new MyViewHolder(view0);
         }
         if(useInnerTimeStampDesign) {
             view = layoutInflater.inflate(R.layout.mobicom_sent_message_list_view, parent, false);
@@ -1027,7 +1036,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
             } else {
                 myHolder.timestampLayout.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
-                if(index != messageList.size() - 1 && !messageList.get(index + 1).isRichMessage()) {
+                if(index != messageList.size() - 1 && !message.isRichMessage() && !messageList.get(index + 1).isRichMessage()) {
                     myHolder.messageTextLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

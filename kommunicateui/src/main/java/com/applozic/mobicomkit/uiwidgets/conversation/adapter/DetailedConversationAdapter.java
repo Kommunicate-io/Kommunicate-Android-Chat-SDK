@@ -1022,14 +1022,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                 }
             });
-           // myHolder.createdAtTime.setVisibility(showTimestamp  ? View.VISIBLE : GONE);
-            if (useInnerTimeStampDesign) {
-                myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
-            } else {
+            myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
+            if (!useInnerTimeStampDesign) {
                 myHolder.timestampLayout.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
+                if(index != messageList.size() - 1 && !messageList.get(index + 1).isRichMessage()) {
+                    myHolder.messageTextLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            myHolder.timestampLayout.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
             }
-
-            //myHolder.createdAtTime.setVisibility(showTimestamp  ? View.VISIBLE : GONE);
 
             if (message.getScheduledAt() != null) {
                 myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));
@@ -1663,12 +1667,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             else {
                 timestampLayout = customView.findViewById(R.id.timestampLayout);
                 statusImageView = customView.findViewById(R.id.statusImageView);
-                messageTextLayout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        timestampLayout.setVisibility(View.VISIBLE);
-                    }
-                });
             }
 
 

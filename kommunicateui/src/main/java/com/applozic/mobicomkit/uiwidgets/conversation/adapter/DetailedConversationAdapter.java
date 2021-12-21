@@ -1044,6 +1044,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     });
                 }
+                else {
+                    myHolder.messageTextLayout.setOnClickListener(null);
+                    myHolder.timestampLayout.setVisibility(View.GONE);
+                }
 
             }
             if (message.getScheduledAt() != null) {

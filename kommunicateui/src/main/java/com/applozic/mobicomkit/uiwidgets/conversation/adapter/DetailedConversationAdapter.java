@@ -269,12 +269,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     /**
      * Creates different view holder according to message type
-     * View type 0 : Main thread messages ( both sent and received)
-     * View type 2 : Date message viewholder
-     * View type 3 : Custom message viewholder
-     * View type 4 : Channel custom message viewholder
-     * View type 5 : Call message viewholder
-     * View type 6 : Feedback message viewholder
+     * View mainThreadView : Main thread messages ( both sent and received)
+     * View dateViewHolder : Date message viewholder
+     * View customViewHolder : Custom message viewholder
+     * View customMessageViewHolder : Channel custom message viewholder
+     * View callViewHolder : Call message viewholder
+     * View feedbackViewHolder : Feedback message viewholder
      */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -285,29 +285,29 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
 
         if (viewType == 2) {
-            View view2 = layoutInflater.inflate(R.layout.mobicom_date_layout, parent, false);
-            return new MyViewHolder2(view2);
+            View dateViewHolder = layoutInflater.inflate(R.layout.mobicom_date_layout, parent, false);
+            return new MyViewHolder2(dateViewHolder);
         } else if (viewType == 3) {
-            View view3 = layoutInflater.inflate(R.layout.km_custom_message_layout, parent, false);
-            return new MyViewHolder3(view3);
+            View customViewHolder = layoutInflater.inflate(R.layout.km_custom_message_layout, parent, false);
+            return new MyViewHolder3(customViewHolder);
         } else if (viewType == 4) {
-            View view4 = layoutInflater.inflate(R.layout.km_channel_custom_message_layout, parent, false);
-            return new MyViewHolder4(view4);
+            View customMessageViewHolder = layoutInflater.inflate(R.layout.km_channel_custom_message_layout, parent, false);
+            return new MyViewHolder4(customMessageViewHolder);
         } else if (viewType == 5) {
-            View view5 = layoutInflater.inflate(R.layout.km_call_layout, parent, false);
-            return new MyViewHolder5(view5);
+            View callViewHolder = layoutInflater.inflate(R.layout.km_call_layout, parent, false);
+            return new MyViewHolder5(callViewHolder);
         } else if (viewType == 6) {
-            View view6 = layoutInflater.inflate(R.layout.km_feedback_agent_layout, parent, false);
-            return new MyViewHolder6(view6);
+            View feedbackViewHolder = layoutInflater.inflate(R.layout.km_feedback_agent_layout, parent, false);
+            return new MyViewHolder6(feedbackViewHolder);
         } else if (viewType == 0) {
-            View view0;
+            View mainThreadView;
             if(useInnerTimeStampDesign) {
-                view0 = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
+                mainThreadView = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
             }
             else {
-                view0 = layoutInflater.inflate(R.layout.km_received_message_list_view, parent, false);
+                mainThreadView = layoutInflater.inflate(R.layout.km_received_message_list_view, parent, false);
             }
-            return new MyViewHolder(view0);
+            return new MyViewHolder(mainThreadView);
         }
         if(useInnerTimeStampDesign) {
             view = layoutInflater.inflate(R.layout.mobicom_sent_message_list_view, parent, false);
@@ -1046,7 +1046,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 }
                 else {
                     myHolder.messageTextLayout.setOnClickListener(null);
-                    myHolder.timestampLayout.setVisibility(View.GONE);
                 }
 
             }

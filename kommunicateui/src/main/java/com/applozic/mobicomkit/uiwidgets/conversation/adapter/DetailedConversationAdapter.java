@@ -441,7 +441,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     showTimestamp = index == messageList.size() - 1
                             || messageList.get(index + 1).getCreatedAtTime() -  message.getCreatedAtTime() > KmConstants.MESSAGE_CLUBBING_TIME_FRAME
                             || messageList.get(index + 1).isTypeOutbox()
-                            || !message.getContactIds().equals(messageList.get(index + 1).getContactIds());
+                            || !message.getContactIds().equals(messageList.get(index + 1).getContactIds())
+                            || messageList.get(index + 1).isActionMessage();
             }
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
@@ -1022,8 +1023,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     }
                 }
             });
-            myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
-            if (!useInnerTimeStampDesign) {
+            if (useInnerTimeStampDesign) {
+                myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
+            } else {
                 myHolder.timestampLayout.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
                 if(index != messageList.size() - 1 && !messageList.get(index + 1).isRichMessage()) {
                     myHolder.messageTextLayout.setOnClickListener(new View.OnClickListener() {
@@ -1033,8 +1035,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     });
                 }
-            }
 
+            }
             if (message.getScheduledAt() != null) {
                 myHolder.createdAtTime.setText(DateUtils.getFormattedDate(message.getScheduledAt()));
             } else if (myHolder.createdAtTime != null && message.isDummyEmptyMessage()) {

@@ -23,4 +23,5 @@ public class KmConstants {
     public static final int STATUS_ONLINE = 3;
     public static final int STATUS_OFFLINE = 0;
     public static final int STATUS_CONNECTED = 1;
+    public static final Long MESSAGE_CLUBBING_TIME_FRAME = 300000L;
 }

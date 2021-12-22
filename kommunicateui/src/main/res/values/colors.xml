@@ -56,7 +56,9 @@
     <color name="km_conversation_list_item_created_at_time_text_color">#0e0e0f</color>
     <color name="km_conversation_list_message_text_color">#848388</color>
     <color name="km_received_message_created_at_time_text_color">#8a8686</color>
+    <color name="km_received_message_created_at_time_text_color_outer">#67757E</color>
     <color name="km_sent_message_created_at_time_text_color">#ede6e6</color>
+    <color name="km_sent_message_created_at_time_text_color_outer">#67757E</color>
     <color name="km_user_profile_text_color">#7F000000</color>
     <color name="km_attachment_size_text_background_color">#80000000</color>
 

@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 
 import android.text.Html;
@@ -106,6 +107,9 @@ public abstract class KmRichMessage {
         createdAtTime = containerView.findViewById(R.id.createdAt);
         createdAtTime.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
         createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
+        if(!TextUtils.isEmpty(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor())) {
+            createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
+        }
 
         handleLayoutVisibilities(model.getTemplateId());
     }

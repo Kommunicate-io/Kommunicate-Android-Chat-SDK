@@ -1,18 +1,18 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.widgets;
 
-import android.app.AlertDialog.Builder;
 
-public class FloatingViewConfig {
+public class KmChatWidgetConfig {
     public enum GRAVITY {
         LEFT_CENTER, LEFT_TOP, TOP_CENTER, TOP_RIGHT, RIGHT_CENTER, RIGHT_BOTTOM, BOTTOM_CENTER, LEFT_BOTTOM, CENTER
     }
 
     int paddingLeft, paddingTop, paddingRight, paddingBottom;
     int displayWidth, displayHeight;
+    int launcherSize;
     Boolean movable;
     GRAVITY gravity;
 
-    private FloatingViewConfig(Builder builder) {
+    private KmChatWidgetConfig(Builder builder) {
         this.paddingLeft = builder.paddingLeft;
         this.paddingTop = builder.paddingTop;
         this.paddingRight = builder.paddingRight;
@@ -20,6 +20,7 @@ public class FloatingViewConfig {
 
         this.displayWidth = builder.displayWidth;
         this.displayHeight = builder.displayHeight;
+        this.launcherSize = builder.launcherSize;
         this.gravity = builder.gravity;
         this.movable = builder.movable;
     }
@@ -28,8 +29,18 @@ public class FloatingViewConfig {
     public static class Builder {
         int paddingLeft, paddingTop, paddingRight, paddingBottom;
         int displayWidth = Integer.MAX_VALUE, displayHeight = Integer.MAX_VALUE;
+        int launcherSize = 0;
         GRAVITY gravity = GRAVITY.RIGHT_CENTER;
         Boolean movable = true;
+
+        /**
+         * @param launcherSize unit is DP
+         */
+        public Builder setLauncherSize(int launcherSize) {
+            this.launcherSize = launcherSize;
+            return this;
+        }
+
         /**
          * @param paddingLeft unit is DP
          */
@@ -63,7 +74,7 @@ public class FloatingViewConfig {
         }
 
         /**
-         * Set the width of area where FloatingView is to show.
+         * Set the width of area where Chat Widget is to show.
          * default: width of screen
          *
          * @param displayWidth
@@ -74,7 +85,7 @@ public class FloatingViewConfig {
         }
 
         /**
-         * Set the height of area where FloatingView is to show.
+         * Set the height of area where Chat Widget is to show.
          * default: height of screen - height of status bar
          *
          * @param displayHeight
@@ -85,7 +96,7 @@ public class FloatingViewConfig {
         }
 
         /**
-         * Set the direction to display the FloatingView.
+         * Set the position to display the FloatingView.
          *
          * @param gravity
          */
@@ -93,13 +104,14 @@ public class FloatingViewConfig {
             this.gravity = gravity;
             return this;
         }
+
         public Builder setMovable(Boolean movable) {
             this.movable = movable;
             return this;
         }
 
-        public FloatingViewConfig build() {
-            return new FloatingViewConfig(this);
+        public KmChatWidgetConfig build() {
+            return new KmChatWidgetConfig(this);
         }
     }
 }

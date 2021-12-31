@@ -35,6 +35,12 @@ import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAppSettingModel;
 
+/**
+ * Chat Launcher icon view
+ *
+ * @author Aman
+ * @date December '21
+ */
 
 public class KmChatWidget {
     public static KmChatWidget kmChatWidget;
@@ -57,7 +63,11 @@ public class KmChatWidget {
     public static final String RIGHT = "right";
     private static final String TAG = "KmFloatingIcon";
 
-
+    /**
+     * Constructor to initialize chat widget
+     *
+     * @param context the Activity's context
+     */
     public KmChatWidget(Context context) {
         this(context, new KmChatWidgetConfig.Builder().build());
         initialize();
@@ -65,6 +75,13 @@ public class KmChatWidget {
 
     }
 
+    /**
+     * Constructor to initialize chat widget
+     *
+     * @param context the Activity's context
+     * @param fetchDashboardSettings set true if you want to fetch settings from dashboard
+     * @param config pass the build of KmChatWidgetConfig
+     */
     public KmChatWidget(Context context, boolean fetchDashboardSettings, KmChatWidgetConfig config) {
         this(context, config);
         initialize();
@@ -110,7 +127,7 @@ public class KmChatWidget {
         }
     }
 
-    public KmChatWidget(Context context, KmChatWidgetConfig config) {
+    private KmChatWidget(Context context, KmChatWidgetConfig config) {
         this.mContext = context;
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         kmChatWidget = this;
@@ -179,6 +196,9 @@ public class KmChatWidget {
         }).execute();
     }
 
+    /**
+     * Method to show the chat widget on screen
+     */
 
     public void show() {
         showTriggered = true;
@@ -197,6 +217,11 @@ public class KmChatWidget {
             });
         }
     }
+
+    /**
+     * Method to hide the chat widget on screen
+     * Have to be called in Activity's onDestroy method
+     */
 
     public void hide() {
         if (!isShowing) {

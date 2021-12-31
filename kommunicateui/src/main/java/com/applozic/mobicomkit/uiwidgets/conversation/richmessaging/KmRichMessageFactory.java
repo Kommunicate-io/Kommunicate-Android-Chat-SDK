@@ -5,6 +5,7 @@ import android.widget.LinearLayout;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmVideoRMAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ButtonKmRichMessage;
@@ -13,6 +14,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.FaqKmR
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ImageKmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.KmFormRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ListKmRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.VideoRichMessage;
 
 /**
  * factory class for creating `AlRichMessage` instances
@@ -31,6 +33,8 @@ public class KmRichMessageFactory {
     public final static int BUTTON_RICH_MESSAGE = 3;
     public final static int REPLY_RICH_MESSAGE = 6;
     public final static int MIXED_BUTTON_RICH_MESSAGE = 11;
+    public final static int VIDEO_RICH_MESSAGE = 14;
+    public final static int FORM_RICH_MESSAGE = 12;
 
     //factory class is a singleton
     private KmRichMessageFactory() {
@@ -63,6 +67,8 @@ public class KmRichMessageFactory {
             return new KmFormRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
         } else if (type == KmRichMessageFactory.BUTTON_RICH_MESSAGE || type == KmRichMessageFactory.REPLY_RICH_MESSAGE || type == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new ButtonKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
+        } else if (type == KmRichMessageFactory.VIDEO_RICH_MESSAGE) {
+            return new VideoRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
         } else {
             return null;
         }

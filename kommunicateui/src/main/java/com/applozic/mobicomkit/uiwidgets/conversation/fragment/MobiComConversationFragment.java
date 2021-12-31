@@ -639,10 +639,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
         emoticonsBtn.setOnClickListener(this);
-        sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
-        deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
-        readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
-        pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
+
+        if(alCustomizationSettings.getInnerTimestampDesign()) {
+            sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
+            deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
+            readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
+            pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
+        }
+        else {
+            sentIcon = getResources().getDrawable(R.drawable.km_sent_icon);
+            deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon);
+            readIcon = getResources().getDrawable(R.drawable.km_read_icon);
+            pendingIcon = getResources().getDrawable(R.drawable.km_pending_message_icon);
+        }
 
         kmAwayView = list.findViewById(R.id.idKmAwayView);
 
@@ -898,7 +907,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-            loadAwayMessage();
+            showAwayMessage(true, null);
         }
 
         emoticonsBtn.setVisibility(View.GONE);
@@ -1061,7 +1070,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setFeedbackDisplay(channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext()));
 
         if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
-            loadAwayMessage();
+            showAwayMessage(true, null);
         }
     }
 
@@ -2271,7 +2280,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 linearLayoutManager.findFirstVisibleItemPosition());
                         if (view != null && !message.isCustom() && !message.isChannelCustomMessage()) {
                             TextView statusImage = view.findViewById(R.id.statusImage);
-                            statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            ImageView statusImageView = view.findViewById(R.id.statusImageView);
+                            if(alCustomizationSettings.getInnerTimestampDesign()) {
+                                statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                            }
+                            else {
+                                statusImageView.setImageDrawable(statusIcon);
+                            }
                         }
                     }
                 } catch (Exception ex) {
@@ -2306,7 +2321,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                     messageList.get(index).setStatus(Message.Status.DELIVERED_AND_READ.getValue());
                                 }
                                 TextView statusImage = view.findViewById(R.id.statusImage);
-                                statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                                ImageView statusImageView = view.findViewById(R.id.statusImageView);
+                                if(alCustomizationSettings.getInnerTimestampDesign()) {
+                                    statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
+                                }
+                                else {
+                                    statusImageView.setImageDrawable(statusIcon);
+                                }
                             }
                         } else if (!message.isVideoNotificationMessage() && !message.isHidden()) {
                             messageList.add(message);
@@ -2730,9 +2751,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
                         TextView createdAtTime = (TextView) view.findViewById(R.id.createdAtTime);
                         TextView statusTextView = view.findViewById(R.id.statusImage);
+                        ImageView statusImageView = view.findViewById(R.id.statusImageView);
 
                         if (statusTextView != null && messageListItem.getKeyString() != null && messageListItem.isTypeOutbox() && !messageListItem.isCall() && !messageListItem.getDelivered() && !messageListItem.isCustom() && !messageListItem.isChannelCustomMessage() && messageListItem.getScheduledAt() == null) {
-                            statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, sentIcon, null);
+                            if(alCustomizationSettings.getInnerTimestampDesign()) {
+                                statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, sentIcon, null);
+                            }
+                            else {
+                                statusImageView.setImageDrawable(sentIcon);
+                            }
                         }
                     }
                 }
@@ -3060,6 +3087,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     updateChannelSubTitle(channel);
                     ChannelService.isUpdateTitle = false;
                 }
+
+                loadAwayMessage();
+                processSupportGroupDetails(channel);
             }
 
             if (appContactService != null && contact != null) {
@@ -3100,6 +3130,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (isEmailConversation(channel)) {
             emailReplyReminderLayout.setVisibility(VISIBLE);
         }
+
     }
 
     public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {
@@ -4309,13 +4340,21 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         });
     }
-
+    /**
+     * displays/hides the away layout
+     *
+     * @param show true to display/ false to not, if response is null, then fetch from cache
+     */
     public void showAwayMessage(boolean show, KmApiResponse.KmDataResponse response) {
         if (response != null) {
             kmAwayView.setupAwayMessage(response, channel);
-            if (alCustomizationSettings.getAwayMessageTextColor() != null) {
-                kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
-            }
+        } else if(show && kmAwayView.getAwayMessage() != null) {
+                kmAwayView.handleAwayMessage(true);
+        } else if(show){
+            loadAwayMessage();
+        }
+        if (alCustomizationSettings.getAwayMessageTextColor() != null) {
+            kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
         }
         kmAwayView.setVisibility(show && alCustomizationSettings.isEnableAwayMessage()? VISIBLE : GONE);
     }
@@ -4350,7 +4389,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                                 //If Conversation was resolved and feedback was submitted given
                                 if (message != null && message.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(message.getCreatedAtTime())) {
-                                    kmFeedbackView.showFeedback(context, response.getData());
+                                    //kmFeedbackView.showFeedback(context, response.getData());
                                 } else {
                                     openFeedbackFragment();
                                 }
@@ -4738,7 +4777,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
             @Override
             public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
-                kmFeedbackView.showFeedback(context, kmFeedback);
+                //kmFeedbackView.showFeedback(context, kmFeedback);
             }
 
             @Override
@@ -4766,12 +4805,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public abstract void onStartLoading(boolean loadingStarted);
 
-    protected void loadAwayMessage() {
+    public void loadAwayMessage() {
         if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()) {
             Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
                     showAwayMessage(true, response);
+
                 }
 
                 @Override

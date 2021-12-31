@@ -31,7 +31,7 @@ public class DateUtils {
         Date date = new Date(timestamp);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
         SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd MMM");
-        return simpleDateFormat.format(date);
+        return simpleDateFormat.format(date).toUpperCase();
     }
 
     public static String getDate(Long timestamp) {

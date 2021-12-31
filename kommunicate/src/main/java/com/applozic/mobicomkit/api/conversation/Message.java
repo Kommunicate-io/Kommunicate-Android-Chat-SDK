@@ -677,7 +677,7 @@ public class Message extends JsonMarker {
     }
 
     public boolean isActionMessage() {
-        return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(FEEDBACK_METADATA_KEY));
+        return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(CONVERSATION_STATUS));
     }
 
     public boolean isFeedbackMessage() {

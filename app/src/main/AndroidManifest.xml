@@ -24,6 +24,7 @@
         <activity
             android:name="kommunicate.io.sample.SplashScreenActivity"
             android:launchMode="singleTask"
+            android:exported="true"
             android:theme="@style/ApplozicTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +40,7 @@
 
         <service
             android:name="kommunicate.io.sample.pushnotification.FcmListenerService"
+            android:exported="true"
             android:stopWithTask="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

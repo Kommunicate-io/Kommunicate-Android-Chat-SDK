@@ -76,6 +76,7 @@
 
         <receiver
             android:name="com.applozic.mobicomkit.broadcast.TimeChangeBroadcastReceiver"
+            android:exported="true"
             tools:node="merge">
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET" />

@@ -555,6 +555,11 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 if (NOTIFICATION_TYPE.DEACTIVATED.getValue().equals(mqttMessageResponse.getType())) {
                                     BroadcastService.sendUserActivatedBroadcast(context, AlMessageEvent.ActionType.USER_DEACTIVATED);
                                 }
+
+                                if(NOTIFICATION_TYPE.USER_ONLINE_STATUS.getValue().equals(mqttMessageResponse.getType())) {
+                                    String[] parts = mqttMessageResponse.getMessage().toString().split(",");
+                                    syncCallService.updateAwayStatus(parts[0], Integer.valueOf(parts[1]));
+                                }
                             }
 
                         } catch (Exception e) {

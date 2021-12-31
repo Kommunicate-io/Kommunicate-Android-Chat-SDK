@@ -3,6 +3,7 @@ package io.kommunicate.utils;
 public class KmConstants {
 
     public static final int PRECHAT_RESULT_CODE = 100;
+    public static final int PRECHAT_RESULT_FAILURE = 111;
     public static final String PRECHAT_RESULT_RECEIVER = "kmPrechatReceiver";
     public static final String FINISH_ACTIVITY_RECEIVER = "kmFinishActivityReceiver";
     public static final String TAKE_ORDER = "takeOrder";
@@ -18,4 +19,9 @@ public class KmConstants {
     public static final String KM_HELPCENTER_URL = "KM_HELPCENTER_URL";
     public static final String PRECHAT_ACTIVITY_NAME = "com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity";
     public static final String CONVERSATION_ACTIVITY_NAME = "com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity";
+    public static final int STATUS_AWAY = 2;
+    public static final int STATUS_ONLINE = 3;
+    public static final int STATUS_OFFLINE = 0;
+    public static final int STATUS_CONNECTED = 1;
+    public static final Long MESSAGE_CLUBBING_TIME_FRAME = 300000L;
 }

@@ -4,14 +4,11 @@ rootProject.allprojects {
         maven {
             url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
         }
-        maven {
-            url "https://google.bintray.com/flexbox-layout"
-        }
     }
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion '28.0.3'
 
     lintOptions {
@@ -19,24 +16,26 @@ android {
     }
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
-        versionName "2.2.2"
+        versionName "2.3.0"
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicate')
-    //api 'io.kommunicate.sdk:kommunicate:2.2.2'
+    //api 'io.kommunicate.sdk:kommunicate:2.3.0'
     api 'com.google.firebase:firebase-messaging:20.1.0'
     api 'com.google.android.gms:play-services-maps:17.0.0'
     api 'com.google.android.gms:play-services-location:17.0.0'

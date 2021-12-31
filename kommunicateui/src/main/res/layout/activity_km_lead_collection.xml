@@ -22,6 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:visibility="invisible"
                 android:layout_marginTop="25dp">
 
                 <View
@@ -39,10 +40,11 @@
             </FrameLayout>
 
             <TextView
-                android:layout_width="269dp"
+                android:id="@+id/kmPreChatGreetingText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="46dp"
-                android:layout_marginLeft="46dp"
+                android:layout_marginStart="45dp"
+                android:layout_marginLeft="45dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="45dp"
                 android:layout_marginRight="45dp"
@@ -62,9 +64,9 @@
                 android:layout_marginLeft="37dp"
                 android:layout_marginTop="46dp"
                 android:layout_marginEnd="39dp"
-                android:nestedScrollingEnabled="false"
                 android:layout_marginRight="39dp"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:nestedScrollingEnabled="false" />
 
             <Button
                 android:id="@+id/start_conversation"

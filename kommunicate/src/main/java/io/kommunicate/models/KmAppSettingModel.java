@@ -44,6 +44,15 @@ public class KmAppSettingModel extends JsonMarker {
         private KmChatWidget chatWidget;
         private boolean collectLead;
         private List<KmPrechatInputModel> leadCollection;
+        private KmCompanySetting companySetting;
+
+        public KmCompanySetting getCompanySetting() {
+            return companySetting;
+        }
+
+        public void setCompanySetting(KmCompanySetting companySetting) {
+            this.companySetting = companySetting;
+        }
 
         public List<KmPrechatInputModel> getLeadCollection() {
             return leadCollection;
@@ -205,6 +214,15 @@ public class KmAppSettingModel extends JsonMarker {
         private int inactiveTime;
         private boolean enableWaitingQueue;
         private int conversationHandlingLimit;
+        private KMRolesAndPermissions rolesAndPermissions;
+
+        public KMRolesAndPermissions getRolesAndPermissions() {
+            return rolesAndPermissions;
+        }
+
+        public void setRolesAndPermissions(KMRolesAndPermissions rolesAndPermissions) {
+            this.rolesAndPermissions = rolesAndPermissions;
+        }
 
         public int getInactiveTime() {
             return inactiveTime;
@@ -228,6 +246,39 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setConversationHandlingLimit(int conversationHandlingLimit) {
             this.conversationHandlingLimit = conversationHandlingLimit;
+        }
+    }
+
+    public static class KMRolesAndPermissions extends JsonMarker {
+        @SerializedName("bot")
+        private boolean isBotAssignmentAllowed = false;
+        @SerializedName("teammate")
+        private boolean isTeamMateAssignmentAllowed = false;
+        @SerializedName("team")
+        private boolean isTeamAssignmentAllowed = false;
+
+        public boolean isBotAssignmentAllowed() {
+            return isBotAssignmentAllowed;
+        }
+
+        public void setBotAssignmentAllowed(boolean botAssignmentAllowed) {
+            isBotAssignmentAllowed = botAssignmentAllowed;
+        }
+
+        public boolean isTeamMateAssignmentAllowed() {
+            return isTeamMateAssignmentAllowed;
+        }
+
+        public void setTeamMateAssignmentAllowed(boolean teamMateAssignmentAllowed) {
+            isTeamMateAssignmentAllowed = teamMateAssignmentAllowed;
+        }
+
+        public boolean isTeamAssignmentAllowed() {
+            return isTeamAssignmentAllowed;
+        }
+
+        public void setTeamAssignmentAllowed(boolean teamAssignmentAllowed) {
+            isTeamAssignmentAllowed = teamAssignmentAllowed;
         }
     }
 }

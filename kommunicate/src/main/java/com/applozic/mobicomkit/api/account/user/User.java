@@ -34,7 +34,7 @@ public class User extends JsonMarker {
     private String imageLink;
     private boolean enableEncryption;
     private Short pushNotificationFormat;
-    private Short authenticationTypeId = AuthenticationType.CLIENT.getValue();
+    private Short authenticationTypeId = AuthenticationType.APPLOZIC.getValue();
     private String displayName;
     private String appModuleName;
     private Short userTypeId;

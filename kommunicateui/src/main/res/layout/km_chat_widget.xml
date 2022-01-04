@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/parent_frame_layout"
+    android:fitsSystemWindows="true">
+<FrameLayout
+    android:id="@+id/circular_frame_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/km_chat_widget_background">
+
+    <ImageView
+        android:id="@+id/km_floating_widget"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+        android:scaleType="center"
+        app:srcCompat="@drawable/km_icon_1" />
+<!--    <ImageView-->
+<!--        android:layout_width="16dp"-->
+<!--        android:layout_height="16dp"-->
+<!--        android:layout_gravity="top|right"-->
+<!--        app:srcCompat="@drawable/km_profile_dot" />-->
+    <TextView
+        android:id="@+id/unreadSmsCount"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@drawable/km_widget_unread_message_background"
+        android:gravity="center_horizontal|center_vertical"
+        android:text=""
+        android:textColor="@color/km_white_color"
+        android:textSize="9sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+</FrameLayout>
+
+</FrameLayout>

@@ -37,7 +37,8 @@
     <color name="km_online_dot_color">#05bf50</color>
     <color name="km_audio_delete_basket_color">#e03919</color>
     <color name="km_away_status_dot_color">#FFCC66</color>
-    <color name="km_unread_message_background_color">#FFCC66</color>
+    <color name="km_unread_message_background_color">#E24848</color>
+    <color name="km_widget_unread_message_background_color">#FFCC66</color>
     <color name="km_prechat_text_color">#4e4e50</color>
     <color name="km_conversation_restart_button_color">#5451e2</color>
     <color name="km_feedback_background_color">#f0f0f0</color>

@@ -118,13 +118,44 @@ public class KmAppSettingModel extends JsonMarker {
     public static class KmChatWidget extends JsonMarker {
         private String primaryColor;
         private String secondaryColor;
+        private String position;
+        private String widgetImageLink;
+        private String iconIndex;
         private boolean showPoweredBy;
         private long sessionTimeout;
         private int botMessageDelayInterval;
+
+        public String getPosition() {
+            return position;
+        }
+
+        public void setWidgetImageLink(String widgetImageLink) {
+            this.widgetImageLink = widgetImageLink;
+        }
+
+        public String getIconIndex() {
+            return iconIndex;
+        }
+
+        public void setIconIndex(String iconIndex) {
+            this.iconIndex = iconIndex;
+        }
+
+        public String getWidgetImageLink() {
+            return widgetImageLink;
+        }
+
+        public void setPosition(String position) {
+            this.position = position;
+        }
+
+
+
+
+
         @SerializedName("isSingleThreaded")
         private boolean singleThreaded;
         private String preChatGreetingMsg;
-
 
         public String getPreChatGreetingMsg() {
             return preChatGreetingMsg;

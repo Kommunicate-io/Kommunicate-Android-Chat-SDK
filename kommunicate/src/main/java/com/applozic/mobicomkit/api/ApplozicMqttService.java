@@ -392,6 +392,12 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                     if (message.getGroupId() != null) {
                                         Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
 
+                                        //For agent app. If user replies to an Initial conversation then update the channel.
+                                        if(channel != null && channel.getKmStatus() == Channel.NOTSTARTED_CONVERSATIONS && !message.getGroupStatus().equals(Message.GroupStatus.INITIAL.getValue())) {
+                                            channel.setKmStatus(Channel.ALL_CONVERSATIONS);
+                                            ChannelService.getInstance(context).updateChannel(channel);
+                                        }
+
                                         if (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) {
                                             if (!MobiComUserPreference.getInstance(context).getDeviceKeyString().equals(message.getDeviceKeyString())) {
                                                 syncCallService.syncMessages(message.getKeyString(), message);

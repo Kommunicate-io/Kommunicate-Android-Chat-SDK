@@ -4,6 +4,8 @@ import android.text.InputType;
 
 import com.applozic.mobicommons.json.JsonMarker;
 
+import java.util.List;
+
 public class KmPrechatInputModel extends JsonMarker {
     public static final String KM_PRECHAT_MODEL_LIST = "preChatModelList";
     private String field;
@@ -13,6 +15,7 @@ public class KmPrechatInputModel extends JsonMarker {
     private String validationRegex;
     private String validationError;
     private String compositeRequiredField;
+    private List<String> options;
     private boolean required;
     private boolean displayValidationError;
     private boolean displayEmptyFieldError;
@@ -42,6 +45,14 @@ public class KmPrechatInputModel extends JsonMarker {
     public KmPrechatInputModel setType(String type) {
         this.type = type;
         return this;
+    }
+
+    public List<String> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<String> options) {
+        this.options = options;
     }
 
     public boolean isRequired() {

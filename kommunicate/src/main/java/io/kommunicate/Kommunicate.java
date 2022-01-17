@@ -470,6 +470,7 @@ public class Kommunicate {
         try {
             Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.PRECHAT_ACTIVITY_NAME));
             intent.putExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST, GsonUtils.getJsonFromObject(inputModelList, List.class));
+            intent.putExtra(KmConstants.PRECHAT_RETURN_DATA_MAP, true);
             intent.putExtra(KmConstants.PRECHAT_RESULT_RECEIVER, resultReceiver);
             context.startActivity(intent);
         } catch (ClassNotFoundException e) {

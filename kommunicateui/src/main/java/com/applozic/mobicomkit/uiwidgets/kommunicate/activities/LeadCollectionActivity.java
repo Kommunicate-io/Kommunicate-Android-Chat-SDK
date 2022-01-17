@@ -45,6 +45,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     private AlCustomizationSettings alCustomizationSettings;
     private TextView greetingText;
     private String greetingMessage;
+    private boolean returnDataMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +63,17 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
         KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);
-
+            returnDataMap = getIntent().getBooleanExtra(KmConstants.PRECHAT_RETURN_DATA_MAP, false);
             String preChatModelListJson = getIntent().getStringExtra(KmPrechatInputModel.KM_PRECHAT_MODEL_LIST);
             if (!TextUtils.isEmpty(preChatModelListJson)) {
                 inputModelList = Arrays.asList((KmPrechatInputModel[]) GsonUtils.getObjectFromJson(preChatModelListJson, KmPrechatInputModel[].class));
                 for (KmPrechatInputModel model : inputModelList) {
-                    if (model.getField().equals(getString(R.string.emailEt))) {
-                        model.setValidationRegex(EMAIL_VALIDATION_REGEX);
-                    } else if (model.getField().equals(getString(R.string.phoneNumberEt))) {
-                        model.setValidationRegex(NUMBER_VALIDATION_REGEX);
+                    if(!TextUtils.isEmpty(model.getField())) {
+                        if (model.getField().equals(getString(R.string.emailEt))) {
+                            model.setValidationRegex(EMAIL_VALIDATION_REGEX);
+                        } else if (model.getField().equals(getString(R.string.phoneNumberEt))) {
+                            model.setValidationRegex(NUMBER_VALIDATION_REGEX);
+                        }
                     }
                 }
             }
@@ -86,7 +89,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         kmPreChatRecyclerView.setLayoutManager(layoutManager);
-        prechatInputAdapter = new KmPrechatInputAdapter((inputModelList != null && !inputModelList.isEmpty()) ? inputModelList : getDefaultModelList());
+        prechatInputAdapter = new KmPrechatInputAdapter((inputModelList != null && !inputModelList.isEmpty()) ? inputModelList : getDefaultModelList(), this);
         kmPreChatRecyclerView.setAdapter(prechatInputAdapter);
 
         Button startConversationButton = findViewById(R.id.start_conversation);
@@ -109,7 +112,10 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         if (prechatInputAdapter != null && prechatInputAdapter.areFieldsValid()) {
-
+            if(returnDataMap) {
+                sendPrechatData(prechatInputAdapter.getDataMap());
+                return;
+            }
             sendPrechatUser(prechatInputAdapter.getDataMap());
 
         }

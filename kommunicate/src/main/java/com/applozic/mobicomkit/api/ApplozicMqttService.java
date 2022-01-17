@@ -45,7 +45,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
     private static final String TYPINGTOPIC = "typing-";
     private static final String OPEN_GROUP = "group-";
     private static final String MQTT_ENCRYPTION_TOPIC = "encr-";
-    private static final String SUPPORT_GROUP_TOPIC = "support-channel-";
+    private static final String SUPPORT_GROUP_TOPIC = "support-channel";
     private static ApplozicMqttService applozicMqttService;
     private AlMqttClient client;
     private MemoryPersistence memoryPersistence;
@@ -478,7 +478,15 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 if (NOTIFICATION_TYPE.MESSAGE_SENT.getValue().equals(mqttMessageResponse.getType())) {
                                     GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
                                     Message sentMessageSync = messageResponse.getMessage();
-                                    syncCallService.syncMessages(sentMessageSync.getKeyString());
+                                    if (sentMessageSync.getGroupId() != null) {
+
+                                        Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(sentMessageSync.getGroupId());
+                                        if (channel != null && channel.getKmStatus() == Channel.NOTSTARTED_CONVERSATIONS && !sentMessageSync.getGroupStatus().equals(Message.GroupStatus.INITIAL.getValue())) {
+                                            channel.setKmStatus(Channel.ALL_CONVERSATIONS);
+                                            ChannelService.getInstance(context).updateChannel(channel);
+                                        }
+                                    }
+                                    syncCallService.syncMessages(sentMessageSync.getKeyString(), sentMessageSync);
                                 }
 
                                 if (NOTIFICATION_TYPE.USER_BLOCKED.getValue().equals(mqttMessageResponse.getType()) ||

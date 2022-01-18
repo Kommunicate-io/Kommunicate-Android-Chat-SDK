@@ -6,6 +6,7 @@ public class KmConstants {
     public static final int PRECHAT_RESULT_FAILURE = 111;
     public static final String PRECHAT_RESULT_RECEIVER = "kmPrechatReceiver";
     public static final String FINISH_ACTIVITY_RECEIVER = "kmFinishActivityReceiver";
+    public static final String PRECHAT_RETURN_DATA_MAP = "kmPrechatReturnData";
     public static final String TAKE_ORDER = "takeOrder";
     public static final String USER_ID = "userId";
     public static final String GROUP_ID = "groupId";

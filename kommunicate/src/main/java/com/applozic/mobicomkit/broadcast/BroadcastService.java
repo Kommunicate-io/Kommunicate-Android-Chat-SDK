@@ -10,6 +10,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.api.notification.NotificationService;
@@ -165,11 +166,11 @@ public class BroadcastService {
 
                 //Do not send BOT and Agent message notification to agents, roletype 3 = user
                 //TODO: Notification should be handled from server side. Change this code when server side changes is done
-                if(MobiComUserPreference.getInstance(context).getUserRoleType() != 3 && contact != null) {
-                        if(contact.getRoleType() != 3) {
+                if(MobiComUserPreference.getInstance(context).getUserRoleType() != 3 ) {
+                        if(contact != null && !User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
                             return;
                         }
-                        if(!channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId())) {
+                        if(channel != null && !channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId())) {
                              return;
                         }
                 }

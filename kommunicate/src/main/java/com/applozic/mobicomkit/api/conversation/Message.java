@@ -38,6 +38,7 @@ public class Message extends JsonMarker {
     private boolean storeOnDevice;
     private String contactIds = "";
     private Integer groupId;
+    private Short groupStatus;
     private boolean sendToDevice;
     private Long scheduledAt;
     private Short source = Source.MT_MOBILE_APP.getValue();
@@ -676,6 +677,17 @@ public class Message extends JsonMarker {
         this.replyMessage = replyMessage;
     }
 
+
+    public Short getGroupStatus() {
+
+        return groupStatus;
+    }
+
+    public void setGroupStatus(Short groupStatus) {
+        this.groupStatus = groupStatus;
+    }
+
+
     public boolean isActionMessage() {
         return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(CONVERSATION_STATUS));
     }
@@ -734,6 +746,22 @@ public class Message extends JsonMarker {
 
     public boolean isAttachmentEncrypted() {
         return fileMeta != null && !TextUtils.isEmpty(fileMeta.getName()) && fileMeta.getName().startsWith(AWS_ENCRYPTED);
+    }
+
+    public enum GroupStatus {
+        INITIAL(Short.valueOf("-1")), OPEN(Short.valueOf("0")), PROGRESS(Short.valueOf("1")),
+        RESOLVED(Short.valueOf("2")), CLOSED(Short.valueOf("2")),
+        SPAM(Short.valueOf("3")), DUPLICATE(Short.valueOf("4")), ARCHIVE(Short.valueOf("5")),
+        UNRESPONDED(Short.valueOf("6")), WAITING(Short.valueOf("7"));
+        private Short value;
+
+        GroupStatus(Short c) {
+            value = c;
+        }
+
+        public Short getValue() {
+            return value;
+        }
     }
 
     public enum Source {

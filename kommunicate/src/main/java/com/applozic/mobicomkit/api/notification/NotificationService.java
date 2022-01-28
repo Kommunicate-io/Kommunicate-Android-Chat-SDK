@@ -145,8 +145,19 @@ public class NotificationService {
         intent.putExtra("sms_body", "text");
         intent.setType("vnd.android-dir/mms-sms");
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) (System.currentTimeMillis() & 0xfffffff),
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getActivity(context,
+                    (int) (System.currentTimeMillis() & 0xfffffff),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE );
+        }
+        else {
+            pendingIntent = PendingIntent.getActivity(context,
+                    (int) (System.currentTimeMillis() & 0xfffffff),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
 
         NotificationCompat.Builder mBuilder =
@@ -399,8 +410,19 @@ public class NotificationService {
         intent.putExtra("sms_body", "text");
         intent.setType("vnd.android-dir/mms-sms");
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, (int) (System.currentTimeMillis() & 0xfffffff),
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getActivity(context,
+                    (int) (System.currentTimeMillis() & 0xfffffff),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE );
+        }
+        else {
+            pendingIntent = PendingIntent.getActivity(context,
+                    (int) (System.currentTimeMillis() & 0xfffffff),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, notificationChannels.getDefaultChannelId(muteNotifications(index)));
 
@@ -466,8 +488,16 @@ public class NotificationService {
             fullScreenIntent.putExtra(CALL_AUDIO_ONLY, true);
         }
 
-        PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
-                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent fullScreenPendingIntent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
+                    fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }
+        else {
+            fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
+                    fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
+
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, notificationChannels.getCallChannelId())

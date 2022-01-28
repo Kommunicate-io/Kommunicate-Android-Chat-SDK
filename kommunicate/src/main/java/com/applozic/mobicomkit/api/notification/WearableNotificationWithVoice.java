@@ -99,8 +99,14 @@ public class WearableNotificationWithVoice {
         // Create an intent for the reply action
         if (pendingIntent == null) {
             Intent replyIntent = new Intent(mContext, notificationHandler);
-            pendingIntent = PendingIntent.getActivity(mContext, (int) (System.currentTimeMillis() & 0xfffffff), replyIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                pendingIntent = PendingIntent.getActivity(mContext, (int) (System.currentTimeMillis() & 0xfffffff), replyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            }
+            else {
+                pendingIntent = PendingIntent.getActivity(mContext, (int) (System.currentTimeMillis() & 0xfffffff), replyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+            }
         }
         // Create the reply action and add the remote input
         NotificationCompat.Action action = new NotificationCompat.Action.Builder(actionIconResId,

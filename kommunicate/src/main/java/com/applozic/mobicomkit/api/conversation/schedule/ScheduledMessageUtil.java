@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
@@ -42,9 +43,16 @@ public class ScheduledMessageUtil {
         Intent otherIntent = new Intent();
         otherIntent.setClass(ctx, intentClass);
         alarm = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        intent = PendingIntent.getService(ctx,
-                (int) System.currentTimeMillis(), otherIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            intent = PendingIntent.getService(ctx,
+                    (int) System.currentTimeMillis(), otherIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }
+        else {
+            intent = PendingIntent.getService(ctx,
+                    (int) System.currentTimeMillis(), otherIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+        }
         alarm.set(AlarmManager.RTC_WAKEUP, message.getScheduledAt(), intent);
         dbHelper.close();
     }

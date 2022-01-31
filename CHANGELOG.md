@@ -3,6 +3,13 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.3.5
+1) Added support for Dropdown in Prechat lead collection
+2) Added Chat Widget floating button: KmChatWidget, which can be used to create an icon for opening conversation
+3) Added new chat design with backward compatibility. To use previous design, use "innerTimestampDesign": true in applozic-settings.json
+4) Auto-sync conversation for Agents in All Conversation screen
+5) Bug fix for Android 12
+
 ## Kommunicate Android SDK 2.3.0
 1) Added support for Android 12
 

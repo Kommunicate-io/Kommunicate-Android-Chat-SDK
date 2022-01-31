@@ -112,7 +112,7 @@ public class AlPrefSettings {
 
     public AlPrefSettings setPassword(String password) {
         decodedPassword = password;
-        sharedPreferences.edit().putString(PASSWORD, password);
+        sharedPreferences.edit().putString(PASSWORD, password).commit();
         return this;
     }
 }

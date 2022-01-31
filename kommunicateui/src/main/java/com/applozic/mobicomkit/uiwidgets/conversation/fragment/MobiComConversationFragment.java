@@ -3277,7 +3277,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-        switchContactStatus(contact, null);
         conversationAssignee = contact;
 
         if (contact != null) {

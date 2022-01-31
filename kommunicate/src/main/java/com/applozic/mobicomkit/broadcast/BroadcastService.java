@@ -340,6 +340,7 @@ public class BroadcastService {
     }
 
     public static void sendAgentStatusBroadcast(Context context, String action, String userId, Integer status) {
+        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.AWAY_STATUS).setUserId(userId).setStatus(status));
         Intent intent = new Intent();
         intent.setAction(action);
         intent.putExtra("userId", userId);

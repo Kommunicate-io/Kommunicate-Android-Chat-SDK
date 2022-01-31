@@ -11,6 +11,7 @@ public class AlMessageEvent extends JsonMarker {
     private String messageKey;
     private String response;
     private String isTyping;
+    private Integer status;
     private boolean loadMore;
     private boolean isGroup;
 
@@ -47,6 +48,15 @@ public class AlMessageEvent extends JsonMarker {
 
     public AlMessageEvent setGroupId(Integer groupId) {
         this.groupId = groupId;
+        return this;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public AlMessageEvent setStatus(Integer status) {
+        this.status = status;
         return this;
     }
 
@@ -119,5 +129,6 @@ public class AlMessageEvent extends JsonMarker {
         public static final String GROUP_MUTE = "GROUP_MUTE";
         public static final String USER_ACTIVATED = "USER_ACTIVATED";
         public static final String USER_DEACTIVATED = "USER_DEACTIVATED";
+        public static final String AWAY_STATUS = "AWAY_STATUS";
     }
 }

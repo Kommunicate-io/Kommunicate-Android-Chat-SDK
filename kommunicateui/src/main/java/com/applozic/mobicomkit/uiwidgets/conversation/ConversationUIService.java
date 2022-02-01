@@ -57,6 +57,7 @@ import java.util.ArrayList;
 
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.utils.KmConstants;
+import io.kommunicate.utils.KmUtils;
 
 public class ConversationUIService {
 
@@ -638,7 +639,7 @@ public class ConversationUIService {
     }
 
     public void updateAgentStatus(String userId, Integer status) {
-        if(userId != null && status != null && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
+        if(userId != null && status != null &&  !KmUtils.isAgent() && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
                 if(status.equals(KmConstants.STATUS_AWAY)) {
                     getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), false);
                     getConversationFragment().showAwayMessage(true, null);

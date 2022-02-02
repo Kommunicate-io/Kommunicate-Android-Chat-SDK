@@ -7,6 +7,7 @@ import android.os.Message;
 import com.applozic.mobicomkit.feed.MqttMessageResponse;
 import com.applozic.mobicomkit.listners.AlMqttListener;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
+import com.applozic.mobicomkit.listners.KmStatusListener;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class AlEventManager {
     private static AlEventManager eventManager;
     private Map<String, ApplozicUIListener> listenerMap;
     private Map<String, AlMqttListener> mqttListenerMap;
+    private Map<String, KmStatusListener> statusListenerMap;
     private KmPluginEventListener kmPluginEventListener;
     private Handler uiHandler;
 
@@ -62,6 +64,22 @@ public class AlEventManager {
     public void unregisterMqttListener(String id) {
         if (mqttListenerMap != null) {
             mqttListenerMap.remove(id);
+        }
+    }
+
+    public void registerStatusListener(String id, KmStatusListener listener) {
+        if (statusListenerMap == null) {
+            statusListenerMap = new HashMap<>();
+        }
+        initHandler();
+        if (!statusListenerMap.containsKey(id)) {
+            statusListenerMap.put(id, listener);
+        }
+    }
+
+    public void unregisterStatusListener(String id) {
+        if (statusListenerMap != null) {
+            statusListenerMap.remove(id);
         }
     }
 
@@ -147,6 +165,12 @@ public class AlEventManager {
             if (kmPluginEventListener != null && AlMessageEvent.ActionType.MESSAGE_SYNC.equals(messageEvent.getAction())) {
                 sendOnConversationResolvedEvent(messageEvent.getMessage());
                 sendOnConversationRestartedEvent(messageEvent.getMessage());
+            }
+
+            if(statusListenerMap != null && !statusListenerMap.isEmpty() && AlMessageEvent.ActionType.AWAY_STATUS.equals(messageEvent.getAction())) {
+                for(KmStatusListener listener : statusListenerMap.values()) {
+                    listener.onStatusChange(messageEvent.getUserId(), messageEvent.getStatus());
+                }
             }
 
             if (listenerMap != null && !listenerMap.isEmpty()) {

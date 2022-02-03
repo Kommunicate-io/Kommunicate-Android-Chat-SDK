@@ -3,6 +3,10 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.3.6
+1) Away Status listener
+2) Bug fix and improvement
+
 ## Kommunicate Android SDK 2.3.5
 1) Added support for Dropdown in Prechat lead collection
 2) Added Chat Widget floating button: KmChatWidget, which can be used to create an icon for opening conversation

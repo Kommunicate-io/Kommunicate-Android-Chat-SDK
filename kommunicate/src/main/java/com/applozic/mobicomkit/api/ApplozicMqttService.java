@@ -393,7 +393,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                         Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
 
                                         //For agent app. If user replies to an Initial conversation then update the channel.
-                                        if(channel != null && channel.getKmStatus() == Channel.NOTSTARTED_CONVERSATIONS && !message.getGroupStatus().equals(Message.GroupStatus.INITIAL.getValue())) {
+                                        if(channel != null && channel.getKmStatus() == Channel.NOTSTARTED_CONVERSATIONS && message.getGroupStatus() != null && !message.getGroupStatus().equals(Message.GroupStatus.INITIAL.getValue())) {
                                             channel.setKmStatus(Channel.ALL_CONVERSATIONS);
                                             ChannelService.getInstance(context).updateChannel(channel);
                                         }
@@ -481,7 +481,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                     if (sentMessageSync.getGroupId() != null) {
 
                                         Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(sentMessageSync.getGroupId());
-                                        if (channel != null && channel.getKmStatus() == Channel.NOTSTARTED_CONVERSATIONS && !sentMessageSync.getGroupStatus().equals(Message.GroupStatus.INITIAL.getValue())) {
+                                        if (channel != null && channel.getKmStatus() == Channel.NOTSTARTED_CONVERSATIONS &&  sentMessageSync.getGroupStatus() != null && !sentMessageSync.getGroupStatus().equals(Message.GroupStatus.INITIAL.getValue())) {
                                             channel.setKmStatus(Channel.ALL_CONVERSATIONS);
                                             ChannelService.getInstance(context).updateChannel(channel);
                                         }

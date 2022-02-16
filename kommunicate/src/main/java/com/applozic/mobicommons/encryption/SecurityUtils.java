@@ -198,6 +198,9 @@ public class SecurityUtils {
             if (sharedPreferences.contains(AES_ENCRYPTION_KEY)) { //get key from shared pref file, decrypt it and return
                 String cipherKey = sharedPreferences.getString(AES_ENCRYPTION_KEY, null);
                 String plainKey = sharedPreferences.getBoolean(AES_KEY_ENCRYPTED, true) ? decrypt(RSA, cipherKey, keyPairRSA) : cipherKey;
+                if(TextUtils.isEmpty(plainKey)) {
+                    return null;
+                }
                 byte[] decodedKey = Base64.decode(plainKey, Base64.DEFAULT);
                 return new SecretKeySpec(decodedKey, 0, decodedKey.length, AES);
             } else { //generate AES key, encrypt it, store it to shared pref and return the un-encrypted version

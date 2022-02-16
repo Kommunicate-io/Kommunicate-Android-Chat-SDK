@@ -3,6 +3,9 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.3.7
+1) Realtime message bug fix
+
 ## Kommunicate Android SDK 2.3.6
 1) Away Status listener
 2) Bug fix and improvement

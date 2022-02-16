@@ -157,5 +157,6 @@
     "quickReply": false
   },
   "receiverNameTextColor": "#5C6677",
-  "innerTimestampDesign": false
+  "innerTimestampDesign": false,
+  "oneTimeRating": true
 }

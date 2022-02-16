@@ -4390,7 +4390,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 if (message != null && message.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(message.getCreatedAtTime())) {
                                     //kmFeedbackView.showFeedback(context, response.getData());
                                 } else {
-                                    openFeedbackFragment();
+                                    //if oneTimeRating = true, don't ask for multiple feedback
+                                    if(!alCustomizationSettings.isOneTimeRating())
+                                        openFeedbackFragment();
                                 }
                             } else {
                                 //if feedback not found (null)

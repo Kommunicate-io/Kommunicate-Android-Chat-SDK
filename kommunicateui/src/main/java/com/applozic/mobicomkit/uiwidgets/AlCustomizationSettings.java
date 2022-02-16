@@ -130,10 +130,17 @@ public class AlCustomizationSettings extends JsonMarker {
     private KmSpeechSetting speechToText;
     private boolean restrictMessageTypingWithBots = false;
     private Map<String, Boolean> hidePostCTA;
+    private boolean oneTimeRating;
 
     public Boolean getInnerTimestampDesign() {
         return innerTimestampDesign;
     }
+
+
+    public boolean isOneTimeRating() {
+        return oneTimeRating;
+    }
+
 
     public void setInnerTimestampDesign(Boolean innerTimestampDesign) {
         this.innerTimestampDesign = innerTimestampDesign;

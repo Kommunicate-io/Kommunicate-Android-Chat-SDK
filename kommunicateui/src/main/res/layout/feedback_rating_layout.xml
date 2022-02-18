@@ -153,5 +153,6 @@
         android:paddingRight="20dp"
         android:text="@string/submit_your_rating"
         android:textAllCaps="false"
+        android:visibility="gone"
         android:textColor="@color/km_white_color" />
 </LinearLayout>

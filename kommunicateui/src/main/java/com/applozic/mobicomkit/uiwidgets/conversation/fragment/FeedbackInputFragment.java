@@ -173,6 +173,9 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
         if (editTextFeedbackComment.getVisibility() == View.GONE) {
             editTextFeedbackComment.setVisibility(View.VISIBLE);
         }
+        if(buttonSubmitFeedback.getVisibility() == View.GONE) {
+            buttonSubmitFeedback.setVisibility(View.VISIBLE);
+        }
 
         for (FeedbackRatingGroup.FeedbackRating feedbackRating : feedbackRatingGroup.feedbackRating) {
             Integer iterationButtonTag = (Integer) feedbackRating.ratingButton.getTag();

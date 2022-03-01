@@ -45,6 +45,11 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean collectLead;
         private List<KmPrechatInputModel> leadCollection;
         private KmCompanySetting companySetting;
+        private KmSubscriptionDetails subscriptionDetails;
+
+        public KmSubscriptionDetails getSubscriptionDetails() {
+            return subscriptionDetails;
+        }
 
         public KmCompanySetting getCompanySetting() {
             return companySetting;
@@ -247,6 +252,25 @@ public class KmAppSettingModel extends JsonMarker {
         public void setConversationHandlingLimit(int conversationHandlingLimit) {
             this.conversationHandlingLimit = conversationHandlingLimit;
         }
+    }
+
+    public static class KmSubscriptionDetails extends JsonMarker {
+        private int id;
+        private boolean trialExpired;
+        private String subscriptionPlan;
+
+        public int getId() {
+            return id;
+        }
+
+        public boolean isTrialExpired() {
+            return trialExpired;
+        }
+
+        public String getSubscriptionPlan() {
+            return subscriptionPlan;
+        }
+
     }
 
     public static class KMRolesAndPermissions extends JsonMarker {

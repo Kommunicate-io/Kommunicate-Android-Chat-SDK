@@ -28,6 +28,7 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
@@ -770,6 +771,7 @@ public class ConversationUIService {
         if (channel != null) {
             openConversationFragment(channel, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING), preFilledMessage);
         }
+        AlEventManager.getInstance().sendOnStartNewConversation(channelKey);
         String productTopicId = intent.getStringExtra(ConversationUIService.PRODUCT_TOPIC_ID);
         String productImageUrl = intent.getStringExtra(ConversationUIService.PRODUCT_IMAGE_URL);
         if (!TextUtils.isEmpty(productTopicId) && !TextUtils.isEmpty(productImageUrl)) {

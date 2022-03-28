@@ -4771,7 +4771,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         kmFeedback.setRating(ratingValue);
-
+        AlEventManager.getInstance().sendOnSubmitRatingClicked(channel.getKey(), ratingValue, feedback);
         Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
         KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
             @Override

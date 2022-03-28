@@ -152,6 +152,36 @@ public class AlEventManager {
         }
     }
 
+    public void sendOnStartNewConversation(Integer conversationId) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onStartNewConversation(conversationId);
+        }
+
+    }
+    public void sendOnBackButtonClicked(boolean isConversationOpened) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onBackButtonClicked(isConversationOpened);
+        }
+    }
+
+    public void sendOnSubmitRatingClicked(Integer conversationId, Integer rating, String feedback) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onSubmitRatingClick(conversationId, rating, feedback);
+        }
+    }
+
+    public void sendOnMessageSent(com.applozic.mobicomkit.api.conversation.Message message) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onMessageSent(message);
+        }
+    }
+
+    public void sendOnMessageReceived(com.applozic.mobicomkit.api.conversation.Message message) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onMessageReceived(message);
+        }
+    }
+
     private void handleState(Message message) {
         if (message != null) {
             Bundle bundle = message.getData();
@@ -162,9 +192,20 @@ public class AlEventManager {
             if (messageEvent == null) {
                 return;
             }
-            if (kmPluginEventListener != null && AlMessageEvent.ActionType.MESSAGE_SYNC.equals(messageEvent.getAction())) {
-                sendOnConversationResolvedEvent(messageEvent.getMessage());
-                sendOnConversationRestartedEvent(messageEvent.getMessage());
+
+            if(kmPluginEventListener != null) {
+                switch (messageEvent.getAction()) {
+                    case AlMessageEvent.ActionType.MESSAGE_SENT:
+                        sendOnMessageSent(messageEvent.getMessage());
+                        break;
+                    case AlMessageEvent.ActionType.MESSAGE_RECEIVED:
+                        sendOnMessageReceived(messageEvent.getMessage());
+                        break;
+                    case AlMessageEvent.ActionType.MESSAGE_SYNC:
+                        sendOnConversationResolvedEvent(messageEvent.getMessage());
+                        sendOnConversationRestartedEvent(messageEvent.getMessage());
+                        break;
+                }
             }
 
             if(statusListenerMap != null && !statusListenerMap.isEmpty() && AlMessageEvent.ActionType.AWAY_STATUS.equals(messageEvent.getAction())) {

@@ -775,6 +775,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
             }
         }
+        else if(id == android.R.id.home) {
+                AlEventManager.getInstance().sendOnBackButtonClicked(getSupportFragmentManager().getBackStackEntryCount() > 1);
+        }
         return false;
     }
 

@@ -97,7 +97,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private int totalOnlineUsers = 0;
     private String themeColorPrimary;
     private String themeColorPrimaryDark;
-    private String editTextHintText = "Write a Message..";
+    private String editTextHintText = "";
     private boolean replyOption = false;
     private String replyMessageLayoutSentMessageBackground = "#C0C0C0";
     private String replyMessageLayoutReceivedMessageBackground = "#F5F5F5";

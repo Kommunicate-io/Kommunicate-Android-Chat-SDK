@@ -3,6 +3,16 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.3.9
+1) editTextHintText can be localized through string "enter_message_hint"
+2) Bug fixes and better analytics
+
+## Kommunicate Android SDK 2.3.8
+1) Added multiple events in Event Listeners
+2) Added oneTimeRating feature in custom settings
+3) Added Expired Layout for Agent app
+4) Bug fixes and optimizations
+
 ## Kommunicate Android SDK 2.3.7
 1) Realtime message bug fix
 

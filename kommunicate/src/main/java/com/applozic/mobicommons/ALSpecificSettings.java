@@ -60,7 +60,7 @@ public class ALSpecificSettings {
     }
 
     public String getTextLogFileName() {
-        return sharedPreferences.getString(TEXT_LOG_FILE_NAME, "applozic_text_logs");
+        return sharedPreferences.getString(TEXT_LOG_FILE_NAME, "kommunicate_logs");
     }
 
     public String getAlBaseUrl() {

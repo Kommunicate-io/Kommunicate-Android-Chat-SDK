@@ -339,7 +339,7 @@ public class Utils {
             BufferedWriter bufferedWriter = null;
             try {
                 String folder = "/" + Utils.getMetaDataValue(context, "main_folder_name");
-                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + folder);
+                File dir = new File(context.getFilesDir().getAbsolutePath() + folder);
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
@@ -370,7 +370,7 @@ public class Utils {
         try {
             String fileName = "/" + ALSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
             String folder = "/" + Utils.getMetaDataValue(context, "main_folder_name");
-            File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + folder);
+            File dir = new File(context.getFilesDir().getAbsolutePath() + folder);
             File textLogFile = new File(dir, fileName);
             if (hasNougat()) {
                 return ALFileProvider.getUriForFile(ApplozicService.getContext(context), getMetaDataValue(context, "com.package.name") + ".applozic.provider", textLogFile);

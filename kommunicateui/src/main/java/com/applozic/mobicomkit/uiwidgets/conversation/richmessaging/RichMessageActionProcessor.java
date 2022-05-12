@@ -393,8 +393,6 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             Map<String, String> formDataMap = new HashMap<>();
             formDataMap.put(KmFormPayloadModel.KM_FORM_DATA, GsonUtils.getJsonFromObject(getStringMap(formSelectedData), Map.class));
             metadata.put(Kommunicate.KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(formDataMap, Map.class));
-        } else {
-            metadata.putAll(formData);
         }
         return metadata;
     }

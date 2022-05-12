@@ -244,17 +244,27 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             KmToast.error(context, Utils.getString(context, R.string.km_invalid_form_data_error), Toast.LENGTH_SHORT).show();
             return;
         }
-
+        boolean postBackToBotPlatform = KmRMActionModel.SubmitButton.KM_POST_DATA_TO_BOT_PLATFORM.equals(submitButtonModel.getRequestType());
+        Map<String, String> metadata = handleMetaData(postBackToBotPlatform, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
+
+        if (submitButtonModel.getPostBackToKommunicate() != null && submitButtonModel.getPostBackToKommunicate().equalsIgnoreCase("true")) {
+            sendFormDataAsMessage(message, metadata, dataMap, "");
+
+            if (richMessageListener != null) {
+                richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
+            }
+        }
         if (submitButtonModel.getPostFormDataAsMessage() != null && submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
-            sendFormDataAsMessage(context, message, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getMessage());
+
+            sendFormDataAsMessage(message, metadata, dataMap, submitButtonModel.getMessage());
 
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
             }
         } else {
             if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
-                sendMessage(submitButtonModel.getMessage(), getStringMap(submitButtonModel.getReplyMetadata()));
+                sendMessage(submitButtonModel.getMessage(), metadata);
             }
             new KmPostDataAsyncTask(context,
                     submitButtonModel.getFormAction(),
@@ -278,13 +288,16 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         }
     }
 
-    //TO SEND FORM DATA AS MESSAGE
-    private void sendFormDataAsMessage(final Context context, Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, String submitButtonMessage) {
+    //TO SEND FORM DATA AS MESSAGE for both postBackToKommunicate and postFormDataAsMessage
+    private void sendFormDataAsMessage(Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, String submitButtonMessage) {
         if (message.getMetadata() != null) {
             com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
             }.getType());
 
-            StringBuilder messageToSend = new StringBuilder(submitButtonMessage).append("\n");
+            StringBuilder messageToSend = new StringBuilder(submitButtonMessage);
+            if(!TextUtils.isEmpty(messageToSend)) {
+                messageToSend.append("\n");
+            }
 
             List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
 
@@ -369,6 +382,21 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
             sendMessage(messageToSend.toString(), replyMetadata);
         }
+    }
+
+    private Map<String, String> handleMetaData(boolean postBackToBotPlatform, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
+        Map<String, String> metadata = new HashMap<>();
+        if (replyMetadata != null) {
+            metadata.putAll(replyMetadata);
+        }
+        if (formSelectedData != null && postBackToBotPlatform) {
+            Map<String, String> formDataMap = new HashMap<>();
+            formDataMap.put(KmFormPayloadModel.KM_FORM_DATA, GsonUtils.getJsonFromObject(getStringMap(formSelectedData), Map.class));
+            metadata.put(Kommunicate.KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(formDataMap, Map.class));
+        } else {
+            metadata.putAll(formData);
+        }
+        return metadata;
     }
 
     private void sendMessage(String message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {

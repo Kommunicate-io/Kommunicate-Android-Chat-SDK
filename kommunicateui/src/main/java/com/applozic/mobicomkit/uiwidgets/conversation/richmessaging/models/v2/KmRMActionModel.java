@@ -53,7 +53,11 @@ public class KmRMActionModel<T> extends JsonMarker {
         private String formAction;
         private String requestType;
         private String postFormDataAsMessage;
+        private String postBackToKommunicate;
 
+        public String getPostBackToKommunicate() {
+            return postBackToKommunicate;
+        }
         public String getPostFormDataAsMessage() {
             return postFormDataAsMessage;
         }

@@ -85,6 +85,7 @@ public class MobiComUserPreference {
     private static String CHANNEL_LIST_LAST_GENERATED_TIME = "channelListLastGeneratedAtTime";
     private static String CHANNEL_LIST_LAST_GENERATED_DEFAULT_VALUE = "10000";
     private static String LOGGED_USER_DELETE_FROM_DASHBOARD = "loggedUserDeletedFromDashboard";
+    private static String AGENT_ROUTING = "agentRouting";
 
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -966,6 +967,19 @@ public class MobiComUserPreference {
     public void setLoggedUserDeletedFromDashboard(boolean deletedFromDashboard) {
         if (sharedPreferences != null) {
             sharedPreferences.edit().putBoolean(LOGGED_USER_DELETE_FROM_DASHBOARD, deletedFromDashboard).commit();
+        }
+    }
+
+    public boolean isAgentRouting() {
+        if(sharedPreferences != null) {
+            return sharedPreferences.getBoolean(AGENT_ROUTING, true);
+        }
+        return false;
+    }
+
+    public void setAgentRouting(boolean isAgentRouting) {
+        if(sharedPreferences != null) {
+            sharedPreferences.edit().putBoolean(AGENT_ROUTING, isAgentRouting).apply();
         }
     }
 }

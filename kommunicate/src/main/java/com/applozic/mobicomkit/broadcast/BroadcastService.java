@@ -170,7 +170,7 @@ public class BroadcastService {
                         if(contact != null && !User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
                             return;
                         }
-                        if(channel != null && !channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId())) {
+                        if(MobiComUserPreference.getInstance(context).isAgentRouting() && channel != null && !channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId())) {
                              return;
                         }
                 }

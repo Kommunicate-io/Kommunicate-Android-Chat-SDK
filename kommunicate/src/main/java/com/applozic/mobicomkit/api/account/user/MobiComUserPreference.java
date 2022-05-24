@@ -85,6 +85,7 @@ public class MobiComUserPreference {
     private static String CHANNEL_LIST_LAST_GENERATED_TIME = "channelListLastGeneratedAtTime";
     private static String CHANNEL_LIST_LAST_GENERATED_DEFAULT_VALUE = "10000";
     private static String LOGGED_USER_DELETE_FROM_DASHBOARD = "loggedUserDeletedFromDashboard";
+    private static String NOTIFY_EVERYBODY = "notifyEverybody";
 
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -966,6 +967,19 @@ public class MobiComUserPreference {
     public void setLoggedUserDeletedFromDashboard(boolean deletedFromDashboard) {
         if (sharedPreferences != null) {
             sharedPreferences.edit().putBoolean(LOGGED_USER_DELETE_FROM_DASHBOARD, deletedFromDashboard).commit();
+        }
+    }
+
+    public boolean isNotifyEverybody() {
+        if(sharedPreferences != null) {
+            return sharedPreferences.getBoolean(NOTIFY_EVERYBODY, true);
+        }
+        return false;
+    }
+
+    public void setNotifyEverybody(boolean isNotifyEverybody) {
+        if(sharedPreferences != null) {
+            sharedPreferences.edit().putBoolean(NOTIFY_EVERYBODY, isNotifyEverybody).apply();
         }
     }
 }

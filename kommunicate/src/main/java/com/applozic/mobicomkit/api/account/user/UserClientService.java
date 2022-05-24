@@ -421,7 +421,7 @@ public class UserClientService extends MobiComKitClientService {
                 userUpdate.setMetadata(metadata);
             }
 
-            String response = httpRequestUtils.postData(getUserProfileUpdateUrl(), GsonUtils.getJsonFromObject(userUpdate, AlUserUpdate.class), userId);
+            String response = httpRequestUtils.postData(getUserProfileUpdateUrl() + (!TextUtils.isEmpty(emailId) ? "?elasticUpdate=true&allowEmail=true" : ""), GsonUtils.getJsonFromObject(userUpdate, AlUserUpdate.class), userId);
             Utils.printLog(context, TAG, response);
             return ((ApiResponse) GsonUtils.getObjectFromJson(response, ApiResponse.class));
         } catch (JSONException e) {

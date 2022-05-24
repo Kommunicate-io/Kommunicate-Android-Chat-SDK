@@ -241,7 +241,7 @@ public class HttpRequestUtils {
             }
 
             if (!TextUtils.isEmpty(userId)) {
-                connection.setRequestProperty(OF_USER_ID_HEADER, URLEncoder.encode(userId, "UTF-8"));
+                connection.setRequestProperty(OF_USER_ID_HEADER, userId);
             }
             String applicationKey = MobiComKitClientService.getApplicationKey(context);
 

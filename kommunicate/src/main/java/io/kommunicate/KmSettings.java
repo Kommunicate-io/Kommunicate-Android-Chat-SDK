@@ -11,13 +11,18 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.kommunicate.async.KmAssigneeUpdateTask;
 import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
+import io.kommunicate.preference.KmDefaultSettingPreference;
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 public class KmSettings {
 
@@ -189,5 +194,29 @@ public class KmSettings {
         channelMetadata.put(KM_CONVERSATION_METADATA, GsonUtils.getJsonFromObject(conversationMetadata, Map.class));
 
         return channelMetadata;
+    }
+
+    public static void setDefaultBotIds(List<String> botIds) {
+        Set<String> hashSet = new HashSet<String>(botIds);
+        hashSet.addAll(botIds);
+        KmDefaultSettingPreference.getInstance().setDefaultBotIds(hashSet);
+    }
+
+    public static void setDefaultAgentIds(List<String> agentIds) {
+        Set<String> hashSet = new HashSet<String>(agentIds);
+        hashSet.addAll(agentIds);
+        KmDefaultSettingPreference.getInstance().setDefaultAgentIds(hashSet);
+    }
+
+    public static void setDefaultAssignee(String assigneeId) {
+        KmDefaultSettingPreference.getInstance().setDefaultAssignee(assigneeId);
+    }
+
+    public static void setDefaultTeamId(String teamId) {
+        KmDefaultSettingPreference.getInstance().setDefaultTeamId(teamId);
+    }
+
+    public static void clearDefaultSettings() {
+        KmDefaultSettingPreference.getInstance().clearSettings();
     }
 }

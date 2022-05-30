@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.preference.KmPreference;
 import io.kommunicate.users.KMUser;
 
 public class KmConversationBuilder extends JsonMarker {

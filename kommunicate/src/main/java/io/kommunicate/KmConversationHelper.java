@@ -39,6 +39,7 @@ import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
+import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -358,6 +359,18 @@ public class KmConversationHelper {
     public static void launchConversationIfLoggedIn(Context context, KmCallback callback) {
         if (Kommunicate.isLoggedIn(context)) {
             KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
+            if(KmDefaultSettingPreference.getInstance().getDefaultBotIds() != null) {
+                conversationBuilder.setBotIds(new ArrayList<String>(KmDefaultSettingPreference.getInstance().getDefaultBotIds()));
+            }
+            if(KmDefaultSettingPreference.getInstance().getDefaultAgentIds() != null) {
+                conversationBuilder.setAgentIds(new ArrayList<String>(KmDefaultSettingPreference.getInstance().getDefaultAgentIds()));
+            }
+            if(KmDefaultSettingPreference.getInstance().getDefaultAssignee() != null) {
+                conversationBuilder.setConversationAssignee(KmDefaultSettingPreference.getInstance().getDefaultAssignee());
+            }
+            if(KmDefaultSettingPreference.getInstance().getDefaultTeamId() != null) {
+                conversationBuilder.setTeamId(KmDefaultSettingPreference.getInstance().getDefaultTeamId());
+            }
             try {
                 startConversation(true, conversationBuilder,
                         getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null, callback));

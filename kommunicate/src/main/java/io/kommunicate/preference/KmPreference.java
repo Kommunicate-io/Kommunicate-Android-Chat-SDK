@@ -1,10 +1,11 @@
-package io.kommunicate;
+package io.kommunicate.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.applozic.mobicommons.json.GsonUtils;
 
+import io.kommunicate.KmConversationBuilder;
 /**
  * Created by ashish on 21/04/18.
  */

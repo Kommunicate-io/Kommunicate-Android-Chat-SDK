@@ -359,17 +359,18 @@ public class KmConversationHelper {
     public static void launchConversationIfLoggedIn(Context context, KmCallback callback) {
         if (Kommunicate.isLoggedIn(context)) {
             KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
-            if(KmDefaultSettingPreference.getInstance().getDefaultBotIds() != null) {
-                conversationBuilder.setBotIds(new ArrayList<String>(KmDefaultSettingPreference.getInstance().getDefaultBotIds()));
+            KmDefaultSettingPreference defaultSettingPreference = KmDefaultSettingPreference.getInstance();
+            if(defaultSettingPreference.getDefaultBotIds() != null) {
+                conversationBuilder.setBotIds(new ArrayList<String>(defaultSettingPreference.getDefaultBotIds()));
             }
-            if(KmDefaultSettingPreference.getInstance().getDefaultAgentIds() != null) {
-                conversationBuilder.setAgentIds(new ArrayList<String>(KmDefaultSettingPreference.getInstance().getDefaultAgentIds()));
+            if(defaultSettingPreference.getDefaultAgentIds() != null) {
+                conversationBuilder.setAgentIds(new ArrayList<String>(defaultSettingPreference.getDefaultAgentIds()));
             }
-            if(KmDefaultSettingPreference.getInstance().getDefaultAssignee() != null) {
-                conversationBuilder.setConversationAssignee(KmDefaultSettingPreference.getInstance().getDefaultAssignee());
+            if(defaultSettingPreference.getDefaultAssignee() != null) {
+                conversationBuilder.setConversationAssignee(defaultSettingPreference.getDefaultAssignee());
             }
-            if(KmDefaultSettingPreference.getInstance().getDefaultTeamId() != null) {
-                conversationBuilder.setTeamId(KmDefaultSettingPreference.getInstance().getDefaultTeamId());
+            if(defaultSettingPreference.getDefaultTeamId() != null) {
+                conversationBuilder.setTeamId(defaultSettingPreference.getDefaultTeamId());
             }
             try {
                 startConversation(true, conversationBuilder,

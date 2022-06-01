@@ -16,6 +16,7 @@ public class KmDefaultSettingPreference {
     public static final String DEFAULT_AGENT_IDS = "DEFAULT_AGENT_IDS";
     public static final String DEFAULT_ASSIGNEE = "DEFAULT_ASSIGNEE";
     public static final String DEFAUT_TEAM = "DEFAUT_TEAM";
+    public static final String SKIP_ROUTING = "SKIP_ROUTING";
     private static SharedPreferences preferences;
     private static KmDefaultSettingPreference kmPreference;
     private static final String KM_DEFAULT_SETTING_PREFERENCE = "KOMMUNICATE_SETTING_PREFS";
@@ -66,4 +67,10 @@ public class KmDefaultSettingPreference {
     public String getDefaultTeamId() {
         return preferences.getString(DEFAUT_TEAM, null);
     }
+
+    public void setSkipRouting(boolean isSkipRouting) {
+        preferences.edit().putBoolean(SKIP_ROUTING,  isSkipRouting).apply();
+    }
+
+    public boolean isSkipRouting() { return preferences.getBoolean(SKIP_ROUTING, false);}
 }

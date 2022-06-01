@@ -216,6 +216,10 @@ public class KmSettings {
         KmDefaultSettingPreference.getInstance().setDefaultTeamId(teamId);
     }
 
+    public static void setSkipRouting(boolean isSkipRouting) {
+        KmDefaultSettingPreference.getInstance().setSkipRouting(isSkipRouting);
+    }
+
     public static void clearDefaultSettings() {
         KmDefaultSettingPreference.getInstance().clearSettings();
     }

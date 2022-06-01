@@ -367,10 +367,13 @@ public class KmConversationHelper {
                 conversationBuilder.setAgentIds(new ArrayList<String>(defaultSettingPreference.getDefaultAgentIds()));
             }
             if(defaultSettingPreference.getDefaultAssignee() != null) {
-                conversationBuilder.setConversationAssignee(defaultSettingPreference.getDefaultAssignee());
+                conversationBuilder.setDefaultAssignee(defaultSettingPreference.getDefaultAssignee());
             }
             if(defaultSettingPreference.getDefaultTeamId() != null) {
                 conversationBuilder.setTeamId(defaultSettingPreference.getDefaultTeamId());
+            }
+            if(defaultSettingPreference.isSkipRouting()) {
+                conversationBuilder.skipConversationRoutingRules(true);
             }
             try {
                 startConversation(true, conversationBuilder,
@@ -652,6 +655,9 @@ public class KmConversationHelper {
         if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee())) {
             metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getConversationAssignee());
             metadata.put(SKIP_ROUTING, "true");
+        }
+        if(!TextUtils.isEmpty(conversationBuilder.getDefaultAssignee())) {
+            metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getDefaultAssignee());
         }
 
         if (conversationBuilder.isSkipConversationRoutingRules()) {

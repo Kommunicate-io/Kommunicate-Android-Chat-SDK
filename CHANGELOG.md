@@ -3,6 +3,18 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.4.1
+1) Added support for Default Conversation Settings for "Create New Conversation"
+   - KmSettings.setDefaultBotIds(List<String> botIds)
+     KmSettings.setDefaultAgentIds(List<String> agentIds)
+     KmSettings.setDefaultAssignee(String assigneeId)
+     KmSettings.setDefaultTeamId(String teamId)
+     KmSettings.setSkipRouting()
+     KmSettings.clearDefaultSettings()
+2) Changes related to Agent app - Notify Everybody feature
+3) Bug fixes and optimizations
+
+
 ## Kommunicate Android SDK 2.4.0
 1) added fix for postBackToBotPlatform
 

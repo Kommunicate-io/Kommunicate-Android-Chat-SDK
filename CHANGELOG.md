@@ -9,7 +9,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
      KmSettings.setDefaultAgentIds(List<String> agentIds)
      KmSettings.setDefaultAssignee(String assigneeId)
      KmSettings.setDefaultTeamId(String teamId)
-     KmSettings.setSkipRouting()
+     KmSettings.setSkipRouting(boolean isSkipRouting)
      KmSettings.clearDefaultSettings()
 2) Changes related to Agent app - Notify Everybody feature
 3) Bug fixes and optimizations

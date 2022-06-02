@@ -8,7 +8,7 @@ import com.applozic.mobicommons.json.GsonUtils;
 
 import java.lang.ref.WeakReference;
 
-import io.kommunicate.KmPreference;
+import io.kommunicate.preference.KmPreference;
 import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.models.KmHelpDocKey;
 import io.kommunicate.services.KmUserService;

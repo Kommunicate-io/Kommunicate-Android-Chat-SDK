@@ -39,6 +39,7 @@ import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
+import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -358,6 +359,22 @@ public class KmConversationHelper {
     public static void launchConversationIfLoggedIn(Context context, KmCallback callback) {
         if (Kommunicate.isLoggedIn(context)) {
             KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
+            KmDefaultSettingPreference defaultSettingPreference = KmDefaultSettingPreference.getInstance();
+            if(defaultSettingPreference.getDefaultBotIds() != null) {
+                conversationBuilder.setBotIds(new ArrayList<String>(defaultSettingPreference.getDefaultBotIds()));
+            }
+            if(defaultSettingPreference.getDefaultAgentIds() != null) {
+                conversationBuilder.setAgentIds(new ArrayList<String>(defaultSettingPreference.getDefaultAgentIds()));
+            }
+            if(defaultSettingPreference.getDefaultAssignee() != null) {
+                conversationBuilder.setDefaultAssignee(defaultSettingPreference.getDefaultAssignee());
+            }
+            if(defaultSettingPreference.getDefaultTeamId() != null) {
+                conversationBuilder.setTeamId(defaultSettingPreference.getDefaultTeamId());
+            }
+            if(defaultSettingPreference.isSkipRouting()) {
+                conversationBuilder.skipConversationRoutingRules(true);
+            }
             try {
                 startConversation(true, conversationBuilder,
                         getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null, callback));
@@ -638,6 +655,9 @@ public class KmConversationHelper {
         if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee())) {
             metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getConversationAssignee());
             metadata.put(SKIP_ROUTING, "true");
+        }
+        if(!TextUtils.isEmpty(conversationBuilder.getDefaultAssignee())) {
+            metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getDefaultAssignee());
         }
 
         if (conversationBuilder.isSkipConversationRoutingRules()) {

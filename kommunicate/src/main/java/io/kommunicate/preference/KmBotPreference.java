@@ -1,4 +1,4 @@
-package io.kommunicate;
+package io.kommunicate.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;

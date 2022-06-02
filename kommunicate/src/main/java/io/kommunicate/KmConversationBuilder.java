@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.preference.KmPreference;
 import io.kommunicate.users.KMUser;
 
 public class KmConversationBuilder extends JsonMarker {
@@ -22,6 +23,7 @@ public class KmConversationBuilder extends JsonMarker {
     private List<String> agentIds;
     private List<String> botIds;
     private List<String> userIds;
+    private String defaultAssignee;
     private boolean skipConversationList = true;
     private String conversationId;
     private String fcmDeviceToken;
@@ -182,6 +184,14 @@ public class KmConversationBuilder extends JsonMarker {
     public KmConversationBuilder setConversationAssignee(String conversationAssignee) {
         this.conversationAssignee = conversationAssignee;
         return this;
+    }
+    public KmConversationBuilder setDefaultAssignee(String defaultAssignee) {
+        this.defaultAssignee = defaultAssignee;
+        return this;
+    }
+
+    public String getDefaultAssignee() {
+        return defaultAssignee;
     }
 
     public boolean isUseOriginalTitle() {

@@ -11,7 +11,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import io.kommunicate.KmBotPreference;
+import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.MessageTypeKmApiResponse;
 import io.kommunicate.services.KmUserService;

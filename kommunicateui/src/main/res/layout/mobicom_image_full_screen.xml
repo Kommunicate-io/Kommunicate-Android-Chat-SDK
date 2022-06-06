@@ -17,6 +17,13 @@
         app:popupTheme="@style/Applozic_PopUpTheme"
         app:subtitleTextAppearance="@style/ToolbarSubtitle"
         app:titleTextAppearance="@style/ToolbarTitle" />
+    <ImageView
+        android:id="@+id/gif_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        />
 
     <com.applozic.mobicomkit.uiwidgets.conversation.TouchImageView
         android:id="@+id/full_screen_image"
@@ -24,6 +31,9 @@
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
+
+
+
 
     <ProgressBar
         android:id="@+id/full_screen_progress_bar"

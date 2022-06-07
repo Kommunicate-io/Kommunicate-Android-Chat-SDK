@@ -129,6 +129,11 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean showPoweredBy;
         private long sessionTimeout;
         private int botMessageDelayInterval;
+        private String notificationTone;
+
+        public String getNotificationTone() {
+            return notificationTone;
+        }
 
         public String getPosition() {
             return position;

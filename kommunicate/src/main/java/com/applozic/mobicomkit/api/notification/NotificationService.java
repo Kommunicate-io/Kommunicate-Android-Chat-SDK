@@ -85,6 +85,7 @@ public class NotificationService {
         this.notificationDisableThreshold = applozicClient.getNotificationMuteThreshold();
         this.notificationFilePath = Applozic.getInstance(context).getCustomNotificationSound();
 
+
         notificationChannels = new NotificationChannels(context, notificationFilePath);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -3,6 +3,7 @@ package io.kommunicate.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicommons.ApplozicService;
@@ -27,6 +28,9 @@ public class KmAppSettingPreferences {
     private static final String LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME";
     private static final String CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME";
     private static final String HIDE_POST_CTA = "HIDE_POST_CTA";
+    private static final String NOTIFICATION_TONE = "NOTIFICATION_TONE";
+
+
 
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
@@ -51,6 +55,20 @@ public class KmAppSettingPreferences {
                 setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
                 setKmBotMessageDelayInterval(appSetting.getChatWidget().getBotMessageDelayInterval());
                 setChatSessionDeleteTime(appSetting.getChatWidget().getSessionTimeout());
+                setNotificationTone(appSetting.getChatWidget().getNotificationTone());
+
+//                public Applozic setCustomNotificationSound(String "src/main/res/raw/eventually.mp3") {
+//                preferences.edit().putString(NOTIFICATION_TONE, filePath).commit();
+//                return this;
+//                }
+
+
+
+                 Applozic.getInstance(ApplozicService.getAppContext()).setCustomNotificationSound("android.resource://" + ApplozicService.getAppContext().getPackageName() + "kommunicateui/raw/light.mp3");
+
+
+                Log.e("Notification",ApplozicService.getAppContext().getPackageName());
+
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());
@@ -58,6 +76,8 @@ public class KmAppSettingPreferences {
             }
         }
     }
+
+
 
     public KmAppSettingPreferences setPrimaryColor(String primaryColor) {
         preferences.edit().putString(KM_THEME_PRIMARY_COLOR, primaryColor).commit();
@@ -75,6 +95,14 @@ public class KmAppSettingPreferences {
 
     public String getSecondaryColor() {
         return preferences.getString(KM_THEME_SECONDARY_COLOR, null);
+    }
+
+    public KmAppSettingPreferences setNotificationTone(String notificationTone) {
+        preferences.edit().putString(NOTIFICATION_TONE, notificationTone).commit();
+        return this;
+    }
+    public String getNotificationTone() {
+        return preferences.getString(NOTIFICATION_TONE, null);
     }
 
     public boolean isCollectFeedback() {

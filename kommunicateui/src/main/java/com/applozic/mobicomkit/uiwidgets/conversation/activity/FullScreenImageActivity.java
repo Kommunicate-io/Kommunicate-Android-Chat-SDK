@@ -59,6 +59,8 @@ public class FullScreenImageActivity extends AppCompatActivity {
     ImageView gifImageView;
     private Message message;
     private ConnectivityReceiver connectivityReceiver;
+    private static final int HEIGHT = 1600;
+    private static final int WIDTH = 1600;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -84,7 +86,7 @@ public class FullScreenImageActivity extends AppCompatActivity {
                 Glide.with(this)
                         .asGif()
                         .load(payloadModel.getUrl())
-                        .apply(new RequestOptions().override(1600, 1600)) //This is important
+                        .apply(new RequestOptions().override(WIDTH, HEIGHT)) //This is important
                         .into(new ImageViewTarget<GifDrawable>(gifImageView) {
                             @Override
                             protected void setResource(@Nullable GifDrawable gifDrawable) {
@@ -97,7 +99,7 @@ public class FullScreenImageActivity extends AppCompatActivity {
                 Glide.with(this)
                         .asBitmap()
                         .load(payloadModel.getUrl())
-                        .apply(new RequestOptions().override(1600, 1600)) //This is important
+                        .apply(new RequestOptions().override(WIDTH, HEIGHT)) //This is important
                         .into(new BitmapImageViewTarget(mediaImageView) {
                             @Override
                             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {

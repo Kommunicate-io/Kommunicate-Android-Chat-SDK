@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -41,8 +42,10 @@ import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
@@ -53,9 +56,11 @@ import java.util.List;
  */
 public class FullScreenImageActivity extends AppCompatActivity {
     TouchImageView mediaImageView;
-
+    ImageView gifImageView;
     private Message message;
     private ConnectivityReceiver connectivityReceiver;
+    private static final int HEIGHT = 1600;
+    private static final int WIDTH = 1600;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -69,6 +74,7 @@ public class FullScreenImageActivity extends AppCompatActivity {
         showUi();
 
         mediaImageView = (TouchImageView) findViewById(R.id.full_screen_image);
+        gifImageView = findViewById(R.id.gif_image_view);
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.full_screen_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         String payload = getIntent().getStringExtra(KmRichMessage.TEMPLATE_ID + 9);
@@ -76,21 +82,34 @@ public class FullScreenImageActivity extends AppCompatActivity {
         if (payload != null) {
             TextView captionText = findViewById(R.id.captionText);
             KmRichMessageModel.KmPayloadModel payloadModel = (KmRichMessageModel.KmPayloadModel) GsonUtils.getObjectFromJson(payload, KmRichMessageModel.KmPayloadModel.class);
-
-            Glide.with(this)
-                    .asBitmap()
-                    .load(payloadModel.getUrl())
-                    .apply(new RequestOptions().override(1600, 1600)) //This is important
-                    .into(new BitmapImageViewTarget(mediaImageView) {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            super.onResourceReady(resource, transition);
-                            progressBar.setVisibility(View.GONE);
-                            mediaImageView.setImageBitmap(resource);
-                            mediaImageView.setZoom(1);
-                        }
-                    });
-
+            if(payloadModel.getUrl().endsWith("gif")) {
+                Glide.with(this)
+                        .asGif()
+                        .load(payloadModel.getUrl())
+                        .apply(new RequestOptions().override(WIDTH, HEIGHT)) //This is important
+                        .into(new ImageViewTarget<GifDrawable>(gifImageView) {
+                            @Override
+                            protected void setResource(@Nullable GifDrawable gifDrawable) {
+                                progressBar.setVisibility(View.GONE);
+                                gifImageView.setImageDrawable(gifDrawable);
+                            }
+                        });
+            }
+            else {
+                Glide.with(this)
+                        .asBitmap()
+                        .load(payloadModel.getUrl())
+                        .apply(new RequestOptions().override(WIDTH, HEIGHT)) //This is important
+                        .into(new BitmapImageViewTarget(mediaImageView) {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                super.onResourceReady(resource, transition);
+                                progressBar.setVisibility(View.GONE);
+                                mediaImageView.setImageBitmap(resource);
+                                mediaImageView.setZoom(1);
+                            }
+                        });
+            }
             if (captionText != null && !TextUtils.isEmpty(payloadModel.getCaption())) {
                 captionText.setVisibility(View.VISIBLE);
                 captionText.setText(payloadModel.getCaption());
@@ -104,8 +123,16 @@ public class FullScreenImageActivity extends AppCompatActivity {
 
             if (message != null && message.getFilePaths() != null && !message.getFilePaths().isEmpty()) {
                 try {
-                    Bitmap imageBitmap = ImageUtils.decodeSampledBitmapFromPath(message.getFilePaths().get(0));
-                    mediaImageView.setImageBitmap(imageBitmap);
+                    if(message.getFileMetas().getContentType().contains("gif")) {
+                        Glide.with(this)
+                                .asGif()
+                                .load(message.getFilePaths().get(0))
+                                .into(gifImageView);
+                    }
+                    else {
+                        Bitmap imageBitmap = ImageUtils.decodeSampledBitmapFromPath(message.getFilePaths().get(0));
+                        mediaImageView.setImageBitmap(imageBitmap);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

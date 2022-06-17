@@ -129,10 +129,13 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean showPoweredBy;
         private long sessionTimeout;
         private int botMessageDelayInterval;
+        private boolean pseudonymsEnabled;
 
         public String getPosition() {
             return position;
         }
+
+        public boolean isPseudonymsEnabled() {return pseudonymsEnabled;}
 
         public void setWidgetImageLink(String widgetImageLink) {
             this.widgetImageLink = widgetImageLink;

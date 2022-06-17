@@ -698,7 +698,6 @@ public class KmConversationHelper {
                 if (kmAppSettings != null) {
                     List<String> agents = new ArrayList<>();
                     agents.add(kmAppSettings.getResponse().getAgentId());
-                    //conversationBuilder.getKmUser().setDisplayName(kmAppSettings.getUserName());
                     conversationBuilder.setAgentIds(agents);
                     if (useSingleThreadedSettingFromServer) {
                         conversationBuilder.setSingleConversation(kmAppSettings.getChatWidget().isSingleThreaded());

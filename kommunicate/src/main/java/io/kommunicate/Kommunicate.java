@@ -810,7 +810,7 @@ public class Kommunicate {
                     public void onSuccess(Object message) {
                         final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
                         if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
-                            if (appSettingModel.getChatWidget().isPseudonymsEnabled()) {
+                            if (appSettingModel.getChatWidget().isPseudonymsEnabled() && !TextUtils.isEmpty(appSettingModel.getResponse().getUserName())) {
                                 user.setDisplayName(appSettingModel.getResponse().getUserName());
                             }
                         }

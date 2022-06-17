@@ -74,7 +74,6 @@ public class Message extends JsonMarker {
     public static final String BOT_ASSIGN = "KM_ASSIGN";
     public static final String KM_ASSIGN_TO = "KM_ASSIGN_TO";
     public static final String KM_ASSIGN_TEAM = "KM_ASSIGN_TEAM";
-
     public static final String CONVERSATION_STATUS = "KM_STATUS";
     public static final String FEEDBACK_METADATA_KEY = "feedback";
     public static final String SKIP_BOT = "skipBot";

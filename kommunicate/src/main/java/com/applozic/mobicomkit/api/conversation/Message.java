@@ -72,6 +72,9 @@ public class Message extends JsonMarker {
     public static final String LOCATION = "location";
     public static final String OTHER = "other";
     public static final String BOT_ASSIGN = "KM_ASSIGN";
+    public static final String KM_ASSIGN_TO = "KM_ASSIGN_TO";
+    public static final String KM_ASSIGN_TEAM = "KM_ASSIGN_TEAM";
+
     public static final String CONVERSATION_STATUS = "KM_STATUS";
     public static final String FEEDBACK_METADATA_KEY = "feedback";
     public static final String SKIP_BOT = "skipBot";
@@ -689,7 +692,7 @@ public class Message extends JsonMarker {
 
 
     public boolean isActionMessage() {
-        return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(CONVERSATION_STATUS));
+        return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(KM_ASSIGN_TO) || getMetadata().containsKey(KM_ASSIGN_TEAM) || getMetadata().containsKey(CONVERSATION_STATUS));
     }
 
     public boolean isFeedbackMessage() {

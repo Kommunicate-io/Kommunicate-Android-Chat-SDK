@@ -46,7 +46,7 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
             message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
 
             if (message != null) {
-                if (hideActionMessages && message.isActionMessage()) {
+                if ((hideActionMessages && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage()))) {
                     message.setHidden(true);
                 }
             }

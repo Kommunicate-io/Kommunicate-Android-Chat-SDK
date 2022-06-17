@@ -593,7 +593,7 @@ public class MessageDatabaseService {
             values.put(MobiComDatabaseHelper.CONVERSATION_ID, message.getConversationId());
             values.put(MobiComDatabaseHelper.TOPIC_ID, message.getTopicId());
             values.put(MobiComDatabaseHelper.HIDDEN, message.hasHideKey());
-            boolean hidden = (hideActionMessages && message.isActionMessage()) || message.hasHideKey();
+            boolean hidden = ((hideActionMessages && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage()))) || message.hasHideKey();
             values.put(MobiComDatabaseHelper.HIDDEN, hidden);
             if (message.getGroupId() != null) {
                 values.put(MobiComDatabaseHelper.CHANNEL_KEY, message.getGroupId());

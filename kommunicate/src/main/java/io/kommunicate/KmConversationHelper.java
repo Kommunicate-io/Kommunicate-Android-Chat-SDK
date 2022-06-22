@@ -29,9 +29,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
-import io.kommunicate.async.KmGetAgentListTask;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmCallback;
@@ -714,10 +714,10 @@ public class KmConversationHelper {
         return new KmCallback() {
             @Override
             public void onSuccess(Object message) {
-                KmAppSettingModel.KmResponse kmAppSettings = (KmAppSettingModel.KmResponse) message;
+                KmAppSettingModel kmAppSettings = (KmAppSettingModel) message;
                 if (kmAppSettings != null) {
                     List<String> agents = new ArrayList<>();
-                    agents.add(kmAppSettings.getAgentId());
+                    agents.add(kmAppSettings.getResponse().getAgentId());
                     conversationBuilder.setAgentIds(agents);
                     if (useSingleThreadedSettingFromServer) {
                         conversationBuilder.setSingleConversation(kmAppSettings.getChatWidget().isSingleThreaded());
@@ -750,7 +750,7 @@ public class KmConversationHelper {
             throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_conversation_builder_cannot_be_null));
         }
         if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
-            new KmGetAgentListTask(conversationBuilder.getContext(),
+            new KmAppSettingTask(conversationBuilder.getContext(),
                     MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()),
                     getCallbackWithAppSettingsToCreateConversation(useSingleThreadedSettingFromServer,
                             conversationBuilder,

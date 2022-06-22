@@ -46,7 +46,6 @@ import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.async.KmAwayMessageTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
-import io.kommunicate.async.KmGetAgentListTask;
 import io.kommunicate.async.KmUserLoginTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
@@ -541,7 +540,7 @@ public class Kommunicate {
                 }
             };
 
-            new KmGetAgentListTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new KmAppSettingTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(chatBuilder.getClientConversationId()) ? chatBuilder.getClientConversationId() : (chatBuilder.isSingleChat() ? getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), chatBuilder.getAgentIds(), chatBuilder.getBotIds()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
@@ -803,8 +802,25 @@ public class Kommunicate {
     }
 
     public static KMUser getVisitor() {
-        KMUser user = new KMUser();
+        final KMUser user = new KMUser();
         user.setUserId(generateUserId());
+        new KmAppSettingTask(ApplozicService.getAppContext(),
+                MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
+                new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
+                        if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
+                            if (appSettingModel.getChatWidget().isPseudonymsEnabled() && !TextUtils.isEmpty(appSettingModel.getResponse().getUserName())) {
+                                user.setDisplayName(appSettingModel.getResponse().getUserName());
+                            }
+                        }
+                    }
+                    @Override
+                    public void onFailure(Object error) {
+
+                    }
+                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
         return user;
     }

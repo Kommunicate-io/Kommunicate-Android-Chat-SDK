@@ -33,7 +33,7 @@ public class ChannelClientService extends MobiComKitClientService {
     private static final String CHANNEL_INFO_URL = "/rest/ws/group/info";
     // private static final String CHANNEL_SYNC_URL = "/rest/ws/group/list";
     private static final String CHANNEL_SYNC_URL = "/rest/ws/group/v3/list";
-    private static final String CREATE_CHANNEL_URL = "/rest/ws/group/create";
+    private static final String CREATE_CHANNEL_URL = "/rest/ws/group/v2.1/create";
     private static final String CREATE_MULTIPLE_CHANNEL_URL = "/rest/ws/group/create/multiple";
     private static final String ADD_MEMBER_TO_CHANNEL_URL = "/rest/ws/group/add/member";
     private static final String REMOVE_MEMBER_FROM_CHANNEL_URL = "/rest/ws/group/remove/member";

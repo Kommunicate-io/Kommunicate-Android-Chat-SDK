@@ -245,7 +245,7 @@ public class MobiComConversationService {
                 if (message.getMetadata() != null && Message.GroupMessageMetaData.TRUE.getValue().equals(message.getMetadata().get(Message.GroupMessageMetaData.HIDE_KEY.getValue()))) {
                     continue;
                 }
-                if (isHideActionMessage && message.isActionMessage()) {
+                if ((isHideActionMessage && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage()))) {
                     message.setHidden(true);
                 }
                 messageList.add(message);
@@ -318,7 +318,7 @@ public class MobiComConversationService {
                 if (message.getMetadata() != null && Message.GroupMessageMetaData.TRUE.getValue().equals(message.getMetadata().get(Message.GroupMessageMetaData.HIDE_KEY.getValue()))) {
                     continue;
                 }
-                if (isHideActionMessage && message.isActionMessage()) {
+                if ((isHideActionMessage && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage()))) {
                     message.setHidden(true);
                 }
                 messageList.add(message);
@@ -439,7 +439,7 @@ public class MobiComConversationService {
                         continue;
                     }
 
-                    message.setHidden(isHideActionMessage && message.isActionMessage());
+                    message.setHidden((isHideActionMessage && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage())));
 
                     if (messageDatabaseService.isMessagePresent(message.getKeyString(), Message.ReplyMessage.HIDE_MESSAGE.getValue())) {
                         messageDatabaseService.updateMessageReplyType(message.getKeyString(), Message.ReplyMessage.NON_HIDDEN.getValue());
@@ -627,7 +627,7 @@ public class MobiComConversationService {
                         continue;
                     }
 
-                    message.setHidden(isHideActionMessage && message.isActionMessage());
+                    message.setHidden((isHideActionMessage && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage())));
 
                     if (messageDatabaseService.isMessagePresent(message.getKeyString(), Message.ReplyMessage.HIDE_MESSAGE.getValue())) {
                         messageDatabaseService.updateMessageReplyType(message.getKeyString(), Message.ReplyMessage.NON_HIDDEN.getValue());
@@ -797,7 +797,7 @@ public class MobiComConversationService {
                     if (Message.MetaDataType.HIDDEN.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue())) || Message.MetaDataType.PUSHNOTIFICATION.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))) {
                         continue;
                     }
-                    if (isHideActionMessage && message.isActionMessage()) {
+                    if ((isHideActionMessage && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage()))) {
                         message.setHidden(true);
                     }
                     if (messageDatabaseService.isMessagePresent(message.getKeyString(), Message.ReplyMessage.HIDE_MESSAGE.getValue())) {

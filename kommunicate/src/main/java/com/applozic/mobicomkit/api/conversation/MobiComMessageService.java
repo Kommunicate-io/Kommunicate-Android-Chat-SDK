@@ -183,7 +183,7 @@ public class MobiComMessageService {
         }
 
         //Hide action message for customer, show for agents
-        if (isHideActionMessage && message.isActionMessage()) {
+        if ((isHideActionMessage && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage()))) {
             message.setHidden(true);
         }
 

@@ -3,6 +3,11 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.4.2
+1) Add support for GIFs
+2) Add support for Pseudo Name for visitors
+3) Blank message during handoff - bug fix
+
 ## Kommunicate Android SDK 2.4.1
 1) Added support for Default Conversation Settings for "Create New Conversation"
    - KmSettings.setDefaultBotIds(List<String> botIds)

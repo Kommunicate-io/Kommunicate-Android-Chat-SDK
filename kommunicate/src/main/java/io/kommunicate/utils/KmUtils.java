@@ -3,9 +3,7 @@ package io.kommunicate.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-
 import androidx.core.content.ContextCompat;
-
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -73,6 +71,13 @@ public class KmUtils {
     public static void setGradientStrokeColor(View view, int width, int color) {
         GradientDrawable gradientDrawable = (GradientDrawable) view.getBackground();
         gradientDrawable.setStroke(width, color);
+    }
+
+    public static void setDrawable(TextView textView, int drawableRes, int color)
+    {
+        textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableRes, 0);
+        textView.setCompoundDrawablePadding(10);
+        textView.getCompoundDrawables()[2].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)); // 2 here refers to the drawable position . See the code to set drawable for the reference
     }
 
     public static void setStatusBarColor(Activity activity, int color) {

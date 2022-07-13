@@ -55,6 +55,11 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
             itemTextView.setText(buttonTitle);
 
+            if(payloadModel.getAction().isWebLink()) // Setting a drawable when this textview has a link in it
+            {
+                KmUtils.setDrawable(itemTextView, R.drawable.ic_link_button, themeHelper.getRichMessageThemeColor());
+            }
+
             itemTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

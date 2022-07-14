@@ -1184,7 +1184,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             myHolder.messageTextLayout.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
                 @Override
                 public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-                    contextMenu.setHeaderTitle(R.string.messageOptions);
                     int positionInSmsList = position;
 
                     if (positionInSmsList < 0 || messageList.isEmpty()) {

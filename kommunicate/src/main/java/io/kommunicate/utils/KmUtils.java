@@ -73,7 +73,7 @@ public class KmUtils {
         gradientDrawable.setStroke(width, color);
     }
 
-    public static void setDrawable(TextView textView, int drawableRes, int color)
+    public static void setIconInsideButton(TextView textView, int drawableRes, int color)
     {
         textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableRes, 0);
         textView.setCompoundDrawablePadding(10);

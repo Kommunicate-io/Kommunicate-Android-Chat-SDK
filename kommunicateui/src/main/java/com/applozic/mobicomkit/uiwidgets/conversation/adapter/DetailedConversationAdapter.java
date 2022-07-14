@@ -1199,7 +1199,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     String[] menuItems = context.getResources().getStringArray(R.array.menu);
 
+                    //TODO: Show Info and Delete menu with sync and layout fix
                     for (int i = 0; i < menuItems.length; i++) {
+
+                        if(menuItems[i].equals(context.getString(R.string.info))) {
+                            continue;
+                        }
+                        if(menuItems[i].equals(context.getString(R.string.delete))) {
+                            continue;
+                        }
 
                         if (!(message.isGroupMessage() && message.isTypeOutbox() && message.isSentToServer()) && menuItems[i].equals(context.getResources().getString(R.string.info))) {
                             continue;

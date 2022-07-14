@@ -1245,6 +1245,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             }
                         });
                     }
+                    view.dispatchTouchEvent(MotionEvent.obtain(0, 0, MotionEvent.ACTION_CANCEL, 0f, 0f, 0));
                 }
             });
         }

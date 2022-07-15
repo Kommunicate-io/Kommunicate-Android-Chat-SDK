@@ -429,7 +429,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
-    protected void bindMessageView(RecyclerView.ViewHolder holder, final Message message, int position) {
+    protected void bindMessageView(RecyclerView.ViewHolder holder, final Message message, final int position) {
         final MyViewHolder myHolder = (MyViewHolder) holder;
         if (message != null) {
             Contact receiverContact = null;
@@ -1181,6 +1181,73 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                 myHolder.messageTextView.setText(highlightedName);
             }
+            myHolder.messageTextLayout.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                @Override
+                public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+                    int positionInSmsList = position;
+
+                    if (positionInSmsList < 0 || messageList.isEmpty()) {
+                        return;
+                    }
+
+                    Message message = messageList.get(positionInSmsList);
+
+                    if (message.isTempDateType() || message.isCustom() || message.isChannelCustomMessage()) {
+                        return;
+                    }
+
+                    String[] menuItems = context.getResources().getStringArray(R.array.menu);
+
+                    //TODO: Show Info and Delete menu with sync and layout fix
+                    for (int i = 0; i < menuItems.length; i++) {
+
+                        if(menuItems[i].equals(context.getString(R.string.info))) {
+                            continue;
+                        }
+                        if(menuItems[i].equals(context.getString(R.string.delete))) {
+                            continue;
+                        }
+
+                        if (!(message.isGroupMessage() && message.isTypeOutbox() && message.isSentToServer()) && menuItems[i].equals(context.getResources().getString(R.string.info))) {
+                            continue;
+                        }
+                        if ((message.hasAttachment() || message.getContentType() == Message.ContentType.LOCATION.getValue() || message.isVideoOrAudioCallMessage()) &&
+                                menuItems[i].equals(context.getResources().getString(R.string.copy))) {
+                            continue;
+                        }
+                        if (menuItems[i].equals(context.getResources().getString(R.string.forward)) && !alCustomizationSettings.isForwardOption()) {
+                            continue;
+                        }
+                        if (((channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || message.isCall() || (message.hasAttachment() && !message.isAttachmentDownloaded()) || message.isVideoOrAudioCallMessage()) && (menuItems[i].equals(context.getResources().getString(R.string.forward)) ||
+                                menuItems[i].equals(context.getResources().getString(R.string.resend)))) {
+                            continue;
+                        }
+                        if (menuItems[i].equals(context.getResources().getString(R.string.resend)) && (!message.isSentViaApp() || message.isSentToServer() || message.isVideoOrAudioCallMessage())) {
+                            continue;
+                        }
+                        if (menuItems[i].equals(context.getResources().getString(R.string.reply)) && (!alCustomizationSettings.isReplyOption() || message.isAttachmentUploadInProgress() || TextUtils.isEmpty(message.getKeyString()) || !message.isSentToServer() || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || (message.hasAttachment() && !message.isAttachmentDownloaded()) || channel != null && !ChannelService.getInstance(context).processIsUserPresentInChannel(channel.getKey()) || message.isVideoOrAudioCallMessage() || contact != null && contact.isDeleted())) {
+                            continue;
+                        }
+                        if (menuItems[i].equals(context.getResources().getString(R.string.delete)) && (TextUtils.isEmpty(message.getKeyString()) || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())))) {
+                            continue;
+                        }
+                        if (menuItems[i].equals(context.getResources().getString(R.string.info)) && (TextUtils.isEmpty(message.getKeyString()) || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || message.isVideoOrAudioCallMessage())) {
+                            continue;
+                        }
+                        if (menuItems[i].equals(context.getResources().getString(R.string.share)) && (message.isAttachmentUploadInProgress() || message.getFilePaths() == null || !(new File(message.getFilePaths().get(0)).exists()))) {
+                            continue;
+                        }
+                        final MenuItem item = contextMenu.add(Menu.NONE, i, i, menuItems[i]);
+                        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                return contextMenuClickListener == null || contextMenuClickListener.onItemClick(position, item);
+                            }
+                        });
+                    }
+                    view.dispatchTouchEvent(MotionEvent.obtain(0, 0, MotionEvent.ACTION_CANCEL, 0f, 0f, 0));
+                }
+            });
         }
     }
 
@@ -1582,7 +1649,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         return false;
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
         ImageView mapImageView;
         RelativeLayout chatLocation;
@@ -1691,7 +1758,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             shareEmailContact = (TextView) mainContactShareLayout.findViewById(R.id.contact_share_emailId);
             addContactButton = (Button) mainContactShareLayout.findViewById(R.id.contact_share_add_btn);
 
-            customView.setOnCreateContextMenuListener(this);
             mapImageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -1733,72 +1799,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 }
             }
         }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle(R.string.messageOptions);
-            int positionInSmsList = this.getLayoutPosition();
-
-            if (positionInSmsList < 0 || messageList.isEmpty()) {
-                return;
-            }
-
-            Message message = messageList.get(positionInSmsList);
-
-            if (message.isTempDateType() || message.isCustom() || message.isChannelCustomMessage()) {
-                return;
-            }
-
-            String[] menuItems = context.getResources().getStringArray(R.array.menu);
-
-            for (int i = 0; i < menuItems.length; i++) {
-
-                if (!(message.isGroupMessage() && message.isTypeOutbox() && message.isSentToServer()) && menuItems[i].equals(context.getResources().getString(R.string.info))) {
-                    continue;
-                }
-
-                if ((message.hasAttachment() || message.getContentType() == Message.ContentType.LOCATION.getValue() || message.isVideoOrAudioCallMessage()) &&
-                        menuItems[i].equals(context.getResources().getString(R.string.copy))) {
-                    continue;
-                }
-
-                if (menuItems[i].equals(context.getResources().getString(R.string.forward)) && !alCustomizationSettings.isForwardOption()) {
-                    continue;
-                }
-
-                if (((channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || message.isCall() || (message.hasAttachment() && !message.isAttachmentDownloaded()) || message.isVideoOrAudioCallMessage()) && (menuItems[i].equals(context.getResources().getString(R.string.forward)) ||
-                        menuItems[i].equals(context.getResources().getString(R.string.resend)))) {
-                    continue;
-                }
-                if (menuItems[i].equals(context.getResources().getString(R.string.resend)) && (!message.isSentViaApp() || message.isSentToServer() || message.isVideoOrAudioCallMessage())) {
-                    continue;
-                }
-
-                if (menuItems[i].equals(context.getResources().getString(R.string.reply)) && (!alCustomizationSettings.isReplyOption() || message.isAttachmentUploadInProgress() || TextUtils.isEmpty(message.getKeyString()) || !message.isSentToServer() || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || (message.hasAttachment() && !message.isAttachmentDownloaded()) || channel != null && !ChannelService.getInstance(context).processIsUserPresentInChannel(channel.getKey()) || message.isVideoOrAudioCallMessage() || contact != null && contact.isDeleted())) {
-                    continue;
-                }
-
-                if (menuItems[i].equals(context.getResources().getString(R.string.delete)) && (TextUtils.isEmpty(message.getKeyString()) || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())))) {
-                    continue;
-                }
-                if (menuItems[i].equals(context.getResources().getString(R.string.info)) && (TextUtils.isEmpty(message.getKeyString()) || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || message.isVideoOrAudioCallMessage())) {
-                    continue;
-                }
-                if (menuItems[i].equals(context.getResources().getString(R.string.share)) && (message.isAttachmentUploadInProgress() || message.getFilePaths() == null || !(new File(message.getFilePaths().get(0)).exists()))) {
-                    continue;
-                }
-
-                MenuItem item = menu.add(Menu.NONE, i, i, menuItems[i]);
-                item.setOnMenuItemClickListener(onEditMenu);
-            }
-        }
-
-        private final MenuItem.OnMenuItemClickListener onEditMenu = new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return contextMenuClickListener == null || contextMenuClickListener.onItemClick(getLayoutPosition(), item);
-            }
-        };
     }
 
     static class MyViewHolder2 extends RecyclerView.ViewHolder {

@@ -1383,7 +1383,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         messageDatabaseService.deleteScheduledMessage(messageKeyString);
                     }
                     messageList.remove(position);
-                    recyclerDetailConversationAdapter.notifyItemRemoved(position);
+                    recyclerDetailConversationAdapter.notifyDataSetChanged();
                     if (messageList.isEmpty()) {
                         emptyTextView.setVisibility(VISIBLE);
                         if (getActivity() != null) {

@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -55,7 +56,7 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
             itemTextView.setText(buttonTitle);
 
-            if(payloadModel.getAction().isWebLink()) // Setting a drawable when this textview has a link in it
+            if((payloadModel.getAction()!=null && payloadModel.getAction().isWebLink()) || (!TextUtils.isEmpty(payloadModel.getType()) && payloadModel.getType().equals(KmRichMessage.WEB_LINK))) // Setting a drawable when this textview has a link in it
             {
                 KmUtils.setIconInsideButton(itemTextView, R.drawable.ic_link_button, themeHelper.getRichMessageThemeColor());
             }

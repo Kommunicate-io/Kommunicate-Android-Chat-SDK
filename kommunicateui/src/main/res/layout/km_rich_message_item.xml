@@ -123,7 +123,8 @@
                 android:textColor="@color/km_rm_card_extension_2_text_color"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:gravity="end" />
         </RelativeLayout>
     </FrameLayout>
 
@@ -164,65 +165,73 @@
         android:textSize="14sp"
         android:textStyle="normal" />
 
-    <View
-        android:id="@+id/viewAction1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/km_image_background_color" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/bookingAction1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:letterSpacing="0.05"
-        android:padding="5dp"
-        android:text=""
-        android:textAlignment="center"
-        android:textColor="@color/km_list_item_header_text_color"
-        android:textSize="12sp"
-        android:textStyle="normal" />
+        <View
+            android:id="@+id/viewAction1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/km_image_background_color" />
 
-    <View
-        android:id="@+id/viewAction2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/km_image_background_color" />
+        <TextView
+            android:id="@+id/bookingAction1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:letterSpacing="0.05"
+            android:padding="5dp"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/km_list_item_header_text_color"
+            android:textSize="12sp"
+            android:textStyle="normal" />
 
-    <TextView
-        android:id="@+id/bookingAction2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:letterSpacing="0.05"
-        android:padding="5dp"
-        android:text=""
-        android:textAlignment="center"
-        android:textColor="@color/km_list_item_header_text_color"
-        android:textSize="12sp"
-        android:textStyle="normal"
-        android:visibility="gone" />
+        <View
+            android:id="@+id/viewAction2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/km_image_background_color" />
 
-    <View
-        android:id="@+id/viewAction3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/km_image_background_color" />
+        <TextView
+            android:id="@+id/bookingAction2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:letterSpacing="0.05"
+            android:padding="5dp"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/km_list_item_header_text_color"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/bookingAction3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal"
-        android:letterSpacing="0.05"
-        android:padding="5dp"
-        android:text=""
-        android:textAlignment="center"
-        android:textColor="@color/km_list_item_header_text_color"
-        android:textSize="12sp"
-        android:textStyle="normal"
-        android:visibility="gone" />
+        <View
+            android:id="@+id/viewAction3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/km_image_background_color" />
+
+        <TextView
+            android:id="@+id/bookingAction3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal"
+            android:letterSpacing="0.05"
+            android:padding="5dp"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/km_list_item_header_text_color"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:visibility="gone" />
+    </LinearLayout>
+
 </LinearLayout>

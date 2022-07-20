@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.view.View.GONE;
+
+import io.kommunicate.utils.KmUtils;
 
 public class KmCardRMAdapter extends KmRichMessageAdapter {
 
@@ -97,6 +100,8 @@ public class KmCardRMAdapter extends KmRichMessageAdapter {
         viewHolder.bookActions[index].setText(actionsList.get(index).getName());
         viewHolder.bookActions[index].setTextColor(themeHelper.getRichMessageThemeColor());
         viewHolder.bookActions[index].setOnClickListener(getGenericCardClickListener(actionsList.get(index)));
+        if(actionsList.get(index).getAction().isWebLink())
+            KmUtils.setIconInsideButton(viewHolder.bookActions[index], R.drawable.ic_link_button, themeHelper.getRichMessageThemeColor());
     }
 
     @Override

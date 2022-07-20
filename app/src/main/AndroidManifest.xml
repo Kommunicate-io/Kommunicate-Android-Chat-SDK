@@ -57,6 +57,11 @@
             android:value="https://api-test.kommunicate.io"
             tools:node="replace"/>-->
 
+        <meta-data
+            android:name="com.applozic.mobicomkit.notification.smallIcon"
+            android:value="3F51B5">
+        </meta-data>
+
     </application>
 
 </manifest>

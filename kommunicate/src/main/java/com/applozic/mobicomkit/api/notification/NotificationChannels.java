@@ -18,6 +18,8 @@ import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
+import io.kommunicate.utils.KmConstants;
+
 /**
  * Please remember to increment the NOTIFICATION_CHANNEL_VERSION if any change is made in this class.
  * It is mandatory to increment the version or the update in the Notification channels will fail.
@@ -110,6 +112,7 @@ public class NotificationChannels {
     private synchronized void createNotificationChannel() {
         CharSequence name = MobiComKitConstants.PUSH_NOTIFICATION_NAME;
         int importance = NotificationManager.IMPORTANCE_HIGH;
+        String notificationTone = Utils.getMetaDataValue(context.getApplicationContext(), KmConstants.NOTIFICATION_TONE);
 
         if (mNotificationManager != null && mNotificationManager.getNotificationChannel(MobiComKitConstants.AL_PUSH_NOTIFICATION) == null) {
             NotificationChannel mChannel = new NotificationChannel(MobiComKitConstants.AL_PUSH_NOTIFICATION, name, importance);
@@ -125,7 +128,7 @@ public class NotificationChannels {
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION).build();
-            mChannel.setSound(TextUtils.isEmpty(soundFilePath) ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(soundFilePath), audioAttributes);
+            mChannel.setSound(TextUtils.isEmpty(notificationTone) ? (TextUtils.isEmpty(soundFilePath) ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(soundFilePath)) : Uri.parse("android.resource://" + context.getPackageName() + "/raw/" + notificationTone), audioAttributes);
             mNotificationManager.createNotificationChannel(mChannel);
             Utils.printLog(context, TAG, "Created notification channel");
         }
@@ -141,6 +144,7 @@ public class NotificationChannels {
             mChannel.enableLights(true);
             mChannel.setLightColor(Color.GREEN);
             mChannel.setShowBadge(ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled());
+            String notificationTone = Utils.getMetaDataValue(context.getApplicationContext(), KmConstants.NOTIFICATION_TONE);
 
             if (ApplozicClient.getInstance(context).getVibrationOnNotification()) {
                 mChannel.enableVibration(true);
@@ -155,7 +159,7 @@ public class NotificationChannels {
                 throw new ApplozicException("Custom sound path is required to create App notification channel. " +
                         "Please set a sound path using Applozic.getInstance(context).setCustomNotificationSound(your-sound-file-path)");
             }
-            mChannel.setSound(Uri.parse(soundFilePath), audioAttributes);
+            mChannel.setSound(TextUtils.isEmpty(notificationTone) ? Uri.parse(soundFilePath) : Uri.parse("android.resource://" + context.getPackageName() + "/raw/" + notificationTone), audioAttributes);
             mNotificationManager.createNotificationChannel(mChannel);
             Utils.printLog(context, TAG, "Created app notification channel");
         }

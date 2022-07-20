@@ -159,7 +159,7 @@ public class NotificationChannels {
                 throw new ApplozicException("Custom sound path is required to create App notification channel. " +
                         "Please set a sound path using Applozic.getInstance(context).setCustomNotificationSound(your-sound-file-path)");
             }
-            mChannel.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/raw/" + notificationTone), audioAttributes);
+            mChannel.setSound(TextUtils.isEmpty(notificationTone) ? Uri.parse(soundFilePath) : Uri.parse("android.resource://" + context.getPackageName() + "/raw/" + notificationTone), audioAttributes);
             mNotificationManager.createNotificationChannel(mChannel);
             Utils.printLog(context, TAG, "Created app notification channel");
         }

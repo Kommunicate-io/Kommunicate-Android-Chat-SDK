@@ -57,6 +57,11 @@
             android:value="https://api-test.kommunicate.io"
             tools:node="replace"/>-->
 
+<!--        <meta-data-->
+<!--            android:name="com.applozic.mobicomkit.notification.iconColor"-->
+<!--            android:resource="@color/colorPrimary">-->
+<!--        </meta-data>-->
+
     </application>
 
 </manifest>

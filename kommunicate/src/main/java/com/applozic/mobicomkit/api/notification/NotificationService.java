@@ -12,6 +12,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import android.text.Html;
 import android.text.TextUtils;
@@ -53,6 +54,7 @@ public class NotificationService {
     public static final int NOTIFICATION_ID = 1000;
     private static final String TAG = "NotificationService";
     private static final String NOTIFICATION_SMALL_ICON_METADATA = "com.applozic.mobicomkit.notification.smallIcon";
+    private static final String NOTIFICATION_SMALL_ICON_COLOR = "com.applozic.mobicomkit.notification.iconColor";
     private static String GROUP_KEY = "applozic_key";
     MessageDatabaseService messageDatabaseService;
     List<Message> unReadMessageList = new ArrayList<>();
@@ -71,6 +73,7 @@ public class NotificationService {
     private String notificationFilePath;
     public static final String BADGE_COUNT = "BADGE_COUNT";
     public static final String NO_ALERT = "NO_ALERT";
+    private final Integer notificationIconColor;
 
     public NotificationService(int iconResourceID, Context context, int wearable_action_label, int wearable_action_title, int wearable_send_icon) {
         this.context = context;
@@ -84,6 +87,7 @@ public class NotificationService {
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.notificationDisableThreshold = applozicClient.getNotificationMuteThreshold();
         this.notificationFilePath = Applozic.getInstance(context).getCustomNotificationSound();
+        this.notificationIconColor = Utils.getMetaDataValueForResources(context,NOTIFICATION_SMALL_ICON_COLOR);
 
         notificationChannels = new NotificationChannels(context, notificationFilePath);
 
@@ -166,6 +170,10 @@ public class NotificationService {
                         .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                         .setPriority(muteNotifications(index) ? NotificationCompat.PRIORITY_LOW : NotificationCompat.PRIORITY_HIGH)
                         .setWhen(System.currentTimeMillis());
+
+        if(notificationIconColor != null)
+            mBuilder.setColor(ContextCompat.getColor(context,notificationIconColor));
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             mBuilder.setGroup(GROUP_KEY);
             mBuilder.setGroupSummary(true);
@@ -367,6 +375,7 @@ public class NotificationService {
         notificationInfo.notificationIconBitmap = notificationIconBitmap;
         notificationInfo.smallIconResourceId = Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_METADATA) != null ? Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_METADATA) : iconResourceId;
         notificationInfo.title = title;
+        notificationInfo.notificationIconColor = notificationIconColor;
 
         return notificationInfo;
     }
@@ -433,6 +442,10 @@ public class NotificationService {
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(notificationInfo.title)
                 .setContentText(channel != null && !(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) ? (displayNameContact != null ? (displayNameContact.getDisplayName() + ": " + getSpannedText(notificationText)) : "" + getSpannedText(notificationText)) : getSpannedText(notificationText));
+
+        if(notificationInfo.notificationIconColor != null)
+            mBuilder.setColor(ContextCompat.getColor(context,notificationInfo.notificationIconColor));
+
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setAutoCancel(true);
         if (ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled()) {
@@ -510,6 +523,9 @@ public class NotificationService {
                         .setCategory(NotificationCompat.CATEGORY_CALL)
                         .setFullScreenIntent(fullScreenPendingIntent, true);
 
+        if(notificationInfo.notificationIconColor != null)
+            notificationBuilder.setColor(notificationInfo.notificationIconColor);
+
         Notification incomingCallNotification = notificationBuilder.build();
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(message.getGroupId() != null ? String.valueOf(message.getGroupId()).hashCode() : message.getContactIds().hashCode(), incomingCallNotification);
@@ -547,5 +563,6 @@ public class NotificationService {
         Contact displayNameContact;
         Integer smallIconResourceId;
         Bitmap notificationIconBitmap;
+        Integer notificationIconColor;
     }
 }

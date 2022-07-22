@@ -3,8 +3,11 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## [UnReleased]
+## Kommunicate Android SDK 2.4.3
 1) Add color customization for notification icon
+2) Added support to set Notification tone
+3) Added icon to link Rich Messages
+4) Crash fix 
 
 ## Kommunicate Android SDK 2.4.2
 1) Add support for GIFs

@@ -5,7 +5,6 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 
 ## [UnReleased]
 1) Add color customization for notification icon
-2) Fixed showing empty body for rich message having no text
 
 ## Kommunicate Android SDK 2.4.2
 1) Add support for GIFs

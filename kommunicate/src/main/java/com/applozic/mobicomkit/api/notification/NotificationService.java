@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat;
 
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
@@ -29,7 +28,6 @@ import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.listners.AlConstantsHandler;
-import com.applozic.mobicomkit.listners.ApplozicUIListener;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
@@ -37,13 +35,9 @@ import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
-import java.security.Provider;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper.CALL_AUDIO_ONLY;
 import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper.CALL_ID;

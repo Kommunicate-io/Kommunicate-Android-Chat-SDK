@@ -3,6 +3,9 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## [UnReleased]
+1) Fixed showing empty body for the rich message having no text
+
 ## Kommunicate Android SDK 2.4.3
 1) Add color customization for notification icon
 2) Added support to set Notification tone

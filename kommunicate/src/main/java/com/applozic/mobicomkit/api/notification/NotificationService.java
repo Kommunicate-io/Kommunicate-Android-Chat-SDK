@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
@@ -28,6 +29,7 @@ import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.listners.AlConstantsHandler;
+import com.applozic.mobicomkit.listners.ApplozicUIListener;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
@@ -39,7 +41,9 @@ import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.security.Provider;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper.CALL_AUDIO_ONLY;
 import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper.CALL_ID;
@@ -51,6 +55,7 @@ import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelp
  * Time: 7:36 PM
  */
 public class NotificationService {
+    public static final String NOTIFICATION_TEXT_NOT_AVAILABLE = "You received a message";
     public static final int NOTIFICATION_ID = 1000;
     private static final String TAG = "NotificationService";
     private static final String NOTIFICATION_SMALL_ICON_METADATA = "com.applozic.mobicomkit.notification.smallIcon";
@@ -399,6 +404,24 @@ public class NotificationService {
             notificationText = getText(3);
         } else {
             notificationText = message.getMessage();
+        }
+
+        if(TextUtils.isEmpty(notificationText))
+        {
+            List<Message> unreadMessages = messageDatabaseService.getUnreadMessages();
+            for (Message unreadMessage : unreadMessages)
+            {
+                if (!TextUtils.isEmpty(unreadMessage.getMessage()))
+                {
+                    notificationText = unreadMessage.getMessage();
+                    break;
+                }
+            }
+        }
+
+        if(TextUtils.isEmpty(notificationText))
+        {
+            notificationText = NOTIFICATION_TEXT_NOT_AVAILABLE;
         }
 
         Class activity = null;

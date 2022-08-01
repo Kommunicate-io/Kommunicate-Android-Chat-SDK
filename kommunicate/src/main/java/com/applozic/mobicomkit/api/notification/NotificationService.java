@@ -35,9 +35,7 @@ import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
-import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +49,7 @@ import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelp
  * Time: 7:36 PM
  */
 public class NotificationService {
+    public static final String NOTIFICATION_TEXT_NOT_AVAILABLE = "You received a message";
     public static final int NOTIFICATION_ID = 1000;
     private static final String TAG = "NotificationService";
     private static final String NOTIFICATION_SMALL_ICON_METADATA = "com.applozic.mobicomkit.notification.smallIcon";
@@ -399,6 +398,24 @@ public class NotificationService {
             notificationText = getText(3);
         } else {
             notificationText = message.getMessage();
+        }
+
+        if(TextUtils.isEmpty(notificationText))
+        {
+            List<Message> unreadMessages = messageDatabaseService.getUnreadMessages();
+            for (Message unreadMessage : unreadMessages)
+            {
+                if (!TextUtils.isEmpty(unreadMessage.getMessage()))
+                {
+                    notificationText = unreadMessage.getMessage();
+                    break;
+                }
+            }
+        }
+
+        if(TextUtils.isEmpty(notificationText))
+        {
+            notificationText = NOTIFICATION_TEXT_NOT_AVAILABLE;
         }
 
         Class activity = null;

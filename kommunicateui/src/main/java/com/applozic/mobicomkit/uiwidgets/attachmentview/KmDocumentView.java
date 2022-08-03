@@ -350,7 +350,7 @@ public class KmDocumentView {
 
     public void playAudio() {
         final String mimeType;
-        if(message.getFileMetas() != null) {
+        if(message.getFileMetas() != null && message.getFileMetas().getName() != null) {
             mimeType = FileUtils.getMimeType(message.getFileMetas().getName());
         }
         else {

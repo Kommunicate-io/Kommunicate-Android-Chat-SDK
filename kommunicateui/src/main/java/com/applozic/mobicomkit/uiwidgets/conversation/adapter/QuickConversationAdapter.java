@@ -64,6 +64,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class QuickConversationAdapter extends RecyclerView.Adapter implements Filterable {
 
+    private static final String DEFAULT_MSG_BODY = "Message";
     private static Map<Short, Integer> messageTypeColorMap = new HashMap<Short, Integer>();
     private static final String CONVERSATION_SOURCE = "source";
     private static final String SOURCE_FACEBOOK = "FACEBOOK";
@@ -249,6 +250,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler));
                     showConversationSourceIcon(channel, myholder.attachmentIcon);
                 }
+
+                if(TextUtils.isEmpty(myholder.messageTextView.getText()))
+                {
+                    myholder.messageTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_messageicon, 0, 0, 0);
+                    myholder.messageTextView.setCompoundDrawablePadding(20);
+                    myholder.messageTextView.setText(DEFAULT_MSG_BODY);
+                }
+                else myholder.messageTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
                 if (myholder.sentOrReceived != null) {
                     if (message.isCall()) {

@@ -12,6 +12,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,6 +68,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private static Map<Short, Integer> messageTypeColorMap = new HashMap<Short, Integer>();
     private static final String CONVERSATION_SOURCE = "source";
     private static final String SOURCE_FACEBOOK = "FACEBOOK";
+    private static final String DEFAULT_MSG_BODY = "Message";
 
     static {
         messageTypeColorMap.put(Message.MessageType.INBOX.getValue(), R.color.message_type_inbox);
@@ -249,6 +251,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler));
                     showConversationSourceIcon(channel, myholder.attachmentIcon);
                 }
+
+                if(TextUtils.isEmpty(myholder.messageTextView.getText()))
+                {
+                    myholder.messageTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_messageicon, 0, 0, 0);
+                    myholder.messageTextView.setCompoundDrawablePadding(20);
+                    myholder.messageTextView.setText(DEFAULT_MSG_BODY);
+                }
+                else myholder.messageTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
                 if (myholder.sentOrReceived != null) {
                     if (message.isCall()) {

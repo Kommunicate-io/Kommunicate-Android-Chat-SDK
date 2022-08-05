@@ -410,7 +410,7 @@ public class MessageClientService extends MobiComKitClientService {
             for (String filePath : message.getFilePaths()) {
                 try {
                     String fileMetaResponse = new FileClientService(context).uploadBlobImage(filePath, handler, oldMessageKey);
-                    if (fileMetaResponse == null) {
+                    if (TextUtils.isEmpty(fileMetaResponse)) {
                         if (skipMessage) {
                             return;
                         }
@@ -426,8 +426,7 @@ public class MessageClientService extends MobiComKitClientService {
                         }
                         BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.UPLOAD_ATTACHMENT_FAILED.toString(), message);
                         return;
-                    }
-                        if (!TextUtils.isEmpty(fileMetaResponse)) {
+                    } else if (!TextUtils.isEmpty(fileMetaResponse)) {
                             message.setFileMetas((FileMeta) GsonUtils.getObjectFromJson(fileMetaResponse, FileMeta.class));
                             if (handler != null) {
                                 android.os.Message msg = handler.obtainMessage();

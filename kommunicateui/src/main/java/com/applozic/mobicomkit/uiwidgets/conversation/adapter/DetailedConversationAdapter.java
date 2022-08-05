@@ -1495,6 +1495,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         try {
             final String mimeType = FileUtils.getMimeType(smListItem.getFilePaths().get(0));
             if (mimeType != null) {
+                if(smListItem.getFileMetas() == null) {
+                    KmToast.error(context, "File not uploaded, please retry", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (mimeType.startsWith("image")) {
                     Intent intent = new Intent(context, FullScreenImageActivity.class);
                     intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(smListItem, Message.class));

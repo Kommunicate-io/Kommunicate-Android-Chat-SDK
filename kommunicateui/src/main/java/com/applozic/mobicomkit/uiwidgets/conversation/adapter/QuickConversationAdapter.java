@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 
 import androidx.fragment.app.FragmentActivity;
@@ -58,6 +59,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.utils.KmUtils;
 
 /**
  * Created by adarsh on 4/7/15.
@@ -245,19 +247,17 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         myholder.attachmentIcon.setVisibility(View.VISIBLE);
                         myholder.attachmentIcon.setImageResource(R.drawable.email);
                     }
-                } else {
+                }
+                else if(TextUtils.isEmpty(message.getMessage()) && message.isRichMessage()) {
+                    KmUtils.setIconInsideTextView(myholder.messageTextView, R.drawable.ic_messageicon, Color.TRANSPARENT, KmUtils.LEFT_POSITION, 20);
+                    myholder.messageTextView.setText(DEFAULT_MSG_BODY);
+                }
+                else {
                     String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler));
                     showConversationSourceIcon(channel, myholder.attachmentIcon);
+                    KmUtils.setIconInsideTextView(myholder.messageTextView);
                 }
-
-                if(TextUtils.isEmpty(myholder.messageTextView.getText()))
-                {
-                    myholder.messageTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_messageicon, 0, 0, 0);
-                    myholder.messageTextView.setCompoundDrawablePadding(20);
-                    myholder.messageTextView.setText(DEFAULT_MSG_BODY);
-                }
-                else myholder.messageTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
                 if (myholder.sentOrReceived != null) {
                     if (message.isCall()) {

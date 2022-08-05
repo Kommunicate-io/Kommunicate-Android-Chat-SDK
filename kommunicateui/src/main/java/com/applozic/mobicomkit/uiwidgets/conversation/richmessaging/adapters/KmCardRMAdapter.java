@@ -101,7 +101,7 @@ public class KmCardRMAdapter extends KmRichMessageAdapter {
         viewHolder.bookActions[index].setTextColor(themeHelper.getRichMessageThemeColor());
         viewHolder.bookActions[index].setOnClickListener(getGenericCardClickListener(actionsList.get(index)));
         if(actionsList.get(index).getAction().isWebLink())
-            KmUtils.setIconInsideButton(viewHolder.bookActions[index], R.drawable.ic_link_button, themeHelper.getRichMessageThemeColor());
+            KmUtils.setIconInsideTextView(viewHolder.bookActions[index], R.drawable.ic_link_button, themeHelper.getRichMessageThemeColor(),KmUtils.RIGHT_POSITION,10);
     }
 
     @Override

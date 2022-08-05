@@ -349,7 +349,13 @@ public class KmDocumentView {
     }
 
     public void playAudio() {
-        final String mimeType = FileUtils.getMimeType(message.getFileMetas().getName());
+        final String mimeType;
+        if(message.getFileMetas() != null && message.getFileMetas().getName() != null) {
+            mimeType = FileUtils.getMimeType(message.getFileMetas().getName());
+        }
+        else {
+            mimeType = null;
+        }
         if (Utils.hasNougat()) {
             uri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
         } else {

@@ -78,12 +78,10 @@ public class KmUtils {
 
     public static void setIconInsideTextView(TextView textView, int drawableRes, int color , int position , int padding)
     {
-        if(position==LEFT_POSITION)
-        {
+        if(position == LEFT_POSITION) {
             textView.setCompoundDrawablesWithIntrinsicBounds(drawableRes, 0, 0, 0);
         }
-        else if(position==RIGHT_POSITION)
-        {
+        else if(position == RIGHT_POSITION) {
             textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableRes, 0);
         }
         textView.setCompoundDrawablePadding(padding);

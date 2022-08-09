@@ -410,7 +410,7 @@ public class MessageClientService extends MobiComKitClientService {
             for (String filePath : message.getFilePaths()) {
                 try {
                     String fileMetaResponse = new FileClientService(context).uploadBlobImage(filePath, handler, oldMessageKey);
-                    if (fileMetaResponse == null) {
+                    if (TextUtils.isEmpty(fileMetaResponse)) {
                         if (skipMessage) {
                             return;
                         }
@@ -427,16 +427,14 @@ public class MessageClientService extends MobiComKitClientService {
                         BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.UPLOAD_ATTACHMENT_FAILED.toString(), message);
                         return;
                     }
-                        if (!TextUtils.isEmpty(fileMetaResponse)) {
-                            message.setFileMetas((FileMeta) GsonUtils.getObjectFromJson(fileMetaResponse, FileMeta.class));
-                            if (handler != null) {
-                                android.os.Message msg = handler.obtainMessage();
-                                msg.what = MobiComConversationService.UPLOAD_COMPLETED;
-                                msg.getData().putString(MobiComKitConstants.OLD_MESSAGE_KEY_INTENT_EXTRA, oldMessageKey);
-                                msg.getData().putString("error", null);
-                                msg.sendToTarget();
-                            }
-                        }
+                    message.setFileMetas((FileMeta) GsonUtils.getObjectFromJson(fileMetaResponse, FileMeta.class));
+                    if (handler != null) {
+                        android.os.Message msg = handler.obtainMessage();
+                        msg.what = MobiComConversationService.UPLOAD_COMPLETED;
+                        msg.getData().putString(MobiComKitConstants.OLD_MESSAGE_KEY_INTENT_EXTRA, oldMessageKey);
+                        msg.getData().putString("error", null);
+                        msg.sendToTarget();
+                    }
                 } catch (Exception ex) {
                     Utils.printLog(context, TAG, "Error uploading file to server: " + filePath);
                     if (handler != null) {

@@ -121,7 +121,7 @@ public class FullScreenImageActivity extends AppCompatActivity {
                 message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
             }
 
-            if (message != null && message.getFilePaths() != null && !message.getFilePaths().isEmpty()) {
+            if (message != null && message.getFilePaths() != null && !message.getFilePaths().isEmpty() && message.getFileMetas() != null) {
                 try {
                     if(message.getFileMetas().getContentType().contains("gif")) {
                         Glide.with(this)

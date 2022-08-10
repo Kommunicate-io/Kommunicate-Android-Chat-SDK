@@ -463,10 +463,13 @@ public class ConversationUIService {
         }
     }
 
-    public void deleteMessage(String keyString, String userId) {
+    public void deleteMessage(String keyString, String userId, Message message) {
         updateLastMessage(keyString, userId);
         if (BroadcastService.isIndividual()) {
             getConversationFragment().deleteMessageFromDeviceList(keyString);
+        }
+        if(BroadcastService.isQuick()) {
+            getQuickConversationFragment().deleteMessage(message, userId);
         }
     }
 
@@ -630,7 +633,9 @@ public class ConversationUIService {
     }
 
     public void updateMessageMetadata(String keyString) {
-        getConversationFragment().updateMessageMetadata(keyString);
+        if(BroadcastService.isIndividual()) {
+            getConversationFragment().updateMessageMetadata(keyString);
+        }
     }
 
     public void muteUserChat(boolean mute, String userId) {

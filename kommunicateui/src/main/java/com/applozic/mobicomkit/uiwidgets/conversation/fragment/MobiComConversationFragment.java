@@ -1494,6 +1494,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (i != -1) {
             messageList.get(i).setMetadata(messageDatabaseService.getMessage(keyString).getMetadata());
             if (conversationAdapter != null) {
+                if(messageList.get(i).isDeletedForAll()) {
+                    messageList.remove(i);
+                }
                 conversationAdapter.notifyDataSetChanged();
             }
             if (messageList.get(messageList.size() - 1).getMetadata().containsKey("isDoneWithClicking")) {

@@ -276,6 +276,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     protected void syncMessages() {
         SyncCallService.getInstance(this).syncMessages(null);
+        SyncCallService.getInstance(this).syncMessageMetadata();
     }
 
     @Override

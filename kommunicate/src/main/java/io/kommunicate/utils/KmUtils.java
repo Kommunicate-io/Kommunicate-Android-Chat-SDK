@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import androidx.core.content.ContextCompat;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -24,6 +25,8 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 public class KmUtils {
 
     private static final String TAG = "Kommunicate";
+    public static final int LEFT_POSITION = 0;
+    public static final int RIGHT_POSITION = 2;
 
     public static boolean isServiceDisconnected(Context context, boolean isAgentApp, RelativeLayout customToolbarLayout) {
         boolean isDebuggable = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
@@ -73,11 +76,24 @@ public class KmUtils {
         gradientDrawable.setStroke(width, color);
     }
 
-    public static void setIconInsideButton(TextView textView, int drawableRes, int color)
+    public static void setIconInsideTextView(TextView textView, int drawableRes, int color , int position , int padding)
     {
-        textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableRes, 0);
-        textView.setCompoundDrawablePadding(10);
-        textView.getCompoundDrawables()[2].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN)); // 2 here refers to the drawable position . See the code to set drawable for the reference
+        if(position == LEFT_POSITION) {
+            textView.setCompoundDrawablesWithIntrinsicBounds(drawableRes, 0, 0, 0);
+        }
+        else if(position == RIGHT_POSITION) {
+            textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableRes, 0);
+        }
+        textView.setCompoundDrawablePadding(padding);
+        if(color!= Color.TRANSPARENT)
+        {
+            textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        }
+    }
+
+    public static void setIconInsideTextView(TextView textView)
+    {
+        textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
     public static void setStatusBarColor(Activity activity, int color) {

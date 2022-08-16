@@ -82,7 +82,7 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
             conversationUIService.syncMessages(message, keyString);
         } else if (BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString().equals(intent.getAction())) {
             userId = intent.getStringExtra("contactNumbers");
-            conversationUIService.deleteMessage(keyString, userId);
+            conversationUIService.deleteMessage(keyString, userId, message);
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_DELIVERY.toString().equals(action) ||
                 BroadcastService.INTENT_ACTIONS.MESSAGE_READ_AND_DELIVERED.toString().equals(action)) {
             conversationUIService.updateDeliveryStatus(message, userId);

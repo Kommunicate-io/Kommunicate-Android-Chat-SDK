@@ -1224,6 +1224,15 @@ public class MessageDatabaseService {
         }
     }
 
+    public synchronized void decreaseChannelUnreadCount(Integer channelKey) {
+        try {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            db.execSQL("UPDATE channel SET unreadCount = unreadCount - 1 WHERE channelKey =" + "'" + channelKey + "' AND unreadCount > 0");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public synchronized void updateChannelUnreadCountToZero(Integer channelKey) {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();

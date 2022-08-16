@@ -27,6 +27,6 @@ public class DisappearingMessageTask extends TimerTask {
         String smsKeyString = message.getKeyString();
         Log.i(TAG, "Self deleting message for keyString: " + smsKeyString);
         conversationService.deleteMessage(message);
-        BroadcastService.sendMessageDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString(), smsKeyString, message.getContactIds());
+        BroadcastService.sendMessageDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString(), smsKeyString, message.getContactIds(), message);
     }
 }

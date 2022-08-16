@@ -117,6 +117,17 @@ public class SyncCallService {
         }
     }
 
+    public synchronized void syncMessageMetadata() {
+        if (Utils.isDeviceInIdleState(context)) {
+            new ConversationRunnables(context, null, false, false, true);
+        } else {
+            Utils.printLog(context, TAG, "Syncing message metadata");
+            Intent intent = new Intent(context, ConversationIntentService.class);
+            intent.putExtra(ConversationIntentService.MESSAGE_METADATA_UPDATE, true);
+            ConversationIntentService.enqueueWork(context, intent);
+        }
+    }
+
     public synchronized void syncMessageMetadataUpdate(String key, boolean isFromFcm, Message message) {
         Integer groupId = null;
         if (message != null) {
@@ -194,8 +205,11 @@ public class SyncCallService {
         refreshView = true;
     }
 
-    public synchronized void deleteMessage(String messageKey) {
+    public synchronized void deleteMessage(String messageKey, Integer channelKey) {
         mobiComConversationService.deleteMessageFromDevice(messageKey, null);
+        if(channelKey != null) {
+            messageDatabaseService.decreaseChannelUnreadCount(channelKey);
+        }
         refreshView = true;
     }
 

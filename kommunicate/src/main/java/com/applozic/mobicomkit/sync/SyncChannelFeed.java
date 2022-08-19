@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.sync;
 
 import com.applozic.mobicommons.json.JsonMarker;
 import com.applozic.mobicomkit.feed.ChannelFeed;
+import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class SyncChannelFeed extends JsonMarker {
     private static final String SUCCESS = "success";
     private String status;
     private String generatedAt;
-    private List<ChannelFeed> response;
+    private groupPxys response;
     private String updatedAt;
 
     public String getStatus() {
@@ -34,10 +35,10 @@ public class SyncChannelFeed extends JsonMarker {
     }
 
     public List<ChannelFeed> getResponse() {
-        return response;
+        return response.getGroupPxys();
     }
 
-    public void setResponse(List<ChannelFeed> response) {
+    public void setResponse(groupPxys response) {
         this.response = response;
     }
 
@@ -61,5 +62,13 @@ public class SyncChannelFeed extends JsonMarker {
                 ", response=" + response +
                 ", updatedAt='" + updatedAt + '\'' +
                 '}';
+    }
+
+    public class groupPxys extends JsonMarker {
+        private List<ChannelFeed> groupPxys;
+
+        public List<ChannelFeed> getGroupPxys() {
+            return groupPxys;
+        }
     }
 }

@@ -7,7 +7,6 @@ import android.net.Uri;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.text.TextUtils;
-
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -322,6 +321,14 @@ public class MobiComMessageService {
             List<Message> messageList = syncMessageFeed.getMessages();
             for (final Message message : messageList) {
                 if (message != null) {
+                    if(message.isDeletedForAll()) {
+                        if(message.getGroupId() != null) {
+                            messageDatabaseService.decreaseChannelUnreadCount(message.getGroupId());
+                        }
+                        messageDatabaseService.deleteMessage(message, null);
+                        BroadcastService.sendMessageDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString(), message.getKeyString(), null, message);
+                        continue;
+                    }
                     messageDatabaseService.replaceExistingMessage(message);
                     BroadcastService.updateMessageMetadata(context, message.getKeyString(), BroadcastService.INTENT_ACTIONS.MESSAGE_METADATA_UPDATE.toString(), message.getGroupId() == null ? message.getTo() : null, message.getGroupId(), false, message.getMetadata());
                 }

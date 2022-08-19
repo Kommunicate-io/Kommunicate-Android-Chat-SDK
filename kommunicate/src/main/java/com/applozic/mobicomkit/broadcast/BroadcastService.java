@@ -117,7 +117,7 @@ public class BroadcastService {
         sendBroadcast(context, intentUpdate);
     }
 
-    public static void sendMessageDeleteBroadcast(Context context, String action, String keyString, String contactNumbers) {
+    public static void sendMessageDeleteBroadcast(Context context, String action, String keyString, String contactNumbers, Message message) {
         postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.MESSAGE_DELETED).setMessageKey(keyString).setUserId(contactNumbers));
 
         Utils.printLog(context, TAG, "Sending message delete broadcast for " + action);
@@ -125,6 +125,8 @@ public class BroadcastService {
         intentDelete.setAction(action);
         intentDelete.putExtra("keyString", keyString);
         intentDelete.putExtra("contactNumbers", contactNumbers);
+        intentDelete.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(message, Message.class));
+
         intentDelete.addCategory(Intent.CATEGORY_DEFAULT);
         sendBroadcast(context, intentDelete);
     }

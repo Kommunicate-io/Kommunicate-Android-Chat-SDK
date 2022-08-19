@@ -300,7 +300,7 @@ MobiComPushReceiver {
                 addPushNotificationId(deleteSingleMessageResponse.getId());
                 String deleteMessageKeyAndUserId = deleteSingleMessageResponse.getMessage().toString();
                 //String contactNumbers = deleteMessageKeyAndUserId.split(",").length > 1 ? deleteMessageKeyAndUserId.split(",")[1] : null;
-                syncCallService.deleteMessage(deleteMessageKeyAndUserId.split(",")[0]);
+                syncCallService.deleteMessage(deleteMessageKeyAndUserId.split(",")[0], null);
             }
 
             if (!TextUtils.isEmpty(messageSent)) {

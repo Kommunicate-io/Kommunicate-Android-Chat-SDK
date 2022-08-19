@@ -470,9 +470,11 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 }
 
                                 if (NOTIFICATION_TYPE.MESSAGE_DELETED.getValue().equals(mqttMessageResponse.getType())) {
+                                    GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
                                     String messageKey = mqttMessageResponse.getMessage().toString().split(",")[0];
-                                    syncCallService.deleteMessage(messageKey);
-                                    BroadcastService.sendMessageDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString(), messageKey, null);
+                                    Message message = messageResponse.getMessage();
+                                    syncCallService.deleteMessage(messageKey, message.getGroupId());
+                                    BroadcastService.sendMessageDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString(), messageKey, null, message);
                                 }
 
                                 if (NOTIFICATION_TYPE.MESSAGE_SENT.getValue().equals(mqttMessageResponse.getType())) {
@@ -509,6 +511,10 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                         String keyString = messageResponse.getMessage().getKeyString();
                                         Message messageObject = messageResponse.getMessage();
                                         syncCallService.syncMessageMetadataUpdate(keyString, false, messageObject);
+                                        if(messageObject.isDeletedForAll()) {
+                                            syncCallService.deleteMessage(keyString, messageObject.getGroupId());
+                                            BroadcastService.sendMessageDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString(), keyString, null, messageObject);
+                                        }
                                     } catch (Exception e) {
                                         Utils.printLog(context, TAG, e.getMessage());
                                     }

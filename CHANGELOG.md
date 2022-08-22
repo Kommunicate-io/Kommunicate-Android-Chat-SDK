@@ -7,6 +7,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 1) Fixed showing empty body for the rich message having no text
 2) Fix for attachment sending empty message
 3) Sync Deleted Messages from dashboard
+4) Optimized Group list API
 
 ## Kommunicate Android SDK 2.4.3
 1) Add color customization for notification icon

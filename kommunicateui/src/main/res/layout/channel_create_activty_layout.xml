@@ -36,7 +36,7 @@
         android:layout_alignRight="@+id/channelIcon"
         android:background="@color/applozic_transparent_color"
         android:clickable="true"
-        android:src="@drawable/km_ic_action_camera_new" />
+        app:srcCompat="@drawable/km_ic_action_camera_new" />
 
     <EditText
         android:id="@+id/channelName"

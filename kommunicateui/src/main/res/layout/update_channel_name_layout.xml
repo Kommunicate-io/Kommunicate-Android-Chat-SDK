@@ -28,7 +28,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="42dp"
-            android:src="@drawable/km_ic_contact_picture_180_holo_light" />
+            app:srcCompat="@drawable/km_ic_contact_picture_180_holo_light" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/applozic_group_profile_camera"

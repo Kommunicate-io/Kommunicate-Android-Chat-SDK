@@ -44,7 +44,7 @@
                     android:layout_marginStart="76dp"
                     android:background="@color/applozic_transparent_color"
                     android:clickable="true"
-                    android:src="@drawable/km_ic_action_camera_new" />
+                    app:srcCompat="@drawable/km_ic_action_camera_new" />
 
             </RelativeLayout>
 

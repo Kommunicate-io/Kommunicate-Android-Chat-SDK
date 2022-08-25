@@ -1271,6 +1271,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     private void loadHtml(FrameLayout emailLayout, Message message) {
         WebView webView = emailLayout.findViewById(R.id.emailWebView);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.loadDataWithBaseURL(null, message.getMessage(), "text/html", "charset=UTF-8", null);
     }
 

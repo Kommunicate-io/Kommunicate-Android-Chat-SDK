@@ -246,7 +246,7 @@ public class ChannelService {
         final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
         SyncChannelFeed syncChannelFeed = channelClientService.getChannelFeed(userpref
                 .getChannelSyncTime());
-        if (syncChannelFeed == null) {
+        if (syncChannelFeed == null || syncChannelFeed.getResponse() == null) {
             return;
         }
         if (syncChannelFeed.isSuccess()) {

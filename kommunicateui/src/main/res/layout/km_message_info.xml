@@ -211,8 +211,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
                 android:clickable="true"
                 app:cardCornerRadius="3dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -220,8 +220,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
                     android:layout_marginStart="3dp"
+                    android:layout_marginLeft="3dp"
                     android:padding="5dp"
                     android:text="@string/delivered"
                     android:textColor="@color/applozic_theme_color_primary"
@@ -231,9 +231,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginRight="5dp">
 
                     <View
                         android:layout_width="15dp"
@@ -253,11 +253,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/applozic_message_info_delivered_header_card"
-                android:layout_marginBottom="65dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="65dp"
                 android:clickable="true"
                 app:cardCornerRadius="0dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -266,8 +266,8 @@
                     android:id="@+id/applozic_message_info_delivered_list_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     android:scrollbars="vertical"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

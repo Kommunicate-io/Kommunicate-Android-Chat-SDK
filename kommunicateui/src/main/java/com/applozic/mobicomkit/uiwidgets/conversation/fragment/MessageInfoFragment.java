@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -384,6 +385,8 @@ public class MessageInfoFragment extends Fragment {
                 int drawableResourceId = getContext().getResources().getIdentifier(contact.getrDrawableName(), "drawable", getContext().getPackageName());
                 holder.circleImageView.setImageResource(drawableResourceId);
             } else {
+
+                //contact.getImageURL();
                 contactImageLoader.loadImage(contact, holder.circleImageView, holder.alphabeticImage);
             }
         }

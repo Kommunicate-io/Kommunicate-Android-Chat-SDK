@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/listViewActivatedStyle"
     android:layout_width="match_parent"
     android:layout_height="?android:attr/listPreferredItemHeight">
@@ -34,7 +35,7 @@
             android:layout_height="48dp"
             android:layout_gravity="center"
             android:layout_toRightOf="@+id/contactIcon"
-            android:src="@drawable/km_ic_contact_picture_holo_light"
+            app:srcCompat="@drawable/km_ic_contact_picture_holo_light"
             android:visibility="visible"
             android:layout_toEndOf="@+id/contactIcon" />
 

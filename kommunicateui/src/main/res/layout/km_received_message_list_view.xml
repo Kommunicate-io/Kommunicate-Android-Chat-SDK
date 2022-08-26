@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/messageLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -34,7 +35,7 @@
             android:layout_height="30dp"
             android:layout_toEndOf="@+id/alphabeticImage"
             android:layout_toRightOf="@+id/alphabeticImage"
-            android:src="@drawable/km_ic_contact_picture_180_holo_light"
+            app:srcCompat="@drawable/km_ic_contact_picture_180_holo_light"
             android:visibility="visible" />
     </RelativeLayout>
 

@@ -3,8 +3,12 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+
 ## [Unreleased]
 1) Added support for HTML Video Rich message
+
+## Kommunicate Android SDK 2.4.5
+1) Multiple crash fix
 
 ## Kommunicate Android SDK 2.4.4
 1) Fixed showing empty body for the rich message having no text

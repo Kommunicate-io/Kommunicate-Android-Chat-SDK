@@ -155,6 +155,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private KmFontManager fontManager;
     private KmThemeHelper themeHelper;
     private Message lastSentMessage;
+    private WebView webView;
     private boolean useInnerTimeStampDesign;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
@@ -1271,7 +1272,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     private void loadHtml(FrameLayout emailLayout, Message message) {
-        WebView webView = emailLayout.findViewById(R.id.emailWebView);
+        webView = emailLayout.findViewById(R.id.emailWebView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadDataWithBaseURL(null, message.getMessage(), "text/html", "charset=UTF-8", null);
     }
@@ -1640,6 +1641,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     public void refreshContactData() {
         if (contact != null) {
             contact = contactService.getContactById(contact.getContactIds());
+        }
+    }
+
+    public void refreshWebView() {
+        if (webView != null) {
+            webView.destroy();
         }
     }
 

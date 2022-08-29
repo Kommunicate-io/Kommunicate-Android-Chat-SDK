@@ -3992,6 +3992,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             }
             if (recyclerDetailConversationAdapter != null) {
+                recyclerDetailConversationAdapter.refreshWebView();
                 recyclerDetailConversationAdapter.notifyDataSetChanged();
             }
             onStartLoading(false);

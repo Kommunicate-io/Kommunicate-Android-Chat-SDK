@@ -35,7 +35,10 @@ public class SyncChannelFeed extends JsonMarker {
     }
 
     public List<ChannelFeed> getResponse() {
-        return response.getGroupPxys();
+        if(response != null) {
+            return response.getGroupPxys();
+        }
+        return null;
     }
 
     public void setResponse(groupPxys response) {

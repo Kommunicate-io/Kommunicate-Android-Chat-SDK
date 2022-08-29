@@ -29,6 +29,7 @@ import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicomkit.listners.AlChannelListener;
 import com.applozic.mobicomkit.sync.SyncChannelFeed;
 import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUserMapper;
 import com.applozic.mobicommons.task.AlTask;
@@ -243,20 +244,23 @@ public class ChannelService {
     }
 
     public synchronized void syncChannels(boolean isMetadataUpdate) {
-        final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
-        SyncChannelFeed syncChannelFeed = channelClientService.getChannelFeed(userpref
-                .getChannelSyncTime());
-        if (syncChannelFeed == null || syncChannelFeed.getResponse() == null) {
-            return;
-        }
-        if (syncChannelFeed.isSuccess()) {
-            processChannelList(syncChannelFeed.getResponse());
+        try {
+            final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
+            SyncChannelFeed syncChannelFeed = channelClientService.getChannelFeed(userpref
+                    .getChannelSyncTime());
+            if (syncChannelFeed == null || syncChannelFeed.getResponse() == null) {
+                return;
+            }
+            if (syncChannelFeed.isSuccess()) {
+                processChannelList(syncChannelFeed.getResponse());
 
-            BroadcastService.sendUpdate(context, isMetadataUpdate, BroadcastService
-                    .INTENT_ACTIONS.CHANNEL_SYNC.toString());
+                BroadcastService.sendUpdate(context, isMetadataUpdate, BroadcastService
+                        .INTENT_ACTIONS.CHANNEL_SYNC.toString());
+            }
+            userpref.setChannelSyncTime(syncChannelFeed.getGeneratedAt());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        userpref.setChannelSyncTime(syncChannelFeed.getGeneratedAt());
-
     }
 
     public synchronized void syncChannels() {

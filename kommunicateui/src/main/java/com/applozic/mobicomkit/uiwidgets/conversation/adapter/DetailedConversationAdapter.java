@@ -15,6 +15,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -155,6 +156,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private KmFontManager fontManager;
     private KmThemeHelper themeHelper;
     private Message lastSentMessage;
+    private List<WebView> webViews = new ArrayList<>();
     private boolean useInnerTimeStampDesign;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
@@ -688,8 +690,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 }
                 if (myHolder.emailLayout != null) {
                     myHolder.emailLayout.setVisibility(View.VISIBLE);
+                    loadHtml(myHolder.emailLayout, message);
                 }
-                loadHtml(myHolder.emailLayout, message);
+
             } else {
                 if (myHolder.viaEmailView != null) {
                     myHolder.viaEmailView.setVisibility(GONE);
@@ -1271,6 +1274,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     private void loadHtml(FrameLayout emailLayout, Message message) {
         WebView webView = emailLayout.findViewById(R.id.emailWebView);
+        webViews.add(webView);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.loadDataWithBaseURL(null, message.getMessage(), "text/html", "charset=UTF-8", null);
     }
 
@@ -1638,6 +1643,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     public void refreshContactData() {
         if (contact != null) {
             contact = contactService.getContactById(contact.getContactIds());
+        }
+    }
+
+    public void refreshWebView() {
+        if (webViews != null) {
+            for(WebView webView : webViews) {
+                Log.e("webview", "load");
+                webView.reload();
+            }
         }
     }
 

@@ -15,6 +15,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -155,7 +156,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private KmFontManager fontManager;
     private KmThemeHelper themeHelper;
     private Message lastSentMessage;
-    private WebView webView;
+    private List<WebView> webViews = new ArrayList<>();
     private boolean useInnerTimeStampDesign;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
@@ -1272,7 +1273,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     private void loadHtml(FrameLayout emailLayout, Message message) {
-        webView = emailLayout.findViewById(R.id.emailWebView);
+        WebView webView = emailLayout.findViewById(R.id.emailWebView);
+        webViews.add(webView);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadDataWithBaseURL(null, message.getMessage(), "text/html", "charset=UTF-8", null);
     }
@@ -1645,8 +1647,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     public void refreshWebView() {
-        if (webView != null) {
-            webView.destroy();
+        if (webViews != null) {
+            for(WebView webView : webViews) {
+                Log.e("webview", "load");
+                webView.reload();
+            }
         }
     }
 

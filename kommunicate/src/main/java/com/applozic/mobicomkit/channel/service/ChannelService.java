@@ -257,7 +257,9 @@ public class ChannelService {
                 BroadcastService.sendUpdate(context, isMetadataUpdate, BroadcastService
                         .INTENT_ACTIONS.CHANNEL_SYNC.toString());
             }
-            userpref.setChannelSyncTime(syncChannelFeed.getGeneratedAt());
+            if(!TextUtils.isEmpty(syncChannelFeed.getGeneratedAt())) {
+                userpref.setChannelSyncTime(syncChannelFeed.getGeneratedAt());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

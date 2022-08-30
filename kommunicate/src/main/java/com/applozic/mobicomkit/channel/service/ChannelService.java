@@ -248,10 +248,10 @@ public class ChannelService {
             final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
             SyncChannelFeed syncChannelFeed = channelClientService.getChannelFeed(userpref
                     .getChannelSyncTime());
-            if (syncChannelFeed == null || syncChannelFeed.getResponse() == null) {
+            if (syncChannelFeed == null || !syncChannelFeed.isSuccess()) {
                 return;
             }
-            if (syncChannelFeed.isSuccess()) {
+            if (syncChannelFeed.getResponse() != null) {
                 processChannelList(syncChannelFeed.getResponse());
 
                 BroadcastService.sendUpdate(context, isMetadataUpdate, BroadcastService

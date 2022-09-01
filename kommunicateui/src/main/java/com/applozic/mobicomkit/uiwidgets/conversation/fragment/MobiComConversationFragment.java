@@ -4103,16 +4103,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     clipboard.setPrimaryClip(clip);
                 }
                 break;
-            case 2:
-                messageDatabaseService.deleteMessageFromDb(message);
-                deleteMessageFromDeviceList(message.getKeyString());
-                Message messageToResend = new Message(message);
-                messageToResend.setCreatedAtTime(System.currentTimeMillis() + MobiComUserPreference.getInstance(getActivity()).getDeviceTimeOffset());
-                conversationService.sendMessage(messageToResend, messageIntentClass);
-                break;
-            case 3:
-                String messageKeyString = message.getKeyString();
-                //new DeleteConversationAsyncTask(conversationService, message, contact).execute();
+            case 1:
                 new MessageDeleteTask(getContext(), message.getKeyString(), true, new AlCallback() {
                     @Override
                     public void onSuccess(Object response) {
@@ -4124,6 +4115,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
                     }
                 }).execute();
+                deleteMessageFromDeviceList(message.getKeyString());
+                break;
+            case 2:
+                messageDatabaseService.deleteMessageFromDb(message);
+                deleteMessageFromDeviceList(message.getKeyString());
+                Message messageToResend = new Message(message);
+                messageToResend.setCreatedAtTime(System.currentTimeMillis() + MobiComUserPreference.getInstance(getActivity()).getDeviceTimeOffset());
+                conversationService.sendMessage(messageToResend, messageIntentClass);
+                break;
+            case 3:
+                String messageKeyString = message.getKeyString();
+                new DeleteConversationAsyncTask(conversationService, message, contact).execute();
                 deleteMessageFromDeviceList(messageKeyString);
                 break;
             case 4:

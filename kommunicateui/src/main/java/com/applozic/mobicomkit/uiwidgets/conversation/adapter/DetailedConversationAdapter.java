@@ -1205,10 +1205,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         if(menuItems[i].equals(context.getString(R.string.info))) {
                             continue;
                         }
-//                        if(menuItems[i].equals(context.getString(R.string.delete))) {
-//                            continue;
-//                        }
-
                         if (!(message.isGroupMessage() && message.isTypeOutbox() && message.isSentToServer()) && menuItems[i].equals(context.getResources().getString(R.string.info))) {
                             continue;
                         }
@@ -1216,7 +1212,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 menuItems[i].equals(context.getResources().getString(R.string.copy))) {
                             continue;
                         }
-                        if (menuItems[i].equals(context.getResources().getString(R.string.forward)) && !alCustomizationSettings.isForwardOption()) {
+                        if (menuItems[i].equals(context.getResources().getString(R.string.delete_for_all)) && (!message.isTypeOutbox() || !alCustomizationSettings.isAgentApp() )) {
                             continue;
                         }
                         if (((channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || message.isCall() || (message.hasAttachment() && !message.isAttachmentDownloaded()) || message.isVideoOrAudioCallMessage()) && (menuItems[i].equals(context.getResources().getString(R.string.forward)) ||
@@ -1229,7 +1225,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         if (menuItems[i].equals(context.getResources().getString(R.string.reply)) && (!alCustomizationSettings.isReplyOption() || message.isAttachmentUploadInProgress() || TextUtils.isEmpty(message.getKeyString()) || !message.isSentToServer() || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || (message.hasAttachment() && !message.isAttachmentDownloaded()) || channel != null && !ChannelService.getInstance(context).processIsUserPresentInChannel(channel.getKey()) || message.isVideoOrAudioCallMessage() || contact != null && contact.isDeleted())) {
                             continue;
                         }
-                        if (menuItems[i].equals(context.getResources().getString(R.string.delete)) && (TextUtils.isEmpty(message.getKeyString()) || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())))) {
+                        if (menuItems[i].equals(context.getResources().getString(R.string.delete)) && (TextUtils.isEmpty(message.getKeyString()) || !alCustomizationSettings.isAgentApp() || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())))) {
                             continue;
                         }
                         if (menuItems[i].equals(context.getResources().getString(R.string.info)) && (TextUtils.isEmpty(message.getKeyString()) || (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || message.isVideoOrAudioCallMessage())) {

@@ -370,7 +370,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
-    private String messageKey;
 
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {

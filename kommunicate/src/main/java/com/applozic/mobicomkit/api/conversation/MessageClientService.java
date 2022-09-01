@@ -84,7 +84,7 @@ public class MessageClientService extends MobiComKitClientService {
     private static final String GET_CONVERSATION_LIST_URL = "/rest/ws/group/support";
     private static final String GET_ALL_GROUPS_URL = "/rest/ws/group/all";
     private static final String MESSAGE_REPORT_URL = "/rest/ws/message/report";
-    private static final String MESSAGE_DELETE_FOR_ALL_URL = "/rest/ws/message/v2/delete?key=";
+    private static final String MESSAGE_DELETE_FOR_ALL_URL = "/rest/ws/message/delete?key=";
 
     private static final String TAG = "MessageClientService";
     private Context context;

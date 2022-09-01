@@ -1205,9 +1205,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         if(menuItems[i].equals(context.getString(R.string.info))) {
                             continue;
                         }
-                        if(menuItems[i].equals(context.getString(R.string.delete))) {
-                            continue;
-                        }
+//                        if(menuItems[i].equals(context.getString(R.string.delete))) {
+//                            continue;
+//                        }
 
                         if (!(message.isGroupMessage() && message.isTypeOutbox() && message.isSentToServer()) && menuItems[i].equals(context.getResources().getString(R.string.info))) {
                             continue;

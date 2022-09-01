@@ -81,6 +81,7 @@ import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageClientService;
+import com.applozic.mobicomkit.api.conversation.MessageDeleteTask;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
@@ -101,6 +102,7 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
+import com.applozic.mobicomkit.listners.AlCallback;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
@@ -368,6 +370,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
+    private String messageKey;
 
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
@@ -4109,7 +4112,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 break;
             case 3:
                 String messageKeyString = message.getKeyString();
-                new DeleteConversationAsyncTask(conversationService, message, contact).execute();
+                //new DeleteConversationAsyncTask(conversationService, message, contact).execute();
+                new MessageDeleteTask(getContext(), message.getKeyString(), true, new AlCallback() {
+                    @Override
+                    public void onSuccess(Object response) {
+                        KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(Object error) {
+                        KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
+                    }
+                }).execute();
                 deleteMessageFromDeviceList(messageKeyString);
                 break;
             case 4:

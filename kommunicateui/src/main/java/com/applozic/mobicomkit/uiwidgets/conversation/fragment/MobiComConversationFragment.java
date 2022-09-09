@@ -3278,12 +3278,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
             showTakeOverFromBotLayout(assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !"bot".equals(assigneeContact.getUserId()), assigneeContact);
         }
-
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-        conversationAssignee = contact;
 
         if (contact != null) {
-            getUserDetail(getContext(), contact.getUserId(), new KmUserDetailsCallback() {
+            conversationAssignee = contact;
+            updateSupportGroupTitleAndImageAndHideSubtitle(channel);
+            retrieveAgentStatusAndSwitchContactStatusUI(contact);
+        } else {
+            getUserDetail(getContext(), channel.getConversationAssignee(), new KmUserDetailsCallback() {
                 @Override
                 public void hasFinished(final Contact contact) {
                     conversationAssignee = contact;

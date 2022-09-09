@@ -115,6 +115,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
+import io.kommunicate.async.KmSyncMessageTask;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -275,8 +276,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     protected void syncMessages() {
-        SyncCallService.getInstance(this).syncMessages(null);
-        SyncCallService.getInstance(this).syncMessageMetadata();
+        new KmSyncMessageTask(this, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

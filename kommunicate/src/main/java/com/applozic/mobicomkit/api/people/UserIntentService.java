@@ -97,6 +97,5 @@ public class UserIntentService extends AlJobIntentService {
                 mobiComConversationService.processLastSeenAtStatus();
             }
         }
-        checkAndSaveLoggedUserDeletedDataToSharedPref();
     }
 }

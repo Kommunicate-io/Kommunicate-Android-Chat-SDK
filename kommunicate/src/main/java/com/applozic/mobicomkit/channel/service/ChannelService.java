@@ -207,7 +207,7 @@ public class ChannelService {
         }
     }
 
-    public synchronized Channel getChannelByChannelKey(Integer channelKey) {
+    public Channel getChannelByChannelKey(Integer channelKey) {
         if (channelKey == null) {
             return null;
         }
@@ -243,7 +243,7 @@ public class ChannelService {
         return channelDatabaseService.getAllChannels();
     }
 
-    public synchronized void syncChannels(boolean isMetadataUpdate) {
+    public void syncChannels(boolean isMetadataUpdate) {
         try {
             final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
             SyncChannelFeed syncChannelFeed = channelClientService.getChannelFeed(userpref
@@ -473,12 +473,12 @@ public class ChannelService {
         return apiResponse.getStatus();
     }
 
-    public synchronized String createConversation(Integer groupId, String userId, String agentId,
+    public String createConversation(Integer groupId, String userId, String agentId,
                                                   String applicationId) {
         return channelClientService.createConversation(groupId, userId, agentId, applicationId);
     }
 
-    public synchronized void processChannelList(List<ChannelFeed> channelFeedList) {
+    public void processChannelList(List<ChannelFeed> channelFeedList) {
         if (channelFeedList != null && channelFeedList.size() > 0) {
             for (ChannelFeed channelFeed : channelFeedList) {
                 processChannelFeedForSync(channelFeed);
@@ -499,12 +499,12 @@ public class ChannelService {
         return channelDatabaseService.getChannelUserByChannelKeyAndUserId(channelKey, userId);
     }
 
-    public synchronized boolean processIsUserPresentInChannel(Integer channelKey) {
+    public boolean processIsUserPresentInChannel(Integer channelKey) {
         return channelDatabaseService.isChannelUserPresent(channelKey, MobiComUserPreference
                 .getInstance(context).getUserId());
     }
 
-    public synchronized boolean isUserAlreadyPresentInChannel(Integer channelKey, String userId) {
+    public boolean isUserAlreadyPresentInChannel(Integer channelKey, String userId) {
         return channelDatabaseService.isChannelUserPresent(channelKey, userId);
     }
 
@@ -519,7 +519,7 @@ public class ChannelService {
         return channelDatabaseService.isChannelUserPresent(channel.getKey(), userId);
     }
 
-    public synchronized String processChannelDeleteConversation(Channel channel, Context context) {
+    public String processChannelDeleteConversation(Channel channel, Context context) {
         String response = new MobiComConversationService(context).deleteSync(null, channel, null);
         if (!TextUtils.isEmpty(response) && "success".equals(response)) {
             channelDatabaseService.deleteChannelUserMappers(channel.getKey());

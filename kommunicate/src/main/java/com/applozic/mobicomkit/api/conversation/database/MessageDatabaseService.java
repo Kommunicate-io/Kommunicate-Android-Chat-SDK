@@ -477,7 +477,7 @@ public class MessageDatabaseService {
         return empty;
     }
 
-    public synchronized void updateMessageFileMetas(long messageId, final Message message) {
+    public void updateMessageFileMetas(long messageId, final Message message) {
         ContentValues values = new ContentValues();
         values.put("keyString", message.getKeyString());
         if (message.getFileMetaKeyStrings() != null) {
@@ -500,7 +500,7 @@ public class MessageDatabaseService {
         dbHelper.close();
     }
 
-    public synchronized long createMessage(final Message message) {
+    public long createMessage(final Message message) {
         long id = -1;
         if (message.getMessageId() != null) {
             return message.getMessageId();
@@ -521,7 +521,7 @@ public class MessageDatabaseService {
         return id;
     }
 
-    public synchronized long createSingleMessage(final Message message) {
+    public long createSingleMessage(final Message message) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
         ApplozicClient applozicClient = ApplozicClient.getInstance(context);
         long id = -1;
@@ -1206,7 +1206,7 @@ public class MessageDatabaseService {
         Utils.printLog(context, TAG, "Delete " + deletedRows + " messages.");
     }
 
-    public synchronized void updateContactUnreadCount(String userId) {
+    public void updateContactUnreadCount(String userId) {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.execSQL("UPDATE contact SET unreadCount = unreadCount + 1 WHERE userId =" + "'" + userId + "'");
@@ -1215,7 +1215,7 @@ public class MessageDatabaseService {
         }
     }
 
-    public synchronized void updateChannelUnreadCount(Integer channelKey) {
+    public void updateChannelUnreadCount(Integer channelKey) {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.execSQL("UPDATE channel SET unreadCount = unreadCount + 1 WHERE channelKey =" + "'" + channelKey + "'");
@@ -1224,7 +1224,7 @@ public class MessageDatabaseService {
         }
     }
 
-    public synchronized void decreaseChannelUnreadCount(Integer channelKey) {
+    public void decreaseChannelUnreadCount(Integer channelKey) {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.execSQL("UPDATE channel SET unreadCount = unreadCount - 1 WHERE channelKey =" + "'" + channelKey + "' AND unreadCount > 0");
@@ -1233,7 +1233,7 @@ public class MessageDatabaseService {
         }
     }
 
-    public synchronized void updateChannelUnreadCountToZero(Integer channelKey) {
+    public void updateChannelUnreadCountToZero(Integer channelKey) {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.execSQL("UPDATE channel SET unreadCount = 0 WHERE channelKey =" + "'" + channelKey + "'");
@@ -1242,12 +1242,12 @@ public class MessageDatabaseService {
         }
     }
 
-    public synchronized void replaceExistingMessage(Message message) {
+    public void replaceExistingMessage(Message message) {
         deleteMessageFromDb(message);
         createMessage(message);
     }
 
-    public synchronized void updateContactUnreadCountToZero(String userId) {
+    public void updateContactUnreadCountToZero(String userId) {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             db.execSQL("UPDATE contact SET unreadCount = 0 WHERE userId =" + "'" + userId + "'");

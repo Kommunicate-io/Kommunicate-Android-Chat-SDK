@@ -62,8 +62,10 @@ import com.applozic.mobicomkit.api.people.UserIntentService;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
+import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
+import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -783,12 +785,25 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     @Override
-    public void onQuickConversationFragmentItemClick(View view, Contact contact, Channel channel, Integer conversationId, String searchString) {
-        conversation = ConversationUIService.getConversationFragment(this, contact, channel, conversationId, searchString, null, null);
-        addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
-        this.channel = channel;
-        this.contact = contact;
+    public void onQuickConversationFragmentItemClick(final Message message, final Integer conversationId, final String searchString) {
         this.currentConversationId = conversationId;
+        new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final Channel clickedChannel = ChannelService.getInstance(ConversationActivity.this).getChannelByChannelKey(message.getGroupId());
+                            clickedChannel.setGroupUsers(ChannelService.getInstance(ConversationActivity.this).getListOfUsersFromChannelUserMapper(clickedChannel.getKey()));
+                            final Contact clickedContact = new ContactDatabase(ConversationActivity.this).getContactById(channel == null ? message.getContactIds() : null);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    channel = clickedChannel;
+                                    contact = clickedContact;
+                                    conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, contact, channel, conversationId, searchString, null, null);
+                                    addFragment(ConversationActivity.this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
+                                }
+                            });
+                        }
+                    }).start();
     }
 
     @Override

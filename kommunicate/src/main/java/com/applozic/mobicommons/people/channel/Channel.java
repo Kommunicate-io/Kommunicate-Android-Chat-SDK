@@ -1,7 +1,6 @@
 package com.applozic.mobicommons.people.channel;
 
 import android.text.TextUtils;
-
 import com.applozic.mobicommons.json.JsonMarker;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.annotations.Expose;
@@ -10,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 /**
@@ -39,6 +40,7 @@ public class Channel extends JsonMarker {
     private Long notificationAfterTime;
     private Long deletedAtTime;
     private int kmStatus;
+    private List<ChannelUserMapper> groupUsers;
     public static final String AL_CATEGORY = "AL_CATEGORY";
     public static final String CONVERSATION_STATUS = "CONVERSATION_STATUS";
     public static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
@@ -244,6 +246,33 @@ public class Channel extends JsonMarker {
 
     public void setKmStatus(int kmStatus) {
         this.kmStatus = kmStatus;
+    }
+
+    public List<ChannelUserMapper> getGroupUsers() {
+        return groupUsers;
+    }
+
+    public void setGroupUsers(List<ChannelUserMapper> groupUsers) {
+        this.groupUsers = groupUsers;
+    }
+
+    public Set<String> getListOfUsersByRole(int role) {
+        Set<String> users = new HashSet<>();
+        for(ChannelUserMapper usersFeed: getGroupUsers()) {
+            if(usersFeed.getRole().equals(role)) {
+                users.add(usersFeed.getUserKey());
+            }
+        }
+        return users;
+    }
+
+    public boolean isUserPresentInChannel(String userId) {
+        for(ChannelUserMapper usersFeed: getGroupUsers()) {
+            if(usersFeed.getUserKey().equals(userId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean blockNotification(Short loggedInUserRole) {

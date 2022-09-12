@@ -243,7 +243,7 @@ public class ChannelService {
         return channelDatabaseService.getAllChannels();
     }
 
-    public void syncChannels(boolean isMetadataUpdate) {
+    public synchronized void syncChannels(boolean isMetadataUpdate) {
         try {
             final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
             SyncChannelFeed syncChannelFeed = channelClientService.getChannelFeed(userpref
@@ -508,13 +508,13 @@ public class ChannelService {
         return channelDatabaseService.isChannelUserPresent(channelKey, userId);
     }
 
-    public synchronized boolean processIsUserPresentInChannel(String clientGroupId) {
+    public boolean processIsUserPresentInChannel(String clientGroupId) {
         Channel channel = channelDatabaseService.getChannelByClientGroupId(clientGroupId);
         return channelDatabaseService.isChannelUserPresent(channel.getKey(),
                 MobiComUserPreference.getInstance(context).getUserId());
     }
 
-    public synchronized boolean isUserAlreadyPresentInChannel(String clientGroupId, String userId) {
+    public boolean isUserAlreadyPresentInChannel(String clientGroupId, String userId) {
         Channel channel = channelDatabaseService.getChannelByClientGroupId(clientGroupId);
         return channelDatabaseService.isChannelUserPresent(channel.getKey(), userId);
     }

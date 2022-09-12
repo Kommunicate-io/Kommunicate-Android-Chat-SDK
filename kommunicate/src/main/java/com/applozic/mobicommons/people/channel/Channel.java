@@ -267,6 +267,9 @@ public class Channel extends JsonMarker {
     }
 
     public boolean isUserPresentInChannel(String userId) {
+        if(getGroupUsers() == null) {
+            return false;
+        }
         for(ChannelUserMapper usersFeed: getGroupUsers()) {
             if(usersFeed.getUserKey().equals(userId)) {
                 return true;

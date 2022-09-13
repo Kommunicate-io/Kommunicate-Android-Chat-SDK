@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
@@ -180,15 +181,13 @@ public class ConversationDatabaseService {
 
     public boolean isConversationPresent(Integer conversationId) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        Cursor cursor = database.rawQuery(
-                "SELECT COUNT(*) FROM conversation WHERE key=?", new String[]{String.valueOf(conversationId)});
-        boolean present = false;
-        if (cursor.moveToFirst()) {
-            present = cursor.getInt(0) > 0;
-            cursor.close();
-        }
+        String sql = "SELECT COUNT(*) FROM conversation WHERE key = ?";
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.bindString(1, String.valueOf(conversationId));
+        long records = statement.simpleQueryForLong();
+
         dbHelper.close();
-        return present;
+        return records > 0;
     }
 
     public void updateConversation(Conversation conversation) {

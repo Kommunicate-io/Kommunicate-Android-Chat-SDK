@@ -34,9 +34,7 @@ public class KmChannelService {
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-            String query = "select * from " + CHANNEL_USER_X + " where channelKey = " + String.valueOf(channelKey) + " and role = " + String.valueOf(3);
-
-            Cursor cursor = db.rawQuery(query, null);
+            Cursor cursor = db.query(CHANNEL_USER_X, null, "channelKey = ? and role = ?", new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
             List<ChannelUserMapper> channelUserMappers = getListOfUsers(cursor);
 
             cursor.close();
@@ -57,8 +55,8 @@ public class KmChannelService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            String query = "select * from " + CHANNEL_USER_X + " where channelKey = " + String.valueOf(channelKey) + " and role = " + String.valueOf(role);
-            cursor = db.rawQuery(query, null);
+            cursor = db.query(CHANNEL_USER_X, null, "channelKey = ? and role = ?", new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
+
             return getListOfUserIds(cursor);
         } catch (Exception e) {
             e.printStackTrace();

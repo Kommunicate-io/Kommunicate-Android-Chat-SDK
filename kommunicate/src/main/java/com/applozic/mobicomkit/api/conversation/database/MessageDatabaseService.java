@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.ApplozicClient;
@@ -288,7 +289,7 @@ public class MessageDatabaseService {
             return null;
         }
         try {
-            Cursor cursor = dbHelper.getReadableDatabase().rawQuery("select * from sms where channelKey = ? and metadata like '%" + Message.CONVERSATION_STATUS + "%' order by createdAt DESC limit 1", new String[]{channelKey.toString()});
+            Cursor cursor = dbHelper.getReadableDatabase().query("sms", null, "channelKey = ? and metadata like % ? % ", new String[]{String.valueOf(channelKey), Message.CONVERSATION_STATUS}, null, null, "createdAt DESC", "1");
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 return getMessage(cursor);
@@ -314,7 +315,7 @@ public class MessageDatabaseService {
 
     public long getMinCreatedAtFromMessageTable() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        final Cursor cursor = db.rawQuery("select min(createdAt) as createdAt from sms", null);
+        final Cursor cursor = db.query("sms", new String[]{"min(createdAt)"}, null, null, null, null, null);
         try {
             long createdAt = 0;
             cursor.moveToFirst();
@@ -358,17 +359,13 @@ public class MessageDatabaseService {
 
     public boolean isMessagePresent(String key) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        Cursor cursor = database.rawQuery(
-                "SELECT COUNT(*) FROM sms WHERE keyString = ?",
-                new String[]{key});
+        String sql = "SELECT COUNT(*) FROM sms WHERE keyString = ?";
+        SQLiteStatement sqLiteStatement = database.compileStatement(sql);
+        sqLiteStatement.bindString(1, key);
         try {
-            cursor.moveToFirst();
-            return cursor.getInt(0) > 0;
+            return sqLiteStatement.simpleQueryForLong() > 0;
         } finally {
-            if (cursor != null) {
-                cursor.close();
-                dbHelper.close();
-            }
+            dbHelper.close();
         }
     }
 
@@ -539,7 +536,7 @@ public class MessageDatabaseService {
         }
 
         if (duplicateCheck) {
-            Cursor cursor = null;
+            SQLiteStatement statement = null;
             try {
                 String queryClause = "";
 
@@ -550,23 +547,19 @@ public class MessageDatabaseService {
                 }
 
                 if (message.isSentToServer() && !TextUtils.isEmpty(message.getKeyString())) {
-                    cursor = database.rawQuery(
-                            "SELECT COUNT(*) FROM sms WHERE keyString = ? and " + queryClause, new String[]{message.getKeyString()});
+                    statement = database.compileStatement("SELECT COUNT(*) FROM sms WHERE keyString = ? and " + queryClause);
+                    statement.bindString(1, message.getKeyString());
                 } else {
-                    cursor = database.rawQuery(
-                            "SELECT COUNT(*) FROM sms WHERE sentToServer=0 and " + queryClause + " and message = ? and createdAt = " + message.getCreatedAtTime(), new String[]{message.getMessage()});
+                    statement = database.compileStatement("SELECT COUNT(*) FROM sms WHERE sentToServer=0 and " + queryClause + " and message = ? and createdAt = ?");
+                    statement.bindString(1, message.getMessage());
+                    statement.bindLong(2, message.getCreatedAtTime());
                 }
-
-                cursor.moveToFirst();
-                if (cursor.getInt(0) > 0) {
+                if(statement.simpleQueryForLong() > 0) {
                     return -1;
                 }
             } catch (Throwable e) {
                 e.printStackTrace();
             } finally {
-                if (cursor != null) {
-                    cursor.close();
-                }
                 dbHelper.close();
             }
         }
@@ -749,7 +742,7 @@ public class MessageDatabaseService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT unreadCount FROM contact WHERE userId = " + "'" + userId + "'", null);
+            cursor = db.query("contact", new String[]{"unreadCount"}, "userId = ?", new String[]{userId}, null, null, null);
             cursor.moveToFirst();
             int unreadMessageCount = 0;
             if (cursor.getCount() > 0) {
@@ -771,7 +764,7 @@ public class MessageDatabaseService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT unreadCount FROM channel WHERE channelKey = " + "'" + String.valueOf(channelKey) + "'", null);
+            cursor = db.query("channel", new String[]{"unreadCount"}, "channelKey = ?", new String[]{String.valueOf(channelKey)}, null, null, null);
             cursor.moveToFirst();
             int unreadMessage = 0;
             if (cursor.getCount() > 0) {
@@ -836,7 +829,7 @@ public class MessageDatabaseService {
     public List<Message> getLatestMessage(String contactNumbers) {
         List<Message> messages = new ArrayList<Message>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from sms where contactNumbers = " + "'" + contactNumbers + "'" + " order by createdAt desc limit 1", null);
+        Cursor cursor = db.query("sms", null, "contactNumbers = ? ", new String[]{contactNumbers}, null, null, "createdAt desc", "1");
         if (cursor.moveToFirst()) {
             messages = MessageDatabaseService.getMessageList(cursor);
         }
@@ -863,7 +856,7 @@ public class MessageDatabaseService {
         }
         List<Message> messages = new ArrayList<Message>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select * from sms where " + clauseString + " order by createdAt desc limit 1", null);
+        Cursor cursor = db.query("sms", null, clauseString, null, null, "createdAt desc", "1");
         try {
             if (cursor.moveToFirst()) {
                 messages = MessageDatabaseService.getMessageList(cursor);
@@ -1298,8 +1291,8 @@ public class MessageDatabaseService {
         int totalCount = 0;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            contactCursor = db.rawQuery("SELECT * FROM contact WHERE unreadCount > 0 ", null);
-            channelCursor = db.rawQuery("SELECT * FROM channel WHERE unreadCount > 0 ", null);
+            contactCursor = db.query("contact", null, "unreadCount > 0", null, null, null, null);
+            channelCursor = db.query("channel", null, "unreadCount > 0", null, null, null, null);
 
             if (contactCursor.moveToFirst()) {
                 do {

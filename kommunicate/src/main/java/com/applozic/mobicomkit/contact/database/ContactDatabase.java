@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 
 import androidx.loader.content.CursorLoader;
@@ -365,15 +366,12 @@ public class ContactDatabase {
         Cursor cursor = null;
         try {
             SQLiteDatabase database = dbHelper.getReadableDatabase();
-            cursor = database.rawQuery(
-                    "SELECT COUNT(*) FROM contact WHERE userId = ?",
-                    new String[]{userId});
-            cursor.moveToFirst();
-            return cursor.getInt(0) > 0;
+
+            String sql = "SELECT COUNT(*) FROM contact WHERE userId = ?";
+            SQLiteStatement sqLiteStatement = database.compileStatement(sql);
+            sqLiteStatement.bindString(1, userId);
+            return sqLiteStatement.simpleQueryForLong() > 0;
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
             dbHelper.close();
         }
     }
@@ -410,19 +408,12 @@ public class ContactDatabase {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT COUNT(DISTINCT (userId)) FROM contact WHERE unreadCount > 0 ", null);
-            cursor.moveToFirst();
-            int chatCount = 0;
-            if (cursor.getCount() > 0) {
-                chatCount = cursor.getInt(0);
-            }
-            return chatCount;
+            String sql = "SELECT COUNT(DISTINCT (userId)) FROM contact WHERE unreadCount > 0 ";
+            SQLiteStatement sqLiteStatement = db.compileStatement(sql);
+            return (int) sqLiteStatement.simpleQueryForLong();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
             dbHelper.close();
         }
         return 0;
@@ -432,13 +423,9 @@ public class ContactDatabase {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT COUNT(DISTINCT (channelKey)) FROM channel WHERE unreadCount > 0 ", null);
-            cursor.moveToFirst();
-            int groupCount = 0;
-            if (cursor.getCount() > 0) {
-                groupCount = cursor.getInt(0);
-            }
-            return groupCount;
+            String sql = "SELECT COUNT(DISTINCT (channelKey)) FROM channel WHERE unreadCount > 0 ";
+            SQLiteStatement sqLiteStatement = db.compileStatement(sql);
+            return (int) sqLiteStatement.simpleQueryForLong();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {

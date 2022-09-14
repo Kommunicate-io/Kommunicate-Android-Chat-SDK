@@ -1206,7 +1206,6 @@ public class MessageDatabaseService {
             ContentValues values = new ContentValues();
             values.put("unreadCount", unreadCount + 1);
             db.update("contact", values, "userId = " + userId, null);
-            //db.execSQL("UPDATE contact SET unreadCount = unreadCount + 1 WHERE userId =" + "'" + userId + "'");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1219,7 +1218,6 @@ public class MessageDatabaseService {
             ContentValues values = new ContentValues();
             values.put("unreadCount", unreadCount + 1);
             db.update("channel", values, "channelKey = " + channelKey, null);
-            //db.execSQL("UPDATE channel SET unreadCount = unreadCount + 1 WHERE channelKey =" + "'" + channelKey + "'");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1231,8 +1229,7 @@ public class MessageDatabaseService {
             int unreadCount = getUnreadMessageCountForChannel(channelKey);
             ContentValues values = new ContentValues();
             values.put("unreadCount", unreadCount - 1);
-            db.update("channel", values, "channelKey =\" + \"'\" + channelKey + \"' AND unreadCount > 0\"", null);
-            //db.execSQL("UPDATE channel SET unreadCount = unreadCount - 1 WHERE channelKey =" + "'" + channelKey + "' AND unreadCount > 0");
+            db.update("channel", values, "channelKey = ? AND unreadCount > 0", new String[]{String.valueOf(channelKey)});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1243,8 +1240,7 @@ public class MessageDatabaseService {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put("unreadCount", 0);
-            db.update("channel", values, "channelKey = " + channelKey, null);
-            //db.execSQL("UPDATE channel SET unreadCount = 0 WHERE channelKey =" + "'" + channelKey + "'");
+            db.update("channel", values, "channelKey = ?", new String[]{String.valueOf(channelKey)});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1260,8 +1256,7 @@ public class MessageDatabaseService {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put("unreadCount", 0);
-            db.update("contact", values, "userId = " + userId, null);
-            //db.execSQL("UPDATE contact SET unreadCount = 0 WHERE userId =" + "'" + userId + "'");
+            db.update("contact", values, "userId = ?", new String[]{userId});
         } catch (Exception e) {
             e.printStackTrace();
         }

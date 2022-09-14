@@ -289,7 +289,7 @@ public class MessageDatabaseService {
             return null;
         }
         try {
-            Cursor cursor = dbHelper.getReadableDatabase().query("sms", null, "channelKey = ? and metadata like % ? % ", new String[]{String.valueOf(channelKey), Message.CONVERSATION_STATUS}, null, null, "createdAt DESC", "1");
+            Cursor cursor = dbHelper.getReadableDatabase().query("sms", null, "channelKey = ? and metadata like ?", new String[]{String.valueOf(channelKey), "%" + Message.CONVERSATION_STATUS + "%"}, null, null, "createdAt DESC", "1");
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 return getMessage(cursor);

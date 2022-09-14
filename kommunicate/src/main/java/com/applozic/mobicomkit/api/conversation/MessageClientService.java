@@ -358,7 +358,7 @@ public class MessageClientService extends MobiComKitClientService {
         if (deleteForAll) {
             urlBuilder.append("&").append(DELETE_FOR_ALL).append("true");
         }
-        return httpRequestUtils.getResponseWithException(urlBuilder.toString(), "application/json", "application/json", false, null);
+        return httpRequestUtils.getResponseWithException(urlBuilder.toString(), "application/json",null, false, null);
     }
 
     public void processMessage(Message message, Handler handler, String userDisplayName) throws Exception {

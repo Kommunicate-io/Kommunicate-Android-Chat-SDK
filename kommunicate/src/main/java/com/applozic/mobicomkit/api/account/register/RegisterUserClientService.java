@@ -185,11 +185,6 @@ public class RegisterUserClientService extends MobiComKitClientService {
             conversationIntentService.putExtra(ConversationIntentService.SYNC, false);
             ConversationIntentService.enqueueWork(context, conversationIntentService);
 
-
-            Intent mutedUserListService = new Intent(context, ConversationIntentService.class);
-            mutedUserListService.putExtra(ConversationIntentService.MUTED_USER_LIST_SYNC, true);
-            ConversationIntentService.enqueueWork(context, mutedUserListService);
-
             Intent intent = new Intent(context, ApplozicMqttIntentService.class);
             intent.putExtra(ApplozicMqttIntentService.CONNECTED_PUBLISH, true);
             ApplozicMqttIntentService.enqueueWork(context, intent);

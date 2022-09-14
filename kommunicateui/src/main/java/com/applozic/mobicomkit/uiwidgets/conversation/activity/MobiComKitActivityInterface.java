@@ -17,7 +17,7 @@ public interface MobiComKitActivityInterface {
     int REQUEST_CODE_FULL_SCREEN_ACTION = 301;
     int INSTRUCTION_DELAY = 5000;
 
-    void onQuickConversationFragmentItemClick(View view, Contact contact, Channel channel, Integer conversationId, String searchString);
+    void onQuickConversationFragmentItemClick(Message message, Integer conversationId, String searchString);
 
     void startContactActivityForResult();
 

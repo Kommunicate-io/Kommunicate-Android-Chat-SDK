@@ -59,6 +59,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.services.KmChannelService;
 import io.kommunicate.utils.KmUtils;
 
 /**
@@ -492,10 +493,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             if (itemPosition != -1 && !messageList.isEmpty()) {
                 Message message = getItem(itemPosition);
                 if (message != null) {
-                    Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
-                    Contact contact = new ContactDatabase(context).getContactById(channel == null ? message.getContactIds() : null);
                     InstructionUtil.hideInstruction(context, R.string.instruction_open_conversation_thread);
-                    ((MobiComKitActivityInterface) context).onQuickConversationFragmentItemClick(view, contact, channel, message.getConversationId(), searchString);
+                    ((MobiComKitActivityInterface) context).onQuickConversationFragmentItemClick(message, message.getConversationId(), searchString);
                 }
             }
         }

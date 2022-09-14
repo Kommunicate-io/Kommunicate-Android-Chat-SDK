@@ -695,7 +695,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             userNotAbleToChatTextView.setText(R.string.group_has_been_deleted_text);
         }
 
-
         bottomlayoutTextView = (TextView) list.findViewById(R.id.user_not_able_to_chat_textView);
         if (!TextUtils.isEmpty(defaultText)) {
             messageEditText.setText(defaultText);
@@ -2067,7 +2066,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void updateChannelSubTitle(final Channel channel) {
-        channelUserMapperList = ChannelService.getInstance(getActivity()).getListOfUsersFromChannelUserMapper(channel.getKey());
+        if(channel.getGroupUsers() != null) {
+            channelUserMapperList = channel.getGroupUsers();
+        } else {
+            channelUserMapperList = ChannelService.getInstance(getActivity()).getListOfUsersFromChannelUserMapper(channel.getKey());
+
+        }
         if (channelUserMapperList != null && channelUserMapperList.size() > 0) {
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                 String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
@@ -2185,7 +2189,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     protected void setChannel(Channel channel) {
         this.channel = channel;
-        if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
+        boolean isUserPresent = true;
+        if(channel.getGroupUsers() != null) {
+            isUserPresent = channel.isUserPresentInChannel(MobiComUserPreference.getInstance(getContext()).getUserId());
+        } else {
+            isUserPresent = ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId());
+        }
+        if (channel != null && !isUserPresent
                 && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
             templateAdapter.setMessageList(new HashMap<String, String>());
             templateAdapter.notifyDataSetChanged();
@@ -3081,7 +3091,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             if (channel != null) {
                 if (channel.getType() != null && (!Channel.GroupType.OPEN.getValue().equals(channel.getType()) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
-                    boolean present = ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey());
+                    boolean present = true;
+                    if(channel.getGroupUsers() != null) {
+                        present = channel.isUserPresentInChannel(MobiComUserPreference.getInstance(getContext()).getUserId());
+                    } else {
+                        present = ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey());
+                    }
+
                     hideSendMessageLayout(channel.isDeleted() || !present);
                 } else {
                     hideSendMessageLayout(channel.isDeleted());
@@ -3104,7 +3120,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 SyncCallService.refreshView = false;
             }
 
-            if (channel != null && !ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey())) {
+            if (channel != null && !channel.isUserPresentInChannel(MobiComUserPreference
+                    .getInstance(getContext()).getUserId())) {
                 Channel newChannel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
                 if (newChannel != null && newChannel.getType() != null && Channel.GroupType.OPEN.getValue().equals(newChannel.getType())) {
                     MobiComUserPreference.getInstance(getActivity()).setNewMessageFlag(true);
@@ -3165,7 +3182,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 if (dialog != null) {
                                     dialog.dismiss();
                                 }
-                                if (ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), assigneeBot.getUserId())) {
+                                if (channel.isUserPresentInChannel(assigneeBot.getUserId())) {
                                     processTakeOverFromBot(getContext(), channel);
                                 } else {
                                     takeOverFromBotLayout.setVisibility(View.GONE);
@@ -3278,12 +3295,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
             showTakeOverFromBotLayout(assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !"bot".equals(assigneeContact.getUserId()), assigneeContact);
         }
-
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-        conversationAssignee = contact;
 
         if (contact != null) {
-            getUserDetail(getContext(), contact.getUserId(), new KmUserDetailsCallback() {
+            conversationAssignee = contact;
+            updateSupportGroupTitleAndImageAndHideSubtitle(channel);
+            retrieveAgentStatusAndSwitchContactStatusUI(contact);
+        } else {
+            getUserDetail(getContext(), channel.getConversationAssignee(), new KmUserDetailsCallback() {
                 @Override
                 public void hasFinished(final Contact contact) {
                     conversationAssignee = contact;
@@ -3360,14 +3379,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void updateChannelTitleAndSubTitle() {
         if (channel != null) {
             Channel channelInfo = ChannelService.getInstance(getActivity()).getChannelInfo(channel.getKey());
-
+            boolean isUserPresent = true;
+            if(channel.getGroupUsers() != null) {
+                isUserPresent = channel.isUserPresentInChannel(MobiComUserPreference.getInstance(getContext()).getUserId());
+            } else {
+                isUserPresent = ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId());
+            }
             if (channelInfo.isDeleted()) {
                 channel.setDeletedAtTime(channelInfo.getDeletedAtTime());
                 individualMessageSendLayout.setVisibility(View.GONE);
                 userNotAbleToChatLayout.setVisibility(VISIBLE);
                 handleSendAndRecordButtonView(true);
                 userNotAbleToChatTextView.setText(ApplozicService.getContext(getContext()).getString(R.string.group_has_been_deleted_text));
-                if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
+                if (channel != null && !isUserPresent
                         && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
                     templateAdapter.setMessageList(new HashMap<String, String>());
                     templateAdapter.notifyDataSetChanged();
@@ -3376,13 +3400,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     getActivity().invalidateOptionsMenu();
                 }
             } else {
-                if ((!ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(channel.getKey())
+
+                if ((!isUserPresent
                         && userNotAbleToChatLayout != null
                         && (!Channel.GroupType.OPEN.getValue().equals(channel.getType())) && !Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
                     individualMessageSendLayout.setVisibility(View.GONE);
                     userNotAbleToChatLayout.setVisibility(VISIBLE);
                     handleSendAndRecordButtonView(true);
-                    if (channel != null && !ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId())
+                    if (channel != null && !isUserPresent
                             && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
                         templateAdapter.setMessageList(new HashMap<String, String>());
                         templateAdapter.notifyDataSetChanged();
@@ -4667,7 +4692,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         final String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
 
-        Set<String> botIds = KmChannelService.getInstance(context).getListOfUsersByRole(channel.getKey(), 2);
+        Set<String> botIds = channel.getListOfUsersByRole(2);
         if (botIds != null) {
             botIds.remove("bot");
         }

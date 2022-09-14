@@ -856,7 +856,7 @@ public class MessageDatabaseService {
         }
         List<Message> messages = new ArrayList<Message>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query("sms", null, clauseString, null, null, "createdAt desc", "1");
+        Cursor cursor = db.query("sms", null, clauseString, null, null, null, "createdAt desc", "1");
         try {
             if (cursor.moveToFirst()) {
                 messages = MessageDatabaseService.getMessageList(cursor);
@@ -1205,7 +1205,7 @@ public class MessageDatabaseService {
             int unreadCount = getUnreadMessageCountForContact(userId);
             ContentValues values = new ContentValues();
             values.put("unreadCount", unreadCount + 1);
-            db.update("contact", values, "userId = " + userId, null);
+            db.update("contact", values, "userId = ?", new String[]{userId});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1217,7 +1217,7 @@ public class MessageDatabaseService {
             int unreadCount = getUnreadMessageCountForChannel(channelKey);
             ContentValues values = new ContentValues();
             values.put("unreadCount", unreadCount + 1);
-            db.update("channel", values, "channelKey = " + channelKey, null);
+            db.update("channel", values, "channelKey = ?", new String[]{String.valueOf(channelKey)});
         } catch (Exception e) {
             e.printStackTrace();
         }

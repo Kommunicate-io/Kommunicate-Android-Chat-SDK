@@ -792,13 +792,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         public void run() {
                             final Channel clickedChannel = ChannelService.getInstance(ConversationActivity.this).getChannelByChannelKey(message.getGroupId());
                             clickedChannel.setGroupUsers(ChannelService.getInstance(ConversationActivity.this).getListOfUsersFromChannelUserMapper(clickedChannel.getKey()));
-                            final Contact clickedContact = new ContactDatabase(ConversationActivity.this).getContactById(channel == null ? message.getContactIds() : null);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     channel = clickedChannel;
-                                    contact = clickedContact;
-                                    conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, contact, channel, conversationId, searchString, null, null);
+                                    conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, null, channel, conversationId, searchString, null, null);
                                     addFragment(ConversationActivity.this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
                                 }
                             });

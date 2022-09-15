@@ -13,7 +13,8 @@ public class DBUtils {
     private static final String TAG = "DBUtils";
 
     public static boolean isTableExists(SQLiteDatabase database, String tableName) {
-        Cursor cursor = database.rawQuery("select DISTINCT tbl_name from sqlite_master where tbl_name = '" + tableName + "'", null);
+        Cursor cursor = database.query(true, "sqlite_master", new String[]{"tbl_name"}, "tbl_name = ?", new String[]{String.valueOf(tableName)}, null, null, null, null);
+
         if (cursor != null) {
             if (cursor.getCount() > 0) {
                 cursor.close();
@@ -28,8 +29,7 @@ public class DBUtils {
         Cursor mCursor = null;
         try {
             //query 1 row
-            mCursor = inDatabase.rawQuery("SELECT * FROM " + inTable + " LIMIT 0", null);
-
+            mCursor = inDatabase.query(inTable, null, "LIMIT 0", null, null, null, null);
             //getColumnIndex gives us the index (0 to ...) of the column - otherwise we get a -1
             return mCursor.getColumnIndex(columnToCheck) != -1;
         } catch (Exception exp) {

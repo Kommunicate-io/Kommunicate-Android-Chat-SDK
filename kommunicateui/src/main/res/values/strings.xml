@@ -116,6 +116,7 @@
     <string name="logout">Logout</string>
     <string name="copy">Copy</string>
     <string name="forward">Forward</string>
+    <string name="delete_for_all">Delete for All</string>
     <string name="resend">Resend</string>
     <string name="delete">Delete</string>
     <string name="info">Info</string>

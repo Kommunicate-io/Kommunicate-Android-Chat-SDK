@@ -25,7 +25,7 @@
 
     <string-array name="menu">
         <item>Copy</item>
-        <item>Forward</item>
+        <item>Delete for All</item>
         <item>Resend</item>
         <item>Delete</item>
         <item>Info</item>

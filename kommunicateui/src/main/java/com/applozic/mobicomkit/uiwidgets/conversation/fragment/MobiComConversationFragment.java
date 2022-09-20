@@ -3011,9 +3011,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         StringBuilder titleBuilder = new StringBuilder();
-        if (contact != null) {
-            titleBuilder.append(contact.getDisplayName());
-        } else if (channel != null) {
+        if (channel != null) {
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                 String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
                 if (!TextUtils.isEmpty(userId)) {
@@ -3028,6 +3026,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 titleBuilder.append(ChannelUtils.getChannelTitleName(channel, loggedInUserId));
             }
+        } else if (contact != null) {
+            titleBuilder.append(contact.getDisplayName());
         }
         if (getActivity() != null) {
             setToolbarTitle(titleBuilder.toString());

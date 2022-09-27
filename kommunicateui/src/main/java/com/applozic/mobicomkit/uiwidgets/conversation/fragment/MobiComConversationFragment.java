@@ -3110,6 +3110,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                 loadAwayMessage();
                 processSupportGroupDetails(channel);
+                Applozic.subscribeToTyping(getContext(), channel, contact);
             }
 
             if (appContactService != null && contact != null) {

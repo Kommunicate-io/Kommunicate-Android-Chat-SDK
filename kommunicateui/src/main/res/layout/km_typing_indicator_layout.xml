@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
+    android:layout_marginStart="50dp"
+    android:layout_marginBottom="8dp"
+    android:layout_alignParentBottom="true"
+    android:gravity="start">
+
+    <LinearLayout
+        android:id="@+id/typing_linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:visibility="visible"
+        android:background="@drawable/km_received_message"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/typing_first_dot"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.3"
+            android:layout_margin="5dp"
+
+            android:background="@drawable/km_blinking_dot"/>
+
+        <TextView
+            android:id="@+id/typing_second_dot"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.3"
+            android:layout_margin="5dp"
+            android:background="@drawable/km_blinking_dot"/>
+
+
+        <TextView
+            android:id="@+id/typing_third_dot"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.3"
+            android:layout_margin="5dp"
+            android:background="@drawable/km_blinking_dot"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -247,6 +247,17 @@
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
+            <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmTypingView
+                android:id="@+id/idKmTypingView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="45dp"
+                android:layout_marginBottom="20dp"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
             <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAwayView
                 android:id="@+id/idKmAwayView"
                 android:layout_width="match_parent"

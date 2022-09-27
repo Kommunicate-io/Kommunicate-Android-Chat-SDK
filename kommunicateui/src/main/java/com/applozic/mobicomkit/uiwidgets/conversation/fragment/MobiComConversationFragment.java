@@ -3152,6 +3152,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             emailReplyReminderLayout.setVisibility(VISIBLE);
         }
 
+        if(kmTypingView != null) {
+            kmTypingView.setVisibility(GONE);
+        }
     }
 
     public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {

@@ -149,6 +149,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmTypingView;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.CustomToolbarListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
@@ -319,6 +320,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected MobicomMessageTemplate messageTemplate;
     protected MobicomMessageTemplateAdapter templateAdapter;
     protected KmAwayView kmAwayView;
+    protected KmTypingView kmTypingView;
     protected TextView applozicLabel;
     protected RelativeLayout customToolbarLayout;
     protected CircleImageView toolbarImageView;
@@ -656,6 +658,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         kmAwayView = list.findViewById(R.id.idKmAwayView);
+        kmTypingView = list.findViewById(R.id.idKmTypingView);
 
         isRecordOptionEnabled = (alCustomizationSettings != null
                 && alCustomizationSettings.getAttachmentOptions() != null
@@ -2898,10 +2901,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                                     ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(ApplozicService.getContext(getContext()).getString(R.string.is_typing));
                                 } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                                    if (toolbarSubtitleText != null && getContext() != null) {
-                                        toolbarSubtitleText.setText(ApplozicService.getContext(getContext()).getString(R.string.typing));
-                                        toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
-                                    }
+                                    kmTypingView.setVisibility(VISIBLE);
                                 } else {
                                     ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(displayNameContact.getDisplayName() + " " + ApplozicService.getContext(getContext()).getString(R.string.is_typing));
                                 }
@@ -2925,9 +2925,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                     return;
                                 }
                                 if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                                    if (toolbarSubtitleText != null) {
-                                        toolbarSubtitleText.setVisibility(View.GONE);
-                                    }
+                                    kmTypingView.setVisibility(GONE);
+
                                     if (conversationAssignee != null) {
                                         switchContactStatus(conversationAssignee, null);
                                     } else {
@@ -3111,6 +3110,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                 loadAwayMessage();
                 processSupportGroupDetails(channel);
+                Applozic.subscribeToTyping(getContext(), channel, contact);
             }
 
             if (appContactService != null && contact != null) {
@@ -3153,6 +3153,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             emailReplyReminderLayout.setVisibility(VISIBLE);
         }
 
+        if(kmTypingView != null) {
+            kmTypingView.setVisibility(GONE);
+        }
     }
 
     public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {

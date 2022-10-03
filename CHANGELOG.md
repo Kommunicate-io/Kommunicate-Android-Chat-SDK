@@ -4,6 +4,12 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
 
+## Kommunicate Android SDK 2.4.8
+1) Typing Indicator Design Changes
+2) SQL Injection vulnerability fix
+3) Threads optimized
+4) Invalid agent/bot name fix
+
 ## Kommunicate Android SDK 2.4.6
 1) Added support for HTML Video Rich message
 2) Multiple crash fix and optimizations

@@ -1,6 +1,6 @@
 ## Migrating to 2.5.0
 
-- We have removed permissions permissions from our SDK. Now if you do not require Camera permissions in your chat app, then it will not show up in Permissions Required.
+- We have removed permissions from our SDK. Now if you do not require Camera, Audio, Location and Storage permissions in your chat app, then it will not show up in Permissions Required.
 - Add these to your AndroidManifest.xml:
 
 - For Camera:

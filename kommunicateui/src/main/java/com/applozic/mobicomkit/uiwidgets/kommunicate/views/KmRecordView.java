@@ -209,7 +209,7 @@ public class KmRecordView extends FrameLayout {
     }
 
     protected void onActionMove(KmRecordButton recordBtn, MotionEvent motionEvent) {
-        if (isSpeechToTextEnabled) {
+        if (isSpeechToTextEnabled  || !PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             return;
         }
         long time = System.currentTimeMillis() - startTime;
@@ -297,7 +297,7 @@ public class KmRecordView extends FrameLayout {
     }
 
     protected void onActionUp(KmRecordButton recordBtn) {
-        if (isSpeechToTextEnabled) {
+        if (isSpeechToTextEnabled  || !PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             return;
         }
 

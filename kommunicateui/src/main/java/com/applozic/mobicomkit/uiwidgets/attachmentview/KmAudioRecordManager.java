@@ -87,11 +87,7 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
                 createRecordingThread();
                 recordingThread.start();
             } else {
-                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.RECORD_AUDIO},
-                            10);
-                }
+                PermissionsUtils.requestPermissions(context, PermissionsUtils.PERMISSIONS_RECORD_AUDIO, PermissionsUtils.REQUEST_AUDIO_RECORD);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -26,6 +26,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.KmAnimationHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
+import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.io.IOException;
@@ -184,6 +185,9 @@ public class KmRecordView extends FrameLayout {
         if (recordListener != null) {
             recordListener.onRecordStart();
         }
+        if(!PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+            return;
+        }
 
         animationHelper.setStartRecorded(true);
         animationHelper.resetBasketAnimation();
@@ -205,7 +209,7 @@ public class KmRecordView extends FrameLayout {
     }
 
     protected void onActionMove(KmRecordButton recordBtn, MotionEvent motionEvent) {
-        if (isSpeechToTextEnabled) {
+        if (isSpeechToTextEnabled  || !PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             return;
         }
         long time = System.currentTimeMillis() - startTime;
@@ -293,7 +297,7 @@ public class KmRecordView extends FrameLayout {
     }
 
     protected void onActionUp(KmRecordButton recordBtn) {
-        if (isSpeechToTextEnabled) {
+        if (isSpeechToTextEnabled  || !PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             return;
         }
 

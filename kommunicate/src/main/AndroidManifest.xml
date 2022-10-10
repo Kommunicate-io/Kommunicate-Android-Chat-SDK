@@ -2,31 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="io.kommunicate">
 
-    <!--Permissions to be used when using these features-->
-    <uses-permission
-        android:name="android.permission.CAMERA"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.RECORD_AUDIO"
-        tools:node="merge" />
-
     <!--Mandatory permissions-->
     <uses-permission
         android:name="android.permission.VIBRATE"
         tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION"
-        tools:node="merge" />
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION"
-        tools:node="merge" />
+
     <uses-permission
         android:name="android.permission.INTERNET"
         tools:node="merge" />
@@ -36,6 +16,7 @@
     <uses-permission
         android:name="android.permission.RECEIVE_BOOT_COMPLETED"
         tools:node="merge" />
+
 
     <application
         android:allowBackup="true"

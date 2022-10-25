@@ -3,6 +3,8 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+### [UnReleased]
+1) Added support for API 33
 
 ## Kommunicate Android SDK 2.4.8
 1) Typing Indicator Design Changes

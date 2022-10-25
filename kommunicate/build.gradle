@@ -8,7 +8,7 @@ rootProject.allprojects {
     }
 }
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     lintOptions {
         abortOnError false
@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "2.4.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

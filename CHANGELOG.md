@@ -3,8 +3,9 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-### [UnReleased]
+## Kommunicate Android SDK 2.5.0
 1) Added support for API 33
+2) Added background color customization for Start new Conversation Button
 
 ## Kommunicate Android SDK 2.4.8
 1) Typing Indicator Design Changes

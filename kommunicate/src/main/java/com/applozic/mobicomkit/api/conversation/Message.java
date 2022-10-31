@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 
 public class Message extends JsonMarker {
 
+    private static final long serialVersionUID = 1990184800447349902L;
     private Long createdAtTime = new Date().getTime();
     private String to;
     private String message;

@@ -57,6 +57,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -643,7 +645,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
         emoticonsBtn.setOnClickListener(this);
-
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         if(alCustomizationSettings.getInnerTimestampDesign()) {
             sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
             deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
@@ -651,10 +653,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             pendingIcon = getResources().getDrawable(R.drawable.km_pending_icon_c);
         }
         else {
-            sentIcon = getResources().getDrawable(R.drawable.km_sent_icon);
-            deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon);
-            readIcon = getResources().getDrawable(R.drawable.km_read_icon);
-            pendingIcon = getResources().getDrawable(R.drawable.km_pending_message_icon);
+                sentIcon = AppCompatResources.getDrawable(getContext(), R.drawable.km_sent_icon);
+                deliveredIcon = AppCompatResources.getDrawable(getContext(), R.drawable.km_delivered_icon);
+                readIcon = AppCompatResources.getDrawable(getContext(), R.drawable.km_read_icon);
+                pendingIcon = AppCompatResources.getDrawable(getContext(), R.drawable.km_pending_message_icon);
         }
 
         kmAwayView = list.findViewById(R.id.idKmAwayView);

@@ -2,6 +2,7 @@ package com.applozic.mobicommons.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
@@ -35,8 +36,13 @@ public class SecureSharedPreferences implements SharedPreferences {
         Context applicationContext = ApplozicService.getContext(context);
         sharedPreferences = applicationContext.getSharedPreferences(name, Context.MODE_PRIVATE);
         this.name = name;
-        KeyPair keyPairRSA = SecurityUtils.getRSAKeyPair(applicationContext);
-        secretKeyAES = SecurityUtils.getAESKey(applicationContext, keyPairRSA);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            KeyPair keyPairRSA = SecurityUtils.getRSAKeyPair(applicationContext);
+            secretKeyAES = SecurityUtils.getAESKey(applicationContext, keyPairRSA);
+        } else {
+            secretKeyAES = SecurityUtils.getAESKey(applicationContext, null);
+        }
+
         initializationVector = new byte[16];
 
         if (!sharedPreferences.contains(SecurityUtils.VERSION_CODE) && !sharedPreferences.getAll().isEmpty()) {
@@ -60,7 +66,7 @@ public class SecureSharedPreferences implements SharedPreferences {
      * @return the plain value for the given key
      */
     private <T> String getDecryptedString(String key, T defValue) {
-        return SecurityUtils.decrypt(SecurityUtils.AES, sharedPreferences.getString(SecurityUtils.encrypt(SecurityUtils.AES, key, secretKeyAES, initializationVector), String.valueOf(defValue)), secretKeyAES, initializationVector);
+        return SecurityUtils.decrypt(SecurityUtils.AES, sharedPreferences.getString(SecurityUtils.encrypt(SecurityUtils.AES, key, secretKeyAES, initializationVector).trim(), String.valueOf(defValue)), secretKeyAES, initializationVector);
     }
 
     /**
@@ -225,7 +231,7 @@ public class SecureSharedPreferences implements SharedPreferences {
          */
         private <T> SecureEditor putAsString(String key, T value) {
             try {
-                editor.putString(SecurityUtils.encrypt(SecurityUtils.AES, key, secretKeyAES, initializationVector), TextUtils.isEmpty(String.valueOf(value)) ? "" : SecurityUtils.encrypt(SecurityUtils.AES, String.valueOf(value), secretKeyAES, initializationVector));
+                editor.putString(SecurityUtils.encrypt(SecurityUtils.AES, key, secretKeyAES, initializationVector).trim(), TextUtils.isEmpty(String.valueOf(value)) ? "" : SecurityUtils.encrypt(SecurityUtils.AES, String.valueOf(value), secretKeyAES, initializationVector));
                 return this;
             } catch (Exception exception) {
                 exception.printStackTrace();

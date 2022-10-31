@@ -40,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
@@ -261,10 +262,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
         }
         else {
-            sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon);
-            deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon);
-            readIcon = context.getResources().getDrawable(R.drawable.km_read_icon);
-            pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_message_icon);
+            sentIcon = AppCompatResources.getDrawable(context, R.drawable.km_sent_icon);
+            deliveredIcon = AppCompatResources.getDrawable(context, R.drawable.km_delivered_icon);
+            readIcon = AppCompatResources.getDrawable(context, R.drawable.km_read_icon);
+            pendingIcon = AppCompatResources.getDrawable(context, R.drawable.km_pending_message_icon);
         }
         final String alphabet = context.getString(R.string.alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);

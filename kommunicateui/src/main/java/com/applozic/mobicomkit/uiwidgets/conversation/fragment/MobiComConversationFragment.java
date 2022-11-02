@@ -3216,30 +3216,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void updateSupportGroupTitleAndImageAndHideSubtitle(Channel channel) {
-        String imageUrl = "";
-        String name = "";
+        toolbarAlphabeticImage.setVisibility(VISIBLE);
+        toolbarImageView.setVisibility(GONE);
+        if (channel != null && channel.getConversationAssignee() != null) {
+            Contact withUserContact = appContactService.getContactById(channel.getConversationAssignee());
 
-        if (channel != null) {
-            name = channel.getName();
-            imageUrl = channel.getImageUrl();
-        }
-
-        if (!TextUtils.isEmpty(imageUrl)) {
-            toolbarAlphabeticImage.setVisibility(View.GONE);
-            toolbarImageView.setVisibility(VISIBLE);
-            try {
-                if (getContext() != null) {
-                    RequestOptions options = new RequestOptions()
-                            .centerCrop()
-                            .placeholder(R.drawable.km_ic_contact_picture_holo_light)
-                            .error(R.drawable.km_ic_contact_picture_holo_light);
-
-
-                    Glide.with(getContext()).load(imageUrl).apply(options).into(toolbarImageView);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            KmViewHelper.loadContactImage(getContext(), toolbarImageView, toolbarAlphabeticImage, withUserContact, R.drawable.km_ic_contact_picture_holo_light);
         } else {
             toolbarAlphabeticImage.setVisibility(VISIBLE);
             toolbarImageView.setVisibility(View.GONE);
@@ -3247,11 +3229,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             String contactNumber = "";
             char firstLetter = 0;
 
-            if (name == null) {
+            if (channel.getName() == null) {
                 return;
             }
-            contactNumber = name.toUpperCase();
-            firstLetter = name.toUpperCase().charAt(0);
+            contactNumber = channel.getName().toUpperCase();
+            firstLetter = channel.getName().toUpperCase().charAt(0);
 
             if (firstLetter != '+') {
                 toolbarAlphabeticImage.setText(String.valueOf(firstLetter));
@@ -3266,8 +3248,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
-        if (!TextUtils.isEmpty(name)) {
-            toolbarTitleText.setText(name);
+        if (!TextUtils.isEmpty(channel.getName())) {
+            toolbarTitleText.setText(channel.getName());
         }
 
         setStatusDots(false, true); //setting the status dot as offline

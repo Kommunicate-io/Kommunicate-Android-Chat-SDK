@@ -36,6 +36,7 @@
   "userNotAbleToChatTextColor": "#000000",
   "audioPermissionNotFoundMsg": "",
   "showStartNewConversation": true,
+  "startNewConversationButtonBackgroundColor":"",
   "noConversationLabel": "You have no conversations",
   "noSearchFoundForChatMessages": "No conversation found",
   "totalRegisteredUserToFetch": 100,

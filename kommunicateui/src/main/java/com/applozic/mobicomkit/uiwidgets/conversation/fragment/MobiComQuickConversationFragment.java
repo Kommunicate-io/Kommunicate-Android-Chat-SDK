@@ -170,7 +170,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
 
         startNewConv = list.findViewById(R.id.start_new_conversation);
-        KmUtils.setGradientSolidColor(startNewConv, KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
+        KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(alCustomizationSettings.getStartNewConversationButtonBackgroundColor()) ? Color.parseColor(alCustomizationSettings.getStartNewConversationButtonBackgroundColor()) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
 
         if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             startNewConv.setVisibility(View.VISIBLE);

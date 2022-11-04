@@ -39,7 +39,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
@@ -64,7 +64,6 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KmFontManager;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.attachmentview.KmDocumentView;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
@@ -80,6 +79,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ContextMenuClickListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
+import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -93,11 +93,6 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONObject;
 
@@ -261,10 +256,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
         }
         else {
-            sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon);
-            deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon);
-            readIcon = context.getResources().getDrawable(R.drawable.km_read_icon);
-            pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_message_icon);
+            sentIcon = AppCompatResources.getDrawable(context, R.drawable.km_sent_icon);
+            deliveredIcon = AppCompatResources.getDrawable(context, R.drawable.km_delivered_icon);
+            readIcon = AppCompatResources.getDrawable(context, R.drawable.km_read_icon);
+            pendingIcon = AppCompatResources.getDrawable(context, R.drawable.km_pending_message_icon);
         }
         final String alphabet = context.getString(R.string.alphabet);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
@@ -1366,73 +1361,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     }
 
-    private void loadImage(final CircleImageView imageView, final TextView textImage, String imageUrl, int placeholderImage) {
-        RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(placeholderImage)
-                .error(placeholderImage);
-
-
-        Glide.with(context).load(imageUrl).apply(options).listener(new RequestListener<Drawable>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                if (textImage != null) {
-                    textImage.setVisibility(View.GONE);
-                }
-                imageView.setVisibility(View.VISIBLE);
-                return false;
-            }
-        }).into(imageView);
-    }
-
     public void loadProfileImage(Contact contact, CircleImageView imageView, TextView textView, boolean hideRecursiveImages) {
         if (hideRecursiveImages) {
             imageView.setVisibility(GONE);
             textView.setVisibility(GONE);
         } else {
             if (contact != null) {
-                loadContactImage(imageView, textView, contact);
+                KmViewHelper.loadContactImage(context, imageView, textView, contact, R.drawable.km_ic_contact_picture_holo_light);
             }
-        }
-    }
-
-    public void loadContactImage(CircleImageView imageView, TextView textView, Contact contact) {
-        try {
-            textView.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.GONE);
-            String contactNumber = "";
-            char firstLetter = 0;
-            contactNumber = contact.getDisplayName().toUpperCase();
-            firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
-
-            if (firstLetter != '+') {
-                textView.setText(String.valueOf(firstLetter));
-            } else if (contactNumber.length() >= 2) {
-                textView.setText(String.valueOf(contactNumber.charAt(1)));
-            }
-
-            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-            GradientDrawable bgShape = (GradientDrawable) textView.getBackground();
-            bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
-
-            if (contact.isDrawableResources()) {
-                textView.setVisibility(View.GONE);
-                imageView.setVisibility(View.VISIBLE);
-                int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
-                imageView.setImageResource(drawableResourceId);
-            } else if (contact.getImageURL() != null) {
-                loadImage(imageView, textView, contact.getImageURL(), 0);
-            } else {
-                textView.setVisibility(View.VISIBLE);
-                imageView.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

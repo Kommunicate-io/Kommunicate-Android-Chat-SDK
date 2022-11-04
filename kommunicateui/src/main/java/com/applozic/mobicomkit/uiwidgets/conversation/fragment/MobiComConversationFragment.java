@@ -532,7 +532,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     faqOption.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ConversationActivity.openFaq(getActivity(), new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl());
+                            String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl();
+                            AlEventManager.getInstance().sendOnFaqClick(FaqUrl);
+                            ConversationActivity.openFaq(getActivity(), FaqUrl);
                         }
                     });
                 }
@@ -551,6 +553,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmFeedbackView.setInteractionListener(new KmFeedbackView.KmFeedbackViewCallbacks() {
             @Override
             public void onRestartConversationPressed() {
+                AlEventManager.getInstance().sendOnConversationRestartedEvent(channel != null ? channel.getKey() : 0);
                 setFeedbackDisplay(false);
             }
         });
@@ -1104,6 +1107,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (!feedBackFragment.isVisible() && !feedBackFragment.isAdded()) {
             feedBackFragment.show(getActivity().getSupportFragmentManager(), FeedbackInputFragment.getFragTag());
         }
+        AlEventManager.getInstance().sendOnRateConversationClick();
     }
 
     @SuppressLint("MissingPermission")
@@ -4313,6 +4317,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlEventManager.getInstance().sendOnAttachmentClick("camera");
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
@@ -4334,6 +4339,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         multiSelectGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AlEventManager.getInstance().sendOnAttachmentClick("gallery");
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (!((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
@@ -4359,6 +4365,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         fileAttachmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                AlEventManager.getInstance().sendOnAttachmentClick("file");
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
@@ -4381,6 +4388,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onClick(View v) {
                 emoticonsFrameLayout.setVisibility(View.GONE);
+                AlEventManager.getInstance().sendOnLocationClick();
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).processLocation();
                 }

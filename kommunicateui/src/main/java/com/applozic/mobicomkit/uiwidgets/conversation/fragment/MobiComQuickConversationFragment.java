@@ -31,6 +31,7 @@ import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
@@ -145,7 +146,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ConversationActivity.openFaq(getActivity(), new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl());
+                        String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl();
+                        AlEventManager.getInstance().sendOnFaqClick(FaqUrl);
+                        ConversationActivity.openFaq(getActivity(), FaqUrl);
                     }
                 });
             }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
@@ -129,6 +130,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
             @Override
             public void onClick(View view) {
                 emoticonsFrameLayout.setVisibility(View.GONE);
+                AlEventManager.getInstance().sendOnAttachmentClick("file");
                 if (contact != null && !contact.isBlocked() || channel != null) {
                     if (attachmentLayout.getVisibility() == View.VISIBLE) {
                         KmToast.error(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();

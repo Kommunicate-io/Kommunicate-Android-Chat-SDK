@@ -140,9 +140,9 @@ public class AlEventManager {
         }
     }
 
-    public void sendOnConversationRestartedEvent(com.applozic.mobicomkit.api.conversation.Message message) {
-        if (kmPluginEventListener != null && message.isTypeOpen() && message.getGroupId() != null) {
-            kmPluginEventListener.onConversationRestarted(message.getGroupId());
+    public void sendOnConversationRestartedEvent(Integer conversationId) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onConversationRestarted(conversationId);
         }
     }
 
@@ -182,6 +182,41 @@ public class AlEventManager {
         }
     }
 
+    public void sendOnAttachmentClick(String attachmentType) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onAttachmentClick(attachmentType);
+        }
+    }
+    public void sendOnFaqClick(String FaqUrl) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onFaqClick(FaqUrl);
+        }
+    }
+    public void sendOnLocationClick() {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onLocationClick();
+        }
+    }
+    public void sendOnNotificationClick(com.applozic.mobicomkit.api.conversation.Message message) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onNotificationClick(message);
+        }
+    }
+    public void sendOnVoiceButtonClick(String action) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onVoiceButtonClick(action);
+        }
+    }
+    public void sendOnRatingEmoticonsClick(Integer ratingValue) {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onRatingEmoticonsClick(ratingValue);
+        }
+    }
+    public void sendOnRateConversationClick() {
+        if (kmPluginEventListener != null) {
+            kmPluginEventListener.onRateConversationClick();
+        }
+    }
     private void handleState(Message message) {
         if (message != null) {
             Bundle bundle = message.getData();
@@ -203,7 +238,6 @@ public class AlEventManager {
                         break;
                     case AlMessageEvent.ActionType.MESSAGE_SYNC:
                         sendOnConversationResolvedEvent(messageEvent.getMessage());
-                        sendOnConversationRestartedEvent(messageEvent.getMessage());
                         break;
                 }
             }

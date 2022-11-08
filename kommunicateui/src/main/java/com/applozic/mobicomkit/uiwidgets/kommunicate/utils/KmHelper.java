@@ -5,11 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import androidx.fragment.app.FragmentActivity;
+
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -96,6 +98,8 @@ public class KmHelper {
             KmConversationHelper.launchConversationIfLoggedIn(context, new KmCallback() {
                 @Override
                 public void onSuccess(Object message) {
+                    AlEventManager.getInstance().sendOnStartNewConversation((Integer) message);
+
                     dialog.dismiss();
                 }
 

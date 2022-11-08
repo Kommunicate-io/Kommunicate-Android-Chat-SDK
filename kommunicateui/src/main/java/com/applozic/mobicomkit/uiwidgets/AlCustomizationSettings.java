@@ -14,6 +14,7 @@ public class AlCustomizationSettings extends JsonMarker {
 
     private String customMessageBackgroundColor = "#e6e5ec";
     private String sentMessageBackgroundColor = "";
+    private String startNewConversationButtonBackgroundColor = "";
     private String receivedMessageBackgroundColor = "#e6e5ec";
     private String sendButtonBackgroundColor = "";
     private String attachmentIconsBackgroundColor = "#FF03A9F4";
@@ -557,6 +558,10 @@ public class AlCustomizationSettings extends JsonMarker {
         this.receivedMessageCreatedAtTimeColor = receivedMessageCreatedAtTimeColor;
     }
 
+    public String getStartNewConversationButtonBackgroundColor() {
+        return startNewConversationButtonBackgroundColor;
+    }
+
     public boolean isShowStartNewConversation() {
         return showStartNewConversation;
     }
@@ -698,6 +703,7 @@ public class AlCustomizationSettings extends JsonMarker {
         return "AlCustomizationSettings{" +
                 "customMessageBackgroundColor='" + customMessageBackgroundColor + '\'' +
                 ", sentMessageBackgroundColor='" + sentMessageBackgroundColor + '\'' +
+                ", startNewConversationButtonBackgroundColor='" + startNewConversationButtonBackgroundColor + '\'' +
                 ", receivedMessageBackgroundColor='" + receivedMessageBackgroundColor + '\'' +
                 ", sendButtonBackgroundColor='" + sendButtonBackgroundColor + '\'' +
                 ", attachmentIconsBackgroundColor='" + attachmentIconsBackgroundColor + '\'' +

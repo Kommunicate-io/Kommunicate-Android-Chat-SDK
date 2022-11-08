@@ -505,6 +505,17 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 serviceDisconnectionLayout.setVisibility(View.VISIBLE);
             } else {
                 if (intent.getExtras() != null) {
+                    if (intent.getExtras().getBoolean("sentFromNotification")) {
+                        String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
+                        if (!TextUtils.isEmpty(messageJson)) {
+                            Message message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+                            AlEventManager.getInstance().sendOnNotificationClick(message);
+                        } else {
+                            AlEventManager.getInstance().sendOnNotificationClick(null);
+
+                        }
+
+                    }
                     BroadcastService.setContextBasedChat(intent.getExtras().getBoolean(ConversationUIService.CONTEXT_BASED_CHAT));
                     if (BroadcastService.isIndividual() && intent.getExtras().getBoolean(MobiComKitConstants.QUICK_LIST)) {
                         setSearchListFragment(quickConversationFragment);

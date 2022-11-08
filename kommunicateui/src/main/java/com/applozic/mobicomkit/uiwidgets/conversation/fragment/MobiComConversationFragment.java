@@ -158,6 +158,7 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
+import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
@@ -548,6 +549,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         mainDivider = list.findViewById(R.id.idMainDividerLine);
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
+
+        if (!TextUtils.isEmpty(alCustomizationSettings.getMessageEditTextBackgroundColor())){
+
+            individualMessageSendLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getMessageEditTextBackgroundColor()));
+        }
 
         kmFeedbackView = list.findViewById(R.id.idKmFeedbackView);
 

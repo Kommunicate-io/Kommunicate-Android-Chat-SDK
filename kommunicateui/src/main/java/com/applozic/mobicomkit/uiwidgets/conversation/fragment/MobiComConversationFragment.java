@@ -3265,7 +3265,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         if (!TextUtils.isEmpty(name)) {
-            toolbarTitleText.setText(name);
+            String customBotName = KmUtils.getCustomBotName(channel, getActivity());
+            if(TextUtils.isEmpty(customBotName)) {
+                toolbarTitleText.setText(name);
+            } else {
+                toolbarTitleText.setText(customBotName);
+            }
         }
 
         setStatusDots(false, true); //setting the status dot as offline

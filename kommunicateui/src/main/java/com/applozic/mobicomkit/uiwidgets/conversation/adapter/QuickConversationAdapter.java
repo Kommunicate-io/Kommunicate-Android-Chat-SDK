@@ -178,7 +178,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.attachedFile.setText("");
                     myholder.attachedFile.setVisibility(View.GONE);
                 }
-
                 if (contactReceiver != null) {
                     String contactInfo = contactReceiver.getDisplayName();
                     if (items != null && items.size() > 1) {
@@ -186,7 +185,12 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         contactInfo = TextUtils.isEmpty(contactReceiver.getFirstName()) ? contactReceiver.getContactNumber() : contactReceiver.getFirstName() + ", "
                                 + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
                     }
-                    myholder.smReceivers.setText(contactInfo);
+                    String customBotName = KmUtils.getCustomBotName(channel, context);
+                    if(!TextUtils.isEmpty(customBotName)) {
+                        myholder.smReceivers.setText(customBotName);
+                    } else {
+                        myholder.smReceivers.setText(contactInfo);
+                    }
                     contactImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
                     processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                 } else if (message.getGroupId() != null && channel != null) {

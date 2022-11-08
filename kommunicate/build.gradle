@@ -8,7 +8,7 @@ rootProject.allprojects {
     }
 }
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     lintOptions {
         abortOnError false
@@ -16,9 +16,9 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
-        versionName "2.4.8"
+        versionName "2.5.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -34,7 +34,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
     api 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     api 'androidx.appcompat:appcompat:1.2.0'
     api 'com.google.code.gson:gson:2.8.6'

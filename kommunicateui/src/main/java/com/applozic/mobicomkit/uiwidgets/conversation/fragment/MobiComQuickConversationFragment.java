@@ -31,6 +31,7 @@ import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
@@ -145,7 +146,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ConversationActivity.openFaq(getActivity(), new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl());
+                        String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl();
+                        AlEventManager.getInstance().sendOnFaqClick(FaqUrl);
+                        ConversationActivity.openFaq(getActivity(), FaqUrl);
                     }
                 });
             }
@@ -170,7 +173,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
 
         startNewConv = list.findViewById(R.id.start_new_conversation);
-        KmUtils.setGradientSolidColor(startNewConv, KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
+        KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(alCustomizationSettings.getStartNewConversationButtonBackgroundColor()) ? Color.parseColor(alCustomizationSettings.getStartNewConversationButtonBackgroundColor()) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
 
         if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             startNewConv.setVisibility(View.VISIBLE);

@@ -15,6 +15,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -168,6 +169,7 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
     public void onClick(View view) {
         Integer buttonTag = (Integer) view.getTag();
         setRatingValue(FEEDBACK_RATING_VALUES.get(buttonTag));
+        AlEventManager.getInstance().sendOnRatingEmoticonsClick(FEEDBACK_RATING_VALUES.get(buttonTag));
 
         //show the feedback comment input edit text, if not already visible
         if (editTextFeedbackComment.getVisibility() == View.GONE) {

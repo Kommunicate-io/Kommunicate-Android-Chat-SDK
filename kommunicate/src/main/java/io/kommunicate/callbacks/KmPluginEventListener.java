@@ -13,4 +13,11 @@ public interface KmPluginEventListener {
     void onMessageSent(Message message);
     void onMessageReceived(Message message);
     void onBackButtonClicked(boolean isConversationOpened);
+    void onAttachmentClick(String attachmentType);
+    void onFaqClick(String FaqUrl);
+    void onLocationClick();
+    void onNotificationClick(Message message);
+    void onVoiceButtonClick(String action);
+    void onRatingEmoticonsClick(Integer ratingValue);
+    void onRateConversationClick();
 }

@@ -433,6 +433,7 @@ public class NotificationService {
         if (applozicClient.isContextBasedChat()) {
             intent.putExtra("contextBasedChat", true);
         }
+        intent.putExtra("sentFromNotification", true);
         intent.putExtra("sms_body", "text");
         intent.setType("vnd.android-dir/mms-sms");
 

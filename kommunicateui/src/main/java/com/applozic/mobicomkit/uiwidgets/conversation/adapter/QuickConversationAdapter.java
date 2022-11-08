@@ -35,13 +35,13 @@ import com.applozic.mobicomkit.channel.database.ChannelDatabaseService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
+import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
@@ -50,7 +50,6 @@ import com.applozic.mobicommons.emoticon.EmoticonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.contact.Contact;
-import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +59,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.kommunicate.services.KmChannelService;
 import io.kommunicate.utils.KmUtils;
 
 /**
@@ -203,10 +201,11 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                         }
                     } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                        Contact withUserContact = contactService.getContactById(channel.getConversationAssignee());
                         myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
                         channelImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
                         myholder.contactImage.setImageResource(R.drawable.km_ic_contact_picture_holo_light);
-                        loadSupportGroupImage(channel.getImageUrl(), channel.getName(), myholder.alphabeticTextView, myholder.contactImage);
+                        KmViewHelper.loadContactImage(context, myholder.contactImage, myholder.alphabeticTextView, withUserContact, R.drawable.km_ic_contact_picture_holo_light);
                     } else {
                         myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
                         channelImageLoader.setLoadingImage(R.drawable.km_group_icon);
@@ -429,27 +428,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             offlineTv.setVisibility(contact != null && contact.isOnline() ? View.GONE : View.VISIBLE);
         } catch (Exception e) {
 
-        }
-    }
-
-    private void loadSupportGroupImage(String imageUrl, String displayName, TextView
-            alphabeticTextView, CircleImageView contactImage) {
-        if (!TextUtils.isEmpty(imageUrl)) {
-            alphabeticTextView.setVisibility(View.GONE);
-            contactImage.setVisibility(View.VISIBLE);
-            Glide.with(context).load(imageUrl).into(contactImage);
-        } else if (!TextUtils.isEmpty(displayName)) {
-            char firstLetter = 0;
-            firstLetter = displayName.toUpperCase().charAt(0);
-
-            alphabeticTextView.setText(String.valueOf(firstLetter));
-
-            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-            GradientDrawable bgShape = (GradientDrawable) alphabeticTextView.getBackground();
-            bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
-
-            alphabeticTextView.setVisibility(View.VISIBLE);
-            contactImage.setVisibility(View.GONE);
         }
     }
 

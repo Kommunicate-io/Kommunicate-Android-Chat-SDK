@@ -7,11 +7,6 @@ import android.os.Bundle;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import io.kommunicate.KmSettings;
-import io.kommunicate.Kommunicate;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.app.R;
 
@@ -23,16 +18,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        Map<String, String> metadata = new HashMap<>();
-        Map<String, String> metadata2 = new HashMap<>();
-        metadata2.put("name", "RandomName"); // Pass key value string
-        metadata2.put("id", "bot-e8xil"); // Pass key value string
 
-        metadata.put("bot_customization", String.valueOf(metadata2)); // Pass key value string
-
-        if (Kommunicate.isLoggedIn(this)) { // Pass application context
-            KmSettings.updateChatContext(this, metadata);
-        }
 
         new Handler().postDelayed(new Runnable() {
             @Override

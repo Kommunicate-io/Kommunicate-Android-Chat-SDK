@@ -3253,10 +3253,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
-        if(!TextUtils.isEmpty(name)) {
-            toolbarTitleText.setText(name);
+        if(!TextUtils.isEmpty(channel.getName())) {
+            toolbarTitleText.setText(channel.getName());
         }
-
 
         setStatusDots(false, true); //setting the status dot as offline
         if (toolbarSubtitleText != null) {

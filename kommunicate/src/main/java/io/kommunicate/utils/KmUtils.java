@@ -131,16 +131,16 @@ public class KmUtils {
         return ContextCompat.getDrawable(context, resId);
     }
 
-    public static String getCustomBotName(Channel channel, Context context) {
-            if(channel != null) {
+    public static String getCustomBotName(Message message, Context context) {
+            if(message != null) {
                 Map<String, String> metadata = new HashMap<>();
                 metadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(context).getMessageMetaData(), Map.class);
-                if(metadata.containsKey(KmSettings.KM_CHAT_CONTEXT) && metadata.get(KM_CHAT_CONTEXT).contains(BOT_CUSTOMIZATION)) {
+                if(metadata != null && metadata.containsKey(KmSettings.KM_CHAT_CONTEXT) && metadata.get(KM_CHAT_CONTEXT).contains(BOT_CUSTOMIZATION)) {
                     JSONObject custombotObject = null;
                     try {
                         custombotObject = new JSONObject(metadata.get(KM_CHAT_CONTEXT));
                         JSONObject botDataObject = new JSONObject(custombotObject.getString(BOT_CUSTOMIZATION));
-                    if(!TextUtils.isEmpty(channel.getConversationAssignee()) && botDataObject.has(ID) && channel.getConversationAssignee().equals(botDataObject.getString(ID))) {
+                    if(!TextUtils.isEmpty(message.getContactIds()) && botDataObject.has(ID) && message.getContactIds().equals(botDataObject.getString(ID))) {
                         return botDataObject.getString(NAME);
                     }
                     } catch (JSONException e) {

@@ -3263,15 +3263,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 bgShape.setColor(getContext().getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
             }
         }
-
-        if (!TextUtils.isEmpty(name)) {
             String customBotName = KmUtils.getCustomBotName(channel, getActivity());
-            if(TextUtils.isEmpty(customBotName)) {
-                toolbarTitleText.setText(name);
-            } else {
+            if(!TextUtils.isEmpty(customBotName)) {
                 toolbarTitleText.setText(customBotName);
+            } else if(!TextUtils.isEmpty(name)) {
+                toolbarTitleText.setText(name);
             }
-        }
 
         setStatusDots(false, true); //setting the status dot as offline
         if (toolbarSubtitleText != null) {

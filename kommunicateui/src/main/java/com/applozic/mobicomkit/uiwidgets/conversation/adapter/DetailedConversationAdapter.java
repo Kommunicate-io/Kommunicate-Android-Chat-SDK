@@ -663,7 +663,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     });
                 }
-                myHolder.nameTextView.setText(contactDisplayName.getDisplayName());
+                String customBotName = KmUtils.getCustomBotName(message, context);
+                if(!TextUtils.isEmpty(customBotName)) {
+                    myHolder.nameTextView.setText(customBotName);
+                } else {
+                    myHolder.nameTextView.setText(contactDisplayName.getDisplayName());
+                }
                 myHolder.nameTextView.setTextColor(Color.parseColor(alCustomizationSettings.getReceiverNameTextColor()));
             }
 

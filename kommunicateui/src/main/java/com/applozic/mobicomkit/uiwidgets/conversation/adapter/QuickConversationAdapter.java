@@ -13,7 +13,6 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -177,6 +176,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.attachedFile.setText("");
                     myholder.attachedFile.setVisibility(View.GONE);
                 }
+
                 if (contactReceiver != null) {
                     String contactInfo = contactReceiver.getDisplayName();
                     if (items != null && items.size() > 1) {
@@ -184,7 +184,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         contactInfo = TextUtils.isEmpty(contactReceiver.getFirstName()) ? contactReceiver.getContactNumber() : contactReceiver.getFirstName() + ", "
                                 + (TextUtils.isEmpty(contact2.getFirstName()) ? contact2.getContactNumber() : contact2.getFirstName()) + (items.size() > 2 ? " & others" : "");
                     }
-
                     myholder.smReceivers.setText(contactInfo);
                     contactImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
                     processContactImage(contactReceiver, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);

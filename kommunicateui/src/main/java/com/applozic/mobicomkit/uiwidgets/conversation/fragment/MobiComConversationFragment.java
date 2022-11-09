@@ -29,7 +29,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -3254,7 +3253,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
-        if(!TextUtils.isEmpty(channel.getName())) {
+        if (!TextUtils.isEmpty(channel.getName())) {
             toolbarTitleText.setText(channel.getName());
         }
 

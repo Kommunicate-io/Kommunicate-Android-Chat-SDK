@@ -37,6 +37,7 @@
   "audioPermissionNotFoundMsg": "",
   "showStartNewConversation": true,
   "startNewConversationButtonBackgroundColor":"",
+  "messageEditTextBackgroundColor":"",
   "noConversationLabel": "You have no conversations",
   "noSearchFoundForChatMessages": "No conversation found",
   "totalRegisteredUserToFetch": 100,

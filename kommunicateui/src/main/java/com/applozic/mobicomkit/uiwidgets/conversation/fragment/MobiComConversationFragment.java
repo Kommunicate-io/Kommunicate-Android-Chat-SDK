@@ -550,6 +550,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
 
+        if (!TextUtils.isEmpty(alCustomizationSettings.getMessageEditTextBackgroundColor())){
+            individualMessageSendLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getMessageEditTextBackgroundColor()));
+        }
+
         kmFeedbackView = list.findViewById(R.id.idKmFeedbackView);
 
         //what to do when Restart Conversation button is clicked

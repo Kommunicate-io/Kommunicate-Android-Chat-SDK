@@ -551,7 +551,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
 
         if (!TextUtils.isEmpty(alCustomizationSettings.getMessageEditTextBackgroundColor())){
-
             individualMessageSendLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getMessageEditTextBackgroundColor()));
         }
 

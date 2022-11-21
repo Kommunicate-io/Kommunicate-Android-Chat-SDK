@@ -44,6 +44,7 @@ public class KmAutoSuggestionArrayAdapter<T> extends ArrayAdapter<T> {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(layoutResourceId, parent, false);
         }
+        //parent.setback
 
         TextView nameView = (TextView) convertView.findViewById(R.id.km_name_tv);
         T source = fullList.get(position);

@@ -9,7 +9,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "APP_ID", '"<YOUR_APP_ID>"'
+        buildConfigField "String", "APP_ID", '"eb775c44211eb7719203f5664b27b59f"'
+        multiDexEnabled true
+
     }
 
     buildTypes {
@@ -30,9 +32,16 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://zendesk.jfrog.io/zendesk/repo' }
+
     }
 }
-
+android {
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api project(':kommunicateui')
@@ -42,6 +51,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation group: 'com.zopim.android', name: 'sdk-api', version: '1.4.8'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

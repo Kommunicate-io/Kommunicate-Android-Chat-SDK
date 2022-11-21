@@ -8,6 +8,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,6 +27,10 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import com.zendesk.logger.Logger;
+import com.zendesk.service.ErrorResponse;
+import com.zendesk.service.ZendeskCallback;
+import com.zopim.android.sdk.api.ZopimChatApi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +44,9 @@ import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
 import io.kommunicate.callbacks.KMLoginHandler;
 
+import com.zopim.android.sdk.model.VisitorInfo;
+
+
 public class MainActivity extends AppCompatActivity {
 
     EditText mUserId, mPassword;
@@ -46,13 +55,36 @@ public class MainActivity extends AppCompatActivity {
     boolean exit = false;
     public static final String APP_ID = BuildConfig.APP_ID;
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
+    public void callbackzendesk() {
 
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Chat.INSTANCE.init(MainActivity.this,"izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX", "io.kommunicate.app");
+        ZopimChatApi.init("izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX");
 
-        Kommunicate.init(this, APP_ID);
+        Logger.setLoggable(true);
+        //ProfileProvider profileProvider = Chat.INSTANCE.providers().profileProvider();
+        //ChatProvider chatProvider = Chat.INSTANCE.providers().chatProvider();
+
+
+//        profileProvider.setVisitorInfo(visitorInfo, new ZendeskCallback<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                Log.e("zendesklogin", "success");
+//
+//            }
+//
+//            @Override
+//            public void onError(ErrorResponse errorResponse) {
+//                Log.e("zendesklogin", "fail");
+//
+//            }
+//        });
+        //profileProvider.
+
 
         layout = (LinearLayout) findViewById(R.id.footerSnack);
         mUserId = (EditText) findViewById(R.id.userId_editText);
@@ -66,55 +98,59 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    if (isPlaceHolderAppId()) {
-                        return;
-                    }
-                    final String mUserIdText = mUserId.getText().toString().trim();
-                    String mPasswordText = mPassword.getText().toString().trim();
-                    if (TextUtils.isEmpty(mUserIdText) || mUserId.getText().toString().trim().length() == 0) {
-                        KmToast.error(getBaseContext(), R.string.enter_user_id, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                VisitorInfo visitorInfo = new VisitorInfo.Builder().
+                        name("sathyan").
+                        phoneNumber("6383362545")
+                        .email("sathya@gmail.com")
+                        .build();
+//                com.zopim.android.sdk.model.VisitorInfo visitorInfo =                 com.zopim.android.sdk.model.VisitorInfo
+//                        withName("sathyan").
+//                        withPhoneNumber("6383362545")
+//                        .withEmail("sathya@gmail.com")
+//                        .build();
+                ZopimChatApi.setVisitorInfo(visitorInfo);
 
-                    final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setTitle("Logging in..");
-                    progressDialog.setMessage("Please wait...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-                    initLoginData(mUserId.getText().toString().trim(), mPassword.getText().toString().trim(), progressDialog);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//
+////                ChatProvidersConfiguration chatProvidersConfiguration = ChatProvidersConfiguration.builder()
+////                        .withVisitorInfo(visitorInfo)
+////                        .build();
+////
+////                Chat.INSTANCE.setChatProvidersConfiguration(chatProvidersConfiguration);
+//                //Chat.INSTANCE.providers().profileProvider().
+//                Chat.INSTANCE.providers().profileProvider().setVisitorInfo(visitorInfo, new ZendeskCallback<Void>() {
+//                    @Override
+//                    public void onSuccess(Void unused) {
+//                        Log.e("zendesklogin", "success");
+//                    }
+//
+//                    @Override
+//                    public void onError(ErrorResponse errorResponse) {
+//                        Log.e("zendesklogin", "success");
+//
+//                    }
+//                });
+                ZopimChatApi.start(MainActivity.this).send("Your message");
+
+//                VisitorInfo visitor = Chat.INSTANCE.providers().profileProvider().getVisitorInfo();
+//                Log.e("zendeskvisitor", visitor.getEmail());
+//                if(Chat.INSTANCE.providers().chatProvider() == null) {
+//                    Log.e("zendesknull", String.valueOf(true));
+//                }
+//                ChatLog.Message message = Chat.INSTANCE.providers().chatProvider().sendMessage("testmessage2");
+//                ChatLog.Message message1 = Chat.INSTANCE.providers().chatProvider().resendFailedMessage(message.getId());
+//                Log.e("zendesknull", String.valueOf(message.getDeliveryStatus()));
+
+                //Log.e("zendeskmessage", String.valueOf(message.getDeliveryStatus()));
+//                MessagingActivity.builder()
+//                        .withEngines(ChatEngine.engine())
+//                        .show(MainActivity.this);
             }
         });
 
         visitorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPlaceHolderAppId()) {
-                    return;
-                }
-                final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                progressDialog.setTitle("Logging in..");
-                progressDialog.setMessage("Please wait...");
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                Kommunicate.init(MainActivity.this, APP_ID);
-                Kommunicate.launchConversationWithPreChat(MainActivity.this, progressDialog, new KmCallback() {
-                    @Override
-                    public void onSuccess(Object message) {
-                        finish();
-                        progressDialog.dismiss();
-                    }
 
-                    @Override
-                    public void onFailure(Object error) {
-                        progressDialog.dismiss();
-                        createLoginErrorDialog(null, (Exception) error);
-
-                    }
-                });
             }
         });
     }

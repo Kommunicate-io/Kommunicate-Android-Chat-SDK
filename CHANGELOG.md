@@ -3,6 +3,12 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.5.1
+1) Added events to KmPluginEventListener - if you use events in your app, implement the new methods.
+2) Added fix for API <= 19. Current min SDK version is still 16. All bugs have been fixed for lower SDK versions.
+3) Added Edit Message Text box Customization - "messageEditTextBackgroundColor" 
+4) Added support to set Custom bot name through Chat Context
+
 ## Kommunicate Android SDK 2.5.0
 1) Added support for API 33
 2) Added background color customization for Start new Conversation Button

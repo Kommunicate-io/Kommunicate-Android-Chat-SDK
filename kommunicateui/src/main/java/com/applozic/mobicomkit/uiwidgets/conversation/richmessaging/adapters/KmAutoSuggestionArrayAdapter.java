@@ -52,7 +52,6 @@ public class KmAutoSuggestionArrayAdapter<T> extends ArrayAdapter<T> {
         }
 
         LinearLayout autoSuggestionRowLayout = (LinearLayout)convertView.findViewById(R.id.km_auto_suggestion_row_layout);
-        Log.e("AutoSug", "getView: "+ Color.parseColor(alCustomizationSettings.getAutoSuggestionButtonBackgroundColor()) );
 
         if (!TextUtils.isEmpty(alCustomizationSettings.getAutoSuggestionButtonBackgroundColor())){
             autoSuggestionRowLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getAutoSuggestionButtonBackgroundColor()));

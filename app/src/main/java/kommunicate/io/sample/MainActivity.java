@@ -30,7 +30,7 @@ import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.zendesk.logger.Logger;
 import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ZendeskCallback;
-import com.zopim.android.sdk.api.ZopimChatApi;
+//import com.zopim.android.sdk.api.ZopimChatApi;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +43,19 @@ import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
 import io.kommunicate.callbacks.KMLoginHandler;
+import zendesk.chat.Chat;
+import zendesk.chat.ChatProvider;
+import zendesk.chat.ChatProvidersConfiguration;
+import zendesk.chat.ChatSettings;
+import zendesk.chat.ChatState;
+import zendesk.chat.ConnectionProvider;
+import zendesk.chat.ConnectionStatus;
+import zendesk.chat.ObservationScope;
+import zendesk.chat.Observer;
+import zendesk.chat.ProfileProvider;
+import zendesk.chat.VisitorInfo;
 
-import com.zopim.android.sdk.model.VisitorInfo;
+//import com.zopim.android.sdk.model.VisitorInfo;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -53,8 +64,9 @@ public class MainActivity extends AppCompatActivity {
     AppCompatButton loginButton, visitorButton;
     LinearLayout layout;
     boolean exit = false;
-    public static final String APP_ID = BuildConfig.APP_ID;
+    //public static final String APP_ID = BuildConfig.APP_ID;
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
+
     public void callbackzendesk() {
 
     }
@@ -62,8 +74,62 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Chat.INSTANCE.init(MainActivity.this,"izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX", "io.kommunicate.app");
-        ZopimChatApi.init("izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX");
+        ObservationScope observationScope = new ObservationScope();
+
+        Chat.INSTANCE.init(MainActivity.this,"izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX");
+        ConnectionProvider connectionProvider =  Chat.INSTANCE.providers().connectionProvider();
+        connectionProvider.connect();
+        connectionProvider.observeConnectionStatus(observationScope, new Observer<ConnectionStatus>() {
+            @Override
+            public void update(ConnectionStatus connectionStatus) {
+                if (connectionStatus == ConnectionStatus.CONNECTED) {
+                    VisitorInfo visitorInfo = VisitorInfo.builder()
+                            .withName("Bob")
+                            .withEmail("bob@example.com")
+                            .withPhoneNumber("123456") // numeric string
+                            .build();
+                    ProfileProvider profileProvider = Chat.INSTANCE.providers().profileProvider();
+
+
+                    profileProvider.setVisitorInfo(visitorInfo, new ZendeskCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.e("zendesklogin", "success");
+                        }
+
+                        @Override
+                        public void onError(ErrorResponse errorResponse) {
+                            Log.e("zendesklogin", "fail");
+
+                        }
+                    });
+
+                    //ObservationScope observationScope = new ObservationScope();
+                    ChatProvider provider = Chat.INSTANCE.providers().chatProvider();
+                    provider.sendMessage("Need Help pls!!");
+                    provider.observeChatState(observationScope, new Observer<ChatState>() {
+                        @Override
+                        public void update(ChatState chatState) {
+                            //Do something with chat state
+                            Log.e("zendesk","chatState"+chatState.toString());
+                        }
+                    });
+                    Chat.INSTANCE.providers().settingsProvider().observeChatSettings(observationScope, new Observer<ChatSettings>() {
+                        @Override
+                        public void update(ChatSettings chatSettings) {
+                            Log.e("zendesk","chatSettings"+chatSettings.toString());
+
+                        }
+                    });
+                }
+                Log.e("zendeskconnection", String.valueOf(connectionStatus));
+            }
+        });
+        //ZopimChatApi.init("izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX");
+
+
+
+
 
         Logger.setLoggable(true);
         //ProfileProvider profileProvider = Chat.INSTANCE.providers().profileProvider();
@@ -98,19 +164,19 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VisitorInfo visitorInfo = new VisitorInfo.Builder().
-                        name("sathyan").
-                        phoneNumber("6383362545")
-                        .email("sathya@gmail.com")
-                        .build();
+                Log.e("zendesk", "happens");
+
 //                com.zopim.android.sdk.model.VisitorInfo visitorInfo =                 com.zopim.android.sdk.model.VisitorInfo
 //                        withName("sathyan").
 //                        withPhoneNumber("6383362545")
 //                        .withEmail("sathya@gmail.com")
 //                        .build();
-                ZopimChatApi.setVisitorInfo(visitorInfo);
+//                ChatProvidersConfiguration chatProvidersConfiguration = ChatProvidersConfiguration.builder()
+//                        .withVisitorInfo(visitorInfo)
+//                        .withDepartment("Department Name")
+//                        .build();
+//                Chat.INSTANCE.setChatProvidersConfiguration(chatProvidersConfiguration);
 
-//
 ////                ChatProvidersConfiguration chatProvidersConfiguration = ChatProvidersConfiguration.builder()
 ////                        .withVisitorInfo(visitorInfo)
 ////                        .build();
@@ -129,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //                    }
 //                });
-                ZopimChatApi.start(MainActivity.this).send("Your message");
+                //ZopimChatApi.start(MainActivity.this).send("Your message");
 
 //                VisitorInfo visitor = Chat.INSTANCE.providers().profileProvider().getVisitorInfo();
 //                Log.e("zendeskvisitor", visitor.getEmail());
@@ -156,13 +222,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean isPlaceHolderAppId() {
-        if (Kommunicate.PLACEHOLDER_APP_ID.equals(APP_ID)) {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-            dialogBuilder.setCancelable(true);
-            dialogBuilder.setMessage(Utils.getString(this, R.string.invalid_app_id_error));
-            dialogBuilder.show();
-            return true;
-        }
+//        if (Kommunicate.PLACEHOLDER_APP_ID.equals(APP_ID)) {
+//            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+//            dialogBuilder.setCancelable(true);
+//            dialogBuilder.setMessage(Utils.getString(this, R.string.invalid_app_id_error));
+//            dialogBuilder.show();
+//            return true;
+//        }
         return false;
     }
 
@@ -224,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
 
         final KMUser user = new KMUser();
         user.setUserId(userId);
-        user.setApplicationId(APP_ID);
+        //user.setApplicationId(APP_ID);
 
         if (!TextUtils.isEmpty(password)) {
             user.setPassword(password);

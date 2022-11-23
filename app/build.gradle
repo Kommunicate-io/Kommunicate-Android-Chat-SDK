@@ -4,7 +4,7 @@ android {
     compileSdkVersion 33
     defaultConfig {
         applicationId "io.kommunicate.app"
-        minSdkVersion 16
+        minSdkVersion 26
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
@@ -51,7 +51,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation group: 'com.zopim.android', name: 'sdk-api', version: '1.4.8'
+    implementation group: 'com.zendesk', name: 'chat-providers', version: '3.3.6'
 
 }
 

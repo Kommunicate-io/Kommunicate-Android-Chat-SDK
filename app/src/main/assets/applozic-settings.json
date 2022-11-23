@@ -39,6 +39,7 @@
   "startNewConversationButtonBackgroundColor":"",
   "messageEditTextBackgroundColor":"",
   "autoSuggestionButtonBackgroundColor":"",
+  "autoSuggestionButtonTextColor":"",
   "noConversationLabel": "You have no conversations",
   "noSearchFoundForChatMessages": "No conversation found",
   "totalRegisteredUserToFetch": 100,

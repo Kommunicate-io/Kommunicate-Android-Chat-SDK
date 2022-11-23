@@ -52,20 +52,21 @@ public class KmAutoSuggestionArrayAdapter<T> extends ArrayAdapter<T> {
         }
 
         LinearLayout autoSuggestionRowLayout = (LinearLayout)convertView.findViewById(R.id.km_auto_suggestion_row_layout);
+        TextView nameView = (TextView) convertView.findViewById(R.id.km_name_tv);
 
         if (!TextUtils.isEmpty(alCustomizationSettings.getAutoSuggestionButtonBackgroundColor())){
             autoSuggestionRowLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getAutoSuggestionButtonBackgroundColor()));
         }
+        if (!TextUtils.isEmpty(alCustomizationSettings.getAutoSuggestionButtonTextColor())){
+           nameView.setTextColor(Color.parseColor(alCustomizationSettings.getAutoSuggestionButtonTextColor()));
+        }
 
-        TextView nameView = (TextView) convertView.findViewById(R.id.km_name_tv);
         T source = fullList.get(position);
-
         if (source instanceof String) {
             nameView.setText((String) source);
         } else if (source instanceof KmAutoSuggestion.Source) {
             nameView.setText(((KmAutoSuggestion.Source) source).getMessage());
         }
-
         return convertView;
     }
 

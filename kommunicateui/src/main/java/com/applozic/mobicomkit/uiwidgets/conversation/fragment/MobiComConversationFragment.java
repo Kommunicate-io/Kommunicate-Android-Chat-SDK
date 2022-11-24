@@ -4103,7 +4103,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected <T> KmAutoSuggestionArrayAdapter<T> getAdapter(T[] data) {
-        return new KmAutoSuggestionArrayAdapter<>(getContext(), R.layout.km_auto_suggestion_row_layout, data);
+        return new KmAutoSuggestionArrayAdapter<>(getContext(), R.layout.km_auto_suggestion_row_layout, data, alCustomizationSettings);
     }
 
     @Override

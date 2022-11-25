@@ -35,6 +35,7 @@ import com.zendesk.service.ZendeskCallback;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.fragment.app.FragmentManager;
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
 import io.kommunicate.app.BuildConfig;
@@ -43,7 +44,9 @@ import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
 import io.kommunicate.callbacks.KMLoginHandler;
+
 import zendesk.chat.Chat;
+import zendesk.chat.ChatEngine;
 import zendesk.chat.ChatProvider;
 import zendesk.chat.ChatProvidersConfiguration;
 import zendesk.chat.ChatSettings;
@@ -54,6 +57,7 @@ import zendesk.chat.ObservationScope;
 import zendesk.chat.Observer;
 import zendesk.chat.ProfileProvider;
 import zendesk.chat.VisitorInfo;
+import zendesk.messaging.MessagingActivity;
 
 //import com.zopim.android.sdk.model.VisitorInfo;
 
@@ -77,7 +81,21 @@ public class MainActivity extends AppCompatActivity {
         ObservationScope observationScope = new ObservationScope();
 
         Chat.INSTANCE.init(MainActivity.this,"izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX");
+//        Zendesk.initialize(this, "izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX", new SuccessCallback<Zendesk>() {
+//            @Override
+//            public void onSuccess(Zendesk zendesk) {
+//
+//            }
+//        }, new FailureCallback<Throwable>() {
+//            @Override
+//            public void onFailure(@NonNull Throwable throwable) {
+//
+//            }
+//        });
+//        Zendesk.getInstance().
         ConnectionProvider connectionProvider =  Chat.INSTANCE.providers().connectionProvider();
+        ChatProvider chatProvider = Chat.INSTANCE.providers().chatProvider();
+
         connectionProvider.connect();
         connectionProvider.observeConnectionStatus(observationScope, new Observer<ConnectionStatus>() {
             @Override
@@ -95,6 +113,24 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void unused) {
                             Log.e("zendesklogin", "success");
+                            chatProvider.sendMessage("testmessage");
+                            ObservationScope observationScope = new ObservationScope();
+                            chatProvider.setTyping(true);
+//                            MessagingActivity.builder()
+//                                    .withEngines(ChatEngine.engine())
+//                                    .show(MainActivity.this);
+                            chatProvider.observeChatState(observationScope, new Observer<ChatState>() {
+                                @Override
+                                public void update(ChatState chatState) {
+                                    Log.e("zendeskstate", chatState.getChatLogs().);
+                                }
+                            });
+                            Chat.INSTANCE.providers().settingsProvider().observeChatSettings(observationScope, new Observer<ChatSettings>() {
+                                @Override
+                                public void update(ChatSettings chatSettings) {
+                                    Log.e("zendesk","chatSettings"+chatSettings.toString());
+                                }
+                            });
                         }
 
                         @Override
@@ -105,22 +141,9 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     //ObservationScope observationScope = new ObservationScope();
-                    ChatProvider provider = Chat.INSTANCE.providers().chatProvider();
-                    provider.sendMessage("Need Help pls!!");
-                    provider.observeChatState(observationScope, new Observer<ChatState>() {
-                        @Override
-                        public void update(ChatState chatState) {
-                            //Do something with chat state
-                            Log.e("zendesk","chatState"+chatState.toString());
-                        }
-                    });
-                    Chat.INSTANCE.providers().settingsProvider().observeChatSettings(observationScope, new Observer<ChatSettings>() {
-                        @Override
-                        public void update(ChatSettings chatSettings) {
-                            Log.e("zendesk","chatSettings"+chatSettings.toString());
+                    //ChatProvider provider = ;
+                    //FragmentManager fragmentManager;
 
-                        }
-                    });
                 }
                 Log.e("zendeskconnection", String.valueOf(connectionStatus));
             }

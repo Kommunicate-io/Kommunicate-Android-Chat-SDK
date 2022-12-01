@@ -46,7 +46,7 @@ import io.kommunicate.app.R;
 import io.kommunicate.callbacks.KMLoginHandler;
 
 import zendesk.chat.Chat;
-import zendesk.chat.ChatEngine;
+//import zendesk.chat.ChatEngine;
 import zendesk.chat.ChatProvider;
 import zendesk.chat.ChatProvidersConfiguration;
 import zendesk.chat.ChatSettings;
@@ -57,7 +57,7 @@ import zendesk.chat.ObservationScope;
 import zendesk.chat.Observer;
 import zendesk.chat.ProfileProvider;
 import zendesk.chat.VisitorInfo;
-import zendesk.messaging.MessagingActivity;
+//import zendesk.messaging.MessagingActivity;
 
 //import com.zopim.android.sdk.model.VisitorInfo;
 
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ObservationScope observationScope = new ObservationScope();
 
-        Chat.INSTANCE.init(MainActivity.this,"izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX");
+        Chat.INSTANCE.init(MainActivity.this,"6HeepWDBoKcayIhkbJlzFp9N0eeVVXyy");
 //        Zendesk.initialize(this, "izhjCMjBEdx8uqV4OSaP24fr9b5zrnAX", new SuccessCallback<Zendesk>() {
 //            @Override
 //            public void onSuccess(Zendesk zendesk) {
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                             chatProvider.observeChatState(observationScope, new Observer<ChatState>() {
                                 @Override
                                 public void update(ChatState chatState) {
-                                    Log.e("zendeskstate", chatState.getChatLogs().);
+                                    Log.e("zendeskstate", String.valueOf(chatState.getChatLogs()));
                                 }
                             });
                             Chat.INSTANCE.providers().settingsProvider().observeChatSettings(observationScope, new Observer<ChatSettings>() {
@@ -188,7 +188,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.e("zendesk", "happens");
-
+                Chat.INSTANCE.providers().chatProvider().observeChatState(new ObservationScope(), new Observer<ChatState>() {
+                    @Override
+                    public void update(ChatState chatState) {
+                        Log.e("zendeskstate", String.valueOf(chatState.getChatLogs()));
+                    }
+                });
 //                com.zopim.android.sdk.model.VisitorInfo visitorInfo =                 com.zopim.android.sdk.model.VisitorInfo
 //                        withName("sathyan").
 //                        withPhoneNumber("6383362545")

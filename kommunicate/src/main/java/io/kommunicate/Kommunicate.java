@@ -61,6 +61,7 @@ import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.preference.KmPreference;
+import io.kommunicate.services.KmZendeskClient;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -882,4 +883,55 @@ public class Kommunicate {
     public static void removeApplicationKey(Context context) {
         new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
     }
+
+    public static void openZendeskChat(final Context context){
+        final KmZendeskClient kmZendeskClient = KmZendeskClient.getInstance(context);
+        kmZendeskClient.isChatGoingOn(new KmZendeskClient.ChatStatus() {
+            @Override
+            public void onChatGoingOn() {
+                final Integer conversationId = kmZendeskClient.getGroupId();
+                new KmConversationBuilder(context)
+                        .setSingleConversation(true)
+                        .setConversationId(String.valueOf(conversationId))
+                        .launchConversation(new KmCallback() {
+                            @Override
+                            public void onSuccess(Object message) {
+                                Utils.printLog(context, TAG, "Successfully launched Zendesk conversation Id:" + conversationId);
+                            }
+
+                            @Override
+                            public void onFailure(Object error) {
+                                Utils.printLog(context, TAG, "Failed to launch Zendesk conversation : " + error.toString());
+
+                            }
+                        });
+            }
+
+            @Override
+            public void onChatFinished() {
+               new KmConversationBuilder(context)
+                       .setSingleConversation(true)
+                       .setSkipConversationList(true)
+                       .launchConversation(new KmCallback() {
+                           @Override
+                           public void onSuccess(Object message) {
+                               Utils.printLog(context, TAG, "Successfully launched conversation : " + message.toString());
+
+                           }
+
+                           @Override
+                           public void onFailure(Object error) {
+                               Utils.printLog(context, TAG, "Failed to launch conversation : " + error.toString());
+
+                           }
+                       });
+            }
+
+            @Override
+            public void onChatError(String errorMessage) {
+
+            }
+        });
+    }
+
 }

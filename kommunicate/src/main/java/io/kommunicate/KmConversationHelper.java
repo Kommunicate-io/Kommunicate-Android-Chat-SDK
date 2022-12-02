@@ -41,6 +41,7 @@ import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -393,6 +394,15 @@ public class KmConversationHelper {
                 callback.onFailure(Utils.getString(null, R.string.km_conversation_builder_cannot_be_null));
             }
             return;
+        }
+        if(KmAppSettingPreferences.getInstance().getZendeskSdkKey() != null) {
+            if (conversationBuilder.getConversationInfo() != null) {
+                conversationBuilder.getConversationInfo().put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
+            } else {
+                Map<String, String> sourceMap = new HashMap<>();
+                sourceMap.put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
+                conversationBuilder.setConversationInfo(sourceMap);
+            }
         }
 
         if (conversationBuilder.getContext() == null) {

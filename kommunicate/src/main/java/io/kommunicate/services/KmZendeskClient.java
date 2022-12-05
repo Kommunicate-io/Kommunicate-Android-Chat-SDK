@@ -29,11 +29,18 @@ import zendesk.chat.Observer;
 import zendesk.chat.ProfileProvider;
 import zendesk.chat.VisitorInfo;
 
+/**
+ * Zendesk Chat SDK V2 integration
+ *
+ * @author Aman
+ * @date December '22
+ */
+
 public class KmZendeskClient {
 
     private static String TAG = "KmZendeskClient";
     private static KmZendeskClient kmZendeskClient;
-    private Integer groupId;
+    private Integer channelKey;
     private ProfileProvider profileProvider;
     private boolean isZendeskConnected;
     private boolean isZendeskInitialized;
@@ -54,14 +61,20 @@ public class KmZendeskClient {
         return kmZendeskClient;
     }
 
+    //Initialize Zendesk with Zendesk Chat SDK Key
     public void initializeZendesk(String accountKey, Integer channelKey, Contact contact, Channel channel ) {
         Utils.printLog(context, TAG, "zendesk initialized");
+        this.contact = contact;
+        this.channel = channel;
+        this.channelKey = channelKey;
         Chat.INSTANCE.init(context, accountKey);
         isZendeskInitialized = true;
-        groupId = channelKey;
-        this.contact = contact;
+        observeZendeskConnection();
         authenticateZendeskUser(contact);
-        this.channel = channel;
+    }
+
+    //Checks Zendesk's socket connection and handle connection
+    private void observeZendeskConnection() {
         Chat.INSTANCE.providers().connectionProvider().observeConnectionStatus(observationScope, new Observer<ConnectionStatus>() {
             @Override
             public void update(ConnectionStatus connectionStatus) {
@@ -74,15 +87,14 @@ public class KmZendeskClient {
                 sendZendeskChatTranscript();
             }
         });
-
     }
+
     private void connectToZendeskSocket() {
         Chat.INSTANCE.providers().connectionProvider().connect();
     }
 
+    //TODO: Change this to JWT authentication
     public void authenticateZendeskUser(Contact contact) {
-       // Chat.INSTANCE.providers().
-
         VisitorInfo visitorInfo = VisitorInfo.builder()
                 .withName(TextUtils.isEmpty(contact.getDisplayName()) ? "" : contact.getDisplayName())
                 .withEmail(TextUtils.isEmpty(contact.getEmailId()) ? "" : contact.getEmailId())
@@ -91,12 +103,12 @@ public class KmZendeskClient {
         Chat.INSTANCE.providers().profileProvider().setVisitorInfo(visitorInfo, new ZendeskCallback<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Utils.printLog(context, TAG, "loginsuccess");
+                Utils.printLog(context, TAG, "Successfully logged in as Visitor");
             }
 
             @Override
             public void onError(ErrorResponse errorResponse) {
-                Utils.printLog(context, TAG, "loginfailed");
+                Utils.printLog(context, TAG, "Failed to login as Visitor");
             }
         });
     }
@@ -115,17 +127,14 @@ public class KmZendeskClient {
         Chat.INSTANCE.providers().chatProvider().sendMessage(message);
     }
 
+    //fetches Chat list and send the chat transcript to Zendesk
     public void sendZendeskChatTranscript() {
         final StringBuilder transcriptString = new StringBuilder();
-        sendZendeskMessage(context.getString(R.string.km_zendesk_transcript_message, new KmClientService(context).getConversationShareUrl(), groupId));
-
-        MessageDatabaseService messageDatabaseService = new MessageDatabaseService(context);
-        //List<Message> messageList = messageDatabaseService.getMessages(null, null, contact, channel, groupId);
+        sendZendeskMessage(context.getString(R.string.km_zendesk_transcript_message, new KmClientService(context).getConversationShareUrl(), channelKey));
         new Thread(new Runnable() {
             @Override
             public void run() {
                 AlConversationResponse kmConversationResponse = null;
-                Message messageList[];
                 List<Message> listOfMessage;
                 try {
                     kmConversationResponse = (AlConversationResponse) GsonUtils.getObjectFromJson(new MessageClientService(context).getMessages(contact, channel, null, null, channel.getKey(), false), AlConversationResponse.class);
@@ -153,16 +162,12 @@ public class KmZendeskClient {
                     }
                 }
                 sendZendeskMessage(transcriptString.toString());
+                Utils.printLog(context, TAG, String.valueOf(transcriptString));
             }
         }).start();
-
-
-           // Utils.printLog(context, TAG, String.valueOf(messageList));
-
     }
 
     public String getMessageForTranscript(Message message) {
-        Utils.printLog(context, TAG, "SENDING TRANSXEIPR");
         if(!TextUtils.isEmpty(message.getMessage())) {
             return message.getMessage();
         }
@@ -177,10 +182,6 @@ public class KmZendeskClient {
 
     public boolean isZendeskConnected() {
         return isZendeskConnected;
-    }
-
-    public Integer getGroupId() {
-        return groupId;
     }
 
     public void isChatGoingOn(final ChatStatus chatStatus) {
@@ -225,6 +226,7 @@ public class KmZendeskClient {
         observationScope.cancel();
         kmZendeskClient = null;
     }
+
     public interface ChatStatus {
         void onChatGoingOn();
         void onChatFinished();

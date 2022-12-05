@@ -1087,11 +1087,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
             showAwayMessage(true, null);
         }
+
+        //If user has Integrated Zopim, initialize Zendesk Chat SDK
         Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
         String zendeskChatSdkKey = KmAppSettingPreferences.getInstance().getZendeskSdkKey();
-        if(assigneeContact != null && User.RoleType.AGENT.getValue().equals(assigneeContact.getRoleType()) && zendeskChatSdkKey != null) {
-
-        KmZendeskClient.getInstance(getContext()).initializeZendesk(zendeskChatSdkKey, channel.getKey(), appContactService.getContactById(MobiComUserPreference.getInstance(getContext()).getUserId()), channel);
+        if(zendeskChatSdkKey != null && assigneeContact != null && User.RoleType.AGENT.getValue().equals(assigneeContact.getRoleType()) ) {
+            KmZendeskClient.getInstance(getContext()).initializeZendesk(zendeskChatSdkKey, channel.getKey(), appContactService.getContactById(MobiComUserPreference.getInstance(getContext()).getUserId()), channel);
         }
     }
 

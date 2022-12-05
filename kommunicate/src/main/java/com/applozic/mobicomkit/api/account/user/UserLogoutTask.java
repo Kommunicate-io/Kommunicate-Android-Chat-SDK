@@ -7,7 +7,7 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
-import io.kommunicate.services.KmZendeskClient;
+import io.kommunicate.zendesk.KmZendeskClient;
 
 public class UserLogoutTask extends AlAsyncTask<Void, Boolean> {
 

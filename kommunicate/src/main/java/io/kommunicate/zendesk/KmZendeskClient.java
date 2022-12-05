@@ -1,4 +1,4 @@
-package io.kommunicate.services;
+package io.kommunicate.zendesk;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.api.conversation.AlConversationResponse;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageClientService;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -19,14 +18,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import io.kommunicate.KmConversationBuilder;
 import io.kommunicate.R;
+import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.services.KmClientService;
 import zendesk.chat.Chat;
 import zendesk.chat.ChatInfo;
 import zendesk.chat.ChatState;
 import zendesk.chat.ConnectionStatus;
 import zendesk.chat.ObservationScope;
 import zendesk.chat.Observer;
-import zendesk.chat.ProfileProvider;
 import zendesk.chat.VisitorInfo;
 
 /**
@@ -184,6 +185,53 @@ public class KmZendeskClient {
     }
     public boolean isZendeskInitialized() {
         return isZendeskInitialized;
+    }
+
+    public void openZendeskChat() {
+        isChatGoingOn(new KmZendeskClient.ChatStatus() {
+            @Override
+            public void onChatGoingOn() {
+                final Integer conversationId = kmZendeskClient.getChannelKey();
+                new KmConversationBuilder(context)
+                        .setSingleConversation(true)
+                        .setConversationId(String.valueOf(conversationId))
+                        .launchConversation(new KmCallback() {
+                            @Override
+                            public void onSuccess(Object message) {
+                                Utils.printLog(context, TAG, "Successfully launched Zendesk conversation Id:" + conversationId);
+                            }
+
+                            @Override
+                            public void onFailure(Object error) {
+                                Utils.printLog(context, TAG, "Failed to launch Zendesk conversation : " + error.toString());
+                            }
+                        });
+            }
+
+            @Override
+            public void onChatFinished() {
+                new KmConversationBuilder(context)
+                        .setSingleConversation(true)
+                        .setSkipConversationList(true)
+                        .launchConversation(new KmCallback() {
+                            @Override
+                            public void onSuccess(Object message) {
+                                Utils.printLog(context, TAG, "Successfully launched conversation : " + message.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Object error) {
+                                Utils.printLog(context, TAG, "Failed to launch conversation : " + error.toString());
+                            }
+                        });
+            }
+
+            @Override
+            public void onChatError(String errorMessage) {
+                Utils.printLog(context, TAG, "Failed to launch conversation : " + errorMessage);
+
+            }
+        });
     }
 
     public void isChatGoingOn(final ChatStatus chatStatus) {

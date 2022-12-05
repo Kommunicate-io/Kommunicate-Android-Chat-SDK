@@ -216,7 +216,7 @@ import io.kommunicate.models.KmFeedback;
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
-import io.kommunicate.services.KmZendeskClient;
+import io.kommunicate.zendesk.KmZendeskClient;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;

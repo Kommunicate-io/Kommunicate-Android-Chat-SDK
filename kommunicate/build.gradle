@@ -6,7 +6,6 @@ rootProject.allprojects {
             url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
         }
         maven { url 'https://zendesk.jfrog.io/zendesk/repo' }
-
     }
 }
 android {
@@ -41,7 +40,6 @@ dependencies {
     api 'androidx.appcompat:appcompat:1.2.0'
     api 'com.google.code.gson:gson:2.8.6'
     implementation group: 'com.zendesk', name: 'chat-providers', version: '3.3.0'
-
 }
 
 /*task sourcesJar(type: Jar) {

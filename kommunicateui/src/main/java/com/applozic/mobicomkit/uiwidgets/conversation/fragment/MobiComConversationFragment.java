@@ -1278,7 +1278,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected void processSendMessage() {
-        if(KmZendeskClient.getInstance(getContext()).isZendeskConnected()) {
+        if(KmZendeskClient.getInstance(getContext()).isZendeskInitialized()) {
             KmZendeskClient.getInstance(getContext()).sendZendeskMessage(messageEditText.getText().toString());
         }
         if (!TextUtils.isEmpty(messageEditText.getText().toString().trim()) || !TextUtils.isEmpty(filePath)) {

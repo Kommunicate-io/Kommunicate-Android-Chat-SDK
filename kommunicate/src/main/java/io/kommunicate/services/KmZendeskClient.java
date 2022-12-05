@@ -41,7 +41,6 @@ public class KmZendeskClient {
     private static String TAG = "KmZendeskClient";
     private static KmZendeskClient kmZendeskClient;
     private Integer channelKey;
-    private ProfileProvider profileProvider;
     private boolean isZendeskConnected;
     private boolean isZendeskInitialized;
     private Contact contact;
@@ -63,7 +62,7 @@ public class KmZendeskClient {
 
     //Initialize Zendesk with Zendesk Chat SDK Key
     public void initializeZendesk(String accountKey, Integer channelKey, Contact contact, Channel channel ) {
-        Utils.printLog(context, TAG, "zendesk initialized");
+        Utils.printLog(context, TAG, "Zendesk Initialized with account key : " + accountKey);
         this.contact = contact;
         this.channel = channel;
         this.channelKey = channelKey;
@@ -123,7 +122,7 @@ public class KmZendeskClient {
     }
 
     public void sendZendeskMessage(String message) {
-        Utils.printLog(context, TAG, "sent message");
+        Utils.printLog(context, TAG, "Sent Zendesk Message" + message);
         Chat.INSTANCE.providers().chatProvider().sendMessage(message);
     }
 
@@ -183,6 +182,9 @@ public class KmZendeskClient {
     public boolean isZendeskConnected() {
         return isZendeskConnected;
     }
+    public boolean isZendeskInitialized() {
+        return isZendeskInitialized;
+    }
 
     public void isChatGoingOn(final ChatStatus chatStatus) {
         if(!isZendeskInitialized) {
@@ -225,6 +227,10 @@ public class KmZendeskClient {
         });
         observationScope.cancel();
         kmZendeskClient = null;
+    }
+
+    public Integer getChannelKey() {
+        return channelKey;
     }
 
     public interface ChatStatus {

@@ -29,7 +29,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -1089,7 +1088,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             showAwayMessage(true, null);
         }
         Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
-        Log.e("zendeskassignee", String.valueOf(assigneeContact.getRoleType()));
         String zendeskChatSdkKey = KmAppSettingPreferences.getInstance().getZendeskSdkKey();
         if(assigneeContact != null && User.RoleType.AGENT.getValue().equals(assigneeContact.getRoleType()) && zendeskChatSdkKey != null) {
 

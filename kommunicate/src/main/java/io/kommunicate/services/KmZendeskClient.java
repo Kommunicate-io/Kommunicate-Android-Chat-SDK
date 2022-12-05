@@ -55,6 +55,7 @@ public class KmZendeskClient {
     }
 
     public void initializeZendesk(String accountKey, Integer channelKey, Contact contact, Channel channel ) {
+        Utils.printLog(context, TAG, "zendesk initialized");
         Chat.INSTANCE.init(context, accountKey);
         isZendeskInitialized = true;
         groupId = channelKey;
@@ -90,12 +91,12 @@ public class KmZendeskClient {
         Chat.INSTANCE.providers().profileProvider().setVisitorInfo(visitorInfo, new ZendeskCallback<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                Log.e(TAG, "loginsuccess");
+                Utils.printLog(context, TAG, "loginsuccess");
             }
 
             @Override
             public void onError(ErrorResponse errorResponse) {
-                Log.e(TAG, "loginfailed");
+                Utils.printLog(context, TAG, "loginfailed");
             }
         });
     }
@@ -104,13 +105,13 @@ public class KmZendeskClient {
         Chat.INSTANCE.providers().chatProvider().observeChatState(observationScope, new Observer<ChatState>() {
             @Override
             public void update(ChatState chatState) {
-                Log.e(TAG, String.valueOf(chatState));
+                Utils.printLog(context, TAG, String.valueOf(chatState));
             }
         });
     }
 
     public void sendZendeskMessage(String message) {
-        Log.e(TAG, "sent message");
+        Utils.printLog(context, TAG, "sent message");
         Chat.INSTANCE.providers().chatProvider().sendMessage(message);
     }
 
@@ -156,12 +157,12 @@ public class KmZendeskClient {
         }).start();
 
 
-           // Log.e(TAG, String.valueOf(messageList));
+           // Utils.printLog(context, TAG, String.valueOf(messageList));
 
     }
 
     public String getMessageForTranscript(Message message) {
-        Log.e(TAG, "SENDING TRANSXEIPR");
+        Utils.printLog(context, TAG, "SENDING TRANSXEIPR");
         if(!TextUtils.isEmpty(message.getMessage())) {
             return message.getMessage();
         }

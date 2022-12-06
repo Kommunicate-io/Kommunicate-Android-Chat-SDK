@@ -2,6 +2,7 @@ package io.kommunicate.zendesk;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.api.conversation.AlConversationResponse;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -14,6 +15,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ZendeskCallback;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +28,7 @@ import zendesk.chat.Chat;
 import zendesk.chat.ChatInfo;
 import zendesk.chat.ChatState;
 import zendesk.chat.ConnectionStatus;
+import zendesk.chat.FileUploadListener;
 import zendesk.chat.ObservationScope;
 import zendesk.chat.Observer;
 import zendesk.chat.VisitorInfo;
@@ -123,8 +126,29 @@ public class KmZendeskClient {
     }
 
     public void sendZendeskMessage(String message) {
+        if(!isZendeskInitialized || TextUtils.isEmpty(message)) {
+            return;
+        }
         Utils.printLog(context, TAG, "Sent Zendesk Message" + message);
         Chat.INSTANCE.providers().chatProvider().sendMessage(message);
+    }
+
+    public void sendZendeskAttachment(String filePath) {
+        if(!isZendeskInitialized) {
+            return;
+        }
+        Chat.INSTANCE.providers().chatProvider().sendFile(new File(filePath), new FileUploadListener() {
+            @Override
+            public void onProgress(String s, long l, long l1) {
+                if(l1 == 0) {
+                    Utils.printLog(context, TAG, "Attachment upload in progress");
+                }
+                if(l == l1) {
+                    Utils.printLog(context, TAG, "Attachment uploaded successfully");
+
+                }
+            }
+        });
     }
 
     //fetches Chat list and send the chat transcript to Zendesk
@@ -172,7 +196,7 @@ public class KmZendeskClient {
             return message.getMessage();
         }
         if(message.getFileMetas() != null && !TextUtils.isEmpty(message.getFileMetas().getBlobKeyString())) {
-            return "/rest/ws/attachment/" + message.getFileMetas().getBlobKeyString();
+            return new KmClientService(context).getBaseUrl() + "/rest/ws/attachment/" + message.getFileMetas().getBlobKeyString();
         }
         if (message.getMetadata() != null && !TextUtils.isEmpty(message.getMetadata().get("templateId"))) {
             return "TemplateId: " + message.getMetadata().get("templateId");
@@ -262,6 +286,9 @@ public class KmZendeskClient {
     }
 
     public void endZendeskChat() {
+        if(!isZendeskInitialized) {
+            return;
+        }
         Chat.INSTANCE.providers().chatProvider().endChat(new ZendeskCallback<Void>() {
             @Override
             public void onSuccess(Void unused) {

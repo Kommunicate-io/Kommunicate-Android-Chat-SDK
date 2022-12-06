@@ -2,6 +2,7 @@ package io.kommunicate.zendesk;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.api.conversation.AlConversationResponse;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -25,7 +26,9 @@ import io.kommunicate.services.KmClientService;
 import zendesk.chat.Chat;
 import zendesk.chat.ChatInfo;
 import zendesk.chat.ChatState;
+import zendesk.chat.CompletionCallback;
 import zendesk.chat.ConnectionStatus;
+import zendesk.chat.JwtAuthenticator;
 import zendesk.chat.ObservationScope;
 import zendesk.chat.Observer;
 import zendesk.chat.VisitorInfo;
@@ -43,6 +46,7 @@ public class KmZendeskClient {
     private static KmZendeskClient kmZendeskClient;
     private Integer channelKey;
     private boolean isZendeskConnected;
+    private boolean isTranscriptSent;
     private boolean isZendeskInitialized;
     private Contact contact;
     private Channel channel;
@@ -69,7 +73,7 @@ public class KmZendeskClient {
         this.channelKey = channelKey;
         Chat.INSTANCE.init(context, accountKey);
         isZendeskInitialized = true;
-        observeZendeskConnection();
+        //observeZendeskConnection();
         authenticateZendeskUser(contact);
     }
 
@@ -94,23 +98,89 @@ public class KmZendeskClient {
     }
 
     //TODO: Change this to JWT authentication
-    public void authenticateZendeskUser(Contact contact) {
-        VisitorInfo visitorInfo = VisitorInfo.builder()
-                .withName(TextUtils.isEmpty(contact.getDisplayName()) ? "" : contact.getDisplayName())
-                .withEmail(TextUtils.isEmpty(contact.getEmailId()) ? "" : contact.getEmailId())
-                .withPhoneNumber(TextUtils.isEmpty(contact.getContactNumber()) ? "" : contact.getContactNumber()) // numeric string
-                .build();
-        Chat.INSTANCE.providers().profileProvider().setVisitorInfo(visitorInfo, new ZendeskCallback<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Utils.printLog(context, TAG, "Successfully logged in as Visitor");
-            }
+    public void authenticateZendeskUser(final Contact contact) {
+       // contact.g
+        if(TextUtils.isEmpty(contact.getDisplayName()) || TextUtils.isEmpty(contact.getUserId()) || TextUtils.isEmpty(contact.getEmailId())) {
+            observeZendeskConnection();
+            return;
+        }
+                    try {
+                        JwtAuthenticator jwtAuthenticator = new JwtAuthenticator() {
+                            @Override
+                            public void getToken(final JwtCompletion jwtCompletion) {
+                                try {
+                                    Log.e("zendesk", "Gettoken");
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                new KmZendeskClientService(context).getJwtForZendeskAuthentication(contact.getUserId(), contact.getDisplayName(),contact.getEmailId(), jwtCompletion);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }).start();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
-            @Override
-            public void onError(ErrorResponse errorResponse) {
-                Utils.printLog(context, TAG, "Failed to login as Visitor");
-            }
-        });
+                            }
+                        };
+                        Chat.INSTANCE.setIdentity(jwtAuthenticator, new CompletionCallback<Void>() {
+                            @Override
+                            public void onCompleted(Void unused) {
+                                observeZendeskConnection();
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //new KmZendeskClientService(context).getJwtForZendeskAuthentication(contact.getUserId(), contact.getDisplayName(), contact.getEmailId(), null);
+
+
+
+
+
+
+//            try {
+//                JwtAuthenticator jwtAuthenticator = new JwtAuthenticator() {
+//                    @Override
+//                    public void getToken(JwtCompletion jwtCompletion) {
+//                        try {
+//                            Log.e("zendesk", "Gettoken");
+//                            new KmZendeskClientService(context).getJwtForZendeskAuthentication(contact.getUserId(), contact.getDisplayName(), contact.getEmailId(), jwtCompletion);
+//                            //jwtCompletion.onTokenLoaded(JWTToken);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                };
+//                Chat.INSTANCE.setIdentity(jwtAuthenticator);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+
+//        VisitorInfo visitorInfo = VisitorInfo.builder()
+//                .withName(TextUtils.isEmpty(contact.getDisplayName()) ? "" : contact.getDisplayName())
+//                .withEmail(TextUtils.isEmpty(contact.getEmailId()) ? "" : contact.getEmailId())
+//                .withPhoneNumber(TextUtils.isEmpty(contact.getContactNumber()) ? "" : contact.getContactNumber()) // numeric string
+//                .build();
+//        Chat.INSTANCE.providers().profileProvider().setVisitorInfo(visitorInfo, new ZendeskCallback<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                Utils.printLog(context, TAG, "Successfully logged in as Visitor");
+//            }
+//
+//            @Override
+//            public void onError(ErrorResponse errorResponse) {
+//                Utils.printLog(context, TAG, "Failed to login as Visitor");
+//            }
+//        });
+
     }
 
     private void observeChatLogs() {
@@ -130,6 +200,7 @@ public class KmZendeskClient {
     //fetches Chat list and send the chat transcript to Zendesk
     public void sendZendeskChatTranscript() {
         final StringBuilder transcriptString = new StringBuilder();
+        Log.e("Zendesktranscript", new KmClientService(context).getConversationShareUrl() + channelKey);
         sendZendeskMessage(context.getString(R.string.km_zendesk_transcript_message, new KmClientService(context).getConversationShareUrl(), channelKey));
         new Thread(new Runnable() {
             @Override
@@ -162,6 +233,7 @@ public class KmZendeskClient {
                     }
                 }
                 sendZendeskMessage(transcriptString.toString());
+                isTranscriptSent = true;
                 Utils.printLog(context, TAG, String.valueOf(transcriptString));
             }
         }).start();

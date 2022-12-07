@@ -130,6 +130,7 @@ public class KmAppSettingModel extends JsonMarker {
         private long sessionTimeout;
         private int botMessageDelayInterval;
         private boolean pseudonymsEnabled;
+        private String zendeskChatSdkKey;
 
         public String getPosition() {
             return position;
@@ -157,9 +158,9 @@ public class KmAppSettingModel extends JsonMarker {
             this.position = position;
         }
 
-
-
-
+        public String getZendeskChatSdkKey() {
+            return zendeskChatSdkKey;
+        }
 
         @SerializedName("isSingleThreaded")
         private boolean singleThreaded;

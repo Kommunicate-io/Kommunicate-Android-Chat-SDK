@@ -216,6 +216,7 @@ import io.kommunicate.models.KmFeedback;
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.zendesk.KmZendeskClient;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
@@ -1086,6 +1087,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
             showAwayMessage(true, null);
         }
+
+        //If user has Integrated Zopim, initialize Zendesk Chat SDK
+        Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
+        String zendeskChatSdkKey = KmAppSettingPreferences.getInstance().getZendeskSdkKey();
+        if(!TextUtils.isEmpty(zendeskChatSdkKey) && assigneeContact != null && User.RoleType.AGENT.getValue().equals(assigneeContact.getRoleType()) ) {
+            KmZendeskClient.getInstance(getContext()).initializeZendesk(zendeskChatSdkKey, channel.getKey(), appContactService.getContactById(MobiComUserPreference.getInstance(getContext()).getUserId()), channel);
+        }
     }
 
     @Override
@@ -1270,6 +1278,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected void processSendMessage() {
+        if(KmZendeskClient.getInstance(getContext()).isZendeskInitialized()) {
+            KmZendeskClient.getInstance(getContext()).sendZendeskMessage(messageEditText.getText().toString());
+        }
         if (!TextUtils.isEmpty(messageEditText.getText().toString().trim()) || !TextUtils.isEmpty(filePath)) {
             String inputMessage = messageEditText.getText().toString();
             String[] inputMsg = inputMessage.toLowerCase().split(" ");

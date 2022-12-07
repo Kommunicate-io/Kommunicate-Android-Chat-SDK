@@ -171,7 +171,7 @@ public class KmAppSettingPreferences {
     }
 
     public String getZendeskSdkKey() {
-        return preferences.getString(ZENDESK_SDK_KEY, null);
+        return preferences.getString(ZENDESK_SDK_KEY, "");
     }
 
     public void clearInstance() {

@@ -1,12 +1,15 @@
 package io.kommunicate.zendesk;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.AlConversationResponse;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageClientService;
+import com.applozic.mobicomkit.api.conversation.MobiComMessageService;
+import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -24,6 +27,7 @@ import java.util.List;
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
 import io.kommunicate.R;
+import io.kommunicate.async.KmStatusUpdateTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.utils.KmAppSettingPreferences;
@@ -163,14 +167,18 @@ public class KmZendeskClient {
                     return;
                 }
                 for (ChatLog log : chatState.getChatLogs()) {
-                    if(lastSyncTime > log.getCreatedTimestamp()) {
-                        continue;
-                    }
+//                    if(lastSyncTime > log.getCreatedTimestamp()) {
+//                        continue;
+//                    }
                     if(log instanceof ChatLog.Message && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
-                        Utils.printLog(context, TAG, "Zendesk Agent message : " + ((ChatLog.Message) log).getMessage());
+                        Utils.printLog(context, TAG, "Zendesk Agent message : " + ((ChatLog.Message) log).getMessage() + "from :" + log.getDisplayName());
+
+                        //processAgentMessage(log.getDisplayName(), ((ChatLog.Message) log).getMessage());
+                        processAgentMessage(((ChatLog.Message) log).getMessage(), log.getDisplayName(), log.getNick(), channel.getKey(), log.getCreatedTimestamp());
                         // TODO: Handle Zendesk Agent Message
                     }
                     if(log.getType().equals(ChatLog.Type.MEMBER_LEAVE) && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
+                        processAgentLeave();
                         // TODO: Handle Agent Leave from Zendesk
                     }
                 }
@@ -179,6 +187,24 @@ public class KmZendeskClient {
         });
     }
 
+    private void processAgentLeave() {
+        channel.getMetadata().put(Channel.CONVERSATION_STATUS, String.valueOf(2));
+        ChannelService.getInstance(context).updateChannel(channel);
+        new KmStatusUpdateTask(channel.getKey(), 2, true, new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                Utils.printLog(context, TAG, "Zendesk conversation resolved");
+                BroadcastService.sendUpdate(context, true, BroadcastService
+                        .INTENT_ACTIONS.CHANNEL_SYNC.toString());
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Zendesk conversation failed to resolve");
+
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
 
     public void sendZendeskMessage(String message) {
         if(!handoffHappened || !zendeskInitialized || TextUtils.isEmpty(message)) {
@@ -186,6 +212,15 @@ public class KmZendeskClient {
         }
         Utils.printLog(context, TAG, "Sent Zendesk Message" + message);
         Chat.INSTANCE.providers().chatProvider().sendMessage(message);
+    }
+
+    public void processAgentMessage(final String message, final String displayName, final String agentId, final Integer conversationId, final Long messageTimestamp) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new KmZendeskClientService(context).sendZendeskMessage(message, displayName, agentId.replace(":", "-"), conversationId, messageTimestamp);
+            }
+        }).start();
     }
 
     public void sendZendeskAttachment(String filePath) {

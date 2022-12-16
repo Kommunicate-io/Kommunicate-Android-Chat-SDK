@@ -204,25 +204,25 @@ public class MainActivity extends AppCompatActivity {
                     metadata.put("skipBot", "true");
                     ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
-                Kommunicate.openZendeskChat(MainActivity.this);
-//                try {
-//                    KmConversationHelper.openConversation(context, true, null, new KmCallback() {
-//                        @Override
-//                        public void onSuccess(Object message) {
-//                            if (progressDialog != null && progressDialog.isShowing()) {
-//                                progressDialog.dismiss();
-//                            }
-//                            finish();
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Object error) {
-//
-//                        }
-//                    });
-//                } catch (KmException e) {
-//                    e.printStackTrace();
-//                }
+
+                try {
+                    KmConversationHelper.openConversation(context, true, null, new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+
+                        }
+                    });
+                } catch (KmException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

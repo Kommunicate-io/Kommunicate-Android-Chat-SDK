@@ -2,7 +2,6 @@ package io.kommunicate.zendesk;
 
 import android.content.Context;
 import android.text.TextUtils;
-
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.AlConversationResponse;
@@ -38,6 +37,7 @@ import zendesk.chat.JwtAuthenticator;
 import zendesk.chat.FileUploadListener;
 import zendesk.chat.ObservationScope;
 import zendesk.chat.Observer;
+
 
 /**
  * Zendesk Chat SDK V2 integration

@@ -51,10 +51,10 @@ public class KmZendeskClient {
     private static String TAG = "KmZendeskClient";
     private static KmZendeskClient kmZendeskClient;
     private Integer channelKey;
-    private boolean isZendeskConnected;
-    private boolean isTranscriptSent;
-    private boolean isZendeskInitialized;
-    private boolean isHandoffHappened;
+    private boolean zendeskConnected;
+    private boolean transcriptSent;
+    private boolean zendeskInitialized;
+    private boolean handoffHappened;
     private Contact contact;
     private Channel channel;
     private Context context;
@@ -75,22 +75,22 @@ public class KmZendeskClient {
 
     //Initialize Zendesk with Zendesk Chat SDK Key
     public void initializeZendesk(String accountKey, Contact contact) {
-        if(isZendeskInitialized) {
+        if(zendeskInitialized) {
             return;
         }
         Utils.printLog(context, TAG, "Zendesk Initialized with account key : " + accountKey);
         this.contact = contact;
         Chat.INSTANCE.init(context, accountKey);
-        isZendeskInitialized = true;
+        zendeskInitialized = true;
         authenticateZendeskUser(contact);
     }
 
     public void handleHandoff(Channel channel, boolean happenedNow) {
         this.channel = channel;
         this.channelKey = channel.getKey();
-        isHandoffHappened = true;
+        handoffHappened = true;
         lastSyncTime = System.currentTimeMillis();
-        if(happenedNow) {
+        if(happenedNow && !transcriptSent) {
             sendZendeskChatTranscript();
         }
     }
@@ -104,7 +104,7 @@ public class KmZendeskClient {
                     connectToZendeskSocket();
                     return;
                 }
-                isZendeskConnected = true;
+                zendeskConnected = true;
                 observeChatLogs();
             }
         });
@@ -179,8 +179,9 @@ public class KmZendeskClient {
         });
     }
 
+
     public void sendZendeskMessage(String message) {
-        if(!isHandoffHappened || !isZendeskInitialized || TextUtils.isEmpty(message)) {
+        if(!handoffHappened || !zendeskInitialized || TextUtils.isEmpty(message)) {
             return;
         }
         Utils.printLog(context, TAG, "Sent Zendesk Message" + message);
@@ -188,7 +189,7 @@ public class KmZendeskClient {
     }
 
     public void sendZendeskAttachment(String filePath) {
-        if(!isZendeskInitialized) {
+        if(!zendeskInitialized) {
             return;
         }
         Chat.INSTANCE.providers().chatProvider().sendFile(new File(filePath), new FileUploadListener() {
@@ -240,7 +241,7 @@ public class KmZendeskClient {
                     }
                 }
                 sendZendeskMessage(transcriptString.toString());
-                isTranscriptSent = true;
+                transcriptSent = true;
                 Utils.printLog(context, TAG, String.valueOf(transcriptString));
             }
         }).start();
@@ -260,10 +261,10 @@ public class KmZendeskClient {
     }
 
     public boolean isZendeskConnected() {
-        return isZendeskConnected;
+        return zendeskConnected;
     }
     public boolean isZendeskInitialized() {
-        return isZendeskInitialized;
+        return zendeskInitialized;
     }
 
     public void openZendeskChat(final Context context) {
@@ -311,7 +312,7 @@ public class KmZendeskClient {
     }
 
     public void endZendeskChat() {
-        if(!isZendeskInitialized) {
+        if(!zendeskInitialized) {
             return;
         }
         Chat.INSTANCE.providers().chatProvider().endChat(new ZendeskCallback<Void>() {

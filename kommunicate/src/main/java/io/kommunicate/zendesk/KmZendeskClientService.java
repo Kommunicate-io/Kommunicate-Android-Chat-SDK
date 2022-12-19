@@ -47,7 +47,6 @@ public class KmZendeskClientService extends KmClientService {
             Utils.printLog(context, TAG, "Zendesk JWT response : " + response);
             Log.e("zendeskuser", response);
 
-            //return response;
         } catch (Exception e) {
             throw e;
         }

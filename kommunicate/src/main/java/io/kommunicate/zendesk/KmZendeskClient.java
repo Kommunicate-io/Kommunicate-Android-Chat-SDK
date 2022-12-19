@@ -114,7 +114,7 @@ public class KmZendeskClient {
         Chat.INSTANCE.providers().connectionProvider().connect();
     }
 
-    //TODO: Change this to JWT authentication
+    //JWT Authentication for logged in users
     public void authenticateZendeskUser(final Contact contact) {
         if(TextUtils.isEmpty(contact.getDisplayName()) || TextUtils.isEmpty(contact.getUserId()) || TextUtils.isEmpty(contact.getEmailId())) {
             observeZendeskConnection();

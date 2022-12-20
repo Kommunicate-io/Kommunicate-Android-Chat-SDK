@@ -19,6 +19,7 @@ import com.zendesk.service.ErrorResponse;
 import com.zendesk.service.ZendeskCallback;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +55,6 @@ public class KmZendeskClient {
 
     private static String TAG = "KmZendeskClient";
     private static KmZendeskClient kmZendeskClient;
-    private Integer channelKey;
     private boolean zendeskConnected;
     private boolean transcriptSent;
     private boolean zendeskInitialized;
@@ -69,6 +69,7 @@ public class KmZendeskClient {
     private KmZendeskClient(Context context) {
         this.context = context;
         observationScope = new ObservationScope();
+        messagesInBuffer = new ArrayList<>();
     }
 
     public static KmZendeskClient getInstance(Context context) {
@@ -92,7 +93,6 @@ public class KmZendeskClient {
 
     public void handleHandoff(Channel channel, boolean happenedNow) {
         this.channel = channel;
-        this.channelKey = channel.getKey();
         handoffHappened = true;
         lastSyncTime = System.currentTimeMillis();
         if(happenedNow && !transcriptSent) {
@@ -286,11 +286,11 @@ public class KmZendeskClient {
 
     //fetches Chat list and send the chat transcript to Zendesk
     public void sendZendeskChatTranscript() {
-        if(contact == null) {
+        if(contact == null || channel == null) {
             return;
         }
         final StringBuilder transcriptString = new StringBuilder();
-        sendZendeskMessage(context.getString(R.string.km_zendesk_transcript_message, new KmClientService(context).getConversationShareUrl(), channelKey));
+        sendZendeskMessage(context.getString(R.string.km_zendesk_transcript_message, new KmClientService(context).getConversationShareUrl(), channel.getKey()));
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -408,9 +408,5 @@ public class KmZendeskClient {
                 Utils.printLog(context, TAG, errorResponse.getReason() + errorResponse.getResponseBody());
             }
         });
-    }
-
-    public Integer getChannelKey() {
-        return channelKey;
     }
 }

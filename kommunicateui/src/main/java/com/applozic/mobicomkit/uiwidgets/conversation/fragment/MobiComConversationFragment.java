@@ -29,6 +29,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -567,9 +568,20 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onRestartConversationPressed() {
                 AlEventManager.getInstance().sendOnConversationRestartedEvent(channel != null ? channel.getKey() : 0);
-                setFeedbackDisplay(false);
                 if(!TextUtils.isEmpty(zendeskChatSdk)) {
-                    KmConversationHelper.createOrLaunchConversation(new KmConversationBuilder(getContext()), true, null);
+                    KmConversationHelper.launchConversationIfLoggedIn(getContext(), new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            conversationUIService.openConversationFragment(ChannelService.getInstance(getContext()).getChannel((Integer) message), (Integer) message,  null, null, null);
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            setFeedbackDisplay(false);
+                        }
+                    });
+                } else {
+                    setFeedbackDisplay(false);
                 }
             }
         });
@@ -1084,9 +1096,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (channel == null) {
             return;
         }
-
         String existingAssignee = channel.getConversationAssignee();
-
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
         //conversation is open
         //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
@@ -1098,7 +1108,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         //If user has Integrated Zopim, initialize Zendesk Chat SDK
         Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
-        if(!TextUtils.isEmpty(zendeskChatSdk) && assigneeContact != null && User.RoleType.AGENT.getValue().equals(assigneeContact.getRoleType()) ) {
+        if(!TextUtils.isEmpty(zendeskChatSdk) && assigneeContact != null && User.RoleType.AGENT.getValue().equals(assigneeContact.getRoleType()) && channel.getKmStatus() != Channel.CLOSED_CONVERSATIONS) {
             KmZendeskClient.getInstance(getContext()).handleHandoff(channel, true);
         }
     }

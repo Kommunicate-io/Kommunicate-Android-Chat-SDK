@@ -8,7 +8,6 @@ import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.AlConversationResponse;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageClientService;
-import com.applozic.mobicomkit.api.conversation.MobiComMessageService;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
@@ -31,6 +30,7 @@ import io.kommunicate.async.KmStatusUpdateTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.utils.KmAppSettingPreferences;
+import zendesk.chat.Attachment;
 import zendesk.chat.Chat;
 import zendesk.chat.ChatLog;
 import zendesk.chat.ChatParticipant;
@@ -64,6 +64,7 @@ public class KmZendeskClient {
     private Context context;
     private ObservationScope observationScope;
     private Long lastSyncTime;
+    private List<String> messagesInBuffer;
 
     private KmZendeskClient(Context context) {
         this.context = context;
@@ -110,6 +111,12 @@ public class KmZendeskClient {
                 }
                 zendeskConnected = true;
                 observeChatLogs();
+                if(!messagesInBuffer.isEmpty()) {
+                    for(String message: messagesInBuffer) {
+                        sendZendeskMessage(message);
+                    }
+                }
+                messagesInBuffer.clear();
             }
         });
     }
@@ -159,49 +166,57 @@ public class KmZendeskClient {
     }
 
     private void observeChatLogs() {
+        lastSyncTime = MobiComUserPreference.getInstance(context).getZendeskLastSyncTime();
+
         Chat.INSTANCE.providers().chatProvider().observeChatState(observationScope, new Observer<ChatState>() {
             @Override
             public void update(ChatState chatState) {
-                Utils.printLog(context, TAG, "id" + String.valueOf(chatState.getChatId()));
                 if(contact == null) {
                     return;
                 }
                 for (ChatLog log : chatState.getChatLogs()) {
-//                    if(lastSyncTime > log.getCreatedTimestamp()) {
-//                        continue;
-//                    }
+                    if(lastSyncTime != null && lastSyncTime >= log.getCreatedTimestamp()) {
+                        continue;
+                    }
+
                     if(log instanceof ChatLog.Message && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
                         Utils.printLog(context, TAG, "Zendesk Agent message : " + ((ChatLog.Message) log).getMessage() + "from :" + log.getDisplayName());
-
-                        //processAgentMessage(log.getDisplayName(), ((ChatLog.Message) log).getMessage());
                         processAgentMessage(((ChatLog.Message) log).getMessage(), log.getDisplayName(), log.getNick(), channel.getKey(), log.getCreatedTimestamp());
-                        // TODO: Handle Zendesk Agent Message
+                    } else if(log instanceof ChatLog.AttachmentMessage && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
+                        Utils.printLog(context, TAG, "Zendesk Agent  : " + ((ChatLog.AttachmentMessage) log).getAttachment().getName() + "from :" + log.getDisplayName());
+                        processAttachmentAgentMessage(((ChatLog.AttachmentMessage) log).getAttachment(), log.getDisplayName(), log.getNick(), channel.getKey(), log.getCreatedTimestamp());
                     }
-                    if(log.getType().equals(ChatLog.Type.MEMBER_LEAVE) && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
+                    else if(log.getType().equals(ChatLog.Type.MEMBER_LEAVE) && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
+                        Utils.printLog(context, TAG, "Zendesk Agent Left");
                         processAgentLeave();
-                        // TODO: Handle Agent Leave from Zendesk
                     }
+                    lastSyncTime = log.getCreatedTimestamp();
                 }
-                lastSyncTime = System.currentTimeMillis();
+                MobiComUserPreference.getInstance(context).setZendeskLastSyncTime(lastSyncTime);
             }
         });
     }
 
     private void processAgentLeave() {
+        if(channel == null || channel.getMetadata() == null) {
+            return;
+        }
         channel.getMetadata().put(Channel.CONVERSATION_STATUS, String.valueOf(2));
+        channel.setKmStatus(Channel.CLOSED_CONVERSATIONS);
         ChannelService.getInstance(context).updateChannel(channel);
+
         new KmStatusUpdateTask(channel.getKey(), 2, true, new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 Utils.printLog(context, TAG, "Zendesk conversation resolved");
                 BroadcastService.sendUpdate(context, true, BroadcastService
                         .INTENT_ACTIONS.CHANNEL_SYNC.toString());
+                endZendeskChat();
             }
 
             @Override
             public void onFailure(Object error) {
                 Utils.printLog(context, TAG, "Zendesk conversation failed to resolve");
-
             }
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -210,17 +225,45 @@ public class KmZendeskClient {
         if(!handoffHappened || !zendeskInitialized || TextUtils.isEmpty(message)) {
             return;
         }
-        Utils.printLog(context, TAG, "Sent Zendesk Message" + message);
+        if(!zendeskConnected) {
+            messagesInBuffer.add(message);
+            return;
+        }
+        Utils.printLog(context, TAG, "Sent Zendesk Message : " + message);
         Chat.INSTANCE.providers().chatProvider().sendMessage(message);
     }
 
+    //send Agent message from Zendesk dashboard to Kommunicate server
+    //using SERIAL_EXECUTOR to send messages in correct order
     public void processAgentMessage(final String message, final String displayName, final String agentId, final Integer conversationId, final Long messageTimestamp) {
-        new Thread(new Runnable() {
+        new KmZendeskSendMessageTask(context, message, displayName, agentId, conversationId, messageTimestamp, new KmCallback() {
             @Override
-            public void run() {
-                new KmZendeskClientService(context).sendZendeskMessage(message, displayName, agentId.replace(":", "-"), conversationId, messageTimestamp);
+            public void onSuccess(Object message) {
+                Utils.printLog(context, TAG, "Zendesk Send Agent Message success");
             }
-        }).start();
+
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Zendesk Send Agent Message failed");
+            }
+        }).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
+    }
+
+    //send Attachment from Zendesk dashboard to Kommunicate server
+    private void processAttachmentAgentMessage(final Attachment attachment, final String displayName, final String agentId, final Integer conversationId, final Long messageTimestamp) {
+        new KmZendeskSendMessageTask(context, attachment, displayName, agentId, conversationId, messageTimestamp, new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                Utils.printLog(context, TAG, "Zendesk Send Agent Message success");
+
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Zendesk Send Agent Message failed");
+
+            }
+        }).executeOnExecutor(AsyncTask.SERIAL_EXECUTOR);
     }
 
     public void sendZendeskAttachment(String filePath) {
@@ -243,6 +286,9 @@ public class KmZendeskClient {
 
     //fetches Chat list and send the chat transcript to Zendesk
     public void sendZendeskChatTranscript() {
+        if(contact == null) {
+            return;
+        }
         final StringBuilder transcriptString = new StringBuilder();
         sendZendeskMessage(context.getString(R.string.km_zendesk_transcript_message, new KmClientService(context).getConversationShareUrl(), channelKey));
         new Thread(new Runnable() {
@@ -282,6 +328,7 @@ public class KmZendeskClient {
         }).start();
     }
 
+    //Fetch list of messages and send it as a transcipt to Zendesk chat
     public String getMessageForTranscript(Message message) {
         if(!TextUtils.isEmpty(message.getMessage())) {
             return message.getMessage();
@@ -310,13 +357,11 @@ public class KmZendeskClient {
                         @Override
                         public void onSuccess(Object message) {
                             Utils.printLog(context, TAG, "Successfully launched new conversation Id:" + String.valueOf(message));
-
                         }
 
                         @Override
                         public void onFailure(Object error) {
                             Utils.printLog(context, TAG, "Failed to launched Zendesk conversation Id:");
-
                         }
                     });
                     return;
@@ -353,6 +398,8 @@ public class KmZendeskClient {
         Chat.INSTANCE.providers().chatProvider().endChat(new ZendeskCallback<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                observationScope.cancel();
+                kmZendeskClient = null;
                 Utils.printLog(context, TAG, "Successfully ended Zendesk Chat");
             }
 
@@ -361,8 +408,6 @@ public class KmZendeskClient {
                 Utils.printLog(context, TAG, errorResponse.getReason() + errorResponse.getResponseBody());
             }
         });
-        observationScope.cancel();
-        kmZendeskClient = null;
     }
 
     public Integer getChannelKey() {

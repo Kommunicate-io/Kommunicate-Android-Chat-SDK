@@ -1,6 +1,7 @@
 package io.kommunicate.zendesk;
 
-public class KmZendeskJwtModel {
+public class KmZendeskApiModel {
+    private static final String SUCCESS = "SUCCESS";
     private String code;
     private String message;
     private JwtData data;
@@ -15,6 +16,10 @@ public class KmZendeskJwtModel {
 
     public JwtData getData() {
         return data;
+    }
+
+    public boolean isSuccess() {
+        return SUCCESS.equals(code);
     }
 
     public class JwtData {

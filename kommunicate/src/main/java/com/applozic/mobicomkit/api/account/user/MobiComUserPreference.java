@@ -87,6 +87,7 @@ public class MobiComUserPreference {
     private static String LOGGED_USER_DELETE_FROM_DASHBOARD = "loggedUserDeletedFromDashboard";
     private static String NOTIFY_EVERYBODY = "notifyEverybody";
     private static final String ZENDESK_LATEST_CONVERSATION = "ZENDESK_LATEST_CONVERSATION";
+    private static final String ZENDESK_LAST_SYNC_TIME = "ZENDESK_LAST_SYNC_TIME";
 
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -993,5 +994,18 @@ public class MobiComUserPreference {
             return sharedPreferences.getInt(ZENDESK_LATEST_CONVERSATION, 0);
         }
         return 0;
+    }
+
+    public void setZendeskLastSyncTime(Long lastSyncTime) {
+        if (sharedPreferences != null) {
+            sharedPreferences.edit().putLong(ZENDESK_LAST_SYNC_TIME, lastSyncTime).apply();
+        }
+    }
+
+    public Long getZendeskLastSyncTime() {
+        if(sharedPreferences != null) {
+            return sharedPreferences.getLong(ZENDESK_LAST_SYNC_TIME, 0L);
+        }
+        return 0L;
     }
 }

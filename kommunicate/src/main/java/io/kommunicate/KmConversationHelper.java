@@ -395,15 +395,6 @@ public class KmConversationHelper {
             }
             return;
         }
-        if(KmAppSettingPreferences.getInstance().getZendeskSdkKey() != null) {
-            if (conversationBuilder.getConversationInfo() != null) {
-                conversationBuilder.getConversationInfo().put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
-            } else {
-                Map<String, String> sourceMap = new HashMap<>();
-                sourceMap.put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
-                conversationBuilder.setConversationInfo(sourceMap);
-            }
-        }
 
         if (conversationBuilder.getContext() == null) {
             if (callback != null) {
@@ -731,6 +722,15 @@ public class KmConversationHelper {
                     conversationBuilder.setAgentIds(agents);
                     if (useSingleThreadedSettingFromServer) {
                         conversationBuilder.setSingleConversation(kmAppSettings.getChatWidget().isSingleThreaded());
+                    }
+                    if(kmAppSettings.getChatWidget().getZendeskChatSdkKey() != null) {
+                        if (conversationBuilder.getConversationInfo() != null) {
+                            conversationBuilder.getConversationInfo().put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
+                        } else {
+                            Map<String, String> sourceMap = new HashMap<>();
+                            sourceMap.put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
+                            conversationBuilder.setConversationInfo(sourceMap);
+                        }
                     }
                     try {
                         final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), agents, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);

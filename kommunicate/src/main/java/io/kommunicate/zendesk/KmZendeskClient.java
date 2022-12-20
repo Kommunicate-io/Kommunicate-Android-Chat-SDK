@@ -197,7 +197,7 @@ public class KmZendeskClient {
         });
     }
 
-    private void processAgentLeave() {
+private void processAgentLeave() {
         if(channel == null || channel.getMetadata() == null) {
             return;
         }

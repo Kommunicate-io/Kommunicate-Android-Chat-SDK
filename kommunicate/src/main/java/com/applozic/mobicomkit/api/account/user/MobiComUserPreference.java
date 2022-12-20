@@ -86,6 +86,7 @@ public class MobiComUserPreference {
     private static String CHANNEL_LIST_LAST_GENERATED_DEFAULT_VALUE = "10000";
     private static String LOGGED_USER_DELETE_FROM_DASHBOARD = "loggedUserDeletedFromDashboard";
     private static String NOTIFY_EVERYBODY = "notifyEverybody";
+    private static final String ZENDESK_LATEST_CONVERSATION = "ZENDESK_LATEST_CONVERSATION";
 
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -981,5 +982,16 @@ public class MobiComUserPreference {
         if(sharedPreferences != null) {
             sharedPreferences.edit().putBoolean(NOTIFY_EVERYBODY, isNotifyEverybody).apply();
         }
+    }
+    public void setLatestZendeskConversationId(Integer conversationId) {
+        if (sharedPreferences != null) {
+            sharedPreferences.edit().putInt(ZENDESK_LATEST_CONVERSATION, conversationId).apply();
+        }
+    }
+    public Integer getLatestZendeskConversationId() {
+        if (sharedPreferences != null) {
+            return sharedPreferences.getInt(ZENDESK_LATEST_CONVERSATION, 0);
+        }
+        return 0;
     }
 }

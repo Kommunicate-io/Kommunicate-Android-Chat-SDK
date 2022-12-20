@@ -887,6 +887,6 @@ public class Kommunicate {
 
     public static void openZendeskChat(final Context context) {
         KmZendeskClient kmZendeskClient = KmZendeskClient.getInstance(context);
-        kmZendeskClient.openZendeskChat();
+        kmZendeskClient.openZendeskChat(context);
     }
 }

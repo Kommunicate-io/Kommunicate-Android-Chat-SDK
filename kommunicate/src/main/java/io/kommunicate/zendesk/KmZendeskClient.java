@@ -2,11 +2,12 @@ package io.kommunicate.zendesk;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
-
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.conversation.AlConversationResponse;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageClientService;
+import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -20,18 +21,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import io.kommunicate.KmConversationBuilder;
+import io.kommunicate.KmConversationHelper;
+import io.kommunicate.KmException;
 import io.kommunicate.R;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmClientService;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import zendesk.chat.Chat;
-import zendesk.chat.ChatInfo;
+import zendesk.chat.ChatLog;
+import zendesk.chat.ChatParticipant;
 import zendesk.chat.ChatState;
+import zendesk.chat.CompletionCallback;
 import zendesk.chat.ConnectionStatus;
+import zendesk.chat.JwtAuthenticator;
 import zendesk.chat.FileUploadListener;
 import zendesk.chat.ObservationScope;
 import zendesk.chat.Observer;
-import zendesk.chat.VisitorInfo;
+
 
 /**
  * Zendesk Chat SDK V2 integration
@@ -45,12 +51,15 @@ public class KmZendeskClient {
     private static String TAG = "KmZendeskClient";
     private static KmZendeskClient kmZendeskClient;
     private Integer channelKey;
-    private boolean isZendeskConnected;
-    private boolean isZendeskInitialized;
+    private boolean zendeskConnected;
+    private boolean transcriptSent;
+    private boolean zendeskInitialized;
+    private boolean handoffHappened;
     private Contact contact;
     private Channel channel;
     private Context context;
     private ObservationScope observationScope;
+    private Long lastSyncTime;
 
     private KmZendeskClient(Context context) {
         this.context = context;
@@ -65,15 +74,25 @@ public class KmZendeskClient {
     }
 
     //Initialize Zendesk with Zendesk Chat SDK Key
-    public void initializeZendesk(String accountKey, Integer channelKey, Contact contact, Channel channel ) {
+    public void initializeZendesk(String accountKey, Contact contact) {
+        if(zendeskInitialized) {
+            return;
+        }
         Utils.printLog(context, TAG, "Zendesk Initialized with account key : " + accountKey);
         this.contact = contact;
-        this.channel = channel;
-        this.channelKey = channelKey;
         Chat.INSTANCE.init(context, accountKey);
-        isZendeskInitialized = true;
-        observeZendeskConnection();
+        zendeskInitialized = true;
         authenticateZendeskUser(contact);
+    }
+
+    public void handleHandoff(Channel channel, boolean happenedNow) {
+        this.channel = channel;
+        this.channelKey = channel.getKey();
+        handoffHappened = true;
+        lastSyncTime = System.currentTimeMillis();
+        if(happenedNow && !transcriptSent) {
+            sendZendeskChatTranscript();
+        }
     }
 
     //Checks Zendesk's socket connection and handle connection
@@ -85,9 +104,8 @@ public class KmZendeskClient {
                     connectToZendeskSocket();
                     return;
                 }
-                isZendeskConnected = true;
+                zendeskConnected = true;
                 observeChatLogs();
-                sendZendeskChatTranscript();
             }
         });
     }
@@ -96,37 +114,74 @@ public class KmZendeskClient {
         Chat.INSTANCE.providers().connectionProvider().connect();
     }
 
-    //TODO: Change this to JWT authentication
-    public void authenticateZendeskUser(Contact contact) {
-        VisitorInfo visitorInfo = VisitorInfo.builder()
-                .withName(TextUtils.isEmpty(contact.getDisplayName()) ? "" : contact.getDisplayName())
-                .withEmail(TextUtils.isEmpty(contact.getEmailId()) ? "" : contact.getEmailId())
-                .withPhoneNumber(TextUtils.isEmpty(contact.getContactNumber()) ? "" : contact.getContactNumber()) // numeric string
-                .build();
-        Chat.INSTANCE.providers().profileProvider().setVisitorInfo(visitorInfo, new ZendeskCallback<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Utils.printLog(context, TAG, "Successfully logged in as Visitor");
-            }
+    //JWT Authentication for logged in users
+    public void authenticateZendeskUser(final Contact contact) {
+        if(TextUtils.isEmpty(contact.getDisplayName()) || TextUtils.isEmpty(contact.getUserId()) || TextUtils.isEmpty(contact.getEmailId())) {
+            observeZendeskConnection();
+            return;
+        }
+                    try {
+                        JwtAuthenticator jwtAuthenticator = new JwtAuthenticator() {
+                            @Override
+                            public void getToken(final JwtCompletion jwtCompletion) {
+                                try {
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                new KmZendeskClientService(context).getJwtForZendeskAuthentication(contact.getUserId(), contact.getDisplayName(),contact.getEmailId(), jwtCompletion);
+                                            } catch (Exception e) {
 
-            @Override
-            public void onError(ErrorResponse errorResponse) {
-                Utils.printLog(context, TAG, "Failed to login as Visitor");
-            }
-        });
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }).start();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        };
+                        Chat.INSTANCE.setIdentity(jwtAuthenticator, new CompletionCallback<Void>() {
+                            @Override
+                            public void onCompleted(Void unused) {
+                                observeZendeskConnection();
+                            }
+                        });
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
     }
 
     private void observeChatLogs() {
         Chat.INSTANCE.providers().chatProvider().observeChatState(observationScope, new Observer<ChatState>() {
             @Override
             public void update(ChatState chatState) {
-                Utils.printLog(context, TAG, String.valueOf(chatState));
+                Utils.printLog(context, TAG, "id" + String.valueOf(chatState.getChatId()));
+                if(contact == null) {
+                    return;
+                }
+                for (ChatLog log : chatState.getChatLogs()) {
+                    if(lastSyncTime > log.getCreatedTimestamp()) {
+                        continue;
+                    }
+                    if(log instanceof ChatLog.Message && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
+                        Utils.printLog(context, TAG, "Zendesk Agent message : " + ((ChatLog.Message) log).getMessage());
+                        // TODO: Handle Zendesk Agent Message
+                    }
+                    if(log.getType().equals(ChatLog.Type.MEMBER_LEAVE) && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
+                        // TODO: Handle Agent Leave from Zendesk
+                    }
+                }
+                lastSyncTime = System.currentTimeMillis();
             }
         });
     }
 
+
     public void sendZendeskMessage(String message) {
-        if(!isZendeskInitialized || TextUtils.isEmpty(message)) {
+        if(!handoffHappened || !zendeskInitialized || TextUtils.isEmpty(message)) {
             return;
         }
         Utils.printLog(context, TAG, "Sent Zendesk Message" + message);
@@ -134,7 +189,7 @@ public class KmZendeskClient {
     }
 
     public void sendZendeskAttachment(String filePath) {
-        if(!isZendeskInitialized) {
+        if(!zendeskInitialized) {
             return;
         }
         Chat.INSTANCE.providers().chatProvider().sendFile(new File(filePath), new FileUploadListener() {
@@ -186,6 +241,7 @@ public class KmZendeskClient {
                     }
                 }
                 sendZendeskMessage(transcriptString.toString());
+                transcriptSent = true;
                 Utils.printLog(context, TAG, String.valueOf(transcriptString));
             }
         }).start();
@@ -205,88 +261,58 @@ public class KmZendeskClient {
     }
 
     public boolean isZendeskConnected() {
-        return isZendeskConnected;
+        return zendeskConnected;
     }
     public boolean isZendeskInitialized() {
-        return isZendeskInitialized;
+        return zendeskInitialized;
     }
 
-    public void openZendeskChat() {
-        isChatGoingOn(new KmZendeskClient.ChatStatus() {
-            @Override
-            public void onChatGoingOn() {
-                final Integer conversationId = kmZendeskClient.getChannelKey();
-                new KmConversationBuilder(context)
-                        .setSingleConversation(true)
-                        .setConversationId(String.valueOf(conversationId))
-                        .launchConversation(new KmCallback() {
-                            @Override
-                            public void onSuccess(Object message) {
-                                Utils.printLog(context, TAG, "Successfully launched Zendesk conversation Id:" + conversationId);
-                            }
+    public void openZendeskChat(final Context context) {
+        this.context = context;
+                 Integer conversationId = MobiComUserPreference.getInstance(context).getLatestZendeskConversationId();
+                if(conversationId == null || conversationId == 0) {
+                    KmConversationHelper.launchConversationIfLoggedIn(context, new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            Utils.printLog(context, TAG, "Successfully launched new conversation Id:" + String.valueOf(message));
 
-                            @Override
-                            public void onFailure(Object error) {
-                                Utils.printLog(context, TAG, "Failed to launch Zendesk conversation : " + error.toString());
-                            }
-                        });
-            }
-
-            @Override
-            public void onChatFinished() {
-                new KmConversationBuilder(context)
-                        .setSingleConversation(true)
-                        .setSkipConversationList(true)
-                        .launchConversation(new KmCallback() {
-                            @Override
-                            public void onSuccess(Object message) {
-                                Utils.printLog(context, TAG, "Successfully launched conversation : " + message.toString());
-                            }
-
-                            @Override
-                            public void onFailure(Object error) {
-                                Utils.printLog(context, TAG, "Failed to launch conversation : " + error.toString());
-                            }
-                        });
-            }
-
-            @Override
-            public void onChatError(String errorMessage) {
-                Utils.printLog(context, TAG, "Failed to launch conversation : " + errorMessage);
-
-            }
-        });
-    }
-
-    public void isChatGoingOn(final ChatStatus chatStatus) {
-        if(!isZendeskInitialized) {
-            chatStatus.onChatFinished();
-            return;
-        }
-        try {
-                Chat.INSTANCE.providers().chatProvider().getChatInfo(new ZendeskCallback<ChatInfo>() {
-                    @Override
-                    public void onSuccess(ChatInfo chatInfo) {
-                        if (chatInfo.isChatting()) {
-                            chatStatus.onChatGoingOn();
-                        } else {
-                            chatStatus.onChatFinished();
                         }
-                    }
 
-                    @Override
-                    public void onError(ErrorResponse errorResponse) {
-                        chatStatus.onChatError(errorResponse.getReason());
-                    }
-                });
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                chatStatus.onChatFinished();
-            }
+                        @Override
+                        public void onFailure(Object error) {
+                            Utils.printLog(context, TAG, "Failed to launched Zendesk conversation Id:");
+
+                        }
+                    });
+                    return;
+                }
+                AppContactService appContactService = new AppContactService(context);
+
+                initializeZendesk(KmAppSettingPreferences.getInstance().getZendeskSdkKey(), appContactService.getContactById(MobiComUserPreference.getInstance(context).getUserId()));
+                Channel latestChannel = ChannelService.getInstance(context).getChannel(conversationId);
+                Contact assigneeContact = appContactService.getContactById(latestChannel.getConversationAssignee());
+                if(User.RoleType.AGENT.getValue().equals(assigneeContact.getRoleType())) {
+                    handleHandoff(latestChannel, false);
+                }
+        try {
+            KmConversationHelper.openConversation(context, true, conversationId, new KmCallback() {
+                @Override
+                public void onSuccess(Object message) {
+                    Utils.printLog(context, TAG, "Successfully launched Zendesk conversation Id:" + String.valueOf(message));
+                }
+
+                @Override
+                public void onFailure(Object error) {
+                    Utils.printLog(context, TAG, "Failed to launch Zendesk conversation : " + error.toString());
+                }
+            });
+        } catch (KmException e) {
+            e.printStackTrace();
+        }
     }
 
     public void endZendeskChat() {
-        if(!isZendeskInitialized) {
+        if(!zendeskInitialized) {
             return;
         }
         Chat.INSTANCE.providers().chatProvider().endChat(new ZendeskCallback<Void>() {
@@ -306,11 +332,5 @@ public class KmZendeskClient {
 
     public Integer getChannelKey() {
         return channelKey;
-    }
-
-    public interface ChatStatus {
-        void onChatGoingOn();
-        void onChatFinished();
-        void onChatError(String errorMessage);
     }
 }

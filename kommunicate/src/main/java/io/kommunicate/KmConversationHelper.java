@@ -724,13 +724,7 @@ public class KmConversationHelper {
                         conversationBuilder.setSingleConversation(kmAppSettings.getChatWidget().isSingleThreaded());
                     }
                     if(kmAppSettings.getChatWidget().getZendeskChatSdkKey() != null) {
-                        if (conversationBuilder.getConversationInfo() != null) {
-                            conversationBuilder.getConversationInfo().put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
-                        } else {
-                            Map<String, String> sourceMap = new HashMap<>();
-                            sourceMap.put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
-                            conversationBuilder.setConversationInfo(sourceMap);
-                        }
+                        conversationBuilder.updateConversationInfo(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
                     }
                     try {
                         final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), agents, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);

@@ -111,10 +111,8 @@ public class KmZendeskClient {
                 }
                 zendeskConnected = true;
                 observeChatLogs();
-                if(!messagesInBuffer.isEmpty()) {
-                    for(String message: messagesInBuffer) {
-                        sendZendeskMessage(message);
-                    }
+                for(String message: messagesInBuffer) {
+                    sendZendeskMessage(message);
                 }
                 messagesInBuffer.clear();
             }

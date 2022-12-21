@@ -33,17 +33,8 @@ public class KmZendeskClientService extends KmClientService {
 
     public KmZendeskApiModel sendZendeskMessage(String message, String displayName, String agentId, Integer conversationId, Long messageTimestamp) {
         try {
-            JSONObject messageProxy = new JSONObject();
-            JSONObject agentInfo = new JSONObject();
-            agentInfo.put("displayName", displayName);
-            agentInfo.put("agentId", agentId);
-                    messageProxy.put("message", message);
-                    messageProxy.put("groupId", conversationId);
-                    messageProxy.put("fromUserName", agentId);
-                    messageProxy.put("messageDeduplicationKey", agentId + "-" + messageTimestamp);
-                    messageProxy.put("agentInfo", agentInfo);
-
-
+            JSONObject messageProxy = KmZendeskUtils.createMessageProxy(displayName, agentId, conversationId, messageTimestamp);
+            messageProxy.put("message", message);
             String response = httpRequestUtils.postData(getKmZendeskSendMessageUrl(), "application/json", "application/json", messageProxy.toString());
             KmZendeskApiModel jwtResponse = (KmZendeskApiModel) GsonUtils.getObjectFromJson(response,
                     KmZendeskApiModel.class);
@@ -56,17 +47,10 @@ public class KmZendeskClientService extends KmClientService {
     }
     public KmZendeskApiModel sendZendeskAttachment(Attachment attachment, String displayName, String agentId, Integer conversationId, Long messageTimestamp) {
         try {
-            JSONObject messageProxy = new JSONObject();
-            JSONObject agentInfo = new JSONObject();
-            agentInfo.put("displayName", displayName);
-            agentInfo.put("agentId", agentId);
-            messageProxy.put("auth", MobiComUserPreference.getInstance(context).getUserAuthToken());
+            JSONObject messageProxy = KmZendeskUtils.createMessageProxy(displayName, agentId, conversationId, messageTimestamp);
             String fileAttachment = GsonUtils.getJsonFromObject(attachment, Attachment.class);
             messageProxy.put("fileAttachment", new JSONObject(fileAttachment.replaceAll("mimeType", "mime_type")));
-            messageProxy.put("groupId", conversationId);
-            messageProxy.put("fromUserName", agentId);
-            messageProxy.put("messageDeduplicationKey", agentId + "-" + messageTimestamp);
-            messageProxy.put("agentInfo", agentInfo);
+            messageProxy.put("auth", MobiComUserPreference.getInstance(context).getUserAuthToken());
             String response = httpRequestUtils.postData(getKmZendeskSendAttachmentUrl(), "application/json", "application/json", messageProxy.toString());
             KmZendeskApiModel jwtResponse = (KmZendeskApiModel) GsonUtils.getObjectFromJson(response,
                     KmZendeskApiModel.class);

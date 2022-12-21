@@ -13,7 +13,6 @@ public class KmZendeskSendMessageTask extends AsyncTask<Void, Void, KmZendeskApi
     private String agentId;
     private Integer conversationId;
     private Long messageTimestamp;
-    //private boolean attachment;
     private Attachment attachment;
     private KmCallback kmCallback;
 
@@ -22,7 +21,7 @@ public class KmZendeskSendMessageTask extends AsyncTask<Void, Void, KmZendeskApi
         this.context = context;
         this.message = message;
         this.displayName = displayName;
-        this.agentId = agentId.replace(":", "-");
+        this.agentId = agentId.replace(":", "-"); //Kommunicate server accepts "-" but Zendesk sends ":"
         this.conversationId = conversationId;
         this.messageTimestamp = messageTimestamp;
         this.attachment = attachment;

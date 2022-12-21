@@ -253,12 +253,9 @@ public class KmConversationBuilder extends JsonMarker {
     }
 
     public void updateConversationInfo(String key, String value) {
-        if (conversationInfo != null) {
-            conversationInfo.put(key, value);
-        } else {
-            Map<String, String> sourceMap = new HashMap<>();
-            sourceMap.put(key, value);
-            this.conversationInfo = sourceMap;
+        if (conversationInfo == null) {
+            conversationInfo = new HashMap<>();
         }
+        conversationInfo.put(key, value);
     }
 }

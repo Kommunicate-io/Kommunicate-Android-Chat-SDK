@@ -1,7 +1,6 @@
 package io.kommunicate.zendesk;
 
 import android.content.Context;
-
 import com.applozic.mobicomkit.api.HttpRequestUtils;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -19,7 +18,6 @@ public class KmZendeskClientService extends KmClientService {
     private static final String KM_ZENDESK_JWT_URL = "/rest/ws/zendesk/jwt";
     private static final String KM_ZENDESK_SEND_MESSAGE = "/rest/ws/zendesk/message/send";
     private static final String KM_ZENDESK_SEND_ATTACHMENT = "/rest/ws/zendesk/file/send";
-
     private static final String TAG = "KmZendeskClientService";
 
     public KmZendeskClientService(Context context) {

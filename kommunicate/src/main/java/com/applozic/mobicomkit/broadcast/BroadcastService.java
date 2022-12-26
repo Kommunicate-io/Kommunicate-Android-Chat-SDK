@@ -185,26 +185,20 @@ public class BroadcastService {
     //Notify everybody -> Send notification to all agent, along with assignment message
     //Automatic assignment -> Send notification only to the assigned agent
     private static boolean showNotificationToAgent(Context context, Contact contact, Channel channel, Message message) {
-        if(MobiComUserPreference.getInstance(context).getUserRoleType() != 3 ) {
-            if(MobiComUserPreference.getInstance(context).isNotifyEverybody()) {
-                if(channel != null && contact != null && User.RoleType.BOT.getValue().equals(new AppContactService(context).getContactById(channel.getConversationAssignee()).getRoleType())) {
-                    if ((message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN))) {
-                        return true;
-                    } else if (!User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
-                        return false;
-                    }
-                } else if(channel != null && channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId()) || User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
-                    return true;
-                }
-            } else if(channel != null && channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId()) && User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
-                return true;
-            } else if(message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN) && message.getAssigneId() != null && message.getAssigneId().equals(MobiComUserPreference.getInstance(context).getUserId())) {
-                return true;
-            }
-        } else if(message.getMetadata() != null && message.getMetadata().containsKey("NO_ALERT") && "true".equals(message.getMetadata().get("NO_ALERT"))) {
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
+        if (userPreference.getUserRoleType() == 3 || channel == null || contact == null) {
             return false;
         }
-        return false;
+        if (userPreference.isNotifyEverybody()) {
+            if (User.RoleType.BOT.getValue().equals(new AppContactService(context).getContactById(channel.getConversationAssignee()).getRoleType())) {
+                return (message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN));
+            } else {
+                return User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType());
+            }
+        } else {
+            return (channel.getConversationAssignee().equals(userPreference.getUserId()) && User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType()))
+                    || (message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN) && message.getAssigneId() != null && message.getAssigneId().equals(MobiComUserPreference.getInstance(context).getUserId()));
+        }
     }
 
     public static void sendUpdateLastSeenAtTimeBroadcast(Context context, String action, String contactId) {

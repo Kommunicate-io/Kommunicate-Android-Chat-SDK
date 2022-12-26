@@ -165,7 +165,7 @@ public class BroadcastService {
                 Channel channel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());
                 Contact contact = new AppContactService(context).getContactById(message.getContactIds());
 
-                if(!showNotificationToAgent(context, contact, channel, message)) {
+                if(!showNotification(context, contact, channel, message)) {
                     return;
                 }
 
@@ -181,10 +181,11 @@ public class BroadcastService {
         }
     }
 
-    //Handle Routing rules for Agents
+    //Handle notification for SDK and agent app
+    //For end users -> Show notification for agent and bot message
     //Notify everybody -> Send notification to all agent, along with assignment message
     //Automatic assignment -> Send notification only to the assigned agent
-    private static boolean showNotificationToAgent(Context context, Contact contact, Channel channel, Message message) {
+    private static boolean showNotification(Context context, Contact contact, Channel channel, Message message) {
         MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
         if (channel == null || contact == null) {
             return false;

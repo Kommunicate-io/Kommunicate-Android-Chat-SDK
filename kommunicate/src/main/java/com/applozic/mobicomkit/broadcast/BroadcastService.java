@@ -197,7 +197,7 @@ public class BroadcastService {
             }
         } else {
             return (channel.getConversationAssignee().equals(userPreference.getUserId()) && User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType()))
-                    || (message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN) && message.getAssigneId() != null && message.getAssigneId().equals(MobiComUserPreference.getInstance(context).getUserId()));
+                    || (message.getAssigneId() != null && message.getAssigneId().equals(MobiComUserPreference.getInstance(context).getUserId()));
         }
     }
 

@@ -154,10 +154,9 @@ public class BroadcastService {
 
     public static void sendNotificationBroadcast(Context context, Message message, int index) {
         if (message != null) {
-            if (ALSpecificSettings.getInstance(context).isAllNotificationMuted() || message.getMetadata() != null && message.getMetadata().containsKey("NO_ALERT") && "true".equals(message.getMetadata().get("NO_ALERT"))) {
+            if (ALSpecificSettings.getInstance(context).isAllNotificationMuted()) {
                 return;
             }
-
             int notificationId = Utils.getLauncherIcon(context.getApplicationContext());
             final NotificationService notificationService =
                     new NotificationService(notificationId, context, 0, 0, 0);
@@ -166,21 +165,13 @@ public class BroadcastService {
                 Channel channel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());
                 Contact contact = new AppContactService(context).getContactById(message.getContactIds());
 
-                //Do not send BOT and Agent message notification to agents, roletype 3 = user
-                //TODO: Notification should be handled from server side. Change this code when server side changes is done
-                if(MobiComUserPreference.getInstance(context).getUserRoleType() != 3 ) {
-                        if(contact != null && !User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
-                            return;
-                        }
-                        if(!MobiComUserPreference.getInstance(context).isNotifyEverybody() && channel != null && !channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId())) {
-                             return;
-                        }
+                if(!showNotificationToAgent(context, contact, channel, message)) {
+                    return;
                 }
 
                 if (message.getConversationId() != null) {
                     ConversationService.getInstance(context).getConversation(message.getConversationId());
                 }
-
                 if (ApplozicClient.getInstance(context).isNotificationStacking()) {
                     notificationService.notifyUser(contact, channel, message, index);
                 } else {
@@ -188,6 +179,32 @@ public class BroadcastService {
                 }
             }
         }
+    }
+
+    //Handle Routing rules for Agents
+    //Notify everybody -> Send notification to all agent, along with assignment message
+    //Automatic assignment -> Send notification only to the assigned agent
+    private static boolean showNotificationToAgent(Context context, Contact contact, Channel channel, Message message) {
+        if(MobiComUserPreference.getInstance(context).getUserRoleType() != 3 ) {
+            if(MobiComUserPreference.getInstance(context).isNotifyEverybody()) {
+                if(channel != null && contact != null && User.RoleType.BOT.getValue().equals(new AppContactService(context).getContactById(channel.getConversationAssignee()).getRoleType())) {
+                    if ((message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN))) {
+                        return true;
+                    } else if (!User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
+                        return false;
+                    }
+                } else if(channel != null && channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId()) || User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
+                    return true;
+                }
+            } else if(channel != null && channel.getConversationAssignee().equals(MobiComUserPreference.getInstance(context).getUserId()) && User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
+                return true;
+            } else if(message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN) && message.getAssigneId() != null && message.getAssigneId().equals(MobiComUserPreference.getInstance(context).getUserId())) {
+                return true;
+            }
+        } else if(message.getMetadata() != null && message.getMetadata().containsKey("NO_ALERT") && "true".equals(message.getMetadata().get("NO_ALERT"))) {
+            return false;
+        }
+        return false;
     }
 
     public static void sendUpdateLastSeenAtTimeBroadcast(Context context, String action, String contactId) {

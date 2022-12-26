@@ -186,8 +186,11 @@ public class BroadcastService {
     //Automatic assignment -> Send notification only to the assigned agent
     private static boolean showNotificationToAgent(Context context, Contact contact, Channel channel, Message message) {
         MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
-        if (userPreference.getUserRoleType() == 3 || channel == null || contact == null) {
+        if (channel == null || contact == null) {
             return false;
+        }
+        if(User.RoleType.USER_ROLE.getValue().equals(userPreference.getUserRoleType())) {
+            return !(message.getMetadata() != null && message.getMetadata().containsKey("NO_ALERT") && "true".equals(message.getMetadata().get("NO_ALERT")));
         }
         if (userPreference.isNotifyEverybody()) {
             if (User.RoleType.BOT.getValue().equals(new AppContactService(context).getContactById(channel.getConversationAssignee()).getRoleType())) {

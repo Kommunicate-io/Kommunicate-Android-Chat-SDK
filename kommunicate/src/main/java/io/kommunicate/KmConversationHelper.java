@@ -723,7 +723,7 @@ public class KmConversationHelper {
                     if (useSingleThreadedSettingFromServer) {
                         conversationBuilder.setSingleConversation(kmAppSettings.getChatWidget().isSingleThreaded());
                     }
-                    if(kmAppSettings.getChatWidget().getZendeskChatSdkKey() != null) {
+                    if(!TextUtils.isEmpty(kmAppSettings.getChatWidget().getZendeskChatSdkKey())) {
                         conversationBuilder.updateConversationInfo(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
                     }
                     try {

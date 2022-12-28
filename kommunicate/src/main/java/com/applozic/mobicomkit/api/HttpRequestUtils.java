@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.api;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -20,6 +21,10 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.List;
+
+import io.kommunicate.R;
 
 
 /**
@@ -37,12 +42,17 @@ public class HttpRequestUtils {
     private static final String APZ_PRODUCT_APP_HEADER = "Apz-Product-App";
     public static boolean isRefreshTokenInProgress = false;
     private String encryptionKey;
+    private String encryptionIV;
+    private Short encryptionType;
     private Context context;
 
 
     public HttpRequestUtils(Context context) {
         this.context = ApplozicService.getContext(context);
-        this.encryptionKey = MobiComUserPreference.getInstance(context).getEncryptionKey();
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
+        this.encryptionKey = userPreference.getEncryptionKey();
+        this.encryptionIV = userPreference.getEncryptionIV();
+        this.encryptionType = userPreference.getEncryptionType();
     }
 
     public String postData(String urlString, String data) throws Exception {
@@ -96,9 +106,12 @@ public class HttpRequestUtils {
         HttpURLConnection connection;
         URL url;
         try {
-            if (!TextUtils.isEmpty(encryptionKey)) {
+            if (!TextUtils.isEmpty(encryptionKey) && !skipEncryption(urlString)) {
+                Log.e("encryption_happens", encryptionKey);
                 data = EncryptionUtils.encrypt(encryptionKey, data);
             }
+            Log.e("encryption_key", TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey()) ? "empty" : encryptionKey);
+
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(isPatchRequest ? "PATCH" : "POST");
@@ -149,7 +162,7 @@ public class HttpRequestUtils {
                 }
             }
             Utils.printLog(context, TAG, "\n\nResponse for url: " + urlString + "\n** Response** : " + sb.toString() + "\n\n");
-            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
+            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey) && !skipEncryption(urlString)) {
                 return EncryptionUtils.decrypt(encryptionKey, sb.toString());
             }
             return sb.toString();
@@ -214,7 +227,7 @@ public class HttpRequestUtils {
 
             Utils.printLog(context, TAG, "\n\nGET Response for url: " + urlString + "\n** Response **: " + sb.toString() + "\n\n");
 
-            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
+            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey) && !skipEncryption(urlString)) {
                 return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(encryptionKey, sb.toString());
             }
             return sb.toString();
@@ -294,5 +307,24 @@ public class HttpRequestUtils {
         } finally {
             isRefreshTokenInProgress = false;
         }
+    }
+
+    private List<String> getSkipEncryptionListEndpoint() {
+        List<String> skipEncryptionList = Arrays.asList(context.getResources().getStringArray(R.array.km_skip_encryption_endpoints));
+        return skipEncryptionList;
+    }
+
+    public boolean skipEncryption(String url) {
+        if(url.contains("api")) {
+            return true;
+        }
+        List<String> skipEncryptionList = Arrays.asList(context.getResources().getStringArray(R.array.km_skip_encryption_endpoints));
+        for(String skipEndpoints: skipEncryptionList) {
+            if(url.contains(skipEndpoints)) {
+                Log.e("skipencryption", skipEndpoints);
+                return true;
+            }
+        }
+        return false;
     }
 }

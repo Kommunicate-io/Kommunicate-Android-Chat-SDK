@@ -67,7 +67,7 @@ public class KmUserClientService extends UserClientService {
     private static final String USER_PASSWORD_RESET = "/users/password-reset";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String CREATE_CONVERSATION_URL = "/create";
-    private static final String BOTS_BASE_URL = "https://api.kommunicate.io/rest/ws/botdetails/";
+    private static final String BOTS_BASE_URL = "/rest/ws/botdetails/";
     private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
 
@@ -280,7 +280,7 @@ public class KmUserClientService extends UserClientService {
     }
 
     private String getBotDetailUrl(String botId) {
-        return BOTS_BASE_URL + botId;
+        return getKmBaseUrl() + BOTS_BASE_URL + botId;
     }
 
     public String getBotDetail(String botId) {
@@ -454,7 +454,7 @@ public class KmUserClientService extends UserClientService {
             StringBuilder stringBuilder = getResponseForConnection(connection);
 
             if (!TextUtils.isEmpty(stringBuilder.toString())) {
-                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
+                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey()) && !httpRequestUtils.skipEncryption(urlString)) {
                     return isFileUpload ? stringBuilder.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), stringBuilder.toString());
                 }
             }

@@ -3,7 +3,6 @@ package com.applozic.mobicomkit.api.account.user;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
@@ -687,32 +686,24 @@ public class MobiComUserPreference {
     }
 
     public String getEncryptionKey() {
-       // String decodedEncryptionKey = AlPrefSettings.getInstance(context).getEncryptionKey();
-//        if (!TextUtils.isEmpty(decodedEncryptionKey)) {
-//            return decodedEncryptionKey;
-//        }
+        String decodedEncryptionKey = AlPrefSettings.getInstance(context).getEncryptionKey();
+        if (!TextUtils.isEmpty(decodedEncryptionKey)) {
+            return decodedEncryptionKey;
+        }
         if (sharedPreferences != null) {
-            Log.e("encryption_keypref", "not null");
-
             String savedEncryptionKey = sharedPreferences.getString(encryption_Key, "");
-            Log.e("encryption_keypref", savedEncryptionKey);
 
             if (!TextUtils.isEmpty(savedEncryptionKey)) {
-                //setEncryptionKey(savedEncryptionKey);
-                //sharedPreferences.edit().remove(encryption_Key).commit();
+                setEncryptionKey(savedEncryptionKey);
+                sharedPreferences.edit().remove(encryption_Key).commit();
                 return savedEncryptionKey;
             }
         }
-        Log.e("encryption_keypref", "null");
         return null;
     }
 
     public void setEncryptionKey(String encryptionKey) {
-        if(sharedPreferences != null) {
-
-            sharedPreferences.edit().putString(encryption_Key, encryptionKey).commit();
-        }
-        //AlPrefSettings.getInstance(context).setEncryptionKey(encryptionKey);
+        AlPrefSettings.getInstance(context).setEncryptionKey(encryptionKey);
     }
 
     public Short getEncryptionType() {
@@ -724,7 +715,7 @@ public class MobiComUserPreference {
 
     public void setEncryptionType(Short encryptionType) {
         if (sharedPreferences != null) {
-            sharedPreferences.edit().putInt(ENCRYPTION_TYPE, encryptionType).apply();
+            sharedPreferences.edit().putInt(ENCRYPTION_TYPE, encryptionType).commit();
         }
     }
     public String getEncryptionIV() {
@@ -736,7 +727,7 @@ public class MobiComUserPreference {
 
     public void setEncryptionIV(String encryptionIV) {
         if (sharedPreferences != null) {
-            sharedPreferences.edit().putString(ENCRYPTION_IV, encryptionIV).apply();
+            sharedPreferences.edit().putString(ENCRYPTION_IV, encryptionIV).commit();
         }
     }
 

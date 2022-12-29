@@ -99,7 +99,7 @@ public class AlPrefSettings {
 
     public AlPrefSettings setEncryptionKey(String encryptionKey) {
         decodedEncryptionKey = encryptionKey;
-        sharedPreferences.edit().putString(ENCRYPTION_KEY, encryptionKey);
+        sharedPreferences.edit().putString(ENCRYPTION_KEY, encryptionKey).commit();
         return this;
     }
 

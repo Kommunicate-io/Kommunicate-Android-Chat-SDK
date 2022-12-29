@@ -1,12 +1,8 @@
 package com.applozic.mobicommons.encryption;
 
-import android.text.TextUtils;
 import android.util.Base64;
-
-import java.security.Key;
-import java.util.Arrays;
-
 import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 
@@ -16,50 +12,58 @@ import javax.crypto.spec.SecretKeySpec;
 public class EncryptionUtils {
 
     private static final String TAG = "EncryptionUtils";
-    private static final String ALGORITHM = "AES/ECB/NoPadding";
-    private static final String ALGORITHM_AES = "AES";
+    private static final String ALGORITHM = "AES";
 
-    // Performs Encryption
-    public static String encrypt(String ketString, String plainText) throws Exception {
-        // generate key
-        if(TextUtils.isEmpty(plainText)){
+    // Converts String to Hex
+    public static String convertStringToHex(String s) {
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            char[] charArray = s.toCharArray();
+            for (char c : charArray) {
+                String charToHex = Integer.toHexString(c);
+                stringBuilder.append(charToHex);
+            }
+            return stringBuilder.toString();
+        } catch (Exception e) {
             return null;
         }
-        Key key =  generateKey(ketString);
-        Cipher chiper = Cipher.getInstance(ALGORITHM);
-        chiper.init(Cipher.ENCRYPT_MODE, key);
-        byte[] w = plainText.getBytes();
-        int bufferLength = 3072;
-        int i = 0;
-        byte[] buf = new byte[bufferLength];
-        StringBuffer stringBuffer = new StringBuffer();
-        while (i < w.length) {
-            int size = Math.min(bufferLength, w.length - i);
-            Arrays.fill(buf, (byte) 0);
-            System.arraycopy(w, i, buf, 0, size);
-            buf = chiper.doFinal(buf);
-            stringBuffer.append(Base64.encodeToString(buf,Base64.DEFAULT));
-            i += size;
+    }
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] =
+                    (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
         }
-        return stringBuffer.toString();
+        return data;
     }
 
-    // Performs decryption
-    public static String decrypt(String ketString, String encryptedText) throws Exception {
-        // generate key
-        Key key =  generateKey(ketString);
-        Cipher chiper= Cipher.getInstance(ALGORITHM);
-        chiper.init(Cipher.DECRYPT_MODE, key);
-        byte[] decodedValue = Base64.decode(encryptedText,Base64.DEFAULT);
-        byte[] decValue = chiper.doFinal(decodedValue);
-        String decryptedValue = new String(decValue);
-        return TextUtils.isEmpty(decryptedValue)?null:decryptedValue.trim();
+    //Performs encryption using AES256
+    public static String encrypt(String secret, String strToEncrypt, String IV) throws Exception {
+        if (strToEncrypt == null) {
+            return null;
+        }
+        Cipher cipher = generateKey(secret, Cipher.ENCRYPT_MODE, IV);
+        byte[] encrypted = cipher.doFinal(strToEncrypt.getBytes("UTF-8"));
+        return Base64.encodeToString(encrypted, Base64.DEFAULT);
     }
 
-    //generateKey() is used to generate a secret key for AES algorithm
-    private static Key generateKey(String ketString) throws Exception {
-        Key key = new SecretKeySpec(ketString.getBytes(), ALGORITHM_AES);
-        return key;
+    //Performs decryption using AES256
+    public static  String decrypt(String secret, String strToDecrypt, String IV) throws Exception {
+        if (strToDecrypt == null) {
+            return null;
+        }
+        Cipher cipher = generateKey(secret, Cipher.DECRYPT_MODE, IV);
+        byte[] decrypted = cipher.doFinal(Base64.decode(strToDecrypt, Base64.DEFAULT));
+        return new String(decrypted, "UTF-8");
+    }
+    public static Cipher generateKey(String keyString, int mode, String IV) throws Exception {
+        SecretKeySpec key = new SecretKeySpec(Base64.decode(keyString, Base64.DEFAULT), ALGORITHM);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        IvParameterSpec ivspec =
+                new IvParameterSpec(hexStringToByteArray(convertStringToHex(IV)));
+        cipher.init(mode, key, ivspec);
+        return cipher;
     }
 
 }

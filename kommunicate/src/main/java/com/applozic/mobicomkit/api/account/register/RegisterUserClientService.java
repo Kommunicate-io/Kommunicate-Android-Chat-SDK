@@ -39,7 +39,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
     private static final String UPDATE_ACCOUNT_URL = "/rest/ws/register/update?";
     private static final String CHECK_PRICING_PACKAGE = "/rest/ws/application/pricing/package";
     private static final String REFRESH_TOKEN_URL = "/rest/ws/register/refresh/token";
-    public static final Short MOBICOMKIT_VERSION_CODE = 112;
+    public static final Short MOBICOMKIT_VERSION_CODE = 113;
     private static final String TAG = "RegisterUserClient";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private HttpRequestUtils httpRequestUtils;
@@ -125,8 +125,15 @@ public class RegisterUserClientService extends MobiComKitClientService {
                 Utils.printLog(context, "Registration response ", "" + registrationResponse.getNotificationResponse());
             }
             JWT.parseToken(context, registrationResponse.getAuthToken());
-            mobiComUserPreference.setEncryptionKey(registrationResponse.getEncryptionKey());
             mobiComUserPreference.enableEncryption(user.isEnableEncryption());
+
+            //If encryption is not enabled from user, then server sends encryption key but does not perform encryption
+            if(user.isEnableEncryption()) {
+                mobiComUserPreference.setEncryptionKey(registrationResponse.getEncryptionKey());
+                mobiComUserPreference.setEncryptionType(registrationResponse.getEncryptionType());
+                mobiComUserPreference.setEncryptionIV(registrationResponse.getEncryptionIV());
+            }
+
             mobiComUserPreference.setCountryCode(user.getCountryCode());
             mobiComUserPreference.setUserId(user.getUserId());
             mobiComUserPreference.setContactNumber(user.getContactNumber());

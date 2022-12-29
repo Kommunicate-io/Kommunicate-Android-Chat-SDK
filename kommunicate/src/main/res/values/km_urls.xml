@@ -21,5 +21,7 @@
     <string-array name="km_skip_encryption_endpoints">
         <item>/rest/ws/register/client</item>
         <item>/rest/ws/register/update</item>
+        <item>/rest/ws/user/blocked/sync</item>
+
     </string-array>
 </resources>

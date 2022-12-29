@@ -455,7 +455,7 @@ public class KmUserClientService extends UserClientService {
 
             if (!TextUtils.isEmpty(stringBuilder.toString())) {
                 if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey()) && !httpRequestUtils.skipEncryption(urlString)) {
-                    return isFileUpload ? stringBuilder.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), stringBuilder.toString());
+                    return isFileUpload ? stringBuilder.toString() : EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), stringBuilder.toString(), MobiComUserPreference.getInstance(context).getEncryptionIV());
                 }
             }
             return stringBuilder.toString();

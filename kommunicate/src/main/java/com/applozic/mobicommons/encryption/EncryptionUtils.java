@@ -1,5 +1,6 @@
 package com.applozic.mobicommons.encryption;
 
+import android.text.TextUtils;
 import android.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -13,6 +14,8 @@ public class EncryptionUtils {
 
     private static final String TAG = "EncryptionUtils";
     private static final String ALGORITHM = "AES";
+    private static final String AES_CBC = "AES/CBC/PKCS5Padding";
+
 
     // Converts String to Hex
     public static String convertStringToHex(String s) {
@@ -43,6 +46,9 @@ public class EncryptionUtils {
         if (strToEncrypt == null) {
             return null;
         }
+        if(TextUtils.isEmpty(secret) || TextUtils.isEmpty(IV)) {
+            return strToEncrypt;
+        }
         Cipher cipher = generateKey(secret, Cipher.ENCRYPT_MODE, IV);
         byte[] encrypted = cipher.doFinal(strToEncrypt.getBytes("UTF-8"));
         return Base64.encodeToString(encrypted, Base64.DEFAULT);
@@ -53,13 +59,16 @@ public class EncryptionUtils {
         if (strToDecrypt == null) {
             return null;
         }
+        if(TextUtils.isEmpty(secret) || TextUtils.isEmpty(IV)) {
+            return strToDecrypt;
+        }
         Cipher cipher = generateKey(secret, Cipher.DECRYPT_MODE, IV);
         byte[] decrypted = cipher.doFinal(Base64.decode(strToDecrypt, Base64.DEFAULT));
         return new String(decrypted, "UTF-8");
     }
     public static Cipher generateKey(String keyString, int mode, String IV) throws Exception {
         SecretKeySpec key = new SecretKeySpec(Base64.decode(keyString, Base64.DEFAULT), ALGORITHM);
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        Cipher cipher = Cipher.getInstance(AES_CBC);
         IvParameterSpec ivspec =
                 new IvParameterSpec(hexStringToByteArray(convertStringToHex(IV)));
         cipher.init(mode, key, ivspec);

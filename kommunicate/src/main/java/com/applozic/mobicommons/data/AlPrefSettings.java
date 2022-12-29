@@ -115,4 +115,8 @@ public class AlPrefSettings {
         sharedPreferences.edit().putString(PASSWORD, password).commit();
         return this;
     }
+
+    public void clearAll() {
+        sharedPreferences.edit().clear().commit();
+    }
 }

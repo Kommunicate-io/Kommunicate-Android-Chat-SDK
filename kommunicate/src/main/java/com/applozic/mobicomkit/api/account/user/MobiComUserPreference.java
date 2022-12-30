@@ -648,7 +648,6 @@ public class MobiComUserPreference {
     public boolean clearAll() {
 
         if (sharedPreferences != null) {
-            AlPrefSettings.getInstance(context).clearAll();
             return sharedPreferences.edit().clear().commit();
         }
         return false;

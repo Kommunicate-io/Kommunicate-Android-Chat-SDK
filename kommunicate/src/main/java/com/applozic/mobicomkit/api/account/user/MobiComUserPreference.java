@@ -1013,15 +1013,4 @@ public class MobiComUserPreference {
             sharedPreferences.edit().putBoolean(NOTIFY_EVERYBODY, isNotifyEverybody).apply();
         }
     }
-    public void setLatestZendeskConversationId(Integer conversationId) {
-        if (sharedPreferences != null) {
-            sharedPreferences.edit().putInt(ZENDESK_LATEST_CONVERSATION, conversationId).apply();
-        }
-    }
-    public Integer getLatestZendeskConversationId() {
-        if (sharedPreferences != null) {
-            return sharedPreferences.getInt(ZENDESK_LATEST_CONVERSATION, 0);
-        }
-        return 0;
-    }
 }

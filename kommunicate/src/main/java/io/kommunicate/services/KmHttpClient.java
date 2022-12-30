@@ -31,7 +31,7 @@ public class KmHttpClient {
         URL url;
         try {
             if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                data = EncryptionUtils.encrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), data);
+                data = EncryptionUtils.encrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), data, MobiComUserPreference.getInstance(context).getEncryptionIV());
             }
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
@@ -79,7 +79,7 @@ public class KmHttpClient {
             Utils.printLog(context, TAG, "Response : " + sb.toString());
             if (!TextUtils.isEmpty(sb.toString())) {
                 if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
-                    return EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString());
+                    return EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), sb.toString(), MobiComUserPreference.getInstance(context).getEncryptionIV());
                 }
             }
             return sb.toString();

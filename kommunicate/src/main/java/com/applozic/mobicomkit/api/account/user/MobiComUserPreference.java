@@ -86,7 +86,9 @@ public class MobiComUserPreference {
     private static String CHANNEL_LIST_LAST_GENERATED_DEFAULT_VALUE = "10000";
     private static String LOGGED_USER_DELETE_FROM_DASHBOARD = "loggedUserDeletedFromDashboard";
     private static String NOTIFY_EVERYBODY = "notifyEverybody";
-
+    private static String ENCRYPTION_TYPE = "encryptionType";
+    private static String ENCRYPTION_IV = "encryptionIV";
+    private SharedPreferences.Editor prefsEditor;
     private SharedPreferences sharedPreferences;
     private Context context;
     private String countryCode;
@@ -97,6 +99,7 @@ public class MobiComUserPreference {
         ApplozicService.initWithContext(context);
         renameSharedPrefFile(this.context);
         sharedPreferences = this.context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
+        prefsEditor = sharedPreferences.edit();
         moveKeysToSecured();
     }
 
@@ -687,18 +690,44 @@ public class MobiComUserPreference {
             return decodedEncryptionKey;
         }
         if (sharedPreferences != null) {
-            String savedEncryptionKey = sharedPreferences.getString(encryption_Key, null);
+            String savedEncryptionKey = sharedPreferences.getString(encryption_Key, "");
+
             if (!TextUtils.isEmpty(savedEncryptionKey)) {
                 setEncryptionKey(savedEncryptionKey);
                 sharedPreferences.edit().remove(encryption_Key).commit();
+                return savedEncryptionKey;
             }
-            return savedEncryptionKey;
         }
         return null;
     }
 
     public void setEncryptionKey(String encryptionKey) {
         AlPrefSettings.getInstance(context).setEncryptionKey(encryptionKey);
+    }
+
+    public Short getEncryptionType() {
+        if (sharedPreferences != null) {
+            return (short) sharedPreferences.getInt(ENCRYPTION_TYPE, 0);
+        }
+        return 0;
+    }
+
+    public void setEncryptionType(Short encryptionType) {
+        if (sharedPreferences != null) {
+            sharedPreferences.edit().putInt(ENCRYPTION_TYPE, encryptionType).commit();
+        }
+    }
+    public String getEncryptionIV() {
+        if (sharedPreferences != null) {
+            return sharedPreferences.getString(ENCRYPTION_IV, "");
+        }
+        return null;
+    }
+
+    public void setEncryptionIV(String encryptionIV) {
+        if (sharedPreferences != null) {
+            sharedPreferences.edit().putString(ENCRYPTION_IV, encryptionIV).commit();
+        }
     }
 
     public boolean isEncryptionEnabled() {

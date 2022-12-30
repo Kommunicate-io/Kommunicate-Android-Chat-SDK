@@ -32,6 +32,18 @@ public class RegistrationResponse extends JsonMarker {
     private Short pricingPackage = PricingType.STARTER.getValue();
     private Long notificationAfter;
     private boolean deactivate;
+    private Short encryptionType;
+    private String encryptionIV;
+
+    public Short getEncryptionType() {
+        return encryptionType;
+    }
+
+    public String getEncryptionIV() {
+        return encryptionIV;
+    }
+
+
 
     public String getMessage() {
         return message;
@@ -233,6 +245,20 @@ public class RegistrationResponse extends JsonMarker {
         }
 
         public String getValue() {
+            return value;
+        }
+    }
+
+    public static enum EncryptionType {
+
+        NONE(Short.valueOf("0")),AES128(Short.valueOf("3")), AES256(Short.valueOf("5")), ;
+        private final Short value;
+
+        private EncryptionType(Short c) {
+            value = c;
+        }
+
+        public Short getValue() {
             return value;
         }
     }

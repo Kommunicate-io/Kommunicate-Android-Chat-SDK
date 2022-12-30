@@ -310,7 +310,7 @@ public class HttpRequestUtils {
     }
 
     public boolean skipEncryption(String url) {
-        if(url.contains("api")) {
+        if(url.contains(new MobiComKitClientService(context).getKmBaseUrl())) {
             return true;
         }
         List<String> skipEncryptionList = Arrays.asList(context.getResources().getStringArray(R.array.km_skip_encryption_endpoints));

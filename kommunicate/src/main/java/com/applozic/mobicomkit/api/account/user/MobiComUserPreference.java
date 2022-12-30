@@ -86,7 +86,6 @@ public class MobiComUserPreference {
     private static String CHANNEL_LIST_LAST_GENERATED_DEFAULT_VALUE = "10000";
     private static String LOGGED_USER_DELETE_FROM_DASHBOARD = "loggedUserDeletedFromDashboard";
     private static String NOTIFY_EVERYBODY = "notifyEverybody";
-    private static final String ZENDESK_LATEST_CONVERSATION = "ZENDESK_LATEST_CONVERSATION";
     private static String ENCRYPTION_TYPE = "encryptionType";
     private static String ENCRYPTION_IV = "encryptionIV";
     private SharedPreferences.Editor prefsEditor;

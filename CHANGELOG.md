@@ -3,6 +3,10 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.5.3
+1) Auto Suggestion Button color customization
+2) Added support for AES256 encryption and decryption
+
 ## Kommunicate Android SDK 2.5.1
 1) Added events to KmPluginEventListener - if you use events in your app, implement the new methods.
 2) Added fix for API <= 19. Current min SDK version is still 16. All bugs have been fixed for lower SDK versions.

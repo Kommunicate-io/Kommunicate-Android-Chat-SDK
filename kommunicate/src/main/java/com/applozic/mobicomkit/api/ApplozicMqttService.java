@@ -358,10 +358,10 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                             final MqttMessageResponse mqttMessageResponse;
                             String messageDataString = null;
 
-                            if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserEncryptionKey())
+                            if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())
                                     && !TextUtils.isEmpty(s) && s.startsWith(MQTT_ENCRYPTION_TOPIC)) {
-                                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserEncryptionKey())) {
-                                    messageDataString = EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getUserEncryptionKey(), mqttMessage.toString());
+                                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
+                                    messageDataString = EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(),mqttMessage.toString().trim(), MobiComUserPreference.getInstance(context).getEncryptionIV());
                                 }
                                 if (TextUtils.isEmpty(messageDataString.trim())) {
                                     return;

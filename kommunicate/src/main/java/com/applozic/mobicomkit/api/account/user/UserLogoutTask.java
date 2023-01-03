@@ -7,8 +7,6 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
-import io.kommunicate.zendesk.KmZendeskClient;
-
 public class UserLogoutTask extends AlAsyncTask<Void, Boolean> {
 
     private TaskListener taskListener;
@@ -53,7 +51,6 @@ public class UserLogoutTask extends AlAsyncTask<Void, Boolean> {
         if (logoutHandler != null) {
             if (result) {
                 logoutHandler.onSuccess(context.get());
-                KmZendeskClient.getInstance(context.get()).endZendeskChat();
             } else {
                 logoutHandler.onFailure(mException);
             }

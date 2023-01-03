@@ -20,6 +20,10 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Arrays;
+import java.util.List;
+import javax.crypto.IllegalBlockSizeException;
+import io.kommunicate.R;
 
 
 /**
@@ -36,13 +40,11 @@ public class HttpRequestUtils {
     public static String DEVICE_KEY_HEADER = "Device-Key";
     private static final String APZ_PRODUCT_APP_HEADER = "Apz-Product-App";
     public static boolean isRefreshTokenInProgress = false;
-    private String encryptionKey;
     private Context context;
 
 
     public HttpRequestUtils(Context context) {
         this.context = ApplozicService.getContext(context);
-        this.encryptionKey = MobiComUserPreference.getInstance(context).getEncryptionKey();
     }
 
     public String postData(String urlString, String data) throws Exception {
@@ -94,10 +96,11 @@ public class HttpRequestUtils {
     public String postData(String urlString, String data, String userId, boolean isPatchRequest, boolean isForAuth, String accept, String contentType) throws Exception {
         Utils.printLog(context, TAG, (isPatchRequest ? "\n\n** Patching data ** : " : "\n\n** Posting data **: ") + data + "\nTo URL: " + urlString + "\n\n");
         HttpURLConnection connection;
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
         URL url;
         try {
-            if (!TextUtils.isEmpty(encryptionKey)) {
-                data = EncryptionUtils.encrypt(encryptionKey, data);
+            if (!TextUtils.isEmpty(userPreference.getEncryptionKey()) && !skipEncryption(urlString)) {
+                data = EncryptionUtils.encrypt(userPreference.getEncryptionKey(), data, userPreference.getEncryptionIV());
             }
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
@@ -149,8 +152,8 @@ public class HttpRequestUtils {
                 }
             }
             Utils.printLog(context, TAG, "\n\nResponse for url: " + urlString + "\n** Response** : " + sb.toString() + "\n\n");
-            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
-                return EncryptionUtils.decrypt(encryptionKey, sb.toString());
+            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(userPreference.getEncryptionKey()) && !skipEncryption(urlString)) {
+                return EncryptionUtils.decrypt(userPreference.getEncryptionKey(), sb.toString(), userPreference.getEncryptionIV());
             }
             return sb.toString();
         } catch (IOException e) {
@@ -168,6 +171,7 @@ public class HttpRequestUtils {
         Utils.printLog(context, TAG, "Calling url **[GET]** : " + urlString);
 
         HttpURLConnection connection = null;
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
         URL url;
 
         try {
@@ -213,9 +217,13 @@ public class HttpRequestUtils {
             }
 
             Utils.printLog(context, TAG, "\n\nGET Response for url: " + urlString + "\n** Response **: " + sb.toString() + "\n\n");
-
-            if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(encryptionKey)) {
-                return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(encryptionKey, sb.toString());
+            try {
+                if (!TextUtils.isEmpty(sb.toString()) && !TextUtils.isEmpty(userPreference.getEncryptionKey()) && !skipEncryption(urlString)) {
+                    return isFileUpload ? sb.toString() : EncryptionUtils.decrypt(userPreference.getEncryptionKey(), sb.toString(), userPreference.getEncryptionIV());
+                }
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+                return sb.toString();
             }
             return sb.toString();
         } catch (ConnectException e) {
@@ -294,5 +302,23 @@ public class HttpRequestUtils {
         } finally {
             isRefreshTokenInProgress = false;
         }
+    }
+
+    private List<String> getSkipEncryptionListEndpoint() {
+        List<String> skipEncryptionList = Arrays.asList(context.getResources().getStringArray(R.array.km_skip_encryption_endpoints));
+        return skipEncryptionList;
+    }
+
+    public boolean skipEncryption(String url) {
+        if(url.contains(new MobiComKitClientService(context).getKmBaseUrl())) {
+            return true;
+        }
+        List<String> skipEncryptionList = Arrays.asList(context.getResources().getStringArray(R.array.km_skip_encryption_endpoints));
+        for(String skipEndpoints: skipEncryptionList) {
+            if(url.contains(skipEndpoints)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

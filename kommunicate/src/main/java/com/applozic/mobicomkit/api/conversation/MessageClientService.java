@@ -35,15 +35,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import io.kommunicate.zendesk.KmZendeskClient;
 
 
 /**
@@ -413,9 +410,6 @@ public class MessageClientService extends MobiComKitClientService {
             for (String filePath : message.getFilePaths()) {
                 try {
                     String fileMetaResponse = new FileClientService(context).uploadBlobImage(filePath, handler, oldMessageKey);
-
-                    //Send attachment to Zendesk as well
-                    KmZendeskClient.getInstance(context).sendZendeskAttachment(filePath);
                     if (TextUtils.isEmpty(fileMetaResponse)) {
                         if (skipMessage) {
                             return;

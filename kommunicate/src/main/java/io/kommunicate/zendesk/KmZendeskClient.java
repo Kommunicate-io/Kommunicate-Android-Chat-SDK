@@ -54,6 +54,7 @@ import zendesk.chat.Observer;
 public class KmZendeskClient {
 
     private static String TAG = "KmZendeskClient";
+    private static String TRANSCRIPT = "Transcript:\n";
     private static KmZendeskClient kmZendeskClient;
     private boolean zendeskConnected;
     private boolean transcriptSent;
@@ -289,6 +290,7 @@ private void processAgentLeave() {
         }
         final StringBuilder transcriptString = new StringBuilder();
         sendZendeskMessage(context.getString(R.string.km_zendesk_transcript_message, new KmClientService(context).getConversationShareUrl(), channel.getKey()));
+        transcriptString.append(TRANSCRIPT);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -304,9 +306,6 @@ private void processAgentLeave() {
                     Collections.reverse(listOfMessage);
                     for(Message message : listOfMessage) {
                         String username;
-                        if(message.isHidden() || message.isChannelCustomMessage()) {
-                            continue;
-                        }
                         if(message.getContactIds().equals(contact.getContactIds())) {
                             username = "User";
                         } else {

@@ -576,6 +576,17 @@ public class NotificationService {
         return !(notificationDisableThreshold == 0 || (notificationDisableThreshold > 0 && index < notificationDisableThreshold));
     }
 
+    public void sendTestNotification() {
+        Integer smallIconResourceId = Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_METADATA) != null ? Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_METADATA) : iconResourceId;
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationChannels.getDefaultChannelId(false))
+                .setSmallIcon(smallIconResourceId)
+                .setContentTitle("Kommunicate")
+                .setContentText("Testing notification")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(123, builder.build());
+    }
+
     static class NotificationInfo {
         String title;
         Contact displayNameContact;

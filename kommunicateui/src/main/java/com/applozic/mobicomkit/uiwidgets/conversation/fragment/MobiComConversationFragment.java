@@ -199,6 +199,8 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.KmConversationBuilder;
+import io.kommunicate.KmConversationHelper;
 import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
@@ -214,9 +216,9 @@ import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmFeedback;
-import io.kommunicate.services.KmChannelService;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.zendesk.KmZendeskClient;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
@@ -373,6 +375,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isRecordOptionEnabled;
     protected boolean isUserGivingEmail;
     protected RelativeLayout conversationRootLayout;
+    private String zendeskChatSdk;
 
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
@@ -454,6 +457,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         messageImageLoader.setImageFadeIn(false);
         messageImageLoader.addImageCache((getActivity()).getSupportFragmentManager(), 0.1f);
         kmAudioRecordManager = new KmAudioRecordManager(getActivity());
+
+        zendeskChatSdk = KmAppSettingPreferences.getInstance().getZendeskSdkKey();
+
     }
 
     private void setupChatBackground() {
@@ -1289,6 +1295,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected void processSendMessage() {
+        if(KmZendeskClient.getInstance(getContext()).isZendeskInitialized()) {
+            KmZendeskClient.getInstance(getContext()).sendZendeskMessage(messageEditText.getText().toString());
+        }
         if (!TextUtils.isEmpty(messageEditText.getText().toString().trim()) || !TextUtils.isEmpty(filePath)) {
             String inputMessage = messageEditText.getText().toString();
             String[] inputMsg = inputMessage.toLowerCase().split(" ");
@@ -2234,6 +2243,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
             templateAdapter.setMessageList(new HashMap<String, String>());
             templateAdapter.notifyDataSetChanged();
+        }
+        if(!TextUtils.isEmpty(zendeskChatSdk)) {
+            KmZendeskClient.getInstance(getContext()).initializeZendesk(zendeskChatSdk, appContactService.getContactById(MobiComUserPreference.getInstance(getContext()).getUserId()));
+            MobiComUserPreference.getInstance(getContext()).setLatestZendeskConversationId(channel.getKey());
         }
     }
 

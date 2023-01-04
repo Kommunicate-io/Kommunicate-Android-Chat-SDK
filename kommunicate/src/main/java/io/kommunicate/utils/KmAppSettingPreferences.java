@@ -27,6 +27,7 @@ public class KmAppSettingPreferences {
     private static final String LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME";
     private static final String CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME";
     private static final String HIDE_POST_CTA = "HIDE_POST_CTA";
+    private static final String ZENDESK_SDK_KEY = "ZENDESK_SDK_KEY";
 
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
@@ -51,6 +52,7 @@ public class KmAppSettingPreferences {
                 setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
                 setKmBotMessageDelayInterval(appSetting.getChatWidget().getBotMessageDelayInterval());
                 setChatSessionDeleteTime(appSetting.getChatWidget().getSessionTimeout());
+                setZendeskChatSdkKey(appSetting.getChatWidget().getZendeskChatSdkKey());
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());
@@ -162,6 +164,14 @@ public class KmAppSettingPreferences {
 
     public int getKmBotMessageDelayInterval() {
         return preferences.getInt(KM_BOT_MESSAGE_DELAY_INTERVAL, 0);
+    }
+
+    public void setZendeskChatSdkKey(String zendeskAccountKey) {
+        preferences.edit().putString(ZENDESK_SDK_KEY, zendeskAccountKey).apply();
+    }
+
+    public String getZendeskSdkKey() {
+        return preferences.getString(ZENDESK_SDK_KEY, "");
     }
 
     public void clearInstance() {

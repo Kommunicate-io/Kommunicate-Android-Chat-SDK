@@ -89,6 +89,9 @@ public class MobiComUserPreference {
     private static String ENCRYPTION_TYPE = "encryptionType";
     private static String ENCRYPTION_IV = "encryptionIV";
     private SharedPreferences.Editor prefsEditor;
+    private static final String ZENDESK_LATEST_CONVERSATION = "ZENDESK_LATEST_CONVERSATION";
+    private static final String ZENDESK_LAST_SYNC_TIME = "ZENDESK_LAST_SYNC_TIME";
+
     private SharedPreferences sharedPreferences;
     private Context context;
     private String countryCode;
@@ -1010,5 +1013,29 @@ public class MobiComUserPreference {
         if(sharedPreferences != null) {
             sharedPreferences.edit().putBoolean(NOTIFY_EVERYBODY, isNotifyEverybody).apply();
         }
+    }
+    public void setLatestZendeskConversationId(Integer conversationId) {
+        if (sharedPreferences != null) {
+            sharedPreferences.edit().putInt(ZENDESK_LATEST_CONVERSATION, conversationId).apply();
+        }
+    }
+    public Integer getLatestZendeskConversationId() {
+        if (sharedPreferences != null) {
+            return sharedPreferences.getInt(ZENDESK_LATEST_CONVERSATION, 0);
+        }
+        return 0;
+    }
+
+    public void setZendeskLastSyncTime(Long lastSyncTime) {
+        if (sharedPreferences != null) {
+            sharedPreferences.edit().putLong(ZENDESK_LAST_SYNC_TIME, lastSyncTime).apply();
+        }
+    }
+
+    public Long getZendeskLastSyncTime() {
+        if(sharedPreferences != null) {
+            return sharedPreferences.getLong(ZENDESK_LAST_SYNC_TIME, 0L);
+        }
+        return 0L;
     }
 }

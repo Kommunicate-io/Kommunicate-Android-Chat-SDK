@@ -61,6 +61,7 @@ import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.preference.KmPreference;
+import io.kommunicate.zendesk.KmZendeskClient;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -816,6 +817,7 @@ public class Kommunicate {
                             }
                         }
                     }
+
                     @Override
                     public void onFailure(Object error) {
 
@@ -881,5 +883,10 @@ public class Kommunicate {
 
     public static void removeApplicationKey(Context context) {
         new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
+    }
+
+    public static void openZendeskChat(final Context context) {
+        KmZendeskClient kmZendeskClient = KmZendeskClient.getInstance(context);
+        kmZendeskClient.openZendeskChat(context);
     }
 }

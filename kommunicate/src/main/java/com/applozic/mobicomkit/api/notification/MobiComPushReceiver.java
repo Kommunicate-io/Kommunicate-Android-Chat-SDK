@@ -172,7 +172,7 @@ MobiComPushReceiver {
                     deleteMessage = null, conversationReadResponse = null,
                     userBlockedResponse = null, userUnBlockedResponse = null, conversationReadForContact = null, conversationReadForChannel = null, conversationReadForSingleMessage = null,
                     userDetailChanged = null, userDeleteNotification = null, messageMetadataUpdate = null, mutedUserListResponse = null, contactSync = null, muteAllNotificationResponse = null,
-                    groupMuteNotificationResponse = null, userActivated = null, userDeactivated = null;
+                    groupMuteNotificationResponse = null, userActivated = null, userDeactivated = null, notificationTest = null;
             SyncCallService syncCallService = SyncCallService.getInstance(context);
 
             if (bundle != null) {
@@ -198,6 +198,7 @@ MobiComPushReceiver {
                 groupMuteNotificationResponse = bundle.getString(notificationKeyList.get(34));
                 userActivated = bundle.getString(notificationKeyList.get(17));
                 userDeactivated = bundle.getString(notificationKeyList.get(18));
+                notificationTest = data.get(notificationKeyList.get(23));
             } else if (data != null) {
                 deleteConversationForContact = data.get(notificationKeyList.get(5));
                 deleteMessage = data.get(notificationKeyList.get(4));
@@ -221,6 +222,7 @@ MobiComPushReceiver {
                 groupMuteNotificationResponse = data.get(notificationKeyList.get(34));
                 userActivated = data.get(notificationKeyList.get(17));
                 userDeactivated = data.get(notificationKeyList.get(18));
+                notificationTest = data.get(notificationKeyList.get(23));
             }
 
             if (!TextUtils.isEmpty(payloadForDelivered)) {
@@ -491,6 +493,16 @@ MobiComPushReceiver {
 
             if (!TextUtils.isEmpty(userDeactivated)) {
                 BroadcastService.sendUserActivatedBroadcast(context, AlMessageEvent.ActionType.USER_DEACTIVATED);
+            }
+            if(!TextUtils.isEmpty(notificationTest)) {
+
+                int notificationId = Utils.getLauncherIcon(context.getApplicationContext());
+                InstantMessageResponse messageResponse = (InstantMessageResponse) GsonUtils.getObjectFromJson(notificationTest, InstantMessageResponse.class);
+                if (messageResponse != null && !messageResponse.isSendAlert()) {
+                    return;
+                }
+                NotificationService notificationService = new NotificationService(notificationId, context, 0, 0, 0);
+                notificationService.sendTestNotification();
             }
 
         } catch (Throwable e) {

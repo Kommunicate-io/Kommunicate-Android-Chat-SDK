@@ -11,6 +11,7 @@ public class InstantMessageResponse extends JsonMarker {
     private String type;
     private String message;
     private boolean notifyUser;
+    private boolean sendAlert;
 
     public String getId() {
         return id;
@@ -44,6 +45,9 @@ public class InstantMessageResponse extends JsonMarker {
         this.notifyUser = notifyUser;
     }
 
+    public boolean isSendAlert() {
+        return sendAlert;
+    }
     @Override
     public String toString() {
         return "MqttMessageResponse{" +

@@ -96,6 +96,7 @@ public class KmZendeskClient {
         this.channel = channel;
         handoffHappened = true;
         lastSyncTime = System.currentTimeMillis();
+        observeChatLogs();
         if(happenedNow && !transcriptSent) {
             sendZendeskChatTranscript();
         }
@@ -165,6 +166,9 @@ public class KmZendeskClient {
     }
 
     private void observeChatLogs() {
+        if(!handoffHappened) {
+            return;
+        }
         lastSyncTime = MobiComUserPreference.getInstance(context).getZendeskLastSyncTime();
 
         Chat.INSTANCE.providers().chatProvider().observeChatState(observationScope, new Observer<ChatState>() {
@@ -305,7 +309,11 @@ private void processAgentLeave() {
                     listOfMessage = Arrays.asList(kmConversationResponse.getMessage());
                     Collections.reverse(listOfMessage);
                     for(Message message : listOfMessage) {
-                        String username;
+                        if (Message.GroupMessageMetaData.FALSE.getValue().equals(message.getMetaDataValueForKey(Message.GroupMessageMetaData.KEY.getValue()))) {
+                            continue;
+                        }
+
+                            String username;
                         if(message.getContactIds().equals(contact.getContactIds())) {
                             username = "User";
                         } else {

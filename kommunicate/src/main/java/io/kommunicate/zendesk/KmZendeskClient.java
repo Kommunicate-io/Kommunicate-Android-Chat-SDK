@@ -96,6 +96,7 @@ public class KmZendeskClient {
         this.channel = channel;
         handoffHappened = true;
         lastSyncTime = System.currentTimeMillis();
+        observeChatLogs();
         if(happenedNow && !transcriptSent) {
             sendZendeskChatTranscript();
         }
@@ -165,6 +166,9 @@ public class KmZendeskClient {
     }
 
     private void observeChatLogs() {
+        if(!handoffHappened) {
+            return;
+        }
         lastSyncTime = MobiComUserPreference.getInstance(context).getZendeskLastSyncTime();
 
         Chat.INSTANCE.providers().chatProvider().observeChatState(observationScope, new Observer<ChatState>() {

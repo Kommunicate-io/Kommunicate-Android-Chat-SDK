@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
@@ -41,14 +42,19 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         Message message = null;
-        String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
-        if (!TextUtils.isEmpty(messageJson)) {
-            message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
-
-            if (message != null) {
-                if ((hideActionMessages && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage()))) {
-                    message.setHidden(true);
-                }
+        String keyString = intent.getStringExtra("keyString");
+        if(!TextUtils.isEmpty(keyString)) {
+            message = new MessageDatabaseService(context).getMessage(keyString);
+        }
+        if(message == null) {
+            String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
+            if (!TextUtils.isEmpty(messageJson)) {
+                message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+            }
+        }
+        if(message != null) {
+            if ((hideActionMessages && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage()))) {
+                message.setHidden(true);
             }
         }
         Utils.printLog(context, TAG, "Received broadcast, action: " + action + ", message: " + message);
@@ -65,7 +71,6 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
             }
         }
 
-        String keyString = intent.getStringExtra("keyString");
         String userId = message != null ? message.getContactIds() : "";
 
         if (BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString().equals(action)) {

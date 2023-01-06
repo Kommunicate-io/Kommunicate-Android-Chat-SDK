@@ -28,6 +28,7 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
+import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
@@ -55,6 +56,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.utils.KmConstants;
@@ -744,9 +746,20 @@ public class ConversationUIService {
             baseContactService.upsert(contact);
             new UserClientService(fragmentActivity).updateUserDisplayName(userId, fullName);
         }
-        String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
-        if (!TextUtils.isEmpty(messageJson)) {
-            Message message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+        Message message = null;
+        if(channelKey != -1) {
+            List<Message> messages = new MessageDatabaseService(fragmentActivity).getLatestMessageByChannelKey(channelKey);
+            message = (messages.size() != 0) ? messages.get(0) : null;
+        }
+
+        if(message == null) {
+            String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
+            if (!TextUtils.isEmpty(messageJson)) {
+                message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+            }
+        }
+
+        if(message != null) {
             if (message.getGroupId() != null) {
                 channel = ChannelService.getInstance(fragmentActivity).getChannelByChannelKey(message.getGroupId());
             } else {
@@ -754,6 +767,7 @@ public class ConversationUIService {
             }
             conversationId = message.getConversationId();
         }
+
         if (conversationId == null) {
             conversationId = intent.getIntExtra(CONVERSATION_ID, 0);
         }

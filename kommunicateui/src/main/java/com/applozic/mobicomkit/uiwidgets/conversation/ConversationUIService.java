@@ -747,16 +747,14 @@ public class ConversationUIService {
             new UserClientService(fragmentActivity).updateUserDisplayName(userId, fullName);
         }
         Message message = null;
-        if(channelKey != -1) {
-            List<Message> messages = new MessageDatabaseService(fragmentActivity).getLatestMessageByChannelKey(channelKey);
-            message = (messages.size() != 0) ? messages.get(0) : null;
+        String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
+        if (!TextUtils.isEmpty(messageJson)) {
+            message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
         }
 
-        if(message == null) {
-            String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
-            if (!TextUtils.isEmpty(messageJson)) {
-                message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
-            }
+        if(message == null && channelKey!=-1) {
+            List<Message> messages = new MessageDatabaseService(fragmentActivity).getLatestMessageByChannelKey(channelKey);
+            message = (messages.size() != 0) ? messages.get(0) : null;
         }
 
         if(message != null) {

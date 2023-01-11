@@ -2,7 +2,7 @@
 
 ## [Kommunicate](https://www.kommunicate.io/?utm_source=github&utm_medium=readme&utm_campaign=android) Android Chat SDK for Customer Support
 
-An Open Source Android Live Chat SDK for Customer Support
+An Open Source Android SDK for enabling AI Chatbot and Live Chat into your App
 
 ## Overview
 

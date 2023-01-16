@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -205,7 +206,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         fragmentTransaction.addToBackStack(fragmentTag);
         fragmentTransaction.commitAllowingStateLoss();
-        supportFragmentManager.executePendingTransactions();
+        if(!supportFragmentManager.isDestroyed()){
+            supportFragmentManager.executePendingTransactions();
+        }
         //Log.i(TAG, "BackStackEntryCount: " + supportFragmentManager.getBackStackEntryCount());
     }
 
@@ -624,7 +627,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PermissionsUtils.REQUEST_STORAGE) {
             if (alStoragePermission != null) {
                 alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));

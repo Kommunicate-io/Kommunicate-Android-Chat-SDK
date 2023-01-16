@@ -16,10 +16,10 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
-        versionName "2.5.3"
+        versionName "2.5.3-zendesk"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }

@@ -752,12 +752,12 @@ public class ConversationUIService {
             message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
         }
 
-        if(message == null){
-            String keyString = intent.getStringExtra("keyString");
+        String keyString = intent.getStringExtra("keyString");
+        if(message == null && !TextUtils.isEmpty(keyString) ){
             message = new MessageDatabaseService(fragmentActivity).getMessage(keyString);
         }
 
-        if(message == null && channelKey!=-1) {
+        if(message == null && channelKey != -1) {
             List<Message> messages = new MessageDatabaseService(fragmentActivity).getLatestMessageByChannelKey(channelKey);
             message = (messages.size() != 0) ? messages.get(0) : null;
         }

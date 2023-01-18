@@ -627,7 +627,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(permissions == null || grantResults == null){
+            return;
+        }
         if (requestCode == PermissionsUtils.REQUEST_STORAGE) {
             if (alStoragePermission != null) {
                 alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));

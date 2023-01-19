@@ -7,6 +7,7 @@ import android.net.Uri;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.text.TextUtils;
+
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -456,5 +457,48 @@ public class MobiComMessageService {
         } else {
             BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
         }
+    }
+
+    public synchronized void processFirebaseMessages(Message messageToProcess) {
+        Message message = prepareMessage(messageToProcess, messageToProcess.getTo());
+        Channel channel = null;
+        if (message.getGroupId() != null) {
+            channel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());
+        }
+        try {
+            List<String> messageKeys = new ArrayList<>();
+            if (message.getMetadata() != null && message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()) != null && !messageDatabaseService.isMessagePresent(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()))) {
+                messageKeys.add(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()));
+            }
+            if (messageKeys != null && messageKeys.size() > 0) {
+                Message[] replyMessageList = conversationService.getMessageListByKeyList(messageKeys);
+                if (replyMessageList != null) {
+                    Message replyMessage = replyMessageList[0];
+                    if (replyMessage != null) {
+                        if (replyMessage.hasAttachment() && !(replyMessage.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
+                            conversationService.setFilePathifExist(replyMessage);
+                        }
+                        if (replyMessage.getContentType() == Message.ContentType.CONTACT_MSG.getValue()) {
+                            fileClientService.loadContactsvCard(replyMessage);
+                        }
+                        replyMessage.setReplyMessage(Message.ReplyMessage.HIDE_MESSAGE.getValue());
+                        messageDatabaseService.createMessage(replyMessage);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (message.getType().equals(Message.MessageType.MT_INBOX.getValue())) {
+            addMTMessage(message, 0);
+        }
+        if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())) {
+            if(channel != null) {
+                channel.setConversationAssignee(message.getAssigneId());
+                ChannelService.getInstance(context).updateChannel(channel);
+            }
+            ChannelService.isUpdateTitle = true;
+        }
+        Utils.printLog(context, TAG, "processing Firebase message: " + message);
     }
 }

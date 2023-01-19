@@ -319,6 +319,7 @@ public class KmUserClientService extends UserClientService {
         user.setEnableEncryption(user.isEnableEncryption());
         user.setRoleType(User.RoleType.AGENT.getValue());
         user.setRoleName(User.RoleName.APPLICATION_WEB_ADMIN.getValue());
+        user.setPlatform(User.Platform.ANDROID.getValue());
 
 
         MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);

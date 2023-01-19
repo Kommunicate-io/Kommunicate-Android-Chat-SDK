@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class User extends JsonMarker {
 
     private static final String DEFAULT_USER_ID_REGEX = "^[a-zA-Z0-9_+#@.?|=;-]+$";
-    private static int platformFlag = 1;
+    private int platform;
     private String userIdRegex;
     private String userId;
     private String email;
@@ -51,12 +51,12 @@ public class User extends JsonMarker {
     private boolean hideActionMessages;
     private Short roleType = RoleType.USER_ROLE.getValue();
 
-    public static int getPlatformFlag() {
-        return platformFlag;
+    public int getPlatform() {
+        return platform;
     }
 
-    public static void setPlatformFlag(int platformFlag) {
-        User.platformFlag = platformFlag;
+    public void setPlatform(int platform) {
+        this.platform = platform;
     }
 
     public List<String> getFeatures() {
@@ -429,6 +429,29 @@ public class User extends JsonMarker {
 
         public String getValue() {
             return value;
+        }
+    }
+
+    public enum Platform {
+        ANDROID(1),
+        IOS(2),
+        WEB(3),
+        PHONE_GAP(4),
+        PLATFORM_API(5),
+        FLUTTER(6),
+        REACT_NATIVE(7),
+        CAPACITOR(8),
+        CORDOVA(9),
+        IONIC(10);
+
+        private int platform;
+
+        Platform(int platform) {
+            this.platform = platform;
+        }
+
+        public int getValue() {
+            return platform;
         }
     }
 }

@@ -57,6 +57,7 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComMessageService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
+import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
@@ -506,15 +507,18 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } else {
                 if (intent.getExtras() != null) {
                     if (intent.getExtras().getBoolean("sentFromNotification")) {
-                        String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
-                        if (!TextUtils.isEmpty(messageJson)) {
-                            Message message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
-                            AlEventManager.getInstance().sendOnNotificationClick(message);
-                        } else {
-                            AlEventManager.getInstance().sendOnNotificationClick(null);
-
+                        String keyString = intent.getStringExtra("keyString");
+                        Message message = null;
+                        if(!TextUtils.isEmpty(keyString)) {
+                            message = new MessageDatabaseService(this).getMessage(keyString);
                         }
-
+                        if(message == null){
+                            String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
+                            if (!TextUtils.isEmpty(messageJson)) {
+                                message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+                            }
+                        }
+                        AlEventManager.getInstance().sendOnNotificationClick(message);
                     }
                     BroadcastService.setContextBasedChat(intent.getExtras().getBoolean(ConversationUIService.CONTEXT_BASED_CHAT));
                     if (BroadcastService.isIndividual() && intent.getExtras().getBoolean(MobiComKitConstants.QUICK_LIST)) {

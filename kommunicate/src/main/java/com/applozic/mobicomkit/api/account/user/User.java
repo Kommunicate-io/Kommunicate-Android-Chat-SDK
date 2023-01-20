@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class User extends JsonMarker {
 
     private static final String DEFAULT_USER_ID_REGEX = "^[a-zA-Z0-9_+#@.?|=;-]+$";
-    private int platform;
+    private int platform = Platform.ANDROID.getValue();
     private String userIdRegex;
     private String userId;
     private String email;

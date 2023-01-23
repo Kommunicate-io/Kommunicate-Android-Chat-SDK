@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.broadcast;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 
 import com.applozic.mobicomkit.feed.MqttMessageResponse;
@@ -13,6 +14,7 @@ import com.applozic.mobicommons.json.GsonUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import io.kommunicate.callbacks.KmPluginEventListener;
 
 /**
@@ -108,13 +110,13 @@ public class AlEventManager {
 
     private void initHandler() {
         if (uiHandler == null) {
-            uiHandler = new Handler(new Handler.Callback() {
+            uiHandler = new Handler(Looper.getMainLooper()) {
                 @Override
-                public boolean handleMessage(Message msg) {
+                public void handleMessage(@NonNull Message msg) {
                     handleState(msg);
-                    return false;
+                    super.handleMessage(msg);
                 }
-            });
+            };
         }
     }
 

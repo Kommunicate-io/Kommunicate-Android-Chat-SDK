@@ -470,7 +470,7 @@ public class MobiComMessageService {
             if (message.getMetadata() != null && message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()) != null && !messageDatabaseService.isMessagePresent(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()))) {
                 messageKeys.add(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()));
             }
-            if (messageKeys != null && messageKeys.size() > 0) {
+            if (messageKeys.size() > 0) {
                 Message[] replyMessageList = conversationService.getMessageListByKeyList(messageKeys);
                 if (replyMessageList != null) {
                     Message replyMessage = replyMessageList[0];

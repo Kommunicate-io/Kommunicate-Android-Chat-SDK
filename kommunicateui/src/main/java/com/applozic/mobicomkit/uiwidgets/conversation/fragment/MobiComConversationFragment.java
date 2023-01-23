@@ -1674,6 +1674,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         menu.findItem(R.id.muteGroup).setVisible(false);
         menu.findItem(R.id.unmuteGroup).setVisible(false);
         menu.findItem(R.id.deleteConversation).setVisible(false);
+        if(alCustomizationSettings.isLogoutOptionFromConversation()){
+            menu.findItem(R.id.logout).setVisible(true);
+        }
     }
 
     @Override

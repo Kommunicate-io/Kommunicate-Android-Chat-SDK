@@ -206,7 +206,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         fragmentTransaction.addToBackStack(fragmentTag);
         fragmentTransaction.commitAllowingStateLoss();
-        supportFragmentManager.executePendingTransactions();
+        if(!supportFragmentManager.isDestroyed()){
+            supportFragmentManager.executePendingTransactions();
+        }
         //Log.i(TAG, "BackStackEntryCount: " + supportFragmentManager.getBackStackEntryCount());
     }
 
@@ -629,6 +631,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if(permissions == null || grantResults == null){
+            return;
+        }
         if (requestCode == PermissionsUtils.REQUEST_STORAGE) {
             if (alStoragePermission != null) {
                 alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));

@@ -647,7 +647,7 @@ public class ConversationUIService {
     }
 
     public void updateAgentStatus(String userId, Integer status) {
-        if(userId != null && status != null &&  !KmUtils.isAgent() && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
+        if(userId != null && status != null && !KmUtils.isAgent() && getConversationFragment().getChannel() != null && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
                 if(status.equals(KmConstants.STATUS_AWAY)) {
                     getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), false);
                     getConversationFragment().showAwayMessage(true, null);
@@ -663,7 +663,7 @@ public class ConversationUIService {
                     getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
                     getConversationFragment().loadAwayMessage();
                 }
-        } else if(userId != null && status != null && KmChannelService.getInstance(fragmentActivity).getUserInSupportGroup(getConversationFragment().getChannel().getKey()).equals(userId)) {
+        } else if(userId != null && status != null && getConversationFragment().getChannel() != null && KmChannelService.getInstance(fragmentActivity).getUserInSupportGroup(getConversationFragment().getChannel().getKey()).equals(userId)) {
             getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
         }
     }

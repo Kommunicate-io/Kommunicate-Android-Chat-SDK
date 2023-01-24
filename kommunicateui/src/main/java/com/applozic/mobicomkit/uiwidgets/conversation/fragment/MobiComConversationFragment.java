@@ -1076,16 +1076,20 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
-        String existingAssignee = channel.getConversationAssignee();
-
+        final String existingAssignee = channel.getConversationAssignee();
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
         //conversation is open
         //if the conversation is opened from the dashboard while the feedback input fragment is open, the feedback fragment will be closed
-        setFeedbackDisplay(channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext()));
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                setFeedbackDisplay(channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext()));
+                if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
+                    showAwayMessage(true, null);
+                }
+            }
+        });
 
-        if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
-            showAwayMessage(true, null);
-        }
     }
 
     @Override

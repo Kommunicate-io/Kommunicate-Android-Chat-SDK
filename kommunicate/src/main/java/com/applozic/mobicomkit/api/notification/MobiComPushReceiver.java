@@ -9,7 +9,10 @@ import android.util.Log;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.api.conversation.MessageClientService;
+import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
+import com.applozic.mobicomkit.api.conversation.MobiComMessageService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.broadcast.AlMessageEvent;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
@@ -163,7 +166,7 @@ MobiComPushReceiver {
     }
 
     //the MqttMessageResponse objects used in this class are not actual MQTT responses, but just their data model is used
-    public static void processMessage(Context context, Bundle bundle, Map<String, String> data) {
+    public static void processMessage(final Context context, Bundle bundle, Map<String, String> data) {
 
         try {
             String payloadForDelivered = null, userConnected = null,
@@ -315,16 +318,28 @@ MobiComPushReceiver {
             }
 
             GcmMessageResponse syncMessageResponse = null;
+            //APPLOZIC_01 -> Handle message we receive from FCM without calling Sync Message API.
+            // Sync Message API is to be called when notification is clicked or when app is opened.
             if (!TextUtils.isEmpty(messageKey)) {
                 syncMessageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageKey, GcmMessageResponse.class);
                 if (processPushNotificationId(syncMessageResponse.getId())) {
                     return;
                 }
                 addPushNotificationId(syncMessageResponse.getId());
-                Message messageObj = syncMessageResponse.getMessage();
+                final Message messageObj = syncMessageResponse.getMessage();
 
                 if (!TextUtils.isEmpty(messageObj.getKeyString())) {
-                    syncCallService.syncMessages(messageObj.getKeyString());
+                    MobiComMessageService mobiComMessageService = new MobiComMessageService(context, MessageIntentService.class);
+                    mobiComMessageService.processFirebaseMessages(messageObj);
+                    Thread bgThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MessageClientService messageClientService = new MessageClientService(context);
+                            messageClientService.updateDeliveryStatus(messageObj.getKeyString(), MobiComUserPreference.getInstance(context).getUserId(), null);
+                        }
+                    });
+                    bgThread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                    bgThread.start();
                     if (messageObj.getGroupId() != null && messageObj.isGroupDeleteAction()) {
                         syncCallService.deleteChannelConversationThread(messageObj.getGroupId());
                         BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, messageObj.getGroupId(), "success");

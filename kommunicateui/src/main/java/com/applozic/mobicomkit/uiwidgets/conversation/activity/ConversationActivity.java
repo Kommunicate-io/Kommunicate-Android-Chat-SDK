@@ -491,6 +491,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         //setIntent(intent);
+        if(intent != null && intent.getBooleanExtra(KmConstants.CLOSE_CONVERSATION_SCREEN, false)) {
+            this.finish();
+        }
         if (!MobiComUserPreference.getInstance(this).isLoggedIn()) {
             //user is not logged in
             Utils.printLog(this, "AL", "user is not logged in yet.");

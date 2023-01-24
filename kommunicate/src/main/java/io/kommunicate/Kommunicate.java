@@ -384,6 +384,16 @@ public class Kommunicate {
         Applozic.logoutUser(context, handler);
     }
 
+    public static void closeConversationScreen(Context context) {
+        try {
+            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
+            intent.putExtra(KmConstants.CLOSE_CONVERSATION_SCREEN, true);
+            context.startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void setDeviceToken(Context context, String deviceToken) {
         Applozic.getInstance(context).setDeviceRegistrationId(deviceToken);
     }

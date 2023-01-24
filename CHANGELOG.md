@@ -5,6 +5,8 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 
 ## Unreleased
 1) Added platform flag
+2) Added logout option on conversation menu
+
 
 ## Kommunicate Android SDK 2.5.3
 1) Auto Suggestion Button color customization

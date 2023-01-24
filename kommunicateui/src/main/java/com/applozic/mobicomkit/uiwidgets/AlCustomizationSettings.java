@@ -91,6 +91,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private MobicomMessageTemplate messageTemplate;
     private String logoutPackageName = "kommunicate.io.sample.MainActivity";
     private boolean logoutOption = false;
+    private boolean logoutOptionFromConversation = false;
     private int defaultGroupType = 2;
     private boolean muteUserChatOption = false;
     private String restrictedWordRegex;
@@ -467,6 +468,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public void setLogout(boolean logoutOption) {
         this.logoutOption = logoutOption;
+    }
+
+    public boolean isLogoutOptionFromConversation() {
+        return logoutOptionFromConversation;
+    }
+
+    public void setLogoutOptionFromConversation(boolean logoutOptionFromConversation) {
+        this.logoutOptionFromConversation = logoutOptionFromConversation;
     }
 
     public String getLogoutPackage() {

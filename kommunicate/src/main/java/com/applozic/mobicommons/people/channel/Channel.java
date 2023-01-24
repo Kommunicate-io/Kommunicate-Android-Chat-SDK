@@ -314,6 +314,12 @@ public class Channel extends JsonMarker {
         return (GroupType.SUPPORT_GROUP.getValue().equals(getType()) && getMetadata() != null && !TextUtils.isEmpty(getMetadata().get(CONVERSATION_ASSIGNEE))) ? getMetadata().get(CONVERSATION_ASSIGNEE) : null;
     }
 
+    public void setConversationAssignee(String assignee) {
+        if(getMetadata() != null) {
+            getMetadata().put(CONVERSATION_ASSIGNEE, assignee);
+        }
+    }
+
     public String getTeamId() {
         return (GroupType.SUPPORT_GROUP.getValue().equals(getType()) && getMetadata() != null && !TextUtils.isEmpty(getMetadata().get(KM_TEAM_ID))) ? getMetadata().get(KM_TEAM_ID) : null;
     }

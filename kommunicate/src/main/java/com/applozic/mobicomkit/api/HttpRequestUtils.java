@@ -60,7 +60,7 @@ public class HttpRequestUtils {
     }
 
     public String postJsonToServer(String stringUrl, String data) throws Exception {
-        return postData(stringUrl, data, null, false, false, null, null);
+        return postData(stringUrl, data, null, false, true, null, null);
     }
 
     public String makePatchRequest(String url, String data) throws Exception {

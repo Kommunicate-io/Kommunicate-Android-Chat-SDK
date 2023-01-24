@@ -4,7 +4,9 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
 ## Unreleased
-1) Stopped calling refresh token API when proper paramters are not passed .
+1) Added platform flag
+2) Added logout option on conversation menu
+3) Stopped calling refresh token API when proper paramters are not passed .
 
 ## Kommunicate Android SDK 2.5.3
 1) Auto Suggestion Button color customization

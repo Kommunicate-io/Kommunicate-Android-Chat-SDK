@@ -426,7 +426,8 @@ public class NotificationService {
         }
 
         Intent intent = new Intent(context, activity);
-        intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(message, Message.class));
+        intent.putExtra("keyString", message.getKeyString());
+        intent.putExtra("groupId", message.getGroupId());
         if (applozicClient.isChatListOnNotificationIsHidden()) {
             intent.putExtra("takeOrder", true);
         }

@@ -28,6 +28,7 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
+import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
@@ -55,6 +56,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.utils.KmConstants;
@@ -645,7 +647,7 @@ public class ConversationUIService {
     }
 
     public void updateAgentStatus(String userId, Integer status) {
-        if(userId != null && status != null &&  !KmUtils.isAgent() && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
+        if(userId != null && status != null && !KmUtils.isAgent() && getConversationFragment().getChannel() != null && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
                 if(status.equals(KmConstants.STATUS_AWAY)) {
                     getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), false);
                     getConversationFragment().showAwayMessage(true, null);
@@ -661,7 +663,7 @@ public class ConversationUIService {
                     getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
                     getConversationFragment().loadAwayMessage();
                 }
-        } else if(userId != null && status != null && KmChannelService.getInstance(fragmentActivity).getUserInSupportGroup(getConversationFragment().getChannel().getKey()).equals(userId)) {
+        } else if(userId != null && status != null && getConversationFragment().getChannel() != null && KmChannelService.getInstance(fragmentActivity).getUserInSupportGroup(getConversationFragment().getChannel().getKey()).equals(userId)) {
             getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
         }
     }
@@ -744,9 +746,23 @@ public class ConversationUIService {
             baseContactService.upsert(contact);
             new UserClientService(fragmentActivity).updateUserDisplayName(userId, fullName);
         }
+        Message message = null;
         String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
         if (!TextUtils.isEmpty(messageJson)) {
-            Message message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+            message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+        }
+
+        String keyString = intent.getStringExtra("keyString");
+        if(message == null && !TextUtils.isEmpty(keyString) ){
+            message = new MessageDatabaseService(fragmentActivity).getMessage(keyString);
+        }
+
+        if(message == null && channelKey != -1) {
+            List<Message> messages = new MessageDatabaseService(fragmentActivity).getLatestMessageByChannelKey(channelKey);
+            message = (messages.size() != 0) ? messages.get(0) : null;
+        }
+
+        if(message != null) {
             if (message.getGroupId() != null) {
                 channel = ChannelService.getInstance(fragmentActivity).getChannelByChannelKey(message.getGroupId());
             } else {
@@ -754,6 +770,7 @@ public class ConversationUIService {
             }
             conversationId = message.getConversationId();
         }
+
         if (conversationId == null) {
             conversationId = intent.getIntExtra(CONVERSATION_ID, 0);
         }

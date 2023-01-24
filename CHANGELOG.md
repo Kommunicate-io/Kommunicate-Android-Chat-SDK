@@ -4,9 +4,14 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
 ## Unreleased
-1) Added platform flag
-2) Added logout option on conversation menu
-3) Stopped calling refresh token API when proper paramters are not passed .
+1) Added support to send platform flag for analytics
+2) Added logout option on conversation screen
+3) Stopped calling refresh token API when proper parameters are not passed.
+4) Send actual Notification from Notification test page
+5) Handle notification from FCM directly
+6) Add support to close Kommunicate Application through code
+7) Threads optimized for Hybrid platforms
+8) Multiple crash fixes
 
 ## Kommunicate Android SDK 2.5.3
 1) Auto Suggestion Button color customization

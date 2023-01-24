@@ -202,6 +202,10 @@ public class RegisterUserClientService extends MobiComKitClientService {
     }
 
     public boolean refreshAuthToken(String applicationId, String userId) {
+        MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
+        if(TextUtils.isEmpty(applicationId) || TextUtils.isEmpty(userId) || TextUtils.isEmpty(mobiComUserPreference.getDeviceKeyString())) {
+            return false;
+        }
         try {
             HttpRequestUtils.isRefreshTokenInProgress = true;
             Map<String, String> tokenRefreshBodyMap = new HashMap<>();

@@ -75,6 +75,7 @@
   "muteUserChatOption": true,
   "replyOption": false,
   "logoutOption": true,
+  "logoutOptionFromConversation": false,
   "isAgentApp": false,
   "logoutPackageName": "kommunicate.io.sample.MainActivity",
   "enableAwayMessage": true,

@@ -3,7 +3,7 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## Unreleased
+## Kommunicate Android SDK 2.6.0
 1) Added support to send platform flag for analytics
 2) Added logout option on conversation screen
 3) Stopped calling refresh token API when proper parameters are not passed.

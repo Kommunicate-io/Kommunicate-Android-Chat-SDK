@@ -194,13 +194,13 @@ public class BroadcastService {
             return !(message.getMetadata() != null && message.getMetadata().containsKey("NO_ALERT") && "true".equals(message.getMetadata().get("NO_ALERT")));
         }
         if (userPreference.isNotifyEverybody()) {
-            if (User.RoleType.BOT.getValue().equals(new AppContactService(context).getContactById(channel.getConversationAssignee()).getRoleType())) {
+            if (User.RoleType.BOT.getValue().equals(new AppContactService(context).getContactById(TextUtils.isEmpty(channel.getConversationAssignee()) ? message.getGroupAssignee() : channel.getConversationAssignee()).getRoleType())) {
                 return (message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN));
             } else {
-                return User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType());
+                return (User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) || (message.getMetadata() != null && message.getMetadata().containsKey(Message.BOT_ASSIGN));
             }
         } else {
-            return (channel.getConversationAssignee().equals(userPreference.getUserId()) && User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType()))
+            return (userPreference.getUserId().equals(TextUtils.isEmpty(message.getGroupAssignee()) ? channel.getConversationAssignee() : message.getGroupAssignee()) && User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType()))
                     || (message.getAssigneId() != null && message.getAssigneId().equals(MobiComUserPreference.getInstance(context).getUserId()));
         }
     }

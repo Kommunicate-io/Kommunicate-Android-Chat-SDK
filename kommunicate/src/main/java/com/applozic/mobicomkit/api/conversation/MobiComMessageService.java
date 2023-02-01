@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
@@ -491,6 +492,13 @@ public class MobiComMessageService {
         }
         if (message.getType().equals(Message.MessageType.MT_INBOX.getValue())) {
             addMTMessage(message, 0);
+        }
+        if(baseContactService.isContactPresent(message.getContactIds())) {
+            Contact contact = baseContactService.getContactById(message.getContactIds());
+            if((contact.getRoleType() == null || contact.getRoleType() == 0 || contact.getUserId() != null) && contact.getUserId().equals(message.getSupportCustomerName())) {
+                contact.setRoleType(User.RoleType.USER_ROLE.getValue());
+                baseContactService.updateContact(contact);
+            }
         }
         if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())) {
             if(channel != null) {

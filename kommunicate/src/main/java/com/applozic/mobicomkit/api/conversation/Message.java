@@ -66,6 +66,8 @@ public class Message extends JsonMarker {
     private short status = Status.READ.getValue();
     private boolean hidden;
     private int replyMessage;
+    private String supportCustomerName;
+    private String groupAssignee;
     public static final String IMAGE = "image";
     public static final String VIDEO = "video";
     public static final String AUDIO = "audio";
@@ -462,6 +464,21 @@ public class Message extends JsonMarker {
         this.groupId = groupId;
     }
 
+    public String getSupportCustomerName() {
+        return supportCustomerName;
+    }
+
+    public void setSupportCustomerName(String supportCustomerName) {
+        this.supportCustomerName = supportCustomerName;
+    }
+
+    public String getGroupAssignee() {
+        return groupAssignee;
+    }
+
+    public void setGroupAssignee(String groupAssignee) {
+        this.groupAssignee = groupAssignee;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -614,7 +631,8 @@ public class Message extends JsonMarker {
 
     public String getAssigneId() {
         if (isActionMessage()) {
-            return getMetadata().get(BOT_ASSIGN);
+            return !TextUtils.isEmpty(getMetadata().get(BOT_ASSIGN)) ? getMetadata().get(BOT_ASSIGN) : !TextUtils.isEmpty(getMetadata().get(KM_ASSIGN_TO)) ?
+                    getMetadata().get(KM_ASSIGN_TO) : "";
         }
         return null;
     }

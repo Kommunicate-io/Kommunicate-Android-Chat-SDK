@@ -3232,7 +3232,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void updateSupportGroupTitleAndImageAndHideSubtitle(Channel channel) {
         toolbarAlphabeticImage.setVisibility(VISIBLE);
         toolbarImageView.setVisibility(GONE);
-        if (channel != null && channel.getConversationAssignee() != null) {
+        if(alCustomizationSettings.isAgentApp() && channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
+            KmViewHelper.loadImage(getContext(), toolbarImageView, toolbarAlphabeticImage, channel.getImageUrl(), R.drawable.km_ic_contact_picture_holo_light);
+        }
+        else if (!alCustomizationSettings.isAgentApp() && channel != null && channel.getConversationAssignee() != null) {
             Contact withUserContact = appContactService.getContactById(channel.getConversationAssignee());
 
             KmViewHelper.loadContactImage(getContext(), toolbarImageView, toolbarAlphabeticImage, withUserContact, R.drawable.km_ic_contact_picture_holo_light);

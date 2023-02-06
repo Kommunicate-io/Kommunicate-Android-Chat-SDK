@@ -12,6 +12,8 @@ import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.KmSpeechSetting;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -27,15 +29,17 @@ public class KmSpeechToText implements RecognitionListener {
     private SpeechRecognizer speechRecognizer;
     private boolean isStopped;
     private String languageCode;
+    private AlCustomizationSettings alCustomizationSettings;
 
-    public KmSpeechToText(Activity context, KmRecordButton recordButton, String languageCode, KmTextListener listener) {
+    public KmSpeechToText(Activity context, KmRecordButton recordButton, KmTextListener listener, AlCustomizationSettings alCustomizationSettings) {
         this.context = context;
         this.listener = listener;
         this.recordButton = recordButton;
-        this.languageCode = languageCode;
+        this.alCustomizationSettings = alCustomizationSettings;
     }
 
     public void startListening() {
+        languageCode =  KmSpeechSetting.getSpeechToTextLanguageCode(context, alCustomizationSettings);
         if (PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             isStopped = false;
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);

@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicommons.ApplozicService;
 
+import java.util.Set;
+
 public class KmPrefSettings {
 
     private static KmPrefSettings kmPrefSettings;
@@ -15,6 +17,7 @@ public class KmPrefSettings {
     private static final String ENABLE_TEXT_TO_SPEECH = "ENABLE_TEXT_TO_SPEECH";
     private static final String SEND_MESSAGE_ON_SPEECH_END = "SEND_MESSAGE_ON_SPEECH_END";
     private static final String SPEECH_TO_TEXT_LANGUAGE = "SPEECH_TO_TEXT_LANGUAGE";
+    private static final String SPEECH_TO_TEXT_LANGUAGES = "SPEECH_TO_TEXT_LANGUAGES";
     private static final String TEXT_TO_SPEECH_LANGUAGE = "TEXT_TO_SPEECH_LANGUAGE";
 
     private KmPrefSettings(Context context) {
@@ -113,7 +116,11 @@ public class KmPrefSettings {
         }
         return this;
     }
-
-
+    public KmPrefSettings setSpeechToTextLanguages(Set<String> languages) {
+        if(sharedPreferences != null) {
+            sharedPreferences.edit().putStringSet(SPEECH_TO_TEXT_LANGUAGES, languages).commit();
+        }
+        return this;
+    }
 }
 

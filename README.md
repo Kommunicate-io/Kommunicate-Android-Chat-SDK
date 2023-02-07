@@ -86,6 +86,18 @@ You can add the Kommunicate SDK in your Android app easily. More information on 
 **Smart Rich Messaging:** Leverage rich messages using buttons, cards, carousels, forms or lists to provide an exquisite support chat experience to your customers.
 
 **Quick Replies:** Quickly respond to generic user queries using Quick Replies. Easily create and manage templated messages from your dashboard.
+Conversation Auto-resolve: Reduce redundant tasks such as manually resolving dormant conversation using automation.
+
+**Push Notifications:** Set up interactive alerts for both your agents and customers for new messages in conversations
+
+**Fallback Emails:** Get notified through email if you miss any messages from your users and vice versa.
+
+**Omnichannel Support:** Manage customer requests from live chat, email, chatbots, social media at a single place.
+
+**Team Roles:** Manage your team, and assign roles and access permission level to each of your agents.
+
+**CSAT Ratings:** Keep track of your customer's overall satisfaction and your team's performance.
+
 
 
 ## Technical Documentation

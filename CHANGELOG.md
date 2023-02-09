@@ -3,6 +3,9 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Unreleased
+1) Fixed agent app toolbar showing conversation assignee image instead of end user image
+
 ## Kommunicate Android SDK 2.6.0
 1) Added support to send platform flag for analytics
 2) Added logout option on conversation screen

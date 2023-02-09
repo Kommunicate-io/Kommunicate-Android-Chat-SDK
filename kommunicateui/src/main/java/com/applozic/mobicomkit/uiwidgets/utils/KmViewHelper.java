@@ -55,7 +55,7 @@ public class KmViewHelper {
         }
     }
 
-    private static void loadImage(Context context, final CircleImageView imageView, final TextView textImage, String imageUrl, int placeholderImage) {
+    public static void loadImage(Context context, final CircleImageView imageView, final TextView textImage, String imageUrl, int placeholderImage) {
         RequestOptions options = new RequestOptions()
                 .centerCrop()
                 .placeholder(placeholderImage)

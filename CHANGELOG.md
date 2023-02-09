@@ -3,7 +3,7 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## Kommunicate Android SDK 2.6.1
+## Kommunicate Android SDK 2.6.2
 1) Fixed agent app toolbar showing conversation assignee image instead of end user image
 2) Fixed notification for agents
 

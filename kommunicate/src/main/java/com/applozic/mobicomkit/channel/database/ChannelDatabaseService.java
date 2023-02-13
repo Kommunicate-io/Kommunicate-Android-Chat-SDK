@@ -330,7 +330,6 @@ public class ChannelDatabaseService {
     }
 
     public boolean isChannelPresent(Integer channelKey) {
-        Cursor cursor = null;
         try {
             SQLiteDatabase database = dbHelper.getReadableDatabase();
             String sql = "SELECT COUNT(*) FROM channel WHERE channelKey = ?";
@@ -356,7 +355,6 @@ public class ChannelDatabaseService {
 
     public boolean isChannelUserPresent(Integer channelKey, String userId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-//        Cursor cursor = null;
         boolean present = false;
         try {
             String sql = "SELECT COUNT(*) FROM channel_User_X WHERE " + MobiComDatabaseHelper.CHANNEL_KEY + "= ? and " + MobiComDatabaseHelper.USERID + "= ?";

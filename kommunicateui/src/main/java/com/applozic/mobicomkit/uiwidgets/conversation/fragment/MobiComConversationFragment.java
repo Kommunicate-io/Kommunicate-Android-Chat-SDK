@@ -29,6 +29,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -3230,6 +3231,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void updateSupportGroupTitleAndImageAndHideSubtitle(Channel channel) {
+        Log.d("Unread","Unread conversations : " + new MessageDatabaseService(getContext()).getUnreadConversationCount());
         toolbarAlphabeticImage.setVisibility(VISIBLE);
         toolbarImageView.setVisibility(GONE);
         if(alCustomizationSettings.isAgentApp() && channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {

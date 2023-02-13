@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
+import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -332,14 +333,11 @@ public class ChannelDatabaseService {
         Cursor cursor = null;
         try {
             SQLiteDatabase database = dbHelper.getReadableDatabase();
-            cursor = database.rawQuery(
-                    "SELECT COUNT(*) FROM channel WHERE channelKey=?", new String[]{String.valueOf(channelKey)});
-            cursor.moveToFirst();
-            return cursor.getInt(0) > 0;
+            String sql = "SELECT COUNT(*) FROM channel WHERE channelKey = ?";
+            SQLiteStatement statement = database.compileStatement(sql);
+            statement.bindString(1,String.valueOf(channelKey));
+            return statement.simpleQueryForLong() > 0;
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
             dbHelper.close();
         }
     }
@@ -358,20 +356,17 @@ public class ChannelDatabaseService {
 
     public boolean isChannelUserPresent(Integer channelKey, String userId) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
-        Cursor cursor = null;
+//        Cursor cursor = null;
         boolean present = false;
         try {
-            cursor = database.rawQuery(
-                    "SELECT COUNT(*) FROM channel_User_X WHERE " + MobiComDatabaseHelper.CHANNEL_KEY + "=? and " + MobiComDatabaseHelper.USERID + "=?",
-                    new String[]{String.valueOf(channelKey), String.valueOf(userId)});
-            cursor.moveToFirst();
-            present = cursor.getInt(0) > 0;
+            String sql = "SELECT COUNT(*) FROM channel_User_X WHERE " + MobiComDatabaseHelper.CHANNEL_KEY + "= ? and " + MobiComDatabaseHelper.USERID + "= ?";
+            SQLiteStatement statement = database.compileStatement(sql);
+            statement.bindString(1,String.valueOf(channelKey));
+            statement.bindString(2,String.valueOf(userId));
+            present = statement.simpleQueryForLong() > 0;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
             dbHelper.close();
         }
         return present;
@@ -465,18 +460,13 @@ public class ChannelDatabaseService {
 
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 Cursor cursor;
-
-                StringBuffer stringBuffer = new StringBuffer();
-
-                stringBuffer.append("SELECT ").append(" * ").
-                        append(" FROM ").append(MobiComDatabaseHelper.CHANNEL).append(" where ").append(MobiComDatabaseHelper.TYPE).append(" NOT IN ('").append(Channel.GroupType.CONTACT_GROUP.getValue()).append("')");
-
-                if (!TextUtils.isEmpty(searchString)) {
-                    stringBuffer.append(" AND " + MobiComDatabaseHelper.CHANNEL_DISPLAY_NAME + " like '%" + searchString.replaceAll("'", "''") + "%'");
+                List<String> selectionArgs = new ArrayList<>();
+                String selection = MobiComDatabaseHelper.TYPE + " NOT IN ('" + Channel.GroupType.CONTACT_GROUP.getValue() + "')";
+                if(!TextUtils.isEmpty(searchString)){
+                    selection += " AND " + MobiComDatabaseHelper.CHANNEL_DISPLAY_NAME + " like ? ";
+                    selectionArgs.add("%" + searchString.replaceAll("'", "''") + "%");
                 }
-                stringBuffer.append(" order by " + MobiComDatabaseHelper.CHANNEL_DISPLAY_NAME + " COLLATE NOCASE asc ");
-                cursor = db.rawQuery(stringBuffer.toString(), null);
-
+                cursor = db.query(MobiComDatabaseHelper.CHANNEL, null, selection, selectionArgs.toArray(new String[0]), null, null, MobiComDatabaseHelper.CHANNEL_DISPLAY_NAME + " COLLATE NOCASE asc ");
                 return cursor;
 
             }
@@ -515,7 +505,7 @@ public class ChannelDatabaseService {
     public String[] getChannelMemberByName(String name, String type) {
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         List<String> userIds = new ArrayList<String>();
-        Cursor cursor = database.rawQuery("Select cu.userId from channel c JOIN channel_User_X cu on c.channelKey = cu.channelKey where c.channelName ='" + name + "' AND c.type ='" + type + "'", null);
+        Cursor cursor = database.query("channel c JOIN channel_User_X cu on c.channelKey = cu.channelKey",new String[]{"cu.userId"},"c.channelName = ? AND c.type = ?",new String[]{name,type},null,null,null);
         try {
             cursor.moveToFirst();
             if (cursor.getCount() > 0) {

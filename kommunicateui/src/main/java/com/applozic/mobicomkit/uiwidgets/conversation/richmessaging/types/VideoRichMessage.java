@@ -24,7 +24,7 @@ public class VideoRichMessage extends KmRichMessage {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         videoTemplateRecycler.setLayoutManager(layoutManager);
-        KmVideoRMAdapter imageAdapter = (KmVideoRMAdapter) KmRichMessageAdapterFactory.getInstance().getRMAdapter(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings), isMessageProcessed);
+        KmVideoRMAdapter imageAdapter = (KmVideoRMAdapter) KmRichMessageAdapterFactory.getInstance().getRMAdapter(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings), isMessageProcessed, alCustomizationSettings);
         videoTemplateRecycler.setAdapter(imageAdapter);
     }
 }

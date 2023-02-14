@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
@@ -72,7 +73,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         if (payloadList != null) {
             final KmRichMessageModel.KmPayloadModel payloadModel = payloadList.get(position);
             WebSettings webSettings = holder.webview.getSettings();
-            webSettings.setJavaScriptEnabled(true);
+            webSettings.setJavaScriptEnabled(new AlCustomizationSettings().isJavaScriptEnabled());
             holder.webview.setWebChromeClient(new WebChromeClient());
 
             holder.webview.getSettings().setPluginState(WebSettings.PluginState.ON);

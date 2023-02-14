@@ -1096,6 +1096,7 @@ public class MessageDatabaseService {
         String statusQuery = status == 2 ? "ch.kmStatus in (1, 2)" : "ch.kmStatus = ? ";
 
         if (status == 1) {
+            List<String> selectionArgs = new ArrayList<>();
             String rowQuery = "SELECT * FROM (" +
                     "select max(createdAt) as maxCreatedAt , m.* from sms m inner join channel ch on m.channelKey = ch.channelKey " +
                     "where m.hidden = 0 " +
@@ -1114,7 +1115,6 @@ public class MessageDatabaseService {
                     ") temp " +
                     (lastFetchTime != null && lastFetchTime > 0 ? " where temp.maxCreatedAt < ?"  : "") +
                     " ORDER BY temp.maxCreatedAt DESC";
-            List<String> selectionArgs = new ArrayList<>();
             selectionArgs.add(String.valueOf(status));
             if(lastFetchTime != null && lastFetchTime > 0) {
                 selectionArgs.add(String.valueOf(lastFetchTime));

@@ -102,7 +102,6 @@ public class KmAutoSuggestionDatabase {
         if (autoSuggestion == null) {
             return false;
         }
-        Cursor cursor = null;
         try {
             SQLiteDatabase database = dbHelper.getReadableDatabase();
             String sql = "SELECT COUNT(*) FROM " + KmDatabaseHelper.AUTO_SUGGESTION_TABLE + " WHERE " + KmDatabaseHelper.ID + " = ?";

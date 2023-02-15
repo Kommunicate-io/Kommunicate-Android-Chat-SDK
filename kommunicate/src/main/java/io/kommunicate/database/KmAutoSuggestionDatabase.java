@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -101,20 +102,16 @@ public class KmAutoSuggestionDatabase {
         if (autoSuggestion == null) {
             return false;
         }
-        Cursor cursor = null;
         try {
             SQLiteDatabase database = dbHelper.getReadableDatabase();
-            cursor = database.rawQuery(
-                    "SELECT COUNT(*) FROM " + KmDatabaseHelper.AUTO_SUGGESTION_TABLE + " WHERE " + KmDatabaseHelper.ID + " = " + autoSuggestion.getId(), null);
-            cursor.moveToFirst();
-            return cursor.getInt(0) > 0;
+            String sql = "SELECT COUNT(*) FROM " + KmDatabaseHelper.AUTO_SUGGESTION_TABLE + " WHERE " + KmDatabaseHelper.ID + " = ?";
+            SQLiteStatement statement = database.compileStatement(sql);
+            statement.bindString(1, String.valueOf(autoSuggestion.getId()));
+            return statement.simpleQueryForLong() > 0;
         } catch (Throwable t) {
             t.printStackTrace();
         } finally {
             dbHelper.close();
-            if (cursor != null) {
-                cursor.close();
-            }
         }
         return false;
     }
@@ -154,10 +151,13 @@ public class KmAutoSuggestionDatabase {
 
         @Override
         protected Cursor onLoadInBackground() {
-            return dbHelper.getReadableDatabase().rawQuery("select * from " + KmDatabaseHelper.AUTO_SUGGESTION_TABLE
-                    + " where " + KmDatabaseHelper.DELETED + " = 0"
-                    + (!TextUtils.isEmpty(typedText) ? (" AND " + KmDatabaseHelper.CATEGORY + " like '%" + typedText.replaceAll("'", "''") + "%'") : "")
-                    + " ORDER BY " + KmDatabaseHelper.CATEGORY + " COLLATE NOCASE asc", null);
+            String selection = KmDatabaseHelper.DELETED + " = 0";
+            List<String> selectionArgs = new ArrayList<>();
+            if(!TextUtils.isEmpty(typedText)) {
+                selection += " AND " + KmDatabaseHelper.CATEGORY + " like ?";
+                selectionArgs.add("%" + typedText.replaceAll("'", "''") + "%");
+            }
+            return dbHelper.getReadableDatabase().query(KmDatabaseHelper.AUTO_SUGGESTION_TABLE, null, selection, selectionArgs.toArray(new String[0]), null, null, KmDatabaseHelper.CATEGORY + " COLLATE NOCASE asc");
         }
     }
 

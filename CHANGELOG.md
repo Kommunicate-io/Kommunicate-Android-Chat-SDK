@@ -6,6 +6,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 ## Unreleased
 1) Added customization for restart conversation button
 2) Removed SQL injection vulnerability from the Android SDK
+3) Restricted Zoom In / out on web view of FaqActivity
 
 
 ## Kommunicate Android SDK 2.6.2

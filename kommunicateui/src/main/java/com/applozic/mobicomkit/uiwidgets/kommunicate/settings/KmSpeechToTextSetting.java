@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -13,7 +12,7 @@ import java.util.Map;
 public class KmSpeechToTextSetting {
     private static KmSpeechToTextSetting kmSpeechToTextSetting;
     private static SharedPreferences sharedPreferences;
-    private static final String S2T_LANGAUGES = "S2T_LANGAUGES";
+    private static final String S2T_LANGUAGES = "S2T_LANGUAGES";
     private static final String ENABLE_MULTIPLE_SPEECH_TO_TEXT = "ENABLE_MULTIPLE_SPEECH_TO_TEXT";
     private static final String SEND_MESSAGE_ON_SPEECH_END = "SEND_MESSAGE_ON_SPEECH_END";
     private static final String SHOW_LANGUAGE_CODE = "SHOW_LANGUAGE_CODE";
@@ -35,13 +34,13 @@ public class KmSpeechToTextSetting {
     public KmSpeechToTextSetting setMultipleLanguage(Map<String, String> languages) {
         if(sharedPreferences != null) {
             String langaugesJson = GsonUtils.getJsonFromObject(languages, Map.class);
-            sharedPreferences.edit().putString(S2T_LANGAUGES, langaugesJson).apply();
+            sharedPreferences.edit().putString(S2T_LANGUAGES, langaugesJson).apply();
         }
         return this;
     }
     public Map<String, String> getMultipleLanguage() {
         if(sharedPreferences != null) {
-            Map<String, String> languages = (Map<String, String>) GsonUtils.getObjectFromJson(sharedPreferences.getString(S2T_LANGAUGES, ""), Map.class);
+            Map<String, String> languages = (Map<String, String>) GsonUtils.getObjectFromJson(sharedPreferences.getString(S2T_LANGUAGES, ""), Map.class);
             return languages;
         }
         return null;

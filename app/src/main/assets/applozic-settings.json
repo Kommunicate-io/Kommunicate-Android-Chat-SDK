@@ -165,4 +165,5 @@
   "innerTimestampDesign": false,
   "oneTimeRating": true,
   "javaScriptEnabled": true
+  "restartConversationButtonVisibility": true
 }

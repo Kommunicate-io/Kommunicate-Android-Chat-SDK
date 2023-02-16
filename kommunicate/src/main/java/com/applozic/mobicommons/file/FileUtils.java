@@ -41,10 +41,13 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
@@ -431,21 +434,65 @@ public class FileUtils {
         return null;
     }
 
+    public static void writeSettingsToFile(Context context, String setting) {
+        try {
+            String fileName = "/" + "kommunicate-settings" + ".json";
+            BufferedWriter bufferedWriter = null;
+            try {
+                File dir = new File(context.getFilesDir().getAbsolutePath());
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                File file = new File(dir, fileName);
+                if (file.exists()) {
+                    file.delete();
+                }
+                file.createNewFile();
+                FileWriter writer = new FileWriter(file, true);
+                bufferedWriter = new BufferedWriter(writer);
+                bufferedWriter.append(setting);
+                bufferedWriter.append("\r\n\n");
+                bufferedWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (bufferedWriter != null) {
+                    bufferedWriter.close();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String loadSettingsJsonFile(Context context) {
         BufferedReader br = null;
         StringBuffer sb = new StringBuffer();
-
+        String line;
         try {
-            br = new BufferedReader(new InputStreamReader(context.getAssets().open(
-                    "applozic-settings.json"), "UTF-8"));
-            String line;
+            if(Arrays.asList(context.getAssets().list("")).contains("kommunicate-settings.json")) {
+                br = new BufferedReader(new InputStreamReader(context.getAssets().open(
+                        "kommunicate-settings.json"), "UTF-8"));
+            } else {
+                br = new BufferedReader(new InputStreamReader(context.getAssets().open(
+                        "applozic-settings.json"), "UTF-8"));
+            }
             if (br != null) {
                 while ((line = br.readLine()) != null) {
                     sb.append(line);
                 }
             }
         } catch (IOException ioe) {
-            return null;
+            File dir = new File(context.getFilesDir().getAbsolutePath());
+            File file = new File(dir, "kommunicate-settings.json");
+            try {
+                br = new BufferedReader(new FileReader(file));
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
         } finally {
             try {

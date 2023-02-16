@@ -786,7 +786,7 @@ public class MessageDatabaseService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT COUNT(DISTINCT (contactNumbers)) FROM sms WHERE read = 0 ", null);
+            cursor = db.query("sms", new String[]{"COUNT(DISTINCT contactNumbers)"},"read = ?", new String[]{"0"},null,null,null);
             cursor.moveToFirst();
             int conversationCount = 0;
             if (cursor.getCount() > 0) {
@@ -808,7 +808,7 @@ public class MessageDatabaseService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT COUNT(1) FROM sms WHERE read = 0 ", null);
+            cursor = db.query("sms", new String[] {"COUNT(1)"}, "read = ?", new String[] {"0"}, null, null, null);
             cursor.moveToFirst();
             int unreadMessageCount = 0;
             if (cursor.getCount() > 0) {
@@ -876,9 +876,7 @@ public class MessageDatabaseService {
         boolean present = false;
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         try {
-            cursor = database.rawQuery(
-                    "SELECT COUNT(*) FROM sms WHERE keyString = ? AND replyMessage = ?",
-                    new String[]{key, String.valueOf(replyMessageType)});
+            cursor = database.query("sms", new String[] {"COUNT(*)"}, "keyString = ? AND replyMessage = ?", new String[] {key, String.valueOf(replyMessageType)}, null, null, null);
             cursor.moveToFirst();
             present = cursor.getInt(0) > 0;
         } catch (Exception e) {
@@ -959,15 +957,20 @@ public class MessageDatabaseService {
                 return new ArrayList<>();
             }
             channelKeysArray.add(String.valueOf(parentGroupKey));
+            String placeHolderString = Utils.makePlaceHolders(channelKeysArray.size());
             String createdAtClause = "";
             String searchCaluse = "";
-            if (createdAt != null && createdAt > 0) {
-                createdAtClause = " and  m.createdAt < " + createdAt;
-            }
 
             if (!TextUtils.isEmpty(searchText)) {
-                searchCaluse += " and (m.message like '%" + searchText.replaceAll("'", "''") + "%' "
-                        + " or c.channelName like '%" + searchText.replaceAll("'", "''") + "%' )";
+                searchCaluse += " and (m.message like ? "
+                        + " or c.channelName like ?)";
+                channelKeysArray.add("%" + searchText.replaceAll("'", "''") + "%");
+                channelKeysArray.add("%" + searchText.replaceAll("'", "''") + "%");
+            }
+
+            if (createdAt != null && createdAt > 0) {
+                createdAtClause += " and  m.createdAt < ?";
+                channelKeysArray.add(String.valueOf(createdAt));
             }
 
             createdAtClause += " and m.deleted = 0 ";
@@ -981,11 +984,6 @@ public class MessageDatabaseService {
             String hiddenType = " and m.messageContentType != " + Message.ContentType.HIDDEN.getValue() + " and m.hidden = 0 and  m.replyMessage != " + Message.ReplyMessage.HIDE_MESSAGE.getValue();
 
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-            String[] toStringArray = new String[channelKeysArray.size()];
-            toStringArray = channelKeysArray.toArray(toStringArray);
-
-            String placeHolderString = Utils.makePlaceHolders(channelKeysArray.size());
 
             String str = "select m1.* from sms m1, (SELECT  " +
                     "        m.channelKey as channelKey1, MAX(createdAt) as createdAt1" +
@@ -1001,7 +999,7 @@ public class MessageDatabaseService {
                     + " order by m1.createdAt desc";
 
 
-            final Cursor cursor = db.rawQuery(str, channelKeysArray.toArray(toStringArray));
+            final Cursor cursor = db.rawQuery(str, channelKeysArray.toArray(new String[0]));
             try {
                 return getMessageList(cursor);
             } finally {
@@ -1033,18 +1031,10 @@ public class MessageDatabaseService {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
             if (!TextUtils.isEmpty(searchText)) {
-                String searchQuery = "select * from sms where deleted = 0 and messageContentType not in (10,11,102,103) and replyMessage not in (2) and type not in (6,7) and hidden = 0 and message like +'%" + searchText.replaceAll("'", "''") + "%' order by createdAt DESC";
-                cursor = db.rawQuery(searchQuery, null);
+                cursor = db.query("sms", null, "deleted = 0 AND messageContentType NOT IN (10,11,102,103) AND replyMessage NOT IN (2) AND type NOT IN (6,7) AND hidden = 0 AND message like ?", new String[]{"%" + searchText.replaceAll("'", "''") + "%"}, null, null, "createdAt DESC");
             } else {
-                String createdAtClause = "";
-                if (createdAt != null && createdAt > 0) {
-                    createdAtClause = " and m1.createdAt < " + createdAt;
-                }
-                createdAtClause += " and m1.deleted = 0 ";
-
                 String messageTypeClause = "";
                 String messageTypeJoinClause = "";
-                String searchCaluse = "";
                 String categoryClause = " left join channel ch on ch.channelKey = m1.channelKey ";
 
                 MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(context);
@@ -1053,10 +1043,6 @@ public class MessageDatabaseService {
                 if (!userPreferences.isDisplayCallRecordEnable()) {
                     messageTypeClause = " and m1.type != " + Message.MessageType.CALL_INCOMING.getValue() + " and m1.type != " + Message.MessageType.CALL_OUTGOING.getValue();
                     messageTypeJoinClause = " and m1.type = m2.type";
-                }
-
-                if (!TextUtils.isEmpty(searchText)) {
-                    searchCaluse += " and m1.message like '%" + searchText.replaceAll("'", "''") + "%' ";
                 }
 
                 String hiddenType = " and m1.messageContentType not in (" + Message.ContentType.HIDDEN.getValue()
@@ -1070,17 +1056,32 @@ public class MessageDatabaseService {
                 }
 
                 rowQuery = rowQuery + "where m2.createdAt is null ";
+                List<String> selectionArgs = new ArrayList<>();
 
                 if (!TextUtils.isEmpty(categoryName)) {
-                    rowQuery = rowQuery + "and ch.AL_CATEGORY = '" + categoryName + "'";
+                    rowQuery = rowQuery + "and ch.AL_CATEGORY = ?";
+                    selectionArgs.add(categoryName);
                 }
 
                 if (skipDeletedGroups) {
                     rowQuery = rowQuery + " and ch.deletedAtTime is null";
                 }
 
+                String createdAtClause = "";
+                if (createdAt != null && createdAt > 0) {
+                    createdAtClause = " and m1.createdAt < ? ";
+                    selectionArgs.add(String.valueOf(createdAt));
+                }
+                createdAtClause += " and m1.deleted = 0 ";
+
+                String searchCaluse = "";
+                if (!TextUtils.isEmpty(searchText)) {
+                    searchCaluse += " and m1.message like ? ";
+                    selectionArgs.add("%" + searchText.replaceAll("'", "''") + "%");
+                }
+
                 rowQuery = rowQuery + createdAtClause + searchCaluse + hiddenType + messageTypeClause + " order by m1.createdAt desc";
-                cursor = db.rawQuery(rowQuery, null);
+                cursor = db.rawQuery(rowQuery, selectionArgs.toArray(new String[0]));
             }
 
             List<Message> messageList = getLatestMessageList(cursor);
@@ -1092,9 +1093,10 @@ public class MessageDatabaseService {
     public List<Message> getAlConversationList(int status, Long lastFetchTime) {
         Cursor cursor = null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String statusQuery = status == 2 ? "ch.kmStatus in (1, 2)" : "ch.kmStatus = " + status;
+        String statusQuery = status == 2 ? "ch.kmStatus in (1, 2)" : "ch.kmStatus = ? ";
 
         if (status == 1) {
+            List<String> selectionArgs = new ArrayList<>();
             String rowQuery = "SELECT * FROM (" +
                     "select max(createdAt) as maxCreatedAt , m.* from sms m inner join channel ch on m.channelKey = ch.channelKey " +
                     "where m.hidden = 0 " +
@@ -1111,23 +1113,31 @@ public class MessageDatabaseService {
                     "AND m.type not in (6, 7) AND m.channelKey = 0 " +
                     "group by m.contactNumbers " +
                     ") temp " +
-                    (lastFetchTime != null && lastFetchTime > 0 ? " where temp.maxCreatedAt < " + lastFetchTime : "") +
+                    (lastFetchTime != null && lastFetchTime > 0 ? " where temp.maxCreatedAt < ?"  : "") +
                     " ORDER BY temp.maxCreatedAt DESC";
-
-            cursor = db.rawQuery(rowQuery, null);
+            selectionArgs.add(String.valueOf(status));
+            if(lastFetchTime != null && lastFetchTime > 0) {
+                selectionArgs.add(String.valueOf(lastFetchTime));
+            }
+            cursor = db.rawQuery(rowQuery, selectionArgs.toArray(new String[0]));
         } else {
-            String rowQuery = "select max(createdAt) , m.* from sms m inner join channel ch on m.channelKey = ch.channelKey " +
-                    "where m.hidden = 0 " +
-                    "AND m.deleted = 0 " +
-                    "AND m.messageContentType not in (11,102) " +
-                    "AND m.type not in (6, 7) " +
-                    "AND ch.type = 10 " +
-                    "AND ch.deletedAtTime is NULL " +
-                    "AND " + statusQuery +
-                    (lastFetchTime != null && lastFetchTime > 0 ? " AND m.createdAt < " + lastFetchTime : "") +
-                    " group by m.channelKey order by createdAt desc";
 
-            cursor = db.rawQuery(rowQuery, null);
+            List<String> selectionArgs = new ArrayList<>();
+            String selection = "m.hidden = 0 AND m.deleted = 0 AND m.messageContentType not in (11,102) AND m.type not in (6, 7) AND ch.type = 10 AND ch.deletedAtTime is NULL AND";
+            if(status == 2){
+                selection += " ch.kmStatus in (1, 2)";
+            }
+            else {
+                selection += " ch.kmStatus = ?";
+                selectionArgs.add(String.valueOf(status));
+            }
+
+            if(lastFetchTime != null && lastFetchTime > 0){
+                selection += " AND m.createdAt < ?";
+                selectionArgs.add(String.valueOf(lastFetchTime));
+            }
+
+            cursor = db.query("sms m inner join channel ch on m.channelKey = ch.channelKey", new String[]{"max(createdAt) , m."}, selection, selectionArgs.toArray(new String[0]), "m.channelKey", null, "createdAt desc");
         }
 
         List<Message> messageList = getLatestMessageList(cursor);
@@ -1137,27 +1147,23 @@ public class MessageDatabaseService {
 
 
     public int getTotalUnreadCountForSupportGroup(int status) {
-        Cursor cursor = null;
         int count = 0;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         try {
-            String statusQuery = status == 2 ? "kmStatus in (1, 2)" : "kmStatus = " + status;
-            String rowQuery = "select sum(" + MobiComDatabaseHelper.UNREAD_COUNT + ") from channel where " + statusQuery;
+            String statusQuery = status == 2 ? "kmStatus in (1, 2)" : "kmStatus = ?";
+            String sql = "select sum(" + MobiComDatabaseHelper.UNREAD_COUNT + ") from channel where " + statusQuery;
 
-            cursor = db.rawQuery(rowQuery, null);
-            cursor.moveToFirst();
-
-            if (cursor.getCount() > 0) {
-                count = cursor.getInt(0);
+            SQLiteStatement statement = db.compileStatement(sql);
+            if (status != 2){
+                statement.bindString(1, String.valueOf(status));
             }
+            long records = statement.simpleQueryForLong();
+            count = (int)records;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             dbHelper.close();
-            if (cursor != null) {
-                cursor.close();
-            }
         }
         return count;
     }
@@ -1319,21 +1325,18 @@ public class MessageDatabaseService {
         if (contactId == null && (groupId == null || groupId == 0)) {
             return new ArrayList<>();
         }
-
-        String query = "SELECT * FROM " + MobiComDatabaseHelper.SMS_TABLE_NAME + " WHERE ";
-        String params = "";
-
+        String selection = "";
+        List<String> selectionArgs = new ArrayList<>();
         if (groupId != null && groupId != 0) {
-            params = MobiComDatabaseHelper.CHANNEL_KEY + " = " + groupId + " AND";
+            selection = MobiComDatabaseHelper.CHANNEL_KEY + " = ? AND ";
+            selectionArgs.add(String.valueOf(groupId));
         } else if (contactId != null) {
-            params = "contactNumbers = '" + contactId + "' AND";
+            selection = "contactNumbers = ? AND ";
+            selectionArgs.add(contactId);
         }
-
-        String selectionArgs = (downloadedOnly ? " filePaths" : " blobKeyString") + " IS NOT NULL ORDER BY createdAt DESC";
-
+        selection += (downloadedOnly ? " filePaths" : " blobKeyString") + " IS NOT NULL";
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query + params + selectionArgs, null);
-
+        Cursor cursor = db.query(MobiComDatabaseHelper.SMS_TABLE_NAME, null, selection, selectionArgs.toArray(new String[0]), null, null, "createdAt DESC");
         return getMessageList(cursor);
 
     }

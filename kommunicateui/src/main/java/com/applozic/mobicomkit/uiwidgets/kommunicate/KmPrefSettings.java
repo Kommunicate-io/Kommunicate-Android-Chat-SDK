@@ -15,7 +15,6 @@ public class KmPrefSettings {
     private static final String ENABLE_TEXT_TO_SPEECH = "ENABLE_TEXT_TO_SPEECH";
     private static final String SEND_MESSAGE_ON_SPEECH_END = "SEND_MESSAGE_ON_SPEECH_END";
     private static final String SPEECH_TO_TEXT_LANGUAGE = "SPEECH_TO_TEXT_LANGUAGE";
-    private static final String SPEECH_TO_TEXT_LANGUAGES = "SPEECH_TO_TEXT_LANGUAGES";
     private static final String TEXT_TO_SPEECH_LANGUAGE = "TEXT_TO_SPEECH_LANGUAGE";
 
     private KmPrefSettings(Context context) {

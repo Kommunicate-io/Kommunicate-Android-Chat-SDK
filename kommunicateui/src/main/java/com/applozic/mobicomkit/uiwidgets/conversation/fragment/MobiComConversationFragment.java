@@ -686,15 +686,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         messageEditText = (EditText) individualMessageSendLayout.findViewById(R.id.conversation_message);
 
         languageChangeButton = individualMessageSendLayout.findViewById(R.id.language_change_button);
-        if(KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled()) {
+        if (KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled()) {
             languageChangeButton.setVisibility(VISIBLE);
             languageChangeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(KmSpeechToTextSetting.getInstance(getContext()).getMultipleLanguage() != null) {
+                    if (KmSpeechToTextSetting.getInstance(getContext()).getMultipleLanguage() != null) {
                         new KmLanguageSlideView(KmSpeechToTextSetting.getInstance(getContext()).getMultipleLanguage()).show(getChildFragmentManager(), KmLanguageSlideView.getFragTag());
                     }
-                    }
+                }
             });
         }
         if (KmUtils.isAgent(getContext())) {

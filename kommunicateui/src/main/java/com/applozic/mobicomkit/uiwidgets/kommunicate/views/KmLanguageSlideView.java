@@ -22,7 +22,13 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.kommunicate.KmSettings;
-
+/**
+ * This UI class is for switching between multiple languages
+ * It can only be used if multiple languages are set by end-user from @KmSpeechToTextSetting
+ *
+ * @author Aman
+ * @date February '23
+ */
 public class KmLanguageSlideView extends BottomSheetDialogFragment implements KmClickHandler<String> {
     private static final String TAG = "KmLanguageSlideView";
     private KmLanguageSelectionAdapter kmLanguageSelectionAdapter;

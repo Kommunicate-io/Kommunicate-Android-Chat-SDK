@@ -245,7 +245,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             return;
         }
         boolean postBackToBotPlatform = KmRMActionModel.SubmitButton.KM_POST_DATA_TO_BOT_PLATFORM.equals(submitButtonModel.getRequestType());
-        Map<String, String> metadata = handleMetaData(postBackToBotPlatform, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, submitButtonModel.getFormData());
+        Map<String, String> metadata = handleMetaData(postBackToBotPlatform, getStringMap(submitButtonModel.getReplyMetadata()), dataMap, getStringMap(submitButtonModel.getMetadata()));
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
 
         if (submitButtonModel.getPostBackToKommunicate() != null && submitButtonModel.getPostBackToKommunicate().equalsIgnoreCase("true")) {
@@ -384,10 +384,13 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         }
     }
 
-    private Map<String, String> handleMetaData(boolean postBackToBotPlatform, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> formData) {
+    private Map<String, String> handleMetaData(boolean postBackToBotPlatform, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, Map<String, String> messageMetadata) {
         Map<String, String> metadata = new HashMap<>();
         if (replyMetadata != null) {
             metadata.putAll(replyMetadata);
+        }
+        if(messageMetadata != null) {
+            metadata.putAll(messageMetadata);
         }
         if (formSelectedData != null && postBackToBotPlatform) {
             Map<String, String> formDataMap = new HashMap<>();

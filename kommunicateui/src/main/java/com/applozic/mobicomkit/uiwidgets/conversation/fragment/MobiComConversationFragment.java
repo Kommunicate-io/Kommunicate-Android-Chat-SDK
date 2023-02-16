@@ -3244,7 +3244,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void updateSupportGroupTitleAndImageAndHideSubtitle(Channel channel) {
         toolbarAlphabeticImage.setVisibility(VISIBLE);
         toolbarImageView.setVisibility(GONE);
-        if (channel != null && channel.getConversationAssignee() != null) {
+        if(alCustomizationSettings.isAgentApp() && channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
+            KmViewHelper.loadImage(getContext(), toolbarImageView, toolbarAlphabeticImage, channel.getImageUrl(), R.drawable.km_ic_contact_picture_holo_light);
+        }
+        else if (!alCustomizationSettings.isAgentApp() && channel != null && channel.getConversationAssignee() != null) {
             Contact withUserContact = appContactService.getContactById(channel.getConversationAssignee());
 
             KmViewHelper.loadContactImage(getContext(), toolbarImageView, toolbarAlphabeticImage, withUserContact, R.drawable.km_ic_contact_picture_holo_light);
@@ -4433,6 +4436,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (channel != null && !channel.isDeleted()) {
             if (display) {
                 kmFeedbackView.setVisibility(VISIBLE);
+                TextView restartConversationTextQuestion = kmFeedbackView.findViewById(R.id.idTextQuestion);
+                TextView textViewRestartConversation = kmFeedbackView.findViewById(R.id.idFeedbackRestartConversation);
+                if(!alCustomizationSettings.isRestartConversationButtonVisibility()){
+                    textViewRestartConversation.setVisibility(View.INVISIBLE);
+                    textViewRestartConversation.setPadding(0, 0, 0, 0);
+                    restartConversationTextQuestion.setVisibility(View.INVISIBLE);
+                    restartConversationTextQuestion.setPadding(0, 0, 0, 0);
+                }
                 individualMessageSendLayout.setVisibility(View.GONE);
                 mainDivider.setVisibility(View.GONE);
 

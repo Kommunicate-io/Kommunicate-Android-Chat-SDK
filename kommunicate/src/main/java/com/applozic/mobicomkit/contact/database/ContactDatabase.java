@@ -144,10 +144,8 @@ public class ContactDatabase {
             if (TextUtils.isEmpty(id)) {
                 return null;
             }
-            String queryForLoaded = "SELECT c.userId AS _id,c.fullName,c.contactNO,c.displayName,c.contactImageURL,c.contactImageLocalURI,c.email,c.applicationId,c.connected,c.lastSeenAt,c.unreadCount,c.blocked,c.blockedBy,c.status,c.contactType,c.userTypeId,c.deletedAtTime,c.notificationAfterTime,c.userRoleType,c.lastMessagedAt,c.userMetadata FROM contact c WHERE userId = ?";
-
             SQLiteDatabase database = dbHelper.getReadableDatabase();
-            cursor = database.rawQuery(queryForLoaded, new String[]{id});
+            cursor = database.query("contact c", new String[]{"c.userId AS _id,c.fullName,c.contactNO,c.displayName,c.contactImageURL,c.contactImageLocalURI,c.email,c.applicationId,c.connected,c.lastSeenAt,c.unreadCount,c.blocked,c.blockedBy,c.status,c.contactType,c.userTypeId,c.deletedAtTime,c.notificationAfterTime,c.userRoleType,c.lastMessagedAt,c.userMetadata"}, "userId = ?", new String[]{id}, null, null, null);
             if (cursor != null) {
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -460,51 +458,62 @@ public class ContactDatabase {
 
                 String query = null;
                 if (parentGroupKey != null && parentGroupKey != 0) {
-                    query = "Select DISTINCT(c.userId) as _id,c.fullName,c.contactNO,c.displayName,c.contactImageURL,c.contactImageLocalURI,c.email,c.applicationId,c.connected,c.lastSeenAt,c.unreadCount,c.blocked,c.blockedBy,c.status,c.contactType,c.userTypeId,c.deletedAtTime,c.notificationAfterTime,c.userRoleType,c.lastMessagedAt,c.userMetadata from contact c join channel_User_X cux on cux.userId = c.userId where ( cux.channelKey = '" + parentGroupKey + "' OR cux.parentGroupKey = '" + parentGroupKey + "' ) AND c.userId NOT IN ('" + userPreferences.getUserId().replaceAll("'", "''") + "')";
+                    List<String> selectionArgs = new ArrayList<>();
+                    String selection = "( cux.channelKey = ? OR cux.parentGroupKey = ? ) AND c.userId NOT IN (?)";
+                    selectionArgs.add(String.valueOf(parentGroupKey));
+                    selectionArgs.add(String.valueOf(parentGroupKey));
+                    selectionArgs.add(userPreferences.getUserId().replaceAll("'", "''"));
                     if (!TextUtils.isEmpty(searchString)) {
-                        query = query + " AND c.fullName like '%" + searchString.replaceAll("'", "''") + "%'";
+                        selection += " AND c.fullName like ? ";
+                        selectionArgs.add("%" + searchString.replaceAll("'", "''") + "%");
                     } else { //if searching, then no need ignore pinned contact
                         if(!TextUtils.isEmpty(pinnedContactUserId)) {
-                            query = query + " AND c.userId NOT IN ('" + pinnedContactUserId.replaceAll("'", "''") + "')";
+                            selection += " AND c.userId NOT IN (?)";
+                            selectionArgs.add(pinnedContactUserId.replaceAll("'", "''"));
                         }
                     }
-                    query = query + " order by c.fullName,c.userId asc ";
-                    cursor = db.rawQuery(query, null);
+
+                    cursor = db.query("contact c join channel_User_X cux on cux.userId = c.userId", new String[]{"DISTINCT(c.userId) as _id,c.fullName,c.contactNO,c.displayName,c.contactImageURL,c.contactImageLocalURI,c.email,c.applicationId,c.connected,c.lastSeenAt,c.unreadCount,c.blocked,c.blockedBy,c.status,c.contactType,c.userTypeId,c.deletedAtTime,c.notificationAfterTime,c.userRoleType,c.lastMessagedAt,c.userMetadata"}, selection, selectionArgs.toArray(new String[0]), null, null, "c.fullName,c.userId asc");
+
                 } else {
-                    query = "select userId as _id, fullName, contactNO, " +
-                            "displayName,contactImageURL,contactImageLocalURI,email," +
-                            "applicationId,connected,lastSeenAt,unreadCount,blocked," +
-                            "blockedBy,status,contactType,userTypeId,deletedAtTime,notificationAfterTime,userRoleType,userMetadata,lastMessagedAt from " + CONTACT + " where deletedAtTime=0 ";
-
                     if (userIdArray != null && userIdArray.length > 0) {
-                        String placeHolderString = Utils.makePlaceHolders(userIdArray.length);
+                        String selection = "deletedAtTime=0";
+                        List<String> selectionArgs = new ArrayList<>();
                         if (!TextUtils.isEmpty(searchString)) {
-                            query = query + " and fullName like '%" + searchString.replaceAll("'", "''") + "%' and  userId  IN (" + placeHolderString + ")";
+                            selection += " and fullName like ? and  userId  IN (?)";
+                            selectionArgs.add("%" + searchString.replaceAll("'", "''") + "%");
                         } else {
-                            query = query + " and userId IN (" + placeHolderString + ")";
+                            selection += " and userId IN (?)";
                         }
-                        query = query + " order by connected desc,lastSeenAt desc ";
-
-                        cursor = db.rawQuery(query, userIdArray);
+                        selectionArgs.add(Utils.makePlaceHolders(userIdArray.length));
+                        cursor = db.query(CONTACT, new String[]{"userId as _id, fullName, contactNO, displayName,contactImageURL,contactImageLocalURI,email,applicationId,connected,lastSeenAt,unreadCount,blocked,blockedBy,status,contactType,userTypeId,deletedAtTime,notificationAfterTime,userRoleType,userMetadata,lastMessagedAt"},selection, selectionArgs.toArray(new String[0]), null, null, "connected desc,lastSeenAt desc");
                     } else {
+                        String selection = "deletedAtTime=0";
+                        List<String> selectionArgs = new ArrayList<>();
                         if (ApplozicClient.getInstance(context).isShowMyContacts()) {
                             if (!TextUtils.isEmpty(searchString)) {
-                                query = query + " and fullName like '%" + searchString.replaceAll("'", "''") + "%' AND contactType != 0 AND userId NOT IN ('" + userPreferences.getUserId().replaceAll("'", "''") + "')";
+                                selection += " and fullName like ? AND contactType != 0 AND userId NOT IN (?)";
+                                selectionArgs.add("%" + searchString.replaceAll("'", "''") + "%");
+                                selectionArgs.add(userPreferences.getUserId().replaceAll("'", "''"));
                             } else {
-                                query = query + " and contactType != 0 AND userId != '" + userPreferences.getUserId() + "'";
+                                selection += " and contactType != 0 AND userId != ?";
+                                selectionArgs.add(userPreferences.getUserId());
                             }
                         } else {
                             if (!TextUtils.isEmpty(searchString)) {
-                                query = query + " and fullName like '%" + searchString.replaceAll("'", "''") + "%' AND userId NOT IN ('" + userPreferences.getUserId().replaceAll("'", "''") + "')";
+                                selection += " and fullName like ? AND userId NOT IN ?";
+                                selectionArgs.add("%" + searchString.replaceAll("'", "''") + "%");
+                                selectionArgs.add(userPreferences.getUserId().replaceAll("'", "''"));
                             } else {
-                                query = query + " and userId != '" + userPreferences.getUserId() + "'";
+                                selection += " and userId != ?";
+                                selectionArgs.add(userPreferences.getUserId());
                             }
                         }
                         if(TextUtils.isEmpty(searchString) && !TextUtils.isEmpty(pinnedContactUserId)) { //ignore pinned contact only if search input is empty
-                            query = query + " AND userId NOT IN ('" + pinnedContactUserId.replaceAll("'", "''") + "')";
+                            selection += " AND userId NOT IN (?)";
+                            selectionArgs.add(pinnedContactUserId.replaceAll("'", "''"));
                         }
-                        query = query + " order by fullName COLLATE NOCASE,userId COLLATE NOCASE asc ";
-                        cursor = db.rawQuery(query, null);
+                        cursor = db.query(CONTACT, new String[]{"userId as _id, fullName, contactNO, displayName,contactImageURL,contactImageLocalURI,email,applicationId,connected,lastSeenAt,unreadCount,blocked,blockedBy,status,contactType,userTypeId,deletedAtTime,notificationAfterTime,userRoleType,userMetadata,lastMessagedAt"}, selection, selectionArgs.toArray(new String[0]), null, null, "fullName COLLATE NOCASE,userId COLLATE NOCASE asc");
                     }
 
                 }
@@ -517,15 +526,14 @@ public class ContactDatabase {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT COUNT(*) FROM contact where  " + MobiComDatabaseHelper.CONTACT_NO + " = ?  AND " + MobiComDatabaseHelper.DEVICE_CONTACT_TYPE + " = ? ", new String[]{contactNumber, String.valueOf(contactType.getValue())});
-            cursor.moveToFirst();
-            return cursor.getInt(0) > 0;
+            String sql = "SELECT COUNT(*) FROM contact where  " + MobiComDatabaseHelper.CONTACT_NO + " = ?  AND " + MobiComDatabaseHelper.DEVICE_CONTACT_TYPE + " = ? ";
+            SQLiteStatement statement = db.compileStatement(sql);
+            statement.bindString(1,contactNumber);
+            statement.bindString(2,String.valueOf(contactType.getValue()));
+            return statement.simpleQueryForLong() > 0;
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
             dbHelper.close();
         }
         return false;

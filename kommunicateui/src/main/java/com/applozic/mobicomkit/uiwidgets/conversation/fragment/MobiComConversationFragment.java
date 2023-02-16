@@ -4433,6 +4433,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (channel != null && !channel.isDeleted()) {
             if (display) {
                 kmFeedbackView.setVisibility(VISIBLE);
+                TextView restartConversationTextQuestion = kmFeedbackView.findViewById(R.id.idTextQuestion);
+                TextView textViewRestartConversation = kmFeedbackView.findViewById(R.id.idFeedbackRestartConversation);
+                if(!alCustomizationSettings.isRestartConversationButtonVisibility()){
+                    textViewRestartConversation.setVisibility(View.INVISIBLE);
+                    textViewRestartConversation.setPadding(0, 0, 0, 0);
+                    restartConversationTextQuestion.setVisibility(View.INVISIBLE);
+                    restartConversationTextQuestion.setPadding(0, 0, 0, 0);
+                }
                 individualMessageSendLayout.setVisibility(View.GONE);
                 mainDivider.setVisibility(View.GONE);
 

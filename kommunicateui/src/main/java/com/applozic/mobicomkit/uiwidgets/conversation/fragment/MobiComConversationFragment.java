@@ -59,6 +59,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -1597,6 +1598,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         this.menu = menu;
+        if(menu instanceof MenuBuilder){
+            MenuBuilder menuBuilder = (MenuBuilder) menu;
+            menuBuilder.setOptionalIconsVisible(true);
+        }
 
         if (contact != null && contact.isDeleted()) {
             menu.findItem(R.id.dial).setVisible(false);
@@ -1679,6 +1684,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         menu.findItem(R.id.unmuteGroup).setVisible(false);
         menu.findItem(R.id.deleteConversation).setVisible(false);
         menu.findItem(R.id.logout).setVisible(alCustomizationSettings.isLogoutOptionFromConversation());
+        menu.findItem(R.id.rate_conversation).setVisible(alCustomizationSettings.isRatingFromConversationEnabled());
     }
 
     @Override
@@ -1753,6 +1759,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else if (contact != null) {
                 unMuteUserChat();
             }
+        }
+        if(id == R.id.rate_conversation) {
+            openFeedbackFragment();
         }
         return false;
     }

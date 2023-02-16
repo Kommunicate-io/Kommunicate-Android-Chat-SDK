@@ -230,6 +230,7 @@
     <string name="submit_your_rating">Submit your rating</string>
     <string name="rating_average">Average</string>
     <string name="rate_the_conversation">Rate the conversation</string>
+    <string name="rate_this_conversation">Rate this conversation</string>
     <string name="rating_poor">Poor</string>
     <string name="feedback_update_failed">"Error occurred. Feedback update failed."</string>
     <string name="mandatory_fields">"Mandatory fields required."</string>

@@ -99,8 +99,15 @@
         mobicomkit:showAsAction="collapseActionView" />
 
     <item
+        android:id="@+id/rate_conversation"
+        android:icon="@drawable/star"
+        android:title="@string/rate_this_conversation"
+        android:visible="false"
+        mobicomkit:showAsAction="collapseActionView">
+    </item>
+
+    <item
         android:id="@+id/logout"
-        android:icon="@drawable/km_ic_action_time"
         android:orderInCategory="11"
         android:showAsAction="collapseActionView"
         android:title="@string/logout"

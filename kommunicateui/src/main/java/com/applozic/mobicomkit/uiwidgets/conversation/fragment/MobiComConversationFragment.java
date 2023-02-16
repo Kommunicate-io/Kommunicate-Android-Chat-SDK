@@ -143,10 +143,12 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionAc
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.animators.OnBasketAnimationEndListener;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmToolbarClickListener;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAwayView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmLanguageSlideView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView;
@@ -174,8 +176,6 @@ import com.applozic.mobicommons.people.channel.ChannelUserMapper;
 import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -213,7 +213,6 @@ import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmFeedback;
-import io.kommunicate.services.KmChannelService;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
 import io.kommunicate.utils.KmAppSettingPreferences;
@@ -250,6 +249,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected Channel channel;
     protected Integer currentConversationId;
     protected EditText messageEditText;
+    protected ImageButton languageChangeButton;
     protected KmRecordButton recordButton;
     protected ImageButton sendButton;
     protected ImageButton attachButton;
@@ -409,7 +409,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
-        isSpeechToTextEnabled = alCustomizationSettings.getSpeechToText().isEnabled() || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled();
+        isSpeechToTextEnabled = alCustomizationSettings.getSpeechToText().isEnabled() || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled() || KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled();
         isTextToSpeechEnabled = alCustomizationSettings.getTextToSpeech().isEnabled() || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
         isSendOnSpeechEnd = alCustomizationSettings.getSpeechToText().isSendMessageOnSpeechEnd() || KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
         botMessageDelayInterval = KmAppSettingPreferences.getInstance().getKmBotMessageDelayInterval();
@@ -685,6 +685,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         sendType = (Spinner) extendedSendingOptionLayout.findViewById(R.id.sendTypeSpinner);
         messageEditText = (EditText) individualMessageSendLayout.findViewById(R.id.conversation_message);
 
+        languageChangeButton = individualMessageSendLayout.findViewById(R.id.language_change_button);
+        if(KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled()) {
+            languageChangeButton.setVisibility(VISIBLE);
+            languageChangeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(KmSpeechToTextSetting.getInstance(getContext()).getMultipleLanguage() != null) {
+                        new KmLanguageSlideView(KmSpeechToTextSetting.getInstance(getContext()).getMultipleLanguage()).show(getChildFragmentManager(), KmLanguageSlideView.getFragTag());
+                    }
+                    }
+            });
+        }
         if (KmUtils.isAgent(getContext())) {
             kmAutoSuggestionRecycler = list.findViewById(R.id.kmAutoSuggestionRecycler);
             kmAutoSuggestionRecycler.setmMaxHeight(240);

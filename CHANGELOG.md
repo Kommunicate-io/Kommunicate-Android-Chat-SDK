@@ -3,8 +3,15 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-[Unreleased]
-1) Added support to set multiple Speech To Text language
+## Unreleased
+1) Added customization for restart conversation button
+2) Removed SQL injection vulnerability from the Android SDK
+3) Added support to set multiple Speech To Text language
+
+
+## Kommunicate Android SDK 2.6.2
+1) Fixed agent app toolbar showing conversation assignee image instead of end user image
+2) Fixed notification for agents
 
 ## Kommunicate Android SDK 2.6.0
 1) Added support to send platform flag for analytics

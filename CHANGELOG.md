@@ -5,6 +5,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 
 ## Unreleased
 1) Removed SQL injection vulnerability from the Android SDK
+2) Added option to rate conversation anytime from the conversation menu
 
 ## Kommunicate Android SDK 2.6.2
 1) Fixed agent app toolbar showing conversation assignee image instead of end user image

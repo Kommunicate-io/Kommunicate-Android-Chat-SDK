@@ -165,6 +165,6 @@
   "innerTimestampDesign": false,
   "oneTimeRating": true,
   "rateConversationMenuOption" : true,
-  "javaScriptEnabled": true
+  "javaScriptEnabled": true,
   "restartConversationButtonVisibility": true
 }

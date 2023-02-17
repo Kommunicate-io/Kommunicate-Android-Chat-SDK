@@ -142,6 +142,7 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isRateConversationMenuOption() {
         return rateConversationMenuOption;
+    }
         
     public boolean isRestartConversationButtonVisibility() {
         return restartConversationButtonVisibility;
@@ -149,6 +150,7 @@ public class AlCustomizationSettings extends JsonMarker {
     
     public boolean isJavaScriptEnabled() {
         return javaScriptEnabled;
+    }
 
     public Boolean getInnerTimestampDesign() {
         return innerTimestampDesign;

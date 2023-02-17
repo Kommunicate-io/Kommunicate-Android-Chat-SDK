@@ -288,4 +288,6 @@
     <string name="invalid_regex_error">Invalid validation regex</string>
     <string name="ask_for_email">How may we reach you?</string>
     <string name="invalid_email">Enter a valid email</string>
+    <string name="select_language">Select a language</string>
+    <string name="changed_language_to">Changed language to %1$s</string>
 </resources>

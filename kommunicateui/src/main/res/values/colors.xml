@@ -76,4 +76,13 @@
     <color name="km_take_over_from_bot_text_color">#635f5f</color>
     <color name="km_take_over_from_bot_name_color">#3e3c3c</color>
 
+    <!--Language Selection colors-->
+    <color name="km_language_bottom_fragment_background_color">#ffffff</color>
+    <color name="km_language_heading_text_color">#000000</color>
+    <color name="km_language_name_text_color">#29292a</color>
+    <color name="km_language_code_text_color">#949498</color>
+    <color name="km_language_selected_background_color">#686464</color>
+    <color name="km_language_selected_name_text_color">#ffffff</color>
+    <color name="km_language_selected_code_text_color">#ffffff</color>
+    <color name="km_language_divider_color">#E7EAF2</color>
 </resources>

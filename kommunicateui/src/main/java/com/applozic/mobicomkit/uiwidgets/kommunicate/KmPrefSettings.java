@@ -113,7 +113,5 @@ public class KmPrefSettings {
         }
         return this;
     }
-
-
 }
 

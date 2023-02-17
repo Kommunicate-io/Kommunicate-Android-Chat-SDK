@@ -380,7 +380,21 @@
                                 android:scaleType="center"
                                 android:src="@drawable/km_ic_action_attachment"
                                 android:visibility="gone" />
-
+                            <ImageButton
+                                android:id="@+id/language_change_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom|start"
+                                android:background="@color/applozic_transparent_color"
+                                android:gravity="center"
+                                android:minHeight="48dp"
+                                android:paddingStart="10dp"
+                                android:paddingLeft="10dp"
+                                android:paddingEnd="5dp"
+                                android:paddingRight="5dp"
+                                android:scaleType="center"
+                                android:src="@drawable/km_language_change"
+                                android:visibility="gone" />
                             <ImageButton
                                 android:id="@+id/attach_button"
                                 android:layout_width="wrap_content"
@@ -426,6 +440,7 @@
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
                                 android:layout_marginTop="16dp"
+                                android:layout_toEndOf="@+id/language_change_button"
                                 android:layout_toStartOf="@+id/conversation_send"
                                 android:layout_toLeftOf="@+id/conversation_send"
                                 android:background="@color/applozic_transparent_color"

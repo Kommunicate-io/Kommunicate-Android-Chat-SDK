@@ -138,13 +138,17 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean oneTimeRating;
     private boolean restartConversationButtonVisibility = true;
     private boolean rateConversationMenuOption;
+    private boolean javaScriptEnabled;
 
     public boolean isRateConversationMenuOption() {
         return rateConversationMenuOption;
-
+        
     public boolean isRestartConversationButtonVisibility() {
         return restartConversationButtonVisibility;
     }
+    
+    public boolean isJavaScriptEnabled() {
+        return javaScriptEnabled;
 
     public Boolean getInnerTimestampDesign() {
         return innerTimestampDesign;

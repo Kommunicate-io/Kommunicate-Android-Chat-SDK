@@ -136,11 +136,15 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean restrictMessageTypingWithBots = false;
     private Map<String, Boolean> hidePostCTA;
     private boolean oneTimeRating;
-    private boolean restartConversationButtonVisibility = true;
-
+    private boolean javaScriptEnabled;
+    private boolean restartConversationButtonVisibility;
+    
     public boolean isRestartConversationButtonVisibility() {
         return restartConversationButtonVisibility;
     }
+    
+    public boolean isJavaScriptEnabled() {
+        return javaScriptEnabled;
 
     public Boolean getInnerTimestampDesign() {
         return innerTimestampDesign;

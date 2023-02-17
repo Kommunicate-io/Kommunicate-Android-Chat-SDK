@@ -33,13 +33,13 @@ public class KmRichMessageAdapterFactory {
         return RMFactoryHelper.INSTANCE;
     }
 
-    public KmRichMessageAdapter getRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed) {
+    public KmRichMessageAdapter getRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed, AlCustomizationSettings alCustomizationSettings) {
         if (model.getTemplateId() == KmRichMessageFactory.CARD_RICH_MESSAGE) {
             return new KmCardRMAdapter(context, model, listener, message, themeHelper, isMessageProcessed);
         } else if (model.getTemplateId() == KmRichMessageFactory.BUTTON_RICH_MESSAGE || model.getTemplateId() == KmRichMessageFactory.REPLY_RICH_MESSAGE || model.getTemplateId() == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
             return new KmButtonRMAdapter(context, model, listener, message, themeHelper);
         } else if (model.getTemplateId() == KmRichMessageFactory.VIDEO_RICH_MESSAGE) {
-            return new KmVideoRMAdapter(context, model, listener, message, themeHelper, isMessageProcessed);
+            return new KmVideoRMAdapter(context, model, listener, message, themeHelper, isMessageProcessed, alCustomizationSettings);
         } else {
             return null;
         }

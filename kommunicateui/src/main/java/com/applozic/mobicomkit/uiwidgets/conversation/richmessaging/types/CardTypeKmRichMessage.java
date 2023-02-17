@@ -24,7 +24,7 @@ public class CardTypeKmRichMessage extends KmRichMessage {
         super.createRichMessage(isMessageProcessed);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         genericCardRecycler.setLayoutManager(layoutManager);
-        KmCardRMAdapter adapter = (KmCardRMAdapter) KmRichMessageAdapterFactory.getInstance().getRMAdapter(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings), isMessageProcessed);
+        KmCardRMAdapter adapter = (KmCardRMAdapter) KmRichMessageAdapterFactory.getInstance().getRMAdapter(context, model, listener, message, KmThemeHelper.getInstance(context, alCustomizationSettings), isMessageProcessed, alCustomizationSettings);
         genericCardRecycler.setAdapter(adapter);
     }
 }

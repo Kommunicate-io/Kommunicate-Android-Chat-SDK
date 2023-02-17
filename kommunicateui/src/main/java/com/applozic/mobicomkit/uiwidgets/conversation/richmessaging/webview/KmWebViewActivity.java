@@ -159,7 +159,7 @@ public class KmWebViewActivity extends AppCompatActivity {
 
     public void loadUrl(String url) {
         if (!TextUtils.isEmpty(url)) {
-            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setJavaScriptEnabled(alCustomizationSettings.isJavaScriptEnabled());
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
             webView.setWebViewClient(new WebViewClient() {
@@ -216,7 +216,7 @@ public class KmWebViewActivity extends AppCompatActivity {
         webView.getSettings().setDomStorageEnabled(true);
         webView.clearHistory();
         webView.clearCache(true);
-        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setJavaScriptEnabled(alCustomizationSettings.isJavaScriptEnabled());
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setUseWideViewPort(false);
         webView.getSettings().setLoadWithOverviewMode(false);

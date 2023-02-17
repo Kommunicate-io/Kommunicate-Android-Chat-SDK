@@ -9,6 +9,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 3) Added support to set multiple Speech To Text language
 4) Added option to enable/disable JavaScript in WebView
 5) Restricted Zoom In / out on web view of FaqActivity
+6) Added option to rate conversation anytime from the conversation menu
 
 
 ## Kommunicate Android SDK 2.6.2

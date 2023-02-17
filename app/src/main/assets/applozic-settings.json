@@ -164,6 +164,7 @@
   "receiverNameTextColor": "#5C6677",
   "innerTimestampDesign": false,
   "oneTimeRating": true,
-  "javaScriptEnabled": true
+  "rateConversationMenuOption" : true,
+  "javaScriptEnabled": true,
   "restartConversationButtonVisibility": true
 }

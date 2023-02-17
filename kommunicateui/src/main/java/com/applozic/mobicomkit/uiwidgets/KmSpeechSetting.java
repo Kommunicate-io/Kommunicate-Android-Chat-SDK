@@ -7,7 +7,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicommons.json.JsonMarker;
 
 public class KmSpeechSetting extends JsonMarker {
-    private boolean enabled = false;
+    private boolean enabled;
     private String languageCode;
     private boolean sendMessageOnSpeechEnd = false;
 

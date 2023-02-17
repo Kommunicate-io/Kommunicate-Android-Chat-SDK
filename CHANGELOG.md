@@ -6,8 +6,11 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 ## Unreleased
 1) Added customization for restart conversation button
 2) Removed SQL injection vulnerability from the Android SDK
-3) Added option to enable/disable JavaScript in WebView
-4) Added option to rate conversation anytime from the conversation menu
+3) Added support to set multiple Speech To Text language
+4) Added option to enable/disable JavaScript in WebView
+5) Restricted Zoom In / out on web view of FaqActivity
+6) Added option to rate conversation anytime from the conversation menu
+
 
 ## Kommunicate Android SDK 2.6.2
 1) Fixed agent app toolbar showing conversation assignee image instead of end user image

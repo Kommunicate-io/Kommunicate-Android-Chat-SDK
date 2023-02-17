@@ -82,6 +82,8 @@ public class KmWebViewActivity extends AppCompatActivity {
 
                 if (!TextUtils.isEmpty(helpCenterUrl)) {
                     loadUrl(helpCenterUrl);
+                    webView.getSettings().setBuiltInZoomControls(false);
+                    webView.getSettings().setDisplayZoomControls(false);
                 } else if (isLinkType) {
                     String linkUrl = alWebViewBundle.getString(KmRichMessage.LINK_URL);
                     if (linkUrl != null && !TextUtils.isEmpty(linkUrl)) {

@@ -7,6 +7,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 1) Added customization for restart conversation button
 2) Removed SQL injection vulnerability from the Android SDK
 3) Added support to set multiple Speech To Text language
+4) Added option to enable/disable JavaScript in WebView
 
 
 ## Kommunicate Android SDK 2.6.2

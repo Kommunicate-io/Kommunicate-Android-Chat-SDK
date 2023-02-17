@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
@@ -39,10 +40,12 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
 
     private List<KmRichMessageModel.KmPayloadModel> payloadList;
     double currentPos, totalDuration;
+    private AlCustomizationSettings alCustomizationSettings;
 
 
-    KmVideoRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed) {
+    KmVideoRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed, AlCustomizationSettings alCustomizationSettings) {
         super(context, model, listener, message, themeHelper);
+        this.alCustomizationSettings = alCustomizationSettings;
         if (model.getPayload() != null) {
             this.payloadList = Arrays.asList((KmRichMessageModel.KmPayloadModel[])
                     GsonUtils.getObjectFromJson(model.getPayload(), KmRichMessageModel.KmPayloadModel[].class));
@@ -72,7 +75,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         if (payloadList != null) {
             final KmRichMessageModel.KmPayloadModel payloadModel = payloadList.get(position);
             WebSettings webSettings = holder.webview.getSettings();
-            webSettings.setJavaScriptEnabled(true);
+            webSettings.setJavaScriptEnabled(alCustomizationSettings.isJavaScriptEnabled());
             holder.webview.setWebChromeClient(new WebChromeClient());
 
             holder.webview.getSettings().setPluginState(WebSettings.PluginState.ON);

@@ -54,6 +54,8 @@ public class KmRMActionModel<T> extends JsonMarker {
         private String requestType;
         private String postFormDataAsMessage;
         private String postBackToKommunicate;
+        private Map<String, Object> metadata;
+        private Map<String, Object> replyMetadata;
 
         public String getPostBackToKommunicate() {
             return postBackToKommunicate;
@@ -66,7 +68,6 @@ public class KmRMActionModel<T> extends JsonMarker {
             this.postFormDataAsMessage = postFormDataAsMessage;
         }
 
-        private Map<String, Object> replyMetadata;
 
         public String getMessage() {
             return message;
@@ -106,6 +107,13 @@ public class KmRMActionModel<T> extends JsonMarker {
 
         public void setReplyMetadata(Map<String, Object> replyMetadata) {
             this.replyMetadata = replyMetadata;
+        }
+        public Map<String, Object> getMetadata() {
+            return metadata;
+        }
+
+        public void setMetadata(Map<String, Object> metadata) {
+            this.metadata = metadata;
         }
     }
 }

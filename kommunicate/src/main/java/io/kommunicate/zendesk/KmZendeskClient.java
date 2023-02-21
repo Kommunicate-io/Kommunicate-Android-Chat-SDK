@@ -129,6 +129,7 @@ public class KmZendeskClient {
     public void authenticateZendeskUser(final Contact contact) {
         if(TextUtils.isEmpty(contact.getDisplayName()) || TextUtils.isEmpty(contact.getUserId()) || TextUtils.isEmpty(contact.getEmailId())) {
             observeZendeskConnection();
+            Utils.printLog(context, TAG, "Zendesk User not authenticated, either displayName or EmailID is missing");
             return;
         }
                     try {
@@ -142,7 +143,6 @@ public class KmZendeskClient {
                                             try {
                                                 new KmZendeskClientService(context).getJwtForZendeskAuthentication(contact.getUserId(), contact.getDisplayName(),contact.getEmailId(), jwtCompletion);
                                             } catch (Exception e) {
-
                                                 e.printStackTrace();
                                             }
                                         }
@@ -366,7 +366,7 @@ private void processAgentLeave() {
 
                         @Override
                         public void onFailure(Object error) {
-                            Utils.printLog(context, TAG, "Failed to launched Zendesk conversation Id:");
+                            Utils.printLog(context, TAG, "Failed to launch existing Zendesk conversation");
                         }
                     });
                     return;
@@ -388,7 +388,17 @@ private void processAgentLeave() {
 
                 @Override
                 public void onFailure(Object error) {
-                    Utils.printLog(context, TAG, "Failed to launch Zendesk conversation : " + error.toString());
+                    KmConversationHelper.launchConversationIfLoggedIn(context, new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            Utils.printLog(context, TAG, "Successfully launched new conversation Id:" + String.valueOf(message));
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            Utils.printLog(context, TAG, "Failed to launch Zendesk conversation");
+                        }
+                    });
                 }
             });
         } catch (KmException e) {

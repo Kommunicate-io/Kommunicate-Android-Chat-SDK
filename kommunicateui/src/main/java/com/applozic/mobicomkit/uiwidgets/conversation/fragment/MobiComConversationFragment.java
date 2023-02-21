@@ -572,7 +572,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     KmConversationHelper.launchConversationIfLoggedIn(getContext(), new KmCallback() {
                         @Override
                         public void onSuccess(Object message) {
-                            conversationUIService.openConversationFragment(ChannelService.getInstance(getContext()).getChannel((Integer) message), (Integer) message,  null, null, null);
+                            setFeedbackDisplay(false);
+                            Utils.printLog(getContext(), TAG, "Successfully started a new Zendesk chat : " + (Integer) message);
                         }
 
                         @Override

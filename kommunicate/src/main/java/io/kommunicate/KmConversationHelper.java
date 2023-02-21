@@ -377,7 +377,7 @@ public class KmConversationHelper {
                 conversationBuilder.skipConversationRoutingRules(true);
             }
             try {
-                startConversation(true, conversationBuilder,
+                startConversation(TextUtils.isEmpty(KmAppSettingPreferences.getInstance().getZendeskSdkKey()), conversationBuilder,
                         getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null, callback));
             } catch (KmException e) {
                 if (callback != null) {
@@ -395,7 +395,7 @@ public class KmConversationHelper {
             }
             return;
         }
-        if(KmAppSettingPreferences.getInstance().getZendeskSdkKey() != null) {
+        if(!TextUtils.isEmpty(KmAppSettingPreferences.getInstance().getZendeskSdkKey())) {
             if (conversationBuilder.getConversationInfo() != null) {
                 conversationBuilder.getConversationInfo().put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
             } else {

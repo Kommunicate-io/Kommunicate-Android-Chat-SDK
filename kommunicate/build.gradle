@@ -19,7 +19,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
-        versionName "2.5.5-zendesk"
+        versionName "2.6.0-zendesk"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }

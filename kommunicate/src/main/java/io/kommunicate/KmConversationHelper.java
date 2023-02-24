@@ -729,6 +729,7 @@ public class KmConversationHelper {
                     List<String> agents = new ArrayList<>();
                     agents.add(kmAppSettings.getResponse().getAgentId());
                     conversationBuilder.setAgentIds(agents);
+                    conversationBuilder.setSingleConversation(TextUtils.isEmpty(KmAppSettingPreferences.getInstance().getZendeskSdkKey()));
                     if (useSingleThreadedSettingFromServer) {
                         conversationBuilder.setSingleConversation(kmAppSettings.getChatWidget().isSingleThreaded());
                     }

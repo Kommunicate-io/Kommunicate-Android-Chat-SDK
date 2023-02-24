@@ -35,6 +35,7 @@ import zendesk.chat.Attachment;
 import zendesk.chat.Chat;
 import zendesk.chat.ChatLog;
 import zendesk.chat.ChatParticipant;
+import zendesk.chat.ChatSessionStatus;
 import zendesk.chat.ChatState;
 import zendesk.chat.CompletionCallback;
 import zendesk.chat.ConnectionStatus;
@@ -177,11 +178,14 @@ public class KmZendeskClient {
                 if(contact == null) {
                     return;
                 }
+                if(chatState.getChatSessionStatus().equals(ChatSessionStatus.ENDED)) {
+                    Utils.printLog(context, TAG, "Zendesk Chat ended");
+                    processAgentLeave();
+                }
                 for (ChatLog log : chatState.getChatLogs()) {
                     if(lastSyncTime != null && lastSyncTime >= log.getCreatedTimestamp()) {
                         continue;
                     }
-
                     if(log instanceof ChatLog.Message && ChatParticipant.AGENT.equals(log.getChatParticipant())) {
                         Utils.printLog(context, TAG, "Zendesk Agent message : " + ((ChatLog.Message) log).getMessage() + "from :" + log.getDisplayName());
                         processAgentMessage(((ChatLog.Message) log).getMessage(), log.getDisplayName(), log.getNick(), channel.getKey(), log.getCreatedTimestamp());

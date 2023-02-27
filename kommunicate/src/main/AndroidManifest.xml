@@ -29,34 +29,34 @@
             tools:node="merge" />
 
         <service
-            android:name="com.applozic.mobicomkit.api.conversation.MessageIntentService"
+            android:name="io.kommunicate.data.conversation.MessageIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name="com.applozic.mobicomkit.api.conversation.ApplozicIntentService"
+            android:name="io.kommunicate.data.conversation.KmIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name="com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService"
+            android:name="io.kommunicate.data.conversation.KmMqttIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name="com.applozic.mobicomkit.api.people.UserIntentService"
+            android:name="io.kommunicate.data.services.UserIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
 
         <service
-            android:name="com.applozic.mobicomkit.api.conversation.ConversationIntentService"
+            android:name="io.kommunicate.data.conversation.ConversationIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
 
         <receiver
-            android:name="com.applozic.mobicomkit.broadcast.TimeChangeBroadcastReceiver"
+            android:name="io.kommunicate.broadcast.TimeChangeBroadcastReceiver"
             android:exported="true"
             tools:node="merge">
             <intent-filter>
@@ -66,7 +66,7 @@
         </receiver>
 
         <receiver
-            android:name="com.applozic.mobicomkit.broadcast.ConnectivityReceiver"
+            android:name="io.kommunicate.broadcast.ConnectivityReceiver"
             android:enabled="true"
             android:exported="true"
             tools:node="merge">
@@ -85,15 +85,15 @@
             android:value="${applicationId}" />
 
         <meta-data
-            android:name="com.applozic.server.url"
+            android:name="io.kommunicate.chat.server.url"
             android:value="https://chat.kommunicate.io" />
 
         <meta-data
-            android:name="com.applozic.mqtt.server.url"
+            android:name="io.kommunicate.mqtt.server.url"
             android:value="tcp://socket.applozic.com:8080" />
 
         <meta-data
-            android:name="com.applozic.mobicomkit.notification.tone"
+            android:name="io.kommunicate.mobicomkit.notification.tone"
             android:value="eventually" /> <!-- Replace this with a valid resource name for Notification Tone -->
 
 

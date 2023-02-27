@@ -1,13 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
 import android.content.Intent;
-import android.view.View;
 
-import com.applozic.mobicomkit.api.conversation.Message;
+import io.kommunicate.data.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
-
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
 
 /**
  * Created by User on 23-05-2015.

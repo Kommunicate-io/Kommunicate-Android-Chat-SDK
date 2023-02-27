@@ -5,8 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.channel.service.ChannelService;
+import io.kommunicate.data.api.MobiComKitConstants;
+import io.kommunicate.data.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 
 /**

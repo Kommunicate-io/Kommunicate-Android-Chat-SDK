@@ -9,7 +9,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.utils.Utils;
 
 /**
  * Created by ashish on 29/01/18.

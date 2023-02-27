@@ -2,7 +2,7 @@ package io.kommunicate.callbacks;
 
 import android.content.Context;
 
-import io.kommunicate.KmConversationResponse;
+import io.kommunicate.models.KmConversationResponse;
 
 /**
  * Created by ashish on 08/03/18.

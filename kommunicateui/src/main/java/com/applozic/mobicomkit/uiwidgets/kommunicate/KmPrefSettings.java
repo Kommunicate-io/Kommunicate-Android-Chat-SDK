@@ -3,8 +3,8 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicommons.ApplozicService;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.KommunicateService;
 
 public class KmPrefSettings {
 
@@ -23,7 +23,7 @@ public class KmPrefSettings {
 
     public static KmPrefSettings getInstance(Context context) {
         if (kmPrefSettings == null) {
-            kmPrefSettings = new KmPrefSettings(ApplozicService.getContext(context));
+            kmPrefSettings = new KmPrefSettings(KommunicateService.getContext(context));
         } else {
             sharedPreferences = context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         }

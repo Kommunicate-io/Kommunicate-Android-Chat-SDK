@@ -1,17 +1,17 @@
 package io.kommunicate.models;
 
-import com.applozic.mobicommons.json.JsonMarker;
-
 import java.util.List;
+
+import io.kommunicate.data.json.JsonMarker;
 
 /**
  * Created by ashish on 03/04/18.
  */
 
 public class KmApiResponse<T> extends JsonMarker {
+    public static final String KM_AUTO_SUGGESSTION_SUCCESS_RESPONSE = "GOT_ALL_SUGGESTIONS_BY_APPLICATION_ID";
     private String code;
     private T data;
-    public static final String KM_AUTO_SUGGESSTION_SUCCESS_RESPONSE = "GOT_ALL_SUGGESTIONS_BY_APPLICATION_ID";
 
     public String getCode() {
         return code;

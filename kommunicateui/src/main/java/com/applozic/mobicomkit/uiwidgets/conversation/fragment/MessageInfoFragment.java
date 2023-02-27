@@ -28,28 +28,28 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.attachment.AttachmentView;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.api.attachment.FileMeta;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.MessageInfo;
-import com.applozic.mobicomkit.api.conversation.MessageInfoResponse;
-import com.applozic.mobicomkit.api.conversation.MessageIntentService;
-import com.applozic.mobicomkit.api.conversation.MobiComMessageService;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.contact.MobiComVCFParser;
-import com.applozic.mobicomkit.contact.VCFContactData;
+import io.kommunicate.KmChat;
+import io.kommunicate.data.api.attachment.AttachmentView;
+import io.kommunicate.data.api.attachment.FileClientService;
+import io.kommunicate.data.api.attachment.FileMeta;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.data.conversation.MessageInfo;
+import io.kommunicate.data.conversation.MessageInfoResponse;
+import io.kommunicate.data.conversation.MessageIntentService;
+import io.kommunicate.data.conversation.MobiComMessageService;
+import io.kommunicate.data.contact.AppContactService;
+import io.kommunicate.data.contact.BaseContactService;
+import io.kommunicate.data.contact.MobiComVCFParser;
+import io.kommunicate.data.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.LocationUtils;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.commons.image.ImageLoader;
-import com.applozic.mobicommons.commons.image.ImageUtils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.utils.LocationUtils;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.utils.image.ImageLoader;
+import io.kommunicate.utils.image.ImageUtils;
+import io.kommunicate.data.json.GsonUtils;
+import io.kommunicate.data.people.contact.Contact;
 
 import java.util.List;
 
@@ -76,7 +76,7 @@ public class MessageInfoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        geoApiKey = Applozic.getInstance(getContext()).getGeoApiKey();
+        geoApiKey = KmChat.getInstance(getContext()).getGeoApiKey();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

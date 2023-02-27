@@ -3,9 +3,9 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.KommunicateService;
+import io.kommunicate.data.json.GsonUtils;
 
 import java.util.Map;
 
@@ -24,7 +24,7 @@ public class KmSpeechToTextSetting {
 
     public static KmSpeechToTextSetting getInstance(Context context) {
         if (kmSpeechToTextSetting == null) {
-            kmSpeechToTextSetting = new KmSpeechToTextSetting(ApplozicService.getContext(context));
+            kmSpeechToTextSetting = new KmSpeechToTextSetting(KommunicateService.getContext(context));
         } else {
             sharedPreferences = context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         }

@@ -8,7 +8,7 @@ import android.text.Spannable;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.utils.Utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

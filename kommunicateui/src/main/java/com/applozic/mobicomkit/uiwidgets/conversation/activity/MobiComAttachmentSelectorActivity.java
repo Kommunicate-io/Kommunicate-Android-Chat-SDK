@@ -20,10 +20,10 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.data.api.attachment.FileClientService;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -33,9 +33,9 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.file.FileUtils;
+import io.kommunicate.data.json.GsonUtils;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -20,19 +20,19 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
+import io.kommunicate.KmChat;
+import io.kommunicate.data.account.register.RegistrationResponse;
+import io.kommunicate.data.api.attachment.FileClientService;
+import io.kommunicate.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.commons.image.ImageLoader;
-import com.applozic.mobicommons.commons.image.ImageUtils;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.utils.image.ImageLoader;
+import io.kommunicate.utils.image.ImageUtils;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
 import io.kommunicate.Kommunicate;
-import io.kommunicate.async.KmAppSettingTask;
+import io.kommunicate.data.async.KmAppSettingTask;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAppSettingModel;
@@ -165,7 +165,7 @@ public class KmChatWidget {
 
     private void configureWidgetFromDashboard() {
         fetchingSettings = true;
-        new KmAppSettingTask(mContext, Applozic.getInstance(mContext).getApplicationKey(), new KmCallback() {
+        new KmAppSettingTask(mContext, KmChat.getInstance(mContext).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 fetchingSettings = false;
@@ -244,7 +244,7 @@ public class KmChatWidget {
             return;
         }
         isShowing = false;
-        Applozic.disconnectPublish(mContext);
+        KmChat.disconnectPublish(mContext);
         mWindowManager.removeViewImmediate(rootView);
     }
 

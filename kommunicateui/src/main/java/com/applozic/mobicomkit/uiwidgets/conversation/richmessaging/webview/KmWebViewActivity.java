@@ -20,8 +20,8 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.data.file.FileUtils;
+import io.kommunicate.data.json.GsonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

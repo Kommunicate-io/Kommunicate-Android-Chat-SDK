@@ -4,25 +4,22 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.feed.GroupInfoUpdate;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.kommunicate.async.KmAssigneeUpdateTask;
-import io.kommunicate.async.KmConversationInfoTask;
-import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
-import io.kommunicate.preference.KmDefaultSettingPreference;
-import io.kommunicate.utils.KmAppSettingPreferences;
+import io.kommunicate.data.async.KmAssigneeUpdateTask;
+import io.kommunicate.data.async.KmConversationInfoTask;
+import io.kommunicate.data.async.KmUpdateConversationTask;
+import io.kommunicate.data.json.GsonUtils;
+import io.kommunicate.data.people.channel.Channel;
+import io.kommunicate.data.preference.KmDefaultSettingPreference;
+import io.kommunicate.models.feed.GroupInfoUpdate;
+import io.kommunicate.utils.Utils;
 
 public class KmSettings {
 
@@ -44,8 +41,8 @@ public class KmSettings {
             return;
         }
 
-        //getting the message metadata already in the applozic preferences
-        String existingMetaDataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        //getting the message metadata already in the kmChat preferences
+        String existingMetaDataString = KommunicateClient.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
 
         if (TextUtils.isEmpty(existingMetaDataString)) { //case 1: no existing metadata
@@ -66,7 +63,7 @@ public class KmSettings {
         }
 
         existingMetadata.put(KM_CHAT_CONTEXT, messageMetaDataString);
-        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+        KommunicateClient.getInstance(context).setMessageMetaData(existingMetadata);
     }
 
     public static void updateUserLanguage(Context context, String languageCode) {
@@ -76,7 +73,7 @@ public class KmSettings {
     }
 
     public static void updateMessageMetadata(Context context, Map<String, String> metadata) {
-        String existingMetadataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        String existingMetadataString = KommunicateClient.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
         if (TextUtils.isEmpty(existingMetadataString)) {
             existingMetadata = new HashMap<>();
@@ -85,7 +82,7 @@ public class KmSettings {
         }
 
         existingMetadata.putAll(metadata);
-        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+        KommunicateClient.getInstance(context).setMessageMetaData(existingMetadata);
     }
 
     public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, KmUpdateConversationTask.KmConversationUpdateListener listener) {

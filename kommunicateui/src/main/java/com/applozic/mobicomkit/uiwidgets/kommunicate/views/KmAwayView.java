@@ -8,13 +8,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserService;
-import com.applozic.mobicomkit.listners.AlCallback;
+import io.kommunicate.data.account.user.User;
+import io.kommunicate.data.account.user.UserService;
+import io.kommunicate.callbacks.AlCallback;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.people.channel.Channel;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.people.channel.Channel;
 
 import androidx.annotation.Nullable;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;

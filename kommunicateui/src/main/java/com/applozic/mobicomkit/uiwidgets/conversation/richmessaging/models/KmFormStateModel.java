@@ -4,7 +4,7 @@ import android.util.SparseArray;
 import android.util.SparseIntArray;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.data.json.JsonMarker;
 
 import java.util.HashSet;
 import java.util.Map;

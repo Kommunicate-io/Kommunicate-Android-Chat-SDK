@@ -13,9 +13,6 @@ import java.util.Date;
  */
 public class KmFeedback {
 
-    public KmFeedback() {
-    }
-
     private int groupId;
     private int id;
     private String comments[];
@@ -24,6 +21,8 @@ public class KmFeedback {
     private String createdAt;
     private String updatedAt;
     private String deleteAt;
+    public KmFeedback() {
+    }
 
     public int getGroupId() {
         return groupId;
@@ -69,6 +68,10 @@ public class KmFeedback {
         return updatedAt;
     }
 
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public boolean isLatestFeedbackSubmitted(long messageTimeStamp) {
         try {
             Calendar calendar = Calendar.getInstance();
@@ -80,10 +83,6 @@ public class KmFeedback {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     public String getDeleteAt() {

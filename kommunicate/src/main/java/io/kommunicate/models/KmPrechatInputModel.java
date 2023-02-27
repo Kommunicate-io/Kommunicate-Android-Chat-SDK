@@ -2,9 +2,9 @@ package io.kommunicate.models;
 
 import android.text.InputType;
 
-import com.applozic.mobicommons.json.JsonMarker;
-
 import java.util.List;
+
+import io.kommunicate.data.json.JsonMarker;
 
 public class KmPrechatInputModel extends JsonMarker {
     public static final String KM_PRECHAT_MODEL_LIST = "preChatModelList";

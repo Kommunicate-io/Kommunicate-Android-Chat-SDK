@@ -2,7 +2,6 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +13,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applozic.mobicomkit.api.conversation.Message;
+import io.kommunicate.data.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types.ButtonKmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.data.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
 import java.util.Arrays;

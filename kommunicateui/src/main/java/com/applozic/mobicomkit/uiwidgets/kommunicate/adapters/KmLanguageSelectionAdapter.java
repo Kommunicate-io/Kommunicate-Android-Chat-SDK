@@ -14,7 +14,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmClickHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.utils.Utils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

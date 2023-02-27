@@ -12,7 +12,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmLanguageSelectionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmClickHandler;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.Map;

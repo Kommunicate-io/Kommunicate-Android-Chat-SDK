@@ -2,7 +2,7 @@ package com.applozic.mobicomkit.uiwidgets;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFontModel;
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.data.json.JsonMarker;
 
 import java.util.Map;
 

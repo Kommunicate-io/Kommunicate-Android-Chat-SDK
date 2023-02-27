@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
@@ -24,9 +24,9 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.KommunicateService;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -36,7 +36,7 @@ import java.util.Map;
 
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
-import io.kommunicate.async.KmPostDataAsyncTask;
+import io.kommunicate.data.async.KmPostDataAsyncTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAutoSuggestionModel;
 
@@ -148,7 +148,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
     private void updateLanguage(String languageCode) {
         if (!TextUtils.isEmpty(languageCode)) {
-            KmSettings.updateUserLanguage(ApplozicService.getAppContext(), languageCode);
+            KmSettings.updateUserLanguage(KommunicateService.getAppContext(), languageCode);
         }
     }
 

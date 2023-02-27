@@ -7,16 +7,16 @@ import android.os.AsyncTask;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.api.conversation.Message;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.data.api.attachment.FileClientService;
+import io.kommunicate.data.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.FileTaskAsync;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.file.FileUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -146,7 +146,7 @@ public class KmAttachmentsController {
     }
 
     /**
-     * do a few checks and write the uri to a file(in the applozic folder)
+     * do a few checks and write the uri to a file(in the kmChat folder)
      *
      * @param selectedFileUri         the uri to process
      * @param alCustomizationSettings the customization settings

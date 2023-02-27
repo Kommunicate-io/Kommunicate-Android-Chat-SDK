@@ -1,15 +1,16 @@
 package io.kommunicate.models;
 
-import com.applozic.mobicommons.json.JsonMarker;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import io.kommunicate.data.json.JsonMarker;
+
 public class KmAppSettingModel extends JsonMarker {
-    private String code;
-    private KmResponse response;
     public static final String SUCCESS = "SUCCESS";
     public static final String PRE_CHAT_GREETINGS = "PRE_CHAT_GREETINGS";
+    private String code;
+    private KmResponse response;
 
     public String getCode() {
         return code;
@@ -103,12 +104,12 @@ public class KmAppSettingModel extends JsonMarker {
             return collectFeedback;
         }
 
-        public boolean isHidePostCTA() {
-            return hidePostCTA;
-        }
-
         public void setCollectFeedback(boolean collectFeedback) {
             this.collectFeedback = collectFeedback;
+        }
+
+        public boolean isHidePostCTA() {
+            return hidePostCTA;
         }
 
         public KmChatWidget getChatWidget() {
@@ -130,15 +131,20 @@ public class KmAppSettingModel extends JsonMarker {
         private long sessionTimeout;
         private int botMessageDelayInterval;
         private boolean pseudonymsEnabled;
+        @SerializedName("isSingleThreaded")
+        private boolean singleThreaded;
+        private String preChatGreetingMsg;
 
         public String getPosition() {
             return position;
         }
 
-        public boolean isPseudonymsEnabled() {return pseudonymsEnabled;}
+        public void setPosition(String position) {
+            this.position = position;
+        }
 
-        public void setWidgetImageLink(String widgetImageLink) {
-            this.widgetImageLink = widgetImageLink;
+        public boolean isPseudonymsEnabled() {
+            return pseudonymsEnabled;
         }
 
         public String getIconIndex() {
@@ -153,17 +159,9 @@ public class KmAppSettingModel extends JsonMarker {
             return widgetImageLink;
         }
 
-        public void setPosition(String position) {
-            this.position = position;
+        public void setWidgetImageLink(String widgetImageLink) {
+            this.widgetImageLink = widgetImageLink;
         }
-
-
-
-
-
-        @SerializedName("isSingleThreaded")
-        private boolean singleThreaded;
-        private String preChatGreetingMsg;
 
         public String getPreChatGreetingMsg() {
             return preChatGreetingMsg;

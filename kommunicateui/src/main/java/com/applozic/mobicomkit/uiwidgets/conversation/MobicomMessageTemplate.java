@@ -1,8 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.data.json.JsonMarker;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**

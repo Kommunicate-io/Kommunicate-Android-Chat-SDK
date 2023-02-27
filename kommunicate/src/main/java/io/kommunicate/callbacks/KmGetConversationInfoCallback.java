@@ -2,7 +2,7 @@ package io.kommunicate.callbacks;
 
 import android.content.Context;
 
-import com.applozic.mobicommons.people.channel.Channel;
+import io.kommunicate.data.people.channel.Channel;
 
 public interface KmGetConversationInfoCallback {
     void onSuccess(Channel channel, Context context);

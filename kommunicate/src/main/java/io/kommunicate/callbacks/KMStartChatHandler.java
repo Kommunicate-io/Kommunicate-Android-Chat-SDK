@@ -2,8 +2,8 @@ package io.kommunicate.callbacks;
 
 import android.content.Context;
 
-import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-import com.applozic.mobicommons.people.channel.Channel;
+import io.kommunicate.data.people.channel.Channel;
+import io.kommunicate.models.feed.ChannelFeedApiResponse;
 
 /**
  * Created by ashish on 23/01/18.

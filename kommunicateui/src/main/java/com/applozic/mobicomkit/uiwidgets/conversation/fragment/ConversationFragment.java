@@ -14,19 +14,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.api.conversation.MessageIntentService;
-import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
-import com.applozic.mobicomkit.api.conversation.SyncCallService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
-import com.applozic.mobicomkit.channel.service.ChannelService;
+import io.kommunicate.data.conversation.MessageIntentService;
+import io.kommunicate.data.conversation.MobiComConversationService;
+import io.kommunicate.data.conversation.SyncCallService;
+import io.kommunicate.broadcast.AlEventManager;
+import io.kommunicate.data.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.LocationUtils;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.people.SearchListFragment;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.utils.LocationUtils;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.people.SearchListFragment;
+import io.kommunicate.data.people.channel.Channel;
+import io.kommunicate.data.people.contact.Contact;
 
 import io.kommunicate.utils.KmConstants;
 

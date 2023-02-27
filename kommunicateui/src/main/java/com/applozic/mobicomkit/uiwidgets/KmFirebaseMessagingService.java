@@ -1,6 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets;
 
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.utils.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 

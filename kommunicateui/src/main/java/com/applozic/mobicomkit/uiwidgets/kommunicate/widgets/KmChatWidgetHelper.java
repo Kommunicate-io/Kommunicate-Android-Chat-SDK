@@ -3,11 +3,11 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.widgets;
 
 import android.content.Context;
 
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.listners.ApplozicUIListener;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.data.conversation.database.MessageDatabaseService;
+import io.kommunicate.callbacks.KommunicateUIListener;
 
-public class KmChatWidgetHelper implements ApplozicUIListener {
+public class KmChatWidgetHelper implements KommunicateUIListener {
     private KmChatWidget kmChatWidget;
     private MessageDatabaseService messageDatabaseService;
 

@@ -15,9 +15,9 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.applozic.mobicomkit.broadcast.AlEventManager;
+import io.kommunicate.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.lang.annotation.Retention;

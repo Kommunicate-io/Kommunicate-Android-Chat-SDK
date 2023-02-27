@@ -1,6 +1,6 @@
 package io.kommunicate.models;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.data.json.JsonMarker;
 
 public class KmAutoSuggestionModel extends JsonMarker {
     private String name;

@@ -25,6 +25,6 @@ public class KmConstants {
     public static final int STATUS_OFFLINE = 0;
     public static final int STATUS_CONNECTED = 1;
     public static final Long MESSAGE_CLUBBING_TIME_FRAME = 300000L;
-    public static final String NOTIFICATION_TONE = "com.applozic.mobicomkit.notification.tone";
+    public static final String NOTIFICATION_TONE = "io.kommunicate.mobicomkit.notification.tone";
     public static final String CLOSE_CONVERSATION_SCREEN = "CLOSE_CONVERSATION_SCREEN";
 }

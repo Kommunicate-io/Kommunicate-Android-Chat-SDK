@@ -3,9 +3,6 @@ package io.kommunicate.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import androidx.core.content.ContextCompat;
-import io.kommunicate.KmSettings;
-
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -20,32 +17,31 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.core.content.ContextCompat;
+import io.kommunicate.KommunicateClient;
+import io.kommunicate.KommunicateService;
+import io.kommunicate.KmSettings;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.data.account.user.User;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.data.json.GsonUtils;
+
 import static io.kommunicate.Kommunicate.KM_CHAT_CONTEXT;
 
 public class KmUtils {
 
-    private static final String TAG = "Kommunicate";
     public static final int LEFT_POSITION = 0;
     public static final int RIGHT_POSITION = 2;
     public static final String BOT_CUSTOMIZATION = "bot_customization";
     public static final String NAME = "name";
     public static final String ID = "id";
-
+    private static final String TAG = "Kommunicate";
 
     public static boolean isServiceDisconnected(Context context, boolean isAgentApp, RelativeLayout customToolbarLayout) {
         boolean isDebuggable = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
@@ -82,7 +78,7 @@ public class KmUtils {
     }
 
     public static boolean isAgent() {
-        return isAgent(ApplozicService.getAppContext());
+        return isAgent(KommunicateService.getAppContext());
     }
 
     public static void setGradientSolidColor(View view, int color) {
@@ -95,23 +91,19 @@ public class KmUtils {
         gradientDrawable.setStroke(width, color);
     }
 
-    public static void setIconInsideTextView(TextView textView, int drawableRes, int color , int position , int padding)
-    {
-        if(position == LEFT_POSITION) {
+    public static void setIconInsideTextView(TextView textView, int drawableRes, int color, int position, int padding) {
+        if (position == LEFT_POSITION) {
             textView.setCompoundDrawablesWithIntrinsicBounds(drawableRes, 0, 0, 0);
-        }
-        else if(position == RIGHT_POSITION) {
+        } else if (position == RIGHT_POSITION) {
             textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableRes, 0);
         }
         textView.setCompoundDrawablePadding(padding);
-        if(color!= Color.TRANSPARENT)
-        {
+        if (color != Color.TRANSPARENT) {
             textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
         }
     }
 
-    public static void setIconInsideTextView(TextView textView)
-    {
+    public static void setIconInsideTextView(TextView textView) {
         textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
@@ -132,23 +124,31 @@ public class KmUtils {
     }
 
     public static String getCustomBotName(Message message, Context context) {
-            if(message != null) {
-                Map<String, String> metadata = new HashMap<>();
-                metadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(context).getMessageMetaData(), Map.class);
-                if(metadata != null && metadata.containsKey(KmSettings.KM_CHAT_CONTEXT) && metadata.get(KM_CHAT_CONTEXT).contains(BOT_CUSTOMIZATION)) {
-                    JSONObject custombotObject = null;
-                    try {
-                        custombotObject = new JSONObject(metadata.get(KM_CHAT_CONTEXT));
-                        JSONObject botDataObject = new JSONObject(custombotObject.getString(BOT_CUSTOMIZATION));
-                    if(!TextUtils.isEmpty(message.getContactIds()) && botDataObject.has(ID) && message.getContactIds().equals(botDataObject.getString(ID))) {
+        if (message != null) {
+            Map<String, String> metadata = new HashMap<>();
+            metadata = (Map<String, String>) GsonUtils.getObjectFromJson(KommunicateClient.getInstance(context).getMessageMetaData(), Map.class);
+            if (metadata != null && metadata.containsKey(KmSettings.KM_CHAT_CONTEXT) && metadata.get(KM_CHAT_CONTEXT).contains(BOT_CUSTOMIZATION)) {
+                JSONObject custombotObject = null;
+                try {
+                    custombotObject = new JSONObject(metadata.get(KM_CHAT_CONTEXT));
+                    JSONObject botDataObject = new JSONObject(custombotObject.getString(BOT_CUSTOMIZATION));
+                    if (!TextUtils.isEmpty(message.getContactIds()) && botDataObject.has(ID) && message.getContactIds().equals(botDataObject.getString(ID))) {
                         return botDataObject.getString(NAME);
                     }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
+        }
         return null;
+    }
+
+    public static Class getClassFromName(String className) throws ClassNotFoundException {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            throw new ClassNotFoundException("No class found for name : " + className);
+        }
     }
 
     public enum PackageType {
@@ -169,14 +169,6 @@ public class KmUtils {
 
         public int getValue() {
             return value;
-        }
-    }
-
-    public static Class getClassFromName(String className) throws ClassNotFoundException {
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new ClassNotFoundException("No class found for name : " + className);
         }
     }
 }

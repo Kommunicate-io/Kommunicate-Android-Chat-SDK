@@ -8,18 +8,18 @@ import io.kommunicate.utils.KmConstants;
 
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.broadcast.BroadcastService;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.contact.BaseContactService;
+import io.kommunicate.KommunicateClient;
+import io.kommunicate.data.api.MobiComKitConstants;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.data.conversation.database.MessageDatabaseService;
+import io.kommunicate.broadcast.BroadcastService;
+import io.kommunicate.data.contact.AppContactService;
+import io.kommunicate.data.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.json.GsonUtils;
+import io.kommunicate.data.people.contact.Contact;
 
 /**
  * Created by devashish on 4/2/15.
@@ -35,7 +35,7 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
     public MobiComKitBroadcastReceiver(FragmentActivity fragmentActivity) {
         this.conversationUIService = new ConversationUIService(fragmentActivity);
         this.baseContactService = new AppContactService(fragmentActivity);
-        this.hideActionMessages = ApplozicClient.getInstance(fragmentActivity).isActionMessagesHidden();
+        this.hideActionMessages = KommunicateClient.getInstance(fragmentActivity).isActionMessagesHidden();
     }
 
     @Override

@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.applozic.mobicomkit.api.attachment.AttachmentView
+                <io.kommunicate.data.api.attachment.AttachmentView
                     android:id="@+id/applozic_message_info_attachmentview"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"

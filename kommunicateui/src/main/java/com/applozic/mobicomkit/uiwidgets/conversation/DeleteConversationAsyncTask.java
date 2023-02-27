@@ -4,13 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.data.conversation.MobiComConversationService;
 
-import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.data.people.channel.Channel;
+import io.kommunicate.data.people.contact.Contact;
 
 /**
  * Created by devashish on 9/2/15.

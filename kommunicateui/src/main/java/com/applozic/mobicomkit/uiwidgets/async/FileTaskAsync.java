@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.api.attachment.FileClientService;
+import io.kommunicate.data.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
 
 import java.io.File;

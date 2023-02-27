@@ -19,21 +19,21 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.UserClientService;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.api.attachment.FileMeta;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
-import com.applozic.mobicomkit.broadcast.BroadcastService;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.contact.BaseContactService;
+import io.kommunicate.KmChat;
+import io.kommunicate.KommunicateClient;
+import io.kommunicate.data.api.MobiComKitConstants;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.data.account.user.UserClientService;
+import io.kommunicate.data.api.attachment.FileClientService;
+import io.kommunicate.data.api.attachment.FileMeta;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.data.conversation.MobiComConversationService;
+import io.kommunicate.data.conversation.database.MessageDatabaseService;
+
+import io.kommunicate.broadcast.BroadcastService;
+import io.kommunicate.data.channel.service.ChannelService;
+import io.kommunicate.data.contact.AppContactService;
+import io.kommunicate.data.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.KmChannelDeleteTask;
 import com.applozic.mobicomkit.uiwidgets.async.KmChannelLeaveMember;
@@ -46,19 +46,19 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConve
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmFragmentGetter;
-import com.applozic.mobicommons.commons.core.utils.LocationInfo;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.channel.ChannelUtils;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.utils.LocationInfo;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.file.FileUtils;
+import io.kommunicate.data.json.GsonUtils;
+import io.kommunicate.data.people.channel.Channel;
+import io.kommunicate.data.people.channel.ChannelUtils;
+import io.kommunicate.data.people.contact.Contact;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.kommunicate.services.KmChannelService;
+import io.kommunicate.data.services.KmChannelService;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -106,7 +106,7 @@ public class ConversationUIService {
         this.baseContactService = new AppContactService(fragmentActivity);
         this.notificationManager = (NotificationManager) fragmentActivity.getSystemService(Context.NOTIFICATION_SERVICE);
         this.fileClientService = new FileClientService(fragmentActivity);
-        isActionMessageHidden = ApplozicClient.getInstance(fragmentActivity).isActionMessagesHidden();
+        isActionMessageHidden = KommunicateClient.getInstance(fragmentActivity).isActionMessagesHidden();
     }
 
     public MobiComQuickConversationFragment getQuickConversationFragment() {
@@ -818,7 +818,7 @@ public class ConversationUIService {
                 if (Utils.isInternetAvailable(fragmentActivity)) {
                     Utils.printLog(fragmentActivity, TAG, "Reconnecting to mqtt.");
                     ((MobiComKitActivityInterface) fragmentActivity).retry();
-                    Applozic.connectPublish(fragmentActivity);
+                    KmChat.connectPublish(fragmentActivity);
 
                 }
             }

@@ -2,12 +2,11 @@ package io.kommunicate;
 
 import android.content.Context;
 
-import com.applozic.mobicommons.json.JsonMarker;
-
 import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.data.json.JsonMarker;
 import io.kommunicate.users.KMUser;
 
 @Deprecated

@@ -9,26 +9,6 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.MobiComKitClientService;
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
-import com.applozic.mobicomkit.api.people.ChannelInfo;
-import com.applozic.mobicomkit.contact.database.ContactDatabase;
-import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.data.AlPrefSettings;
-import com.applozic.mobicommons.data.SecureSharedPreferences;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.reflect.TypeToken;
 
 import java.security.SecureRandom;
@@ -39,31 +19,48 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.kommunicate.async.GetUserListAsyncTask;
-import io.kommunicate.async.KMFaqTask;
-import io.kommunicate.async.KMHelpDocsKeyTask;
-import io.kommunicate.async.KmAppSettingTask;
-import io.kommunicate.async.KmAwayMessageTask;
-import io.kommunicate.async.KmConversationCreateTask;
-import io.kommunicate.async.KmConversationInfoTask;
-import io.kommunicate.async.KmUserLoginTask;
-import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
-import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
+import io.kommunicate.callbacks.KMLogoutHandler;
+import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
-import io.kommunicate.database.KmDatabaseHelper;
+import io.kommunicate.data.preference.AlPrefSettings;
+import io.kommunicate.data.preference.SecureSharedPreferences;
+import io.kommunicate.data.api.MobiComKitClientService;
+import io.kommunicate.data.account.register.RegisterUserClientService;
+import io.kommunicate.data.account.register.RegistrationResponse;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.data.account.user.PushNotificationTask;
+import io.kommunicate.data.account.user.User;
+import io.kommunicate.notification.MobiComPushReceiver;
+import io.kommunicate.models.ChannelInfo;
+import io.kommunicate.data.async.GetUserListAsyncTask;
+import io.kommunicate.data.async.KMFaqTask;
+import io.kommunicate.data.async.KMHelpDocsKeyTask;
+import io.kommunicate.data.async.KmAppSettingTask;
+import io.kommunicate.data.async.KmAwayMessageTask;
+import io.kommunicate.data.async.KmConversationCreateTask;
+import io.kommunicate.data.async.KmConversationInfoTask;
+import io.kommunicate.data.async.KmUserLoginTask;
+import io.kommunicate.data.contact.database.ContactDatabase;
+import io.kommunicate.data.database.KmDatabaseHelper;
+import io.kommunicate.data.json.GsonUtils;
+import io.kommunicate.data.people.channel.Channel;
+import io.kommunicate.data.people.contact.Contact;
+import io.kommunicate.data.preference.KmPreference;
+import io.kommunicate.users.KMUser;
+import io.kommunicate.models.KMGroupInfo;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
-import io.kommunicate.preference.KmPreference;
-import io.kommunicate.users.KMUser;
+import io.kommunicate.models.feed.ChannelFeedApiResponse;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
+import io.kommunicate.utils.Utils;
 
 /**
  * Created by ashish on 23/01/18.
@@ -71,28 +68,28 @@ import io.kommunicate.utils.KmUtils;
 
 public class Kommunicate {
 
+    public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
+    public static final String KM_ALREADY_LOGGED_IN_STATUS = "ALREADY_LOGGED_IN";
+    public static final String PLACEHOLDER_APP_ID = "<Your-APP-ID>";
     private static final String KM_BOT = "bot";
     private static final String TAG = "KommunicateTag";
     private static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
     private static final String SKIP_ROUTING = "SKIP_ROUTING";
-    public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
-    public static final String KM_ALREADY_LOGGED_IN_STATUS = "ALREADY_LOGGED_IN";
-    public static final String PLACEHOLDER_APP_ID = "<Your-APP-ID>";
     static private String faqPageName;
-
-    public static void setFaqPageName(String faqPageName) {
-        Kommunicate.faqPageName = faqPageName;
-    }
 
     public static String getFaqPageName() {
         return faqPageName;
     }
 
+    public static void setFaqPageName(String faqPageName) {
+        Kommunicate.faqPageName = faqPageName;
+    }
+
     public static void init(Context context, String applicationKey) {
-        if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
+        if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(KmChat.getInstance(context).getApplicationKey())) {
             KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
         } else {
-            Applozic.init(context, applicationKey);
+            KmChat.init(context, applicationKey);
         }
     }
 
@@ -261,7 +258,7 @@ public class Kommunicate {
      * @param callback       callback to update the status
      */
     public static void checkForLeadCollection(final Context context, final ProgressDialog progressDialog, final KMUser kmUser, final KmCallback callback) {
-        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
+        new KmAppSettingTask(context, KmChat.getInstance(context).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
@@ -381,7 +378,7 @@ public class Kommunicate {
             }
         };
 
-        Applozic.logoutUser(context, handler);
+        KmChat.logoutUser(context, handler);
     }
 
     public static void closeConversationScreen(Context context) {
@@ -395,11 +392,11 @@ public class Kommunicate {
     }
 
     public static void setDeviceToken(Context context, String deviceToken) {
-        Applozic.getInstance(context).setDeviceRegistrationId(deviceToken);
+        KmChat.getInstance(context).setDeviceRegistrationId(deviceToken);
     }
 
     public static String getDeviceToken(Context context) {
-        return Applozic.getInstance(context).getDeviceRegistrationId();
+        return KmChat.getInstance(context).getDeviceRegistrationId();
     }
 
     public static void openConversation(Context context) {
@@ -498,7 +495,7 @@ public class Kommunicate {
     }
 
     public static void setNotificationSoundPath(Context context, String path) {
-        Applozic.getInstance(context).setCustomNotificationSound(path);
+        KmChat.getInstance(context).setCustomNotificationSound(path);
     }
 
     @Deprecated
@@ -620,8 +617,8 @@ public class Kommunicate {
             metadata.put(SKIP_ROUTING, String.valueOf(chatBuilder.isSkipRouting()));
         }
 
-        if (!TextUtils.isEmpty(ApplozicClient.getInstance(chatBuilder.getContext()).getMessageMetaData())) {
-            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(chatBuilder.getContext()).getMessageMetaData(), Map.class);
+        if (!TextUtils.isEmpty(KommunicateClient.getInstance(chatBuilder.getContext()).getMessageMetaData())) {
+            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(KommunicateClient.getInstance(chatBuilder.getContext()).getMessageMetaData(), Map.class);
             if (defaultMetadata != null) {
                 metadata.putAll(defaultMetadata);
             }
@@ -814,8 +811,8 @@ public class Kommunicate {
     public static KMUser getVisitor() {
         final KMUser user = new KMUser();
         user.setUserId(generateUserId());
-        new KmAppSettingTask(ApplozicService.getAppContext(),
-                MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
+        new KmAppSettingTask(KommunicateService.getAppContext(),
+                MobiComKitClientService.getApplicationKey(KommunicateService.getAppContext()),
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
@@ -826,12 +823,13 @@ public class Kommunicate {
                             }
                         }
                     }
+
                     @Override
                     public void onFailure(Object error) {
 
                     }
                 }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
+        user.setAuthenticationTypeId(User.AuthenticationType.KOMMUNICATE.getValue());
         return user;
     }
 
@@ -860,8 +858,8 @@ public class Kommunicate {
             return;
         }
 
-        //getting the message metadata already in the applozic preferences
-        String existingMetaDataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        //getting the message metadata already in the kmChat preferences
+        String existingMetaDataString = KommunicateClient.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
 
         if (TextUtils.isEmpty(existingMetaDataString)) { //case 1: no existing metadata
@@ -882,7 +880,7 @@ public class Kommunicate {
         }
 
         existingMetadata.put(KM_CHAT_CONTEXT, messageMetaDataString);
-        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+        KommunicateClient.getInstance(context).setMessageMetaData(existingMetadata);
     }
 
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
@@ -890,6 +888,6 @@ public class Kommunicate {
     }
 
     public static void removeApplicationKey(Context context) {
-        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
+        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, KommunicateService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
     }
 }

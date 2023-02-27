@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 
 import androidx.fragment.app.DialogFragment;
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
@@ -15,9 +15,9 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.KommunicateService;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.json.JsonMarker;
 
 public class KmCustomDialog {
 
@@ -35,10 +35,10 @@ public class KmCustomDialog {
 
         TextView dialogTitle = dialog.findViewById(R.id.kmDialogTitle);
         if (dialogTitle != null) {
-            dialogTitle.setText(ApplozicService.getContext(activity).getString(R.string.km_take_over_from_bot_dialog_title, assignedBot));
+            dialogTitle.setText(KommunicateService.getContext(activity).getString(R.string.km_take_over_from_bot_dialog_title, assignedBot));
         }
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(ApplozicService.getContext(activity), R.drawable.km_take_over_from_bot_button_background));
+            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(KommunicateService.getContext(activity), R.drawable.km_take_over_from_bot_button_background));
 
             TextView cancelButton = dialog.findViewById(R.id.kmDialogNegativeText);
             TextView takeOverFromBotButton = dialog.findViewById(R.id.kmDialogPositiveText);
@@ -192,7 +192,7 @@ public class KmCustomDialog {
                 }
 
                 if (titleTextColor > 0) {
-                    dialogTitle.setTextColor(ApplozicService.getContext(activity).getResources().getColor(titleTextColor));
+                    dialogTitle.setTextColor(KommunicateService.getContext(activity).getResources().getColor(titleTextColor));
                 }
             }
             if (dialogMessage != null) {
@@ -202,12 +202,12 @@ public class KmCustomDialog {
                     dialogMessage.setText("");
                 }
                 if (messageTextColor > 0) {
-                    dialogMessage.setTextColor(ApplozicService.getContext(activity).getResources().getColor(messageTextColor));
+                    dialogMessage.setTextColor(KommunicateService.getContext(activity).getResources().getColor(messageTextColor));
                 }
             }
 
             if (dialog.getWindow() != null) {
-                dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(ApplozicService.getContext(activity), R.drawable.km_take_over_from_bot_button_background));
+                dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(KommunicateService.getContext(activity), R.drawable.km_take_over_from_bot_button_background));
 
                 TextView cancelButton = dialog.findViewById(R.id.kmDialogNegativeText);
                 TextView takeOverFromBotButton = dialog.findViewById(R.id.kmDialogPositiveText);
@@ -218,7 +218,7 @@ public class KmCustomDialog {
                         cancelButton.setText(negativeButtonLabel);
                     }
                     if (negativeButtonTextColor > 0) {
-                        cancelButton.setTextColor(ApplozicService.getContext(activity).getResources().getColor(negativeButtonTextColor));
+                        cancelButton.setTextColor(KommunicateService.getContext(activity).getResources().getColor(negativeButtonTextColor));
                     }
                     cancelButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -237,7 +237,7 @@ public class KmCustomDialog {
                         takeOverFromBotButton.setText(positiveButtonLabel);
                     }
                     if (positiveButtonTextColor > 0) {
-                        takeOverFromBotButton.setTextColor(ApplozicService.getContext(activity).getResources().getColor(positiveButtonTextColor));
+                        takeOverFromBotButton.setTextColor(KommunicateService.getContext(activity).getResources().getColor(positiveButtonTextColor));
                     }
                     takeOverFromBotButton.setOnClickListener(new View.OnClickListener() {
                         @Override

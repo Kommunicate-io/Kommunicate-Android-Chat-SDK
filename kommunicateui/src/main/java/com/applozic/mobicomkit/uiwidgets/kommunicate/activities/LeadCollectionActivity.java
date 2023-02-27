@@ -22,9 +22,9 @@ import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.KommunicateService;
+import io.kommunicate.data.file.FileUtils;
+import io.kommunicate.data.json.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_km_lead_collection);
-        ApplozicService.initWithContext(this);
+        KommunicateService.initWithContext(this);
 
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {

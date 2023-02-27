@@ -21,8 +21,8 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.KommunicateService;
+import io.kommunicate.utils.Utils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -149,12 +149,12 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
             inputModel.setDisplayValidationError(isValidationError);
 
             if (isInValidCompositeField(inputModel)) {
-                KmToast.error(ApplozicService.getAppContext(), getString(R.string.prechat_screen_toast_error_message, inputModel.getField(), inputModel.getCompositeRequiredField()), Toast.LENGTH_SHORT).show();
+                KmToast.error(KommunicateService.getAppContext(), getString(R.string.prechat_screen_toast_error_message, inputModel.getField(), inputModel.getCompositeRequiredField()), Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             if(inputModel.getElement() != null && inputModel.getElement().equals(PRECHAT_DROPDOWN_ELEMENT) && inputModel.isRequired() && TextUtils.isEmpty(inputTextMap.get(inputModel.getField()))) {
-                KmToast.error(ApplozicService.getAppContext(), getString(R.string.prechat_dropdown_toast_error_message), Toast.LENGTH_SHORT).show();
+                KmToast.error(KommunicateService.getAppContext(), getString(R.string.prechat_dropdown_toast_error_message), Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -167,11 +167,11 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
     }
 
     private String getString(int resId) {
-        return Utils.getString(ApplozicService.getAppContext(), resId);
+        return Utils.getString(KommunicateService.getAppContext(), resId);
     }
 
     private String getString(int resId, Object... args) {
-        return ApplozicService.getAppContext().getString(resId, args);
+        return KommunicateService.getAppContext().getString(resId, args);
     }
 
     private String getErrorText(KmPrechatInputModel inputModel) {

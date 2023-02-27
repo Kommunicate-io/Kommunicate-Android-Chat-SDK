@@ -38,7 +38,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.utils.Utils;
 
 import java.util.Calendar;
 import java.util.Collections;

@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
-import io.kommunicate.database.KmAutoSuggestionDatabase;
-import io.kommunicate.database.KmDatabaseHelper;
+import io.kommunicate.data.database.KmAutoSuggestionDatabase;
+import io.kommunicate.data.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAutoSuggestionModel;
 
 public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {

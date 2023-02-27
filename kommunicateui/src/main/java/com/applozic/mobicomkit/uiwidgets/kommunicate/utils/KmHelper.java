@@ -8,13 +8,13 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
+import io.kommunicate.KmChat;
+import io.kommunicate.data.account.register.RegistrationResponse;
+import io.kommunicate.data.account.user.User;
+import io.kommunicate.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.utils.Utils;
 
 import java.util.List;
 
@@ -126,7 +126,7 @@ public class KmHelper {
         kmUser.setEmail(user.getEmail());
         kmUser.setContactNumber(user.getContactNumber());
         kmUser.setDisplayName(user.getDisplayName());
-        kmUser.setApplicationId(Applozic.getInstance(context).getApplicationKey());
+        kmUser.setApplicationId(KmChat.getInstance(context).getApplicationKey());
 
         try {
             Kommunicate.login(context, kmUser, new KMLoginHandler() {

@@ -26,15 +26,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.SyncCallService;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
-import com.applozic.mobicomkit.broadcast.BroadcastService;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.contact.BaseContactService;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.data.account.user.User;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.data.conversation.SyncCallService;
+import io.kommunicate.data.conversation.database.MessageDatabaseService;
+import io.kommunicate.broadcast.AlEventManager;
+import io.kommunicate.broadcast.BroadcastService;
+import io.kommunicate.data.contact.AppContactService;
+import io.kommunicate.data.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.KmLinearLayoutManager;
@@ -48,13 +48,13 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.DateUtils;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.SearchListFragment;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.KommunicateService;
+import io.kommunicate.utils.DateUtils;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.file.FileUtils;
+import io.kommunicate.data.json.GsonUtils;
+import io.kommunicate.data.people.SearchListFragment;
+import io.kommunicate.data.people.contact.Contact;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.Kommunicate;
-import io.kommunicate.services.KmClientService;
+import io.kommunicate.data.services.KmClientService;
 import io.kommunicate.utils.KmUtils;
 
 /**
@@ -98,7 +98,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String jsonString = FileUtils.loadSettingsJsonFile(ApplozicService.getContext(getContext()));
+        String jsonString = FileUtils.loadSettingsJsonFile(KommunicateService.getContext(getContext()));
         if (!TextUtils.isEmpty(jsonString)) {
             alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
         } else {
@@ -182,8 +182,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         startNewConv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ApplozicService.getContext(getContext()) instanceof KmActionCallback) {
-                    ((KmActionCallback) ApplozicService.getContext(getContext())).onReceive(getContext(), null, "startNewChat");
+                if (KommunicateService.getContext(getContext()) instanceof KmActionCallback) {
+                    ((KmActionCallback) KommunicateService.getContext(getContext())).onReceive(getContext(), null, "startNewChat");
                 } else {
                     KmHelper.setStartNewChat(getActivity());
                 }
@@ -267,7 +267,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 messageList.add(0, message);
                 recyclerAdapter.notifyDataSetChanged();
                 emptyTextView.setVisibility(View.GONE);
-                emptyTextView.setText(!TextUtils.isEmpty(alCustomizationSettings.getNoConversationLabel()) ? alCustomizationSettings.getNoConversationLabel() : ApplozicService.getContext(context).getResources().getString(R.string.no_conversation));
+                emptyTextView.setText(!TextUtils.isEmpty(alCustomizationSettings.getNoConversationLabel()) ? alCustomizationSettings.getNoConversationLabel() : KommunicateService.getContext(context).getResources().getString(R.string.no_conversation));
             }
         });
     }
@@ -469,9 +469,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
             });
         } else {
             if (!Utils.isInternetAvailable(getActivity())) {
-                KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.you_need_network_access_for_delete), Toast.LENGTH_SHORT).show();
+                KmToast.error(KommunicateService.getContext(getContext()), KommunicateService.getContext(getContext()).getString(R.string.you_need_network_access_for_delete), Toast.LENGTH_SHORT).show();
             } else {
-                KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.delete_conversation_failed), Toast.LENGTH_SHORT).show();
+                KmToast.error(KommunicateService.getContext(getContext()), KommunicateService.getContext(getContext()).getString(R.string.delete_conversation_failed), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -481,7 +481,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         boolean isLoadingConversation = (downloadConversation != null && downloadConversation.getStatus() == AsyncTask.Status.RUNNING);
         if (latestMessageForEachContact.isEmpty() && !isLoadingConversation) {
             emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(!TextUtils.isEmpty(alCustomizationSettings.getNoConversationLabel()) ? alCustomizationSettings.getNoConversationLabel() : ApplozicService.getContext(getContext()).getResources().getString(R.string.no_conversation));
+            emptyTextView.setText(!TextUtils.isEmpty(alCustomizationSettings.getNoConversationLabel()) ? alCustomizationSettings.getNoConversationLabel() : KommunicateService.getContext(getContext()).getResources().getString(R.string.no_conversation));
         } else {
             emptyTextView.setVisibility(View.GONE);
         }
@@ -509,7 +509,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     @Override
     public void onResume() {
         //Assigning to avoid notification in case if quick conversation fragment is opened....
-        toolbar.setTitle(ApplozicService.getContext(getContext()).getResources().getString(R.string.conversations));
+        toolbar.setTitle(KommunicateService.getContext(getContext()).getResources().getString(R.string.conversations));
         toolbar.setSubtitle("");
         BroadcastService.selectMobiComKitAll();
         super.onResume();
@@ -739,7 +739,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 } else {
                     createdAt = messageList.isEmpty() ? null : messageList.get(messageList.size() - 1).getCreatedAtTime();
                 }
-                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(createdAt, searchString, MobiComUserPreference.getInstance(ApplozicService.getContextFromWeak(context)).getParentGroupKey());
+                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(createdAt, searchString, MobiComUserPreference.getInstance(KommunicateService.getContextFromWeak(context)).getParentGroupKey());
             }
 
             return 0L;

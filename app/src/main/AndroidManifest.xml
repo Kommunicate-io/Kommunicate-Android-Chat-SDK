@@ -79,8 +79,8 @@
         </service>
 
         <!--<meta-data
-            android:name="com.applozic.server.url"
-            android:value="https://apps-test.applozic.com"
+            android:name="io.kommunicate.chat.server.url"
+            android:value="https://chat-test.kommunicate.io"
             tools:node="replace"/>
 
         <meta-data
@@ -89,7 +89,7 @@
             tools:node="replace"/>-->
 
 <!--        <meta-data-->
-<!--            android:name="com.applozic.mobicomkit.notification.iconColor"-->
+<!--            android:name="io.kommunicate.notification.iconColor"-->
 <!--            android:resource="@color/colorPrimary">-->
 <!--        </meta-data>-->
 

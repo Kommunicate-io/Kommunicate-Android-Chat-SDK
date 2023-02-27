@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,8 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +30,12 @@ import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
 import io.kommunicate.app.BuildConfig;
 import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.data.account.register.RegistrationResponse;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
 import io.kommunicate.callbacks.KMLoginHandler;
+import io.kommunicate.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -197,14 +196,6 @@ public class MainActivity extends AppCompatActivity {
         Kommunicate.login(MainActivity.this, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
-                if (KMUser.RoleType.USER_ROLE.getValue().equals(registrationResponse.getRoleType())) {
-                    ApplozicClient.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
-                } else {
-                    Map<String, String> metadata = new HashMap<>();
-                    metadata.put("skipBot", "true");
-                    ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
-                }
-
                 try {
                     KmConversationHelper.openConversation(context, true, null, new KmCallback() {
                         @Override

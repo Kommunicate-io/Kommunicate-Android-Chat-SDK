@@ -46,27 +46,25 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.MessageIntentService;
-import com.applozic.mobicomkit.api.conversation.MobiComMessageService;
-import com.applozic.mobicomkit.api.conversation.SyncCallService;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.api.conversation.service.ConversationService;
-import com.applozic.mobicomkit.api.people.UserIntentService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
-import com.applozic.mobicomkit.broadcast.BroadcastService;
-import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.contact.database.ContactDatabase;
+import io.kommunicate.KmChat;
+import io.kommunicate.KommunicateClient;
+import io.kommunicate.data.api.MobiComKitConstants;
+import io.kommunicate.data.account.register.RegisterUserClientService;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.data.account.user.User;
+import io.kommunicate.data.api.attachment.FileClientService;
+import io.kommunicate.data.conversation.Message;
+import io.kommunicate.data.conversation.MessageIntentService;
+import io.kommunicate.data.conversation.MobiComMessageService;
+import io.kommunicate.data.conversation.database.MessageDatabaseService;
+import io.kommunicate.data.conversation.service.ConversationService;
+import io.kommunicate.data.services.UserIntentService;
+import io.kommunicate.broadcast.AlEventManager;
+import io.kommunicate.broadcast.BroadcastService;
+import io.kommunicate.broadcast.ConnectivityReceiver;
+import io.kommunicate.data.channel.service.ChannelService;
+import io.kommunicate.data.contact.AppContactService;
+import io.kommunicate.data.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -90,15 +88,15 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.SearchListFragment;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.channel.Conversation;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.KommunicateService;
+import io.kommunicate.utils.PermissionsUtils;
+import io.kommunicate.utils.Utils;
+import io.kommunicate.data.file.FileUtils;
+import io.kommunicate.data.json.GsonUtils;
+import io.kommunicate.data.people.SearchListFragment;
+import io.kommunicate.data.people.channel.Channel;
+import io.kommunicate.data.people.channel.Conversation;
+import io.kommunicate.data.people.contact.Contact;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -117,8 +115,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
-import io.kommunicate.async.KmSyncMessageTask;
+import io.kommunicate.data.async.KmAutoSuggestionsAsyncTask;
+import io.kommunicate.data.async.KmSyncMessageTask;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -265,14 +263,14 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onStop() {
         super.onStop();
         if(KmChatWidget.getInstance(this) == null) {
-            Applozic.disconnectPublish(this);
+            KmChat.disconnectPublish(this);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Applozic.connectPublishWithVerifyToken(this, getString(R.string.please_wait_info));
+        KmChat.connectPublishWithVerifyToken(this, getString(R.string.please_wait_info));
         syncMessages();
         if (!Utils.isInternetAvailable(getApplicationContext())) {
             String errorMessage = getResources().getString(R.string.internet_connection_not_available);
@@ -286,7 +284,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     protected void onPause() {
-        //ApplozicMqttService.getInstance(this).unSubscribe();
+        //KmMqttService.getInstance(this).unSubscribe();
         super.onPause();
     }
 
@@ -349,7 +347,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ApplozicService.initWithContext(this);
+        KommunicateService.initWithContext(this);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
             alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
@@ -378,7 +376,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);
         quickConversationFragment = new MobiComQuickConversationFragment();
         connectivityReceiver = new ConnectivityReceiver();
-        geoApiKey = Applozic.getInstance(this).getGeoApiKey();
+        geoApiKey = KmChat.getInstance(this).getGeoApiKey();
         activityToOpenOnClickOfCallButton = Utils.getMetaDataValue(getApplicationContext(), ACTIVITY_TO_OPEN_ONCLICK_OF_CALL_BUTTON_META_DATA);
         layout = (LinearLayout) findViewById(R.id.footerAd);
         applozicPermission = new KmPermissions(this, layout);
@@ -445,7 +443,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             UserIntentService.enqueueWork(this, lastSeenStatusIntent);
         }
 
-        if (ApplozicClient.getInstance(this).isAccountClosed() || ApplozicClient.getInstance(this).isNotAllowed()) {
+        if (KommunicateClient.getInstance(this).isAccountClosed() || KommunicateClient.getInstance(this).isNotAllowed()) {
             accountStatusAsyncTask = new SyncAccountStatusAsyncTask(this, layout, snackbar);
             accountStatusAsyncTask.execute();
         }
@@ -987,7 +985,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void processVideoCall(Contact contactObj, Integer conversationId) {
         this.contact = baseContactService.getContactById(contactObj.getContactIds());
-        if (ApplozicClient.getInstance(getApplicationContext()).isIPCallEnabled()) {
+        if (KommunicateClient.getInstance(getApplicationContext()).isIPCallEnabled()) {
             try {
                 if (Utils.hasMarshmallow() && !PermissionsUtils.checkPermissionForCameraAndMicrophone(this)) {
                     applozicPermission.checkRuntimePermissionForCameraAndAudioRecording();
@@ -1010,7 +1008,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         this.currentConversationId = conversationId;
         try {
 
-            if (ApplozicClient.getInstance(getApplicationContext()).isIPCallEnabled()) {
+            if (KommunicateClient.getInstance(getApplicationContext()).isIPCallEnabled()) {
                 if (Utils.hasMarshmallow() && !PermissionsUtils.checkPermissionForCameraAndMicrophone(this)) {
                     applozicPermission.checkRuntimePermissionForCameraAndAudioRecording();
                     return;
@@ -1293,7 +1291,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         Context context;
         RegisterUserClientService registerUserClientService;
         String loggedInUserId;
-        ApplozicClient applozicClient;
+        KommunicateClient kommunicateClient;
         WeakReference<Snackbar> snackBarWeakReference;
         WeakReference<LinearLayout> linearLayoutWeakReference;
 
@@ -1302,7 +1300,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             this.registerUserClientService = new RegisterUserClientService(context);
             this.linearLayoutWeakReference = new WeakReference<LinearLayout>(linearLayout);
             this.snackBarWeakReference = new WeakReference<Snackbar>(snackbar);
-            this.applozicClient = ApplozicClient.getInstance(context);
+            this.kommunicateClient = KommunicateClient.getInstance(context);
             this.loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
         }
 
@@ -1322,7 +1320,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-            if (applozicClient.isAccountClosed() || applozicClient.isNotAllowed()) {
+            if (kommunicateClient.isAccountClosed() || kommunicateClient.isNotAllowed()) {
                 LinearLayout linearLayout = null;
                 Snackbar snackbar = null;
                 if (snackBarWeakReference != null) {
@@ -1332,7 +1330,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     linearLayout = linearLayoutWeakReference.get();
                 }
                 if (snackbar != null && linearLayout != null) {
-                    snackbar = Snackbar.make(linearLayout, applozicClient.isAccountClosed() ?
+                    snackbar = Snackbar.make(linearLayout, kommunicateClient.isAccountClosed() ?
                                     R.string.applozic_account_closed : R.string.applozic_free_version_not_allowed_on_release_build,
                             Snackbar.LENGTH_INDEFINITE);
                     snackbar.show();

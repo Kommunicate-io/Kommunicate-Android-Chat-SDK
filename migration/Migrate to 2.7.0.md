@@ -7,3 +7,4 @@
     "applozic_my_profile_option_info" -> "kommunicate_my_profile_option_info"
     "applozic_select_photo" -> "kommunicate_select_photo"
     "applozic_network_usage" -> "kommunicate_network_usage"
+- Rename "applozic-settings.json" to "kommunicate-settings.json"

@@ -10,7 +10,7 @@
     android:paddingEnd="12dp"
     android:paddingBottom="6dp">
 
-    <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmTextViewWithImage
+    <io.kommunicate.uiwidgets.kommunicate.views.KmTextViewWithImage
         android:id="@+id/toastText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

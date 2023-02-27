@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/applozic_dark_black_color"
+    android:background="@color/kommunicate_dark_black_color"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/applozic_dark_black_color"
+        android:background="@color/kommunicate_dark_black_color"
         android:elevation="4dp"
         android:paddingTop="10dp"
-        android:theme="@style/Applozic_FullScreen_Theme"
-        app:popupTheme="@style/Applozic_PopUpTheme"
+        android:theme="@style/Kommunicate_FullScreen_Theme"
+        app:popupTheme="@style/Kommunicate_PopUpTheme"
         app:subtitleTextAppearance="@style/ToolbarSubtitle"
         app:titleTextAppearance="@style/ToolbarTitle" />
 
@@ -25,7 +25,7 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
 
-    <com.applozic.mobicomkit.uiwidgets.conversation.TouchImageView
+    <io.kommunicate.uiwidgets.conversation.TouchImageView
         android:id="@+id/full_screen_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -50,7 +50,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
-        android:background="@color/applozic_transparent_color"
+        android:background="@color/kommunicate_transparent_color"
         android:textColor="@color/km_white_color"
         android:text=""
         android:ellipsize="marquee"

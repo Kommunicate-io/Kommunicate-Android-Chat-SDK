@@ -3,7 +3,7 @@
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity">
+    tools:context="io.kommunicate.uiwidgets.people.activity.MobiComKitPeopleActivity">
 
     <!--
     <android.support.v4.view.PagerTabStrip

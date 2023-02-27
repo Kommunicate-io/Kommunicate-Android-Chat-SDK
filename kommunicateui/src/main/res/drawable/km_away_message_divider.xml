@@ -6,7 +6,7 @@
                 android:dashGap="2dp"
                 android:dashWidth="4dp"
                 android:width="1dp"
-                android:color="@color/applozic_theme_color_primary" />
+                android:color="@color/kommunicate_theme_color_primary" />
         </shape>
     </item>
 </layer-list>

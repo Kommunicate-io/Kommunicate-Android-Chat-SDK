@@ -5,7 +5,7 @@ import android.os.Handler;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import io.kommunicate.uiwidgets.conversation.activity.ConversationActivity;
 
 import io.kommunicate.users.KMUser;
 import io.kommunicate.app.R;

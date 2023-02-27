@@ -3,7 +3,7 @@
 
     <stroke
         android:width="2dp"
-        android:color="@color/applozic_theme_color_primary" />
+        android:color="@color/kommunicate_theme_color_primary" />
 
     <padding
         android:bottom="2dp"

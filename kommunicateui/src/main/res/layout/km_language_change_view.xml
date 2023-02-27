@@ -31,7 +31,7 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_gravity="end"
-                android:background="@color/applozic_transparent_color"
+                android:background="@color/kommunicate_transparent_color"
                 android:src="@drawable/km_ic_action_cancel" />
         </FrameLayout>
 

@@ -4,7 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import io.kommunicate.uiwidgets.kommunicate.views.KmToast;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -22,9 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import java.util.HashMap;
-import java.util.Map;
 
 import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;

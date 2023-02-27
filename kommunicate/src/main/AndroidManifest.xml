@@ -78,7 +78,7 @@
 
         <meta-data
             android:name="activity.open.on.notification"
-            android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+            android:value="io.kommunicate.uiwidgets.conversation.activity.ConversationActivity" />
 
         <meta-data
             android:name="com.package.name"
@@ -90,7 +90,7 @@
 
         <meta-data
             android:name="io.kommunicate.mqtt.server.url"
-            android:value="tcp://socket.applozic.com:8080" />
+            android:value="tcp://socket.kommunicate.io:8080" />
 
         <meta-data
             android:name="io.kommunicate.mobicomkit.notification.tone"

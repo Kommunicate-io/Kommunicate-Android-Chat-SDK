@@ -178,7 +178,7 @@
             android:paddingEnd="2dp"
             android:paddingRight="2dp"
             android:text="@string/self_destruct"
-            android:textColor="@color/applozic_darker_gray_color"
+            android:textColor="@color/kommunicate_darker_gray_color"
             android:textSize="11sp"
             android:visibility="gone" />
     </LinearLayout>
@@ -217,7 +217,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:textColor="@color/applozic_darker_gray_color"
+            android:textColor="@color/kommunicate_darker_gray_color"
             android:textSize="11sp"
             android:visibility="gone" />
     </LinearLayout>

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp">
 
-        <com.applozic.mobicomkit.uiwidgets.DashedLineView
+        <io.kommunicate.uiwidgets.DashedLineView
             android:id="@+id/awayMessageDivider"
             android:layout_width="match_parent"
             android:layout_height="1dp"

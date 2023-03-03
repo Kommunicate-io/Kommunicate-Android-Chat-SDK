@@ -132,10 +132,6 @@ public class KmDocumentView {
         fileText.setTextColor(ContextCompat.getColor(context, message.isTypeOutbox() ? R.color.message_text_color : R.color.km_received_message_text_color));
         audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? 0xFFFFFFFF : 0xFFFFB242, PorterDuff.Mode.MULTIPLY);
         cancelIcon.setVisibility(message.isTypeOutbox() ? GONE : View.VISIBLE);
-        if (message.isTypeOutbox()) {
-            docIcon.setColorFilter(0xffffffff);
-        }
-
         setupAttachmentView();
         registerEvents();
         if (message.isCanceled()) {

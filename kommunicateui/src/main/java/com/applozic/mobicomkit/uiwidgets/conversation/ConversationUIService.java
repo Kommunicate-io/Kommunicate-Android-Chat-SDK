@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -58,6 +59,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.kommunicate.async.KmDeleteConversationTask;
+import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -253,13 +256,22 @@ public class ConversationUIService {
         }
     }
 
-    public void deleteConversationThread(final Contact contact, final Channel channel) {
+    public void deleteConversationThread(final Context context, final Channel channel) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity).
                 setPositiveButton(R.string.delete_conversation, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new DeleteConversationAsyncTask(new MobiComConversationService(fragmentActivity), contact, channel, null, fragmentActivity).execute();
-
+                        new KmDeleteConversationTask(context, channel.getKey(), true, new KmCallback() {
+                            @Override
+                            public void onSuccess(Object message) {
+                                KmToast.success(context, R.string.conversation_deleted, Toast.LENGTH_SHORT).show();
+                            }
+                            @Override
+                            public void onFailure(Object error) {
+                                KmToast.error(context, "Conversation failed to delete", Toast.LENGTH_SHORT).show();
+                                Utils.printLog(context, TAG, error.toString());
+                            }
+                        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -267,22 +279,8 @@ public class ConversationUIService {
             public void onClick(DialogInterface dialogInterface, int i) {
             }
         });
-        String name = "";
-        if (channel != null) {
-            if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                String userId = ChannelService.getInstance(fragmentActivity).getGroupOfTwoReceiverUserId(channel.getKey());
-                if (!TextUtils.isEmpty(userId)) {
-                    Contact withUserContact = baseContactService.getContactById(userId);
-                    name = withUserContact.getDisplayName();
-                }
-            } else {
-                name = ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(fragmentActivity).getUserId());
-            }
-        } else {
-            name = contact.getDisplayName();
-        }
-        alertDialog.setTitle(fragmentActivity.getString(R.string.dialog_delete_conversation_title).replace("[name]", name));
-        alertDialog.setMessage(fragmentActivity.getString(R.string.dialog_delete_conversation_confir).replace("[name]", name));
+        alertDialog.setTitle(fragmentActivity.getString(R.string.dialog_delete_conversation_title));
+        alertDialog.setMessage(fragmentActivity.getString(R.string.delete_confirm));
         alertDialog.setCancelable(true);
         alertDialog.create().show();
     }

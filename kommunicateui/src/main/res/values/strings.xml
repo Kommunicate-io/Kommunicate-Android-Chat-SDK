@@ -291,4 +291,6 @@
     <string name="invalid_email">Enter a valid email</string>
     <string name="select_language">Select a language</string>
     <string name="changed_language_to">Changed language to %1$s</string>
+    <string name="delete_confirm">Are you sure you want to delete this conversation?</string>
+    <string name="conversation_deleted">Conversation Deleted</string>
 </resources>

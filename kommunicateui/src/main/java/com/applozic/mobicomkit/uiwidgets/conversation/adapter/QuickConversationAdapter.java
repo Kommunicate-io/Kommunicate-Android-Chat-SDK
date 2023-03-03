@@ -234,7 +234,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             message.getFileMetas() != null ? message.getFileMetas().getName() : "";
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
                     myholder.attachmentIcon.setImageResource(R.drawable.km_ic_action_attachment);
-                    myholder.messageTextView.setText(filePath);
+                    myholder.messageTextView.setText(KmUtils.getAttachmentName(message));
                 } else if (myholder.attachmentIcon != null && message.getContentType() == Message.ContentType.LOCATION.getValue()) {
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
                     myholder.attachmentIcon.setImageResource(R.drawable.mobicom_notification_location_icon);

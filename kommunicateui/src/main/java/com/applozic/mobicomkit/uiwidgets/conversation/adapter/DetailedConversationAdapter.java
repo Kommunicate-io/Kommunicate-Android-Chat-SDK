@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -588,7 +589,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             if (TextUtils.isEmpty(msg.getMessage())) {
                                 myHolder.replyMessageTextView.setText(context.getString(R.string.attachment_string));
                             } else {
-                                myHolder.replyMessageTextView.setText(msg.getMessage());
+                                myHolder.replyMessageTextView.setText(KmUtils.getAttachmentName(msg));
                             }
                             myHolder.imageViewPhoto.setVisibility(View.GONE);
                             myHolder.imageViewRLayout.setVisibility(View.GONE);
@@ -607,7 +608,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myHolder.imageViewForAttachmentType.setVisibility(View.GONE);
                         myHolder.imageViewRLayout.setVisibility(View.GONE);
                         myHolder.imageViewPhoto.setVisibility(View.GONE);
-                        myHolder.replyMessageTextView.setText(msg.getMessage());
+                        myHolder.replyMessageTextView.setText(KmUtils.getAttachmentName(msg));
                     }
                     myHolder.replyRelativeLayout.setVisibility(View.VISIBLE);
                     myHolder.replyRelativeLayout.setOnClickListener(new View.OnClickListener() {
@@ -1329,10 +1330,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         } else {
                             outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                         }
-                        if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        try {
                             intent.setDataAndType(outputUri, "text/x-vcard");
                             context.startActivity(intent);
-                        } else {
+                        } catch (ActivityNotFoundException activityNotFoundException) {
                             KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
                         }
                     } else {
@@ -1348,10 +1349,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 } else {
                                     outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                                 }
-                                if (intent.resolveActivity(context.getPackageManager()) != null) {
+                                try {
                                     intent.setDataAndType(outputUri, "text/x-vcard");
                                     context.startActivity(intent);
-                                } else {
+                                } catch (ActivityNotFoundException activityNotFoundException) {
                                     KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
                                 }
                             }
@@ -1379,15 +1380,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     private void showAttachmentIconAndText(TextView attachedFile, final Message message, final String mimeType) {
 
-        String fileName = "";
-        if (message.getFileMetas() == null && message.getFilePaths() != null) {
-            fileName = message.getFilePaths().get(0).substring(message.getFilePaths().get(0).lastIndexOf("/") + 1);
-        } else if (message.getFileMetas() != null) {
-            fileName = message.getFileMetas().getName();
-        }
         attachedFile.setTextColor(message.isTypeOutbox() ?
                 Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
-        attachedFile.setText(fileName);
+        attachedFile.setText(KmUtils.getAttachmentName(message));
         attachedFile.setVisibility(View.VISIBLE);
         attachedFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1403,10 +1398,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                         }
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        try {
                             intent.setDataAndType(outputUri, mimeType);
                             context.startActivity(intent);
-                        } else {
+                        } catch (ActivityNotFoundException activityNotFoundException) {
                             KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
                         }
                     }

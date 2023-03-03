@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.attachmentview;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -10,7 +11,9 @@ import android.os.Handler;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import io.kommunicate.utils.KmUtils;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,6 +41,7 @@ import com.applozic.mobicommons.json.GsonUtils;
 import java.io.File;
 
 import static android.view.View.GONE;
+import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
 
 /**
  * Created by devashish on 22/07/16.
@@ -107,7 +111,7 @@ public class KmDocumentView {
                 audio_duration_textView.setVisibility(GONE);
                 audioseekbar.setVisibility(GONE);
                 fileText.setVisibility(View.VISIBLE);
-                fileText.setText(message.getFileMetas().getName());
+                fileText.setText(KmUtils.getAttachmentName(message));
             }
         } else if (message.getFilePaths() != null) {
             filePath = message.getFilePaths().get(0);
@@ -119,8 +123,9 @@ public class KmDocumentView {
                 audio_duration_textView.setVisibility(GONE);
                 audioseekbar.setVisibility(GONE);
                 fileText.setVisibility(View.VISIBLE);
-                fileText.setText(new File(filePath).getName());
-                docIcon.setImageResource(R.drawable.ic_documentreceive);
+                fileText.setText(KmUtils.getAttachmentName(message));
+                setDocumentIcon(mimeType, docIcon);
+                //docIcon.setImageResource(R.drawable.ic_documentreceive);
             }
         }
 
@@ -155,7 +160,8 @@ public class KmDocumentView {
                         fileText.setVisibility(View.VISIBLE);
                         audio_duration_textView.setVisibility(GONE);
                         audioseekbar.setVisibility(GONE);
-                        docIcon.setImageResource(R.drawable.ic_documentreceive);
+                        setDocumentIcon(mimeType, docIcon);
+//                        docIcon.setImageResource(R.drawable.ic_documentreceive);
                     }
                 }
             }
@@ -166,7 +172,7 @@ public class KmDocumentView {
         if (message.getFileMetas() != null && message.getFilePaths() == null) {
             sizeTextView.setText(message.getFileMetas().getSizeInReadableFormat());
             if (!(message.getFileMetas().getContentType().contains("audio"))) {
-                fileText.setText(message.getFileMetas().getName());
+                fileText.setText(KmUtils.getAttachmentName(message));
                 audioseekbar.setVisibility(GONE);
                 audio_duration_textView.setVisibility(GONE);
             } else {
@@ -187,11 +193,12 @@ public class KmDocumentView {
                 mimeType = FileUtils.getMimeType(filePath);
                 if (mimeType != null && !(mimeType.contains("audio"))) {
                     String fileName = new File(filePath).getName();
-                    fileText.setText(fileName);
+                    fileText.setText(KmUtils.getAttachmentName(message));
                     audioseekbar.setVisibility(GONE);
                     audio_duration_textView.setVisibility(GONE);
                     docIcon.setVisibility(View.VISIBLE);
-                    docIcon.setImageResource(R.drawable.ic_documentreceive);
+                    setDocumentIcon(mimeType, docIcon);
+//                    docIcon.setImageResource(R.drawable.ic_documentreceive);
                 } else {
                     if (message.isAttachmentDownloaded()) {
                         KommunicateAudioManager.getInstance(context).updateAudioDuration(audio_duration_textView, filePath);
@@ -371,9 +378,9 @@ public class KmDocumentView {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, mimeType);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            if (intent.resolveActivity(context.getPackageManager()) != null) {
+            try {
                 context.startActivity(intent);
-            } else {
+            } catch (ActivityNotFoundException activityNotFoundException) {
                 KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
             }
         }

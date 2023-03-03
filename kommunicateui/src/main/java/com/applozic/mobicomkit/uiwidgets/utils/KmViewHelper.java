@@ -3,9 +3,12 @@ package com.applozic.mobicomkit.uiwidgets.utils;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.bumptech.glide.Glide;
@@ -81,5 +84,20 @@ public class KmViewHelper {
                 return false;
             }
         }).into(imageView);
+    }
+
+    public static void setDocumentIcon(String mimeType, ImageView documentIcon) {
+        if (TextUtils.isEmpty(mimeType)) {
+            documentIcon.setImageResource(R.drawable.ic_documentreceive);
+            return;
+        }
+        if (mimeType.contains("pdf")) {
+            documentIcon.setImageResource(R.drawable.km_pdf_icon);
+        }
+        else if(mimeType.contains("txt") || mimeType.contains("doc") || mimeType.contains("text/plain")) {
+            documentIcon.setImageResource(R.drawable.km_doc_icon);
+        } else {
+            documentIcon.setImageResource(R.drawable.ic_documentreceive);
+        }
     }
 }

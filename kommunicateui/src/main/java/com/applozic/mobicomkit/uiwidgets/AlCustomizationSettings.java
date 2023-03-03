@@ -139,6 +139,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean restartConversationButtonVisibility = true;
     private boolean rateConversationMenuOption;
     private boolean javaScriptEnabled;
+    private boolean hideChatInHelpcenter = true;
 
     public boolean isRateConversationMenuOption() {
         return rateConversationMenuOption;
@@ -729,6 +730,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public Map<String, Boolean> isHidePostCTA() {
         return hidePostCTA;
+    }
+
+    public boolean isHideChatInHelpcenter() {
+        return hideChatInHelpcenter;
     }
 
     @Override

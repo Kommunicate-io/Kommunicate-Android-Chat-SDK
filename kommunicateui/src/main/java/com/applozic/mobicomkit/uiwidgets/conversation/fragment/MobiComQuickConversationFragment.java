@@ -146,8 +146,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl();
+                        String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl(alCustomizationSettings.isHideChatInHelpcenter());
                         AlEventManager.getInstance().sendOnFaqClick(FaqUrl);
+                        Log.e("help", FaqUrl);
+
                         ConversationActivity.openFaq(getActivity(), FaqUrl);
                     }
                 });

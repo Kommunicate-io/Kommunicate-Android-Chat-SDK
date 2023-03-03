@@ -485,6 +485,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 return;
             }
             Message message = messageList.get(position);
+            menu.setHeaderTitle(R.string.conversation_options);
 
             String[] menuItems = context.getResources().getStringArray(R.array.conversation_options_menu);
 
@@ -545,8 +546,10 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                 switch (item.getItemId()) {
                     case 0:
-                        if(channel != null) {
-                            conversationUIService.deleteConversationThread(context, channel);
+                        if (channel != null && channel.isDeleted()) {
+                            conversationUIService.deleteGroupConversation(channel);
+                        } else {
+                            conversationUIService.deleteConversationThread(contact, channel);
                         }
                         break;
                     case 1:

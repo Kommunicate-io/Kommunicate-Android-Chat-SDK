@@ -28,9 +28,7 @@ import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
@@ -52,7 +50,6 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
@@ -256,7 +253,7 @@ public class ConversationUIService {
         }
     }
 
-    public void deleteConversationThread(final Context context, final Channel channel) {
+    public void deleteChannel(final Context context, final Channel channel) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity).
                 setPositiveButton(R.string.delete_conversation, new DialogInterface.OnClickListener() {
                     @Override

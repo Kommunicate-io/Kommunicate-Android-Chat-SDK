@@ -536,17 +536,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 Message message = messageList.get(position);
 
                 Channel channel = null;
-                Contact contact = null;
                 if (message.getGroupId() != null) {
                     channel = ChannelDatabaseService.getInstance(context).getChannelByChannelKey(message.getGroupId());
-                } else {
-                    contact = contactService.getContactById(message.getContactIds());
                 }
 
                 switch (item.getItemId()) {
                     case 0:
                         if(channel != null) {
-                            conversationUIService.deleteConversationThread(context, channel);
+                            conversationUIService.deleteChannel(context, channel);
                         }
                         break;
                     case 1:

@@ -166,5 +166,6 @@
   "oneTimeRating": true,
   "rateConversationMenuOption" : true,
   "javaScriptEnabled": true,
-  "restartConversationButtonVisibility": true
+  "restartConversationButtonVisibility": true,
+  "hideChatInHelpcenter": true
 }

@@ -536,7 +536,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     faqOption.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl();
+                            String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl(alCustomizationSettings.isHideChatInHelpcenter());
                             AlEventManager.getInstance().sendOnFaqClick(FaqUrl);
                             ConversationActivity.openFaq(getActivity(), FaqUrl);
                         }

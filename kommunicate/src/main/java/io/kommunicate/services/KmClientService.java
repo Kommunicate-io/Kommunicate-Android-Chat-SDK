@@ -109,11 +109,11 @@ public class KmClientService extends MobiComKitClientService {
         return httpRequestUtils.getResponse(getAppSettingUrl() + appId, "application/json", "application/json");
     }
 
-    public String getHelpCenterUrl() {
+    public String getHelpCenterUrl(boolean hideChat) {
         if(faqPageName!=null)
-            return getKmMappedUrl(KM_HELPCENTER) + FAQ_PAGE_ENDPOINT + faqPageName+ HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context);
+            return getKmMappedUrl(KM_HELPCENTER) + FAQ_PAGE_ENDPOINT + faqPageName+ HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context) + (hideChat ? "&hideChat=true" : "");
         else
-            return getKmMappedUrl(KM_HELPCENTER) + HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context);
+            return getKmMappedUrl(KM_HELPCENTER) + HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context) + (hideChat ? "&hideChat=true" : "");
     }
 
     public String getKmMappedUrl(String urlMapper) {

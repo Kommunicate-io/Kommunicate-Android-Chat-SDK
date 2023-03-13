@@ -2793,7 +2793,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 } else {
                                     setDocumentIcon(null, imageViewDoc);
                                     setDocumentIcon(message.getFileMetas().getContentType(), imageViewDoc);
-                                   // imageViewDoc.setImageResource(R.drawable.ic_documentreceive);
                                 }
                                 applozicDocRelativeLayout.setVisibility(VISIBLE);
                             } else if (message.getFilePaths() != null) {
@@ -2803,7 +2802,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                     imageViewDoc.setImageResource(R.drawable.ic_play_circle_outline);
                                 } else {
                                     setDocumentIcon(mimeType, imageViewDoc);
-//                                    imageViewDoc.setImageResource(R.drawable.ic_documentreceive);
                                 }
                                 applozicDocRelativeLayout.setVisibility(VISIBLE);
                             }
@@ -2874,7 +2872,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                         imageViewDoc.setImageResource(R.drawable.ic_play_circle_outline);
                                     } else {
                                         setDocumentIcon(mimeType, imageViewDoc);
-//                                        imageViewDoc.setImageResource(R.drawable.ic_documentreceive);
                                     }
                                     applozicDocRelativeLayout.setVisibility(VISIBLE);
                                 } else if (message.getFilePaths() != null) {
@@ -2892,7 +2889,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                         imageViewDoc.setImageResource(R.drawable.ic_play_circle_outline);
                                     } else {
                                         setDocumentIcon(mimeType, imageViewDoc);
-//                                        imageViewDoc.setImageResource(R.drawable.ic_documentreceive);
                                     }
                                     applozicDocRelativeLayout.setVisibility(VISIBLE);
                                 }

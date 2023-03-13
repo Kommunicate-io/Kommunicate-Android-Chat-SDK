@@ -125,7 +125,6 @@ public class KmDocumentView {
                 fileText.setVisibility(View.VISIBLE);
                 fileText.setText(KmUtils.getAttachmentName(message));
                 setDocumentIcon(mimeType, docIcon);
-                //docIcon.setImageResource(R.drawable.ic_documentreceive);
             }
         }
 
@@ -157,7 +156,6 @@ public class KmDocumentView {
                         audio_duration_textView.setVisibility(GONE);
                         audioseekbar.setVisibility(GONE);
                         setDocumentIcon(mimeType, docIcon);
-//                        docIcon.setImageResource(R.drawable.ic_documentreceive);
                     }
                 }
             }
@@ -188,13 +186,11 @@ public class KmDocumentView {
                 filePath = message.getFilePaths().get(0);
                 mimeType = FileUtils.getMimeType(filePath);
                 if (mimeType != null && !(mimeType.contains("audio"))) {
-                    String fileName = new File(filePath).getName();
                     fileText.setText(KmUtils.getAttachmentName(message));
                     audioseekbar.setVisibility(GONE);
                     audio_duration_textView.setVisibility(GONE);
                     docIcon.setVisibility(View.VISIBLE);
                     setDocumentIcon(mimeType, docIcon);
-//                    docIcon.setImageResource(R.drawable.ic_documentreceive);
                 } else {
                     if (message.isAttachmentDownloaded()) {
                         KommunicateAudioManager.getInstance(context).updateAudioDuration(audio_duration_textView, filePath);

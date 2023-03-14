@@ -222,6 +222,7 @@ import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
 import static java.util.Collections.disjoint;
 
 /**
@@ -2790,7 +2791,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 if (message.getFileMetas().getContentType().contains("audio")) {
                                     imageViewDoc.setImageResource(R.drawable.ic_play_circle_outline);
                                 } else {
-                                    imageViewDoc.setImageResource(R.drawable.ic_documentreceive);
+                                    setDocumentIcon(null, imageViewDoc);
+                                    setDocumentIcon(message.getFileMetas().getContentType(), imageViewDoc);
                                 }
                                 applozicDocRelativeLayout.setVisibility(VISIBLE);
                             } else if (message.getFilePaths() != null) {
@@ -2799,7 +2801,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 if (mimeType.contains("audio")) {
                                     imageViewDoc.setImageResource(R.drawable.ic_play_circle_outline);
                                 } else {
-                                    imageViewDoc.setImageResource(R.drawable.ic_documentreceive);
+                                    setDocumentIcon(mimeType, imageViewDoc);
                                 }
                                 applozicDocRelativeLayout.setVisibility(VISIBLE);
                             }
@@ -2864,10 +2866,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 RelativeLayout applozicDocRelativeLayout = (RelativeLayout) view.findViewById(R.id.applozic_doc_downloaded);
                                 ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.doc_icon);
                                 if (message.getFileMetas() != null && message.getFilePaths() == null) {
+                                    String filePath = message.getFilePaths().get(0);
+                                    final String mimeType = FileUtils.getMimeType(filePath);
                                     if (message.getFileMetas().getContentType().contains("audio")) {
                                         imageViewDoc.setImageResource(R.drawable.ic_play_circle_outline);
                                     } else {
-                                        imageViewDoc.setImageResource(R.drawable.ic_documentreceive);
+                                        setDocumentIcon(mimeType, imageViewDoc);
                                     }
                                     applozicDocRelativeLayout.setVisibility(VISIBLE);
                                 } else if (message.getFilePaths() != null) {
@@ -2884,7 +2888,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                         }
                                         imageViewDoc.setImageResource(R.drawable.ic_play_circle_outline);
                                     } else {
-                                        imageViewDoc.setImageResource(R.drawable.ic_documentreceive);
+                                        setDocumentIcon(mimeType, imageViewDoc);
                                     }
                                     applozicDocRelativeLayout.setVisibility(VISIBLE);
                                 }

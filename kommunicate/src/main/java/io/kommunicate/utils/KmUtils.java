@@ -23,15 +23,18 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -149,6 +152,21 @@ public class KmUtils {
                 }
             }
         return null;
+    }
+
+    public static String getAttachmentName(Message message) {
+        if (message == null) {
+            return "File";
+        }
+        FileMeta fileMeta = message.getFileMetas();
+        if (fileMeta == null && message.getFilePaths() != null) {
+            return new File(message.getFilePaths().get(0)).getName().replace(KmConstants.AWS_ENCRYPTED, "").replace(String.valueOf(message.getCreatedAtTime()), "");
+        }
+        if (fileMeta != null && fileMeta.getName() != null) {
+            String fileName = FileUtils.getName(fileMeta.getName()) + message.getCreatedAtTime() + "." + FileUtils.getFileFormat(fileMeta.getName());
+            return fileName.replace(KmConstants.AWS_ENCRYPTED, "").replace(String.valueOf(message.getCreatedAtTime()), "");
+        }
+        return "File";
     }
 
     public enum PackageType {

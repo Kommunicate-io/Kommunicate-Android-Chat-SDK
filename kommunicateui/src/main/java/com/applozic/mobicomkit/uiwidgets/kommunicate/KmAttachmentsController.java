@@ -185,17 +185,13 @@ public class KmAttachmentsController {
                 fileName = FileUtils.getFileName(context, selectedFileUri);
 
                 String fileFormat = FileUtils.getFileFormat(fileName);
-                String fileNameToWrite;
                 if (TextUtils.isEmpty(fileFormat)) {
                     String format = FileUtils.getFileFormat(FileUtils.getFile(context, selectedFileUri).getAbsolutePath());
                     if (TextUtils.isEmpty(format)) {
                         return FORMAT_EMPTY;
                     }
-                    fileNameToWrite = timeStamp + "." + format;
-                } else {
-                    fileNameToWrite = timeStamp + "." + fileFormat;
                 }
-                File mediaFile = FileClientService.getFilePath(fileNameToWrite, context.getApplicationContext(), mimeType);
+                File mediaFile = FileClientService.getFilePath(fileName, context.getApplicationContext(), mimeType);
                 new FileTaskAsync(mediaFile, selectedFileUri, context, prePostUIMethods).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } catch (Exception e) {
                 e.printStackTrace();

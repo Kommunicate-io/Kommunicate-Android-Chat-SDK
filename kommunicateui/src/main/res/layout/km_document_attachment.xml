@@ -32,6 +32,8 @@
             android:id="@+id/download_doc_relative_layout"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:background="@color/applozic_theme_color_primary"
             android:gravity="center_vertical">
 
@@ -136,8 +138,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:maxLines="3"
             android:text=""
             android:textColor="@color/km_white_color"

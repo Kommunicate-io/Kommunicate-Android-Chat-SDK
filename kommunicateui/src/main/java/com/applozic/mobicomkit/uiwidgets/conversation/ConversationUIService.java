@@ -27,6 +27,7 @@ import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
@@ -49,6 +50,7 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
+import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
@@ -255,7 +257,7 @@ public class ConversationUIService {
                 setPositiveButton(R.string.delete_conversation, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new DeleteConversationAsyncTask(new MobiComConversationService(fragmentActivity), contact, channel, null, fragmentActivity).execute();
+                        new DeleteConversationAsyncTask(new MobiComConversationService(fragmentActivity), null, channel, null, fragmentActivity).execute();
 
                     }
                 });
@@ -264,22 +266,8 @@ public class ConversationUIService {
             public void onClick(DialogInterface dialogInterface, int i) {
             }
         });
-        String name = "";
-        if (channel != null) {
-            if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                String userId = ChannelService.getInstance(fragmentActivity).getGroupOfTwoReceiverUserId(channel.getKey());
-                if (!TextUtils.isEmpty(userId)) {
-                    Contact withUserContact = baseContactService.getContactById(userId);
-                    name = withUserContact.getDisplayName();
-                }
-            } else {
-                name = ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(fragmentActivity).getUserId());
-            }
-        } else {
-            name = contact.getDisplayName();
-        }
-        alertDialog.setTitle(fragmentActivity.getString(R.string.dialog_delete_conversation_title).replace("[name]", name));
-        alertDialog.setMessage(fragmentActivity.getString(R.string.dialog_delete_conversation_confir).replace("[name]", name));
+
+        alertDialog.setTitle(fragmentActivity.getString(R.string.dialog_delete_conversation_title));
         alertDialog.setCancelable(true);
         alertDialog.create().show();
     }

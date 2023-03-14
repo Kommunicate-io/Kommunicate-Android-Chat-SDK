@@ -485,8 +485,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 return;
             }
             Message message = messageList.get(position);
-            menu.setHeaderTitle(R.string.conversation_options);
-
             String[] menuItems = context.getResources().getStringArray(R.array.conversation_options_menu);
 
             boolean isUserPresentInGroup = false;

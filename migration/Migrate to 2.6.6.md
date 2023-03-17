@@ -1,4 +1,4 @@
-## Migrating to 2.x.x
+## Migrating to 2.6.6
 
 - We have changed our formData format to match with the Web SDK. If you were using webhooks/inline code earlier with form submission, please check this migration guide:
 

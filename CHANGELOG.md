@@ -4,7 +4,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
 
-## Unreleased
+## Kommunicate Android SDK 2.6.6
 1) Added support to hide chat in helpcenter with "hideChatInHelpcenter" custom setting
 2) Fixed formData getting double stringified.
 

@@ -138,7 +138,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean oneTimeRating;
     private boolean restartConversationButtonVisibility = true;
     private boolean rateConversationMenuOption;
-    private boolean javaScriptEnabled;
+    private boolean javaScriptEnabled = true;
     private boolean hideChatInHelpcenter = true;
 
     public boolean isRateConversationMenuOption() {

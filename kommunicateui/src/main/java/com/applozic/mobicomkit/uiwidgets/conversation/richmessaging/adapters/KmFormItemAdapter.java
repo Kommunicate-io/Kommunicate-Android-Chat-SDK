@@ -3,11 +3,13 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.Gravity;
@@ -37,6 +39,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFor
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmSelectButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
@@ -240,21 +243,37 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             formItemViewHolder.formFlowLayout.removeAllViews();
                             for (KmFormPayloadModel.Options option : options) {
                                 final int index = options.indexOf(option);
-                                final CheckBox checkBox = new CheckBox(context);
+                                final KmSelectButton checkBox = new KmSelectButton(context);
                                 checkBox.setGravity(Gravity.FILL);
                                 checkBox.setChecked(checkedBoxes.contains(index));
                                 checkBox.setText(option.getLabel());
-                                checkBox.setPaddingRelative(0, 0, 20, 0);
-
-                                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                                checkBox.setButtonDrawable(R.drawable.km_multiple_button_selector);
+                                checkBox.setOnCheckedChangeListener(new KmSelectButton.onMultipleSelectButtonClicked() {
                                     @Override
-                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        boolean isDone = isChecked ? checkedBoxes.add(index) : checkedBoxes.remove(index);
+                                    public void onSelectionChanged(View view, boolean isChecked) {
+                                      boolean isDone = isChecked ? checkedBoxes.add(index) : checkedBoxes.remove(index);
+                                        checkBox.setChecked(isChecked);
                                         checkBoxStateArray.put(position, checkedBoxes);
                                         formStateModel.setCheckBoxStates(checkBoxStateArray);
                                         KmFormStateHelper.addFormState(messageKey, formStateModel);
                                     }
                                 });
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                    checkBox.setPaddingRelative(0, 0, 20, 0);
+                                }
+//                                checkBox.setPaddingRelative(0, 0, 20, 0);
+
+//                                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                                    @Override
+//                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                                        Log.e("checkbox", "check");
+//
+//                                        boolean isDone = isChecked ? checkedBoxes.add(index) : checkedBoxes.remove(index);
+//                                        checkBoxStateArray.put(position, checkedBoxes);
+//                                        formStateModel.setCheckBoxStates(checkBoxStateArray);
+//                                        KmFormStateHelper.addFormState(messageKey, formStateModel);
+//                                    }
+//                                });
 
                                 formItemViewHolder.formFlowLayout.addView(checkBox);
                             }

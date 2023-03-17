@@ -16,7 +16,6 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -1581,7 +1580,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     public void refreshWebView() {
         if (webViews != null) {
             for(WebView webView : webViews) {
-                Log.e("webview", "load");
                 webView.reload();
             }
         }

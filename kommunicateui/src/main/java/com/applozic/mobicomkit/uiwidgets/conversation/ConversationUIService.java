@@ -29,7 +29,6 @@ import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
@@ -58,6 +57,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.kommunicate.async.KmDeleteConversationTask;
+import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmChannelService;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -253,13 +254,22 @@ public class ConversationUIService {
         }
     }
 
-    public void deleteConversationThread(final Contact contact, final Channel channel) {
+    public void deleteChannel(final Context context, final Channel channel) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(fragmentActivity).
                 setPositiveButton(R.string.delete_conversation, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new DeleteConversationAsyncTask(new MobiComConversationService(fragmentActivity), contact, channel, null, fragmentActivity).execute();
+                        new KmDeleteConversationTask(context, channel.getKey(),false, new KmCallback() {
+                            @Override
+                            public void onSuccess(Object message) {
+                                KmToast.success(context, R.string.conversation_delete_successful, Toast.LENGTH_SHORT).show();
+                            }
 
+                            @Override
+                            public void onFailure(Object error) {
+                                KmToast.error(context, R.string.conversation_delete_failed, Toast.LENGTH_SHORT).show();
+                            }
+                        }).execute();
                     }
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -267,22 +277,8 @@ public class ConversationUIService {
             public void onClick(DialogInterface dialogInterface, int i) {
             }
         });
-        String name = "";
-        if (channel != null) {
-            if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
-                String userId = ChannelService.getInstance(fragmentActivity).getGroupOfTwoReceiverUserId(channel.getKey());
-                if (!TextUtils.isEmpty(userId)) {
-                    Contact withUserContact = baseContactService.getContactById(userId);
-                    name = withUserContact.getDisplayName();
-                }
-            } else {
-                name = ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(fragmentActivity).getUserId());
-            }
-        } else {
-            name = contact.getDisplayName();
-        }
-        alertDialog.setTitle(fragmentActivity.getString(R.string.dialog_delete_conversation_title).replace("[name]", name));
-        alertDialog.setMessage(fragmentActivity.getString(R.string.dialog_delete_conversation_confir).replace("[name]", name));
+
+        alertDialog.setTitle(fragmentActivity.getString(R.string.dialog_delete_conversation_title));
         alertDialog.setCancelable(true);
         alertDialog.create().show();
     }
@@ -647,6 +643,9 @@ public class ConversationUIService {
     }
 
     public void updateAgentStatus(String userId, Integer status) {
+        if (BroadcastService.isQuick()) {
+            return;
+        }
         if(userId != null && status != null && !KmUtils.isAgent() && getConversationFragment().getChannel() != null && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
                 if(status.equals(KmConstants.STATUS_AWAY)) {
                     getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), false);

@@ -30,6 +30,8 @@
     <string name="zero_friends_on_app">Contacts were not found.</string>
     <string name="zero_groups_on_app">Groups were not found.</string>
     <string name="delete_thread_text">Deleting..</string>
+    <string name="conversation_delete_successful">Conversation has been deleted</string>
+    <string name="conversation_delete_failed">Conversation failed to delete</string>
     <string name="search_title">Search</string>
     <string name="km_user_already_in_a_group">Already added to the [groupType].</string>
     <string name="km_contacts_loading_info">Loading please wait..</string>

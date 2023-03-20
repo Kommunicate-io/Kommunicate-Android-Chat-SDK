@@ -485,8 +485,6 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 return;
             }
             Message message = messageList.get(position);
-            menu.setHeaderTitle(R.string.conversation_options);
-
             String[] menuItems = context.getResources().getStringArray(R.array.conversation_options_menu);
 
             boolean isUserPresentInGroup = false;
@@ -537,19 +535,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 Message message = messageList.get(position);
 
                 Channel channel = null;
-                Contact contact = null;
                 if (message.getGroupId() != null) {
                     channel = ChannelDatabaseService.getInstance(context).getChannelByChannelKey(message.getGroupId());
-                } else {
-                    contact = contactService.getContactById(message.getContactIds());
                 }
 
                 switch (item.getItemId()) {
                     case 0:
-                        if (channel != null && channel.isDeleted()) {
-                            conversationUIService.deleteGroupConversation(channel);
-                        } else {
-                            conversationUIService.deleteConversationThread(contact, channel);
+                        if(channel != null) {
+                            conversationUIService.deleteChannel(context, channel);
                         }
                         break;
                     case 1:

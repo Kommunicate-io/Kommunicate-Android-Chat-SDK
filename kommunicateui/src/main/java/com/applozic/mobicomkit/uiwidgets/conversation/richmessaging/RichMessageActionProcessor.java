@@ -30,6 +30,8 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -393,9 +395,9 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             metadata.putAll(messageMetadata);
         }
         if (formSelectedData != null && postBackToBotPlatform) {
-            Map<String, String> formDataMap = new HashMap<>();
-            formDataMap.put(KmFormPayloadModel.KM_FORM_DATA, GsonUtils.getJsonFromObject(getStringMap(formSelectedData), Map.class));
-            metadata.put(Kommunicate.KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(formDataMap, Map.class));
+            Map<String, Object> formDataMap = new HashMap<>();
+            formDataMap.put(KmFormPayloadModel.KM_FORM_DATA, new JSONObject(formSelectedData));
+            metadata.put(Kommunicate.KM_CHAT_CONTEXT,    String.valueOf(new JSONObject(formDataMap)));
         }
         return metadata;
     }

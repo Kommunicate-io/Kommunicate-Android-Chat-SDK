@@ -140,7 +140,11 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean rateConversationMenuOption;
     private boolean javaScriptEnabled;
     private boolean hideChatInHelpcenter = true;
+    private boolean checkboxAsMultipleButton = false;
 
+    public boolean isCheckboxAsMultipleButton() {
+        return checkboxAsMultipleButton;
+    }
     public boolean isRateConversationMenuOption() {
         return rateConversationMenuOption;
     }

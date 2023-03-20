@@ -36,7 +36,7 @@ public class KmFormRichMessage extends KmRichMessage {
 
         LinearLayoutManager formLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         alFormLayoutRecycler.setLayoutManager(formLayoutManager);
-        final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString());
+        final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString(), alCustomizationSettings);
         alFormLayoutRecycler.setAdapter(formItemAdapter);
 
         if (isMessageProcessed && themeHelper.hideSubmitButtonsPostCTA()) {

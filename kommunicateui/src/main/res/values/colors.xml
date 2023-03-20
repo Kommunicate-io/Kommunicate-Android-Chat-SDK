@@ -85,4 +85,9 @@
     <color name="km_language_selected_name_text_color">#ffffff</color>
     <color name="km_language_selected_code_text_color">#ffffff</color>
     <color name="km_language_divider_color">#E7EAF2</color>
+    
+    <!--Multiple Select Button-->
+    <color name="km_multiple_select_text_color">#00A4BF</color>
+    <color name="km_multiple_select_border_color">#00A4BF</color>
+    <color name="km_multiple_select_selected_background_color">#D4F3F8</color>
 </resources>

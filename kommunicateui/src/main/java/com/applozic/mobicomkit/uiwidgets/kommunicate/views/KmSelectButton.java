@@ -1,24 +1,27 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.views;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.applozic.mobicomkit.uiwidgets.R;
-
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatCheckBox;
-
+/**
+ * UI class for Multiple Select Button.
+ * It can be enabled by adding "checkboxAsMultipleButton"
+ * This will replace the normal Checkbox with multiple select buttons
+ *
+ * @author Aman
+ * @date March '23
+ */
 public class KmSelectButton extends LinearLayout {
     private static final String TAG = "KmSelectButton";
     private LinearLayout rootLinearLayout;
@@ -36,6 +39,7 @@ public class KmSelectButton extends LinearLayout {
         buttonTextView = rootLinearLayout.findViewById(R.id.singleTextItem);
         return rootLinearLayout;
     }
+
     public KmSelectButton(Context context) {
         super(context);
         inflateView(context);
@@ -54,32 +58,21 @@ public class KmSelectButton extends LinearLayout {
         buttonTextView.setText(text);
     }
     public void setChecked(boolean isChecked) {
-        Log.e("checkbox", "check");
-
         checked = isChecked;
-        buttonTextView.setPressed(isChecked);
-        buttonTextView.setSelected(isChecked);
+        buttonTextView.setTypeface(null, isChecked? Typeface.BOLD : Typeface.NORMAL);
         buttonTextView.setCompoundDrawablesWithIntrinsicBounds(isChecked ? R.drawable.km_selector_success: 0, 0,0, 0);
+        buttonTextView.setPadding(DimensionsUtils.convertDpToPx(isChecked ? 5 : 16), DimensionsUtils.convertDpToPx(isChecked ? 8 : 9), DimensionsUtils.convertDpToPx(isChecked ? 5 : 17), DimensionsUtils.convertDpToPx(8));
         StateListDrawable drawable = (StateListDrawable)buttonTextView.getBackground();
         DrawableContainer.DrawableContainerState dcs = (DrawableContainer.DrawableContainerState)drawable.getConstantState();
         Drawable[] drawableItems = dcs.getChildren();
         GradientDrawable gradientDrawableChecked = (GradientDrawable)drawableItems[0];
-//        gradientDrawableChecked.setColor(Color.BLUE);
-        //        GradientDrawable drawable = (GradientDrawable) buttonTextView.getBackground();
-//        drawable.mutate();
-//        drawable.setColor(Color.BLUE);
-        //        buttonTextView.setBackgroundColor(isChecked ? getResources().getColor(R.color.holo_blue) : getResources().getColor(R.color.white));
-//        buttonTextView.setEnabled(true);
-//        buttonTextView.setSelected(true);
-//        buttonTextView.setActivated(true);
-       // this.setPressed(true);
+        gradientDrawableChecked.setColor(getResources().getColor(isChecked ? R.color.km_multiple_select_selected_background_color : R.color.applozic_transparent_color));
     }
     public void setOnCheckedChangeListener(final onMultipleSelectButtonClicked onCheckedChangeListener) {
         this.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                onCheckedChangeListener.onSelectionChanged(null, !checked);
-
+                onCheckedChangeListener.onSelectionChanged(KmSelectButton.this, !checked);
             }
         });
     }

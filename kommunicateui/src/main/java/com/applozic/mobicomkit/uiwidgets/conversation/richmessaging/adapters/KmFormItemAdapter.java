@@ -29,6 +29,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.form.KmDropdownItemAdapter;
@@ -37,6 +38,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFor
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmSelectButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
@@ -66,6 +68,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private String messageKey;
     private SparseIntArray validationArray;
     private SparseArray<KmFormPayloadModel.Options> dropdownFieldArray;
+    private AlCustomizationSettings alCustomizationSettings;
     private static final int VALID_DATA = 2;
     private static final int INVALID_DATA = 1;
 
@@ -75,12 +78,13 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_DROPDOWN = 4;
 
     //TODO: Create Adaptor Factory Pattern for this Form rich message type
-    public KmFormItemAdapter(Context context, List<KmFormPayloadModel> payloadList, String messageKey) {
+    public KmFormItemAdapter(Context context, List<KmFormPayloadModel> payloadList, String messageKey, AlCustomizationSettings alCustomizationSettings) {
         this.context = context;
         this.payloadList = payloadList;
         this.messageKey = messageKey;
 
         this.formStateModel = KmFormStateHelper.getFormState(messageKey);
+        this.alCustomizationSettings = alCustomizationSettings;
 
         KmFormStateHelper.initFormState();
 
@@ -227,36 +231,48 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         }, formItemViewHolder.formFlowLayout, options).createLayout(radioButtonSelectedIndices.get(position, -1));
                     } else if (KmFormPayloadModel.Type.CHECKBOX.getValue().equals(payloadModel.getType())) {
                         KmFormPayloadModel.Selections selectionModel = payloadModel.getSelectionModel();
-
                         setFormLabelText(formItemViewHolder, selectionModel.getTitle());
                         handleItemVisibility(formItemViewHolder, formItemViewHolder.formFlowLayout);
-
                         List<KmFormPayloadModel.Options> options = payloadModel.getSelectionModel().getOptions();
-
                         final HashSet<Integer> checkedBoxes = checkBoxStateArray.get(position, new HashSet<Integer>());
-
                         if (options != null && !options.isEmpty()) {
-
                             formItemViewHolder.formFlowLayout.removeAllViews();
                             for (KmFormPayloadModel.Options option : options) {
                                 final int index = options.indexOf(option);
-                                final CheckBox checkBox = new CheckBox(context);
-                                checkBox.setGravity(Gravity.FILL);
-                                checkBox.setChecked(checkedBoxes.contains(index));
-                                checkBox.setText(option.getLabel());
-                                checkBox.setPaddingRelative(0, 0, 20, 0);
+                                if(alCustomizationSettings.isCheckboxAsMultipleButton()) {
+                                    final KmSelectButton checkBox = new KmSelectButton(context);
+                                    checkBox.setGravity(Gravity.FILL);
+                                    checkBox.setChecked(checkedBoxes.contains(index));
+                                    checkBox.setText(option.getLabel());
+                                    checkBox.setOnCheckedChangeListener(new KmSelectButton.onMultipleSelectButtonClicked() {
+                                        @Override
+                                        public void onSelectionChanged(View view, boolean isChecked) {
+                                            boolean isDone = isChecked ? checkedBoxes.add(index) : checkedBoxes.remove(index);
+                                            checkBox.setChecked(isChecked);
+                                            checkBoxStateArray.put(position, checkedBoxes);
+                                            formStateModel.setCheckBoxStates(checkBoxStateArray);
+                                            KmFormStateHelper.addFormState(messageKey, formStateModel);
+                                        }
+                                    });
+                                    formItemViewHolder.formFlowLayout.addView(checkBox);
+                                } else {
+                                    final CheckBox checkBox = new CheckBox(context);
+                                    checkBox.setGravity(Gravity.FILL);
+                                    checkBox.setChecked(checkedBoxes.contains(index));
+                                    checkBox.setText(option.getLabel());
+                                    checkBox.setPaddingRelative(0, 0, 20, 0);
 
-                                checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                                    @Override
-                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                        boolean isDone = isChecked ? checkedBoxes.add(index) : checkedBoxes.remove(index);
-                                        checkBoxStateArray.put(position, checkedBoxes);
-                                        formStateModel.setCheckBoxStates(checkBoxStateArray);
-                                        KmFormStateHelper.addFormState(messageKey, formStateModel);
-                                    }
-                                });
-
-                                formItemViewHolder.formFlowLayout.addView(checkBox);
+                                    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                            boolean isDone = isChecked ? checkedBoxes.add(index) : checkedBoxes.remove(index);
+                                            checkBoxStateArray.put(position, checkedBoxes);
+                                            formStateModel.setCheckBoxStates(checkBoxStateArray);
+                                            KmFormStateHelper.addFormState(messageKey, formStateModel);
+                                        }
+                                    });
+                                    formItemViewHolder.formFlowLayout.addView(checkBox);
+                                }
                             }
                         } else {
                             formItemViewHolder.formFlowLayout.setVisibility(View.GONE);

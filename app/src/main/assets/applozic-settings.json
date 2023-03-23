@@ -167,5 +167,6 @@
   "rateConversationMenuOption" : true,
   "javaScriptEnabled": true,
   "restartConversationButtonVisibility": true,
-  "hideChatInHelpcenter": true
+  "hideChatInHelpcenter": true,
+  "checkboxAsMultipleButton": true
 }

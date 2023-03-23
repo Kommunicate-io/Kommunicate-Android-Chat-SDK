@@ -3,6 +3,9 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.6.8
+1) Added support for Multiple Select Button - using custom setting "checkboxAsMultipleButton"
+2) Added support to show conversation info view below topbar - using KmConversationInfoSetting class
 
 ## Kommunicate Android SDK 2.6.6
 1) Added support to hide chat in helpcenter with "hideChatInHelpcenter" custom setting

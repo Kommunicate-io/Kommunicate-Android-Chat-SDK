@@ -8,6 +8,7 @@ import android.os.Message;
 import com.applozic.mobicomkit.feed.MqttMessageResponse;
 import com.applozic.mobicomkit.listners.AlMqttListener;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
+import com.applozic.mobicomkit.listners.KmConversationInfoListener;
 import com.applozic.mobicomkit.listners.KmStatusListener;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -28,6 +29,7 @@ public class AlEventManager {
     private Map<String, AlMqttListener> mqttListenerMap;
     private Map<String, KmStatusListener> statusListenerMap;
     private KmPluginEventListener kmPluginEventListener;
+    private KmConversationInfoListener kmConversationInfoListener;
     private Handler uiHandler;
 
     public static AlEventManager getInstance() {
@@ -106,6 +108,16 @@ public class AlEventManager {
     public void registerPluginEventListener(KmPluginEventListener kmPluginEventListener) {
         this.kmPluginEventListener = kmPluginEventListener;
         initHandler();
+    }
+
+    public void registerConversationInfoListener(KmConversationInfoListener kmConversationInfoListener) {
+        this.kmConversationInfoListener = kmConversationInfoListener;
+    }
+
+    public void sendOnConversationInfoClicked() {
+        if(kmConversationInfoListener != null) {
+            kmConversationInfoListener.onConversationInfoClicked();
+        }
     }
 
     private void initHandler() {

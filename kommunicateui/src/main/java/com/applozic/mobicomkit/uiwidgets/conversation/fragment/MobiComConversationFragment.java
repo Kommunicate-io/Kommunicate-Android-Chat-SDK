@@ -148,6 +148,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSett
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAwayView;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmConversationInfoView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmLanguageSlideView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
@@ -214,6 +215,7 @@ import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmFeedback;
+import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
 import io.kommunicate.utils.KmAppSettingPreferences;
@@ -374,6 +376,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isRecordOptionEnabled;
     protected boolean isUserGivingEmail;
     protected RelativeLayout conversationRootLayout;
+    protected KmConversationInfoView kmConversationInfoView;
 
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
@@ -507,7 +510,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (faqButtonLayout != null) {
             faqButtonLayout.setVisibility(View.GONE);
         }
-
+        //Conversation Info screen to show below Topbar
+        kmConversationInfoView = list.findViewById(R.id.km_conversation_info_view);
+        KmConversationInfoSetting infoSetting = KmConversationInfoSetting.getInstance(getContext());
+        if(infoSetting.isKmConversationInfoEnabled()) {
+            kmConversationInfoView.setVisibility(VISIBLE);
+            kmConversationInfoView.setupView(infoSetting.getInfoContent(), infoSetting.getContentColo(), infoSetting.getBackgroundColor(), infoSetting.getLeadingImageIcon(), infoSetting.getTrailingImageIcon());
+        }
 
         if (customToolbarLayout != null) {
             customToolbarLayout.setVisibility(View.GONE);

@@ -16,6 +16,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.ContextMenu;
@@ -39,6 +40,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -221,6 +223,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this.contactService = new AppContactService(context);
         this.imageCache = ImageCache.getInstance(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         this.messageList = messageList;
+//        this.messageList.add(0, messageList.get(1));
         geoApiKey = Applozic.getInstance(context).getGeoApiKey();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
@@ -306,6 +309,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 mainThreadView = layoutInflater.inflate(R.layout.km_received_message_list_view, parent, false);
             }
             return new MyViewHolder(mainThreadView);
+        } else if(viewType == 7) {
+            View feedbackViewHolder = layoutInflater.inflate(R.layout.km_static_top_message, parent, false);
+            return new StaticMessageHolder(feedbackViewHolder);
         }
         if(useInnerTimeStampDesign) {
             view = layoutInflater.inflate(R.layout.mobicom_sent_message_list_view, parent, false);
@@ -322,7 +328,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         final Message message = getItem(position);
 
         try {
-            if (type == 2) {
+            if (type == 7) {
+                StaticMessageHolder messageHolder = (StaticMessageHolder) holder;
+
+                // static message
+            } else if (type == 2) {
                 MyViewHolder2 myViewHolder2 = (MyViewHolder2) holder;
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd, yyyy");
                 SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat("EEEE");
@@ -1472,6 +1482,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         if (message == null) {
             return 0;
         }
+        if(message.isInitialFirstMessage()) {
+            return 7;
+        }
         if (message.isTempDateType()) {
             return 2;
         }
@@ -1488,6 +1501,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         if (message.isVideoCallMessage()) {
             return 5;
         }
+
 
         return message.isTypeOutbox() ? 1 : 0;
     }
@@ -1807,6 +1821,20 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             imageViewFeedbackRating = itemView.findViewById(R.id.idRatingImage);
             scrollViewFeedbackCommentWrap = itemView.findViewById(R.id.idCommentScrollView);
             textViewFeedbackText = itemView.findViewById(R.id.idFeedbackRateText);
+        }
+    }
+
+    static class StaticMessageHolder extends RecyclerView.ViewHolder {
+        TextView textViewFeedbackComment;
+        ImageView imageViewFeedbackRating;
+        ScrollView scrollViewFeedbackCommentWrap;
+        TextView textViewFeedbackText;
+        public StaticMessageHolder(@NonNull View itemView) {
+            super(itemView);
+//            textViewFeedbackComment = itemView.findViewById(R.id.idFeedbackComment);
+//            imageViewFeedbackRating = itemView.findViewById(R.id.idRatingImage);
+//            scrollViewFeedbackCommentWrap = itemView.findViewById(R.id.idCommentScrollView);
+//            textViewFeedbackText = itemView.findViewById(R.id.idFeedbackRateText);
         }
     }
 }

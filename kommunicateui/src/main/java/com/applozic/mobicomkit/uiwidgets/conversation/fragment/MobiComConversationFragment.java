@@ -29,6 +29,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -486,11 +487,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         conversationRootLayout = (RelativeLayout) list.findViewById(R.id.rl_conversation_layout);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
         linearLayoutManager = new KmLinearLayoutManager(getActivity());
+        linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerViewPositionHelper = new RecyclerViewPositionHelper(recyclerView, linearLayoutManager);
         ((ConversationActivity) getActivity()).setChildFragmentLayoutBGToTransparent();
         messageList = new ArrayList<Message>();
+//        messageList.add(new Message());
         multimediaPopupGrid = (GridView) list.findViewById(R.id.mobicom_multimedia_options1);
         textViewCharLimitMessage = list.findViewById(R.id.botCharLimitTextView);
         loggedInUserRole = MobiComUserPreference.getInstance(ApplozicService.getContext(getContext())).getUserRoleType();
@@ -1588,7 +1591,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 boolean added = updateMessageList(message, false);
                 if (added) {
                     //Todo: update unread count
-                    linearLayoutManager.setStackFromEnd(true);
+                    linearLayoutManager.setStackFromEnd(false);
                     recyclerDetailConversationAdapter.updateLastSentMessage(message);
                     recyclerDetailConversationAdapter.notifyDataSetChanged();
                     linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
@@ -1956,12 +1959,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         clearList();
+//        messageList.add(new Message());
         updateTitle(contact, channel);
         swipeLayout.setEnabled(true);
         loadMore = true;
         if (selfDestructMessageSpinner != null) {
             selfDestructMessageSpinner.setSelection(0);
         }
+        Log.e("detailedgg", String.valueOf(messageList.size()));
         recyclerDetailConversationAdapter = getConversationAdapter(getActivity(),
                 R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler);
         recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
@@ -1987,7 +1992,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                linearLayoutManager.setStackFromEnd(true);
+                linearLayoutManager.setStackFromEnd(false);
             }
         });
         recyclerView.setAdapter(recyclerDetailConversationAdapter);
@@ -2535,7 +2540,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 int index = messageList.indexOf(message);
                 if (index != -1) {
                     recyclerView.requestFocusFromTouch();
-                    linearLayoutManager.setStackFromEnd(true);
+                    linearLayoutManager.setStackFromEnd(false);
                     linearLayoutManager.scrollToPositionWithOffset(index, height / 2 - itemHeight / 2);
                     recyclerView.postDelayed(new Runnable() {
                         @Override
@@ -3912,7 +3917,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         if (message.isTempDateType()) {
                             continue;
                         }
-                        endTime = messageList.get(0).getCreatedAtTime();
+                        endTime = messageList.get(alCustomizationSettings.isStaticTopMessage() ? 1 : 0).getCreatedAtTime();
                         break;
                     }
                     nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
@@ -3927,6 +3932,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     firstDateMessage.setTempDateType(Short.valueOf("100"));
                     firstDateMessage.setCreatedAtTime(nextMessageList.get(0).getCreatedAtTime());
 
+                    Message firstMessage = new Message();
+                    firstMessage.setInitialFirstMessage();
+                    if(initial && alCustomizationSettings.isStaticTopMessage() && !messageList.contains(firstMessage)) {
+                        createAtMessage.add(firstMessage);
+//                        createAtMessage.add(firstMessage);
+                    } else if(!initial && alCustomizationSettings.isStaticTopMessage()) {
+                        createAtMessage.add(firstMessage);
+                        messageList.remove(firstMessage);
+                    }
                     if (initial && !messageList.contains(firstDateMessage)) {
                         createAtMessage.add(firstDateMessage);
                     } else if (!initial) {
@@ -3969,7 +3983,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             super.onPostExecute(result);
 
             if (nextMessageList.isEmpty()) {
-                linearLayoutManager.setStackFromEnd(true);
+                linearLayoutManager.setStackFromEnd(false);
             }
 
             if (!messageList.isEmpty() && !nextMessageList.isEmpty() &&
@@ -4009,7 +4023,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     });
                 }
             } else if (!nextMessageList.isEmpty()) {
-                linearLayoutManager.setStackFromEnd(true);
+                linearLayoutManager.setStackFromEnd(false);
+                // nextMessageList should be empty on refresh
                 messageList.addAll(0, nextMessageList);
                 linearLayoutManager.scrollToPositionWithOffset(nextMessageList.size() - 1, 0);
             }

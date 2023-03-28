@@ -141,6 +141,11 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean javaScriptEnabled = true;
     private boolean hideChatInHelpcenter = true;
     private boolean checkboxAsMultipleButton = false;
+    private boolean staticTopMessage = true;
+
+    public boolean isStaticTopMessage() {
+        return staticTopMessage;
+    }
 
     public boolean isCheckboxAsMultipleButton() {
         return checkboxAsMultipleButton;

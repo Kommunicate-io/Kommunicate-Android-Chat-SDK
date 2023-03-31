@@ -330,8 +330,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         try {
             if (type == 7) {
                 StaticMessageHolder messageHolder = (StaticMessageHolder) holder;
+                messageHolder.topMessageTextView.setText(alCustomizationSettings.getStaticTopMessage());
+                if(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage())) {
+                    messageHolder.topMessageImageView.setImageResource(context.getResources().getIdentifier(alCustomizationSettings.getStaticTopIcon(), "drawable", context.getPackageName()));
+                }
 
-                // static message
             } else if (type == 2) {
                 MyViewHolder2 myViewHolder2 = (MyViewHolder2) holder;
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd, yyyy");
@@ -1825,16 +1828,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     static class StaticMessageHolder extends RecyclerView.ViewHolder {
-        TextView textViewFeedbackComment;
-        ImageView imageViewFeedbackRating;
-        ScrollView scrollViewFeedbackCommentWrap;
-        TextView textViewFeedbackText;
+        TextView topMessageTextView;
+        ImageView topMessageImageView;
+
         public StaticMessageHolder(@NonNull View itemView) {
             super(itemView);
-//            textViewFeedbackComment = itemView.findViewById(R.id.idFeedbackComment);
-//            imageViewFeedbackRating = itemView.findViewById(R.id.idRatingImage);
-//            scrollViewFeedbackCommentWrap = itemView.findViewById(R.id.idCommentScrollView);
-//            textViewFeedbackText = itemView.findViewById(R.id.idFeedbackRateText);
+            topMessageImageView = itemView.findViewById(R.id.top_message_image_view);
+            topMessageTextView = itemView.findViewById(R.id.top_message_text_view);
+
         }
     }
 }

@@ -3917,7 +3917,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         if (message.isTempDateType()) {
                             continue;
                         }
-                        endTime = messageList.get(alCustomizationSettings.isStaticTopMessage() ? 1 : 0).getCreatedAtTime();
+                        endTime = messageList.get(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
                         break;
                     }
                     nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
@@ -3934,10 +3934,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                     Message firstMessage = new Message();
                     firstMessage.setInitialFirstMessage();
-                    if(initial && alCustomizationSettings.isStaticTopMessage() && !messageList.contains(firstMessage)) {
+                    if(initial && !TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) && !messageList.contains(firstMessage)) {
                         createAtMessage.add(firstMessage);
 //                        createAtMessage.add(firstMessage);
-                    } else if(!initial && alCustomizationSettings.isStaticTopMessage()) {
+                    } else if(!initial && !TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage())) {
                         createAtMessage.add(firstMessage);
                         messageList.remove(firstMessage);
                     }

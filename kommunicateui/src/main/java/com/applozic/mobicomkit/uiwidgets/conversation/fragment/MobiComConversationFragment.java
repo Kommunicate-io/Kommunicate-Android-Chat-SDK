@@ -29,7 +29,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -493,7 +492,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         recyclerViewPositionHelper = new RecyclerViewPositionHelper(recyclerView, linearLayoutManager);
         ((ConversationActivity) getActivity()).setChildFragmentLayoutBGToTransparent();
         messageList = new ArrayList<Message>();
-//        messageList.add(new Message());
         multimediaPopupGrid = (GridView) list.findViewById(R.id.mobicom_multimedia_options1);
         textViewCharLimitMessage = list.findViewById(R.id.botCharLimitTextView);
         loggedInUserRole = MobiComUserPreference.getInstance(ApplozicService.getContext(getContext())).getUserRoleType();
@@ -1959,14 +1957,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         clearList();
-//        messageList.add(new Message());
         updateTitle(contact, channel);
         swipeLayout.setEnabled(true);
         loadMore = true;
         if (selfDestructMessageSpinner != null) {
             selfDestructMessageSpinner.setSelection(0);
         }
-        Log.e("detailedgg", String.valueOf(messageList.size()));
         recyclerDetailConversationAdapter = getConversationAdapter(getActivity(),
                 R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler);
         recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
@@ -3936,7 +3932,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     firstMessage.setInitialFirstMessage();
                     if(initial && !TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) && !messageList.contains(firstMessage)) {
                         createAtMessage.add(firstMessage);
-//                        createAtMessage.add(firstMessage);
                     } else if(!initial && !TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage())) {
                         createAtMessage.add(firstMessage);
                         messageList.remove(firstMessage);
@@ -4024,7 +4019,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             } else if (!nextMessageList.isEmpty()) {
                 linearLayoutManager.setStackFromEnd(false);
-                // nextMessageList should be empty on refresh
                 messageList.addAll(0, nextMessageList);
                 linearLayoutManager.scrollToPositionWithOffset(nextMessageList.size() - 1, 0);
             }

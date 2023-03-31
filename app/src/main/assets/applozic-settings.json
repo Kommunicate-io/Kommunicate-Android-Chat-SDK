@@ -169,6 +169,6 @@
   "restartConversationButtonVisibility": true,
   "hideChatInHelpcenter": true,
   "checkboxAsMultipleButton": true,
-  "staticTopMessage": "Messages in this chat are end-to-end encrypted. No one outside this chat can read them",
+  "staticTopMessage": "",
   "staticTopIcon": "km_lock"
 }

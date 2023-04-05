@@ -33,6 +33,7 @@ import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
 import io.kommunicate.app.BuildConfig;
 import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
@@ -197,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
         Kommunicate.login(MainActivity.this, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+
                 if (KMUser.RoleType.USER_ROLE.getValue().equals(registrationResponse.getRoleType())) {
                     ApplozicClient.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
                 } else {
@@ -204,6 +206,13 @@ public class MainActivity extends AppCompatActivity {
                     metadata.put("skipBot", "true");
                     ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
+
+                //To enable the new Custom toolbar Design
+                KmConversationInfoSetting.getInstance(getApplicationContext()).enableCustomToolbarSubtitleDesign(true);
+                //Setting up the agent experience
+                KmConversationInfoSetting.getInstance(getApplicationContext()).setToolbarAgentExperience("16 years of experience");
+                //Setting up the agent rating
+                KmConversationInfoSetting.getInstance(getApplicationContext()).setToolbarSubtitleRating((float) 3.5);
 
                 try {
                     KmConversationHelper.openConversation(context, true, null, new KmCallback() {

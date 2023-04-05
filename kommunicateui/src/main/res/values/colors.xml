@@ -90,4 +90,6 @@
     <color name="km_multiple_select_text_color">#00A4BF</color>
     <color name="km_multiple_select_border_color">#00A4BF</color>
     <color name="km_multiple_select_selected_background_color">#D4F3F8</color>
+
+    <color name="km_typing_dot_color">#000000</color>
 </resources>

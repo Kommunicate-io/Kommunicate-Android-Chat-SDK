@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 
+import android.animation.AnimatorSet;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -106,6 +108,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.vectordrawable.graphics.drawable.AnimatorInflaterCompat;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -311,6 +314,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } else if(viewType == 7) {
             View feedbackViewHolder = layoutInflater.inflate(R.layout.km_static_top_message, parent, false);
             return new StaticMessageHolder(feedbackViewHolder);
+        } else if(viewType == 8) {
+            View typingViewHolder = layoutInflater.inflate(R.layout.km_typing_indicator_layout, parent, false);
+            return new TypingMessageHolder(typingViewHolder);
         }
         if(useInnerTimeStampDesign) {
             view = layoutInflater.inflate(R.layout.mobicom_sent_message_list_view, parent, false);
@@ -430,6 +436,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     } else {
                         myViewholder6.textViewFeedbackText.setText(context.getString(R.string.rating_text));
                     }
+                }
+            } else if(type == 8) {
+                TypingMessageHolder typingMessageHolder = (TypingMessageHolder) holder;
+                if(messageList.size() -1 != position) {
+                    ((TypingMessageHolder) holder).parentLayout.setVisibility(GONE);
+                } else {
+                    ((TypingMessageHolder) holder).parentLayout.setVisibility(View.VISIBLE);
                 }
             } else {
                 bindMessageView(holder, message, position);
@@ -1263,6 +1276,16 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
+    //insert new item and only update item which requires updated and not the whole layout
+    public void onItemInserted(int position) {
+        notifyItemInserted(position);
+        while(position != 0 &&
+                (messageList.get(position).getCreatedAtTime() - messageList.get(position-1).getCreatedAtTime() < KmConstants.MESSAGE_CLUBBING_TIME_FRAME)
+        && (messageList.get(position).getType().equals(messageList.get(position-1).getType()))){
+            notifyItemChanged(position - 1);
+            position--;
+        }
+    }
     protected Pair<Integer, Integer> getReceivedMessageBgColors(Contact contact, Message message) {
         return new Pair<>(isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()), Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
     }
@@ -1502,6 +1525,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
         if (message.isVideoCallMessage()) {
             return 5;
+        }
+        if(message.isTypingMessage()) {
+            return 8;
         }
 
 
@@ -1835,6 +1861,49 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             topMessageImageView = itemView.findViewById(R.id.top_message_image_view);
             topMessageTextView = itemView.findViewById(R.id.top_message_text_view);
 
+        }
+    }
+
+    static class TypingMessageHolder extends RecyclerView.ViewHolder {
+        LinearLayout parentLayout;
+         TextView firstDot;
+         TextView secondDot;
+         TextView thirdDot;
+        public TypingMessageHolder(@NonNull View itemView) {
+            super(itemView);
+            parentLayout = itemView.findViewById(R.id.typing_linear_layout);
+            firstDot = itemView.findViewById(R.id.typing_first_dot);
+            secondDot = itemView.findViewById(R.id.typing_second_dot);
+            thirdDot = itemView.findViewById(R.id.typing_third_dot);
+            setupBackground();
+            startTypingAnimation();
+        }
+        private void setupBackground() {
+            GradientDrawable bgShape;
+            bgShape = (GradientDrawable) parentLayout.getBackground();
+
+            if (bgShape != null) {
+                String bgColor = new AlCustomizationSettings().getReceivedMessageBackgroundColor();
+                bgShape.setColor(Color.parseColor(bgColor));
+                bgShape.setStroke(3, Color.parseColor(bgColor));
+            }
+        }
+
+        @SuppressLint("RestrictedApi")
+        private void startTypingAnimation() {
+            AnimatorSet firstAnimatorSet = (AnimatorSet) AnimatorInflaterCompat.loadAnimator(itemView.getContext(), R.animator.km_blinking);
+            firstAnimatorSet.setTarget(firstDot);
+            firstAnimatorSet.start();
+
+            AnimatorSet secondAnimatorSet = (AnimatorSet) AnimatorInflaterCompat.loadAnimator(itemView.getContext(), R.animator.km_blinking);
+            secondAnimatorSet.setStartDelay(200);
+            secondAnimatorSet.setTarget(secondDot);
+            secondAnimatorSet.start();
+
+            AnimatorSet thirdAnimatorSet = (AnimatorSet) AnimatorInflaterCompat.loadAnimator(itemView.getContext(), R.animator.km_blinking);
+            thirdAnimatorSet.setStartDelay(400);
+            thirdAnimatorSet.setTarget(thirdDot);
+            thirdAnimatorSet.start();
         }
     }
 }

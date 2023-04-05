@@ -4,9 +4,11 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="3dp"
     android:layout_marginStart="50dp"
+    android:layout_marginLeft="50dp"
     android:layout_marginBottom="8dp"
     android:layout_alignParentBottom="true"
-    android:gravity="start">
+    android:gravity="start"
+    >
 
     <LinearLayout
         android:id="@+id/typing_linear_layout"

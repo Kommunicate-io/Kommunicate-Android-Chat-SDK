@@ -127,7 +127,7 @@
                 android:id="@+id/toolbar_agent_experience"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2 year of experience  "
+                android:text="@string/agent_experience"
                 android:fontFamily="sans-serif-light"
                 android:textColor="@color/km_white_color"
                 android:textSize="12sp"
@@ -137,15 +137,13 @@
                 android:id="@+id/toolbar_agent_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4.5"
+                android:text="@string/agent_rating"
                 android:fontFamily="sans-serif-light"
                 android:textColor="@color/km_white_color"
                 android:textSize="12sp"
                 android:textStyle="normal"
                 android:drawablePadding="2dp"
                 android:visibility="gone"
-
-
                 />
         </LinearLayout>
 

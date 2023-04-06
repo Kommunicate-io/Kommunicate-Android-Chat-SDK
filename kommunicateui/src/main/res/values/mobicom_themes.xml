@@ -10,6 +10,7 @@
         <item name="colorPrimaryDark">@color/primary_dark_color</item>
         <item name="colorAccent">@color/holo_blue</item>
 
+
         <!--
                 <item name="android:actionDropDownStyle">@style/actionDropDownStyle</item>
                 <item name="actionDropDownStyle">@style/actionDropDownStyle</item> -->
@@ -36,6 +37,7 @@
     </style>
 
     <style name="ToolBarStyle" parent="Widget.AppCompat.Toolbar">
+
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
         <item name="actionMenuTextColor">@android:color/black</item>
@@ -44,7 +46,6 @@
     </style>
 
     <style name="Applozic.People.Theme" parent="Theme.AppCompat.Light.NoActionBar">
-
         <item name="colorPrimary">@color/applozic_theme_color_primary</item>
         <!-- colorPrimaryDark is used for the status bar -->
         <item name="colorPrimaryDark">@color/applozic_theme_color_primary_dark</item>
@@ -55,7 +56,8 @@
 
         <!-- You can also set colorControlNormal, colorControlActivated
              colorControlHighlight & colorSwitchThumbNormal. -->
-        <!-- <item name="colorControlNormal">#c5c5c5</item>-->
+
+
         <item name="colorControlActivated">@color/applozic_theme_color_control_activated</item>
         <item name="colorControlHighlight">@color/applozic_theme_color_control_highlight</item>
         <item name="android:textColorPrimary">@color/white</item>
@@ -77,6 +79,7 @@
     <style name="ApplozicTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:subtitleTextStyle">@style/ApplozicTheme.ActionBar.TitleTextStyle</item>
         <item name="android:windowContentOverlay">@null</item>
+
     </style>
 
     <style name="ApplozicTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
@@ -89,6 +92,8 @@
     </style>
 
     <style name="ApplozicTheme_ActionButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
+
+
         <item name="android:width">20dp</item>
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>

@@ -377,11 +377,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isUserGivingEmail;
     protected RelativeLayout conversationRootLayout;
     protected KmConversationInfoView kmConversationInfoView;
-
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
-
-    protected boolean isCustomToolbarSubtitleDesign;
+    public boolean isCustomToolbarSubtitleDesign;
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -522,13 +520,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             customToolbarLayout.setVisibility(View.GONE);
             toolbarImageView = customToolbarLayout.findViewById(R.id.conversation_contact_photo);
             toolbarSubtitleText = customToolbarLayout.findViewById(R.id.toolbar_subtitle);
-
-            isCustomToolbarSubtitleDesign = KmConversationInfoSetting.getInstance(getContext()).isCustomToolbarSubtitleDesign();
-            if(isCustomToolbarSubtitleDesign){
-                newCustomToolbarDesign();
-            }
-
-
+            //To set new custom toolbar design
+            newCustomToolbarDesign();
             if (fontManager != null && fontManager.getToolbarSubtitleFont() != null) {
                 toolbarSubtitleText.setTypeface(fontManager.getToolbarSubtitleFont());
             }
@@ -1007,21 +1000,25 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void newCustomToolbarDesign(){
 
-        TextView ratingTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_rating);
-        TextView experienceTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_experience);
-        ratingTextview.setVisibility(VISIBLE);
-        experienceTextview.setVisibility(VISIBLE);
+        isCustomToolbarSubtitleDesign = KmConversationInfoSetting.getInstance(getContext()).isCustomToolbarSubtitleDesign();
 
-        Drawable starDrawable = getResources().getDrawable(R.drawable.star);
-        starDrawable.setBounds(0,0,33,33);
-        ratingTextview.setCompoundDrawables(starDrawable,null,null,null);
-        String experienceText  = KmConversationInfoSetting.getInstance(getContext()).getToolbarAgentExperience().trim();
+        if(isCustomToolbarSubtitleDesign){
+            TextView ratingTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_rating);
+            TextView experienceTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_experience);
+            ratingTextview.setVisibility(VISIBLE);
+            experienceTextview.setVisibility(VISIBLE);
+
+            Drawable starDrawable = getResources().getDrawable(R.drawable.star);
+            starDrawable.setBounds(0,0,33,33);
+            ratingTextview.setCompoundDrawables(starDrawable,null,null,null);
+            String experienceText  = KmConversationInfoSetting.getInstance(getContext()).getToolbarAgentExperience().trim();
             if(!TextUtils.isEmpty(experienceText)){
-        experienceTextview.setText(experienceText);
-        experienceTextview.append(" | ");
+                experienceTextview.setText(experienceText);
+                experienceTextview.append(" | ");
             }
-        String agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating().toString();
-        ratingTextview.setText(agentRating);
+            String agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating().toString();
+            ratingTextview.setText(agentRating);
+        }
     }
 
     public void handleSendAndRecordButtonView(boolean isSendButtonVisible) {

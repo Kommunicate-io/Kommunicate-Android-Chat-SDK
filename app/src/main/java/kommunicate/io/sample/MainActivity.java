@@ -207,13 +207,6 @@ public class MainActivity extends AppCompatActivity {
                     ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
 
-                //To enable the new Custom toolbar Design
-                KmConversationInfoSetting.getInstance(getApplicationContext()).enableCustomToolbarSubtitleDesign(true);
-                //Setting up the agent experience
-                KmConversationInfoSetting.getInstance(getApplicationContext()).setToolbarAgentExperience("16 years of experience");
-                //Setting up the agent rating
-                KmConversationInfoSetting.getInstance(getApplicationContext()).setToolbarSubtitleRating((float) 3.5);
-
                 try {
                     KmConversationHelper.openConversation(context, true, null, new KmCallback() {
                         @Override

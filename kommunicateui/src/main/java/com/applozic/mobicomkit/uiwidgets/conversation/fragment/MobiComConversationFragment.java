@@ -1009,12 +1009,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             experienceTextview.setVisibility(VISIBLE);
 
             Drawable starDrawable = getResources().getDrawable(R.drawable.star);
-            starDrawable.setBounds(0,0,33,33);
+            starDrawable.setBounds(0,0,40,40);
             ratingTextview.setCompoundDrawables(starDrawable,null,null,null);
             String experienceText  = KmConversationInfoSetting.getInstance(getContext()).getToolbarAgentExperience().trim();
+            StringBuilder stringBuilder = new StringBuilder(experienceText);
+            stringBuilder.append(" | ");
+            experienceText = stringBuilder.toString();
             if(!TextUtils.isEmpty(experienceText)){
                 experienceTextview.setText(experienceText);
-                experienceTextview.append(" | ");
+
             }
             String agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating().toString();
             ratingTextview.setText(agentRating);

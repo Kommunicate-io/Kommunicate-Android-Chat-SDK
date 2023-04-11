@@ -301,24 +301,6 @@ public class MessageDatabaseService {
         }
         return null;
     }
-    public Message getLatestMessage(Integer channelKey) {
-        if (channelKey == null) {
-            return null;
-        }
-        try {
-            Cursor cursor = dbHelper.getReadableDatabase().query("sms", null, "channelKey = ?", new String[]{String.valueOf(channelKey)}, null, null, "createdAt DESC", "1");
-            if (cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                return getMessage(cursor);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            dbHelper.close();
-        }
-        return null;
-    }
-
     public List<Message> getPendingDeleteMessages() {
         String structuredNameWhere = "";
         List<String> structuredNameParamsList = new ArrayList<String>();

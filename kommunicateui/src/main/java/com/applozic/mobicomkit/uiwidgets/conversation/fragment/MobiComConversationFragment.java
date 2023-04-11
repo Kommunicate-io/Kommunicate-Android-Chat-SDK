@@ -225,6 +225,7 @@ import io.kommunicate.utils.KmUtils;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
+import static com.applozic.mobicommons.people.channel.Channel.ASSIGNED_CONVERSATIONS;
 import static java.util.Collections.disjoint;
 
 /**
@@ -4479,20 +4480,24 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             frameLayoutProgressbar.setVisibility(View.GONE);
                             if (response.getData() != null) { //i.e if feedback found
                                 //show the feedback based on the data given
-                                Message message = messageDatabaseService.getLatestStatusMessage(channel.getKey());
-
+                                Message latestStatusMessage = messageDatabaseService.getLatestStatusMessage(channel.getKey());
+                                Message latestMessage = messageDatabaseService.getLatestMessage(channel.getKey());
                                 //If Conversation was resolved and feedback was submitted given
-                                if (message != null && message.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(message.getCreatedAtTime())) {
-                                    //kmFeedbackView.showFeedback(context, response.getData());
-                                } else {
-                                    //if oneTimeRating = true, don't ask for multiple feedback
+                                if (latestStatusMessage != null && latestStatusMessage.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(latestStatusMessage.getCreatedAtTime())) {
+//                                   kmFeedbackView.showFeedback(context, response.getData());
+                                }
+                                else {
+//                                  //Don't open feedback input fragment when feedback is already submitted
+                                    if(latestMessage.isFeedbackMessage()){
+                                        return;
+                                    }
                                     if(!alCustomizationSettings.isOneTimeRating())
                                         openFeedbackFragment();
                                 }
                             } else {
                                 //if feedback not found (null)
                                 //open the feedback input fragment
-                                openFeedbackFragment();
+                                    openFeedbackFragment();
                             }
                         }
 

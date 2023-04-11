@@ -4481,7 +4481,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             if (response.getData() != null) { //i.e if feedback found
                                 //show the feedback based on the data given
                                 Message latestStatusMessage = messageDatabaseService.getLatestStatusMessage(channel.getKey());
-                                Message latestMessage = messageDatabaseService.getLatestMessage(channel.getKey());
+                                Message latestMessage = messageList.get(messageList.size() - 1);
                                 //If Conversation was resolved and feedback was submitted given
                                 if (latestStatusMessage != null && latestStatusMessage.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(latestStatusMessage.getCreatedAtTime())) {
 //                                   kmFeedbackView.showFeedback(context, response.getData());

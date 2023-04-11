@@ -27,7 +27,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0.3"
             android:layout_margin="5dp"
-
+            android:backgroundTint="@color/km_typing_dot_color_first"
             android:background="@drawable/km_blinking_dot"/>
 
         <TextView
@@ -37,6 +37,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0.3"
             android:layout_margin="5dp"
+            android:backgroundTint="@color/km_typing_dot_color_second"
             android:background="@drawable/km_blinking_dot"/>
 
 
@@ -47,6 +48,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0.3"
             android:layout_margin="5dp"
+            android:backgroundTint="@color/km_typing_dot_color_third"
             android:background="@drawable/km_blinking_dot"/>
 
     </LinearLayout>

@@ -93,6 +93,6 @@
 
     <!--Typing Indicator dots-->
     <color name="km_typing_dot_color_first">#000000</color>
-    <color name="km_typing_dot_color_second">#00A4BF</color>
-    <color name="km_typing_dot_color_third">#686464</color>
+    <color name="km_typing_dot_color_second">#000000</color>
+    <color name="km_typing_dot_color_third">#000000</color>
 </resources>

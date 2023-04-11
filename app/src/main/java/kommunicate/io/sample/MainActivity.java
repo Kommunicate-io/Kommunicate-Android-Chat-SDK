@@ -194,11 +194,9 @@ public class MainActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(password)) {
             user.setPassword(password);
         }
-
         Kommunicate.login(MainActivity.this, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
-
                 if (KMUser.RoleType.USER_ROLE.getValue().equals(registrationResponse.getRoleType())) {
                     ApplozicClient.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
                 } else {

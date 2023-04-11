@@ -18,12 +18,9 @@ public class KmConversationInfoSetting {
     private static final String TRAILING_IMAGE = "TRAILING_IMAGE";
     private static final String CONVERSATION_INFO_BACKGROUND_COLOR = "CONVERSATION_INFO_BACKGROUND_COLOR";
     private static final String CONVERSATION_INFO_CONTENT_COLOR = "CONVERSATION_INFO_CONTENT_COLOR";
-
     private static final String AGENT_EXPERIENCE = "AGENT_EXPERIENCE";
     private static final String AGENT_RATING = "AGENT_RATING";
     private static final String NEW_TOOLBAR_ENABLED = "NEW_TOOLBAR_ENABLED";
-
-
     private KmConversationInfoSetting(Context context) {
         sharedPreferences = context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
     }

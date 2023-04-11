@@ -999,7 +999,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void newCustomToolbarDesign(){
-
         isCustomToolbarSubtitleDesign = KmConversationInfoSetting.getInstance(getContext()).isCustomToolbarSubtitleDesign();
 
         if(isCustomToolbarSubtitleDesign){
@@ -1007,7 +1006,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             TextView experienceTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_experience);
             ratingTextview.setVisibility(VISIBLE);
             experienceTextview.setVisibility(VISIBLE);
-
             Drawable starDrawable = getResources().getDrawable(R.drawable.star);
             starDrawable.setBounds(0,0,40,40);
             ratingTextview.setCompoundDrawables(starDrawable,null,null,null);
@@ -1017,7 +1015,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             experienceText = stringBuilder.toString();
             if(!TextUtils.isEmpty(experienceText)){
                 experienceTextview.setText(experienceText);
-
             }
             String agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating().toString();
             ratingTextview.setText(agentRating);

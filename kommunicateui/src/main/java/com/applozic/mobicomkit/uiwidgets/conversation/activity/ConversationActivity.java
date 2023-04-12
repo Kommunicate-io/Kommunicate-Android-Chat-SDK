@@ -56,7 +56,6 @@ import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComMessageService;
-import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
@@ -66,7 +65,6 @@ import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -428,6 +426,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
+        //To change the color of home button in action bar by setting up the custom drawable
+        mActionBar.setHomeAsUpIndicator(R.drawable.km_home);
 
         kmAttachmentsController = new KmAttachmentsController(this);
 
@@ -802,7 +802,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
         }
         else if(id == android.R.id.home) {
-                AlEventManager.getInstance().sendOnBackButtonClicked(getSupportFragmentManager().getBackStackEntryCount() > 1);
+            AlEventManager.getInstance().sendOnBackButtonClicked(getSupportFragmentManager().getBackStackEntryCount() > 1);
         }
         return false;
     }

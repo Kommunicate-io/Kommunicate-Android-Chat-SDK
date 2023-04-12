@@ -293,4 +293,6 @@
     <string name="invalid_email">Enter a valid email</string>
     <string name="select_language">Select a language</string>
     <string name="changed_language_to">Changed language to %1$s</string>
+    <string name="agent_experience">2 year of experience</string>
+    <string name="agent_rating">4.5</string>
 </resources>

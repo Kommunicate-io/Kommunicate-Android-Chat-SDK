@@ -377,11 +377,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isUserGivingEmail;
     protected RelativeLayout conversationRootLayout;
     protected KmConversationInfoView kmConversationInfoView;
-
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
-
-
+    public boolean isCustomToolbarSubtitleDesign;
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -523,6 +521,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             customToolbarLayout.setVisibility(View.GONE);
             toolbarImageView = customToolbarLayout.findViewById(R.id.conversation_contact_photo);
             toolbarSubtitleText = customToolbarLayout.findViewById(R.id.toolbar_subtitle);
+            //To set new custom toolbar design
+            newCustomToolbarDesign();
             if (fontManager != null && fontManager.getToolbarSubtitleFont() != null) {
                 toolbarSubtitleText.setTypeface(fontManager.getToolbarSubtitleFont());
             }
@@ -999,6 +999,29 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         return list;
     }
 
+    public void newCustomToolbarDesign(){
+        isCustomToolbarSubtitleDesign = KmConversationInfoSetting.getInstance(getContext()).isCustomToolbarSubtitleDesign();
+
+        if(isCustomToolbarSubtitleDesign){
+            TextView ratingTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_rating);
+            TextView experienceTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_experience);
+            Drawable starDrawable = getResources().getDrawable(R.drawable.star);
+            starDrawable.setBounds(0,0,40,40);
+            ratingTextview.setCompoundDrawables(starDrawable,null,null,null);
+            String experienceText  = KmConversationInfoSetting.getInstance(getContext()).getToolbarAgentExperience();
+            Float agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating();
+            if(!TextUtils.isEmpty(experienceText)){
+                experienceTextview.setVisibility(VISIBLE);
+                StringBuilder stringBuilder = new StringBuilder(experienceText.trim());
+                stringBuilder.append(agentRating == -1.0F ? "" : " | ");
+                experienceTextview.setText(stringBuilder);
+            }
+            if(agentRating != -1.0F){
+                ratingTextview.setVisibility(VISIBLE);
+                ratingTextview.setText(agentRating.toString());
+            }
+        }
+    }
     public void handleSendAndRecordButtonView(boolean isSendButtonVisible) {
         boolean showRecordButton = (alCustomizationSettings != null
                 && alCustomizationSettings.getAttachmentOptions() != null
@@ -3414,7 +3437,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
             if (User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
                 toolbarSubtitleText.setText(ApplozicService.getContext(getContext()).getString(R.string.online));
-                toolbarSubtitleText.setVisibility(VISIBLE);
+                toolbarSubtitleText.setVisibility(isCustomToolbarSubtitleDesign ? View.GONE : View.VISIBLE);
                 setStatusDots(true, true);
                 return;
             }
@@ -3424,19 +3447,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 } else {
                     toolbarSubtitleText.setText(R.string.away);
                 }
-                toolbarSubtitleText.setVisibility(VISIBLE);
+                toolbarSubtitleText.setVisibility(isCustomToolbarSubtitleDesign ? View.GONE : View.VISIBLE);
             } else {
                 if (User.RoleType.USER_ROLE.getValue().equals(contact.getRoleType())) {
                     if (contact.getLastSeenAt() > 0) {
                         if (getActivity() != null) {
-                            toolbarSubtitleText.setVisibility(VISIBLE);
+                            toolbarSubtitleText.setVisibility(isCustomToolbarSubtitleDesign ? View.GONE : View.VISIBLE);
                             toolbarSubtitleText.setText(ApplozicService.getContext(getContext()).getString(R.string.subtitle_last_seen_at_time) + " " + DateUtils.getDateAndTimeForLastSeen(ApplozicService.getContext(getContext()), contact.getLastSeenAt(), R.string.JUST_NOW, R.plurals.MINUTES_AGO, R.plurals.HOURS_AGO, R.string.YESTERDAY));
                         }
                     } else {
                         toolbarSubtitleText.setVisibility(View.GONE);
                     }
                 } else {
-                    toolbarSubtitleText.setVisibility(View.VISIBLE);
+                    toolbarSubtitleText.setVisibility(isCustomToolbarSubtitleDesign ? View.GONE : View.VISIBLE);
                     toolbarSubtitleText.setText(R.string.offline);
                 }
             }

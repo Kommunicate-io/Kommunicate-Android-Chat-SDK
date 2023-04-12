@@ -579,6 +579,12 @@ public class Message extends JsonMarker {
     public void setInitialFirstMessage() {
         this.type = MessageType.INITIAL_FIRST_MESSAGE.value;
     }
+    public boolean isTypingMessage() {
+        return type != null && type.equals(MessageType.TYPING_MESSAGE.value);
+    }
+    public void setTypingMessage() {
+        this.type = MessageType.TYPING_MESSAGE.value;
+    }
     public void setTempDateType(short tempDateType) {
         this.type = tempDateType;
     }
@@ -810,7 +816,7 @@ public class Message extends JsonMarker {
         INBOX(Short.valueOf("0")), OUTBOX(Short.valueOf("1")), DRAFT(Short.valueOf("2")),
         OUTBOX_SENT_FROM_DEVICE(Short.valueOf("3")), MT_INBOX(Short.valueOf("4")),
         MT_OUTBOX(Short.valueOf("5")), CALL_INCOMING(Short.valueOf("6")), CALL_OUTGOING(Short.valueOf("7")),
-        DATE_TEMP(Short.valueOf("100")), INITIAL_FIRST_MESSAGE(Short.valueOf("101"));
+        DATE_TEMP(Short.valueOf("100")), INITIAL_FIRST_MESSAGE(Short.valueOf("101")), TYPING_MESSAGE(Short.valueOf("102"));
         private Short value;
 
         MessageType(Short c) {

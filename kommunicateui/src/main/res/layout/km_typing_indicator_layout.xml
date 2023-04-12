@@ -4,9 +4,11 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="3dp"
     android:layout_marginStart="50dp"
+    android:layout_marginLeft="50dp"
     android:layout_marginBottom="8dp"
     android:layout_alignParentBottom="true"
-    android:gravity="start">
+    android:gravity="start"
+    >
 
     <LinearLayout
         android:id="@+id/typing_linear_layout"
@@ -25,7 +27,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0.3"
             android:layout_margin="5dp"
-
+            android:backgroundTint="@color/km_typing_dot_color_first"
             android:background="@drawable/km_blinking_dot"/>
 
         <TextView
@@ -35,6 +37,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0.3"
             android:layout_margin="5dp"
+            android:backgroundTint="@color/km_typing_dot_color_second"
             android:background="@drawable/km_blinking_dot"/>
 
 
@@ -45,6 +48,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0.3"
             android:layout_margin="5dp"
+            android:backgroundTint="@color/km_typing_dot_color_third"
             android:background="@drawable/km_blinking_dot"/>
 
     </LinearLayout>

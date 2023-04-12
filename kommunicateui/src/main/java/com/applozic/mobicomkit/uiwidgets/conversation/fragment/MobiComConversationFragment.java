@@ -225,7 +225,6 @@ import io.kommunicate.utils.KmUtils;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
-import static com.applozic.mobicommons.people.channel.Channel.ASSIGNED_CONVERSATIONS;
 import static java.util.Collections.disjoint;
 
 /**

@@ -84,7 +84,7 @@
   "toolbarTitleColor": "#ffffff",
   "toolbarSubtitleColor": "#ffffff",
   "toolbarColor": "",
-  "statusBarColor": "",
+  "statusBarColor": "#ffffff",
   "richMessageThemeColor": "",
   "restrictMessageTypingWithBots": false,
   "enableFaqOption": [
@@ -168,5 +168,7 @@
   "javaScriptEnabled": true,
   "restartConversationButtonVisibility": true,
   "hideChatInHelpcenter": true,
-  "checkboxAsMultipleButton": true
+  "checkboxAsMultipleButton": true,
+  "staticTopMessage": "",
+  "staticTopIcon": "km_lock"
 }

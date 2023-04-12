@@ -80,7 +80,7 @@ public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
                 List<Message> mergedList = new ArrayList<>();
 
                 if (messageList != null && !messageList.isEmpty()) {
-
+                    mergedList.add(getInitialTopMessage());
                     mergedList.add(getDateMessage(messageList.get(0)));
 
                     for (int i = 0; i < messageList.size(); i++) {
@@ -126,5 +126,11 @@ public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
         firstDateMessage.setTempDateType(Short.valueOf("100"));
         firstDateMessage.setCreatedAtTime(message.getCreatedAtTime());
         return firstDateMessage;
+    }
+
+    private Message getInitialTopMessage() {
+        Message firstMessage = new Message();
+        firstMessage.setInitialFirstMessage();
+        return firstMessage;
     }
 }

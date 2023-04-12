@@ -33,6 +33,7 @@ import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
 import io.kommunicate.app.BuildConfig;
 import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;
@@ -193,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
         if (!TextUtils.isEmpty(password)) {
             user.setPassword(password);
         }
-
         Kommunicate.login(MainActivity.this, user, new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {

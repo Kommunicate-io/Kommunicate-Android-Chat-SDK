@@ -1008,17 +1008,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             starDrawable.setBounds(0,0,40,40);
             ratingTextview.setCompoundDrawables(starDrawable,null,null,null);
             String experienceText  = KmConversationInfoSetting.getInstance(getContext()).getToolbarAgentExperience();
-            String agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating().toString();
+            Float agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating();
             if(!TextUtils.isEmpty(experienceText)){
                 experienceTextview.setVisibility(VISIBLE);
                 StringBuilder stringBuilder = new StringBuilder(experienceText.trim());
-                stringBuilder.append(" | ");
-                experienceText = stringBuilder.toString();
-                experienceTextview.setText(experienceText);
+                stringBuilder.append(agentRating == -1.0F ? "" : " | ");
+                experienceTextview.setText(stringBuilder);
             }
-            if(!TextUtils.isEmpty(agentRating)){
+            if(agentRating != -1.0F){
                 ratingTextview.setVisibility(VISIBLE);
-                ratingTextview.setText(agentRating);
+                ratingTextview.setText(agentRating.toString());
             }
         }
     }

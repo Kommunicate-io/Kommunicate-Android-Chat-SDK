@@ -1004,23 +1004,24 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if(isCustomToolbarSubtitleDesign){
             TextView ratingTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_rating);
             TextView experienceTextview = customToolbarLayout.findViewById(R.id.toolbar_agent_experience);
-            ratingTextview.setVisibility(VISIBLE);
-            experienceTextview.setVisibility(VISIBLE);
             Drawable starDrawable = getResources().getDrawable(R.drawable.star);
             starDrawable.setBounds(0,0,40,40);
             ratingTextview.setCompoundDrawables(starDrawable,null,null,null);
-            String experienceText  = KmConversationInfoSetting.getInstance(getContext()).getToolbarAgentExperience().trim();
-            StringBuilder stringBuilder = new StringBuilder(experienceText);
-            stringBuilder.append(" | ");
-            experienceText = stringBuilder.toString();
+            String experienceText  = KmConversationInfoSetting.getInstance(getContext()).getToolbarAgentExperience();
+            String agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating().toString();
             if(!TextUtils.isEmpty(experienceText)){
+                experienceTextview.setVisibility(VISIBLE);
+                StringBuilder stringBuilder = new StringBuilder(experienceText.trim());
+                stringBuilder.append(" | ");
+                experienceText = stringBuilder.toString();
                 experienceTextview.setText(experienceText);
             }
-            String agentRating = KmConversationInfoSetting.getInstance(getContext()).getToolbarSubtitleRating().toString();
-            ratingTextview.setText(agentRating);
+            if(!TextUtils.isEmpty(agentRating)){
+                ratingTextview.setVisibility(VISIBLE);
+                ratingTextview.setText(agentRating);
+            }
         }
     }
-
     public void handleSendAndRecordButtonView(boolean isSendButtonVisible) {
         boolean showRecordButton = (alCustomizationSettings != null
                 && alCustomizationSettings.getAttachmentOptions() != null

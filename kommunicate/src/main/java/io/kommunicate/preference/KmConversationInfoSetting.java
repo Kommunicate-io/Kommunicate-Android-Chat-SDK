@@ -132,7 +132,7 @@ public class KmConversationInfoSetting {
 
     public String getToolbarAgentExperience() {
         if (sharedPreferences != null) {
-            return sharedPreferences.getString(AGENT_EXPERIENCE, null);
+            return sharedPreferences.getString(AGENT_EXPERIENCE, "");
         }
         return null;
     }
@@ -146,7 +146,7 @@ public class KmConversationInfoSetting {
 
     public Float getToolbarSubtitleRating(){
         if (sharedPreferences != null){
-            return sharedPreferences.getFloat(AGENT_RATING,0.0F);
+            return sharedPreferences.getFloat(AGENT_RATING,-1.0F);
         }
         return null;
     }

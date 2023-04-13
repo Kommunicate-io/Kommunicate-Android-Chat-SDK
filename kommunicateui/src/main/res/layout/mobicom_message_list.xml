@@ -247,7 +247,7 @@
             android:layout_marginTop="10dp"
             android:orientation="vertical">
 
-            <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmTypingView
+            <io.kommunicate.uiwidgets.kommunicate.views.KmTypingView
                 android:id="@+id/idKmTypingView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -258,7 +258,7 @@
                 android:orientation="vertical"
                 android:visibility="gone" />
 
-            <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAwayView
+            <io.kommunicate.uiwidgets.kommunicate.views.KmAwayView
                 android:id="@+id/idKmAwayView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -273,7 +273,7 @@
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.05"
                 android:textColor="@color/white"
-                android:background="@color/applozic_theme_color_primary"
+                android:background="@color/kommunicate_theme_color_primary"
                 android:paddingStart="16dp"
                 android:paddingTop="11.5dp"
                 android:paddingEnd="16dp"
@@ -318,7 +318,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/applozicLabel"
+                android:id="@+id/kommunicateLabel"
                 android:layout_width="match_parent"
                 android:layout_height="19dp"
                 android:background="#5B5959"
@@ -333,7 +333,7 @@
                 android:id="@+id/idMainDividerLine"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/applozic_theme_color_primary" />
+                android:background="@color/kommunicate_theme_color_primary" />
 
             <FrameLayout
                 android:layout_width="fill_parent"
@@ -370,7 +370,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -385,7 +385,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -400,7 +400,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -443,7 +443,7 @@
                                 android:layout_toEndOf="@+id/language_change_button"
                                 android:layout_toStartOf="@+id/conversation_send"
                                 android:layout_toLeftOf="@+id/conversation_send"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:cursorVisible="true"
                                 android:ellipsize="start"
                                 android:fontFamily="sans-serif"
@@ -472,7 +472,7 @@
                                 android:layout_height="18dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:src="@drawable/smiley" />
 
                             <ImageButton
@@ -481,7 +481,7 @@
                                 android:layout_height="16.3dp"
                                 android:layout_marginStart="29dp"
                                 android:layout_marginLeft="29dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:src="@drawable/camera" />
 
                             <ImageButton
@@ -490,7 +490,7 @@
                                 android:layout_height="18dp"
                                 android:layout_marginStart="30dp"
                                 android:layout_marginLeft="30dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:src="@drawable/km_multiselectgallery_icon"
                                 android:visibility="gone" />
 
@@ -500,7 +500,7 @@
                                 android:layout_height="18.3dp"
                                 android:layout_marginStart="30dp"
                                 android:layout_marginLeft="30dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:src="@drawable/attachment" />
 
                             <ImageButton
@@ -509,7 +509,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginStart="29dp"
                                 android:layout_marginLeft="29dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/kommunicate_transparent_color"
                                 android:src="@drawable/locaiton" />
                         </LinearLayout>
                     </LinearLayout>
@@ -521,7 +521,7 @@
                     android:layout_height="80dp"
                     android:visibility="gone">
 
-                    <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView
+                    <io.kommunicate.uiwidgets.kommunicate.views.KmRecordView
                         android:id="@+id/km_record_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -529,7 +529,7 @@
                         android:layout_marginStart="23dp"
                         android:layout_marginLeft="23dp" />
 
-                    <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton
+                    <io.kommunicate.uiwidgets.kommunicate.views.KmRecordButton
                         android:id="@+id/audio_record_button"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
@@ -565,7 +565,7 @@
                         android:textSize="18sp" />
                 </LinearLayout>
 
-                <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView
+                <io.kommunicate.uiwidgets.kommunicate.views.KmFeedbackView
                     android:id="@+id/idKmFeedbackView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -621,7 +621,7 @@
             android:background="@color/black"
             android:visibility="gone" />
 
-        <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecyclerView
+        <io.kommunicate.uiwidgets.kommunicate.views.KmRecyclerView
             android:id="@+id/kmAutoSuggestionRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -49,7 +49,7 @@
     <string name="action_settings">Settings</string>
     <string name="user_block">Block</string>
     <string name="user_un_block">Unblock</string>
-    <string name="applozic_my_profile_option_info">Profile</string>
+    <string name="kommunicate_my_profile_option_info">Profile</string>
 
     <string name="location_services_disabled_message">Sending location requires access to your location. Turn on location access.</string>
     <string name="location_services_disabled_title">Location services disabled</string>
@@ -60,7 +60,7 @@
 
     <string name="select_file">Select a file</string>
 
-    <string name="applozic_select_photo">Select a photo</string>
+    <string name="kommunicate_select_photo">Select a photo</string>
     <string name="attachment_retry">Retry</string>
 
 
@@ -128,8 +128,8 @@
     <string name="view_option_string">View</string>
     <string name="message_option_string">Message</string>
 
-    <string name="applozic_account_closed">Please contact Applozic to activate chat in your app</string>
-    <string name="applozic_free_version_not_allowed_on_release_build">Please contact Applozic to activate chat in your app</string>
+    <string name="kommunicate_account_closed">Please contact Kommunicate to activate chat in your app</string>
+    <string name="kommunicate_free_version_not_allowed_on_release_build">Please contact Kommunicate to activate chat in your app</string>
     <string name="quick_conversation_loading">loading conversation…</string>
     <string name="alert_for_empty_message">Do you want to send a message without text?</string>
     <string name="yes_alert">Yes</string>
@@ -179,16 +179,16 @@
     <string name="user_block_info">Block [name]? A blocked user will no longer be able to send you messages</string>
     <string name="user_un_block_info">Unblock [name] to send a message</string>
     <string name="please_wait_info">Please wait a moment…</string>
-    <string name="applozic_userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
-    <string name="applozic_channel_error_info_in_logs">Please check group name is null or empty or it has at least one member to be added in group</string>
-    <string name="applozic_add_user_to_multiple_channel_error_info_in_logs">UserId can not be null or empty and channel key list should not be null</string>
+    <string name="kommunicate_userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
+    <string name="kommunicate_channel_error_info_in_logs">Please check group name is null or empty or it has at least one member to be added in group</string>
+    <string name="kommunicate_add_user_to_multiple_channel_error_info_in_logs">UserId can not be null or empty and channel key list should not be null</string>
     <string name="user_logout_info">Logout successful</string>
     <string name="unable_share_message">Unable to share you are not a participant of this group</string>
     <string name="user_is_blocked">Unable to send user is blocked</string>
     <string name="when_on_wifi">When on Wi-Fi</string>
     <string name="when_on_cellular_network">When on cellular network</string>
     <string name="media_auto_download">Media-auto download</string>
-    <string name="applozic_network_usage">Network usage</string>
+    <string name="kommunicate_network_usage">Network usage</string>
     <string name="enable_vibration_notification">Enable vibration on notification</string>
     <string name="user_has_been_deleted_text">User has been deleted</string>
     <string name="make_admin_text_info">Make group admin</string>

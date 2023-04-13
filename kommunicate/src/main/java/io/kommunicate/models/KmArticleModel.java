@@ -45,6 +45,16 @@ public class KmArticleModel {
         this.data = data;
     }
 
+    @Override
+    public String toString() {
+        return "KmArticleModel{" +
+                "articles=" + articles +
+                ", article=" + article +
+                ", code='" + code + '\'' +
+                ", data=" + data +
+                '}';
+    }
+
     public class KmArticle {
         private String _id;
         private String article_id;
@@ -211,15 +221,5 @@ public class KmArticleModel {
         public void setContent(String content) {
             this.content = content;
         }
-    }
-
-    @Override
-    public String toString() {
-        return "KmArticleModel{" +
-                "articles=" + articles +
-                ", article=" + article +
-                ", code='" + code + '\'' +
-                ", data=" + data +
-                '}';
     }
 }

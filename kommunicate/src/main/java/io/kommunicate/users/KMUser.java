@@ -2,10 +2,10 @@ package io.kommunicate.users;
 
 import android.content.Context;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.data.account.user.MobiComUserPreference;
+import io.kommunicate.data.account.user.User;
+import io.kommunicate.data.contact.AppContactService;
+import io.kommunicate.data.people.contact.Contact;
 
 /**
  * Created by ashish on 23/01/18.
@@ -17,16 +17,16 @@ public class KMUser extends User {
     private String applicationName;
     private boolean chatNotificationMailSent = true;
 
-    public static boolean isLoggedIn(Context context) {
-        return MobiComUserPreference.getInstance(context).isLoggedIn();
-    }
-
     public KMUser() {
         setSkipDeletedGroups(true);
     }
 
     public KMUser(boolean skipDeletedGroups) {
         setSkipDeletedGroups(skipDeletedGroups);
+    }
+
+    public static boolean isLoggedIn(Context context) {
+        return MobiComUserPreference.getInstance(context).isLoggedIn();
     }
 
     public static KMUser getLoggedInUser(Context context) {

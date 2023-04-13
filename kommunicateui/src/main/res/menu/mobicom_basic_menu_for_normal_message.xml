@@ -76,10 +76,10 @@
         android:visible="false"
         mobicomkit:showAsAction="collapseActionView" />
     <item
-        android:id="@+id/applozicUserProfile"
+        android:id="@+id/kommunicateUserProfile"
         android:orderInCategory="2"
         android:showAsAction="collapseActionView"
-        android:title="@string/applozic_my_profile_option_info"
+        android:title="@string/kommunicate_my_profile_option_info"
         android:visible="false"
         mobicomkit:showAsAction="collapseActionView" />
 

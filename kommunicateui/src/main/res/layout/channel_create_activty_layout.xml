@@ -28,13 +28,13 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/applozic_channel_profile_camera"
+        android:id="@+id/kommunicate_channel_profile_camera"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_above="@+id/channelName"
         android:layout_alignEnd="@+id/channelIcon"
         android:layout_alignRight="@+id/channelIcon"
-        android:background="@color/applozic_transparent_color"
+        android:background="@color/kommunicate_transparent_color"
         android:clickable="true"
         app:srcCompat="@drawable/km_ic_action_camera_new" />
 

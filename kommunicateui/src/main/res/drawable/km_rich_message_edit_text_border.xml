@@ -3,14 +3,14 @@
     android:shape="rectangle">
 
     <!-- view background color -->
-    <solid android:color="@color/applozic_transparent_color" />
+    <solid android:color="@color/kommunicate_transparent_color" />
 
     <!-- view border color and width -->
 
     <!-- Here is the corner radius -->
     <stroke
         android:width="1dp"
-        android:color="@color/applozic_theme_color_primary" />
+        android:color="@color/kommunicate_theme_color_primary" />
 
     <corners android:radius="25dp" />
 </shape>

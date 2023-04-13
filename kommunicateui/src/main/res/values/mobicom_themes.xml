@@ -3,8 +3,8 @@
     <!-- the theme applied to the application or activity -->
 
     <style name="MobiComAppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:actionBarStyle">@style/ApplozicActionBar</item>
-        <item name="actionBarStyle">@style/ApplozicActionBar</item>
+        <item name="android:actionBarStyle">@style/KommunicateActionBar</item>
+        <item name="actionBarStyle">@style/KommunicateActionBar</item>
         <!-- Set AppCompat’s color theming attrs -->
         <item name="colorPrimary">@color/mobitexter_main_color</item>
         <item name="colorPrimaryDark">@color/primary_dark_color</item>
@@ -16,10 +16,10 @@
 
     </style>
 
-    <style name="ApplozicTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/applozic_theme_color_primary</item>
-        <item name="colorPrimaryDark">@color/applozic_theme_color_primary_dark</item>
-        <item name="colorAccent">@color/applozic_theme_color_primary</item>
+    <style name="KommunicateTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/kommunicate_theme_color_primary</item>
+        <item name="colorPrimaryDark">@color/kommunicate_theme_color_primary_dark</item>
+        <item name="colorAccent">@color/kommunicate_theme_color_primary</item>
         <item name="windowActionModeOverlay">true</item>
     </style>
 
@@ -43,11 +43,11 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>-->
     </style>
 
-    <style name="Applozic.People.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Kommunicate.People.Theme" parent="Theme.AppCompat.Light.NoActionBar">
 
-        <item name="colorPrimary">@color/applozic_theme_color_primary</item>
+        <item name="colorPrimary">@color/kommunicate_theme_color_primary</item>
         <!-- colorPrimaryDark is used for the status bar -->
-        <item name="colorPrimaryDark">@color/applozic_theme_color_primary_dark</item>
+        <item name="colorPrimaryDark">@color/kommunicate_theme_color_primary_dark</item>
 
         <!-- colorAccent is used as the default value for colorControlActivated
              which is used to tint widgets -->
@@ -56,11 +56,11 @@
         <!-- You can also set colorControlNormal, colorControlActivated
              colorControlHighlight & colorSwitchThumbNormal. -->
         <!-- <item name="colorControlNormal">#c5c5c5</item>-->
-        <item name="colorControlActivated">@color/applozic_theme_color_control_activated</item>
-        <item name="colorControlHighlight">@color/applozic_theme_color_control_highlight</item>
+        <item name="colorControlActivated">@color/kommunicate_theme_color_control_activated</item>
+        <item name="colorControlHighlight">@color/kommunicate_theme_color_control_highlight</item>
         <item name="android:textColorPrimary">@color/white</item>
         <!--actionbar icon color-->
-        <item name="android:textColorSecondary">@color/applozic_theme_secondary_text</item>
+        <item name="android:textColorSecondary">@color/kommunicate_theme_secondary_text</item>
     </style>
 
 
@@ -74,33 +74,33 @@
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="ApplozicTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:subtitleTextStyle">@style/ApplozicTheme.ActionBar.TitleTextStyle</item>
+    <style name="KommunicateTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:subtitleTextStyle">@style/KommunicateTheme.ActionBar.TitleTextStyle</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="ApplozicTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
+    <style name="KommunicateTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
         <item name="android:textColor">@color/white</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="ApplozicTheme.ActionBar.SubTitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
+    <style name="KommunicateTheme.ActionBar.SubTitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
         <item name="android:textSize">10sp</item>
     </style>
 
-    <style name="ApplozicTheme_ActionButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
+    <style name="KommunicateTheme_ActionButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
         <item name="android:width">20dp</item>
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>
     </style>
 
-    <style name="Applozic_PopUpTheme" parent="ThemeOverlay.AppCompat.Light">
+    <style name="Kommunicate_PopUpTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:textColorPrimary">@color/black</item>
     </style>
 
     <style name="actionDropDownStyle" parent="android:style/Widget.Holo.Light.Spinner"></style>
 
-    <style name="Applozic_FullScreen_Theme" parent="@style/Theme.AppCompat.Light">
+    <style name="Kommunicate_FullScreen_Theme" parent="@style/Theme.AppCompat.Light">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimaryDark">@color/dark_black</item>

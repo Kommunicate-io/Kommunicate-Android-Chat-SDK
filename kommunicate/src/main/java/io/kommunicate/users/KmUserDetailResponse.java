@@ -1,11 +1,11 @@
 package io.kommunicate.users;
 
-import com.applozic.mobicomkit.api.account.user.UserDetail;
-import com.applozic.mobicommons.json.JsonMarker;
-import com.applozic.mobicommons.people.channel.Channel;
-
 import java.io.Serializable;
 import java.util.List;
+
+import io.kommunicate.data.account.user.UserDetail;
+import io.kommunicate.data.json.JsonMarker;
+import io.kommunicate.data.people.channel.Channel;
 
 /**
  * Created by ashish on 31/01/18.

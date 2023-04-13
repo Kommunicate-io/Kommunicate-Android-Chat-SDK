@@ -2,14 +2,13 @@ package io.kommunicate;
 
 import android.content.Context;
 
-import com.applozic.mobicommons.json.Exclude;
-import com.applozic.mobicommons.json.JsonMarker;
-
 import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.callbacks.KmCallback;
-import io.kommunicate.preference.KmPreference;
+import io.kommunicate.data.json.Exclude;
+import io.kommunicate.data.json.JsonMarker;
+import io.kommunicate.data.preference.KmPreference;
 import io.kommunicate.users.KMUser;
 
 public class KmConversationBuilder extends JsonMarker {
@@ -80,8 +79,8 @@ public class KmConversationBuilder extends JsonMarker {
         return appId;
     }
 
-    public KmConversationBuilder setPreFilledMessage(String messageString) {
-        preFilledMessage = messageString;
+    public KmConversationBuilder setAppId(String appId) {
+        this.appId = appId;
         return this;
     }
 
@@ -89,8 +88,8 @@ public class KmConversationBuilder extends JsonMarker {
         return preFilledMessage;
     }
 
-    public KmConversationBuilder setAppId(String appId) {
-        this.appId = appId;
+    public KmConversationBuilder setPreFilledMessage(String messageString) {
+        preFilledMessage = messageString;
         return this;
     }
 
@@ -112,13 +111,13 @@ public class KmConversationBuilder extends JsonMarker {
         return this;
     }
 
+    public String getConversationId() {
+        return conversationId;
+    }
+
     public KmConversationBuilder setConversationId(String conversationId) {
         this.conversationId = conversationId;
         return this;
-    }
-
-    public String getConversationId() {
-        return conversationId;
     }
 
     public boolean isSkipConversationList() {
@@ -139,13 +138,13 @@ public class KmConversationBuilder extends JsonMarker {
         return this;
     }
 
+    public Map<String, String> getMessageMetadata() {
+        return messageMetadata;
+    }
+
     public KmConversationBuilder setMessageMetadata(Map<String, String> messageMetadata) {
         this.messageMetadata = messageMetadata;
         return this;
-    }
-
-    public Map<String, String> getMessageMetadata() {
-        return messageMetadata;
     }
 
     public String getClientConversationId() {
@@ -170,6 +169,11 @@ public class KmConversationBuilder extends JsonMarker {
         return conversationAssignee;
     }
 
+    public KmConversationBuilder setConversationAssignee(String conversationAssignee) {
+        this.conversationAssignee = conversationAssignee;
+        return this;
+    }
+
     public KmConversationBuilder useSavedOptions() {
         KmConversationBuilder builder = KmPreference.getInstance(context).getKmConversationBuilder();
         builder.setContext(context);
@@ -181,17 +185,13 @@ public class KmConversationBuilder extends JsonMarker {
         return this;
     }
 
-    public KmConversationBuilder setConversationAssignee(String conversationAssignee) {
-        this.conversationAssignee = conversationAssignee;
-        return this;
+    public String getDefaultAssignee() {
+        return defaultAssignee;
     }
+
     public KmConversationBuilder setDefaultAssignee(String defaultAssignee) {
         this.defaultAssignee = defaultAssignee;
         return this;
-    }
-
-    public String getDefaultAssignee() {
-        return defaultAssignee;
     }
 
     public boolean isUseOriginalTitle() {

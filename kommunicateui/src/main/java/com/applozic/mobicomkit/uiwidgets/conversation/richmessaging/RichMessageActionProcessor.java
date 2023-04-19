@@ -264,10 +264,10 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
             }
-        } else {
-            if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
-                sendMessage(submitButtonModel.getMessage(), metadata);
-            }
+        } else if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
+            sendMessage(submitButtonModel.getMessage(), metadata);
+        }
+        if(!TextUtils.isEmpty(submitButtonModel.getFormAction())) {
             new KmPostDataAsyncTask(context,
                     submitButtonModel.getFormAction(),
                     null,

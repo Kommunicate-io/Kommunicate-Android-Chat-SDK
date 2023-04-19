@@ -1580,7 +1580,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (getActivity() == null) {
             return;
         }
-
+        if(!messageDatabaseService.isMessagePresent(message.getKeyString())) {
+            messageDatabaseService.createMessage(message);
+        }
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

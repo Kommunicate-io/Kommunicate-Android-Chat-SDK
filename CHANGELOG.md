@@ -3,6 +3,10 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.7.0
+1) Fix for rating asked everytime in a resolved conversation
+2) Fix formAction not getting called
+
 ## Kommunicate Android SDK 2.6.9
 1) Changed Message View layout to Top to Bottom
 2) Support for custom toolbar subtitle - using KmConversationInfoSetting class

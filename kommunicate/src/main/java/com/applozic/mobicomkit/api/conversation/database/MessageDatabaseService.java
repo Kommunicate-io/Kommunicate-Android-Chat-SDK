@@ -301,7 +301,6 @@ public class MessageDatabaseService {
         }
         return null;
     }
-
     public List<Message> getPendingDeleteMessages() {
         String structuredNameWhere = "";
         List<String> structuredNameParamsList = new ArrayList<String>();

@@ -1604,7 +1604,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (getActivity() == null) {
             return;
         }
-
+        if(!messageDatabaseService.isMessagePresent(message.getKeyString())) {
+            messageDatabaseService.createMessage(message);
+        }
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -4542,20 +4544,24 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             frameLayoutProgressbar.setVisibility(View.GONE);
                             if (response.getData() != null) { //i.e if feedback found
                                 //show the feedback based on the data given
-                                Message message = messageDatabaseService.getLatestStatusMessage(channel.getKey());
-
-                                //If Conversation was resolved and feedback was submitted given
-                                if (message != null && message.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(message.getCreatedAtTime())) {
-                                    //kmFeedbackView.showFeedback(context, response.getData());
-                                } else {
-                                    //if oneTimeRating = true, don't ask for multiple feedback
+                                Message latestStatusMessage = messageDatabaseService.getLatestStatusMessage(channel.getKey());
+                                Message latestMessage = messageList.get(messageList.size() - 1);
+                                //If Conversation is resolved and feedback is submitted
+                                if (latestStatusMessage != null && latestStatusMessage.isTypeResolved() && response.getData().isLatestFeedbackSubmitted(latestStatusMessage.getCreatedAtTime())) {
+//                                   kmFeedbackView.showFeedback(context, response.getData());
+                                }
+                                else {
+//                                  //Don't open feedback input fragment when feedback is already submitted
+                                    if(latestMessage.isFeedbackMessage()){
+                                        return;
+                                    }
                                     if(!alCustomizationSettings.isOneTimeRating())
                                         openFeedbackFragment();
                                 }
                             } else {
                                 //if feedback not found (null)
                                 //open the feedback input fragment
-                                openFeedbackFragment();
+                                    openFeedbackFragment();
                             }
                         }
 

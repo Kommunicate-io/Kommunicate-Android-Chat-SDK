@@ -449,6 +449,13 @@ public class MobiComMessageService {
         if (!baseContactService.isContactPresent(message.getContactIds())) {
             userService.processUserDetails(message.getContactIds());
         }
+        if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())) {
+            if (message.isGroupMetaDataUpdated()) {
+                ChannelService.getInstance(context).syncChannels(true);
+            } else {
+                ChannelService.getInstance(context).syncChannels(false);
+            }
+        }
         Channel channel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());
         if (channel == null) {
             return;

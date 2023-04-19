@@ -484,6 +484,13 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                     } else {
                         validationArray.put(i, VALID_DATA);
                     }
+                } else if (KmFormPayloadModel.Type.HIDDEN.getValue().equals(payloadList.get(i).getType())) {
+                    KmFormPayloadModel.Hidden hiddenModel = payloadList.get(i).getHiddenModel();
+                    if (hiddenModel != null && !hiddenFields.containsKey(hiddenModel.getName())) {
+                        hiddenFields.put(hiddenModel.getName(), hiddenModel.getValue());
+
+                    }
+                    formStateModel.setHiddenFields(hiddenFields);
                 }
                 formStateModel.setValidationArray(validationArray);
                 KmFormStateHelper.addFormState(messageKey, formStateModel);

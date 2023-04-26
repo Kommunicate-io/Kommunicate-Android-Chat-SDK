@@ -1,5 +1,6 @@
 package com.applozic.mobicomkit;
 
+import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +35,9 @@ import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.applozic.mobicommons.task.AlTask;
 
+import java.util.HashMap;
 import java.util.Map;
+import io.kommunicate.KmSettings;
 
 /**
  * Created by sunil on 29/8/16.
@@ -60,6 +63,16 @@ public class Applozic {
         applozic = getInstance(context);
         AlPrefSettings.getInstance(context).setApplicationKey(applicationKey);
         return applozic;
+    }
+    public static void setDefaultLanguage(Context context){
+        String deviceLanguage = context.getResources().getConfiguration().locale.getLanguage();
+        if(deviceLanguage.isEmpty()){
+            return;
+        }
+        AlPrefSettings.getInstance(context).setDeviceDefaultLanguageToBot(deviceLanguage);
+        Map<String, String> localeMetadata = new HashMap<>();
+        localeMetadata.put(KM_USER_LOCALE,deviceLanguage);
+        KmSettings.updateChatContext(context,localeMetadata);
     }
 
     public static Applozic getInstance(Context context) {

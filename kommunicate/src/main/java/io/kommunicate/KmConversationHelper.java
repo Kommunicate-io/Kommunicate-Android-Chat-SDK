@@ -1,12 +1,13 @@
 package io.kommunicate;
 
+import static io.kommunicate.KmSettings.KM_CHAT_CONTEXT;
+import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
-
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
@@ -19,6 +20,7 @@ import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.listners.MessageListHandler;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.data.AlPrefSettings;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 
@@ -651,7 +653,12 @@ public class KmConversationHelper {
         metadata.put("GROUP_USER_ROLE_UPDATED_MESSAGE", "");
         metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
         metadata.put("HIDE", "true");
-
+        String languageCode = AlPrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
+        Map<String, String> localeMetadata = new HashMap<>();
+        if(!languageCode.isEmpty()){
+            localeMetadata.put(KM_USER_LOCALE,languageCode);
+            metadata.put(KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(localeMetadata,Map.class));
+        }
         if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee())) {
             metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getConversationAssignee());
             metadata.put(SKIP_ROUTING, "true");

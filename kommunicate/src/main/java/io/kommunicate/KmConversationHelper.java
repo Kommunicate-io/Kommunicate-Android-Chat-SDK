@@ -654,8 +654,8 @@ public class KmConversationHelper {
         metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
         metadata.put("HIDE", "true");
         String languageCode = AlPrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
-        Map<String, String> localeMetadata = new HashMap<>();
-        if(!languageCode.isEmpty()){
+        if(!TextUtils.isEmpty(languageCode)){
+            Map<String, String> localeMetadata = new HashMap<>();
             localeMetadata.put(KM_USER_LOCALE,languageCode);
             metadata.put(KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(localeMetadata,Map.class));
         }

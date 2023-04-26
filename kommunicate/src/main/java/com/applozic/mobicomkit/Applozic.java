@@ -66,7 +66,7 @@ public class Applozic {
     }
     public static void setDefaultLanguage(Context context){
         String deviceLanguage = context.getResources().getConfiguration().locale.getLanguage();
-        if(deviceLanguage.isEmpty()){
+        if(!TextUtils.isEmpty(deviceLanguage)){
             return;
         }
         AlPrefSettings.getInstance(context).setDeviceDefaultLanguageToBot(deviceLanguage);

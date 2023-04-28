@@ -3,6 +3,7 @@ package io.kommunicate;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.listners.MessageListHandler;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.data.AlPrefSettings;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 
@@ -55,6 +57,7 @@ public class KmConversationHelper {
     public static final String CONVERSATION_STATUS = "CONVERSATION_STATUS";
     public static final String KM_TEAM_ID = "KM_TEAM_ID";
     private static final String TAG = "KmConversationHelper";
+    public static final String GROUP_CREATION_URL = "GROUP_CREATION_URL";
 
     public static void openConversation(final Context context, final boolean skipConversationList, final Integer conversationId, final KmCallback callback) throws KmException {
         if (!(context instanceof Activity)) {
@@ -651,7 +654,13 @@ public class KmConversationHelper {
         metadata.put("GROUP_USER_ROLE_UPDATED_MESSAGE", "");
         metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
         metadata.put("HIDE", "true");
-
+        ApplicationInfo applicationInfo = conversationBuilder.getContext().getApplicationInfo();
+        int stringId = applicationInfo.labelRes;
+        String appName =  stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : conversationBuilder.getContext().getString(stringId);
+        if(!TextUtils.isEmpty(appName)){
+            String label = "Android app: " + appName;
+            metadata.put(GROUP_CREATION_URL,label);
+        }
         if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee())) {
             metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getConversationAssignee());
             metadata.put(SKIP_ROUTING, "true");

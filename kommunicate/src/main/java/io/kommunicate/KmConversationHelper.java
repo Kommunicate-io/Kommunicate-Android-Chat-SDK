@@ -658,7 +658,7 @@ public class KmConversationHelper {
         int stringId = applicationInfo.labelRes;
         String appName =  stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : conversationBuilder.getContext().getString(stringId);
         if(!TextUtils.isEmpty(appName)){
-            String label = "Android app: " + appName;
+            String label = "Android: " + appName;
             metadata.put(GROUP_CREATION_URL,label);
         }
         if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee())) {

@@ -17,6 +17,8 @@ import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLConnection;
 
+import io.kommunicate.BuildConfig;
+
 /**
  * Created by devashish on 27/12/14.
  */
@@ -31,14 +33,11 @@ public class MobiComKitClientService {
     public static String APPLICATION_KEY_HEADER_VALUE_METADATA = "com.applozic.application.key";
     public static String APP_MODULE_NAME_META_DATA_KEY = "com.applozic.module.key";
     protected Context context;
-    protected String DEFAULT_URL = "https://apps.applozic.com";
     protected String FILE_BASE_URL = "https://applozic.appspot.com";
     protected String DEFAULT_MQTT_URL = "tcp://apps.applozic.com:1883";
     public static String FILE_BASE_URL_METADATA_KEY = "com.applozic.attachment.url";
     public static String FILE_UPLOAD_METADATA_KEY = "com.applozic.attachment.upload.endpoint";
     public static String FILE_DOWNLOAD_METADATA_KEY = "com.applozic.attachment.download.endpoint";
-    private static final String KM_PROD_BASE_URL = "https://api.kommunicate.io";
-    private static final String KM_TEST_BASE_URL = "https://api-test.kommunicate.io";
 
     public MobiComKitClientService() {
 
@@ -77,7 +76,7 @@ public class MobiComKitClientService {
             return BASE_URL;
         }
 
-        return DEFAULT_URL;
+        return BuildConfig.CHAT_SERVER_URL;
     }
 
     public String getKmBaseUrl() {
@@ -92,7 +91,7 @@ public class MobiComKitClientService {
             return KM_BASE_URL;
         }
 
-        return KM_PROD_BASE_URL;
+        return BuildConfig.API_SERVER_URL;
     }
 
     protected String getMqttBaseUrl() {

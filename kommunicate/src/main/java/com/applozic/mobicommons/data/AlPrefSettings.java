@@ -10,6 +10,7 @@ public class AlPrefSettings {
     public static final String AL_PREF_SETTING_KEY = "al_secret_key_pref";
     private static final String APPLICATION_KEY = "APPLICATION_KEY";
     public static final String GOOGLE_API_KEY_META_DATA = "com.google.android.geo.API_KEY";
+    public static final String DEFAULT_LANGUAGE = "DEFAULT_LANGUAGE";
     private static String USER_ENCRYPTION_KEY = "user_encryption_key";
     private static String USER_AUTH_TOKEN = "user_auth_token";
     private static String ENCRYPTION_KEY = "encryption_key";
@@ -114,5 +115,11 @@ public class AlPrefSettings {
         decodedPassword = password;
         sharedPreferences.edit().putString(PASSWORD, password).commit();
         return this;
+    }
+    public void setDeviceDefaultLanguageToBot(String languageCode) {
+       sharedPreferences.edit().putString(DEFAULT_LANGUAGE, languageCode).apply();
+    }
+    public String getDeviceDefaultLanguageToBot() {
+        return sharedPreferences.getString(DEFAULT_LANGUAGE, null);
     }
 }

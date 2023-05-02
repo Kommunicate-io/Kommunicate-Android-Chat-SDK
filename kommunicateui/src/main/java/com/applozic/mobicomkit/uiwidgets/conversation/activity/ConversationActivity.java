@@ -487,6 +487,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         };
 
         AlEventManager.getInstance().sendOnPluginLaunchEvent();
+        Applozic.setDefaultLanguage(this);
     }
 
     @Override

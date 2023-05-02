@@ -90,7 +90,7 @@
 
         <meta-data
             android:name="com.applozic.mqtt.server.url"
-            android:value="tcp://socket.applozic.com:8080" />
+            android:value="tcp://socket.kommunicate.io:1883" />
 
         <meta-data
             android:name="com.applozic.mobicomkit.notification.tone"

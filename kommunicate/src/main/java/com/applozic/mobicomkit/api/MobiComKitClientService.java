@@ -33,7 +33,6 @@ public class MobiComKitClientService {
     public static String APPLICATION_KEY_HEADER_VALUE_METADATA = "com.applozic.application.key";
     public static String APP_MODULE_NAME_META_DATA_KEY = "com.applozic.module.key";
     protected Context context;
-    protected String FILE_BASE_URL = "https://applozic.appspot.com";
     protected String DEFAULT_MQTT_URL = "tcp://apps.applozic.com:1883";
     public static String FILE_BASE_URL_METADATA_KEY = "com.applozic.attachment.url";
     public static String FILE_UPLOAD_METADATA_KEY = "com.applozic.attachment.upload.endpoint";
@@ -103,7 +102,7 @@ public class MobiComKitClientService {
         if (!TextUtils.isEmpty(MQTT_BASE_URL)) {
             return MQTT_BASE_URL;
         }
-        return DEFAULT_MQTT_URL;
+        return BuildConfig.MQTT_URL;
     }
 
     public PasswordAuthentication getCredentials() {
@@ -145,6 +144,6 @@ public class MobiComKitClientService {
 
     public String getFileBaseUrl() {
         String fileURL = Utils.getMetaDataValue(context.getApplicationContext(), FILE_BASE_URL_METADATA_KEY);
-        return (TextUtils.isEmpty(fileURL) ? FILE_BASE_URL : fileURL);
+        return (TextUtils.isEmpty(fileURL) ? BuildConfig.CHAT_SERVER_URL : fileURL);
     }
 }

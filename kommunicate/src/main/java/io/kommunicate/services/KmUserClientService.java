@@ -37,6 +37,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.TimeZone;
 
+import io.kommunicate.BuildConfig;
 import io.kommunicate.KMGroupInfo;
 import io.kommunicate.KmException;
 import io.kommunicate.feeds.KmRegistrationResponse;
@@ -62,8 +63,6 @@ public class KmUserClientService extends UserClientService {
     private static final String GET_APPLICATION_LIST = "/rest/ws/user/getlist";
     private static final String CONVERSATION_URL = "/conversations";
     private static final String KM_GET_HELPDOCS_KEY_URL = "/integration/settings/";
-    private static final String KM_HELPDOCS_URL = "https://api.helpdocs.io/v1/article";
-    private static final String KM_HELPDOCS_SERACH_URL = "https://api.helpdocs.io/v1/search?key=";
     private static final String USER_PASSWORD_RESET = "/users/password-reset";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String CREATE_CONVERSATION_URL = "/create";
@@ -81,7 +80,7 @@ public class KmUserClientService extends UserClientService {
     }
 
     private String getArticleListUrl() {
-        return KM_HELPDOCS_URL + "?key=";
+        return BuildConfig.HELPCENTER_URL + "?key=";
     }
 
     private String getKmGetHelpdocsKeyUrl() {
@@ -179,7 +178,7 @@ public class KmUserClientService extends UserClientService {
     }
 
     public String getArticleList(String helpDocsKey) throws Exception {
-        StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_URL);
+        StringBuilder urlBuilder = new StringBuilder(BuildConfig.HELPCENTER_URL);
 
         if (!TextUtils.isEmpty(helpDocsKey)) {
             urlBuilder.append("?key=").append(helpDocsKey);
@@ -195,8 +194,8 @@ public class KmUserClientService extends UserClientService {
     }
 
     public String getSelectedArticles(String helpDocsKey, String queryString) throws Exception {
-        StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_SERACH_URL);
-        urlBuilder.append(helpDocsKey).append("&query=").append(queryString);
+        StringBuilder urlBuilder = new StringBuilder(BuildConfig.HELPCENTER_URL);
+        urlBuilder.append(helpDocsKey).append("&q=").append(queryString);
 
         try {
             return getResponse(urlBuilder.toString(), "application/json", "application/json");
@@ -208,7 +207,7 @@ public class KmUserClientService extends UserClientService {
     }
 
     public String getArticleAnswer(String articleId, String helpDocsKey) throws Exception {
-        StringBuilder urlBuilder = new StringBuilder(KM_HELPDOCS_URL);
+        StringBuilder urlBuilder = new StringBuilder(BuildConfig.HELPCENTER_URL);
         urlBuilder.append("/").append(articleId).append("?key=").append(helpDocsKey);
 
         try {

@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import io.kommunicate.BuildConfig;
+
 /**
  * Created by devashish on 25/1/15.
  */
@@ -73,7 +75,8 @@ public class LocationUtils {
 
         String location = getLocationFromMessage(message);
 
-        final String staticMapUrl = "https://maps.googleapis.com/maps/api/staticmap?center=" + location
+        final String staticMapUrl = BuildConfig.GOOGLE_API_SERVER_URL +
+        "center=" + location
                 + "&zoom=17&size=400x400&maptype=roadmap&format=png&visual_refresh=true&markers=" + location
                 + "&key="+geoApiKey;
 

@@ -158,8 +158,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
                 mobiComUserPreference.setUserEncryptionKey(registrationResponse.getUserEncryptionKey());
             }
             mobiComUserPreference.setPassword(user.getPassword());
-            mobiComUserPreference.
-                    setPricingPackage(registrationResponse.getPricingPackage());
+            mobiComUserPreference.setPricingPackage(registrationResponse.getPricingPackage());
             mobiComUserPreference.setAuthenticationType(String.valueOf(user.getAuthenticationTypeId()));
             if (registrationResponse.getRoleType() != null) {
                 mobiComUserPreference.setUserRoleType(registrationResponse.getRoleType());

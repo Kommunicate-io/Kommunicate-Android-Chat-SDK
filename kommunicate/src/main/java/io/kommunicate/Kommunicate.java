@@ -25,7 +25,6 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
-import com.applozic.mobicommons.data.SecureSharedPreferences;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -890,6 +889,6 @@ public class Kommunicate {
     }
 
     public static void removeApplicationKey(Context context) {
-        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
+        context.getSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, Context.MODE_PRIVATE).edit().remove("APPLICATION_KEY").commit();
     }
 }

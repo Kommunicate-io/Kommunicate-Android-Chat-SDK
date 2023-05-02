@@ -1,6 +1,7 @@
 package com.applozic.mobicommons.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.applozic.mobicommons.ApplozicService;
@@ -26,10 +27,10 @@ public class AlPrefSettings {
     private static String decodedUserEncryptionKey;
     private static String decodedUserAuthToken;
 
-    private SecureSharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
 
     private AlPrefSettings(Context context) {
-        this.sharedPreferences = new SecureSharedPreferences(AL_PREF_SETTING_KEY, ApplozicService.getContext(context));
+        this.sharedPreferences = context.getSharedPreferences(AL_PREF_SETTING_KEY,  Context.MODE_PRIVATE);
     }
 
     public static AlPrefSettings getInstance(Context context) {

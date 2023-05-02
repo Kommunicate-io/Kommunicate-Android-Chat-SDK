@@ -119,6 +119,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean disableGlobalStoragePermission = true;
 
     private boolean launchChatFromProfilePicOrName = false;
+    private boolean useDeviceDefaultLanguage = true;
     private Map<String, Boolean> filterGallery;
     private boolean enableShareConversation = false;
     private String messageStatusIconColor = "";
@@ -637,6 +638,9 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isAgentApp() {
         return isAgentApp;
     }
+    public boolean isUseDeviceDefaultLanguage(){
+        return useDeviceDefaultLanguage;
+    }
 
     public boolean isGroupSubtitleHidden() {
         return hideGroupSubtitle;
@@ -812,6 +816,7 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", messageCharacterLimit" + messageCharacterLimit +
                 ", toolbarTitleColor=" + toolbarTitleColor +
                 ", toolbarSubtitleColor=" + toolbarSubtitleColor +
+                ", useDeviceDefaultLanguage=" + useDeviceDefaultLanguage +
                 '}';
     }
 }

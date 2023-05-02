@@ -24,6 +24,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.kommunicate.BuildConfig;
+
 /**
  * Created by reytum on 20/10/17.
  */
@@ -38,7 +40,6 @@ public class ALGroupInfoTask extends AlAsyncTask<Void, ALGroupInfoTask.ChannelMo
     private ChannelService channelService;
     private boolean isUserListRequest;
     private static final String BASE_URL_METADATA = "com.applozic.server.url";
-    private String DEFAULT_URL = "https://apps.applozic.com";
     private static final String CHANNEL_INFO_URL = "/rest/ws/group/info";
     private static final String GROUP_ID = "groupId";
     private static final String CLIENT_GROUPID = "clientGroupId";
@@ -180,7 +181,7 @@ public class ALGroupInfoTask extends AlAsyncTask<Void, ALGroupInfoTask.ChannelMo
         if (!TextUtils.isEmpty(BASE_URL)) {
             return BASE_URL;
         }
-        return DEFAULT_URL;
+        return BuildConfig.CHAT_SERVER_URL;
     }
 
     private String getChannelInfoUrl() {

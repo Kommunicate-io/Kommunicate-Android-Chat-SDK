@@ -80,7 +80,7 @@
 
         <!--<meta-data
             android:name="com.applozic.server.url"
-            android:value="https://apps-test.applozic.com"
+            android:value="https://chat-test.kommunicate.io"
             tools:node="replace"/>
 
         <meta-data

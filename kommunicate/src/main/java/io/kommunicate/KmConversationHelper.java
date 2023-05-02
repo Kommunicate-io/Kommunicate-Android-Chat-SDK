@@ -1,5 +1,7 @@
 package io.kommunicate;
 
+import static io.kommunicate.KmSettings.KM_CHAT_CONTEXT;
+import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +9,6 @@ import android.content.pm.ApplicationInfo;
 import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
-
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
@@ -660,6 +661,11 @@ public class KmConversationHelper {
         if(!TextUtils.isEmpty(appName)){
             String label = "Android: " + appName;
             metadata.put(GROUP_CREATION_URL,label);
+        String languageCode = AlPrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
+        if(!TextUtils.isEmpty(languageCode)){
+            Map<String, String> localeMetadata = new HashMap<>();
+            localeMetadata.put(KM_USER_LOCALE,languageCode);
+            metadata.put(KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(localeMetadata,Map.class));
         }
         if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee())) {
             metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getConversationAssignee());

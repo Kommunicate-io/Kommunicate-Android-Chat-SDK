@@ -5,7 +5,6 @@ import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
@@ -24,14 +23,12 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
@@ -655,12 +652,14 @@ public class KmConversationHelper {
         metadata.put("GROUP_USER_ROLE_UPDATED_MESSAGE", "");
         metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
         metadata.put("HIDE", "true");
-        ApplicationInfo applicationInfo = conversationBuilder.getContext().getApplicationInfo();
-        int stringId = applicationInfo.labelRes;
-        String appName =  stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : conversationBuilder.getContext().getString(stringId);
-        if(!TextUtils.isEmpty(appName)){
+        String appName = conversationBuilder.getContext().getApplicationInfo().loadLabel(conversationBuilder.getContext().getPackageManager()).toString();
+        if(!TextUtils.isEmpty(appName)) {
             String label = "Android: " + appName;
-            metadata.put(GROUP_CREATION_URL,label);
+            metadata.put(GROUP_CREATION_URL, label);
+        }else{
+            String label = "Android: " + Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey();
+            metadata.put(GROUP_CREATION_URL, label);
+        }
         String languageCode = AlPrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
         if(!TextUtils.isEmpty(languageCode)){
             Map<String, String> localeMetadata = new HashMap<>();

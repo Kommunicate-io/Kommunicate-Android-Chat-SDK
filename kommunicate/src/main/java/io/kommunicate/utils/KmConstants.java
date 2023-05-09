@@ -29,4 +29,5 @@ public class KmConstants {
     public static final String CLOSE_CONVERSATION_SCREEN = "CLOSE_CONVERSATION_SCREEN";
     public static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     public static final String KM_USER_LOCALE = "kmUserLocale";
+    public static final String KM_USER_LANGUAGE_CODE = "kmUserLanguageCode";
 }

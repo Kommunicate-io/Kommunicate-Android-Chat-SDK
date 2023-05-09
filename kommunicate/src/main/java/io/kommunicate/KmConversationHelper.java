@@ -2,12 +2,14 @@ package io.kommunicate;
 
 import static io.kommunicate.KmSettings.KM_CHAT_CONTEXT;
 import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
@@ -57,6 +59,7 @@ public class KmConversationHelper {
     public static final String CONVERSATION_STATUS = "CONVERSATION_STATUS";
     public static final String KM_TEAM_ID = "KM_TEAM_ID";
     private static final String TAG = "KmConversationHelper";
+    public static final String GROUP_CREATION_URL = "GROUP_CREATION_URL";
 
     public static void openConversation(final Context context, final boolean skipConversationList, final Integer conversationId, final KmCallback callback) throws KmException {
         if (!(context instanceof Activity)) {
@@ -362,19 +365,19 @@ public class KmConversationHelper {
         if (Kommunicate.isLoggedIn(context)) {
             KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
             KmDefaultSettingPreference defaultSettingPreference = KmDefaultSettingPreference.getInstance();
-            if(defaultSettingPreference.getDefaultBotIds() != null) {
+            if (defaultSettingPreference.getDefaultBotIds() != null) {
                 conversationBuilder.setBotIds(new ArrayList<String>(defaultSettingPreference.getDefaultBotIds()));
             }
-            if(defaultSettingPreference.getDefaultAgentIds() != null) {
+            if (defaultSettingPreference.getDefaultAgentIds() != null) {
                 conversationBuilder.setAgentIds(new ArrayList<String>(defaultSettingPreference.getDefaultAgentIds()));
             }
-            if(defaultSettingPreference.getDefaultAssignee() != null) {
+            if (defaultSettingPreference.getDefaultAssignee() != null) {
                 conversationBuilder.setDefaultAssignee(defaultSettingPreference.getDefaultAssignee());
             }
-            if(defaultSettingPreference.getDefaultTeamId() != null) {
+            if (defaultSettingPreference.getDefaultTeamId() != null) {
                 conversationBuilder.setTeamId(defaultSettingPreference.getDefaultTeamId());
             }
-            if(defaultSettingPreference.isSkipRouting()) {
+            if (defaultSettingPreference.isSkipRouting()) {
                 conversationBuilder.skipConversationRoutingRules(true);
             }
             try {
@@ -653,17 +656,25 @@ public class KmConversationHelper {
         metadata.put("GROUP_USER_ROLE_UPDATED_MESSAGE", "");
         metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
         metadata.put("HIDE", "true");
+        String appName = conversationBuilder.getContext().getApplicationInfo().loadLabel(conversationBuilder.getContext().getPackageManager()).toString();
+        if (!TextUtils.isEmpty(appName)) {
+            String label = "Android: " + appName;
+            metadata.put(GROUP_CREATION_URL, label);
+        } else {
+            String label = "Android: " + Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey();
+            metadata.put(GROUP_CREATION_URL, label);
+        }
         String languageCode = AlPrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
-        if(!TextUtils.isEmpty(languageCode)){
+        if (!TextUtils.isEmpty(languageCode)) {
             Map<String, String> localeMetadata = new HashMap<>();
-            localeMetadata.put(KM_USER_LOCALE,languageCode);
-            metadata.put(KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(localeMetadata,Map.class));
+            localeMetadata.put(KM_USER_LOCALE, languageCode);
+            metadata.put(KM_CHAT_CONTEXT, GsonUtils.getJsonFromObject(localeMetadata, Map.class));
         }
         if (!TextUtils.isEmpty(conversationBuilder.getConversationAssignee())) {
             metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getConversationAssignee());
             metadata.put(SKIP_ROUTING, "true");
         }
-        if(!TextUtils.isEmpty(conversationBuilder.getDefaultAssignee())) {
+        if (!TextUtils.isEmpty(conversationBuilder.getDefaultAssignee())) {
             metadata.put(CONVERSATION_ASSIGNEE, conversationBuilder.getDefaultAssignee());
         }
 

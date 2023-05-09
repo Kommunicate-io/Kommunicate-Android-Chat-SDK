@@ -5,6 +5,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 
 ## [Unreleased]
  1) Added support for group creation source in sdk
+  
 ## Kommunicate Android SDK 2.7.0
 1) Fix for rating asked everytime in a resolved conversation
 2) Fix formAction not getting called

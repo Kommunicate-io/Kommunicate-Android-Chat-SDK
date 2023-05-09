@@ -2,7 +2,8 @@
 
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
-
+## [Unreleased]
+1) Add support on form data as message flow with only submitted responses
 ## Kommunicate Android SDK 2.7.0
 1) Fix for rating asked everytime in a resolved conversation
 2) Fix formAction not getting called

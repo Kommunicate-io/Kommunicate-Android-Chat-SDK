@@ -251,15 +251,14 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
 
         if (submitButtonModel.getPostBackToKommunicate() != null && submitButtonModel.getPostBackToKommunicate().equalsIgnoreCase("true")) {
-            sendFormDataAsMessage(message, metadata, dataMap, "");
+            sendFormDataAsMessage(message, metadata, dataMap, "", "");
 
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
             }
         }
         if (submitButtonModel.getPostFormDataAsMessage() != null && submitButtonModel.getPostFormDataAsMessage().equalsIgnoreCase("true")) {
-
-            sendFormDataAsMessage(message, metadata, dataMap, submitButtonModel.getMessage());
+            sendFormDataAsMessage(message, metadata, dataMap, submitButtonModel.getMessage(), submitButtonModel.getAddFormLabelInMessage());
 
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
@@ -267,7 +266,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         } else if (!TextUtils.isEmpty(submitButtonModel.getMessage())) {
             sendMessage(submitButtonModel.getMessage(), metadata);
         }
-        if(!TextUtils.isEmpty(submitButtonModel.getFormAction())) {
+        if (!TextUtils.isEmpty(submitButtonModel.getFormAction())) {
             new KmPostDataAsyncTask(context,
                     submitButtonModel.getFormAction(),
                     null,
@@ -291,13 +290,13 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     }
 
     //TO SEND FORM DATA AS MESSAGE for both postBackToKommunicate and postFormDataAsMessage
-    private void sendFormDataAsMessage(Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, String submitButtonMessage) {
+    private void sendFormDataAsMessage(Message message, Map<String, String> replyMetadata, Map<String, Object> formSelectedData, String submitButtonMessage, String addFormLabelInMessage) {
         if (message.getMetadata() != null) {
             com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
             }.getType());
 
             StringBuilder messageToSend = new StringBuilder(submitButtonMessage);
-            if(!TextUtils.isEmpty(messageToSend)) {
+            if (!TextUtils.isEmpty(messageToSend)) {
                 messageToSend.append("\n");
             }
 
@@ -312,7 +311,11 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                 if (model.isTypeText()) {
                     KmFormPayloadModel.Text textModel = model.getTextModel();
                     if (formSelectedData.containsKey(textModel.getLabel())) {
-                        messageToSend.append(textModel.getLabel()).append(" : ").append(formSelectedData.get(textModel.getLabel()).toString()).append("\n");
+                        if (addFormLabelInMessage.equalsIgnoreCase("false")) {
+                            messageToSend.append(formSelectedData.get(textModel.getLabel()).toString()).append("\n");
+                        } else {
+                            messageToSend.append(textModel.getLabel()).append(" : ").append(formSelectedData.get(textModel.getLabel()).toString()).append("\n");
+                        }
                     } else {
                         messageToSend.append(textModel.getLabel()).append(" : ").append("\n");
 
@@ -391,13 +394,13 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         if (replyMetadata != null) {
             metadata.putAll(replyMetadata);
         }
-        if(messageMetadata != null) {
+        if (messageMetadata != null) {
             metadata.putAll(messageMetadata);
         }
         if (formSelectedData != null && postBackToBotPlatform) {
             Map<String, Object> formDataMap = new HashMap<>();
             formDataMap.put(KmFormPayloadModel.KM_FORM_DATA, new JSONObject(formSelectedData));
-            metadata.put(Kommunicate.KM_CHAT_CONTEXT,    String.valueOf(new JSONObject(formDataMap)));
+            metadata.put(Kommunicate.KM_CHAT_CONTEXT, String.valueOf(new JSONObject(formDataMap)));
         }
         return metadata;
     }

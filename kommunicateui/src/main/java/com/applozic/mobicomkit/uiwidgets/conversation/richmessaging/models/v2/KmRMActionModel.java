@@ -53,6 +53,7 @@ public class KmRMActionModel<T> extends JsonMarker {
         private String formAction;
         private String requestType;
         private String postFormDataAsMessage;
+        private String addFormLabelInMessage = "true";
         private String postBackToKommunicate;
         private Map<String, Object> metadata;
         private Map<String, Object> replyMetadata;
@@ -66,6 +67,12 @@ public class KmRMActionModel<T> extends JsonMarker {
 
         public void setPostFormDataAsMessage(String postFormDataAsMessage) {
             this.postFormDataAsMessage = postFormDataAsMessage;
+        }
+        public void setAddFormLabelInMessage(String addFormLabelInMessage) {
+            this.addFormLabelInMessage = addFormLabelInMessage;
+        }
+        public String getAddFormLabelInMessage(){
+            return addFormLabelInMessage;
         }
 
 

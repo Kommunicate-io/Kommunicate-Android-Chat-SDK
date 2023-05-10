@@ -1,5 +1,6 @@
 package io.kommunicate;
 
+import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
@@ -71,7 +72,7 @@ public class KmSettings {
 
     public static void updateUserLanguage(Context context, String languageCode) {
         Map<String, String> languageCodeMap = new HashMap<>();
-        languageCodeMap.put(KM_LANGUAGE_UPDATE_KEY, languageCode);
+        languageCodeMap.put(KM_USER_LOCALE, languageCode);
         updateChatContext(context, languageCodeMap);
     }
 

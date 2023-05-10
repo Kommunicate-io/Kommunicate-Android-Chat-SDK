@@ -170,5 +170,6 @@
   "hideChatInHelpcenter": true,
   "checkboxAsMultipleButton": true,
   "staticTopMessage": "",
-  "staticTopIcon": "km_lock"
+  "staticTopIcon": "km_lock",
+  "useDeviceDefaultLanguage": true
 }

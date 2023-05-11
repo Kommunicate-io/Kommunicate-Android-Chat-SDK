@@ -301,6 +301,7 @@ public class MessageDatabaseService {
         }
         return null;
     }
+
     public List<Message> getPendingDeleteMessages() {
         String structuredNameWhere = "";
         List<String> structuredNameParamsList = new ArrayList<String>();
@@ -553,7 +554,7 @@ public class MessageDatabaseService {
                     statement.bindString(1, message.getMessage());
                     statement.bindLong(2, message.getCreatedAtTime());
                 }
-                if(statement.simpleQueryForLong() > 0) {
+                if (statement.simpleQueryForLong() > 0) {
                     return -1;
                 }
             } catch (Throwable e) {
@@ -785,7 +786,7 @@ public class MessageDatabaseService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.query("sms", new String[]{"COUNT(DISTINCT contactNumbers)"},"read = ?", new String[]{"0"},null,null,null);
+            cursor = db.query("sms", new String[]{"COUNT(DISTINCT contactNumbers)"}, "read = ?", new String[]{"0"}, null, null, null);
             cursor.moveToFirst();
             int conversationCount = 0;
             if (cursor.getCount() > 0) {
@@ -807,7 +808,7 @@ public class MessageDatabaseService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.query("sms", new String[] {"COUNT(1)"}, "read = ?", new String[] {"0"}, null, null, null);
+            cursor = db.query("sms", new String[]{"COUNT(1)"}, "read = ?", new String[]{"0"}, null, null, null);
             cursor.moveToFirst();
             int unreadMessageCount = 0;
             if (cursor.getCount() > 0) {
@@ -875,7 +876,7 @@ public class MessageDatabaseService {
         boolean present = false;
         SQLiteDatabase database = dbHelper.getReadableDatabase();
         try {
-            cursor = database.query("sms", new String[] {"COUNT(*)"}, "keyString = ? AND replyMessage = ?", new String[] {key, String.valueOf(replyMessageType)}, null, null, null);
+            cursor = database.query("sms", new String[]{"COUNT(*)"}, "keyString = ? AND replyMessage = ?", new String[]{key, String.valueOf(replyMessageType)}, null, null, null);
             cursor.moveToFirst();
             present = cursor.getInt(0) > 0;
         } catch (Exception e) {
@@ -1094,54 +1095,58 @@ public class MessageDatabaseService {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String statusQuery = status == 2 ? "ch.kmStatus in (1, 2)" : "ch.kmStatus = ? ";
 
-        if (status == 1) {
-            List<String> selectionArgs = new ArrayList<>();
-            String rowQuery = "SELECT * FROM (" +
-                    "select max(createdAt) as maxCreatedAt , m.* from sms m inner join channel ch on m.channelKey = ch.channelKey " +
-                    "where m.hidden = 0 " +
-                    "AND m.deleted = 0 " +
-                    "AND m.messageContentType not in (11,102) " +
-                    "AND m.type not in (6, 7) " +
-                    "AND ch.deletedAtTime is NULL " +
-                    "AND " + statusQuery + " group by m.channelKey " +
-                    "UNION ALL " +
-                    "select max(createdAt) as maxCreatedAt , m.* from sms m " +
-                    "where m.hidden = 0 " +
-                    "AND m.deleted = 0 " +
-                    "AND m.messageContentType not in (11,102) " +
-                    "AND m.type not in (6, 7) AND m.channelKey = 0 " +
-                    "group by m.contactNumbers " +
-                    ") temp " +
-                    (lastFetchTime != null && lastFetchTime > 0 ? " where temp.maxCreatedAt < ?"  : "") +
-                    " ORDER BY temp.maxCreatedAt DESC";
-            selectionArgs.add(String.valueOf(status));
-            if(lastFetchTime != null && lastFetchTime > 0) {
-                selectionArgs.add(String.valueOf(lastFetchTime));
-            }
-            cursor = db.rawQuery(rowQuery, selectionArgs.toArray(new String[0]));
-        } else {
-
-            List<String> selectionArgs = new ArrayList<>();
-            String selection = "m.hidden = 0 AND m.deleted = 0 AND m.messageContentType not in (11,102) AND m.type not in (6, 7) AND ch.type = 10 AND ch.deletedAtTime is NULL AND";
-            if(status == 2){
-                selection += " ch.kmStatus in (1, 2)";
-            }
-            else {
-                selection += " ch.kmStatus = ?";
+        try {
+            if (status == 1) {
+                List<String> selectionArgs = new ArrayList<>();
+                String rowQuery = "SELECT * FROM (" +
+                        "select max(createdAt) as maxCreatedAt , m.* from sms m inner join channel ch on m.channelKey = ch.channelKey " +
+                        "where m.hidden = 0 " +
+                        "AND m.deleted = 0 " +
+                        "AND m.messageContentType not in (11,102) " +
+                        "AND m.type not in (6, 7) " +
+                        "AND ch.deletedAtTime is NULL " +
+                        "AND " + statusQuery + " group by m.channelKey " +
+                        "UNION ALL " +
+                        "select max(createdAt) as maxCreatedAt , m.* from sms m " +
+                        "where m.hidden = 0 " +
+                        "AND m.deleted = 0 " +
+                        "AND m.messageContentType not in (11,102) " +
+                        "AND m.type not in (6, 7) AND m.channelKey = 0 " +
+                        "group by m.contactNumbers " +
+                        ") temp " +
+                        (lastFetchTime != null && lastFetchTime > 0 ? " where temp.maxCreatedAt < ?" : "") +
+                        " ORDER BY temp.maxCreatedAt DESC";
                 selectionArgs.add(String.valueOf(status));
-            }
+                if (lastFetchTime != null && lastFetchTime > 0) {
+                    selectionArgs.add(String.valueOf(lastFetchTime));
+                }
+                cursor = db.rawQuery(rowQuery, selectionArgs.toArray(new String[0]));
+            } else {
 
-            if(lastFetchTime != null && lastFetchTime > 0){
-                selection += " AND m.createdAt < ?";
-                selectionArgs.add(String.valueOf(lastFetchTime));
-            }
+                List<String> selectionArgs = new ArrayList<>();
+                String selection = "m.hidden = 0 AND m.deleted = 0 AND m.messageContentType not in (11,102) AND m.type not in (6, 7) AND ch.type = 10 AND ch.deletedAtTime is NULL AND";
+                if (status == 2) {
+                    selection += " ch.kmStatus in (1, 2)";
+                } else {
+                    selection += " ch.kmStatus = ?";
+                    selectionArgs.add(String.valueOf(status));
+                }
 
-            cursor = db.query("sms m inner join channel ch on m.channelKey = ch.channelKey", new String[]{"max(createdAt) , m."}, selection, selectionArgs.toArray(new String[0]), "m.channelKey", null, "createdAt desc");
+                if (lastFetchTime != null && lastFetchTime > 0) {
+                    selection += " AND m.createdAt < ?";
+                    selectionArgs.add(String.valueOf(lastFetchTime));
+                }
+
+                cursor = db.query("sms m inner join channel ch on m.channelKey = ch.channelKey", new String[]{"max(createdAt) , m.*"}, selection, selectionArgs.toArray(new String[0]), "m.channelKey", null, "createdAt desc");
+            }
+            List<Message> messageList = getLatestMessageList(cursor);
+            return messageList;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            dbHelper.close();
         }
-
-        List<Message> messageList = getLatestMessageList(cursor);
-        dbHelper.close();
-        return messageList;
     }
 
 
@@ -1154,11 +1159,11 @@ public class MessageDatabaseService {
             String sql = "select sum(" + MobiComDatabaseHelper.UNREAD_COUNT + ") from channel where " + statusQuery;
 
             SQLiteStatement statement = db.compileStatement(sql);
-            if (status != 2){
+            if (status != 2) {
                 statement.bindString(1, String.valueOf(status));
             }
             long records = statement.simpleQueryForLong();
-            count = (int)records;
+            count = (int) records;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -1,5 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
+
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
@@ -157,7 +158,9 @@ public class ConversationFragment extends MobiComConversationFragment implements
         });
         return view;
     }
-
+    public void setAutoTextOnEditText(String newText){
+        messageEditText.setText(newText);
+    }
     @Override
     protected void processMobiTexterUserCheck() {
 

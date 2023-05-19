@@ -27,7 +27,6 @@ import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
@@ -50,7 +49,6 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
@@ -259,7 +257,7 @@ public class ConversationUIService {
                 setPositiveButton(R.string.delete_conversation, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new KmDeleteConversationTask(context, channel.getKey(),false, new KmCallback() {
+                        new KmDeleteConversationTask(context, channel.getKey(), false, new KmCallback() {
                             @Override
                             public void onSuccess(Object message) {
                                 KmToast.success(context, R.string.conversation_delete_successful, Toast.LENGTH_SHORT).show();
@@ -466,7 +464,7 @@ public class ConversationUIService {
         if (BroadcastService.isIndividual()) {
             getConversationFragment().deleteMessageFromDeviceList(keyString);
         }
-        if(BroadcastService.isQuick()) {
+        if (BroadcastService.isQuick()) {
             getQuickConversationFragment().deleteMessage(message, userId);
         }
     }
@@ -631,7 +629,7 @@ public class ConversationUIService {
     }
 
     public void updateMessageMetadata(String keyString) {
-        if(BroadcastService.isIndividual()) {
+        if (BroadcastService.isIndividual()) {
             getConversationFragment().updateMessageMetadata(keyString);
         }
     }
@@ -646,23 +644,21 @@ public class ConversationUIService {
         if (BroadcastService.isQuick()) {
             return;
         }
-        if(userId != null && status != null && !KmUtils.isAgent() && getConversationFragment().getChannel() != null && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
-                if(status.equals(KmConstants.STATUS_AWAY)) {
-                    getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), false);
-                    getConversationFragment().showAwayMessage(true, null);
-                } else if(status.equals(KmConstants.STATUS_ONLINE)) {
-                    getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), true);
-                    getConversationFragment().showAwayMessage(false, null);
-                }
-                else if(status.equals(KmConstants.STATUS_OFFLINE)){
-                    getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
-                    getConversationFragment().showAwayMessage(true, null);
-                }
-                else if(status.equals(KmConstants.STATUS_CONNECTED)){
-                    getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
-                    getConversationFragment().loadAwayMessage();
-                }
-        } else if(userId != null && status != null && getConversationFragment().getChannel() != null && KmChannelService.getInstance(fragmentActivity).getUserInSupportGroup(getConversationFragment().getChannel().getKey()).equals(userId)) {
+        if (userId != null && status != null && !KmUtils.isAgent() && getConversationFragment().getChannel() != null && !TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) && getConversationFragment().getChannel().getConversationAssignee().equals(userId)) {
+            if (status.equals(KmConstants.STATUS_AWAY)) {
+                getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), false);
+                getConversationFragment().showAwayMessage(true, null);
+            } else if (status.equals(KmConstants.STATUS_ONLINE)) {
+                getConversationFragment().switchContactStatus(baseContactService.getContactById(userId), true);
+                getConversationFragment().showAwayMessage(false, null);
+            } else if (status.equals(KmConstants.STATUS_OFFLINE)) {
+                getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
+                getConversationFragment().showAwayMessage(true, null);
+            } else if (status.equals(KmConstants.STATUS_CONNECTED)) {
+                getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
+                getConversationFragment().loadAwayMessage();
+            }
+        } else if (userId != null && status != null && getConversationFragment().getChannel() != null && KmChannelService.getInstance(fragmentActivity).getUserInSupportGroup(getConversationFragment().getChannel().getKey()).equals(userId)) {
             getConversationFragment().processSupportGroupDetails(getConversationFragment().getChannel());
         }
     }
@@ -752,16 +748,16 @@ public class ConversationUIService {
         }
 
         String keyString = intent.getStringExtra("keyString");
-        if(message == null && !TextUtils.isEmpty(keyString) ){
+        if (message == null && !TextUtils.isEmpty(keyString)) {
             message = new MessageDatabaseService(fragmentActivity).getMessage(keyString);
         }
 
-        if(message == null && channelKey != -1) {
+        if (message == null && channelKey != -1) {
             List<Message> messages = new MessageDatabaseService(fragmentActivity).getLatestMessageByChannelKey(channelKey);
             message = (messages.size() != 0) ? messages.get(0) : null;
         }
 
-        if(message != null) {
+        if (message != null) {
             if (message.getGroupId() != null) {
                 channel = ChannelService.getInstance(fragmentActivity).getChannelByChannelKey(message.getGroupId());
             } else {
@@ -787,7 +783,6 @@ public class ConversationUIService {
         if (contact != null) {
             openConversationFragment(contact, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING));
         }
-
         String preFilledMessage = intent.getStringExtra(KmConstants.KM_PREFILLED_MESSAGE);
         if (channel != null) {
             openConversationFragment(channel, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING), preFilledMessage);
@@ -835,5 +830,9 @@ public class ConversationUIService {
             return ((KmFragmentGetter) context.getApplicationContext()).getConversationFragment(contact, channel, conversationId, searchString, messageSearchString);
         }
         return ConversationFragment.newInstance(contact, channel, conversationId, searchString, messageSearchString, preFilledMessage);
+    }
+
+    public void setAutoText(String preFilled) {
+        getConversationFragment().setAutoTextOnEditText(preFilled);
     }
 }

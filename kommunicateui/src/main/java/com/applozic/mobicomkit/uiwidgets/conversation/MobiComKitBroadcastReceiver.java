@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentActivity;
 import io.kommunicate.utils.KmConstants;
 
 import android.text.TextUtils;
-
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -40,6 +39,10 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals("ACTION_TEXT_UPDATED")) {
+            String preFilledText = intent.getStringExtra("preFilled");
+            conversationUIService.setAutoText(preFilledText);
+        }
         String action = intent.getAction();
         Message message = null;
         String keyString = intent.getStringExtra("keyString");

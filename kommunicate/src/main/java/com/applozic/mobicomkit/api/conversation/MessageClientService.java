@@ -31,8 +31,7 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+
 import com.google.gson.JsonParser;
 
 import java.io.UnsupportedEncodingException;
@@ -41,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 
 /**
@@ -409,7 +410,18 @@ public class MessageClientService extends MobiComKitClientService {
         if (!isBroadcastOneByOneGroupType && message.isUploadRequired()) {
             for (String filePath : message.getFilePaths()) {
                 try {
-                    String fileMetaResponse = new FileClientService(context).uploadBlobImage(filePath, handler, oldMessageKey);
+                    String fileMetaResponse = "";
+                    if(!TextUtils.isEmpty(KmAppSettingPreferences.getInstance().getUploadOverrideUrl())) {
+                        fileMetaResponse = new FileClientService(context).defaultUploadOverride(filePath, handler, oldMessageKey, KmAppSettingPreferences.getInstance().getUploadOverrideUrl(), KmAppSettingPreferences.getInstance().getUploadOverrideHeader(), message.getGroupId());
+                        if(!TextUtils.isEmpty(fileMetaResponse)) {
+                            message.setMetadata(Utils.getUploadOverrideMap(fileMetaResponse));
+                        }
+                    } else {
+                        fileMetaResponse = new FileClientService(context).uploadBlobImage(filePath, handler, oldMessageKey);
+
+                        message.setFileMetas((FileMeta) GsonUtils.getObjectFromJson(fileMetaResponse, FileMeta.class));
+
+                    }
                     if (TextUtils.isEmpty(fileMetaResponse)) {
                         if (skipMessage) {
                             return;
@@ -427,7 +439,6 @@ public class MessageClientService extends MobiComKitClientService {
                         BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.UPLOAD_ATTACHMENT_FAILED.toString(), message);
                         return;
                     }
-                    message.setFileMetas((FileMeta) GsonUtils.getObjectFromJson(fileMetaResponse, FileMeta.class));
                     if (handler != null) {
                         android.os.Message msg = handler.obtainMessage();
                         msg.what = MobiComConversationService.UPLOAD_COMPLETED;

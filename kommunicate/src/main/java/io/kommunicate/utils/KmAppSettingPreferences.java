@@ -8,6 +8,8 @@ import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.GsonUtils;
 
+import java.util.HashMap;
+
 import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAppSettingModel;
@@ -27,6 +29,8 @@ public class KmAppSettingPreferences {
     private static final String LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME";
     private static final String CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME";
     private static final String HIDE_POST_CTA = "HIDE_POST_CTA";
+    private static final String UPLOAD_OVERRIDE_URL = "UPLOAD_OVERRIDE_URL";
+    private static final String UPLOAD_OVERRIDE_HEADER = "UPLOAD_OVERRIDE_HEADER";
 
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
@@ -51,6 +55,8 @@ public class KmAppSettingPreferences {
                 setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
                 setKmBotMessageDelayInterval(appSetting.getChatWidget().getBotMessageDelayInterval());
                 setChatSessionDeleteTime(appSetting.getChatWidget().getSessionTimeout());
+                setUploadOverrideUrl(appSetting.getChatWidget().getDefaultUploadOverride().getUrl());
+                setUploadOverrideHeader(appSetting.getChatWidget().getDefaultUploadOverride().getHeaders());
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());
@@ -111,6 +117,23 @@ public class KmAppSettingPreferences {
 
     public long getChatSessionDeleteTime() {
         return preferences.getLong(CHAT_SESSION_DELETE_TIME, 0);
+    }
+
+    public KmAppSettingPreferences setUploadOverrideUrl(String uploadOverrideUrl) {
+        preferences.edit().putString(UPLOAD_OVERRIDE_URL, uploadOverrideUrl).commit();
+        return this;
+    }
+
+    public String getUploadOverrideUrl() {
+        return preferences.getString(UPLOAD_OVERRIDE_URL, "");
+    }
+
+    public KmAppSettingPreferences setUploadOverrideHeader(HashMap<String, String> headers) {
+        preferences.edit().putString(UPLOAD_OVERRIDE_HEADER, GsonUtils.getJsonFromObject(headers, HashMap.class)).commit();
+        return this;
+    }
+    public HashMap<String, String> getUploadOverrideHeader() {
+        return (HashMap<String, String>) GsonUtils.getObjectFromJson(preferences.getString(UPLOAD_OVERRIDE_HEADER, null), HashMap.class);
     }
 
     public boolean isSessionExpired() {

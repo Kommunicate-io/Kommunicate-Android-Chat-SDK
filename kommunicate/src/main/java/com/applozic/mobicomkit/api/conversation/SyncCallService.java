@@ -103,6 +103,8 @@ public class SyncCallService {
     public synchronized void syncMessages(String key, Message message) {
         if (!TextUtils.isEmpty(key) && mobiComMessageService.isMessagePresent(key)) {
             Utils.printLog(context, TAG, "Message is already present, MQTT reached before GCM.");
+            messageDatabaseService.replaceExistingMessage(message);
+            BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
         } else {
             if (Utils.isDeviceInIdleState(context)) {
                 new ConversationRunnables(context, message, false, true, false);

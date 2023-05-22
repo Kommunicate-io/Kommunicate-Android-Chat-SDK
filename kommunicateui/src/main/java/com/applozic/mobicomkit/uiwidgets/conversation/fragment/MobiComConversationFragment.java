@@ -1574,7 +1574,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void addMessage(final Message message) {
         hideAwayMessage(message);
-
+        if(messageList.contains(message)) {
+            updateMessage(message);
+        }
         if (ApplozicService.getContext(getContext()) instanceof KmOnMessageListener) {
             ((KmOnMessageListener) ApplozicService.getContext(getContext())).onNewMessage(message, channel, contact);
         }

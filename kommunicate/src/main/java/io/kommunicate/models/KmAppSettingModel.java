@@ -3,6 +3,7 @@ package io.kommunicate.models;
 import com.applozic.mobicommons.json.JsonMarker;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class KmAppSettingModel extends JsonMarker {
@@ -130,6 +131,10 @@ public class KmAppSettingModel extends JsonMarker {
         private long sessionTimeout;
         private int botMessageDelayInterval;
         private boolean pseudonymsEnabled;
+        @SerializedName("isSingleThreaded")
+        private boolean singleThreaded;
+        private String preChatGreetingMsg;
+        private UploadOverride defaultUploadOverride;
 
         public String getPosition() {
             return position;
@@ -156,15 +161,9 @@ public class KmAppSettingModel extends JsonMarker {
         public void setPosition(String position) {
             this.position = position;
         }
-
-
-
-
-
-        @SerializedName("isSingleThreaded")
-        private boolean singleThreaded;
-        private String preChatGreetingMsg;
-
+        public UploadOverride getDefaultUploadOverride() {
+            return defaultUploadOverride;
+        }
         public String getPreChatGreetingMsg() {
             return preChatGreetingMsg;
         }
@@ -306,6 +305,17 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setTeamAssignmentAllowed(boolean teamAssignmentAllowed) {
             isTeamAssignmentAllowed = teamAssignmentAllowed;
+        }
+    }
+
+    public static class UploadOverride extends JsonMarker {
+        HashMap<String, String> headers;
+        String url;
+        public HashMap<String, String> getHeaders() {
+            return headers;
+        }
+        public String getUrl() {
+            return url;
         }
     }
 }

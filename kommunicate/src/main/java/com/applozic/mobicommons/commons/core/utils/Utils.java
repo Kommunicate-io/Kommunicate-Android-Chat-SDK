@@ -25,10 +25,14 @@ import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.file.ALFileProvider;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 /**
@@ -392,5 +396,20 @@ public class Utils {
 
     public static String getPackageName(Context context) {
         return ApplozicService.getContext(context).getPackageName();
+    }
+
+    public static HashMap<String, String> getUploadOverrideMap(String string) {
+        try {
+            JSONObject jsonObject = new JSONObject(string);
+            JSONObject jsonObjec2 = new JSONObject(jsonObject.getString("metadata"));
+            HashMap<String, String> newMetadata = new HashMap<>();
+            newMetadata.put("payload", jsonObjec2.getString("payload"));
+            newMetadata.put("templateId", jsonObjec2.getString("templateId"));
+            newMetadata.put("contentType", "300");
+            return newMetadata;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

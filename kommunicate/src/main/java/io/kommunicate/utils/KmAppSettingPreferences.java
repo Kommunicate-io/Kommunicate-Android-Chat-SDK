@@ -55,8 +55,10 @@ public class KmAppSettingPreferences {
                 setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
                 setKmBotMessageDelayInterval(appSetting.getChatWidget().getBotMessageDelayInterval());
                 setChatSessionDeleteTime(appSetting.getChatWidget().getSessionTimeout());
+                if(appSetting.getChatWidget().getDefaultUploadOverride() != null) {
                 setUploadOverrideUrl(appSetting.getChatWidget().getDefaultUploadOverride().getUrl());
                 setUploadOverrideHeader(appSetting.getChatWidget().getDefaultUploadOverride().getHeaders());
+                }
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());

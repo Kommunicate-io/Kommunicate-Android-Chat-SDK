@@ -268,7 +268,7 @@ public class FileClientService extends MobiComKitClientService {
         try {
             ApplozicMultipartUtility multipart = new ApplozicMultipartUtility(uploadUrl, headers, context);
             if(groupId != null) {
-                multipart.addFormField("data", "application/json", "{\"groupId\": \" " + groupId + "\"}");
+                multipart.addFormField("data", "application/json", "{\"groupId\": \"" + groupId + "\"}");
             }
             multipart.addFilePart("file", new File(path), handler, oldMessageKey);
             uploadResponse = multipart.getResponse();

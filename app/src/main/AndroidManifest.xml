@@ -4,11 +4,6 @@
     package="io.kommunicate.app">
 
     <uses-permission android:name="io.kommunicate.app.permission.MAPS_RECEIVE" />
-    <permission
-        android:name="io.kommunicate.app.permission.MAPS_RECEIVE"
-        android:protectionLevel="signature" />
-
-
 
         <!--Permissions to be used when using these features-->
         <uses-permission

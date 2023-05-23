@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentActivity;
 import io.kommunicate.utils.KmConstants;
 
 import android.text.TextUtils;
-
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -134,6 +133,9 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
             conversationUIService.muteUserChat(intent.getBooleanExtra("mute", false), intent.getStringExtra("userId"));
         } else if(BroadcastService.INTENT_ACTIONS.AGENT_STATUS.toString().equals(action)) {
             conversationUIService.updateAgentStatus(intent.getStringExtra("userId"), intent.getIntExtra("status", KmConstants.STATUS_ONLINE));
+        } else if (BroadcastService.INTENT_ACTIONS.ACTION_POPULATE_CHAT_TEXT.toString().equals(action)) {
+            String preFilledText = intent.getStringExtra("preFilled");
+            conversationUIService.setAutoText(preFilledText);
         }
     }
 }

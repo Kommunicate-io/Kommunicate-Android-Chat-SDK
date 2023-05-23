@@ -19,6 +19,7 @@ import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
+import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
@@ -891,5 +892,9 @@ public class Kommunicate {
 
     public static void removeApplicationKey(Context context) {
         new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
+    }
+
+    public static void setChatText(Context context, String PreFilledText) {
+        BroadcastService.onAutoText(context,PreFilledText);
     }
 }

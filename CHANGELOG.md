@@ -3,8 +3,11 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## [Unreleased]
+## Kommunicate Android SDK 2.7.1
  1) Added support for group creation source in sdk
+ 2) Added support for Multilingual bot 
+ 3) Added a new field addFormLabelInMessage to form Rich message, which controls whether or not to show the form label in the message when the form data is submitted
+ 4) Expose Method to populate text on chat bar - Kommunicate.setChatText(context, "Text to populate");
   
 ## Kommunicate Android SDK 2.7.0
 1) Fix for rating asked everytime in a resolved conversation

@@ -833,6 +833,9 @@ public class ConversationUIService {
     }
 
     public void setAutoText(String preFilled) {
+        if(BroadcastService.isQuick()){
+            return;
+        }
         getConversationFragment().setAutoTextOnEditText(preFilled);
     }
 }

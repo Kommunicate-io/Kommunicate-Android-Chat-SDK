@@ -39,10 +39,6 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("ACTION_POPULATE_CHAT_TEXT")) {
-            String preFilledText = intent.getStringExtra("preFilled");
-            conversationUIService.setAutoText(preFilledText);
-        }
         String action = intent.getAction();
         Message message = null;
         String keyString = intent.getStringExtra("keyString");
@@ -137,6 +133,9 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
             conversationUIService.muteUserChat(intent.getBooleanExtra("mute", false), intent.getStringExtra("userId"));
         } else if(BroadcastService.INTENT_ACTIONS.AGENT_STATUS.toString().equals(action)) {
             conversationUIService.updateAgentStatus(intent.getStringExtra("userId"), intent.getIntExtra("status", KmConstants.STATUS_ONLINE));
+        } else if (intent.getAction().equals("ACTION_POPULATE_CHAT_TEXT")) {
+            String preFilledText = intent.getStringExtra("preFilled");
+            conversationUIService.setAutoText(preFilledText);
         }
     }
 }

@@ -18,6 +18,8 @@ import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ApplozicMultipartUtility {
     private static final String LINE_FEED = "\r\n";
@@ -27,6 +29,7 @@ public class ApplozicMultipartUtility {
     private HttpURLConnection httpConn;
     private OutputStream outputStream;
     private PrintWriter writer;
+    private boolean isUploadOveridden;
 
     public ApplozicMultipartUtility(String requestURL, String charset, Context context)
             throws IOException {
@@ -47,6 +50,34 @@ public class ApplozicMultipartUtility {
                 true);
     }
 
+    public ApplozicMultipartUtility(String requestURL, HashMap<String, String> headers, Context context) throws IOException {
+        boundary = "--" + System.currentTimeMillis() + "--";
+        isUploadOveridden = true;
+        URL url = new URL(requestURL);
+        httpConn = (HttpURLConnection) url.openConnection();
+        httpConn.setUseCaches(false);
+        httpConn.setDoOutput(true);
+        httpConn.setDoInput(true);
+        httpConn.setRequestProperty("Content-Type",
+                "multipart/form-data; boundary=" + boundary);
+        if(headers != null && !headers.isEmpty()) {
+            for(Map.Entry<String, String> entry : headers.entrySet()) {
+                httpConn.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        outputStream = httpConn.getOutputStream();
+        writer = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"),
+                true);
+    }
+    public void addFormField(String name, String contentType, String value) {
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append("Content-Disposition: form-data; name=\"" + name + "\";")
+                .append(LINE_FEED);
+        writer.append("Content-Type: ").append(contentType).append(LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.append(value).append(LINE_FEED);
+        writer.flush();
+    }
 
     public void addFilePart(String fieldName, File uploadFile, Handler handler, String oldMessageKey)
             throws IOException, InterruptedException {
@@ -54,7 +85,7 @@ public class ApplozicMultipartUtility {
         writer.append("--" + boundary).append(LINE_FEED);
         writer.append(
                 "Content-Disposition: form-data; name=\"" + fieldName
-                        + "\"; filename=\"" + AWS_ENCRYPTED + fileName + "\"")
+                        + "\"; filename=\"" + (isUploadOveridden? "" : AWS_ENCRYPTED) + fileName + "\"")
                 .append(LINE_FEED);
         writer.append(
                 "Content-Type: "

@@ -11,10 +11,8 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.HttpRequestUtils;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
-import com.applozic.mobicomkit.api.attachment.urlservice.S3URLService;
 import com.applozic.mobicomkit.api.attachment.urlservice.URLServiceProvider;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
@@ -37,6 +35,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by devashish on 26/12/14.
@@ -257,6 +256,22 @@ public class FileClientService extends MobiComKitClientService {
             multipart.addFilePart("file", new File(path), handler, oldMessageKey);
             uploadResponse = multipart.getResponse();
            // return multipart.getResponse();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return uploadResponse;
+    }
+
+    public String defaultUploadOverride(String path, Handler handler, String oldMessageKey, String uploadUrl, HashMap<String, String> headers, Integer groupId) throws Exception {
+        String uploadResponse = null;
+        try {
+            ApplozicMultipartUtility multipart = new ApplozicMultipartUtility(uploadUrl, headers, context);
+            if(groupId != null) {
+                multipart.addFormField("data", "application/json", "{\"groupId\": \"" + groupId + "\"}");
+            }
+            multipart.addFilePart("file", new File(path), handler, oldMessageKey);
+            uploadResponse = multipart.getResponse();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

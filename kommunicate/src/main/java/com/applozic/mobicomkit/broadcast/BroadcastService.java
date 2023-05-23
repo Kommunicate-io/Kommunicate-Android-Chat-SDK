@@ -367,9 +367,9 @@ public class BroadcastService {
     }
 
     public static void onAutoText(Context context, String prefilledText) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.ACTION_TEXT_UPDATED));
+        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.ACTION_POPULATE_CHAT_TEXT));
         Intent intent = new Intent();
-        intent.setAction(INTENT_ACTIONS.ACTION_TEXT_UPDATED.toString());
+        intent.setAction(INTENT_ACTIONS.ACTION_POPULATE_CHAT_TEXT.toString());
         intent.putExtra("preFilled", prefilledText);
         sendBroadcast(context, intent);
     }
@@ -407,7 +407,7 @@ public class BroadcastService {
         intentFilter.addAction(INTENT_ACTIONS.LOGGED_USER_DELETE.toString());
         intentFilter.addAction(INTENT_ACTIONS.AGENT_STATUS.toString());
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-        intentFilter.addAction(INTENT_ACTIONS.ACTION_TEXT_UPDATED.toString());
+        intentFilter.addAction(INTENT_ACTIONS.ACTION_POPULATE_CHAT_TEXT.toString());
         return intentFilter;
     }
 
@@ -426,6 +426,6 @@ public class BroadcastService {
         UPDATE_LAST_SEEN_AT_TIME, UPDATE_TYPING_STATUS, MESSAGE_READ_AND_DELIVERED, MESSAGE_READ_AND_DELIVERED_FOR_CONTECT, CHANNEL_SYNC,
         CONTACT_VERIFIED, NOTIFY_USER, MQTT_DISCONNECTED, UPDATE_CHANNEL_NAME, UPDATE_TITLE_SUBTITLE, CONVERSATION_READ, UPDATE_USER_DETAIL,
         MESSAGE_METADATA_UPDATE, MUTE_USER_CHAT, MQTT_CONNECTED, USER_ONLINE, USER_OFFLINE, GROUP_MUTE, CONTACT_PROFILE_CLICK, LOGGED_USER_DELETE,
-        AGENT_STATUS,ACTION_TEXT_UPDATED
+        AGENT_STATUS, ACTION_POPULATE_CHAT_TEXT
     }
 }

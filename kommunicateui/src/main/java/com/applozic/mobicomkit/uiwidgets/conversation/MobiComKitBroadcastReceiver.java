@@ -39,7 +39,7 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals("ACTION_TEXT_UPDATED")) {
+        if (intent.getAction().equals("ACTION_POPULATE_CHAT_TEXT")) {
             String preFilledText = intent.getStringExtra("preFilled");
             conversationUIService.setAutoText(preFilledText);
         }

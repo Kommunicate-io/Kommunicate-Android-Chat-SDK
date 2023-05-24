@@ -3,7 +3,9 @@ package io.kommunicate.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+
 import androidx.core.content.ContextCompat;
+
 import io.kommunicate.KmSettings;
 
 import android.graphics.Color;
@@ -52,9 +54,9 @@ public class KmUtils {
 
     public static boolean isServiceDisconnected(Context context, boolean isAgentApp, RelativeLayout customToolbarLayout) {
         boolean isDebuggable = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-        boolean disconnect = !isAgentApp
-                && MobiComUserPreference.getInstance(context).getPricingPackage() == PackageType.STARTUP.getValue()
-                && !isDebuggable;
+        boolean disconnect = (!isAgentApp && !isDebuggable) && (MobiComUserPreference.getInstance(context).getPricingPackage() == PackageType.STARTUP.getValue()
+                || MobiComUserPreference.getInstance(context).getPricingPackage() == PackageType.START_MONTHLY.getValue()
+                || MobiComUserPreference.getInstance(context).getPricingPackage() == PackageType.START_YEARLY.getValue());
         if (customToolbarLayout != null) {
             customToolbarLayout.setVisibility(View.GONE);
         }
@@ -98,23 +100,19 @@ public class KmUtils {
         gradientDrawable.setStroke(width, color);
     }
 
-    public static void setIconInsideTextView(TextView textView, int drawableRes, int color , int position , int padding)
-    {
-        if(position == LEFT_POSITION) {
+    public static void setIconInsideTextView(TextView textView, int drawableRes, int color, int position, int padding) {
+        if (position == LEFT_POSITION) {
             textView.setCompoundDrawablesWithIntrinsicBounds(drawableRes, 0, 0, 0);
-        }
-        else if(position == RIGHT_POSITION) {
+        } else if (position == RIGHT_POSITION) {
             textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableRes, 0);
         }
         textView.setCompoundDrawablePadding(padding);
-        if(color!= Color.TRANSPARENT)
-        {
+        if (color != Color.TRANSPARENT) {
             textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
         }
     }
 
-    public static void setIconInsideTextView(TextView textView)
-    {
+    public static void setIconInsideTextView(TextView textView) {
         textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
@@ -135,22 +133,22 @@ public class KmUtils {
     }
 
     public static String getCustomBotName(Message message, Context context) {
-            if(message != null) {
-                Map<String, String> metadata = new HashMap<>();
-                metadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(context).getMessageMetaData(), Map.class);
-                if(metadata != null && metadata.containsKey(KmSettings.KM_CHAT_CONTEXT) && metadata.get(KM_CHAT_CONTEXT).contains(BOT_CUSTOMIZATION)) {
-                    JSONObject custombotObject = null;
-                    try {
-                        custombotObject = new JSONObject(metadata.get(KM_CHAT_CONTEXT));
-                        JSONObject botDataObject = new JSONObject(custombotObject.getString(BOT_CUSTOMIZATION));
-                    if(!TextUtils.isEmpty(message.getContactIds()) && botDataObject.has(ID) && message.getContactIds().equals(botDataObject.getString(ID))) {
+        if (message != null) {
+            Map<String, String> metadata = new HashMap<>();
+            metadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(context).getMessageMetaData(), Map.class);
+            if (metadata != null && metadata.containsKey(KmSettings.KM_CHAT_CONTEXT) && metadata.get(KM_CHAT_CONTEXT).contains(BOT_CUSTOMIZATION)) {
+                JSONObject custombotObject = null;
+                try {
+                    custombotObject = new JSONObject(metadata.get(KM_CHAT_CONTEXT));
+                    JSONObject botDataObject = new JSONObject(custombotObject.getString(BOT_CUSTOMIZATION));
+                    if (!TextUtils.isEmpty(message.getContactIds()) && botDataObject.has(ID) && message.getContactIds().equals(botDataObject.getString(ID))) {
                         return botDataObject.getString(NAME);
                     }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
+        }
         return null;
     }
 
@@ -177,7 +175,9 @@ public class KmUtils {
         ENTERPRISE_MONTHLY(105),
         ENTERPRISE_YEARLY(106),
         EARLY_BIRD_MONTHLY(107),
-        EARLY_BIRD_YEARLY(108);
+        EARLY_BIRD_YEARLY(108),
+        START_MONTHLY(112),
+        START_YEARLY(113);
 
         private int value;
 

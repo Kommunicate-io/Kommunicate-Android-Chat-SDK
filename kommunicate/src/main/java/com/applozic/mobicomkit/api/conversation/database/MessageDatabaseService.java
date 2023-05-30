@@ -769,17 +769,14 @@ public class MessageDatabaseService {
                 SQLiteDatabase db = dbHelper.getReadableDatabase();
                 // Execute the query.
                 Cursor cursor = db.query("channel", new String[]{"unreadCount"}, "channelKey = ?", new String[]{String.valueOf(channelKey)}, null, null, null);
-
                 // Get the unread message count.
-
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     unreadMessage[0] = cursor.getInt(0);
                 }
 
-                // Close the cursor and the database.
+                // Close the cursor
                 cursor.close();
-                db.close();
             }
         };
         // Execute the query on a worker thread.
@@ -793,7 +790,8 @@ public class MessageDatabaseService {
             e.printStackTrace();
         }
 
-    // Return the unread message count.
+        // Return the unread message count.
+        dbHelper.close();
         return unreadMessage[0];
     }
 

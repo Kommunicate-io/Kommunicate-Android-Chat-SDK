@@ -760,25 +760,41 @@ public class MessageDatabaseService {
     }
 
     public int getUnreadMessageCountForChannel(Integer channelKey) {
-        Cursor cursor = null;
-        try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.query("channel", new String[]{"unreadCount"}, "channelKey = ?", new String[]{String.valueOf(channelKey)}, null, null, null);
-            cursor.moveToFirst();
-            int unreadMessage = 0;
-            if (cursor.getCount() > 0) {
-                unreadMessage = cursor.getInt(0);
-            }
-            return unreadMessage;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (cursor != null) {
+        final int[] unreadMessage = {0};
+        // Create a Runnable object to execute the query on a worker thread.
+        Runnable queryRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // Open the database in read-only mode.
+                SQLiteDatabase db = dbHelper.getReadableDatabase();
+                // Execute the query.
+                Cursor cursor = db.query("channel", new String[]{"unreadCount"}, "channelKey = ?", new String[]{String.valueOf(channelKey)}, null, null, null);
+
+                // Get the unread message count.
+
+                if (cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    unreadMessage[0] = cursor.getInt(0);
+                }
+
+                // Close the cursor and the database.
                 cursor.close();
+                db.close();
             }
-            dbHelper.close();
+        };
+        // Execute the query on a worker thread.
+        Thread thread = new Thread(queryRunnable);
+        thread.start();
+
+        // Wait for the query to complete.
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return 0;
+
+    // Return the unread message count.
+        return unreadMessage[0];
     }
 
     public int getUnreadConversationCount() {

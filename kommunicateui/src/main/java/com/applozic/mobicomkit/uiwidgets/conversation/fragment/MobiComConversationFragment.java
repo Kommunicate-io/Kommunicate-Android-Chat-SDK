@@ -1193,7 +1193,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             messageEditText.setText("");
             sendMessage(message, null, null, null, Message.ContentType.DEFAULT.getValue());
         }
-
     }
 
     protected void sendMessage() {
@@ -1242,9 +1241,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 processSendMessage();
             }
         }
-        if (contact != null && !contact.isBlocked() || channel != null) {
-            handleSendAndRecordButtonView(false);
-        }
+//        if (contact != null && !contact.isBlocked() || channel != null) {
+//            handleSendAndRecordButtonView(false);
+//        }
     }
 
     public void sendMessage(short messageContentType, String filePath) {
@@ -4228,6 +4227,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if(!TextUtils.isEmpty(customInputField.getKM_FIELD().getPlaceholder())) {
                     messageEditText.setHint(customInputField.getKM_FIELD().getPlaceholder());
                 }
+            } else {
+                customInputField = null;
+                isCustomFieldMessage = false;
             }
         }
     }
@@ -4288,20 +4290,31 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     } else {
                         KmToast.error(getContext(), getResources().getString(R.string.invalid_regex_error), Toast.LENGTH_SHORT).show();
                     }
+                    handleSendAndRecordButtonView(true);
                     return;
                 }
             } catch (PatternSyntaxException e) {
                 e.printStackTrace();
-                if(customInputField.getKM_FIELD().getFieldType().equals("EMAIL")) {
-                    if (!Pattern.compile(LeadCollectionActivity.EMAIL_VALIDATION_REGEX).matcher(messageEditText.getText().toString().trim()).find()) {
+                boolean isRegexMatching = true;
+                switch(customInputField.getKM_FIELD().getFieldType()) {
+                    case (KmCustomInputModel.EMAIL): {
+                        isRegexMatching = Pattern.compile(LeadCollectionActivity.EMAIL_VALIDATION_REGEX).matcher(messageEditText.getText().toString().trim()).matches();
+                        break;
+                    }
+                    case (KmCustomInputModel.PHONE_NUMBER): {
+                        isRegexMatching = Pattern.compile(LeadCollectionActivity.PHONE_NUMBER_VALIDATION_REGEX).matcher(messageEditText.getText().toString().trim()).matches();
+                        break;
+                    }
+                }
+                    if(!isRegexMatching) {
                         if (!TextUtils.isEmpty(customInputField.getKM_FIELD().getValidation().getErrorText())) {
                             KmToast.error(getContext(), customInputField.getKM_FIELD().getValidation().getErrorText(), Toast.LENGTH_SHORT).show();
                         } else {
                             KmToast.error(getContext(), getResources().getString(R.string.invalid_regex_error), Toast.LENGTH_SHORT).show();
                         }
+                        handleSendAndRecordButtonView(true);
                         return;
                     }
-                }
             }
         }
         if(customInputField.getKM_FIELD().getAction().containsKey(UpdateUserDetails) && customInputField.getKM_FIELD().getAction().get(UpdateUserDetails).equals(true)) {

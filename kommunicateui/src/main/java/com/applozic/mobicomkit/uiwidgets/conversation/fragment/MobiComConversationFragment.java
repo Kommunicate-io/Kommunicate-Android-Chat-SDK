@@ -1190,6 +1190,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (isCustomFieldMessage) {
             validateCustomInputRegex(message);
         } else {
+            messageEditText.setText("");
             sendMessage(message, null, null, null, Message.ContentType.DEFAULT.getValue());
         }
 
@@ -1352,7 +1353,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             if (disjointResult && !restrictedWordMatches) {
                 sendMessage(messageEditText.getText().toString().trim());
-                messageEditText.setText("");
             } else {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
                         setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
@@ -4232,7 +4232,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    private void updateUpdateCustomInput(String message) {
+    private void updateUserFromCustomInput(String message) {
         String fieldType = customInputField.getKM_FIELD().getFieldType();
         String field = customInputField.getKM_FIELD().getField();
         if(customInputField == null || TextUtils.isEmpty(fieldType)) {
@@ -4304,12 +4304,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             }
         }
-        if(customInputField.getReplyMetadata() != null) {
-            sendMessage(message, customInputField.getReplyMetadata(), null, null, Message.ContentType.DEFAULT.getValue());
-        }
         if(customInputField.getKM_FIELD().getAction().containsKey(UpdateUserDetails) && customInputField.getKM_FIELD().getAction().get(UpdateUserDetails).equals(true)) {
-            updateUpdateCustomInput(message);
+            updateUserFromCustomInput(message);
         }
+        messageEditText.setText("");
+        sendMessage(message, customInputField.getReplyMetadata() != null ? customInputField.getReplyMetadata() : null, null, null, Message.ContentType.DEFAULT.getValue());
     }
 
     protected <T> KmAutoSuggestionArrayAdapter<T> getAdapter(T[] data) {

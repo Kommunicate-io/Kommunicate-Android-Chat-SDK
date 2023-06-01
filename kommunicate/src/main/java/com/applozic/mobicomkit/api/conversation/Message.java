@@ -82,6 +82,8 @@ public class Message extends JsonMarker {
     public static final String SKIP_BOT = "skipBot";
     public static final String AL_DELETE_MESSAGE_FOR_ALL_KEY = "AL_DELETE_GROUP_MESSAGE_FOR_ALL";
     public static final String AUTO_SUGGESTION_TYPE_MESSAGE = "KM_AUTO_SUGGESTION";
+    public static final String KM_FIELD = "KM_FIELD";
+
     public static final String STATUS_CLOSED = "closed";
     public static final String STATUS_OPEN = "open";
     public static final String RICH_MESSAGE_CONTENT_TYPE = "300";
@@ -775,6 +777,10 @@ public class Message extends JsonMarker {
 
     public boolean isRichMessage() {
         return metadata != null && RICH_MESSAGE_CONTENT_TYPE.equals(metadata.get("contentType"));
+    }
+
+    public boolean isCustomInputField() {
+        return metadata != null && metadata.containsKey(KM_FIELD);
     }
 
     public boolean isAttachmentEncrypted() {

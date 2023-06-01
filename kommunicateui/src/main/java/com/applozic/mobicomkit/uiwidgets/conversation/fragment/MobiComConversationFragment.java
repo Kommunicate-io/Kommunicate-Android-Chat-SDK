@@ -4242,15 +4242,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         switch(fieldType) {
             case(KmCustomInputModel.EMAIL) : {
                 user.setEmail(message);
-                return;
+                break;
             }
             case(KmCustomInputModel.NAME) : {
                 user.setDisplayName(message);
-                return;
+                break;
             }
             case(KmCustomInputModel.PHONE_NUMBER) : {
                 user.setContactNumber(message);
-                return;
+                break;
             }
             default: {
                 Map<String, String> inputMetadata = new HashMap<>();

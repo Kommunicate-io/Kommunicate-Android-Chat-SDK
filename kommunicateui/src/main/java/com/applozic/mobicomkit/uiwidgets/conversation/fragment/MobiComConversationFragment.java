@@ -1241,9 +1241,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 processSendMessage();
             }
         }
-//        if (contact != null && !contact.isBlocked() || channel != null) {
-//            handleSendAndRecordButtonView(false);
-//        }
     }
 
     public void sendMessage(short messageContentType, String filePath) {

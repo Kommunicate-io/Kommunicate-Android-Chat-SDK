@@ -135,6 +135,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmA
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.helpers.KmFormStateHelper;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmAutoSuggestion;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmCustomInputModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmSpeechToText;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmTextToSpeech;
@@ -224,6 +225,7 @@ import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmCustomInputModel.UpdateUserDetails;
 import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
 import static java.util.Collections.disjoint;
 
@@ -380,6 +382,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
     public boolean isCustomToolbarSubtitleDesign;
+    private KmCustomInputModel customInputField;
+    private boolean isCustomFieldMessage = false;
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -1183,7 +1187,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void sendMessage(String message) {
-        sendMessage(message, null, null, null, Message.ContentType.DEFAULT.getValue());
+        if (isCustomFieldMessage) {
+            validateCustomInputRegex(message);
+        } else {
+            messageEditText.setText("");
+            sendMessage(message, null, null, null, Message.ContentType.DEFAULT.getValue());
+        }
     }
 
     protected void sendMessage() {
@@ -1231,9 +1240,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 processSendMessage();
             }
-        }
-        if (contact != null && !contact.isBlocked() || channel != null) {
-            handleSendAndRecordButtonView(false);
         }
     }
 
@@ -1343,7 +1349,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             if (disjointResult && !restrictedWordMatches) {
                 sendMessage(messageEditText.getText().toString().trim());
-                messageEditText.setText("");
             } else {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
                         setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
@@ -1637,6 +1642,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
                 selfDestructMessage(message);
                 checkForAutoSuggestions();
+                checkForCustomInput();
             }
         });
     }
@@ -4157,6 +4163,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
             loadMore = !nextMessageList.isEmpty();
             checkForAutoSuggestions();
+            checkForCustomInput();
         }
     }
 
@@ -4205,6 +4212,113 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 messageEditText.setHint(!TextUtils.isEmpty(alCustomizationSettings.getEditTextHintText()) ? alCustomizationSettings.getEditTextHintText() : ApplozicService.getContext(getContext()).getString(R.string.enter_message_hint));
             }
         }
+    }
+    private void checkForCustomInput() {
+        if (User.RoleType.USER_ROLE.getValue() == loggedInUserRole) {
+            if (messageList != null && !messageList.isEmpty() && messageList.get(messageList.size() - 1).isCustomInputField()) {
+                customInputField = KmCustomInputModel.parseCustomInputModel(messageList.get(messageList.size() - 1));
+                if (customInputField == null) {
+                    return;
+                }
+                isCustomFieldMessage = true;
+                if(!TextUtils.isEmpty(customInputField.getKM_FIELD().getPlaceholder())) {
+                    messageEditText.setHint(customInputField.getKM_FIELD().getPlaceholder());
+                }
+            } else {
+                customInputField = null;
+                isCustomFieldMessage = false;
+            }
+        }
+    }
+
+    private void updateUserFromCustomInput(String message) {
+        String fieldType = customInputField.getKM_FIELD().getFieldType();
+        String field = customInputField.getKM_FIELD().getField();
+        if(customInputField == null || TextUtils.isEmpty(fieldType)) {
+            return;
+        }
+        User user = new User();
+        switch(fieldType) {
+            case(KmCustomInputModel.EMAIL) : {
+                user.setEmail(message);
+                break;
+            }
+            case(KmCustomInputModel.NAME) : {
+                user.setDisplayName(message);
+                break;
+            }
+            case(KmCustomInputModel.PHONE_NUMBER) : {
+                user.setContactNumber(message);
+                break;
+            }
+            default: {
+                Map<String, String> inputMetadata = new HashMap<>();
+                inputMetadata.put(field, message);
+                user.setMetadata(inputMetadata);
+            }
+        }
+
+        UserService.getInstance(getContext()).updateUser(user, fieldType.equals(KmCustomInputModel.EMAIL), new AlCallback() {
+            @Override
+            public void onSuccess(Object response) {
+                Utils.printLog(getContext(), TAG, "Updated User through Custom Input Field");
+            }
+
+            @Override
+            public void onError(Object error) {
+                Utils.printLog(getContext(), TAG, "Failed to update user through Custom Input Field " + error.toString());
+
+
+            }
+        });
+    }
+
+    private void validateCustomInputRegex(String message) {
+        if(customInputField == null) {
+            return;
+        }
+        if (customInputField.getKM_FIELD().getValidation() != null
+                && !TextUtils.isEmpty(customInputField.getKM_FIELD().getValidation().getRegex())) {
+            try {
+                if (!Pattern.compile(customInputField.getKM_FIELD().getValidation().getRegex()).matcher(messageEditText.getText().toString().trim()).find()) {
+                    kmAwayView.showInvalidEmail();
+                    if (!TextUtils.isEmpty(customInputField.getKM_FIELD().getValidation().getErrorText())) {
+                        KmToast.error(getContext(), customInputField.getKM_FIELD().getValidation().getErrorText(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        KmToast.error(getContext(), getResources().getString(R.string.invalid_regex_error), Toast.LENGTH_SHORT).show();
+                    }
+                    handleSendAndRecordButtonView(true);
+                    return;
+                }
+            } catch (PatternSyntaxException e) {
+                e.printStackTrace();
+                boolean isRegexMatching = true;
+                switch(customInputField.getKM_FIELD().getFieldType()) {
+                    case (KmCustomInputModel.EMAIL): {
+                        isRegexMatching = Pattern.compile(LeadCollectionActivity.EMAIL_VALIDATION_REGEX).matcher(messageEditText.getText().toString().trim()).matches();
+                        break;
+                    }
+                    case (KmCustomInputModel.PHONE_NUMBER): {
+                        isRegexMatching = Pattern.compile(LeadCollectionActivity.PHONE_NUMBER_VALIDATION_REGEX).matcher(messageEditText.getText().toString().trim()).matches();
+                        break;
+                    }
+                }
+                    if(!isRegexMatching) {
+                        if (!TextUtils.isEmpty(customInputField.getKM_FIELD().getValidation().getErrorText())) {
+                            KmToast.error(getContext(), customInputField.getKM_FIELD().getValidation().getErrorText(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            KmToast.error(getContext(), getResources().getString(R.string.invalid_regex_error), Toast.LENGTH_SHORT).show();
+                        }
+                        handleSendAndRecordButtonView(true);
+                        return;
+                    }
+            }
+        }
+        if(customInputField.getKM_FIELD().getAction().containsKey(UpdateUserDetails) && customInputField.getKM_FIELD().getAction().get(UpdateUserDetails).equals(true)) {
+            updateUserFromCustomInput(message);
+        }
+        messageEditText.setText("");
+        sendMessage(message, customInputField.getReplyMetadata() != null ? customInputField.getReplyMetadata() : null, null, null, Message.ContentType.DEFAULT.getValue());
     }
 
     protected <T> KmAutoSuggestionArrayAdapter<T> getAdapter(T[] data) {

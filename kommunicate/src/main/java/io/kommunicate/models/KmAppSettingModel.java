@@ -222,6 +222,15 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean enableWaitingQueue;
         private int conversationHandlingLimit;
         private KMRolesAndPermissions rolesAndPermissions;
+        private boolean teamModeEnabled;
+
+        public boolean isTeamModeEnabled() {
+            return teamModeEnabled;
+        }
+        public void setTeamModeEnabled(boolean teamModeEnabled) {
+            this.teamModeEnabled = teamModeEnabled;
+        }
+
 
         public KMRolesAndPermissions getRolesAndPermissions() {
             return rolesAndPermissions;
@@ -282,6 +291,24 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean isTeamMateAssignmentAllowed = false;
         @SerializedName("team")
         private boolean isTeamAssignmentAllowed = false;
+        private boolean hideAssignToDropdown;
+        private boolean restictOperatorToReadOnly;
+
+        public boolean isHideAssignToDropdown() {
+            return hideAssignToDropdown;
+        }
+
+        public void setHideAssignToDropdown(boolean hideAssignToDropdown) {
+            this.hideAssignToDropdown = hideAssignToDropdown;
+        }
+
+        public boolean isRestrictOperatorToReadOnly() {
+            return restictOperatorToReadOnly;
+        }
+
+        public void setRestrictOperatorToReadOnly(boolean restictOperatorToReadOnly) {
+            this.restictOperatorToReadOnly = restictOperatorToReadOnly;
+        }
 
         public boolean isBotAssignmentAllowed() {
             return isBotAssignmentAllowed;

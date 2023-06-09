@@ -45,6 +45,7 @@ import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -381,7 +382,7 @@ public class KmConversationHelper {
                 conversationBuilder.skipConversationRoutingRules(true);
             }
             try {
-                startConversation(true, conversationBuilder,
+                startConversation(TextUtils.isEmpty(KmAppSettingPreferences.getInstance().getZendeskSdkKey()), conversationBuilder,
                         getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null, callback));
             } catch (KmException e) {
                 if (callback != null) {
@@ -398,6 +399,15 @@ public class KmConversationHelper {
                 callback.onFailure(Utils.getString(null, R.string.km_conversation_builder_cannot_be_null));
             }
             return;
+        }
+        if(!TextUtils.isEmpty(KmAppSettingPreferences.getInstance().getZendeskSdkKey())) {
+            if (conversationBuilder.getConversationInfo() != null) {
+                conversationBuilder.getConversationInfo().put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
+            } else {
+                Map<String, String> sourceMap = new HashMap<>();
+                sourceMap.put(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
+                conversationBuilder.setConversationInfo(sourceMap);
+            }
         }
 
         if (conversationBuilder.getContext() == null) {
@@ -737,8 +747,12 @@ public class KmConversationHelper {
                     List<String> agents = new ArrayList<>();
                     agents.add(kmAppSettings.getResponse().getAgentId());
                     conversationBuilder.setAgentIds(agents);
+                    conversationBuilder.setSingleConversation(TextUtils.isEmpty(KmAppSettingPreferences.getInstance().getZendeskSdkKey()));
                     if (useSingleThreadedSettingFromServer) {
                         conversationBuilder.setSingleConversation(kmAppSettings.getChatWidget().isSingleThreaded());
+                    }
+                    if(!TextUtils.isEmpty(kmAppSettings.getChatWidget().getZendeskChatSdkKey())) {
+                        conversationBuilder.updateConversationInfo(KmConstants.CONVERSATION_SOURCE, KmConstants.ZOPIM);
                     }
                     try {
                         final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), agents, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);

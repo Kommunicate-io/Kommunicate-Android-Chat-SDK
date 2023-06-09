@@ -52,6 +52,11 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 7) Threads optimized for Hybrid platforms
 8) Multiple crash fixes
 
+
+## Kommunicate Android SDK 2.5.3-zendesk
+1) Added support for Zendesk Chat Integration
+
+
 ## Kommunicate Android SDK 2.5.3
 1) Auto Suggestion Button color customization
 2) Added support for AES256 encryption and decryption

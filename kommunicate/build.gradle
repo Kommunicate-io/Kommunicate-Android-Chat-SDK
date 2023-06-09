@@ -5,6 +5,7 @@ rootProject.allprojects {
         maven {
             url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
         }
+        maven { url 'https://zendesk.jfrog.io/zendesk/repo' }
     }
 }
 android {
@@ -15,10 +16,12 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
-        versionName "2.7.1"
+
+        versionName "2.7.1-zendesk"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
         buildConfigField "String", "API_SERVER_URL", '"https://api.kommunicate.io"'
@@ -42,6 +45,7 @@ dependencies {
     api 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
     api 'androidx.appcompat:appcompat:1.2.0'
     api 'com.google.code.gson:gson:2.8.6'
+    implementation group: 'com.zendesk', name: 'chat-providers', version: '3.3.0'
 }
 
 /*task sourcesJar(type: Jar) {

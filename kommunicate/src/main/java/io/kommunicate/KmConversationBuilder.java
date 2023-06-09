@@ -5,6 +5,7 @@ import android.content.Context;
 import com.applozic.mobicommons.json.Exclude;
 import com.applozic.mobicommons.json.JsonMarker;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -249,5 +250,12 @@ public class KmConversationBuilder extends JsonMarker {
     public KmConversationBuilder setTeamId(String teamId) {
         this.teamId = teamId;
         return this;
+    }
+
+    public void updateConversationInfo(String key, String value) {
+        if (conversationInfo == null) {
+            conversationInfo = new HashMap<>();
+        }
+        conversationInfo.put(key, value);
     }
 }

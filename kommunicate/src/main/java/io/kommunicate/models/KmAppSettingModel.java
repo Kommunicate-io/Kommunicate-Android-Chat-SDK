@@ -131,10 +131,14 @@ public class KmAppSettingModel extends JsonMarker {
         private long sessionTimeout;
         private int botMessageDelayInterval;
         private boolean pseudonymsEnabled;
+
         @SerializedName("isSingleThreaded")
         private boolean singleThreaded;
         private String preChatGreetingMsg;
         private UploadOverride defaultUploadOverride;
+
+        private String zendeskChatSdkKey;
+
 
         public String getPosition() {
             return position;
@@ -161,9 +165,21 @@ public class KmAppSettingModel extends JsonMarker {
         public void setPosition(String position) {
             this.position = position;
         }
+
         public UploadOverride getDefaultUploadOverride() {
             return defaultUploadOverride;
         }
+
+
+        public String getZendeskChatSdkKey() {
+            return zendeskChatSdkKey;
+        }
+
+        @SerializedName("isSingleThreaded")
+        private boolean singleThreaded;
+        private String preChatGreetingMsg;
+
+
         public String getPreChatGreetingMsg() {
             return preChatGreetingMsg;
         }

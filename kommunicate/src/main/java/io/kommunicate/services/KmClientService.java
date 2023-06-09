@@ -36,6 +36,8 @@ public class KmClientService extends MobiComKitClientService {
     private static final String CONVERSATION_FEEDBACK_URL = "/feedback";
     public static final String APP_SETTING_URL = "/users/v2/chat/plugin/settings?appId=";
     private static final String CHANGE_CONVERSATION_ASSIGNEE_URL = "/rest/ws/group/assignee/change?groupId=";
+    private static final String CHANGE_CONVERSATION_STATUS_URL = "/rest/ws/group/status/change?groupId=";
+
 
     private static final String TAG = "KmClientService";
     private String faqPageName = null;
@@ -93,6 +95,19 @@ public class KmClientService extends MobiComKitClientService {
                     + "&switchAssignee=" + switchAssignee
                     + "&sendNotifyMessage=" + sendNotifyMessage
                     + "&takeOverFromBot=" + takeOverFromBot;
+
+            return httpRequestUtils.makePatchRequest(url, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String changeConversationStatus(Integer groupId, int status, boolean sendNotifyMessage) {
+        try {
+            String url = getBaseUrl() + CHANGE_CONVERSATION_STATUS_URL + groupId
+                    + "&status=" + status
+                    + "&sendNotifyMessage=" + sendNotifyMessage;
 
             return httpRequestUtils.makePatchRequest(url, null);
         } catch (Exception e) {

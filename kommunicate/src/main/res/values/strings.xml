@@ -15,4 +15,5 @@
     <string name="km_ok_button">OK</string>
     <string name="km_set_app_id">You need to replace the &lt;Your-App-ID&gt; in the app level build.gradle file with your actual appId from Kommunicate dashboard</string>
     <string name="km_clear_app_data">You just changed the AppId, please clear the app data or logout/login the user again in Kommunicate for the new AppId to reflect</string>
+    <string name="km_zendesk_transcript_message">This chat is initiated from Kommunicate widget, look for more here: %1$s%2$d</string>
 </resources>

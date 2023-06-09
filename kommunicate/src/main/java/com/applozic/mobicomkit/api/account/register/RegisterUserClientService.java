@@ -173,6 +173,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
             contact.setUserId(user.getUserId());
             contact.setFullName(registrationResponse.getDisplayName());
             contact.setImageURL(registrationResponse.getImageLink());
+            contact.setEmailId(user.getEmail());
             contact.setContactNumber(registrationResponse.getContactNumber());
             contact.setMetadata(registrationResponse.getMetadata());
             if (user.getUserTypeId() != null) {

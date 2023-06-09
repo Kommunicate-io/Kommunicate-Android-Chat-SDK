@@ -15,10 +15,12 @@ android {
         abortOnError false
     }
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
-        versionName "2.7.1"
+
+        versionName "2.7.1-zendesk"
+
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
     }

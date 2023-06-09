@@ -26,8 +26,13 @@ public class KmConstants {
     public static final int STATUS_CONNECTED = 1;
     public static final Long MESSAGE_CLUBBING_TIME_FRAME = 300000L;
     public static final String NOTIFICATION_TONE = "com.applozic.mobicomkit.notification.tone";
+
     public static final String CLOSE_CONVERSATION_SCREEN = "CLOSE_CONVERSATION_SCREEN";
     public static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     public static final String KM_USER_LOCALE = "kmUserLocale";
     public static final String KM_USER_LANGUAGE_CODE = "kmUserLanguageCode";
+
+    public static final String CONVERSATION_SOURCE = "source";
+    public static final String ZOPIM = "zopim";
+
 }

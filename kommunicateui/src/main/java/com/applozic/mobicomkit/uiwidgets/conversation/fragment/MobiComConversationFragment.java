@@ -3328,6 +3328,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void updateSupportGroupTitleAndImageAndHideSubtitle(Channel channel) {
+        if(getActivity() == null) {
+            return;
+        }
         toolbarAlphabeticImage.setVisibility(VISIBLE);
         toolbarImageView.setVisibility(GONE);
         if(alCustomizationSettings.isAgentApp() && channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {

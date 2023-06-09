@@ -1152,10 +1152,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
-
         final String existingAssignee = channel.getConversationAssignee();
-
-        String existingAssignee = channel.getConversationAssignee();
 
         channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
         //conversation is open

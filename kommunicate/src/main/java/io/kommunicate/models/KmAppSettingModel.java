@@ -175,10 +175,6 @@ public class KmAppSettingModel extends JsonMarker {
             return zendeskChatSdkKey;
         }
 
-        @SerializedName("isSingleThreaded")
-        private boolean singleThreaded;
-        private String preChatGreetingMsg;
-
 
         public String getPreChatGreetingMsg() {
             return preChatGreetingMsg;

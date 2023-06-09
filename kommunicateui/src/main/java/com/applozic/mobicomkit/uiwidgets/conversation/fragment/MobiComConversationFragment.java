@@ -2267,15 +2267,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected void setChannel(Channel channel) {
+        if (channel == null){
+            return;
+        }
         this.channel = channel;
         boolean isUserPresent = true;
-        if(channel.getGroupUsers() != null) {
-            isUserPresent = channel.isUserPresentInChannel(MobiComUserPreference.getInstance(getContext()).getUserId());
-        } else {
-            isUserPresent = ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId());
-        }
-        if (channel != null && !isUserPresent
-                && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
+            if (channel.getGroupUsers() != null) {
+                isUserPresent = channel.isUserPresentInChannel(MobiComUserPreference.getInstance(getContext()).getUserId());
+            } else {
+                isUserPresent = ChannelService.getInstance(getContext()).isUserAlreadyPresentInChannel(channel.getKey(), MobiComUserPreference.getInstance(getContext()).getUserId());
+            }
+        if (!isUserPresent && messageTemplate != null && messageTemplate.isEnabled() && templateAdapter != null) {
             templateAdapter.setMessageList(new HashMap<String, String>());
             templateAdapter.notifyDataSetChanged();
         }

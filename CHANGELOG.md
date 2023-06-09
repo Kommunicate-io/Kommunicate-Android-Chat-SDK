@@ -3,6 +3,11 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.7.2
+1) Added support for Custom Input Field
+2) Added Restriction for Start Plan in Android SDK
+3) Added team concept in companySettings
+4) Fixed a bug in which user Unable to retrieve all conversation list in the agent app(While using latest SDK).
 ## Kommunicate Android SDK 2.7.1
  1) Added support for group creation source in sdk
  2) Added support for Multilingual bot 

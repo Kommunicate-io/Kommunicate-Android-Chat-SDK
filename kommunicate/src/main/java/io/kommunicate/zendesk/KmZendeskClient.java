@@ -418,6 +418,7 @@ private void processAgentLeave() {
             @Override
             public void onSuccess(Void unused) {
                 observationScope.cancel();
+                handoffHappened = false;
                 kmZendeskClient = null;
                 Utils.printLog(context, TAG, "Successfully ended Zendesk Chat");
             }
@@ -425,6 +426,9 @@ private void processAgentLeave() {
             @Override
             public void onError(ErrorResponse errorResponse) {
                 Utils.printLog(context, TAG, errorResponse.getReason() + errorResponse.getResponseBody());
+                observationScope.cancel();
+                handoffHappened = false;
+                kmZendeskClient = null;
             }
         });
     }

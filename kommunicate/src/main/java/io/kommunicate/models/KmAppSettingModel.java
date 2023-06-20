@@ -293,6 +293,17 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean isTeamAssignmentAllowed = false;
         private boolean hideAssignToDropdown;
         private boolean restictOperatorToReadOnly;
+        private boolean restrictSpamBtn;
+
+
+        public boolean isRestrictSpamBtn() {
+            return restrictSpamBtn;
+        }
+
+        public void setRestrictSpamBtn(boolean restrictSpamBtn) {
+            this.restrictSpamBtn = restrictSpamBtn;
+        }
+
 
         public boolean isHideAssignToDropdown() {
             return hideAssignToDropdown;

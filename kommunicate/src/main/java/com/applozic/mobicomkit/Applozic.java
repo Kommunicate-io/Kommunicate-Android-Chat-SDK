@@ -35,7 +35,9 @@ import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.applozic.mobicommons.task.AlTask;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import io.kommunicate.KmSettings;
 
@@ -202,6 +204,19 @@ public class Applozic {
         ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
     }
 
+    public static void subscribeToTeamTopic(Context context, boolean useEncrypted, ArrayList<String> teams) {
+        Intent subscribeIntent = new Intent(context, ApplozicMqttIntentService.class);
+        subscribeIntent.putExtra(ApplozicMqttIntentService.CONNECT_TO_TEAM_TOPIC, true);
+        subscribeIntent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
+        subscribeIntent.putStringArrayListExtra(ApplozicMqttIntentService.TEAM_TOPIC_LIST, teams);
+        ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
+    }
+    public static void unSubscribeToTeamTopic(Context context, boolean useEncrypted) {
+        Intent subscribeIntent = new Intent(context, ApplozicMqttIntentService.class);
+        subscribeIntent.putExtra(ApplozicMqttIntentService.DISCONNECT_FROM_TEAM_TOPIC, true);
+        subscribeIntent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
+        ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
+    }
     public static void subscribeToTyping(Context context, Channel channel, Contact contact) {
         Intent intent = new Intent(context, ApplozicMqttIntentService.class);
         if (channel != null) {

@@ -14,6 +14,8 @@ import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 
+import java.util.List;
+
 /**
  * Created by sunil on 30/12/15.
  */
@@ -36,6 +38,11 @@ public class ApplozicMqttIntentService extends AlJobIntentService {
     public static final String STOP_TYPING = "STOP_TYPING";
     public static final String CONNECT_TO_SUPPORT_GROUP_TOPIC = "connectToSupportGroupTopic";
     public static final String DISCONNECT_FROM_SUPPORT_GROUP_TOPIC = "disconnectFromSupportGroupTopic";
+    public static final String CONNECT_TO_TEAM_TOPIC = "connectToTeamTopic";
+    public static final String DISCONNECT_FROM_TEAM_TOPIC = "disconnectFromTeamTopic";
+    public static final String TEAM_TOPIC_LIST = "teamTopicList";
+
+
     public static final String USE_ENCRYPTED_TOPIC = "useEncryptedTopic";
 
     /**
@@ -89,6 +96,18 @@ public class ApplozicMqttIntentService extends AlJobIntentService {
 
         boolean unSubscribeToSupportGroupTopic = intent.getBooleanExtra(DISCONNECT_FROM_SUPPORT_GROUP_TOPIC, false);
         if (unSubscribeToSupportGroupTopic) {
+            ApplozicMqttService.getInstance(getApplicationContext()).unSubscribeToSupportGroup(useEncryptedTopic);
+            return;
+        }
+
+        boolean subscribeToTeamTopic = intent.getBooleanExtra(CONNECT_TO_TEAM_TOPIC, false);
+        List<String> teamList = intent.getStringArrayListExtra(TEAM_TOPIC_LIST);
+        if (subscribeToTeamTopic) {
+            ApplozicMqttService.getInstance(getApplicationContext()).subscribeToTeamTopic(useEncryptedTopic, teamList);
+            return;
+        }
+        boolean unSubscribeToTeamTopic = intent.getBooleanExtra(DISCONNECT_FROM_TEAM_TOPIC, false);
+        if (unSubscribeToTeamTopic) {
             ApplozicMqttService.getInstance(getApplicationContext()).unSubscribeToSupportGroup(useEncryptedTopic);
             return;
         }

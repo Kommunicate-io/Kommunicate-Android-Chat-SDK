@@ -3461,6 +3461,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
                 if (isHideAssigneeStatus){
                     toolbarSubtitleText.setVisibility(GONE);
+                    toolbarOnlineColorDot.setVisibility(GONE);
+                    toolbarOfflineColorDot.setVisibility(GONE);
                 } else {
                     toolbarSubtitleText.setText(ApplozicService.getContext(getContext()).getString(R.string.online));
                     toolbarSubtitleText.setVisibility(isCustomToolbarSubtitleDesign ? View.GONE : View.VISIBLE);

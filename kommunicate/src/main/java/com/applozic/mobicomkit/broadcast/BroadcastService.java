@@ -373,6 +373,13 @@ public class BroadcastService {
         intent.putExtra("preFilled", prefilledText);
         sendBroadcast(context, intent);
     }
+    public static void hideAssignee(Context context,Boolean hide){
+        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.HIDE_ASSIGNEE_STATUS));
+        Intent intent = new Intent();
+        intent.setAction(INTENT_ACTIONS.HIDE_ASSIGNEE_STATUS.toString());
+        intent.putExtra("hideAssignee", hide);
+        sendBroadcast(context, intent);
+    }
     public static IntentFilter getIntentFilter() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(INTENT_ACTIONS.FIRST_TIME_SYNC_COMPLETE.toString());
@@ -408,6 +415,7 @@ public class BroadcastService {
         intentFilter.addAction(INTENT_ACTIONS.AGENT_STATUS.toString());
         intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
         intentFilter.addAction(INTENT_ACTIONS.ACTION_POPULATE_CHAT_TEXT.toString());
+        intentFilter.addAction(INTENT_ACTIONS.HIDE_ASSIGNEE_STATUS.toString());
         return intentFilter;
     }
 
@@ -426,6 +434,6 @@ public class BroadcastService {
         UPDATE_LAST_SEEN_AT_TIME, UPDATE_TYPING_STATUS, MESSAGE_READ_AND_DELIVERED, MESSAGE_READ_AND_DELIVERED_FOR_CONTECT, CHANNEL_SYNC,
         CONTACT_VERIFIED, NOTIFY_USER, MQTT_DISCONNECTED, UPDATE_CHANNEL_NAME, UPDATE_TITLE_SUBTITLE, CONVERSATION_READ, UPDATE_USER_DETAIL,
         MESSAGE_METADATA_UPDATE, MUTE_USER_CHAT, MQTT_CONNECTED, USER_ONLINE, USER_OFFLINE, GROUP_MUTE, CONTACT_PROFILE_CLICK, LOGGED_USER_DELETE,
-        AGENT_STATUS, ACTION_POPULATE_CHAT_TEXT
+        AGENT_STATUS, ACTION_POPULATE_CHAT_TEXT, HIDE_ASSIGNEE_STATUS
     }
 }

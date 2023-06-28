@@ -136,6 +136,9 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
         } else if (BroadcastService.INTENT_ACTIONS.ACTION_POPULATE_CHAT_TEXT.toString().equals(action)) {
             String preFilledText = intent.getStringExtra("preFilled");
             conversationUIService.setAutoText(preFilledText);
+        } else if (BroadcastService.INTENT_ACTIONS.HIDE_ASSIGNEE_STATUS.toString().equals(action)){
+            Boolean hide = intent.getBooleanExtra("hideAssignee",false);
+            conversationUIService.hideAssigneeStatus(hide);
         }
     }
 }

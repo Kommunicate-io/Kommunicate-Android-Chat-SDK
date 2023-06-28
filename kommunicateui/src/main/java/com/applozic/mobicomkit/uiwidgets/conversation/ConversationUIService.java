@@ -99,7 +99,6 @@ public class ConversationUIService {
     private BaseContactService baseContactService;
     private NotificationManager notificationManager;
     private boolean isActionMessageHidden;
-    private boolean hideAssignee;
 
     public ConversationUIService(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -843,7 +842,6 @@ public class ConversationUIService {
         if(BroadcastService.isQuick()){
             return;
         }
-        hideAssignee = hide;
-        getConversationFragment().hideAssigneeStatus(hideAssignee);
+        getConversationFragment().hideAssigneeStatus(hide);
     }
 }

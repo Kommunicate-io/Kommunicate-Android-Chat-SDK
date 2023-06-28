@@ -163,6 +163,8 @@ public class ConversationFragment extends MobiComConversationFragment implements
     }
     public void hideAssigneeStatus(Boolean hide){
         isHideAssigneeStatus = hide;
+        setStatusDots(hide,hide);
+        showAwayMessage(!hide,null);
     }
     @Override
     protected void processMobiTexterUserCheck() {

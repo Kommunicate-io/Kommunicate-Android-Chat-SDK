@@ -897,4 +897,8 @@ public class Kommunicate {
     public static void setChatText(Context context, String PreFilledText) {
         BroadcastService.onAutoText(context,PreFilledText);
     }
+
+    public static void hideAssigneeStatus(Context context,Boolean hide) {
+        BroadcastService.hideAssignee(context,hide);
+    }
 }

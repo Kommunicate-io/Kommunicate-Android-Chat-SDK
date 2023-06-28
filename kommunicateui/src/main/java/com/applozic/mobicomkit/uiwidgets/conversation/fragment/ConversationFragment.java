@@ -161,6 +161,9 @@ public class ConversationFragment extends MobiComConversationFragment implements
     public void setAutoTextOnEditText(String newText){
         messageEditText.setText(newText);
     }
+    public void hideAssigneeStatus(Boolean hide){
+        isHideAssigneeStatus = hide;
+    }
     @Override
     protected void processMobiTexterUserCheck() {
 

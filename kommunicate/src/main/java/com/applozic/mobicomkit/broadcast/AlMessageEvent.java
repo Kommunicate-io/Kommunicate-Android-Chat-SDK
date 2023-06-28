@@ -131,5 +131,6 @@ public class AlMessageEvent extends JsonMarker {
         public static final String USER_DEACTIVATED = "USER_DEACTIVATED";
         public static final String AWAY_STATUS = "AWAY_STATUS";
         public static final String ACTION_POPULATE_CHAT_TEXT = "ACTION_POPULATE_CHAT_TEXT";
+        public static final String HIDE_ASSIGNEE_STATUS = "HIDE_ASSIGNEE_STATUS";
     }
 }

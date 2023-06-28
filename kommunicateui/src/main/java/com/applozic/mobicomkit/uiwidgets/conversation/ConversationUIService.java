@@ -838,4 +838,10 @@ public class ConversationUIService {
         }
         getConversationFragment().setAutoTextOnEditText(preFilled);
     }
+    public void hideAssigneeStatus(Boolean hide) {
+        if(BroadcastService.isQuick()){
+            return;
+        }
+        getConversationFragment().hideAssigneeStatus(hide);
+    }
 }

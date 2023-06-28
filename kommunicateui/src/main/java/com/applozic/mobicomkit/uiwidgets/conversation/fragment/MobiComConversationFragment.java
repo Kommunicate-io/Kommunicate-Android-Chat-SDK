@@ -384,6 +384,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public boolean isCustomToolbarSubtitleDesign;
     private KmCustomInputModel customInputField;
     private boolean isCustomFieldMessage = false;
+    protected boolean isHideAssigneeStatus = false;
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -3427,9 +3428,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         boolean awayDotVisibility = connected && !agentStatus;
 
         if (toolbarOnlineColorDot != null && toolbarOfflineColorDot != null && toolbarAwayColorDot != null) {
-            toolbarAwayColorDot.setVisibility(awayDotVisibility ? VISIBLE : View.GONE);
-            toolbarOfflineColorDot.setVisibility(offlineDotVisibility ? VISIBLE : View.GONE);
-            toolbarOnlineColorDot.setVisibility(onlineDotVisibility ? VISIBLE : View.GONE);
+            if (isHideAssigneeStatus){
+                toolbarAwayColorDot.setVisibility(GONE);
+                toolbarOfflineColorDot.setVisibility(GONE);
+                toolbarOnlineColorDot.setVisibility(GONE);
+                toolbarSubtitleText.setVisibility(GONE);
+            } else {
+                toolbarAwayColorDot.setVisibility(awayDotVisibility ? VISIBLE : View.GONE);
+                toolbarOfflineColorDot.setVisibility(offlineDotVisibility ? VISIBLE : View.GONE);
+                toolbarOnlineColorDot.setVisibility(onlineDotVisibility ? VISIBLE : View.GONE);
+            }
         }
     }
 
@@ -3451,9 +3459,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             }
             if (User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
-                toolbarSubtitleText.setText(ApplozicService.getContext(getContext()).getString(R.string.online));
-                toolbarSubtitleText.setVisibility(isCustomToolbarSubtitleDesign ? View.GONE : View.VISIBLE);
-                setStatusDots(true, true);
+                if (isHideAssigneeStatus){
+                    toolbarSubtitleText.setVisibility(GONE);
+                } else {
+                    toolbarSubtitleText.setText(ApplozicService.getContext(getContext()).getString(R.string.online));
+                    toolbarSubtitleText.setVisibility(isCustomToolbarSubtitleDesign ? View.GONE : View.VISIBLE);
+                    setStatusDots(true, true);
+                }
                 return;
             }
             if (contact.isConnected()) {
@@ -4624,7 +4636,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (alCustomizationSettings.getAwayMessageTextColor() != null) {
             kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
         }
-        kmAwayView.setVisibility(show && alCustomizationSettings.isEnableAwayMessage()? VISIBLE : GONE);
+        if (isHideAssigneeStatus){
+            kmAwayView.setVisibility(GONE);
+        } else{
+            kmAwayView.setVisibility(show && alCustomizationSettings.isEnableAwayMessage()? VISIBLE : GONE);
+        }
         //don't hide any message if away view is visible
         if(show && alCustomizationSettings.isEnableAwayMessage()) {
             linearLayoutManager.scrollToPosition(messageList.size() - 1);

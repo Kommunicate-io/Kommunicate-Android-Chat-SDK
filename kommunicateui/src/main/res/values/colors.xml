@@ -31,6 +31,7 @@
     <color name="km_list_item_main_header_text_color">#686464</color>
     <color name="km_via_email_text_color">#414243</color>
     <color name="km_faq_button_background_color">#24ffffff</color>
+    <color name="km_faq_button_text_color">#ffffff</color>
     <color name="km_record_circle_color">#e03919</color>
     <color name="km_offline_dot_stroke_color">#f5f2f2</color>
     <color name="km_offline_dot_color">#949896</color>
@@ -96,7 +97,7 @@
     <color name="km_typing_dot_color_second">#000000</color>
     <color name="km_typing_dot_color_third">#000000</color>
 
-    <!--Action Bar Back Button color-->
-    <color name="km_back_button_colour">#FFFFFF</color>
+    <!--Action Bar Icon color-->
+    <color name="km_toolbar_icon_color">#FFFFFF</color>
 
 </resources>

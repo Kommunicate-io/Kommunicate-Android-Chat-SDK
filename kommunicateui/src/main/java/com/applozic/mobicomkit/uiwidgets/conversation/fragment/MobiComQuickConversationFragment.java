@@ -141,7 +141,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         if (alCustomizationSettings.isFaqOptionEnabled() || KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(1)) {
             faqButtonLayout.setVisibility(View.VISIBLE);
             TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
-
+            TextView conversationTextView = faqButtonLayout.findViewById(R.id.km_conversation_text_view);
             if (textView != null) {
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -152,6 +152,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                     }
                 });
             }
+            conversationTextView.setTextColor(KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getToolbarTitleColor());
         } else {
             faqButtonLayout.setVisibility(View.GONE);
         }
@@ -224,9 +225,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        if (alCustomizationSettings.isRefreshOption()) {
-            menu.findItem(R.id.refresh).setVisible(true);
-        }
+        //Removing Refresh option from conversation list screen because we have swipe down refresh
+//        if (alCustomizationSettings.isRefreshOption()) {
+//            menu.findItem(R.id.refresh).setVisible(true);
+//        }
         if (alCustomizationSettings.isProfileOption()) {
             menu.findItem(R.id.applozicUserProfile).setVisible(true);
         }
@@ -510,6 +512,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public void onResume() {
         //Assigning to avoid notification in case if quick conversation fragment is opened....
         toolbar.setTitle(ApplozicService.getContext(getContext()).getResources().getString(R.string.conversations));
+        toolbar.setTitleTextColor(KmThemeHelper.getInstance(getActivity(), alCustomizationSettings).getToolbarTitleColor());
         toolbar.setSubtitle("");
         BroadcastService.selectMobiComKitAll();
         super.onResume();

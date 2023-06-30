@@ -9,9 +9,8 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:theme="@style/KommunicateActionBar"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -29,13 +28,14 @@
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/km_conversation_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:text="@string/conversations"
-                android:textColor="@color/km_white_color"
+                android:textColor="@color/km_toolbar_icon_color"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                 android:paddingRight="7dp"
                 android:paddingBottom="5dp"
                 android:text="@string/faq_option"
-                android:textColor="@color/km_white_color"
+                android:textColor="@color/km_faq_button_text_color"
                 android:textSize="16sp"
                 android:textStyle="bold" />
         </RelativeLayout>

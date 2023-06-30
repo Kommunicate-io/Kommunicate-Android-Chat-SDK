@@ -34,6 +34,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by sunil on 26/11/15.
@@ -46,6 +47,8 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
     private static final String OPEN_GROUP = "group-";
     private static final String MQTT_ENCRYPTION_TOPIC = "encr-";
     private static final String SUPPORT_GROUP_TOPIC = "support-channel";
+    private static final String TEAM_TOPIC = "teamid";
+
     private static ApplozicMqttService applozicMqttService;
     private AlMqttClient client;
     private MemoryPersistence memoryPersistence;
@@ -299,6 +302,47 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                     String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + SUPPORT_GROUP_TOPIC + "-" + getApplicationKey(context);
                     Utils.printLog(context, TAG, "UnSubscribing to support group topic : " + topic);
                     client.unsubscribe(topic);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+    }
+
+    public synchronized void subscribeToTeamTopic(boolean useEncrypted, List<String> teams) {
+        try {
+            String userKeyString = MobiComUserPreference.getInstance(context).getSuUserKeyString();
+            if (TextUtils.isEmpty(userKeyString)) {
+                return;
+            }
+            final MqttClient client = connect();
+            if (client != null && client.isConnected()) {
+                for(String team: teams) {
+                    String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + TEAM_TOPIC + "-" + team;
+                    Utils.printLog(context, TAG, "Subscribing to team topic : " + topic);
+                    client.subscribe(topic, 0);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unSubscribeToTeamTopic(final boolean useEncrypted, final List<String> teams) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (client == null || !client.isConnected()) {
+                        return;
+                    }
+                    for(String team: teams) {
+                        String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + TEAM_TOPIC + "-" + team;
+                        Utils.printLog(context, TAG, "Unsubscribing to team topic : " + topic);
+                        client.unsubscribe(topic);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -580,6 +624,20 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                     String[] parts = mqttMessageResponse.getMessage().toString().split(",");
                                     syncCallService.updateAwayStatus(parts[0], Integer.valueOf(parts[1]));
                                 }
+                                if(NOTIFICATION_TYPE.GROUP_UPDATE.getValue().equals(mqttMessageResponse.getType())) {
+                                    try {
+                                        GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
+                                        Message message = messageResponse.getMessage();
+                                        if(messageResponse.getMessage() != null && message.getMetadata() != null
+                                        && message.getMetadata().containsKey("KM_REMOVE_GROUP")
+                                        && "true".equals(message.getMetadata().get("KM_REMOVE_GROUP"))) {
+                                            ChannelService.getInstance(context).deleteChannelFromDb(messageResponse.getMessage().getGroupId());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
                             }
 
                         } catch (Exception e) {
@@ -773,7 +831,10 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
         USER_DELETE_NOTIFICATION("APPLOZIC_34"),
         USER_MUTE_NOTIFICATION("APPLOZIC_37"),
         MUTE_NOTIFICATIONS("APPLOZIC_38"),
-        GROUP_MUTE_NOTIFICATION("APPLOZIC_39");
+        GROUP_MUTE_NOTIFICATION("APPLOZIC_39"),
+        WAITING_QUEUE_UPDATE("APPLOZIC_40"),
+        AGENT_SCORECARD_UPDATE("APPLOZIC_41"),
+        GROUP_UPDATE("APPLOZIC_42");
 
         private String value;
 

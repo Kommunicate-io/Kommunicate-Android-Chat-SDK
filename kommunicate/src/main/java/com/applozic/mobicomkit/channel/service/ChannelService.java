@@ -843,6 +843,15 @@ public class ChannelService {
         }
     }
 
+    public void deleteChannelFromDb(Integer channelKey) {
+        if(channelKey != null && channelKey != 0) {
+            channelDatabaseService.deleteChannel(channelKey);
+            channelDatabaseService.deleteChannelUserMappers(channelKey);
+            BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, channelKey, "success");
+
+        }
+    }
+
     private void processChildGroupKeys(Set<Integer> childGroupKeys) {
         for (Integer channelKey : childGroupKeys) {
             Channel channel = channelDatabaseService.getChannelByChannelKey(channelKey);

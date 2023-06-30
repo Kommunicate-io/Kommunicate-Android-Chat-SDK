@@ -172,7 +172,7 @@
             android:paddingRight="7dp"
             android:paddingBottom="5dp"
             android:text="@string/faq_option"
-            android:textColor="@color/km_white_color"
+            android:textColor="@color/km_faq_button_text_color"
             android:textSize="16sp"
             android:textStyle="bold" />
         <TextView

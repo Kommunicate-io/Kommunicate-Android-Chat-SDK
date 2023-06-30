@@ -96,7 +96,7 @@
     <color name="km_typing_dot_color_second">#000000</color>
     <color name="km_typing_dot_color_third">#000000</color>
 
-    <!--Action Bar Back Button color-->
-    <color name="km_back_button_colour">#FFFFFF</color>
+    <!--Action Bar Icon color-->
+    <color name="km_toolbar_icon_color">#FFFFFF</color>
 
 </resources>

@@ -545,7 +545,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             toolbarAlphabeticImage = customToolbarLayout.findViewById(R.id.toolbarAlphabeticImage);
 
             TextView faqOption = customToolbarLayout.findViewById(R.id.kmFaqOption);
-
+            TextView refreshOption = customToolbarLayout.findViewById(R.id.kmRefreshOption);
             if (KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(2)) {
                 faqOption.setVisibility(View.VISIBLE);
                 if (faqOption != null) {
@@ -560,6 +560,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             } else {
                 faqOption.setVisibility(View.GONE);
+            }
+            if(alCustomizationSettings.isRefreshOption()) {
+                refreshOption.setVisibility(VISIBLE);
+                refreshOption.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        downloadConversation = new DownloadConversation(recyclerView, false, 1, 1, 1, contact, channel, currentConversationId, messageSearchString);
+                        downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+                });
+            } else {
+                refreshOption.setVisibility(GONE);
             }
         }
 

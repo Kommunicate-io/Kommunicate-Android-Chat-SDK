@@ -224,9 +224,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        if (alCustomizationSettings.isRefreshOption()) {
-            menu.findItem(R.id.refresh).setVisible(true);
-        }
+        //Removing Refresh option from conversation list screen because we have swipe down refresh
+//        if (alCustomizationSettings.isRefreshOption()) {
+//            menu.findItem(R.id.refresh).setVisible(true);
+//        }
         if (alCustomizationSettings.isProfileOption()) {
             menu.findItem(R.id.applozicUserProfile).setVisible(true);
         }

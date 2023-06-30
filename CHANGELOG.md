@@ -3,8 +3,12 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.7.4
+1) UI/UX changes to match iOS
+
 ## Kommunicate Android SDK 2.7.3
 1) Expose a function to show/hide online, offline,away status of the agent on conversation screen
+
 ## Kommunicate Android SDK 2.7.2
 1) Added support for Custom Input Field
 2) Added Restriction for Start Plan in Android SDK

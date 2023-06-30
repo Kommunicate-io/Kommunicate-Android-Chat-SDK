@@ -148,43 +148,50 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/kmFaqOption"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/km_faq_button_background"
-        android:paddingStart="7dp"
-        android:paddingLeft="7dp"
-        android:paddingTop="5dp"
-        android:paddingEnd="7dp"
-        android:paddingRight="7dp"
-        android:paddingBottom="5dp"
-        android:text="@string/faq_option"
-        android:textColor="@color/km_white_color"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-    <TextView
-        android:id="@+id/kmRefreshOption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/km_refresh_icon"
-        android:paddingStart="7dp"
-        android:paddingLeft="7dp"
-        android:paddingTop="5dp"
-        android:paddingEnd="7dp"
-        android:paddingRight="7dp"
-        android:paddingBottom="5dp"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:layout_centerVertical="true">
+        <TextView
+            android:id="@+id/kmFaqOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/km_faq_button_background"
+            android:paddingStart="7dp"
+            android:paddingLeft="7dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="7dp"
+            android:paddingRight="7dp"
+            android:paddingBottom="5dp"
+            android:text="@string/faq_option"
+            android:textColor="@color/km_white_color"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/kmRefreshOption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/km_refresh_icon"
+            android:paddingStart="7dp"
+            android:paddingLeft="7dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="7dp"
+            android:paddingRight="7dp"
+            android:paddingBottom="5dp"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 </RelativeLayout>

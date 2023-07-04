@@ -23,6 +23,7 @@ import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
@@ -456,6 +457,9 @@ public class ConversationUIService {
         if (!TextUtils.isEmpty(userId) && conversationFragment.getContact() != null && userId.equals(conversationFragment.getContact().getUserId()) ||
                 conversationFragment.getCurrentChannelKey(message.getGroupId())) {
             conversationFragment.updateMessageKeyString(message);
+        }
+        if (User.RoleType.BOT.getValue().equals(new AppContactService(getConversationFragment().getContext()).getContactById(TextUtils.isEmpty(getConversationFragment().getChannel().getConversationAssignee()) ? message.getGroupAssignee() : getConversationFragment().getChannel().getConversationAssignee()).getRoleType())) {
+            updateTypingStatus(userId,"1");
         }
     }
 

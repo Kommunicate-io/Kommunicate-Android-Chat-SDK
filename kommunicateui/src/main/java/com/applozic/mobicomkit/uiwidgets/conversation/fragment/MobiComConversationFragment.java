@@ -4628,24 +4628,24 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
      * @param show true to display/ false to not, if response is null, then fetch from cache
      */
     public void showAwayMessage(boolean show, KmApiResponse.KmDataResponse response) {
-        if (response != null) {
-            kmAwayView.setupAwayMessage(response, channel);
-        } else if(show && kmAwayView.getAwayMessage() != null) {
-                kmAwayView.handleAwayMessage(true);
-        } else if(show){
-            loadAwayMessage();
-        }
-        if (alCustomizationSettings.getAwayMessageTextColor() != null) {
-            kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
-        }
         if (isHideAssigneeStatus){
             kmAwayView.setVisibility(GONE);
-        } else{
+        }else {
+            if (response != null) {
+                kmAwayView.setupAwayMessage(response, channel);
+            } else if(show && kmAwayView.getAwayMessage() != null) {
+                kmAwayView.handleAwayMessage(true);
+            } else if(show){
+                loadAwayMessage();
+            }
+            if (alCustomizationSettings.getAwayMessageTextColor() != null) {
+                kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(alCustomizationSettings.getAwayMessageTextColor()));
+            }
             kmAwayView.setVisibility(show && alCustomizationSettings.isEnableAwayMessage()? VISIBLE : GONE);
-        }
-        //don't hide any message if away view is visible
-        if(show && alCustomizationSettings.isEnableAwayMessage()) {
-            linearLayoutManager.scrollToPosition(messageList.size() - 1);
+            //don't hide any message if away view is visible
+            if(show && alCustomizationSettings.isEnableAwayMessage()) {
+                linearLayoutManager.scrollToPosition(messageList.size() - 1);
+            }
         }
     }
 

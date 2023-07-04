@@ -163,8 +163,14 @@ public class ConversationFragment extends MobiComConversationFragment implements
     }
     public void hideAssigneeStatus(Boolean hide){
         isHideAssigneeStatus = hide;
-        setStatusDots(hide,hide);
-        showAwayMessage(!hide,null);
+        if (channel!= null) {
+            Contact contact = appContactService.getContactById(channel.getConversationAssignee());
+            retrieveAgentStatusAndSwitchContactStatusUI(contact);
+        } else {
+            if (conversationAssignee != null) {
+                retrieveAgentStatusAndSwitchContactStatusUI(conversationAssignee);
+            }
+        }
     }
     @Override
     protected void processMobiTexterUserCheck() {

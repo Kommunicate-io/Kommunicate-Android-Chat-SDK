@@ -120,6 +120,7 @@ public class AlCustomizationSettings extends JsonMarker {
 
     private boolean launchChatFromProfilePicOrName = false;
     private boolean useDeviceDefaultLanguage = true;
+    private boolean showTypingIndicatorWhileFetchingResponse = false;
     private Map<String, Boolean> filterGallery;
     private boolean enableShareConversation = false;
     private String messageStatusIconColor = "";
@@ -641,6 +642,9 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isUseDeviceDefaultLanguage(){
         return useDeviceDefaultLanguage;
     }
+    public boolean isShowTypingIndicatorWhileFetchingResponse() {
+        return showTypingIndicatorWhileFetchingResponse;
+    }
 
     public boolean isGroupSubtitleHidden() {
         return hideGroupSubtitle;
@@ -817,6 +821,7 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", toolbarTitleColor=" + toolbarTitleColor +
                 ", toolbarSubtitleColor=" + toolbarSubtitleColor +
                 ", useDeviceDefaultLanguage=" + useDeviceDefaultLanguage +
+                ", showTypingIndicatorWhileFetchingResponse=" + showTypingIndicatorWhileFetchingResponse+
                 '}';
     }
 }

@@ -194,6 +194,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -2804,6 +2805,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void updateMessageKeyString(final Message message) {
         if (getActivity() == null) {
             return;
+        }
+        //Showing typing indicator when bot is fetching response from API
+        if (alCustomizationSettings.isShowTypingIndicatorWhileFetchingResponse()){
+            if (Objects.equals(conversationAssignee.getRoleType(), User.RoleType.BOT.getValue())){
+                updateTypingStatus(message.getTo(),true);
+            }
         }
 
         this.getActivity().runOnUiThread(new Runnable() {

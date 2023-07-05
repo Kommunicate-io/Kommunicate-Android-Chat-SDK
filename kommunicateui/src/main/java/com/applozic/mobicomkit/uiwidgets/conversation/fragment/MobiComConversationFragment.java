@@ -182,6 +182,8 @@ import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
@@ -201,6 +203,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.async.KmGetDataAsyncTask;
 import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
@@ -385,6 +388,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private KmCustomInputModel customInputField;
     private boolean isCustomFieldMessage = false;
     protected boolean isHideAssigneeStatus = false;
+    protected boolean isApiAutoSuggest = false;
+    protected Map<String, String> autoSuggestHeaders;
+    protected String autoSuggestUrl;
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -793,6 +799,27 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
                             intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
                             ApplozicMqttIntentService.enqueueWork(getActivity(), intent);
+                        }
+                        if(isApiAutoSuggest) {
+                            final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) messageEditText;
+                            autoCompleteTextView.setThreshold(2);
+                            new KmGetDataAsyncTask(getContext(), autoSuggestUrl, "application/json", "application/json", "option", autoSuggestHeaders, new KmCallback() {
+                                @Override
+                                public void onSuccess(Object message) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject((String) message);
+                                        autoCompleteTextView.setAdapter(getAdapter((KmAutoSuggestion.Source[]) GsonUtils.getObjectFromJson((String) jsonObject.get("data").toString(), KmAutoSuggestion.Source[].class)));
+                                        Utils.printLog(getContext(), TAG, "Fetching Autosuggestion from API");
+                                    } catch( Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Object error) {
+                                    Utils.printLog(getContext(), TAG, "Failed to fetch Autosuggestion from API");
+
+                                }
+                            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         }
                         populateAutoSuggestion(true, s.toString(), null);
                     } else if (s.toString().trim().length() == 0) {
@@ -4219,12 +4246,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 } catch (Exception sourceParseException) {
                     try {
                         //Data is of type Source Array
-                        autoCompleteTextView.setAdapter(getAdapter((KmAutoSuggestion.Source[]) GsonUtils.getObjectFromJson(payloadJson, KmAutoSuggestion.Source[].class)));
+                        KmAutoSuggestion.Source sourceData = (KmAutoSuggestion.Source) GsonUtils.getObjectFromJson(payloadJson, KmAutoSuggestion.Source.class);
+                        //Data should be fetched from API
+                        if(!TextUtils.isEmpty(sourceData.getUrl())) {
+                            isApiAutoSuggest = true;
+                            autoSuggestUrl = sourceData.getUrl();
+                            autoSuggestHeaders = sourceData.getHeaders();
+                        } else {
+                            autoCompleteTextView.setAdapter(getAdapter((KmAutoSuggestion.Source[]) GsonUtils.getObjectFromJson(payloadJson, KmAutoSuggestion.Source[].class)));
+                        }
                     } catch (Exception stringParseException) {
                         //Data is of type object. Not implemented for now.
                     }
                 }
-
                 autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

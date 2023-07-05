@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicommons.json.GsonUtils;
 
+import java.util.Map;
+
 public class KmAutoSuggestion {
     private String placeholder;
     private Object source;
@@ -36,6 +38,7 @@ public class KmAutoSuggestion {
         private String searchKey;
         private String message;
         private String url;
+        private Map<String, String> headers;
 
         public String getSearchKey() {
             return searchKey;
@@ -59,6 +62,12 @@ public class KmAutoSuggestion {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+        public Map<String, String> getHeaders() {
+            return headers;
+        }
+        public void setHeaders(Map<String, String> headers) {
+            this.headers = headers;
         }
 
         @Override

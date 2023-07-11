@@ -3423,12 +3423,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             showTakeOverFromBotLayout(assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !"bot".equals(assigneeContact.getUserId()), assigneeContact);
         }
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-
-        if (contact != null) {
-            conversationAssignee = contact;
-            updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-            retrieveAgentStatusAndSwitchContactStatusUI(contact);
-        } else {
             getUserDetail(getContext(), channel.getConversationAssignee(), new KmUserDetailsCallback() {
                 @Override
                 public void hasFinished(final Contact contact) {
@@ -3437,7 +3431,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     retrieveAgentStatusAndSwitchContactStatusUI(contact);
                 }
             });
-        }
     }
 
     //connected is for online/offline, agentStatus is online/away

@@ -2,8 +2,10 @@ package io.kommunicate.async;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
 import java.lang.ref.WeakReference;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import io.kommunicate.callbacks.KmCallback;
@@ -33,7 +35,10 @@ public class KmGetDataAsyncTask extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
         try {
-            return new KmHttpClient(context.get()).getResponseWithException(url, contentType, accept, data, headers);
+            if(!TextUtils.isEmpty(data)) {
+                url = url + (URLEncoder.encode(data, "UTF-8")).trim();
+            }
+            return new KmHttpClient(context.get()).getResponseWithException(url, contentType, accept, headers);
         } catch (Exception e) {
             e.printStackTrace();
             exception = e;

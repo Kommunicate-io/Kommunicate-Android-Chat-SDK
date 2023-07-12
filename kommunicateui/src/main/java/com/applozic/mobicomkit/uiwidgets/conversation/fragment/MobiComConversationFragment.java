@@ -803,7 +803,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         if(isApiAutoSuggest) {
                             final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) messageEditText;
                             autoCompleteTextView.setThreshold(2);
-                            new KmGetDataAsyncTask(getContext(), autoSuggestUrl, "application/json", "application/json", "option", autoSuggestHeaders, new KmCallback() {
+                            new KmGetDataAsyncTask(getContext(), autoSuggestUrl, "application/json", "application/json", s.toString().trim(), autoSuggestHeaders, new KmCallback() {
                                 @Override
                                 public void onSuccess(Object message) {
                                     try {

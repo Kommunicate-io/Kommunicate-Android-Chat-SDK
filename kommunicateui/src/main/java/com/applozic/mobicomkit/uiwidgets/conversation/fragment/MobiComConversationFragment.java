@@ -3428,7 +3428,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 public void hasFinished(final Contact contact) {
                     conversationAssignee = contact;
                     updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-                    retrieveAgentStatusAndSwitchContactStatusUI(contact);
+                    switchContactStatus(contact, contact.isUserOnline());
                 }
             });
     }

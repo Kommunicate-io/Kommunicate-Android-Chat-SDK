@@ -175,7 +175,7 @@ public class UserService {
         contact.setUserId(userDetail.getUserId());
         contact.setContactNumber(userDetail.getPhoneNumber());
         contact.setConnected(userDetail.isConnected());
-        contact.setStatus(userDetail.getStatusMessage());
+        contact.setStatus(userDetail.getStatus());
         if (!TextUtils.isEmpty(userDetail.getDisplayName())) {
             contact.setFullName(userDetail.getDisplayName());
         }
@@ -379,10 +379,14 @@ public class UserService {
 
     public void processUserDetailsResponse(String response) {
         if (!TextUtils.isEmpty(response)) {
-            List<UserDetail> userDetails = (List<UserDetail>) GsonUtils.getObjectFromJson(response, new TypeToken<List<UserDetail>>() {
+            ApiResponse<List<UserDetail>> apiResponse = (ApiResponse<List<UserDetail>>) GsonUtils.getObjectFromJson(response,  new TypeToken<ApiResponse<List<UserDetail>>>() {
             }.getType());
-            for (UserDetail userDetail : userDetails) {
-                processUser(userDetail);
+            if (apiResponse != null) {
+                if (apiResponse.isSuccess()) {
+                    for (UserDetail userDetail : apiResponse.getResponse()) {
+                        processUser(userDetail);
+                    }
+                }
             }
         }
     }

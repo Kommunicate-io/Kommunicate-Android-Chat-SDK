@@ -3,6 +3,9 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.7.5
+1) Fixed online/offline issue for taxbuddy
+2) Fixed issue in which gray status dot is showing when agent is online(hideAssigneeStatus)
 ## Kommunicate Android SDK 2.7.4
 1) UI/UX changes to match iOS
 

@@ -13,8 +13,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.crypto.IllegalBlockSizeException;
 
 public class KmHttpClient {
 
@@ -89,5 +94,75 @@ public class KmHttpClient {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getResponseWithException(String urlString, String contentType, String accept, Map<String, String> headers) throws Exception {
+        Utils.printLog(context, TAG, "Calling url **[GET]** : " + urlString);
+
+        HttpURLConnection connection = null;
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
+        URL url;
+
+        try {
+            url = new URL(urlString);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setInstanceFollowRedirects(true);
+            connection.setRequestMethod("GET");
+            connection.setUseCaches(false);
+            connection.setDoInput(true);
+
+            if (!TextUtils.isEmpty(contentType)) {
+                connection.setRequestProperty("Content-Type", contentType);
+            }
+            if (!TextUtils.isEmpty(accept)) {
+                connection.setRequestProperty("Accept", accept);
+            }
+            if(headers != null && !headers.isEmpty()) {
+                for (Map.Entry<String, String> header : headers.entrySet()) {
+                    connection.setRequestProperty(header.getKey(), header.getValue());
+                }
+            }
+            connection.connect();
+
+            BufferedReader br = null;
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                InputStream inputStream = connection.getInputStream();
+                br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            } else {
+                Utils.printLog(context, TAG, "\n\nResponse code for url: " + urlString + "\n** Code ** : " + connection.getResponseCode() + "\n\n");
+            }
+
+            StringBuilder sb = new StringBuilder();
+            try {
+                String line;
+                if (br != null) {
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            } finally {
+                if (br != null) {
+                    br.close();
+                }
+            }
+
+            Utils.printLog(context, TAG, "\n\nGET Response for url: " + urlString + "\n** Response **: " + sb.toString() + "\n\n");
+            return sb.toString();
+        } catch (ConnectException e) {
+            Utils.printLog(context, TAG, "failed to connect Internet is not working");
+            throw e;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Throwable e) {
+            throw e;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 }

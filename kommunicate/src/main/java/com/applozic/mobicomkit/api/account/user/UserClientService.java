@@ -55,6 +55,7 @@ public class UserClientService extends MobiComKitClientService {
     public static final String USER_PROFILE_UPDATE_URL = "/rest/ws/user/update";
     public static final String USER_READ_URL = "/rest/ws/user/read";
     public static final String USER_DETAILS_LIST_POST_URL = "/rest/ws/user/detail";
+    public static final String  USER_DETAILS_LIST_POST_URL_V2 = "/rest/ws/user/v2/detail";
     public static final String UPDATE_USER_PASSWORD = "/rest/ws/user/update/password";
     public static final String USER_LOGOUT = "/rest/ws/device/logout";
     private static final String MUTE_USER_URL = "/rest/ws/user/chat/mute";
@@ -110,7 +111,7 @@ public class UserClientService extends MobiComKitClientService {
     }
 
     public String getUserDetailsListPostUrl() {
-        return getBaseUrl() + USER_DETAILS_LIST_POST_URL;
+        return getBaseUrl() + USER_DETAILS_LIST_POST_URL_V2;
     }
 
     public String getUserReadUrl() {

@@ -24,6 +24,7 @@ public class UserDetail extends JsonMarker {
     private String email;
     private Map<String,String> metadata;
     private Short roleType;
+    private String status;
 
     public Long getLastMessageAtTime() {
         return lastMessageAtTime;
@@ -143,6 +144,12 @@ public class UserDetail extends JsonMarker {
 
     public void setEmailId(String emailId) {
         this.email = emailId;
+    }
+    public String getStatus() {
+        return this.status;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

@@ -245,6 +245,10 @@ public class Contact extends JsonMarker {
         this.status = status;
     }
 
+    public boolean isUserOnline() {
+        return "1".equals(status);
+    }
+
     public Long getDeletedAtTime() {
         return deletedAtTime == null ? 0 : deletedAtTime;
     }

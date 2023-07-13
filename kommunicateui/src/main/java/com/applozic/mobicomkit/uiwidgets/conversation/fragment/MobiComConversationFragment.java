@@ -513,7 +513,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setupChatBackground();
 
         frameLayoutProgressbar = list.findViewById(R.id.idProgressBarLayout);
-
+        Button startNewConv = list.findViewById(R.id.start_new_conversation);
+        startNewConv.setVisibility(GONE);
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();
 

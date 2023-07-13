@@ -99,7 +99,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/default_start_new_button_text_color"
                 android:textSize="14sp"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </RelativeLayout>
 
         <TextView

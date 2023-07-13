@@ -178,6 +178,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
         if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             startNewConv.setVisibility(View.VISIBLE);
+        } else {
+            startNewConv.setVisibility(View.GONE);
         }
 
         startNewConv.setOnClickListener(new View.OnClickListener() {

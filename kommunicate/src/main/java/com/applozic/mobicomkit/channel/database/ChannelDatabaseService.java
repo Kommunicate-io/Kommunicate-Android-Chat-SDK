@@ -20,6 +20,7 @@ import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUserMapper;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -234,6 +235,28 @@ public class ChannelDatabaseService {
             dbHelper.close();
         }
         return null;
+    }
+
+    public Map<Channel, Long> getChannelKeyAndLastSeenByChannelName(String channelName) {
+        Map<Channel, Long> resultMap = new LinkedHashMap<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] columns = { "c.channelKey", "MAX(s.createdAt) AS maxCreatedAt"};
+        String table = "channel c INNER JOIN sms s ON c.channelKey = s.channelKey";
+        String selection = "c.channelName = ?";
+        String[] selectionArgs = { channelName };
+        String groupBy = "c.channelKey";
+        String orderBy = "maxCreatedAt DESC";
+        Cursor cursor = db.query(table, columns, selection, selectionArgs, groupBy, null, orderBy);
+        if (cursor.moveToFirst()) {
+            do {
+                Channel channel = getChannelByChannelKey(cursor.getInt(0));
+                long createdAt = cursor.getLong(1);
+                resultMap.put(channel, createdAt);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return resultMap;
     }
 
     public Channel getChannel(Cursor cursor) {

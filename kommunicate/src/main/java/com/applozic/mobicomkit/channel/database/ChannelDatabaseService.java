@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
 import com.applozic.mobicomkit.feed.GroupInfoUpdate;
 import com.applozic.mobicommons.ApplozicService;
@@ -237,25 +238,33 @@ public class ChannelDatabaseService {
         return null;
     }
 
-    public Map<Channel, Long> getChannelKeyAndLastSeenByChannelName(String channelName) {
-        Map<Channel, Long> resultMap = new LinkedHashMap<>();
+    public Map<Channel, Long> getChannelAndUserLastContactedByChannelKey(Integer channelKey) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] columns = { "c.channelKey", "MAX(s.createdAt) AS maxCreatedAt"};
-        String table = "channel c INNER JOIN sms s ON c.channelKey = s.channelKey";
-        String selection = "c.channelName = ?";
-        String[] selectionArgs = { channelName };
+        String table = "channel c JOIN channel_User_X cu ON c.channelKey = cu.channelKey JOIN sms s ON c.channelKey = s.channelKey";
+        String[] columns = {"c.channelKey", "MAX(s.createdAt) AS latestMessageTime"};
+        String selection = "cu.userId = (SELECT userId FROM channel_User_X WHERE channelKey = ? AND role = ?)";
+        String[] selectionArgs = {String.valueOf(channelKey), String.valueOf(User.RoleType.USER_ROLE.getValue())};
         String groupBy = "c.channelKey";
-        String orderBy = "maxCreatedAt DESC";
-        Cursor cursor = db.query(table, columns, selection, selectionArgs, groupBy, null, orderBy);
-        if (cursor.moveToFirst()) {
-            do {
-                Channel channel = getChannelByChannelKey(cursor.getInt(0));
-                long createdAt = cursor.getLong(1);
-                resultMap.put(channel, createdAt);
-            } while (cursor.moveToNext());
+        String orderBy = "latestMessageTime DESC";
+        Map<Channel, Long> resultMap = new LinkedHashMap<>();
+        Cursor cursor = null;
+        try{
+            cursor = db.query(table,columns,selection,selectionArgs,groupBy,null,orderBy);
+            if (cursor.moveToFirst()) {
+                do {
+                    Channel channel = getChannelByChannelKey(cursor.getInt(0));
+                    long createdAt = cursor.getLong(1);
+                    resultMap.put(channel, createdAt);
+                } while (cursor.moveToNext());
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        } finally {
+            if(cursor != null){
+                cursor.close();
+            }
+            dbHelper.close();
         }
-        cursor.close();
-        db.close();
         return resultMap;
     }
 

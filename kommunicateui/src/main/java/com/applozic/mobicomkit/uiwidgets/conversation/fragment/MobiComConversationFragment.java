@@ -4413,7 +4413,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 new MessageDeleteTask(getContext(), message.getKeyString(), true, new AlCallback() {
                     @Override
                     public void onSuccess(Object response) {
-                        KmToast.makeText(Objects.requireNonNull(getContext()), "Message Deleted", Toast.LENGTH_SHORT).show();
+                        if (getContext() != null) {
+                            KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override

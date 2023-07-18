@@ -165,6 +165,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
         isHideAssigneeStatus = hide;
         if (channel != null) {
             processSupportGroupDetails(channel);
+            loadAwayMessage();
         }
     }
     @Override

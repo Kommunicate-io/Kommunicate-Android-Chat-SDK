@@ -461,7 +461,6 @@
                                 android:minLines="2"
                                 android:textAlignment="viewStart"
                                 android:textColorHint="#8f8b8b"
-                                android:imeOptions="actionDone"
                                 android:textSize="14sp" />
 
                         </RelativeLayout>

@@ -11,9 +11,11 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -52,6 +54,8 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import io.kommunicate.utils.KmDateUtils;
+
+import static android.view.View.FOCUS_FORWARD;
 
 public class KmFormItemAdapter extends RecyclerView.Adapter {
 
@@ -182,7 +186,22 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         String savedStr = textFieldArray.get(position, null);
 
                         editText.setText(savedStr);
-
+                        //Focus next available editText without crashing
+                        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                            @Override
+                            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+                                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                                    View view = textView.focusSearch(FOCUS_FORWARD);
+                                    if (view != null) {
+                                        if (!view.requestFocus(FOCUS_FORWARD)) {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                }
+                                return false;
+                            }
+                        });
                         if (validationArray.get(position) == 1) {
                             formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
                             formItemViewHolder.formValidationText.setText(textModel.getValidation() != null
@@ -204,6 +223,22 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                         String savedStr = textAreaFieldArray.get(position, null);
                         editText.setText(savedStr);
 
+                        //Focus next available editText without crashing
+                        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                            @Override
+                            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+                                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                                    View view = textView.focusSearch(FOCUS_FORWARD);
+                                    if (view != null) {
+                                        if (!view.requestFocus(FOCUS_FORWARD)) {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                }
+                                return false;
+                            }
+                        });
                         if (validationArray.get(position) == 1) {
                             formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
                             formItemViewHolder.formValidationText.setText(textAreaModel.getValidation() != null
@@ -313,7 +348,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 } else {
                                     formItemViewHolder.formDropdownList.setSelection(0);
                                 }
-
                                 formItemViewHolder.formDropdownList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                     @Override
                                     public void onItemSelected(AdapterView<?> parent, View view, int dropdownItemPosition, long id) {

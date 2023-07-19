@@ -187,10 +187,8 @@
             android:background="@drawable/km_refresh_icon"
             android:paddingStart="7dp"
             android:paddingLeft="7dp"
-            android:paddingTop="5dp"
             android:paddingEnd="7dp"
             android:paddingRight="7dp"
-            android:paddingBottom="5dp"
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>

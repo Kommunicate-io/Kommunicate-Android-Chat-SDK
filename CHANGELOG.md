@@ -3,6 +3,11 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.7.7
+1) Added support to send message on language change
+2) Show/Hide Template message buttons when resolved conversation
+3) Fixed refresh icon squeeze and crashes
+
 ## Kommunicate Android SDK 2.7.6
 1) Change default visibility of startNewConversation button
 2) Away message visibility effects

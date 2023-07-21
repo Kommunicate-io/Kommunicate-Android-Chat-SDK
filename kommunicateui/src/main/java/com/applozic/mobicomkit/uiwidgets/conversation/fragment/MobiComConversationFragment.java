@@ -4708,6 +4708,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
      * @param display true to display/ false to not
      */
     public void setFeedbackDisplay(boolean display) {
+        hideMessageTemplate();
         if (channel != null && !channel.isDeleted()) {
             if (display) {
                 kmFeedbackView.setVisibility(VISIBLE);
@@ -5190,6 +5191,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             recordLayout.setVisibility(hideLayout || !isRecordOptionEnabled ? GONE : VISIBLE);
         } else {
             individualMessageSendLayout.setVisibility(VISIBLE);
+        }
+    }
+    public void hideMessageTemplate() {
+        if (messageTemplate != null && messageTemplate.isEnabled()) {
+            if (!alCustomizationSettings.isRestartConversationButtonVisibility() && channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
+                messageTemplateView.setVisibility(GONE);
+            } else {
+                messageTemplateView.setVisibility(View.VISIBLE);
+            }
         }
     }
 }

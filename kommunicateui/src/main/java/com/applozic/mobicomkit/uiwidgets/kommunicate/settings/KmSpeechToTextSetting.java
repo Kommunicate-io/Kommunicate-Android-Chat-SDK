@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
+import com.applozic.mobicomkit.api.people.ChannelInfo;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmSpeechToTextModel;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.List;
 import java.util.Map;
 
 public class KmSpeechToTextSetting {
@@ -16,6 +20,7 @@ public class KmSpeechToTextSetting {
     private static final String ENABLE_MULTIPLE_SPEECH_TO_TEXT = "ENABLE_MULTIPLE_SPEECH_TO_TEXT";
     private static final String SEND_MESSAGE_ON_SPEECH_END = "SEND_MESSAGE_ON_SPEECH_END";
     private static final String SHOW_LANGUAGE_CODE = "SHOW_LANGUAGE_CODE";
+    private static final String S2T_LANGUAGE_LIST = "S2T_LANGUAGE_LIST";
 
 
     private KmSpeechToTextSetting(Context context) {
@@ -42,6 +47,24 @@ public class KmSpeechToTextSetting {
         if(sharedPreferences != null) {
             Map<String, String> languages = (Map<String, String>) GsonUtils.getObjectFromJson(sharedPreferences.getString(S2T_LANGUAGES, ""), Map.class);
             return languages;
+        }
+        return null;
+    }
+
+    public KmSpeechToTextSetting setSpeechToTextList(List<KmSpeechToTextModel> speechToTextList) {
+        if(sharedPreferences != null) {
+            String listJson = GsonUtils.getJsonFromObject(speechToTextList,  new
+                    TypeToken<List<KmSpeechToTextModel>>() {
+                    }.getType());
+            sharedPreferences.edit().putString(S2T_LANGUAGE_LIST, listJson).apply();
+        }
+        return this;
+    }
+
+    public List<KmSpeechToTextModel> getSpeechToTextList() {
+        if(sharedPreferences != null) {
+            return (List<KmSpeechToTextModel>) GsonUtils.getObjectFromJson(sharedPreferences.getString(S2T_LANGUAGE_LIST, ""), new TypeToken<List<KmSpeechToTextModel>>() {
+                    }.getType());
         }
         return null;
     }
@@ -85,4 +108,6 @@ public class KmSpeechToTextSetting {
         }
         return false;
     }
+
+
 }

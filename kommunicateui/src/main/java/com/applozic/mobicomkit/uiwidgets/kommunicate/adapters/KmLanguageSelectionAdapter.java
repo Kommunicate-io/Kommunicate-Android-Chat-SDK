@@ -47,8 +47,6 @@ public class KmLanguageSelectionAdapter extends RecyclerView.Adapter {
         mViewHolder.kmLanguageCode.setVisibility(KmSpeechToTextSetting.getInstance(context).isShowLanguageCode() ? View.VISIBLE : View.GONE);
 
         mViewHolder.kmLanguageName.setText(languages.get(position).getName());
-//        mViewHolder.kmLanguageName.setText("name");
-//        mViewHolder.kmLanguageCode.setText("code");
         mViewHolder.kmLanguageCode.setText(languages.get(position).getCode());
         if (languages.get(position).getCode().equals(selectedLanguageCode)) {
             mViewHolder.parentView.setBackgroundColor(Utils.getColor(context, R.color.km_language_selected_background_color));

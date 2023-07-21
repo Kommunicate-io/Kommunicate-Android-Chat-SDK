@@ -9,12 +9,15 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmLanguageSelectionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmClickHandler;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmSpeechToTextModel;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
@@ -29,16 +32,18 @@ import io.kommunicate.KmSettings;
  * @author Aman
  * @date February '23
  */
-public class KmLanguageSlideView extends BottomSheetDialogFragment implements KmClickHandler<String> {
+public class KmLanguageSlideView extends BottomSheetDialogFragment implements KmClickHandler<KmSpeechToTextModel> {
     private static final String TAG = "KmLanguageSlideView";
     private KmLanguageSelectionAdapter kmLanguageSelectionAdapter;
     private RecyclerView languageRecyclerView;
-    private Map<String, String> languages;
+    private List<KmSpeechToTextModel> languages;
     private ImageButton dismissButton;
+    private ConversationUIService conversationUIService;
 
 
-    public KmLanguageSlideView(Map<String, String> languages) {
+    public KmLanguageSlideView(ConversationUIService conversationUIService, List<KmSpeechToTextModel> languages) {
         this.languages = languages;
+        this.conversationUIService = conversationUIService;
     }
 
     @Override
@@ -70,12 +75,15 @@ public class KmLanguageSlideView extends BottomSheetDialogFragment implements Km
     }
 
     @Override
-    public void onItemClicked(View view, String data) {
-        if(!TextUtils.isEmpty(data) && languages.get(data) != null && getContext() != null) {
-            KmToast.makeText(getContext(), getContext().getString(R.string.changed_language_to, languages.get(data)), Toast.LENGTH_SHORT).show();
+    public void onItemClicked(View view, KmSpeechToTextModel data) {
+        if(data != null && getContext() != null) {
+            KmToast.makeText(getContext(), getContext().getString(R.string.changed_language_to, data.getName()), Toast.LENGTH_SHORT).show();
             dismissAllowingStateLoss();
-            KmSettings.updateUserLanguage(getContext(), data);
-            KmPrefSettings.getInstance(getContext()).setSpeechToTextLanguage(data);
+            KmSettings.updateUserLanguage(getContext(), data.getCode());
+            KmPrefSettings.getInstance(getContext()).setSpeechToTextLanguage(data.getCode());
+            if(data.isSendMessageOnClick()) {
+                conversationUIService.sendMessage(data.getMessageToSend());
+            }
         } else {
             Utils.printLog(getContext(), TAG, "Failed to change language");
         }

@@ -630,6 +630,12 @@ public class ConversationUIService {
 
     }
 
+    public void sendMessage(String message) {
+        if(BroadcastService.isIndividual()) {
+            getConversationFragment().sendMessage(message);
+        }
+    }
+
     public void updateMessageMetadata(String keyString) {
         if (BroadcastService.isIndividual()) {
             getConversationFragment().updateMessageMetadata(keyString);

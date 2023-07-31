@@ -221,6 +221,24 @@ public class SecurityUtils {
                 return secretKey;
             }
         } catch (Exception exception) {
+            if (exception instanceof IllegalBlockSizeException) {
+            SharedPreferences sharedPreferences = context.getApplicationContext().getSharedPreferences(CRYPTO_SHARED_PREF, Context.MODE_PRIVATE);
+            SecretKey secretKey = generateAESKey();
+            if (secretKey == null) {
+                Utils.printLog(context, TAG, "SecretKey is null. There are problems occurring with it's generation at runtime.");
+                return null;
+            }
+
+            //do not encrypt aes key if rsa keypair is null
+            String cipherKey = Base64.encodeToString(secretKey.getEncoded(), Base64.DEFAULT);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(AES_ENCRYPTION_KEY, cipherKey);
+            editor.putBoolean(AES_KEY_ENCRYPTED,false);
+            editor.apply();
+            return secretKey;
+        }
+            exception.printStackTrace();
             return null;
         }
     }
@@ -268,7 +286,7 @@ public class SecurityUtils {
      * @param initializationVector the vector for aes encryption/decryption
      * @return the cipher text
      */
-    private static String encrypt(String cryptAlgorithm, String plainText, KeyPair keyPairRSA, SecretKey secretKeyAES, byte[] initializationVector) {
+    private static String encrypt(String cryptAlgorithm, String plainText, KeyPair keyPairRSA, SecretKey secretKeyAES, byte[] initializationVector) throws Exception{
         if (TextUtils.isEmpty(plainText) || TextUtils.isEmpty(cryptAlgorithm)) {
             return null;
         }
@@ -290,7 +308,7 @@ public class SecurityUtils {
      * @param keyPairRSA     the key pair for rsa encryption/decryption
      * @return the cipher text
      */
-    public static String encrypt(String cryptAlgorithm, String plainText, KeyPair keyPairRSA) {
+    public static String encrypt(String cryptAlgorithm, String plainText, KeyPair keyPairRSA) throws Exception {
         return encrypt(cryptAlgorithm, plainText, keyPairRSA, null, null);
     }
 
@@ -303,7 +321,7 @@ public class SecurityUtils {
      * @param initializationVector the IV for ECB encryption mode
      * @return the cipher text
      */
-    public static String encrypt(String cryptAlgorithm, String plainText, SecretKey secretKeyAES, byte[] initializationVector) {
+    public static String encrypt(String cryptAlgorithm, String plainText, SecretKey secretKeyAES, byte[] initializationVector) throws Exception {
         return encrypt(cryptAlgorithm, plainText, null, secretKeyAES, initializationVector);
     }
 
@@ -317,7 +335,7 @@ public class SecurityUtils {
      * @param initializationVector the vector for aes encryption/decryption
      * @return the plain text
      */
-    private static String decrypt(String cryptAlgorithm, String cipherText, KeyPair keyPairRSA, SecretKey secretKeyAES, byte[] initializationVector) {
+    private static String decrypt(String cryptAlgorithm, String cipherText, KeyPair keyPairRSA, SecretKey secretKeyAES, byte[] initializationVector) throws Exception {
         try {
             Cipher cipher = returnCipher(cryptAlgorithm, Cipher.DECRYPT_MODE, keyPairRSA, secretKeyAES, initializationVector);
             byte[] cipherArray = Base64.decode(cipherText, Base64.DEFAULT);
@@ -336,7 +354,7 @@ public class SecurityUtils {
      * @param keyPairRSA     the key pair for rsa encryption/decryption
      * @return the plain text
      */
-    public static String decrypt(String cryptAlgorithm, String cipherText, KeyPair keyPairRSA) {
+    public static String decrypt(String cryptAlgorithm, String cipherText, KeyPair keyPairRSA) throws Exception {
         return decrypt(cryptAlgorithm, cipherText, keyPairRSA, null, null);
     }
 
@@ -349,7 +367,7 @@ public class SecurityUtils {
      * @param initializationVector the vector for aes encryption/decryption
      * @return the plain text
      */
-    public static String decrypt(String cryptAlgorithm, String cipherText, SecretKey secretKeyAES, byte[] initializationVector) {
+    public static String decrypt(String cryptAlgorithm, String cipherText, SecretKey secretKeyAES, byte[] initializationVector) throws Exception {
         return decrypt(cryptAlgorithm, cipherText, null, secretKeyAES, initializationVector);
     }
 }

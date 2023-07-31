@@ -66,7 +66,13 @@ public class SecureSharedPreferences implements SharedPreferences {
      * @return the plain value for the given key
      */
     private <T> String getDecryptedString(String key, T defValue) {
-        return SecurityUtils.decrypt(SecurityUtils.AES, sharedPreferences.getString(SecurityUtils.encrypt(SecurityUtils.AES, key, secretKeyAES, initializationVector).trim(), String.valueOf(defValue)), secretKeyAES, initializationVector);
+        try{
+            return SecurityUtils.decrypt(SecurityUtils.AES, sharedPreferences.getString(SecurityUtils.encrypt(SecurityUtils.AES, key, secretKeyAES, initializationVector).trim(), String.valueOf(defValue)), secretKeyAES, initializationVector);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -76,8 +82,13 @@ public class SecureSharedPreferences implements SharedPreferences {
      * @return the encrypted string
      */
     private String encryptString(String string) {
-        return !TextUtils.isEmpty(string) ? SecurityUtils.encrypt(SecurityUtils.AES, string, secretKeyAES, initializationVector) : "";
-    }
+        try {
+            return !TextUtils.isEmpty(string) ? SecurityUtils.encrypt(SecurityUtils.AES, string, secretKeyAES, initializationVector) : "";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }    }
 
     /**
      * encrypts the entire shared preference passed to it
@@ -131,15 +142,22 @@ public class SecureSharedPreferences implements SharedPreferences {
     @Nullable
     @Override
     public Set<String> getStringSet(String key, @Nullable Set<String> defValue) {
-        Set encryptSet = sharedPreferences.getStringSet(SecurityUtils.encrypt(SecurityUtils.AES, key, secretKeyAES, initializationVector), defValue);
-        Set<String> decryptSet = new HashSet<>();
-        if (encryptSet == null) {
-            return defValue;
+        try {
+            Set<String> encryptSet = sharedPreferences.getStringSet(SecurityUtils.encrypt(SecurityUtils.AES, key, secretKeyAES, initializationVector), defValue);
+
+            Set<String> decryptSet = new HashSet<>();
+            if (encryptSet == null) {
+                return defValue;
+            }
+            for (Object string : encryptSet) {
+                decryptSet.add(SecurityUtils.decrypt(SecurityUtils.AES, (String) string, secretKeyAES, initializationVector));
+            }
+
+            return decryptSet;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        for (Object string : encryptSet) {
-            decryptSet.add(SecurityUtils.decrypt(SecurityUtils.AES, (String) string, secretKeyAES, initializationVector));
-        }
-        return decryptSet;
     }
 
     @Override

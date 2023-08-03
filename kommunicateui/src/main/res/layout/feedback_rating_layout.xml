@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center_horizontal"
-                android:text="@string/rating_good" />
+                android:text="@string/rating_great" />
         </LinearLayout>
 
     </LinearLayout>

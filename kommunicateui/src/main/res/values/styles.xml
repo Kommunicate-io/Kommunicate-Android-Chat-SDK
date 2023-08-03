@@ -26,6 +26,9 @@
 
     <style name="KommunicateActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:textColorSecondary">@color/km_toolbar_icon_color</item>
+<!--        to make menu items appear below the Action Bar area-->
+        <item name="overlapAnchor">false</item>
+        <item name="android:dropDownVerticalOffset">?attr/actionBarSize</item>
     </style>
 
 </resources>

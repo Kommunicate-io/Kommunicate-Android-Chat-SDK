@@ -523,11 +523,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             faqButtonLayout.setVisibility(View.GONE);
         }
         //Conversation Info screen to show below Topbar
-        kmConversationInfoView = list.findViewById(R.id.km_conversation_info_view);
-        KmConversationInfoSetting infoSetting = KmConversationInfoSetting.getInstance(getContext());
-        if(infoSetting.isKmConversationInfoEnabled()) {
-            kmConversationInfoView.setVisibility(VISIBLE);
-            kmConversationInfoView.setupView(infoSetting.getInfoContent(), infoSetting.getContentColo(), infoSetting.getBackgroundColor(), infoSetting.getLeadingImageIcon(), infoSetting.getTrailingImageIcon());
+        if(!alCustomizationSettings.isAgentApp()){
+            kmConversationInfoView = list.findViewById(R.id.km_conversation_info_view);
+            KmConversationInfoSetting infoSetting = KmConversationInfoSetting.getInstance(getContext());
+            if(infoSetting.isKmConversationInfoEnabled()) {
+                kmConversationInfoView.setVisibility(VISIBLE);
+                kmConversationInfoView.setupView(infoSetting.getInfoContent(), infoSetting.getContentColo(), infoSetting.getBackgroundColor(), infoSetting.getLeadingImageIcon(), infoSetting.getTrailingImageIcon());
+            }
         }
 
         if (customToolbarLayout != null) {

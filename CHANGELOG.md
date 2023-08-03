@@ -3,6 +3,9 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+##Unreleased
+1) Users unable to open conversation is fixed
+
 ## Kommunicate Android SDK 2.7.7
 1) Added support to send message on language change
 2) Show/Hide Template message buttons when resolved conversation

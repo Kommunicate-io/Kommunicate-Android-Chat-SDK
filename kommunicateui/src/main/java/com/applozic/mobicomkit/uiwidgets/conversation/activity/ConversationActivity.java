@@ -380,6 +380,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
                 toolbarTitle.setLayoutParams(layoutParams);
+                RelativeLayout layout = findViewById(R.id.faqButtonLayout);
+                Toolbar.LayoutParams params = (Toolbar.LayoutParams) layout.getLayoutParams();
+                params.setMarginEnd(0);
+                layout.setLayoutParams(params);
             }
         }
 

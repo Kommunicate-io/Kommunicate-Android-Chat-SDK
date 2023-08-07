@@ -12,6 +12,7 @@ import java.util.Map;
 public class MobicomMessageTemplate extends JsonMarker {
 
     private boolean isEnabled = false;
+    private boolean isLeftAligned = false;
     private String backgroundColor;
     private String borderColor;
     private String textColor;
@@ -76,6 +77,10 @@ public class MobicomMessageTemplate extends JsonMarker {
 
     public boolean isEnabled() {
         return isEnabled;
+    }
+
+    public boolean isLeftAligned() {
+        return isLeftAligned;
     }
 
     public void setEnabled(boolean enabled) {

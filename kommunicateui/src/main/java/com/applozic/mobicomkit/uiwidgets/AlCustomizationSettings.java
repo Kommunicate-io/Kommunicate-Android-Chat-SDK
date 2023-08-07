@@ -145,6 +145,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean checkboxAsMultipleButton = false;
     private String staticTopMessage = "";
     private String staticTopIcon = "";
+    private boolean toolbarTitleCenterAligned = false;
 
     public String getStaticTopMessage() {
         return staticTopMessage;
@@ -756,6 +757,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isHideChatInHelpcenter() {
         return hideChatInHelpcenter;
+    }
+
+    public boolean isToolbarTitleCenterAligned() {
+        return toolbarTitleCenterAligned;
     }
 
     @Override

@@ -132,6 +132,7 @@
   "disableGlobalStoragePermission": true,
   "messageTemplate": {
     "isEnabled": false,
+    "isLeftAligned" : false,
     "borderColor": "#5c5aa7",
     "backgroundColor": "#FFFFFF",
     "hideOnSend": false,
@@ -171,5 +172,6 @@
   "checkboxAsMultipleButton": true,
   "staticTopMessage": "",
   "staticTopIcon": "km_lock",
-  "useDeviceDefaultLanguage": true
+  "useDeviceDefaultLanguage": true,
+  "toolbarTitleCenterAligned": false
 }

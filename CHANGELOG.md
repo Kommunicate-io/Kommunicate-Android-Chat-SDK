@@ -3,8 +3,11 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-##Unreleased
-1) Users unable to open conversation is fixed
+
+## Unreleased
+1) Fixed dropdown list of spinner in form type rich message clashing with the spinner layout
+2) Added customization to center toolbar title and left align message templates
+3) Bug fixes
 
 ## Kommunicate Android SDK 2.7.7
 1) Added support to send message on language change

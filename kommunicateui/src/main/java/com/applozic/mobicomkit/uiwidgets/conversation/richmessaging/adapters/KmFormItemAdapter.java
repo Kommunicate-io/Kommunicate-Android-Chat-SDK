@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -340,6 +341,16 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 }
 
                                 KmDropdownItemAdapter dropdownItemAdapter = new KmDropdownItemAdapter(context, android.R.layout.simple_spinner_item, dropdownList.getOptions());
+
+                                formItemViewHolder.formDropdownList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                    @Override
+                                    public void onGlobalLayout() {
+                                        Spinner spinner = formItemViewHolder.formDropdownList;
+                                        spinner.setDropDownVerticalOffset(spinner.getHeight());
+                                        spinner.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                    }
+                                });
+
                                 formItemViewHolder.formDropdownList.setAdapter(dropdownItemAdapter);
                                 dropdownItemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

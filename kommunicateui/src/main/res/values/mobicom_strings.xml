@@ -8,7 +8,7 @@
     <string name="select_at_least">At least 1 contact must be selected</string>
     <string name="group_name_hint">Name of the group</string>
     <string name="empty_conversations">No conversations!</string>
-    <string name="enter_message_hint">Write a message…</string>
+    <string name="enter_message_hint">Type your message...</string>
     <string name="send_text">SEND</string>
     <string name="cancel_text">CANCEL</string>
     <string name="ok_text">OK</string>
@@ -203,7 +203,7 @@
     <string name="km_read">Read</string>
     <string name="km_not_read">Not read yet</string>
     <string name="km_not_sent">Not sent</string>
-    <string name="default_start_new_conversation">Start new conversation</string>
+    <string name="default_start_new_conversation">Start New Conversation</string>
     <string name="start_conversation">Start Conversation</string>
     <string name="info_file_attachment_mime_type_not_supported">Can\'t send this type of files!</string>
     <string name="processing_take_over_from_bot">Taking over from bot</string>

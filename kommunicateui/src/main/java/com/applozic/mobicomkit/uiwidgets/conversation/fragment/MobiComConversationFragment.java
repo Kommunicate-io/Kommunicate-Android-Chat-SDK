@@ -638,6 +638,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
+        if(alCustomizationSettings.getMessageTemplate().isLeftAligned()){
+            ViewGroup.LayoutParams layoutParams = messageTemplateView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            messageTemplateView.setLayoutParams(layoutParams);
+        }
+
         boolean isAgentApp = alCustomizationSettings != null && alCustomizationSettings.isAgentApp();
 
         if (!isAgentApp && MobiComUserPreference.getInstance(getContext()).getPricingPackage() == 1) {

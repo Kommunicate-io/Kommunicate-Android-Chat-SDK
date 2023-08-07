@@ -371,6 +371,13 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         setSupportActionBar(myToolbar);
         setToolbarTitleSubtitleColorFromSettings();
 
+        if (alCustomizationSettings.isToolbarTitleCenterAligned()) {
+            TextView toolbarTitle = myToolbar.findViewById(R.id.km_conversation_text_view);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbarTitle.getLayoutParams();
+            layoutParams.addRule(RelativeLayout.LEFT_OF, R.id.kmFaqOption);
+            toolbarTitle.setLayoutParams(layoutParams);
+        }
+
         baseContactService = new AppContactService(this);
         conversationUIService = new ConversationUIService(this);
         mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);

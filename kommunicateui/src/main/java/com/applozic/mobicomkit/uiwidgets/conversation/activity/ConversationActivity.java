@@ -372,10 +372,15 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         setToolbarTitleSubtitleColorFromSettings();
 
         if (alCustomizationSettings.isToolbarTitleCenterAligned()) {
-            TextView toolbarTitle = myToolbar.findViewById(R.id.km_conversation_text_view);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbarTitle.getLayoutParams();
-            layoutParams.addRule(RelativeLayout.LEFT_OF, R.id.kmFaqOption);
-            toolbarTitle.setLayoutParams(layoutParams);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                TextView toolbarTitle = myToolbar.findViewById(R.id.km_conversation_text_view);
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbarTitle.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+                toolbarTitle.setLayoutParams(layoutParams);
+            }
         }
 
         baseContactService = new AppContactService(this);

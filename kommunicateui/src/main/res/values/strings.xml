@@ -227,7 +227,7 @@
     <string name="resolved_info_text">This conversation has been marked as resolved.</string>
     <string name="restart_conversation_text">Restart conversation</string>
     <string name="rating_text">You rated the conversation</string>
-    <string name="rating_good">Good</string>
+    <string name="rating_great">Great</string>
     <string name="add_a_comment">Add a comment..</string>
     <string name="submit_your_rating">Submit your rating</string>
     <string name="rating_average">Average</string>

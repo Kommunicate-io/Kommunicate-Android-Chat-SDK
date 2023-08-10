@@ -1114,7 +1114,7 @@ public class MessageDatabaseService {
                         "AND m.type not in (6, 7) AND m.channelKey = 0 " +
                         "group by m.contactNumbers " +
                         ") temp " +
-                        (lastFetchTime != null && lastFetchTime > 0 ? " where temp.maxCreatedAt < ?" : "") +
+                        (lastFetchTime != null && lastFetchTime > 0 ? " where temp.maxCreatedAt < " + lastFetchTime : "") +
                         " ORDER BY temp.maxCreatedAt DESC";
                 selectionArgs.add(String.valueOf(status));
                 if (lastFetchTime != null && lastFetchTime > 0) {

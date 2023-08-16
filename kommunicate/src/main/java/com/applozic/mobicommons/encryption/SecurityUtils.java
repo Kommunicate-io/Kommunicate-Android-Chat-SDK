@@ -199,7 +199,20 @@ public class SecurityUtils {
                 String cipherKey = sharedPreferences.getString(AES_ENCRYPTION_KEY, null);
                 String plainKey = sharedPreferences.getBoolean(AES_KEY_ENCRYPTED, true) ? decrypt(RSA, cipherKey, keyPairRSA) : cipherKey;
                 if(TextUtils.isEmpty(plainKey)) {
-                    return null;
+                    //Workaround when unable decrypt the AES key because of that plainKey was null
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.clear();
+                    SecretKey secretKey = generateAESKey();
+                    if (secretKey == null) {
+                        Utils.printLog(context, TAG, "SecretKey is null. There are problems occurring with it's generation at runtime.");
+                        return null;
+                    }
+                    plainKey = Base64.encodeToString(secretKey.getEncoded(), Base64.DEFAULT);
+                    String newCipherKey = keyPairRSA == null ? plainKey : encrypt(RSA, plainKey, keyPairRSA);
+                    editor.putString(AES_ENCRYPTION_KEY, newCipherKey);
+                    editor.putBoolean(AES_KEY_ENCRYPTED, keyPairRSA != null);
+                    editor.apply();
+                    return secretKey;
                 }
                 byte[] decodedKey = Base64.decode(plainKey, Base64.DEFAULT);
                 return new SecretKeySpec(decodedKey, 0, decodedKey.length, AES);

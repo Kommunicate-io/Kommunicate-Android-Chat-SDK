@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -23,10 +24,13 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +38,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -373,17 +378,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         if (alCustomizationSettings.isToolbarTitleCenterAligned()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                TextView toolbarTitle = myToolbar.findViewById(R.id.km_conversation_text_view);
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbarTitle.getLayoutParams();
-                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-                toolbarTitle.setLayoutParams(layoutParams);
-                RelativeLayout layout = findViewById(R.id.faqButtonLayout);
-                Toolbar.LayoutParams params = (Toolbar.LayoutParams) layout.getLayoutParams();
-                params.setMarginEnd(0);
-                layout.setLayoutParams(params);
+                centerToolbarTitle(myToolbar);
             }
         }
 
@@ -506,6 +501,38 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if(alCustomizationSettings.isUseDeviceDefaultLanguage()){
             Applozic.setDefaultLanguage(this);
         }
+    }
+
+    private void centerToolbarTitle(Toolbar myToolbar) {
+        TextView toolbarTitle = myToolbar.findViewById(R.id.km_conversation_text_view);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbarTitle.getLayoutParams();
+        toolbarTitle.setGravity(Gravity.CENTER);
+        ViewTreeObserver viewTreeObserver = getWindow().getDecorView().getViewTreeObserver();
+
+        Resources resources = getResources();
+        TypedValue typedValue = new TypedValue();
+        getApplicationContext().getTheme().resolveAttribute(
+                android.R.attr.actionBarSize, typedValue, true);
+
+        int actionBarWidth = (int) typedValue.getDimension(resources.getDisplayMetrics());
+
+        ViewTreeObserver.OnGlobalLayoutListener listener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int marginEnd;
+                if(isOverflowMenuVisible(myToolbar)){
+                    marginEnd = 10;
+                }
+                else {
+                    marginEnd = actionBarWidth - 30;
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    layoutParams.setMarginEnd(marginEnd);
+                }
+                toolbarTitle.setLayoutParams(layoutParams);
+            }
+        };
+        viewTreeObserver.addOnGlobalLayoutListener(listener);
     }
 
     @Override
@@ -639,6 +666,19 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 Utils.printLog(this, TAG, "URI format(extension) is empty.");
                 break;
         }
+    }
+
+    private boolean isOverflowMenuVisible(Toolbar toolbar) {
+        Log.d("hey toolbarChildCount " , ""+toolbar.getChildCount());
+
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            if (toolbar.getChildAt(i) instanceof ActionMenuView) {
+                ActionMenuView actionMenuView = (ActionMenuView) toolbar.getChildAt(i);
+                Log.d("here",""+actionMenuView.getMenu().hasVisibleItems());
+                return actionMenuView.getMenu().hasVisibleItems();
+            }
+        }
+        return false;
     }
 
     public void setToolbarTitleSubtitleColorFromSettings() {

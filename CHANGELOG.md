@@ -3,8 +3,6 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## Unreleased
-1) Fixed toolbar title not in center when menu option is disabled
 
 ## Kommunicate Android SDK 2.7.8
 1) Fixed dropdown list of spinner in form type rich message clashing with the spinner layout

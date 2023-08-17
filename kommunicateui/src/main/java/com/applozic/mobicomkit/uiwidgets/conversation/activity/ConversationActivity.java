@@ -669,12 +669,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     private boolean isOverflowMenuVisible(Toolbar toolbar) {
-        Log.d("hey toolbarChildCount " , ""+toolbar.getChildCount());
 
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             if (toolbar.getChildAt(i) instanceof ActionMenuView) {
                 ActionMenuView actionMenuView = (ActionMenuView) toolbar.getChildAt(i);
-                Log.d("here",""+actionMenuView.getMenu().hasVisibleItems());
                 return actionMenuView.getMenu().hasVisibleItems();
             }
         }

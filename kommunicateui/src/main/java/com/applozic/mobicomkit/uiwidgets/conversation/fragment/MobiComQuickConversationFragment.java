@@ -2,11 +2,15 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -61,6 +65,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import io.kommunicate.Kommunicate;
 import io.kommunicate.services.KmClientService;
@@ -240,6 +245,40 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         if (alCustomizationSettings.isLogoutOption()) {
             menu.findItem(R.id.logout).setVisible(true);
         }
+
+        if(!alCustomizationSettings.isAgentApp() && alCustomizationSettings.isToolbarTitleCenterAligned()) {
+            if (alCustomizationSettings.isProfileOption() || alCustomizationSettings.isMessageSearchOption() || alCustomizationSettings.isLogoutOption()) {
+                centerToolbarTitle(toolbar,true);
+            } else {
+                centerToolbarTitle(toolbar,false);
+            }
+        }
+    }
+
+    private void centerToolbarTitle(Toolbar myToolbar , boolean isOverflowMenuVisible) {
+        TextView toolbarTitle = myToolbar.findViewById(R.id.km_conversation_text_view);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbarTitle.getLayoutParams();
+        toolbarTitle.setGravity(Gravity.CENTER);
+
+        Resources resources = getResources();
+        TypedValue typedValue = new TypedValue();
+        Objects.requireNonNull(getActivity()).getTheme().resolveAttribute(
+                android.R.attr.actionBarSize, typedValue, true);
+
+        int actionBarWidth = (int) typedValue.getDimension(resources.getDisplayMetrics());
+
+        int marginEnd;
+        if (isOverflowMenuVisible) {
+            marginEnd = 10;
+        } else {
+            marginEnd = actionBarWidth - 30;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            layoutParams.setMarginEnd(marginEnd);
+        } else {
+            layoutParams.setMargins(0, 0, marginEnd, 0);
+        }
+        toolbarTitle.setLayoutParams(layoutParams);
     }
 
     public void addMessage(final Message message) {

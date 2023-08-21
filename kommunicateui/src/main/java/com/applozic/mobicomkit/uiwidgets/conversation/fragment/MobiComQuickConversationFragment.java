@@ -142,9 +142,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerAdapter.setAlCustomizationSettings(alCustomizationSettings);
 
         faqButtonLayout = getActivity().findViewById(R.id.faqButtonLayout);
+        faqButtonLayout.setVisibility(View.VISIBLE);
 
         if (alCustomizationSettings.isFaqOptionEnabled() || KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(1)) {
-            faqButtonLayout.setVisibility(View.VISIBLE);
             TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
             TextView conversationTextView = faqButtonLayout.findViewById(R.id.km_conversation_text_view);
             if (textView != null) {
@@ -159,7 +159,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
             }
             conversationTextView.setTextColor(KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getToolbarTitleColor());
         } else {
-            faqButtonLayout.setVisibility(View.GONE);
+            TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
+            textView.setVisibility(View.GONE);
         }
 
         linearLayoutManager = new KmLinearLayoutManager(getContext());

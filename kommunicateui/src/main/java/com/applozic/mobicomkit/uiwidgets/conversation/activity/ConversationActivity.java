@@ -371,22 +371,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         setSupportActionBar(myToolbar);
         setToolbarTitleSubtitleColorFromSettings();
 
-        if (alCustomizationSettings.isToolbarTitleCenterAligned()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                TextView toolbarTitle = myToolbar.findViewById(R.id.km_conversation_text_view);
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbarTitle.getLayoutParams();
-                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                layoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-                toolbarTitle.setLayoutParams(layoutParams);
-                RelativeLayout layout = findViewById(R.id.faqButtonLayout);
-                Toolbar.LayoutParams params = (Toolbar.LayoutParams) layout.getLayoutParams();
-                params.setMarginEnd(0);
-                layout.setLayoutParams(params);
-            }
-        }
-
         baseContactService = new AppContactService(this);
         conversationUIService = new ConversationUIService(this);
         mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);

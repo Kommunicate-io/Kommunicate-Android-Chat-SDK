@@ -172,6 +172,7 @@
   "checkboxAsMultipleButton": true,
   "staticTopMessage": "",
   "staticTopIcon": "km_lock",
+  "menuIconOnConversationScreen":"",
   "useDeviceDefaultLanguage": true,
   "toolbarTitleCenterAligned": false
 }

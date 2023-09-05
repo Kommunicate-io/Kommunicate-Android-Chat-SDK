@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
+
+import java.util.Objects;
 
 import io.kommunicate.utils.KmConstants;
 
@@ -156,6 +159,10 @@ public class ConversationFragment extends MobiComConversationFragment implements
                 }
             }
         });
+        //customisation to change option menu icon on conversation screen
+        if(!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(Objects.requireNonNull(getContext()),getResources().getIdentifier(alCustomizationSettings.getMenuIconOnConversationScreen(),"drawable",getContext().getPackageName())));
+        }
         return view;
     }
     public void setAutoTextOnEditText(String newText){

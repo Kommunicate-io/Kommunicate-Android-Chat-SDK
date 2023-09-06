@@ -145,6 +145,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean checkboxAsMultipleButton = false;
     private String staticTopMessage = "";
     private String staticTopIcon = "";
+    private String menuIconOnConversationScreen = "";
     private boolean toolbarTitleCenterAligned = false;
 
     public String getStaticTopMessage() {
@@ -155,6 +156,9 @@ public class AlCustomizationSettings extends JsonMarker {
         return staticTopIcon;
     }
 
+    public String getMenuIconOnConversationScreen() {
+        return menuIconOnConversationScreen;
+    }
     public boolean isCheckboxAsMultipleButton() {
         return checkboxAsMultipleButton;
     }

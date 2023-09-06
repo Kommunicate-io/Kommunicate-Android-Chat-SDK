@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -170,6 +172,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerView.setAdapter(recyclerAdapter);
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(false);
+        if(!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
+            Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.km_baseline_more_vert);
+            toolbar.setOverflowIcon(overflowIcon);
+        }
         RelativeLayout toolbarCustomLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         if (toolbarCustomLayout != null) {
             toolbarCustomLayout.setVisibility(View.GONE);
@@ -214,7 +220,6 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
         recyclerView.setLongClickable(true);
         registerForContextMenu(recyclerView);
-
         return list;
     }
 

@@ -159,10 +159,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
                 }
             }
         });
-        //customisation to change option menu icon on conversation screen
-        if(!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
-            toolbar.setOverflowIcon(ContextCompat.getDrawable(Objects.requireNonNull(getContext()),getResources().getIdentifier(alCustomizationSettings.getMenuIconOnConversationScreen(),"drawable",getContext().getPackageName())));
-        }
         return view;
     }
     public void setAutoTextOnEditText(String newText){
@@ -205,6 +201,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
     @Override
     public void onResume() {
         super.onResume();
+
     }
 
     @Override

@@ -510,6 +510,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(true);
+        //customisation to change option menu icon on conversation screen
+        if(!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
+            Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()),getResources().getIdentifier(alCustomizationSettings.getMenuIconOnConversationScreen(),"drawable",getContext().getPackageName()));
+            toolbar.setOverflowIcon(overflowIcon);
+        }
         setupChatBackground();
 
         frameLayoutProgressbar = list.findViewById(R.id.idProgressBarLayout);
@@ -3225,7 +3230,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onResume() {
         super.onResume();
-
         AlEventManager.getInstance().registerUIListener(TAG, this);
 
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {

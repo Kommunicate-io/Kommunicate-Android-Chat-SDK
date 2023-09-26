@@ -316,11 +316,11 @@ public class KmAppSettingModel extends JsonMarker {
         }
 
         public List<Short> getConversationResolve() {
-            return conversationAll;
+            return conversationResolve;
         }
 
-        public void setConversationResolve(List<Short> conversationAll) {
-            this.conversationAll = conversationAll;
+        public void setConversationResolve(List<Short> conversationResolve) {
+            this.conversationResolve = conversationResolve;
         }
 
 

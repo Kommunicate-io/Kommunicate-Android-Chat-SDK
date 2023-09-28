@@ -3,6 +3,8 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Unreleased
+1) Fixed message template crash
 ## Kommunicate Android SDK 2.8.0
 1) Added customisation to change the option menu icon on Conversation Screen
 ## Kommunicate Android SDK 2.7.9

@@ -294,6 +294,10 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean hideAssignToDropdown;
         private boolean restictOperatorToReadOnly;
         private boolean restrictSpamBtn;
+        @SerializedName("conversation.all")
+        private List<Short> conversationAll = null;
+        @SerializedName("conversation.resolved")
+        private List<Short> conversationResolve = null;
 
 
         public boolean isRestrictSpamBtn() {
@@ -302,6 +306,21 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setRestrictSpamBtn(boolean restrictSpamBtn) {
             this.restrictSpamBtn = restrictSpamBtn;
+        }
+        public List<Short> getConversationAll() {
+            return conversationAll;
+        }
+
+        public void setConversationAll(List<Short> conversationAll) {
+            this.conversationAll = conversationAll;
+        }
+
+        public List<Short> getConversationResolve() {
+            return conversationResolve;
+        }
+
+        public void setConversationResolve(List<Short> conversationResolve) {
+            this.conversationResolve = conversationResolve;
         }
 
 

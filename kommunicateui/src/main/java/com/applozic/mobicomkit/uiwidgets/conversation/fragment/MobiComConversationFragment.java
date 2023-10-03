@@ -645,12 +645,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
-        if(alCustomizationSettings.getMessageTemplate().isLeftAligned()){
-            ViewGroup.LayoutParams layoutParams = messageTemplateView.getLayoutParams();
-            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            messageTemplateView.setLayoutParams(layoutParams);
-        }
-
         boolean isAgentApp = alCustomizationSettings != null && alCustomizationSettings.isAgentApp();
 
         if (!isAgentApp && MobiComUserPreference.getInstance(getContext()).getPricingPackage() == 1) {
@@ -950,6 +944,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if (messageTemplate != null && messageTemplate.isEnabled()) {
             messageTemplateView.setVisibility(View.VISIBLE);
+            if(messageTemplate.isLeftAligned()){
+                ViewGroup.LayoutParams layoutParams = messageTemplateView.getLayoutParams();
+                layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                messageTemplateView.setLayoutParams(layoutParams);
+            }
             templateAdapter = new MobicomMessageTemplateAdapter(messageTemplate);
             MobicomMessageTemplateAdapter.MessageTemplateDataListener listener = new MobicomMessageTemplateAdapter.MessageTemplateDataListener() {
                 @Override

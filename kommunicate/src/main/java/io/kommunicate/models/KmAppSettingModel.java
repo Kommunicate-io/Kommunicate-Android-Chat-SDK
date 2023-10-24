@@ -298,6 +298,8 @@ public class KmAppSettingModel extends JsonMarker {
         private List<Short> conversationAll = null;
         @SerializedName("conversation.resolved")
         private List<Short> conversationResolve = null;
+        @SerializedName("hideAssigneeChange")
+        private List<Short> hideAssigneeChange = null;
 
 
         public boolean isRestrictSpamBtn() {
@@ -306,6 +308,12 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setRestrictSpamBtn(boolean restrictSpamBtn) {
             this.restrictSpamBtn = restrictSpamBtn;
+        }
+        public List<Short> getHideAssigneeChange() {
+            return hideAssigneeChange;
+        }
+        public void setHideAssigneeChange(List<Short> hideAssigneeChange) {
+            this.hideAssigneeChange = hideAssigneeChange;
         }
         public List<Short> getConversationAll() {
             return conversationAll;
@@ -335,6 +343,7 @@ public class KmAppSettingModel extends JsonMarker {
         public boolean isRestrictOperatorToReadOnly() {
             return restictOperatorToReadOnly;
         }
+
 
         public void setRestrictOperatorToReadOnly(boolean restictOperatorToReadOnly) {
             this.restictOperatorToReadOnly = restictOperatorToReadOnly;

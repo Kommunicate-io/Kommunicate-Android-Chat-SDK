@@ -637,11 +637,6 @@ public class KmConversationHelper {
         channelInfo.setType(10);
         channelInfo.setUsers(users);
 
-//        if (conversationBuilder.getAgentIds() != null) {
-//            if (!conversationBuilder.getAgentIds().isEmpty()) {
-//                channelInfo.setAdmin(conversationBuilder.getAgentIds().get(0));
-//            }
-//        }
 
         if (!TextUtils.isEmpty(conversationBuilder.getClientConversationId())) {
             channelInfo.setClientGroupId(conversationBuilder.getClientConversationId());
@@ -769,7 +764,6 @@ public class KmConversationHelper {
     }
 
     private static void startConversation(boolean useSingleThreadedSettingFromServer, final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) throws KmException {
-        long startTime =  System.currentTimeMillis();
         if (conversationBuilder == null) {
             throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_conversation_builder_cannot_be_null));
         }
@@ -786,7 +780,6 @@ public class KmConversationHelper {
                 startOrGetConversation(conversationBuilder, handler);
             }
         }
-        long endTime =  System.currentTimeMillis();
 
     }
     public static void refreshAppSettings(Context context) {

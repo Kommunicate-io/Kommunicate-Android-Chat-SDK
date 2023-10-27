@@ -38,8 +38,8 @@ public class KmAppSettingModel extends JsonMarker {
 
     public static class KmResponse extends JsonMarker {
         private String userName;
-        private String agentId;
-        private String agentName;
+        private String agentId = null;
+        private String agentName = null;
         private boolean collectFeedback;
         private boolean hidePostCTA;
         private KmChatWidget chatWidget;

@@ -34,7 +34,7 @@ public class KmClientService extends MobiComKitClientService {
     public static final String KM_DASHBOARD = "km_dashboard_url";
     public static final String KM_HELPCENTER = "km_helpcenter_url";
     private static final String CONVERSATION_FEEDBACK_URL = "/feedback";
-    public static final String APP_SETTING_URL = "/users/v2/chat/plugin/settings?appId=";
+    public static final String APP_SETTING_URL = "/users/v3/chat/plugin/settings?appId=";
     private static final String CHANGE_CONVERSATION_ASSIGNEE_URL = "/rest/ws/group/assignee/change?groupId=";
 
     private static final String TAG = "KmClientService";

@@ -6,9 +6,11 @@ import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
@@ -50,6 +52,7 @@ import io.kommunicate.utils.KmUtils;
 
 public class KmConversationHelper {
 
+    private static SharedPreferences sharedPreferences;
     public static final String CONVERSATION_ASSIGNEE = "CONVERSATION_ASSIGNEE";
     public static final String CONVERSATION_TITLE = "CONVERSATION_TITLE";
     public static final String SKIP_ROUTING = "SKIP_ROUTING";
@@ -60,6 +63,7 @@ public class KmConversationHelper {
     public static final String KM_TEAM_ID = "KM_TEAM_ID";
     private static final String TAG = "KmConversationHelper";
     public static final String GROUP_CREATION_URL = "GROUP_CREATION_URL";
+    public static final String SINGLE_THREADED = "IS_SINGLE_THREADED";
 
     public static void openConversation(final Context context, final boolean skipConversationList, final Integer conversationId, final KmCallback callback) throws KmException {
         if (!(context instanceof Activity)) {
@@ -602,11 +606,10 @@ public class KmConversationHelper {
 
         KMGroupInfo channelInfo = new KMGroupInfo(Utils.getString(conversationBuilder.getContext(), R.string.km_default_support_group_name), new ArrayList<String>());
 
-        if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
-            throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_agent_list_empty_error));
-        }
-        for (String agentId : conversationBuilder.getAgentIds()) {
-            users.add(channelInfo.new GroupUser().setUserId(agentId).setGroupRole(1));
+        if (conversationBuilder.getAgentIds() != null) {
+            for (String agentId : conversationBuilder.getAgentIds()) {
+                users.add(channelInfo.new GroupUser().setUserId(agentId).setGroupRole(1));
+            }
         }
 
         users.add(channelInfo.new GroupUser().setUserId(KM_BOT).setGroupRole(2));
@@ -634,9 +637,11 @@ public class KmConversationHelper {
         channelInfo.setType(10);
         channelInfo.setUsers(users);
 
-        if (!conversationBuilder.getAgentIds().isEmpty()) {
-            channelInfo.setAdmin(conversationBuilder.getAgentIds().get(0));
-        }
+//        if (conversationBuilder.getAgentIds() != null) {
+//            if (!conversationBuilder.getAgentIds().isEmpty()) {
+//                channelInfo.setAdmin(conversationBuilder.getAgentIds().get(0));
+//            }
+//        }
 
         if (!TextUtils.isEmpty(conversationBuilder.getClientConversationId())) {
             channelInfo.setClientGroupId(conversationBuilder.getClientConversationId());
@@ -764,24 +769,40 @@ public class KmConversationHelper {
     }
 
     private static void startConversation(boolean useSingleThreadedSettingFromServer, final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) throws KmException {
+        long startTime =  System.currentTimeMillis();
         if (conversationBuilder == null) {
             throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_conversation_builder_cannot_be_null));
         }
-        if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
-            new KmAppSettingTask(conversationBuilder.getContext(),
-                    MobiComKitClientService.getApplicationKey(conversationBuilder.getContext()),
-                    getCallbackWithAppSettingsToCreateConversation(useSingleThreadedSettingFromServer,
-                            conversationBuilder,
-                            handler)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
+        sharedPreferences = conversationBuilder.getContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
+        if (sharedPreferences != null) {
+            boolean isSingleThreaded = sharedPreferences.getBoolean(SINGLE_THREADED,false);
+            refreshAppSettings(conversationBuilder.getContext());
+            conversationBuilder.setSingleConversation(isSingleThreaded);
             final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
-            if (!TextUtils.isEmpty(clientChannelKey)) {
+            if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
+                createConversation(conversationBuilder, handler);
+            } else {
                 conversationBuilder.setClientConversationId(clientChannelKey);
                 startOrGetConversation(conversationBuilder, handler);
-            } else {
-                createConversation(conversationBuilder, handler);
             }
         }
+        long endTime =  System.currentTimeMillis();
+
+    }
+    public static void refreshAppSettings(Context context) {
+        new KmAppSettingTask(context,MobiComKitClientService.getApplicationKey(context), new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                KmAppSettingModel kmAppSettings = (KmAppSettingModel) message;
+                if (sharedPreferences != null) {
+                    sharedPreferences.edit().putBoolean(SINGLE_THREADED, kmAppSettings.getChatWidget().isSingleThreaded()).apply();
+                }
+            }
+            @Override
+            public void onFailure(Object error) {
+                Utils.printLog(context, TAG, "Failed to fetch AppSettings" + error);
+            }
+        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public static void getConversationById(Context context, String conversationId, final KmCallback callback) {

@@ -767,20 +767,20 @@ public class KmConversationHelper {
         if (conversationBuilder == null) {
             throw new KmException(Utils.getString(conversationBuilder.getContext(), R.string.km_conversation_builder_cannot_be_null));
         }
+        refreshAppSettings(conversationBuilder.getContext());
         sharedPreferences = conversationBuilder.getContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         if (sharedPreferences != null) {
             boolean isSingleThreaded = sharedPreferences.getBoolean(SINGLE_THREADED,false);
-            refreshAppSettings(conversationBuilder.getContext());
             conversationBuilder.setSingleConversation(isSingleThreaded);
-            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), conversationBuilder.getAgentIds(), conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
-            if (conversationBuilder.getAgentIds() == null || conversationBuilder.getAgentIds().isEmpty()) {
-                createConversation(conversationBuilder, handler);
-            } else {
+            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : getClientGroupId(conversationBuilder.getUserIds(), null, conversationBuilder.getBotIds(), conversationBuilder.getContext());
+            if (!TextUtils.isEmpty(clientChannelKey) && clientChannelKey != null) {
                 conversationBuilder.setClientConversationId(clientChannelKey);
                 startOrGetConversation(conversationBuilder, handler);
+            } else {
+                createConversation(conversationBuilder, handler);
             }
-        }
 
+        }
     }
     public static void refreshAppSettings(Context context) {
         new KmAppSettingTask(context,MobiComKitClientService.getApplicationKey(context), new KmCallback() {
@@ -865,17 +865,15 @@ public class KmConversationHelper {
 
     private static String getClientGroupId(List<String> userIds, List<String> agentIds, List<String> botIds, Context context) throws KmException {
 
-        if (agentIds == null || agentIds.isEmpty()) {
-            throw new KmException("Please add at-least one Agent");
-        }
         if (userIds == null || userIds.isEmpty()) {
             userIds = new ArrayList<>();
         }
 
-        Collections.sort(agentIds);
-
-        List<String> tempList = new ArrayList<>(agentIds);
-
+        List<String> tempList = new ArrayList<>();
+        if (agentIds != null){
+            Collections.sort(agentIds);
+            tempList.addAll(agentIds);
+        }
         String loginUserId = MobiComUserPreference.getInstance(context).getUserId();
 
         if (!userIds.contains(loginUserId)) {

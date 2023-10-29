@@ -1953,23 +1953,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void loadConversation(Channel channel, Integer conversationId) {
-        loadConversation(null, channel, conversationId, messageSearchString);
+        loadConversation(null, channel, conversationId, messageSearchString, false);
     }
 
     public void loadConversation(Contact contact, Integer conversationId) {
-        loadConversation(contact, null, conversationId, messageSearchString);
+        loadConversation(contact, null, conversationId, messageSearchString, false);
     }
 
     //With search
     public void loadConversation(Contact contact, Integer conversationId, String messageSearchString) {
-        loadConversation(contact, null, conversationId, messageSearchString);
+        loadConversation(contact, null, conversationId, messageSearchString, false);
     }
 
     public void loadConversation(Channel channel, Integer conversationId, String messageSearchString) {
-        loadConversation(null, channel, conversationId, messageSearchString);
+        loadConversation(null, channel, conversationId, messageSearchString, false);
     }
 
-    public void loadConversation(final Contact contact, final Channel channel, final Integer conversationId, final String searchString) {
+    public void loadConversation(final Contact contact, final Channel channel, final Integer conversationId, final String searchString, boolean isNewConversation) {
         if (downloadConversation != null) {
             downloadConversation.cancel(true);
         }
@@ -2077,7 +2077,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         processMobiTexterUserCheck();
 
 
-        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversationId, messageSearchString);
+        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversationId, messageSearchString, isNewConversation);
         downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         if (hideExtendedSendingOptionLayout) {
@@ -2646,7 +2646,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             filePath = messageToForward.getFilePaths().get(0);
         }
         this.messageToForward = messageToForward;
-        loadConversation(contact, channel, currentConversationId, null);
+        loadConversation(contact, channel, currentConversationId, null, false);
 
     }
 
@@ -3295,8 +3295,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 SyncCallService.refreshView = false;
             }
 
+            boolean isNewConversation = false;
+
             if (channel != null && !channel.isUserPresentInChannel(MobiComUserPreference
                     .getInstance(getContext()).getUserId())) {
+                isNewConversation = true;
                 Channel newChannel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
                 if (newChannel != null && newChannel.getType() != null && Channel.GroupType.OPEN.getValue().equals(newChannel.getType())) {
                     MobiComUserPreference.getInstance(getActivity()).setNewMessageFlag(true);
@@ -3308,7 +3311,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             if (messageList.isEmpty()) {
-                loadConversation(contact, channel, currentConversationId, messageSearchString);
+                loadConversation(contact, channel, currentConversationId, messageSearchString, isNewConversation);
             } else if (MobiComUserPreference.getInstance(getActivity()).getNewMessageFlag()) {
                 loadnewMessageOnResume(contact, channel, currentConversationId);
             }
@@ -3962,6 +3965,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         private List<Conversation> conversationList;
         private String messageSearchString;
         private List<Message> nextMessageList = new ArrayList<Message>();
+        private boolean isNewConversation;
 
         public DownloadConversation(RecyclerView recyclerView, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, Contact contact, Channel channel, Integer conversationId, String messageSearchString) {
             this.recyclerView = recyclerView;
@@ -3971,6 +3975,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             this.channel = channel;
             this.conversationId = conversationId;
             this.messageSearchString = messageSearchString;
+        }
+
+        public DownloadConversation(RecyclerView recyclerView, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, Contact contact, Channel channel, Integer conversationId, String messageSearchString, boolean isNewConversation) {
+            this.recyclerView = recyclerView;
+            this.initial = initial;
+            this.firstVisibleItem = firstVisibleItem;
+            this.contact = contact;
+            this.channel = channel;
+            this.conversationId = conversationId;
+            this.messageSearchString = messageSearchString;
+            this.isNewConversation = isNewConversation;
         }
 
         @Override
@@ -4023,31 +4038,35 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         @Override
         protected Long doInBackground(Void... voids) {
             try {
-                if (initial) {
-                    Long lastConversationloadTime = 1L;
-                    if (!messageList.isEmpty()) {
-                        for (int i = messageList.size() - 1; i >= 0; i--) {
-                            if (messageList.get(i).isTempDateType()) {
+                if(!isNewConversation ||
+                        botMessageDelayInterval == 0 ||
+                        !Objects.equals(Objects.requireNonNull(new ContactDatabase(getContext()).getContactById(channel.getConversationAssignee())).getRoleType(), User.RoleType.BOT.getValue())) {
+                    if (initial) {
+                        Long lastConversationloadTime = 1L;
+                        if (!messageList.isEmpty()) {
+                            for (int i = messageList.size() - 1; i >= 0; i--) {
+                                if (messageList.get(i).isTempDateType()) {
+                                    continue;
+                                }
+                                lastConversationloadTime = messageList.get(i).getCreatedAtTime();
+                                break;
+                            }
+                        }
+
+
+                        nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
+                    } else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
+                        loadMore = false;
+                        Long endTime = null;
+                        for (Message message : messageList) {
+                            if (message.isTempDateType()) {
                                 continue;
                             }
-                            lastConversationloadTime = messageList.get(i).getCreatedAtTime();
+                            endTime = messageList.get(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
                             break;
                         }
+                        nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                     }
-
-
-                    nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
-                } else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
-                    loadMore = false;
-                    Long endTime = null;
-                    for (Message message : messageList) {
-                        if (message.isTempDateType()) {
-                            continue;
-                        }
-                        endTime = messageList.get(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
-                        break;
-                    }
-                    nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                 }
                 if (BroadcastService.isContextBasedChatEnabled()) {
                     conversations = ConversationService.getInstance(getActivity()).getConversationList(channel, contact);

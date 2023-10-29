@@ -772,7 +772,7 @@ public class KmConversationHelper {
         if (sharedPreferences != null) {
             boolean isSingleThreaded = sharedPreferences.getBoolean(SINGLE_THREADED,false);
             conversationBuilder.setSingleConversation(isSingleThreaded);
-            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : getClientGroupId(conversationBuilder.getUserIds(), null, conversationBuilder.getBotIds(), conversationBuilder.getContext());
+            final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), null, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
             if (!TextUtils.isEmpty(clientChannelKey) && clientChannelKey != null) {
                 conversationBuilder.setClientConversationId(clientChannelKey);
                 startOrGetConversation(conversationBuilder, handler);

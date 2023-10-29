@@ -5,6 +5,8 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 
 ## Unreleased
 1) Fixed typing indicator appearing after welcome message was received
+## Kommunicate Android SDK 2.8.4
+1) Reduce time taken for conversation creation
 ## Kommunicate Android SDK 2.8.3
 1) Team Concept phase 3
 ## Kommunicate Android SDK 2.8.2

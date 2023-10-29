@@ -1,10 +1,13 @@
 package io.kommunicate.utils;
 
+import static io.kommunicate.KmConversationHelper.SINGLE_THREADED;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -20,6 +23,7 @@ public class KmAppSettingPreferences {
     public static final String CLEAR_THEME_INSTANCE = "CLEAR_THEME_INSTANCE";
     private static KmAppSettingPreferences kmAppSettingPreferences;
     private static SharedPreferences preferences;
+    private static SharedPreferences alpreferences;
     private KmCallback callback;
     private static final String KM_THEME_PREFERENCES = "KM_THEME_PREFERENCES";
     private static final String KM_THEME_PRIMARY_COLOR = "KM_THEME_PRIMARY_COLOR";
@@ -31,6 +35,7 @@ public class KmAppSettingPreferences {
     private static final String HIDE_POST_CTA = "HIDE_POST_CTA";
     private static final String UPLOAD_OVERRIDE_URL = "UPLOAD_OVERRIDE_URL";
     private static final String UPLOAD_OVERRIDE_HEADER = "UPLOAD_OVERRIDE_HEADER";
+    public static final String SINGLE_THREADED = "IS_SINGLE_THREADED";
 
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
@@ -59,10 +64,20 @@ public class KmAppSettingPreferences {
                 setUploadOverrideUrl(appSetting.getChatWidget().getDefaultUploadOverride().getUrl());
                 setUploadOverrideHeader(appSetting.getChatWidget().getDefaultUploadOverride().getHeaders());
                 }
+                checkIsSingleThreaded(appSetting.getChatWidget().isSingleThreaded());
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());
                 setHidePostCTA(appSetting.getResponse().isHidePostCTA());
+            }
+        }
+    }
+    public void checkIsSingleThreaded(boolean isSingleConversation){
+        alpreferences = ApplozicService.getAppContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
+        if (alpreferences != null) {
+            boolean isSingleThreaded = alpreferences.getBoolean(SINGLE_THREADED, false);
+            if (isSingleConversation != isSingleThreaded) {
+                alpreferences.edit().putBoolean(SINGLE_THREADED,isSingleConversation).apply();
             }
         }
     }

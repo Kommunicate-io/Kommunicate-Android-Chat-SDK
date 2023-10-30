@@ -30,6 +30,8 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -225,7 +227,37 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             }
         } else if (object instanceof KmRichMessageModel) {
             KmRichMessageModel model = (KmRichMessageModel) object;
-            openWebLink(model.getFormData(), model.getFormAction());
+               try {
+                   Map<String, String> localeMetadata = new HashMap<>();
+                   localeMetadata.put(null,null);
+                   String payloadString = model.getPayload();
+                   JSONArray payloadArray = new JSONArray(payloadString);
+                   JSONObject jsonObject = payloadArray.getJSONObject(0);
+                   String replyText = jsonObject.getString("replyText");
+                   sendMessage(replyText,localeMetadata, Message.ContentType.DEFAULT.getValue());
+                   if (!model.getFormAction().isEmpty()) {
+                       new KmPostDataAsyncTask(context,
+                               model.getFormAction(),
+                               null,
+                               ((KmRichMessageModel) object).getRequestType(),
+                               model.getFormData(),
+                               new KmCallback() {
+                                   @Override
+                                   public void onSuccess(Object messageString) {
+                                       Utils.printLog(context, TAG, "Submit post success : " + messageString);
+                                   }
+
+                                   @Override
+                                   public void onFailure(Object error) {
+                                       Utils.printLog(context, TAG, "Submit post error : " + error);
+                                   }
+                               }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                   }
+
+               } catch (JSONException e) {
+                   e.printStackTrace();
+               }
+
         } else if (object instanceof KmRichMessageModel.KmPayloadModel) {
             makeFormRequest(context, (KmRichMessageModel.KmPayloadModel) object);
         }

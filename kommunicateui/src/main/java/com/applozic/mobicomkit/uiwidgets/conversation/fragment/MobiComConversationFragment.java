@@ -4086,8 +4086,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
 
                     nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
-                }
-                else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
+                } else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
                     loadMore = false;
                     Long endTime = null;
                     for (Message message : messageList) {

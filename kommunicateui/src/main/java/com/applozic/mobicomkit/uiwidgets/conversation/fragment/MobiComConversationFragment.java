@@ -1632,6 +1632,38 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void addMessage(final Message message) {
+
+        String senderId = message.getTo();
+        boolean isSentMessage = message.getType().equals(Message.MessageType.MT_OUTBOX.getValue());
+
+        if(messageList.isEmpty() && !isSentMessage) {
+            boolean sentByBot = senderId != null && Objects.equals(new ContactDatabase(getContext()).getContactById(senderId).getRoleType(), User.RoleType.BOT.getValue());
+            if (sentByBot){
+                return;
+            }
+        }
+
+        hideAwayMessage(message);
+        if(messageList.contains(message)) {
+            updateMessage(message);
+        }
+        if (ApplozicService.getContext(getContext()) instanceof KmOnMessageListener) {
+            ((KmOnMessageListener) ApplozicService.getContext(getContext())).onNewMessage(message, channel, contact);
+        }
+
+        if (botMessageDelayInterval > 0 && message.getGroupId() != null && message.getGroupId() != 0 && !TextUtils.isEmpty(message.getTo())) {
+            Contact contact = appContactService.getContactById(message.getTo());
+            if (contact != null && User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
+                botTypingDelayManager.addMessage(message);
+                return;
+            }
+        }
+
+        handleAddMessage(message);
+    }
+
+    public void addMessageForNewConversation(final Message message) {
+
         hideAwayMessage(message);
         if(messageList.contains(message)) {
             updateMessage(message);
@@ -3432,9 +3464,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             toolbarTitleText.setText(channel.getName());
         }
 
-        setStatusDots(false, true); //setting the status dot as offline
-        if (toolbarSubtitleText != null) {
-            toolbarSubtitleText.setVisibility(View.GONE);
+        if(alCustomizationSettings.isAgentApp()){
+            setStatusDots(false, true); //setting the status dot as offline
+            if (toolbarSubtitleText != null) {
+                toolbarSubtitleText.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -4038,35 +4072,32 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         @Override
         protected Long doInBackground(Void... voids) {
             try {
-                if(!isNewConversation ||
-                        botMessageDelayInterval == 0 ||
-                        !Objects.equals(Objects.requireNonNull(new ContactDatabase(getContext()).getContactById(channel.getConversationAssignee())).getRoleType(), User.RoleType.BOT.getValue())) {
-                    if (initial) {
-                        Long lastConversationloadTime = 1L;
-                        if (!messageList.isEmpty()) {
-                            for (int i = messageList.size() - 1; i >= 0; i--) {
-                                if (messageList.get(i).isTempDateType()) {
-                                    continue;
-                                }
-                                lastConversationloadTime = messageList.get(i).getCreatedAtTime();
-                                break;
-                            }
-                        }
-
-
-                        nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
-                    } else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
-                        loadMore = false;
-                        Long endTime = null;
-                        for (Message message : messageList) {
-                            if (message.isTempDateType()) {
+                if (initial) {
+                    Long lastConversationloadTime = 1L;
+                    if (!messageList.isEmpty()) {
+                        for (int i = messageList.size() - 1; i >= 0; i--) {
+                            if (messageList.get(i).isTempDateType()) {
                                 continue;
                             }
-                            endTime = messageList.get(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
+                            lastConversationloadTime = messageList.get(i).getCreatedAtTime();
                             break;
                         }
-                        nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                     }
+
+
+                    nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
+                }
+                else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
+                    loadMore = false;
+                    Long endTime = null;
+                    for (Message message : messageList) {
+                        if (message.isTempDateType()) {
+                            continue;
+                        }
+                        endTime = messageList.get(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
+                        break;
+                    }
+                    nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                 }
                 if (BroadcastService.isContextBasedChatEnabled()) {
                     conversations = ConversationService.getInstance(getActivity()).getConversationList(channel, contact);
@@ -4141,16 +4172,29 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 nextMessageList.remove(nextMessageList.size() - 1);
             }
 
-            for (Message message : nextMessageList) {
-                if (initial && !messageList.contains(message)) {
-                    messageList.add(message);
+            Contact assignee = new ContactDatabase(getContext()).getContactById(channel.getConversationAssignee());
+
+            if(isNewConversation &&
+                    assignee != null &&
+                    assignee.getRoleType().equals(User.RoleType.BOT.getValue()) &&
+                    botMessageDelayInterval > 0) {
+                for (Message message : nextMessageList) {
+                    if (initial && !messageList.contains(message) && !TextUtils.isEmpty(message.getKeyString())) {
+                        addMessageForNewConversation(message);
+                    }
                 }
-                selfDestructMessage(message);
+            } else {
+                for (Message message : nextMessageList) {
+                    if (initial && !messageList.contains(message)) {
+                        messageList.add(message);
+                    }
+                    selfDestructMessage(message);
+                }
             }
 
             if (initial) {
                 recyclerDetailConversationAdapter.searchString = searchString;
-                emptyTextView.setVisibility(messageList.isEmpty() ? VISIBLE : View.GONE);
+                emptyTextView.setVisibility(!messageList.isEmpty() || (assignee != null && Objects.equals(assignee.getRoleType(), User.RoleType.BOT.getValue())) ? GONE : VISIBLE);
                 if(messageList.isEmpty()) {
                     linearLayoutManager.setStackFromEnd(false);
 

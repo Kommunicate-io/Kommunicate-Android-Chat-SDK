@@ -3,6 +3,8 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Unreleased
+1) Added configuration for form submit button in hidePostCTA
 ## Kommunicate Android SDK 2.8.4
 1) Reduce time taken for conversation creation
 ## Kommunicate Android SDK 2.8.3

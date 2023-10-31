@@ -39,7 +39,7 @@ public class KmFormRichMessage extends KmRichMessage {
         final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString(), alCustomizationSettings);
         alFormLayoutRecycler.setAdapter(formItemAdapter);
 
-        if (isMessageProcessed && themeHelper.hideSubmitButtonsPostCTA()) {
+        if (isMessageProcessed && themeHelper.hideFormSubmitButtonsPostCTA()) {
             return;
         }
 

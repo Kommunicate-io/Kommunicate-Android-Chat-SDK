@@ -1676,7 +1676,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if (added) {
                     //Todo: update unread count
                     recyclerDetailConversationAdapter.updateLastSentMessage(message);
-                    recyclerDetailConversationAdapter.onItemInserted(messageList.size()-1);
+                    recyclerDetailConversationAdapter.notifyDataSetChanged();
                     linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
                     emptyTextView.setVisibility(View.GONE);
                     currentConversationId = message.getConversationId();

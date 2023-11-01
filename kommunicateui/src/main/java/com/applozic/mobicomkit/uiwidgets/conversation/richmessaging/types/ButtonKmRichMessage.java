@@ -2,7 +2,6 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -116,6 +115,7 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
     public static boolean hideMessage(KmThemeHelper themeHelper, String action) {
         return (themeHelper.hideLinkButtonsPostCTA() && KmRichMessage.WEB_LINK.equals(action))
+                || (themeHelper.hideQuickRepliesPostCTA() && KmRichMessage.QUICK_REPLY_OLD.equals(action))
                 || (themeHelper.hideQuickRepliesPostCTA() && KmRichMessage.QUICK_REPLY.equals(action))
                 || (themeHelper.hideSubmitButtonsPostCTA() && KmRichMessage.SUBMIT_BUTTON.equals(action));
     }

@@ -18,6 +18,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmL
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmRichMessageAdapterFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class ListKmRichMessage extends KmRichMessage {
 
     public static final int MAX_ACTIONS_LIMIT = 3;
+    public static final int QUICK_REPLY_TEMPLATE_ID = 6;
 
     public ListKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
         super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
@@ -40,44 +42,53 @@ public class ListKmRichMessage extends KmRichMessage {
             if (model.getPayload() != null) {
                 TextView headerText = listItemLayout.findViewById(R.id.headerText);
                 ImageView headerImage = listItemLayout.findViewById(R.id.headerImage);
+
                 KmRichMessageModel.KmPayloadModel payload = (KmRichMessageModel.KmPayloadModel) GsonUtils.getObjectFromJson(model.getPayload(), KmRichMessageModel.KmPayloadModel.class);
-                if (payload != null) {
-                    RecyclerView listRecycler = listItemLayout.findViewById(R.id.alListItemRecycler);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-                    listRecycler.setLayoutManager(layoutManager);
-                    KmListRMAdapter adapter = (KmListRMAdapter) KmRichMessageAdapterFactory.getInstance().getListRMAdapter(context, message, getFilteredList(isMessageProcessed, payload.getElements()), payload.getReplyMetadata(), listener, alCustomizationSettings, isMessageProcessed);
-                    listRecycler.setAdapter(adapter);
+                    if (payload != null) {
+                        RecyclerView listRecycler = listItemLayout.findViewById(R.id.alListItemRecycler);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                        listRecycler.setLayoutManager(layoutManager);
+                        KmListRMAdapter adapter = (KmListRMAdapter) KmRichMessageAdapterFactory.getInstance().getListRMAdapter(context, message, getFilteredList(isMessageProcessed, payload.getElements()), payload.getReplyMetadata(), listener, alCustomizationSettings, isMessageProcessed);
+                        listRecycler.setAdapter(adapter);
 
-                    if (!TextUtils.isEmpty(payload.getHeaderText())) {
-                        headerText.setVisibility(View.VISIBLE);
-                        headerText.setText(getHtmlText(payload.getHeaderText()));
-                    } else {
-                        headerText.setVisibility(View.GONE);
-                    }
-
-                    if (!TextUtils.isEmpty(payload.getHeaderImgSrc())) {
-                        headerImage.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(payload.getHeaderImgSrc()).into(headerImage);
-                    } else {
-                        headerImage.setVisibility(View.GONE);
-                    }
-
-                    if (payload.getButtons() != null) {
-                        final List<KmRichMessageModel.KmButtonModel> action = payload.getButtons();
-
-                        if (showAction(isMessageProcessed, action.get(0))) {
-                            setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton1), null, action.get(0), payload, model);
+                        if (!TextUtils.isEmpty(payload.getHeaderText())) {
+                            headerText.setVisibility(View.VISIBLE);
+                            headerText.setText(getHtmlText(payload.getHeaderText()));
+                        } else {
+                            headerText.setVisibility(View.GONE);
                         }
 
-                        if (action.size() > 1 && showAction(isMessageProcessed, action.get(1))) {
-                            setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton2), listItemLayout.findViewById(R.id.actionDivider2), action.get(1), payload, model);
+                        if (!TextUtils.isEmpty(payload.getHeaderImgSrc())) {
+                            headerImage.setVisibility(View.VISIBLE);
+                            Glide.with(context).load(payload.getHeaderImgSrc()).into(headerImage);
+                        } else {
+                            headerImage.setVisibility(View.GONE);
                         }
 
-                        if (action.size() > 2 && showAction(isMessageProcessed, action.get(2))) {
-                            setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton3), listItemLayout.findViewById(R.id.actionDivider3), action.get(2), payload, model);
+                        if (payload.getButtons() != null) {
+
+                            final List<KmRichMessageModel.KmButtonModel> action = payload.getButtons();
+
+                            if (!showAction(isMessageProcessed, action.get(0))) {
+                                setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton1), null, action.get(0), payload, model);
+                            }
+
+                            if (action.size() > 1) {
+                                if (!showAction(isMessageProcessed, action.get(1))) {
+                                    setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton2), listItemLayout.findViewById(R.id.actionDivider2), action.get(1), payload, model);
+                                }
+                            }
+
+                            if (action.size() > 2) {
+                                if (!showAction(isMessageProcessed, action.get(2))) {
+                                    setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton3), listItemLayout.findViewById(R.id.actionDivider3), action.get(2), payload, model);
+                                }
+
+                            }
+
                         }
                     }
-                }
+
             }
         }
     }
@@ -96,7 +107,7 @@ public class ListKmRichMessage extends KmRichMessage {
     private List<KmRichMessageModel.KmElementModel> getFilteredList(boolean isMessageProcessed, List<KmRichMessageModel.KmElementModel> elementList) {
         List<KmRichMessageModel.KmElementModel> newList = new ArrayList<>();
         for (KmRichMessageModel.KmElementModel element : elementList) {
-            if (isMessageProcessed && ButtonKmRichMessage.hideMessage(themeHelper, element.getAction().getType())) {
+            if (isMessageProcessed && hideMessage(themeHelper, element.getAction().getType())) {
                 continue;
             }
             newList.add(element);
@@ -105,6 +116,22 @@ public class ListKmRichMessage extends KmRichMessage {
     }
 
     private boolean showAction(boolean isMessageProcessed, KmRichMessageModel.KmButtonModel action) {
-        return action != null && !(isMessageProcessed && ButtonKmRichMessage.hideMessage(themeHelper, action.getType()));
+
+        if (action.getType() == null){
+            return(isMessageProcessed && hideMessage(themeHelper, action.getAction().getType()));
+        }
+        return(isMessageProcessed && hideMessage(themeHelper, action.getType()));
+    }
+    public static boolean hideMessage(KmThemeHelper themeHelper, String action) {
+        return (themeHelper.hideLinkButtonsPostCTA() && KmRichMessage.WEB_LINK.equals(action))
+                || (themeHelper.hideQuickRepliesPostCTA() && KmRichMessage.QUICK_REPLY_OLD.equals(action))
+                || (themeHelper.hideSubmitButtonsPostCTA() && KmRichMessage.SUBMIT_BUTTON.equals(action))
+                || (themeHelper.hideQuickRepliesPostCTA() && KmRichMessage.QUICK_REPLY.equals(action));
+    }
+    private String getActionType(KmRichMessageModel.KmButtonModel payloadModel, Short templateId) {
+        if (payloadModel.getAction() == null) {
+            return templateId == QUICK_REPLY_TEMPLATE_ID ? QUICK_REPLY : SUBMIT_BUTTON;
+        }
+        return payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) ? payloadModel.getAction().getType() : payloadModel.getType();
     }
 }

@@ -1114,11 +1114,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onMessageReceived(Message message) {
-        if (!Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())) {
-            if (textToSpeech != null && !TextUtils.isEmpty(message.getMessage())) {
-                textToSpeech.speak(message.getMessage());
-            }
-        }
     }
 
     @Override
@@ -1638,7 +1633,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if(messageList.isEmpty() && !isSentMessage) {
             boolean sentByBot = senderId != null && Objects.equals(new ContactDatabase(getContext()).getContactById(senderId).getRoleType(), User.RoleType.BOT.getValue());
-            if (sentByBot){
+            if (sentByBot && !containsSentMessage()){
                 return;
             }
         }
@@ -1662,7 +1657,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         handleAddMessage(message);
     }
 
+    public boolean containsSentMessage(){
+        for(int index = 0; index < messageList.size(); index++){
+            if (Objects.equals(messageList.get(index).getType(), Message.MessageType.OUTBOX_SENT_FROM_DEVICE.getValue())){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addMessageForNewConversation(final Message message) {
+
+        Message firstMessage = new Message();
+        firstMessage.setInitialFirstMessage();
+        if(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) && messageList.size() == 0 && message.isInitialFirstMessage()) {
+            messageList.add(message);
+            return;
+        }
 
         hideAwayMessage(message);
         if(messageList.contains(message)) {
@@ -1684,6 +1695,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected void handleAddMessage(final Message message) {
+
+        if (Objects.equals(message.getType(), Message.MessageType.MT_OUTBOX.getValue()) &&
+                !Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType()) &&
+                textToSpeech != null &&
+                !TextUtils.isEmpty(message.getMessage())) {
+            textToSpeech.speak(message.getMessage());
+        }
+
         if (message.getGroupId() != null) {
             if (channel != null && channel.getKey().equals(message.getGroupId())) {
                 if (message.getTo() != null) {
@@ -1697,7 +1716,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (getActivity() == null) {
             return;
         }
-        if(!messageDatabaseService.isMessagePresent(message.getKeyString())) {
+        if(message.getKeyString() != null && !messageDatabaseService.isMessagePresent(message.getKeyString())) {
             messageDatabaseService.createMessage(message);
         }
         this.getActivity().runOnUiThread(new Runnable() {
@@ -4178,7 +4197,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     assignee.getRoleType().equals(User.RoleType.BOT.getValue()) &&
                     botMessageDelayInterval > 0) {
                 for (Message message : nextMessageList) {
-                    if (initial && !messageList.contains(message) && !TextUtils.isEmpty(message.getKeyString())) {
+                    if (initial && !messageList.contains(message) && !Objects.equals(message.getType(), Message.MessageType.DATE_TEMP.getValue())) {
                         addMessageForNewConversation(message);
                     }
                 }

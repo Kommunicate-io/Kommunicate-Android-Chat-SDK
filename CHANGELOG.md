@@ -4,7 +4,8 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
 ## Unreleased
-1) Added configuration for form submit button in hidePostCTA
+
+1) Fixed typing indicator appearing after welcome message was received
 ## Kommunicate Android SDK 2.8.4
 1) Reduce time taken for conversation creation
 ## Kommunicate Android SDK 2.8.3

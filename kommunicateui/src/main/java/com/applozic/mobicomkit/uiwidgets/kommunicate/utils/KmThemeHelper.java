@@ -20,6 +20,7 @@ public class KmThemeHelper implements KmCallback {
     private static final String SUBMIT_BUTTON = "submit";
     private static final String LINK_BUTTON = "link";
     private static final String QUICK_REPLIES = "quickReply";
+    private static final String FORM_SUBMIT_BUTTON = "hidePostFormSubmit";
     private static KmThemeHelper kmThemeHelper;
     private final Context context;
     private final KmAppSettingPreferences appSettingPreferences;
@@ -119,6 +120,11 @@ public class KmThemeHelper implements KmCallback {
     @SuppressWarnings("ConstantConditions")
     public boolean hideSubmitButtonsPostCTA() {
         return getHidePostCTA().get(SUBMIT_BUTTON) != null ? getHidePostCTA().get(SUBMIT_BUTTON) : false;
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    public boolean hideFormSubmitButtonsPostCTA() {
+        return getHidePostCTA().get(FORM_SUBMIT_BUTTON) != null ? getHidePostCTA().get(FORM_SUBMIT_BUTTON) : false;
     }
 
     @SuppressWarnings("ConstantConditions")

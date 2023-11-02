@@ -39,15 +39,16 @@ public class KmFormRichMessage extends KmRichMessage {
         final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString(), alCustomizationSettings);
         alFormLayoutRecycler.setAdapter(formItemAdapter);
 
-        if (isMessageProcessed && themeHelper.hideFormSubmitButtonsPostCTA()) {
-            return;
-        }
-
         List<Object> actionModelList = new ArrayList<>();
 
         for (Object object : kmRichMessageModel.getFormModelList()) {
             if (object instanceof KmFormPayloadModel) {
                 KmFormPayloadModel formPayloadModel = (KmFormPayloadModel) object;
+
+                if (isMessageProcessed && themeHelper.hideFormSubmitButtonsPostCTA() && KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType())) {
+                    continue;
+                }
+
                 if (KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType()) || KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType()) || TextUtils.isEmpty(formPayloadModel.getType())) {
                     actionModelList.add(formPayloadModel.getAction());
                 }

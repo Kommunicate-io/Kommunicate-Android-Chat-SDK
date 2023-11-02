@@ -161,7 +161,7 @@
     "submit": false,
     "link": false,
     "quickReply": false,
-    "formSubmitButton": false
+    "hidePostFormSubmit": false
   },
   "receiverNameTextColor": "#5C6677",
   "innerTimestampDesign": false,

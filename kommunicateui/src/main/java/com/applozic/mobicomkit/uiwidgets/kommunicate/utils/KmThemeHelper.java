@@ -20,7 +20,7 @@ public class KmThemeHelper implements KmCallback {
     private static final String SUBMIT_BUTTON = "submit";
     private static final String LINK_BUTTON = "link";
     private static final String QUICK_REPLIES = "quickReply";
-    private static final String FORM_SUBMIT_BUTTON = "formSubmitButton";
+    private static final String FORM_SUBMIT_BUTTON = "hidePostFormSubmit";
     private static KmThemeHelper kmThemeHelper;
     private final Context context;
     private final KmAppSettingPreferences appSettingPreferences;

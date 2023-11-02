@@ -173,7 +173,7 @@ public class KmCardRMAdapter extends KmRichMessageAdapter {
                 try {
                     List<KmRichMessageModel.KmButtonModel> actionsList = payloadModel.getButtons();
                     for (int i = 0; i < actionsList.size(); i++) {
-                        if (isMessageProcessed && ButtonKmRichMessage.hideMessage(themeHelper, actionsList.get(i).getType())) {
+                        if (isMessageProcessed && ButtonKmRichMessage.hideMessage(themeHelper, actionsList.get(i).getAction().getType())) {
                             continue;
                         }
                         setupBookActions(viewHolder, i, actionsList);

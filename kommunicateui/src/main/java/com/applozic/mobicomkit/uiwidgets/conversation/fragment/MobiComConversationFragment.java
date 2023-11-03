@@ -1636,6 +1636,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (sentByBot && !containsSentMessage()){
                 return;
             }
+            if(!sentByBot){
+                Message firstMessage = new Message();
+                firstMessage.setInitialFirstMessage();
+                if(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) && messageList.size() == 0) {
+                    messageList.add(firstMessage);
+                    return;
+                }
+            }
         }
 
         hideAwayMessage(message);
@@ -1668,8 +1676,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void addMessageForNewConversation(final Message message) {
 
-        Message firstMessage = new Message();
-        firstMessage.setInitialFirstMessage();
         if(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) && messageList.size() == 0 && message.isInitialFirstMessage()) {
             messageList.add(message);
             return;

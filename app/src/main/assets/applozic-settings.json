@@ -84,7 +84,7 @@
   "toolbarTitleColor": "#ffffff",
   "toolbarSubtitleColor": "#ffffff",
   "toolbarColor": "",
-  "statusBarColor": "#ffffff",
+  "statusBarColor": "",
   "richMessageThemeColor": "",
   "restrictMessageTypingWithBots": false,
   "enableFaqOption": [

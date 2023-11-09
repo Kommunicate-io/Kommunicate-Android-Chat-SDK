@@ -66,6 +66,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private SparseArray<String> textFieldArray;
     private SparseArray<String> textAreaFieldArray;
     private SparseArray<HashSet<Integer>> checkBoxStateArray;
+    private SparseArray<HashSet<Integer>> unCheckBoxStateArray;
     private SparseIntArray radioButtonSelectedIndices;
     private SparseArray<Long> dateFieldArray;
     private Map<String, String> hiddenFields;
@@ -100,6 +101,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         textFieldArray = formStateModel.getTextFields();
         textAreaFieldArray = formStateModel.getTextAreaFields();
         checkBoxStateArray = formStateModel.getCheckBoxStates();
+        unCheckBoxStateArray = formStateModel.getUncheckBoxStates();
         radioButtonSelectedIndices = formStateModel.getSelectedRadioButtonIndex();
         hiddenFields = formStateModel.getHiddenFields();
         validationArray = formStateModel.getValidationArray();
@@ -116,6 +118,10 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
         if (checkBoxStateArray == null) {
             checkBoxStateArray = new SparseArray<>();
+        }
+
+        if (unCheckBoxStateArray == null) {
+            unCheckBoxStateArray = new SparseArray<>();
         }
 
         if (radioButtonSelectedIndices == null) {
@@ -257,6 +263,13 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
                         List<KmFormPayloadModel.Options> options = payloadModel.getSelectionModel().getOptions();
 
+                        int selectedIndex = -1;
+                        for (int i = 0; i < options.size(); i++){
+                            if (options.get(i).isSelected()){
+                                selectedIndex = i;
+                            }
+                        }
+
                         new KmRadioGroup(context, new KmRadioGroup.KmRadioButtonClickListener() {
                             @Override
                             public void onClick(int index) {
@@ -264,13 +277,14 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 formStateModel.setSelectedRadioButtonIndex(radioButtonSelectedIndices);
                                 KmFormStateHelper.addFormState(messageKey, formStateModel);
                             }
-                        }, formItemViewHolder.formFlowLayout, options).createLayout(radioButtonSelectedIndices.get(position, -1));
+                        }, formItemViewHolder.formFlowLayout, options).createLayout(radioButtonSelectedIndices.get(position, selectedIndex));
                     } else if (KmFormPayloadModel.Type.CHECKBOX.getValue().equals(payloadModel.getType())) {
                         KmFormPayloadModel.Selections selectionModel = payloadModel.getSelectionModel();
                         setFormLabelText(formItemViewHolder, selectionModel.getTitle());
                         handleItemVisibility(formItemViewHolder, formItemViewHolder.formFlowLayout);
                         List<KmFormPayloadModel.Options> options = payloadModel.getSelectionModel().getOptions();
                         final HashSet<Integer> checkedBoxes = checkBoxStateArray.get(position, new HashSet<Integer>());
+                        final HashSet<Integer> unCheckedBoxes = unCheckBoxStateArray.get(position, new HashSet<Integer>());
                         if (options != null && !options.isEmpty()) {
                             formItemViewHolder.formFlowLayout.removeAllViews();
                             for (KmFormPayloadModel.Options option : options) {
@@ -278,15 +292,31 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 if(alCustomizationSettings.isCheckboxAsMultipleButton()) {
                                     final KmSelectButton checkBox = new KmSelectButton(context);
                                     checkBox.setGravity(Gravity.FILL);
-                                    checkBox.setChecked(checkedBoxes.contains(index));
+                                    if (checkedBoxes.contains(index)){
+                                        checkBox.setChecked(true);
+                                    } else if (unCheckedBoxes.contains(index)){
+                                        checkBox.setChecked(false);
+                                    } else {
+                                        checkBox.setChecked(option.isSelected());
+                                    }
                                     checkBox.setText(option.getLabel());
                                     checkBox.setOnCheckedChangeListener(new KmSelectButton.onMultipleSelectButtonClicked() {
                                         @Override
                                         public void onSelectionChanged(View view, boolean isChecked) {
-                                            boolean isDone = isChecked ? checkedBoxes.add(index) : checkedBoxes.remove(index);
+
+                                            if (isChecked){
+                                                checkedBoxes.add(index);
+                                                unCheckedBoxes.remove(index);
+                                            } else {
+                                                checkedBoxes.remove(index);
+                                                unCheckedBoxes.add(index);
+                                            }
+
                                             checkBox.setChecked(isChecked);
                                             checkBoxStateArray.put(position, checkedBoxes);
+                                            unCheckBoxStateArray.put(position,unCheckedBoxes);
                                             formStateModel.setCheckBoxStates(checkBoxStateArray);
+                                            formStateModel.setUncheckBoxStates(unCheckBoxStateArray);
                                             KmFormStateHelper.addFormState(messageKey, formStateModel);
                                         }
                                     });
@@ -294,16 +324,32 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 } else {
                                     final CheckBox checkBox = new CheckBox(context);
                                     checkBox.setGravity(Gravity.FILL);
-                                    checkBox.setChecked(checkedBoxes.contains(index));
+                                    if (checkedBoxes.contains(index)){
+                                        checkBox.setChecked(true);
+                                    } else if (unCheckedBoxes.contains(index)){
+                                        checkBox.setChecked(false);
+                                    } else {
+                                        checkBox.setChecked(option.isSelected());
+                                    }
                                     checkBox.setText(option.getLabel());
                                     checkBox.setPaddingRelative(0, 0, 20, 0);
 
                                     checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                                         @Override
                                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                            boolean isDone = isChecked ? checkedBoxes.add(index) : checkedBoxes.remove(index);
+                                            if (isChecked){
+                                                checkedBoxes.add(index);
+                                                unCheckedBoxes.remove(index);
+                                            } else {
+                                                checkedBoxes.remove(index);
+                                                unCheckedBoxes.add(index);
+                                            }
+
+                                            checkBox.setChecked(isChecked);
                                             checkBoxStateArray.put(position, checkedBoxes);
+                                            unCheckBoxStateArray.put(position,unCheckedBoxes);
                                             formStateModel.setCheckBoxStates(checkBoxStateArray);
+                                            formStateModel.setUncheckBoxStates(unCheckBoxStateArray);
                                             KmFormStateHelper.addFormState(messageKey, formStateModel);
                                         }
                                     });

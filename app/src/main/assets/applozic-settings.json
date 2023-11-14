@@ -175,5 +175,6 @@
   "staticTopIcon": "km_lock",
   "menuIconOnConversationScreen":"",
   "useDeviceDefaultLanguage": true,
-  "toolbarTitleCenterAligned": false
+  "toolbarTitleCenterAligned": false,
+  "disableFormPostSubmit": true
 }

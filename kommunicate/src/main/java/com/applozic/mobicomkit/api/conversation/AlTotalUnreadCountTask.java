@@ -31,10 +31,10 @@ public class AlTotalUnreadCountTask extends AlAsyncTask<Void, Integer> {
     @Override
     protected Integer doInBackground() {
         try {
-            String data = new MessageClientService(ApplozicService.getContextFromWeak(weakReferenceContext)).getMessages(null,null,null,null,null,false);
-            JsonObject jsonObject = JsonParser.parseString(data).getAsJsonObject();
-            if (jsonObject.has("groupFeeds")) {
-                String channelFeedResponse = jsonObject.get("groupFeeds").toString();
+            String message = new MessageClientService(ApplozicService.getContextFromWeak(weakReferenceContext)).getMessages(null,null,null,null,null,false);
+            JsonObject messageObject = JsonParser.parseString(message).getAsJsonObject();
+            if (messageObject.has("groupFeeds")) {
+                String channelFeedResponse = messageObject.get("groupFeeds").toString();
                 ChannelFeed[] channelFeeds = (ChannelFeed[]) GsonUtils.getObjectFromJson(channelFeedResponse, ChannelFeed[].class);
                 int totalUnreadCount = 0;
                 for (ChannelFeed channelFeed : channelFeeds){

@@ -188,6 +188,10 @@ public class MobiComMessageService {
             message.setHidden(true);
         }
 
+        if (!message.isHidden() && !TextUtils.isEmpty(message.getKeyString()) && messageDatabaseService.isMessagePresent(message.getKeyString())){
+            return receiverContact;
+        }
+
         messageDatabaseService.createMessage(message);
 
         //Check if we are........container is already opened...don't send broadcast

@@ -4512,6 +4512,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     @Override
                     public void onSuccess(Object response) {
                         if (getContext() != null) {
+                            deleteMessageFromDeviceList(message.getKeyString());
+                            recyclerDetailConversationAdapter.notifyItemRangeChanged(position,messageList.size() - position);
                             KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -4521,11 +4523,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
                     }
                 }).execute();
-                deleteMessageFromDeviceList(message.getKeyString());
                 break;
             case 2:
                 messageDatabaseService.deleteMessageFromDb(message);
                 deleteMessageFromDeviceList(message.getKeyString());
+                recyclerDetailConversationAdapter.notifyItemRangeChanged(position,messageList.size() - position);
                 Message messageToResend = new Message(message);
                 messageToResend.setCreatedAtTime(System.currentTimeMillis() + MobiComUserPreference.getInstance(getActivity()).getDeviceTimeOffset());
                 conversationService.sendMessage(messageToResend, messageIntentClass);

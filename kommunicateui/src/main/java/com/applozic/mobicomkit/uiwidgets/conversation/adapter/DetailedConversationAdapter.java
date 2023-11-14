@@ -1215,7 +1215,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
                     int positionInSmsList = position;
 
-                    if (positionInSmsList < 0 || messageList.isEmpty()) {
+                    if (positionInSmsList < 0 || messageList.isEmpty() || positionInSmsList >= messageList.size()) {
                         return;
                     }
 

@@ -3,6 +3,8 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Unreleased
+1) Fixed unreadCount returning wrong value
 ## Kommunicate Android SDK 2.8.6
 1) Fixed typing indicator appearing after welcome message was received
 2) Fixed hidePostCta

@@ -188,7 +188,7 @@ public class MobiComMessageService {
             message.setHidden(true);
         }
 
-        if (!message.isHidden() && !TextUtils.isEmpty(message.getKeyString()) && messageDatabaseService.isMessagePresent(message.getKeyString())){
+        if (!TextUtils.isEmpty(message.getKeyString()) && messageDatabaseService.isMessagePresent(message.getKeyString())){
             return receiverContact;
         }
 

@@ -5,21 +5,13 @@ import android.content.Context;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.broadcast.BroadcastService;
-import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.feed.ChannelFeed;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.AnnotationExclusionStrategy;
-import com.applozic.mobicommons.json.ArrayAdapterFactory;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.task.AlAsyncTask;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 

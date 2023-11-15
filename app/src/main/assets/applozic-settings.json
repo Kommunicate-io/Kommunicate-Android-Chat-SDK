@@ -112,9 +112,9 @@
     "messageEditTextFont": ""
   },
   "filterGallery": {
-    "ALL_FILES": true,
+    "ALL_FILES": false,
     "IMAGE_VIDEO": false,
-    "IMAGE_ONLY": false,
+    "IMAGE_ONLY": true,
     "AUDIO_ONLY": false,
     "VIDEO_ONLY": false
   },

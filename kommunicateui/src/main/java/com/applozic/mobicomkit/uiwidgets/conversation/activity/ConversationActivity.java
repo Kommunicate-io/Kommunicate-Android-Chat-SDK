@@ -1128,8 +1128,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     public void processAttachment() {
-//        Intent intentPick = new Intent(this, MobiComAttachmentSelectorActivity.class);
-//        startActivityForResult(intentPick, MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT);
         if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForStoragePermission(this)) {
             applozicPermission.requestStoragePermissions(KmPermissions.REQUEST_STORAGE_ATTACHMENT);
         } else {

@@ -117,15 +117,6 @@ public class PermissionsUtils {
             }
 
             return isGranted;
-
-//            return ActivityCompat.checkSelfPermission()
-//
-//            return (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_MEDIA_IMAGES)
-//                    != PackageManager.PERMISSION_GRANTED)
-//                    || (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_MEDIA_VIDEO)
-//                    != PackageManager.PERMISSION_GRANTED)
-//                    || (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_MEDIA_AUDIO)
-//                    != PackageManager.PERMISSION_GRANTED);
         }
         else {
             return (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -153,7 +144,6 @@ public class PermissionsUtils {
     }
 
     public static void requestPermissions(Activity activity, String[] permissions, int requestCode) {
-//        ActivityCompat.requestPermissions(activity,new String[]{"android.permission.READ_MEDIA_IMAGES"}, requestCode);
         ActivityCompat.requestPermissions(activity, permissions, requestCode);
     }
 

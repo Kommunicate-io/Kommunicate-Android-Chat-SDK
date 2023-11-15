@@ -176,5 +176,5 @@
   "menuIconOnConversationScreen":"",
   "useDeviceDefaultLanguage": true,
   "toolbarTitleCenterAligned": false,
-  "disableFormPostSubmit": true
+  "disableFormPostSubmit": false
 }

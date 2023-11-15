@@ -3,8 +3,10 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## Unreleased
+##  Kommunicate Android SDK 2.8.7
 1) Fixed unreadCount returning wrong value
+2) Added support of prefill checkboxes on Form Template.
+3) Default configuration added for disabling the form submit button using 'disableFormPostSubmit'.
 ## Kommunicate Android SDK 2.8.6
 1) Fixed typing indicator appearing after welcome message was received
 2) Fixed hidePostCta

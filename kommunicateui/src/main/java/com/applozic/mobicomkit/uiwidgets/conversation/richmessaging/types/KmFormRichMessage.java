@@ -104,7 +104,7 @@ public class KmFormRichMessage extends KmRichMessage {
     static RecyclerView.OnItemTouchListener formListenerTrue = new RecyclerView.OnItemTouchListener() {
         @Override
         public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-            return true; // Consume the touch event, preventing interactions
+            return true; // **True** will restrict the interaction on recyclerView
         }
 
         @Override
@@ -121,7 +121,7 @@ public class KmFormRichMessage extends KmRichMessage {
     static RecyclerView.OnItemTouchListener formListenerFalse = new RecyclerView.OnItemTouchListener() {
         @Override
         public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-            return false; // Consume the touch event, preventing interactions
+            return false;
         }
 
         @Override

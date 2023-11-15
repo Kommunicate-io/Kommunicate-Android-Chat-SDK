@@ -3,11 +3,14 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
@@ -38,6 +41,13 @@ public class KmFormRichMessage extends KmRichMessage {
         alFormLayoutRecycler.setLayoutManager(formLayoutManager);
         final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString(), alCustomizationSettings);
         alFormLayoutRecycler.setAdapter(formItemAdapter);
+        alFormLayoutRecycler.removeOnItemTouchListener(formListenerTrue);
+        alFormLayoutRecycler.removeOnItemTouchListener(formListenerFalse);
+        if (isMessageProcessed && themeHelper.isDisableFormPostSubmit()) {
+            alFormLayoutRecycler.addOnItemTouchListener(formListenerTrue);
+        } else {
+            alFormLayoutRecycler.addOnItemTouchListener(formListenerFalse);
+        }
 
         List<Object> actionModelList = new ArrayList<>();
 
@@ -90,4 +100,39 @@ public class KmFormRichMessage extends KmRichMessage {
             flowLayout.setVisibility(View.GONE);
         }
     }
+
+    static RecyclerView.OnItemTouchListener formListenerTrue = new RecyclerView.OnItemTouchListener() {
+        @Override
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            return true; // **True** will restrict the interaction on recyclerView
+        }
+
+        @Override
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
+    };
+
+    static RecyclerView.OnItemTouchListener formListenerFalse = new RecyclerView.OnItemTouchListener() {
+        @Override
+        public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
+    };
+
 }

@@ -109,6 +109,9 @@ public class KmThemeHelper implements KmCallback {
         return hidePostCTA;
     }
 
+    public boolean isDisableFormPostSubmit() {
+        return alCustomizationSettings.isDisableFormPostSubmit();
+    }
     public boolean isHidePostCTA() {
         if (getHidePostCTA().isEmpty()) {
             return false;

@@ -4513,7 +4513,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     public void onSuccess(Object response) {
                         if (getContext() != null) {
                             deleteMessageFromDeviceList(message.getKeyString());
-                            recyclerDetailConversationAdapter.notifyItemRangeChanged(position,messageList.size() - position);
+                            recyclerDetailConversationAdapter.notifyItemRangeChanged(position-1,messageList.size());
                             KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -4527,7 +4527,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             case 2:
                 messageDatabaseService.deleteMessageFromDb(message);
                 deleteMessageFromDeviceList(message.getKeyString());
-                recyclerDetailConversationAdapter.notifyItemRangeChanged(position,messageList.size() - position);
+                recyclerDetailConversationAdapter.notifyItemRangeChanged(position-1,messageList.size());
                 Message messageToResend = new Message(message);
                 messageToResend.setCreatedAtTime(System.currentTimeMillis() + MobiComUserPreference.getInstance(getActivity()).getDeviceTimeOffset());
                 conversationService.sendMessage(messageToResend, messageIntentClass);
@@ -4536,6 +4536,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 String messageKeyString = message.getKeyString();
                 new DeleteConversationAsyncTask(conversationService, message, contact).execute();
                 deleteMessageFromDeviceList(messageKeyString);
+                recyclerDetailConversationAdapter.notifyItemRangeChanged(position-1,messageList.size());
                 break;
             case 4:
                 String messageJson = GsonUtils.getJsonFromObject(message, Message.class);

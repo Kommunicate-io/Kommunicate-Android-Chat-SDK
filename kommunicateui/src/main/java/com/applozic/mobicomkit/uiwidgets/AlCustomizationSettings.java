@@ -147,6 +147,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String staticTopIcon = "";
     private String menuIconOnConversationScreen = "";
     private boolean toolbarTitleCenterAligned = false;
+    private boolean disableFormPostSubmit = false;
 
     public String getStaticTopMessage() {
         return staticTopMessage;
@@ -765,6 +766,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isToolbarTitleCenterAligned() {
         return toolbarTitleCenterAligned;
+    }
+
+    public boolean isDisableFormPostSubmit() {
+        return disableFormPostSubmit;
     }
 
     @Override

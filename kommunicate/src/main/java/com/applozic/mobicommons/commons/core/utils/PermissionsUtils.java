@@ -3,10 +3,15 @@ package com.applozic.mobicommons.commons.core.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PermissionInfo;
 import android.os.Build;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sunil on 20/1/16.
@@ -34,6 +39,27 @@ public class PermissionsUtils {
             return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         }
     }
+
+    public static String[] getStoragePermission(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            try {
+                PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+                List<String> permissions = new ArrayList<>();
+                for (String permission : info.requestedPermissions){
+                    if (permission.contains("android.permission.READ_MEDIA")){
+                        permissions.add(permission);
+                    }
+                }
+                return permissions.toArray(new String[0]);
+            } catch (Exception exception){
+                exception.printStackTrace();
+                return new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_AUDIO};
+            }
+        } else {
+            return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        }
+    }
+
     public static boolean verifyPermissions(int[] grantResults) {
         if (grantResults.length < 1) {
             return false;
@@ -83,12 +109,14 @@ public class PermissionsUtils {
 
     public static boolean checkSelfForStoragePermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_MEDIA_IMAGES)
-                    != PackageManager.PERMISSION_GRANTED)
-                    || (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_MEDIA_VIDEO)
-                    != PackageManager.PERMISSION_GRANTED)
-                    || (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_MEDIA_AUDIO)
-                    != PackageManager.PERMISSION_GRANTED);
+
+            boolean isGranted = false;
+
+            for (String permission : getStoragePermission(activity.getApplicationContext())){
+                isGranted = isGranted || (ActivityCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED);
+            }
+
+            return isGranted;
         }
         else {
             return (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)

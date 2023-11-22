@@ -1702,7 +1702,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     protected void handleAddMessage(final Message message) {
 
-        if (Objects.equals(message.getType(), Message.MessageType.MT_OUTBOX.getValue()) &&
+        if (Objects.equals(message.getType(), Message.MessageType.MT_INBOX.getValue()) &&
                 !Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType()) &&
                 textToSpeech != null &&
                 !TextUtils.isEmpty(message.getMessage())) {

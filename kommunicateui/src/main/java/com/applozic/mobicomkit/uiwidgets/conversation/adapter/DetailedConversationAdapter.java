@@ -1291,14 +1291,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     private boolean isMessageProcessed(Message message) {
-        if (themeHelper.isHidePostCTA()) {
+        if (themeHelper.isHidePostCTA() || themeHelper.isDisableFormPostSubmit()) {
             return lastSentMessage != null && lastSentMessage.getCreatedAtTime() > message.getCreatedAtTime();
         }
         return false;
     }
 
     public void updateLastSentMessage(Message message) {
-        if (themeHelper.isHidePostCTA() && message.isTypeOutbox()) {
+        if ((themeHelper.isHidePostCTA() || themeHelper.isDisableFormPostSubmit()) && message.isTypeOutbox()) {
             lastSentMessage = message;
         }
     }

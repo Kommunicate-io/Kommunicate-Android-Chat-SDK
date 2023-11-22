@@ -761,7 +761,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     public void checkPermission(KmStoragePermission storagePermission) {
-        PermissionsUtils.requestPermissions(this, PermissionsUtils.PERMISSIONS_STORAGE, PermissionsUtils.REQUEST_STORAGE);
+        PermissionsUtils.requestPermissions(this, PermissionsUtils.getStoragePermission(getApplicationContext()), PermissionsUtils.REQUEST_STORAGE);
         this.alStoragePermission = storagePermission;
     }
 

@@ -1114,11 +1114,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onMessageReceived(Message message) {
-        if (!Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())) {
-            if (textToSpeech != null && !TextUtils.isEmpty(message.getMessage())) {
-                textToSpeech.speak(message.getMessage());
-            }
-        }
     }
 
     @Override

@@ -3,7 +3,7 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## Unreleased
+## Kommunicate Android SDK 2.8.8
 1) Fixed crash while deleting message on agent app
 ##  Kommunicate Android SDK 2.8.7
 1) Fixed unreadCount returning wrong value

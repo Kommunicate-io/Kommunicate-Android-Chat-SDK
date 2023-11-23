@@ -1632,38 +1632,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void addMessage(final Message message) {
-
-        String senderId = message.getTo();
-        boolean isSentMessage = message.getType().equals(Message.MessageType.MT_OUTBOX.getValue());
-
-        if(messageList.isEmpty() && !isSentMessage) {
-            boolean sentByBot = senderId != null && Objects.equals(new ContactDatabase(getContext()).getContactById(senderId).getRoleType(), User.RoleType.BOT.getValue());
-            if (sentByBot){
-                return;
-            }
-        }
-
-        hideAwayMessage(message);
-        if(messageList.contains(message)) {
-            updateMessage(message);
-        }
-        if (ApplozicService.getContext(getContext()) instanceof KmOnMessageListener) {
-            ((KmOnMessageListener) ApplozicService.getContext(getContext())).onNewMessage(message, channel, contact);
-        }
-
-        if (botMessageDelayInterval > 0 && message.getGroupId() != null && message.getGroupId() != 0 && !TextUtils.isEmpty(message.getTo())) {
-            Contact contact = appContactService.getContactById(message.getTo());
-            if (contact != null && User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
-                botTypingDelayManager.addMessage(message);
-                return;
-            }
-        }
-
-        handleAddMessage(message);
-    }
-
-    public void addMessageForNewConversation(final Message message) {
-
         hideAwayMessage(message);
         if(messageList.contains(message)) {
             updateMessage(message);
@@ -1992,23 +1960,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void loadConversation(Channel channel, Integer conversationId) {
-        loadConversation(null, channel, conversationId, messageSearchString, false);
+        loadConversation(null, channel, conversationId, messageSearchString);
     }
 
     public void loadConversation(Contact contact, Integer conversationId) {
-        loadConversation(contact, null, conversationId, messageSearchString, false);
+        loadConversation(contact, null, conversationId, messageSearchString);
     }
 
     //With search
     public void loadConversation(Contact contact, Integer conversationId, String messageSearchString) {
-        loadConversation(contact, null, conversationId, messageSearchString, false);
+        loadConversation(contact, null, conversationId, messageSearchString);
     }
 
     public void loadConversation(Channel channel, Integer conversationId, String messageSearchString) {
-        loadConversation(null, channel, conversationId, messageSearchString, false);
+        loadConversation(null, channel, conversationId, messageSearchString);
     }
 
-    public void loadConversation(final Contact contact, final Channel channel, final Integer conversationId, final String searchString, boolean isNewConversation) {
+    public void loadConversation(final Contact contact, final Channel channel, final Integer conversationId, final String searchString) {
         if (downloadConversation != null) {
             downloadConversation.cancel(true);
         }
@@ -2116,7 +2084,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         processMobiTexterUserCheck();
 
 
-        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversationId, messageSearchString, isNewConversation);
+        downloadConversation = new DownloadConversation(recyclerView, true, 1, 0, 0, contact, channel, conversationId, messageSearchString);
         downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         if (hideExtendedSendingOptionLayout) {
@@ -2685,7 +2653,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             filePath = messageToForward.getFilePaths().get(0);
         }
         this.messageToForward = messageToForward;
-        loadConversation(contact, channel, currentConversationId, null, false);
+        loadConversation(contact, channel, currentConversationId, null);
 
     }
 
@@ -3334,11 +3302,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 SyncCallService.refreshView = false;
             }
 
-            boolean isNewConversation = false;
-
             if (channel != null && !channel.isUserPresentInChannel(MobiComUserPreference
                     .getInstance(getContext()).getUserId())) {
-                isNewConversation = true;
                 Channel newChannel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channel.getKey());
                 if (newChannel != null && newChannel.getType() != null && Channel.GroupType.OPEN.getValue().equals(newChannel.getType())) {
                     MobiComUserPreference.getInstance(getActivity()).setNewMessageFlag(true);
@@ -3350,7 +3315,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             if (messageList.isEmpty()) {
-                loadConversation(contact, channel, currentConversationId, messageSearchString, isNewConversation);
+                loadConversation(contact, channel, currentConversationId, messageSearchString);
             } else if (MobiComUserPreference.getInstance(getActivity()).getNewMessageFlag()) {
                 loadnewMessageOnResume(contact, channel, currentConversationId);
             }
@@ -3471,11 +3436,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             toolbarTitleText.setText(channel.getName());
         }
 
-        if(alCustomizationSettings.isAgentApp()){
-            setStatusDots(false, true); //setting the status dot as offline
-            if (toolbarSubtitleText != null) {
-                toolbarSubtitleText.setVisibility(View.GONE);
-            }
+        setStatusDots(false, true); //setting the status dot as offline
+        if (toolbarSubtitleText != null) {
+            toolbarSubtitleText.setVisibility(View.GONE);
         }
     }
 
@@ -4006,7 +3969,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         private List<Conversation> conversationList;
         private String messageSearchString;
         private List<Message> nextMessageList = new ArrayList<Message>();
-        private boolean isNewConversation;
 
         public DownloadConversation(RecyclerView recyclerView, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, Contact contact, Channel channel, Integer conversationId, String messageSearchString) {
             this.recyclerView = recyclerView;
@@ -4016,17 +3978,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             this.channel = channel;
             this.conversationId = conversationId;
             this.messageSearchString = messageSearchString;
-        }
-
-        public DownloadConversation(RecyclerView recyclerView, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, Contact contact, Channel channel, Integer conversationId, String messageSearchString, boolean isNewConversation) {
-            this.recyclerView = recyclerView;
-            this.initial = initial;
-            this.firstVisibleItem = firstVisibleItem;
-            this.contact = contact;
-            this.channel = channel;
-            this.conversationId = conversationId;
-            this.messageSearchString = messageSearchString;
-            this.isNewConversation = isNewConversation;
         }
 
         @Override
@@ -4178,29 +4129,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 nextMessageList.remove(nextMessageList.size() - 1);
             }
 
-            Contact assignee = new ContactDatabase(getContext()).getContactById(channel.getConversationAssignee());
-
-            if(isNewConversation &&
-                    assignee != null &&
-                    assignee.getRoleType().equals(User.RoleType.BOT.getValue()) &&
-                    botMessageDelayInterval > 0) {
-                for (Message message : nextMessageList) {
-                    if (initial && !messageList.contains(message) && !TextUtils.isEmpty(message.getKeyString())) {
-                        addMessageForNewConversation(message);
-                    }
+            for (Message message : nextMessageList) {
+                if (initial && !messageList.contains(message)) {
+                    messageList.add(message);
                 }
-            } else {
-                for (Message message : nextMessageList) {
-                    if (initial && !messageList.contains(message)) {
-                        messageList.add(message);
-                    }
-                    selfDestructMessage(message);
-                }
+                selfDestructMessage(message);
             }
 
             if (initial) {
                 recyclerDetailConversationAdapter.searchString = searchString;
-                emptyTextView.setVisibility(!messageList.isEmpty() || (assignee != null && Objects.equals(assignee.getRoleType(), User.RoleType.BOT.getValue())) ? GONE : VISIBLE);
+                emptyTextView.setVisibility(messageList.isEmpty() ? VISIBLE : View.GONE);
                 if(messageList.isEmpty()) {
                     linearLayoutManager.setStackFromEnd(false);
 

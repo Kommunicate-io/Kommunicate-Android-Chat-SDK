@@ -29,7 +29,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -4286,15 +4285,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         @Override
         public void onMessageQueued(Message message) {
-//            handleTypingMessage(true);
             updateTypingStatus(message.getTo(),true);
         }
 
         @Override
         public void onMessageDispatched(Message message) {
-            Log.d("XCode download : ", message.toString());
             handleAddMessage(message);
-//            handleTypingMessage(false);
         }
     }
 
@@ -5225,14 +5221,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onMessageQueued(Message message) {
         updateTypingStatus(message.getTo(), true);
-//        handleTypingMessage(true);
     }
 
     @Override
     public void onMessageDispatched(Message message) {
-        Log.d("XCode sync : ", message.toString());
         handleAddMessage(message);
-//        handleTypingMessage(false);
     }
 
     public abstract void onStartLoading(boolean loadingStarted);

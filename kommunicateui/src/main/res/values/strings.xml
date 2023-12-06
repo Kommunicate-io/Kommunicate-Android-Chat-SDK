@@ -295,4 +295,5 @@
     <string name="changed_language_to">Changed language to %1$s</string>
     <string name="agent_experience">2 year of experience</string>
     <string name="agent_rating">4.5</string>
+    <string name="km_whatsapp_restriction">The last message received from this contact was over 24 hours ago. To send Template message, go to the dashboard.</string>
 </resources>

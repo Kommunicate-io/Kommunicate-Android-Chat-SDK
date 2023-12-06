@@ -5250,7 +5250,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             if ((double) lastMessageTime <= twentyFourHoursAgoTimeStamp()) {
                                 individualMessageSendLayout.setVisibility(View.GONE);
                                 recordLayout.setVisibility(GONE);
-                                userNotAbleToChatTextView.setText("R.string.km_whatsapp_restriction");
+                                userNotAbleToChatTextView.setText(R.string.km_whatsapp_restriction);
                                 userNotAbleToChatLayout.setVisibility(VISIBLE);
                             }
                         }

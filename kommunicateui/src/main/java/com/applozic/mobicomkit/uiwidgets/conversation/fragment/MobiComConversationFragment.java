@@ -395,6 +395,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
+    private Message lastUserMessage;
+    private static final String[] WHATSAPP_SOURCE = {"WHATSAPPCLOUDAPI", "WHATSAPPTWILIO", "WHATSAPPDIALOG360"};;
+    private static final String CONVERSATION_SOURCE = "source";
 
     public void fetchBotType(Contact contact, KmCallback kmCallback) {
         if (contact != null) {
@@ -1685,6 +1688,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     channelKey = message.getGroupId();
                     if (Message.MessageType.MT_INBOX.getValue().equals(message.getType())) {
                         try {
+                            restrictWhatsappConversation(message);
                             messageDatabaseService.updateReadStatusForKeyString(message.getKeyString());
                             Intent intent = new Intent(getActivity(), UserIntentService.class);
                             intent.putExtra(UserIntentService.PAIRED_MESSAGE_KEY_STRING, message.getKeyString());
@@ -4159,6 +4163,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             Message lastSentMessage = null;
 
             if (!messageList.isEmpty()) {
+                if (alCustomizationSettings.isAgentApp()) {
+                    for (int i = messageList.size() - 1; i >= 0; i--) {
+                        Message userLastmessage = messageList.get(i);
+                        if (userLastmessage.getType().equals(Message.MessageType.MT_INBOX.getValue())) {
+                            lastUserMessage = userLastmessage;
+                            break;
+                        }
+                    }
+                }
+
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     Message message = messageList.get(i);
                     if (lastSentMessage == null && message.isTypeOutbox()) {
@@ -4172,6 +4186,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
                 }
             }
+
+            restrictWhatsappConversation(lastUserMessage);
 
             if (recyclerDetailConversationAdapter != null) {
                 recyclerDetailConversationAdapter.setLastSentMessage(lastSentMessage);
@@ -5216,6 +5232,33 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 messageTemplateView.setVisibility(View.VISIBLE);
             }
+        }
+    }
+    private double twentyFourHoursAgoTimeStamp() {
+        Date currentDate = new Date();
+        long twentyFourHoursAgoMillis = currentDate.getTime() - (24 * 60 * 60 * 1000);
+        return twentyFourHoursAgoMillis;
+    }
+    private void restrictWhatsappConversation(Message lastMessage) {
+        if (alCustomizationSettings.isAgentApp()) {
+            String conversationSource = channel.getMetadata().get(CONVERSATION_SOURCE);
+            if (conversationSource != null){
+                for (String source : WHATSAPP_SOURCE) {
+                    if (source.equals(conversationSource)) {
+                        if ( lastMessage != null) {
+                            long lastMessageTime = lastMessage.getCreatedAtTime();
+                            if ((double) lastMessageTime <= twentyFourHoursAgoTimeStamp()) {
+                                individualMessageSendLayout.setVisibility(View.GONE);
+                                recordLayout.setVisibility(GONE);
+                                userNotAbleToChatTextView.setText("R.string.km_whatsapp_restriction");
+                                userNotAbleToChatLayout.setVisibility(VISIBLE);
+                            }
+                        }
+
+                    }
+                }
+            }
+
         }
     }
 }

@@ -148,6 +148,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String menuIconOnConversationScreen = "";
     private boolean toolbarTitleCenterAligned = false;
     private boolean disableFormPostSubmit = false;
+    private String mainDividerLineColor = "";
 
     public String getStaticTopMessage() {
         return staticTopMessage;
@@ -715,6 +716,9 @@ public class AlCustomizationSettings extends JsonMarker {
     public String getToolbarTitleColor() {
         return toolbarTitleColor;
     }
+    public String getMainDividerLineColor() {
+        return mainDividerLineColor;
+    }
 
     public void setToolbarTitleColor(String toolbarTitleColor) {
         this.toolbarTitleColor = toolbarTitleColor;
@@ -778,6 +782,7 @@ public class AlCustomizationSettings extends JsonMarker {
                 "customMessageBackgroundColor='" + customMessageBackgroundColor + '\'' +
                 ", sentMessageBackgroundColor='" + sentMessageBackgroundColor + '\'' +
                 ", messageEditTextBackgroundColor='" + messageEditTextBackgroundColor + '\'' +
+                ", mainDividerLineColor='" + mainDividerLineColor + '\'' +
                 ", autoSuggestionButtonBackgroundColor='" + autoSuggestionButtonBackgroundColor + '\'' +
                 ", startNewConversationButtonBackgroundColor='" + startNewConversationButtonBackgroundColor + '\'' +
                 ", receivedMessageBackgroundColor='" + receivedMessageBackgroundColor + '\'' +

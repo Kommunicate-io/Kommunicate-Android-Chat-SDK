@@ -1688,7 +1688,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     channelKey = message.getGroupId();
                     if (Message.MessageType.MT_INBOX.getValue().equals(message.getType())) {
                         try {
-                            restrictWhatsappConversation(message);
                             messageDatabaseService.updateReadStatusForKeyString(message.getKeyString());
                             Intent intent = new Intent(getActivity(), UserIntentService.class);
                             intent.putExtra(UserIntentService.PAIRED_MESSAGE_KEY_STRING, message.getKeyString());
@@ -4166,7 +4165,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if (alCustomizationSettings.isAgentApp()) {
                     for (int i = messageList.size() - 1; i >= 0; i--) {
                         Message userLastmessage = messageList.get(i);
-                        if (userLastmessage.getType().equals(Message.MessageType.MT_INBOX.getValue())) {
+                        if (userLastmessage.getType().equals(Message.MessageType.MT_INBOX.getValue()) && !Objects.equals(userLastmessage.getTo(), "bot")) {
                             lastUserMessage = userLastmessage;
                             break;
                         }
@@ -5221,8 +5220,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             individualMessageSendLayout.setVisibility(hideLayout ? GONE : VISIBLE);
             recordLayout.setVisibility(hideLayout || !isRecordOptionEnabled ? GONE : VISIBLE);
+            restrictWhatsappConversation(lastUserMessage);
         } else {
             individualMessageSendLayout.setVisibility(VISIBLE);
+            restrictWhatsappConversation(lastUserMessage);
+
         }
     }
     public void hideMessageTemplate() {

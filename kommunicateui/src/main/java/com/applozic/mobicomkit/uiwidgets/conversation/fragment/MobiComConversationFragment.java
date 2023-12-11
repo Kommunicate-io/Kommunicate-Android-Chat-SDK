@@ -1645,6 +1645,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
                     botDelayMessageList.add(message);
                     botTypingDelayManager.addMessage(message);
+                    emptyTextView.setVisibility(GONE);
                 }
                 return;
             }
@@ -4122,7 +4123,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             long createdTimeInMilliSec = nextMessageList.get(0).getCreatedAtTime();
             long currentTimeInMilliSec = System.currentTimeMillis();
             long diff = currentTimeInMilliSec - createdTimeInMilliSec;
-            return diff < 3000;
+            return diff < 5000;
         }
 
         @Override
@@ -4178,7 +4179,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         private void setupConversationScreen() {
             if (initial) {
                 recyclerDetailConversationAdapter.searchString = searchString;
-                emptyTextView.setVisibility(messageList.isEmpty() ? VISIBLE : View.GONE);
+                emptyTextView.setVisibility(messageList.isEmpty() && (botDelayMessageList == null || botDelayMessageList.isEmpty()) ? VISIBLE : View.GONE);
                 if(messageList.isEmpty()) {
                     linearLayoutManager.setStackFromEnd(false);
 

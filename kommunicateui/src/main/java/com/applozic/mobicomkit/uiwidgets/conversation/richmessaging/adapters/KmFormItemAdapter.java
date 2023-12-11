@@ -377,8 +377,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             setFormLabelText(formItemViewHolder, dropdownList.getTitle());
                             handleItemVisibility(formItemViewHolder, formItemViewHolder.formDropdownListContainer);
                             if (dropdownList.getOptions() != null) {
-                                filterDropdownList(dropdownList.getOptions());
-
+                                
                                 if (validationArray.get(position) == 1) {
                                     formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
                                     formItemViewHolder.formValidationText.setText(dropdownList.getValidation().getErrorText());
@@ -394,17 +393,14 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                         Spinner spinner = formItemViewHolder.formDropdownList;
                                         spinner.setDropDownVerticalOffset(spinner.getHeight());
                                         spinner.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
                                     }
                                 });
 
+
                                 formItemViewHolder.formDropdownList.setAdapter(dropdownItemAdapter);
                                 dropdownItemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                                if (dropdownFieldArray.get(position) != null) {
-                                    formItemViewHolder.formDropdownList.setSelection(dropdownList.getOptions().indexOf(dropdownFieldArray.get(position)));
-                                } else {
-                                    formItemViewHolder.formDropdownList.setSelection(0);
-                                }
+                                formItemViewHolder.formDropdownList.setSelection(filterDropdownList(dropdownList.getOptions()));
                                 formItemViewHolder.formDropdownList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                     @Override
                                     public void onItemSelected(AdapterView<?> parent, View view, int dropdownItemPosition, long id) {
@@ -427,16 +423,16 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         }
     }
 
-    //Moves selected item to 1st position
-    private void filterDropdownList(List<KmFormPayloadModel.Options> dropdownList) {
+    //Returns the position of the item to be selected by default
+    private int filterDropdownList(List<KmFormPayloadModel.Options> dropdownList) {
+        int selectedIndex = 0;
         for (int i = 0; i < dropdownList.size(); i++) {
             if (dropdownList.get(i).isSelected()) {
-                if (i > 0) {
-                    Collections.swap(dropdownList, i, 0);
-                }
-                return;
+                selectedIndex = i;
+                break;
             }
         }
+        return selectedIndex;
     }
 
     private void setFormLabelText(KmFormItemViewHolder formItemViewHolder, String text) {

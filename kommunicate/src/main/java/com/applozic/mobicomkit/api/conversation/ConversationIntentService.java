@@ -69,20 +69,20 @@ public class ConversationIntentService extends AlJobIntentService {
             return;
         }
 
-        Message message = (Message) intent.getSerializableExtra(AL_MESSAGE);
-
-        if (message != null) {
-            mobiComMessageService.processInstantMessage(message);
-        }
-
-        if (sync) {
-            mobiComMessageService.syncMessages();
-        }
-
         if (metadataSync) {
             Utils.printLog(ConversationIntentService.this, TAG, "Syncing messages service started for metadata update");
             mobiComMessageService.syncMessageForMetadataUpdate();
             return;
+        }
+
+        Message message = (Message) intent.getSerializableExtra(AL_MESSAGE);
+
+        if (message != null) {
+            mobiComMessageService.processInstantMessage(message);
+        } else {
+            if (sync) {
+                mobiComMessageService.syncMessages();
+            }
         }
     }
 

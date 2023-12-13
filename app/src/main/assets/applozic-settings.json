@@ -177,5 +177,5 @@
   "useDeviceDefaultLanguage": true,
   "toolbarTitleCenterAligned": false,
   "disableFormPostSubmit": false,
-  "mainDividerLineColor": ""
+  "chatBarTopLineViewColor": ""
 }

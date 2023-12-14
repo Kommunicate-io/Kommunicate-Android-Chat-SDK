@@ -629,8 +629,7 @@ public class MessageDatabaseService {
         } finally {
             dbHelper.close();
         }
-
-
+        
         return id;
     }
 

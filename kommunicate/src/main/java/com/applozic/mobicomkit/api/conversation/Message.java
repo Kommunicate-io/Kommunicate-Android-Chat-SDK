@@ -491,12 +491,12 @@ public class Message extends JsonMarker {
             return DateUtils.getDate(message.getCreatedAtTime()).equals(DateUtils.getDate(getCreatedAtTime()));
         }
 
-        if (getMessageId() != null && message.getMessageId() != null && getMessageId().equals(message.getMessageId())) {
-            return true;
-        }
-
         if (getKeyString() != null && message.getKeyString() != null) {
             return (getKeyString().equals(message.getKeyString()));
+        }
+
+        if (getMessageId() != null && message.getMessageId() != null && getMessageId().equals(message.getMessageId())) {
+            return true;
         }
         return false;
     }

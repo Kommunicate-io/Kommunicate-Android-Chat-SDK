@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -501,7 +500,6 @@ public class MessageDatabaseService {
     public long createMessage(final Message message) {
         long id = -1;
         if (message.getMessageId() != null) {
-            Log.d("xcode return : ", "" + message.getMessageId());
             return message.getMessageId();
         }
         if (isMessagePresent(message.getKeyString())) {
@@ -509,7 +507,6 @@ public class MessageDatabaseService {
         } else {
             id = createSingleMessage(message);
         }
-//        id = createSingleMessage(message);
         message.setMessageId(id);
         if (message.isSentToMany()) {
             String[] toList = message.getTo().trim().replace("undefined,", "").split(",");
@@ -554,7 +551,6 @@ public class MessageDatabaseService {
                 }
 
                 if (message.isSentToServer() && !TextUtils.isEmpty(message.getKeyString())) {
-//                    statement = database.compileStatement("SELECT COUNT(*) FROM sms WHERE keyString = " + message.getKeyString() + " and " + queryClause);
                     statement = database.compileStatement("SELECT COUNT(*) FROM sms WHERE keyString = ? and " + queryClause);
                     statement.bindString(1, message.getKeyString());
                 } else {
@@ -563,7 +559,6 @@ public class MessageDatabaseService {
                     statement.bindLong(2, message.getCreatedAtTime());
                 }
                 if (statement.simpleQueryForLong() > 0) {
-                    Log.d("xcode negative up : ", String.valueOf(message));
                     return -1;
                 }
             } catch (Throwable e) {
@@ -635,9 +630,6 @@ public class MessageDatabaseService {
             dbHelper.close();
         }
 
-        if (id == -1){
-            Log.d("xcode negative : ", message.toString());
-        }
 
         return id;
     }

@@ -2,7 +2,6 @@ package com.applozic.mobicomkit.api.conversation;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 
 import com.applozic.mobicomkit.ApplozicClient;

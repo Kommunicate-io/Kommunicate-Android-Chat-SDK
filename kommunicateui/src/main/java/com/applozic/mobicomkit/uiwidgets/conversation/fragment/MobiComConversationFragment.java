@@ -596,7 +596,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         mainDivider = list.findViewById(R.id.idMainDividerLine);
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
-
+        if (!TextUtils.isEmpty(alCustomizationSettings.getChatBarTopLineViewColor())){
+            mainDivider.setBackgroundColor(Color.parseColor(alCustomizationSettings.getChatBarTopLineViewColor()));
+        }
         if (!TextUtils.isEmpty(alCustomizationSettings.getMessageEditTextBackgroundColor())){
             individualMessageSendLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getMessageEditTextBackgroundColor()));
         }

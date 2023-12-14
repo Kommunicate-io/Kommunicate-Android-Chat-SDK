@@ -4120,6 +4120,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         private boolean isNewConversation(List<Message> nextMessageList) {
+            if (nextMessageList.size() == 0){
+                return false;
+            }
             long createdTimeInMilliSec = nextMessageList.get(0).getCreatedAtTime();
             long currentTimeInMilliSec = System.currentTimeMillis();
             long diff = currentTimeInMilliSec - createdTimeInMilliSec;

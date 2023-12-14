@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.api.conversation;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 
 import com.applozic.mobicomkit.ApplozicClient;
@@ -491,12 +492,12 @@ public class Message extends JsonMarker {
             return DateUtils.getDate(message.getCreatedAtTime()).equals(DateUtils.getDate(getCreatedAtTime()));
         }
 
-        if (getKeyString() != null && message.getKeyString() != null) {
-            return (getKeyString().equals(message.getKeyString()));
-        }
-
         if (getMessageId() != null && message.getMessageId() != null && getMessageId().equals(message.getMessageId())) {
             return true;
+        }
+
+        if (getKeyString() != null && message.getKeyString() != null) {
+            return (getKeyString().equals(message.getKeyString()));
         }
         return false;
     }

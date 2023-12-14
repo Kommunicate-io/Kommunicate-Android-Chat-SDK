@@ -279,7 +279,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     protected void syncMessages() {
-        new KmSyncMessageTask(this, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new KmSyncMessageTask(this, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

@@ -525,7 +525,9 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                     GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
                                     Message sentMessageSync = messageResponse.getMessage();
 
-                                    if (sentMessageSync.getTo() == null || MobiComUserPreference.getInstance(context).getUserId() == null || sentMessageSync.getTo().equals(MobiComUserPreference.getInstance(context).getUserId())) {
+                                    if (TextUtils.isEmpty(sentMessageSync.getTo()) ||
+                                            TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserId()) ||
+                                            sentMessageSync.getTo().equals(MobiComUserPreference.getInstance(context).getUserId())) {
                                         if (sentMessageSync.getGroupId() != null) {
 
                                             Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(sentMessageSync.getGroupId());

@@ -188,10 +188,6 @@ public class MobiComMessageService {
             message.setHidden(true);
         }
 
-        if (!TextUtils.isEmpty(message.getKeyString()) && messageDatabaseService.isMessagePresent(message.getKeyString())){
-            return receiverContact;
-        }
-
         messageDatabaseService.createMessage(message);
 
         //Check if we are........container is already opened...don't send broadcast
@@ -503,6 +499,7 @@ public class MobiComMessageService {
         }
         if (message.getType().equals(Message.MessageType.MT_INBOX.getValue())) {
             addMTMessage(message, 0);
+            MobiComUserPreference.getInstance(context).setLastSyncTime(String.valueOf(message.getCreatedAtTime()));
         }
         if(baseContactService.isContactPresent(message.getContactIds())) {
             Contact contact = baseContactService.getContactById(message.getContactIds());

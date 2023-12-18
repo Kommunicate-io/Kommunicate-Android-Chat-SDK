@@ -502,7 +502,11 @@ public class MessageDatabaseService {
         if (message.getMessageId() != null) {
             return message.getMessageId();
         }
-        id = createSingleMessage(message);
+        if (isMessagePresent(message.getKeyString())) {
+            id = getMessage(message.getKeyString()).getMessageId();
+        } else {
+            id = createSingleMessage(message);
+        }
         message.setMessageId(id);
         if (message.isSentToMany()) {
             String[] toList = message.getTo().trim().replace("undefined,", "").split(",");

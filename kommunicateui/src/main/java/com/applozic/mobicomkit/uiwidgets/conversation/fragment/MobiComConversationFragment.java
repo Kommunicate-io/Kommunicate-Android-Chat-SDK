@@ -392,6 +392,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isApiAutoSuggest = false;
     protected Map<String, String> autoSuggestHeaders;
     protected String autoSuggestUrl;
+    private Set<Message> botDelayMessageList;
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -1643,7 +1644,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (botMessageDelayInterval > 0 && message.getGroupId() != null && message.getGroupId() != 0 && !TextUtils.isEmpty(message.getTo())) {
             Contact contact = appContactService.getContactById(message.getTo());
             if (contact != null && User.RoleType.BOT.getValue().equals(contact.getRoleType())) {
-                botTypingDelayManager.addMessage(message);
+                if (botDelayMessageList == null || !botDelayMessageList.contains(message)){
+                    if (botDelayMessageList == null){
+                        botDelayMessageList = new HashSet<>();
+                    }
+                    botDelayMessageList.add(message);
+                    botTypingDelayManager.addMessage(message);
+                    emptyTextView.setVisibility(GONE);
+                }
                 return;
             }
         }
@@ -3436,9 +3444,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             toolbarTitleText.setText(channel.getName());
         }
 
-        setStatusDots(false, true); //setting the status dot as offline
-        if (toolbarSubtitleText != null) {
-            toolbarSubtitleText.setVisibility(View.GONE);
+        if(alCustomizationSettings.isAgentApp()){
+            setStatusDots(false, true); //setting the status dot as offline
+            if (toolbarSubtitleText != null) {
+                toolbarSubtitleText.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -3958,7 +3968,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         return type;
     }
 
-    public class DownloadConversation extends AsyncTask<Void, Integer, Long> {
+    public class DownloadConversation extends AsyncTask<Void, Integer, Long> implements KmBotTypingDelayManager.MessageDispatcher {
 
         private RecyclerView recyclerView;
         private int firstVisibleItem;
@@ -3969,6 +3979,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         private List<Conversation> conversationList;
         private String messageSearchString;
         private List<Message> nextMessageList = new ArrayList<Message>();
+        private boolean isNewConversation;
 
         public DownloadConversation(RecyclerView recyclerView, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, Contact contact, Channel channel, Integer conversationId, String messageSearchString) {
             this.recyclerView = recyclerView;
@@ -4044,6 +4055,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
 
                     nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
+                    isNewConversation = isNewConversation(nextMessageList);
                 } else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
                     loadMore = false;
                     Long endTime = null;
@@ -4055,6 +4067,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         break;
                     }
                     nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
+                    isNewConversation = isNewConversation(nextMessageList);
                 }
                 if (BroadcastService.isContextBasedChatEnabled()) {
                     conversations = ConversationService.getInstance(getActivity()).getConversationList(channel, contact);
@@ -4111,6 +4124,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return 0L;
         }
 
+        private boolean isNewConversation(List<Message> nextMessageList) {
+            if (nextMessageList.size() == 0){
+                return false;
+            }
+            long createdTimeInMilliSec = nextMessageList.get(0).getCreatedAtTime();
+            long currentTimeInMilliSec = System.currentTimeMillis();
+            long diff = currentTimeInMilliSec - createdTimeInMilliSec;
+            return diff < 5000;
+        }
+
         @Override
         protected void onPostExecute(Long result) {
             super.onPostExecute(result);
@@ -4129,31 +4152,57 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 nextMessageList.remove(nextMessageList.size() - 1);
             }
 
-            for (Message message : nextMessageList) {
-                if (initial && !messageList.contains(message)) {
-                    messageList.add(message);
-                }
-                selfDestructMessage(message);
-            }
+            Contact assignee = new ContactDatabase(getContext()).getContactById(channel.getConversationAssignee());
 
+            if (isNewConversation && assignee != null && assignee.getRoleType().equals(User.RoleType.BOT.getValue()) && botMessageDelayInterval > 0) {
+                KmBotTypingDelayManager kmBotTypingDelayManager = new KmBotTypingDelayManager(getContext(), this);
+                handleTypingMessage(false);
+                for (Message message : nextMessageList) {
+                    if (initial && !messageList.contains(message)) {
+                        if (TextUtils.isEmpty(message.getKeyString())){
+                            messageList.add(0,message);
+                            selfDestructMessage(message);
+                            setupConversationScreen();
+                            handleTypingMessage(true);
+                        } else if (botDelayMessageList == null || !botDelayMessageList.contains(message)){
+                            if (botDelayMessageList == null){
+                                botDelayMessageList = new HashSet<>();
+                            }
+                            botDelayMessageList.add(message);
+                            kmBotTypingDelayManager.addMessage(message);
+                        }
+                    }
+                }
+            } else {
+                for (Message message : nextMessageList) {
+                    if (initial && !messageList.contains(message)) {
+                        messageList.add(message);
+                    }
+                    selfDestructMessage(message);
+                }
+                setupConversationScreen();
+            }
+        }
+
+        private void setupConversationScreen() {
             if (initial) {
                 recyclerDetailConversationAdapter.searchString = searchString;
-                emptyTextView.setVisibility(messageList.isEmpty() ? VISIBLE : View.GONE);
+                emptyTextView.setVisibility(messageList.isEmpty() && (botDelayMessageList == null || botDelayMessageList.isEmpty()) ? VISIBLE : View.GONE);
                 if(messageList.isEmpty()) {
                     linearLayoutManager.setStackFromEnd(false);
 
                 } else if (!messageList.isEmpty()) {
-                            if (!TextUtils.isEmpty(searchString)) {
-                                int height = recyclerView.getHeight();
-                                int itemHeight = recyclerView.getChildAt(0).getHeight();
-                                recyclerView.requestFocusFromTouch();
-                                recyclerView.scrollTo(scrollToFirstSearchIndex() + 1, height / 2 - itemHeight / 2);
-                            } else {
-                                if(!recyclerView.canScrollVertically(1) || !recyclerView.canScrollVertically(-1)) {
-                                    linearLayoutManager.setStackFromEnd(false);
-                                }
-                                linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
-                            }
+                    if (!TextUtils.isEmpty(searchString)) {
+                        int height = recyclerView.getHeight();
+                        int itemHeight = recyclerView.getChildAt(0).getHeight();
+                        recyclerView.requestFocusFromTouch();
+                        recyclerView.scrollTo(scrollToFirstSearchIndex() + 1, height / 2 - itemHeight / 2);
+                    } else {
+                        if(!recyclerView.canScrollVertically(1) || !recyclerView.canScrollVertically(-1)) {
+                            linearLayoutManager.setStackFromEnd(false);
+                        }
+                        linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
+                    }
                 }
             } else if (!nextMessageList.isEmpty()) {
                 messageList.addAll(0, nextMessageList);
@@ -4253,6 +4302,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             loadMore = !nextMessageList.isEmpty();
             checkForAutoSuggestions();
             checkForCustomInput();
+        }
+
+        @Override
+        public void onMessageQueued(Message message) {
+            updateTypingStatus(message.getTo(),true);
+        }
+
+        @Override
+        public void onMessageDispatched(Message message) {
+            handleAddMessage(message);
         }
     }
 

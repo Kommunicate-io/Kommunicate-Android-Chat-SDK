@@ -6,6 +6,7 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 ## Unreleased
 1) Fixed typing indicator for welcome message
 2) Fixed "no conversations" showing sometimes for the first time when conversation is created
+3) Fixed user messages coming on right side in agent app
 ## Kommunicate Android SDK 2.8.8
 1) Fixed crash while deleting message on agent app
 ##  Kommunicate Android SDK 2.8.7

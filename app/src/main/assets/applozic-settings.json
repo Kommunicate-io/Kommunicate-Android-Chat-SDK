@@ -22,7 +22,7 @@
   "conversationDayTextColor": "#333333",
   "messageTimeTextColor": "#ede6e6",
   "channelCustomMessageTextColor": "#666666",
-  "sentMessageBorderColor": "#5c5aa7",
+  "sentMessageBorderColor": "",
   "receivedMessageBorderColor": "#e6e5ec",
   "channelCustomMessageBorderColor": "#cccccc",
   "collapsingToolbarLayoutColor": "#5c5aa7",

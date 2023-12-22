@@ -182,6 +182,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -193,6 +194,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -205,6 +207,7 @@ import java.util.regex.PatternSyntaxException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.async.KmGetDataAsyncTask;
+import io.kommunicate.models.KmAutoSuggestionModel;
 import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
@@ -4910,7 +4913,42 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
                 break;
             case KmAutoSuggestionAdapter.KM_AUTO_SUGGESTION_ACTION:
-                populateAutoSuggestion(false, null, (String) object);
+                List<KmAutoSuggestionModel> autoSuggestionList = KmService.getAutoSuggestionList();
+                if (autoSuggestionList != null && !autoSuggestionList.isEmpty()) {
+                    for (KmAutoSuggestionModel kmAutoSuggestion : autoSuggestionList) {
+                        if (kmAutoSuggestion.isSupportsRichMessage() && object.equals(kmAutoSuggestion.getContent())){
+
+                            Map<String, String> autoSuggestionMetadata = new HashMap<>();
+                            try {
+                                JSONObject jsonDictionary = new JSONObject((String) object);
+                                JSONObject contentMetaData = jsonDictionary.optJSONObject("metadata");
+
+                                if (contentMetaData != null) {
+                                    Iterator<String> keys = contentMetaData.keys();
+                                    while (keys.hasNext()) {
+                                        String key = keys.next();
+                                        String value = contentMetaData.optString(key);
+                                        autoSuggestionMetadata.put(key, value);
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            autoSuggestionMetadata.put("KM_EVENT","QUICKREPLY_CLICK");
+                            autoSuggestionMetadata.put("skipBot","true");
+                            autoSuggestionMetadata.put("category","HIDDEN");
+                            sendMessage("KM_EVENT_QUICKREPLY_CLICK", autoSuggestionMetadata, null, null, Message.ContentType.DEFAULT.getValue());
+                            getLoaderManager().destroyLoader(1);
+                            kmAutoSuggestionRecycler.setVisibility(View.GONE);
+                            if (kmAutoSuggestionDivider != null) {
+                                kmAutoSuggestionDivider.setVisibility(View.GONE);
+                            }
+                        }
+                        if (!kmAutoSuggestion.isSupportsRichMessage() && object.equals(kmAutoSuggestion.getContent())) {
+                            populateAutoSuggestion(false, null, (String) object);
+                        }
+                    }
+                }
                 break;
             case RichMessageActionProcessor.NOTIFY_ITEM_CHANGE:
                 if (messageList != null && recyclerDetailConversationAdapter != null && message != null) {

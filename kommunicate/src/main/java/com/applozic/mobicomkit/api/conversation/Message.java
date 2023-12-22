@@ -1,12 +1,17 @@
 package com.applozic.mobicomkit.api.conversation;
 
+import static com.applozic.mobicommons.ApplozicService.getAppContext;
+import static com.applozic.mobicommons.ApplozicService.getContext;
+
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Patterns;
 
 import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper;
 import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.JsonMarker;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
@@ -689,7 +694,8 @@ public class Message extends JsonMarker {
     }
 
     public boolean hasHideKey() {
-        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType()) || hidden || Message.MetaDataType.HIDDEN.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()));
+        int loggedInUserRole = MobiComUserPreference.getInstance(getAppContext()).getUserRoleType();
+        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType()) || hidden || (Message.MetaDataType.HIDDEN.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue())) && !(loggedInUserRole == User.RoleType.AGENT.getValue()));
     }
 
     public boolean isGroupMetaDataUpdated() {

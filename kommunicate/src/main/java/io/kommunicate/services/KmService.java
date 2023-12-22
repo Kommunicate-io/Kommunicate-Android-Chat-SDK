@@ -42,6 +42,7 @@ public class KmService {
     public static final String KM_NO_ALERT = "NO_ALERT";
     public static final String KM_BADGE_COUNT = "BADGE_COUNT";
 
+    public static List<KmAutoSuggestionModel> autoSuggestionList;
     public KmService(Context context) {
         this.context = ApplozicService.getContext(context);
         clientService = new KmClientService(context);
@@ -66,6 +67,7 @@ public class KmService {
             KmApiResponse<List<KmAutoSuggestionModel>> kmApiResponse = new Gson().fromJson(clientService.getKmAutoSuggestions(), listType);
             if (kmApiResponse != null) {
                 List<KmAutoSuggestionModel> autoSuggestionList = kmApiResponse.getData();
+                setAutoSuggestionList(autoSuggestionList);
                 if (autoSuggestionList != null && !autoSuggestionList.isEmpty() && autoSuggestionDatabase != null) {
                     for (KmAutoSuggestionModel kmAutoSuggestion : autoSuggestionList) {
                         autoSuggestionDatabase.upsertAutoSuggestion(kmAutoSuggestion);
@@ -78,6 +80,13 @@ public class KmService {
         }
         return null;
     }
+    public void setAutoSuggestionList(List<KmAutoSuggestionModel> autoSuggestionList) {
+        KmService.autoSuggestionList = autoSuggestionList;
+    }
+    public static List<KmAutoSuggestionModel> getAutoSuggestionList() {
+        return autoSuggestionList;
+    }
+
 
     public String getAppSetting(String appId) {
         return clientService.getAppSetting(appId);

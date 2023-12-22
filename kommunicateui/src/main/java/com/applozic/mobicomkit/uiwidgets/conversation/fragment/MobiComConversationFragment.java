@@ -399,7 +399,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
-    private Message lastUserMessage;
+    protected Message lastUserMessage;
     private static final String[] WHATSAPP_SOURCE = {"WHATSAPPCLOUDAPI", "WHATSAPPTWILIO", "WHATSAPPDIALOG360"};;
     private static final String CONVERSATION_SOURCE = "source";
 
@@ -5336,12 +5336,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
     }
-    private double twentyFourHoursAgoTimeStamp() {
+    protected double twentyFourHoursAgoTimeStamp() {
         Date currentDate = new Date();
         long twentyFourHoursAgoMillis = currentDate.getTime() - (24 * 60 * 60 * 1000);
         return twentyFourHoursAgoMillis;
     }
-    private void restrictWhatsappConversation(Message lastMessage) {
+    protected void restrictWhatsappConversation(Message lastMessage) {
         if (alCustomizationSettings.isAgentApp()) {
             String conversationSource = channel.getMetadata().get(CONVERSATION_SOURCE);
             if (conversationSource != null){

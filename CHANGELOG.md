@@ -3,10 +3,12 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## Unreleased
+## Kommunicate Android SDK 2.8.9
 1) Fixed typing indicator for welcome message
 2) Fixed "no conversations" showing sometimes for the first time when conversation is created
-3) Fixed user messages coming on right side in agent app
+3) Fix the random order of item in dropdown list
+4) Provided customisation To change mainDivider line colour
+5) Fixed user messages coming on right side in agent app
 ## Kommunicate Android SDK 2.8.8
 1) Fixed crash while deleting message on agent app
 ##  Kommunicate Android SDK 2.8.7

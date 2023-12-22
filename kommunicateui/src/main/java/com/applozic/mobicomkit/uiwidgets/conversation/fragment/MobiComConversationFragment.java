@@ -4938,6 +4938,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             autoSuggestionMetadata.put("skipBot","true");
                             autoSuggestionMetadata.put("category","HIDDEN");
                             sendMessage("KM_EVENT_QUICKREPLY_CLICK", autoSuggestionMetadata, null, null, Message.ContentType.DEFAULT.getValue());
+                            messageEditText.setText("");
                             getLoaderManager().destroyLoader(1);
                             kmAutoSuggestionRecycler.setVisibility(View.GONE);
                             if (kmAutoSuggestionDivider != null) {

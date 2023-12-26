@@ -415,8 +415,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected DetailedConversationAdapter getConversationAdapter(Activity activity,
-                                                                 int rowViewId, List<Message> messageList, Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiIconHandler) {
-        return new DetailedConversationAdapter(activity, rowViewId, messageList, contact, channel, messageIntentClass, emojiIconHandler);
+                                                                 int rowViewId, List<Message> messageList, Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiIconHandler, AlCustomizationSettings alCustomizationSettings) {
+        return new DetailedConversationAdapter(activity, rowViewId, messageList, contact, channel, messageIntentClass, emojiIconHandler, alCustomizationSettings);
     }
 
     @Override
@@ -707,7 +707,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
         emoticonsBtn.setOnClickListener(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        if(alCustomizationSettings.getInnerTimestampDesign()) {
+        if(alCustomizationSettings.getInnerTimestampDesign() || !TextUtils.isEmpty(alCustomizationSettings.getMessageStatusIconColor())) {
             sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
             deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
             readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
@@ -2068,7 +2068,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             selfDestructMessageSpinner.setSelection(0);
         }
         recyclerDetailConversationAdapter = getConversationAdapter(getActivity(),
-                R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler);
+                R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler, alCustomizationSettings);
         recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
         recyclerDetailConversationAdapter.setContextMenuClickListener(this);
         recyclerDetailConversationAdapter.setRichMessageCallbackListener(richMessageActionProcessor.getRichMessageListener());

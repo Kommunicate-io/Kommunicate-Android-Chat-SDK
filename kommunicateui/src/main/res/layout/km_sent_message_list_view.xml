@@ -150,6 +150,13 @@
                 android:layout_height="12dp"
                 android:visibility="visible"
                 android:layout_gravity="center" />
+
+            <View
+                android:id="@+id/statusIconBackground"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:background="@drawable/km_status_icon_background" />
+
             <ImageView
                 android:id="@+id/statusImageView"
                 android:layout_width="12dp"

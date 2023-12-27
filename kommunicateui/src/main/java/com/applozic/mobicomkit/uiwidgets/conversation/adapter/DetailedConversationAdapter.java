@@ -201,18 +201,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler) {
-        this(context, textViewResourceId, messageList, null, channel, messageIntentClass, emojiconHandler);
+        this(context, textViewResourceId, messageList, null, channel, messageIntentClass, emojiconHandler, null);
     }
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, Contact contact, Class messageIntentClass, EmojiconHandler emojiconHandler) {
-        this(context, textViewResourceId, messageList, contact, null, messageIntentClass, emojiconHandler);
+        this(context, textViewResourceId, messageList, contact, null, messageIntentClass, emojiconHandler, null);
     }
 
     public void setLastSentMessage(Message message) {
         this.lastSentMessage = message;
     }
 
-    public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, final Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler) {
+    public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, final Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler, AlCustomizationSettings alCustomizationSettings) {
         //super(context, textViewResourceId, messageList);
         this.messageIntentClass = messageIntentClass;
         this.context = context;
@@ -226,6 +226,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this.contactService = new AppContactService(context);
         this.imageCache = ImageCache.getInstance(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         this.messageList = messageList;
+        this.alCustomizationSettings = alCustomizationSettings;
         geoApiKey = Applozic.getInstance(context).getGeoApiKey();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
@@ -254,7 +255,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         imageThumbnailLoader.setImageFadeIn(false);
         imageThumbnailLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
 
-        if(useInnerTimeStampDesign) {
+        if(useInnerTimeStampDesign || (alCustomizationSettings != null && !TextUtils.isEmpty(alCustomizationSettings.getMessageStatusIconColor()))) {
             sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon_c);
             deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_c);
             readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_c);
@@ -1729,14 +1730,21 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             messageRootLayout = (RelativeLayout) customView.findViewById(R.id.messageLayout);
             emailLayout = customView.findViewById(R.id.emailLayout);
             viaEmailView = customView.findViewById(R.id.via_email_text_view);
+            statusIconBackground = customView.findViewById(R.id.statusIconBackground);
 
             if(useInnerTimeStampDesign) {
-                statusIconBackground = customView.findViewById(R.id.statusIconBackground);
-                    if (statusIconBackground != null) {
-                        KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getMessageStatusIconColor());
-                    }
+                if (statusIconBackground != null) {
+                    KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getMessageStatusIconColor());
+                }
             }
             else {
+                if(statusIconBackground != null){
+                    if (!TextUtils.isEmpty(alCustomizationSettings.getMessageStatusIconColor())) {
+                        KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getMessageStatusIconColor());
+                    } else {
+                        statusIconBackground.setVisibility(GONE);
+                    }
+                }
                 timestampLayout = customView.findViewById(R.id.timestampLayout);
                 statusImageView = customView.findViewById(R.id.statusImageView);
             }

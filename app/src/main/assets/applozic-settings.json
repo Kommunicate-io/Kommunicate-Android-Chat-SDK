@@ -10,7 +10,7 @@
   "sentContactMessageTextColor:": "#5fba7d",
   "chatBackgroundColorOrDrawable": "#FFFFFF",
   "receivedContactMessageTextColor": "#646262",
-  "messageStatusIconColor": "#5c5aa7",
+  "messageStatusIconColor": "",
   "sentMessageTextColor": "#FFFFFFFF",
   "receivedMessageTextColor": "#646262",
   "messageEditTextTextColor": "#000000",

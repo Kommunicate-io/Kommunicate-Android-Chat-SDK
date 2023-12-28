@@ -12,7 +12,15 @@ public class KmAutoSuggestionModel extends JsonMarker {
     private long updated_at;
     private String userName;
     private long id;
+    private boolean supportsRichMessage = false;
 
+
+    public boolean isSupportsRichMessage() {
+        return supportsRichMessage;
+    }
+    public void setSupportsRichMessage(boolean SupportRichMessage) {
+        this.supportsRichMessage = SupportRichMessage;
+    }
     public String getName() {
         return name;
     }

@@ -159,6 +159,8 @@ public class KmUtils {
         FileMeta fileMeta = message.getFileMetas();
         if (fileMeta == null && message.getFilePaths() != null) {
             return new File(message.getFilePaths().get(0)).getName().replace(KmConstants.AWS_ENCRYPTED, "").replace(String.valueOf(message.getCreatedAtTime()), "");
+        } else if (message.getFilePaths() != null){
+            return new File(message.getFilePaths().get(0)).getName().replace(KmConstants.AWS_ENCRYPTED, "").replace(String.valueOf(message.getCreatedAtTime()), "");
         }
         if (fileMeta != null && fileMeta.getName() != null) {
             String fileName = FileUtils.getName(fileMeta.getName()) + message.getCreatedAtTime() + "." + FileUtils.getFileFormat(fileMeta.getName());

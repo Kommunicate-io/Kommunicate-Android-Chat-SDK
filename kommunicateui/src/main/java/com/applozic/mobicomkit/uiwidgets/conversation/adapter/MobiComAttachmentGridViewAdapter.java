@@ -95,8 +95,11 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
                     e.printStackTrace();
                 }
 
-                Intent contentChooserIntent = FileUtils.createGetContentIntent(filterOptions, context.getPackageManager());
+                Intent contentChooserIntent = FileUtils.createGetContentIntent(filterOptions, context.getPackageManager(), alCustomizationSettings.isMultipleAttachmentSelectionEnabled());
                 contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                if (alCustomizationSettings.isMultipleAttachmentSelectionEnabled()){
+                    contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                }
                 Intent intentPick = Intent.createChooser(contentChooserIntent, context.getString(R.string.select_file));
                 ((Activity) context).startActivityForResult(intentPick, REQUEST_CODE);
             }

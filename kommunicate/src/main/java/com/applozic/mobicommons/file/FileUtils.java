@@ -656,7 +656,7 @@ public class FileUtils {
      * @return The intent for opening a file with Intent.createChooser()
      * @author paulburke
      */
-    public static Intent createGetContentIntent(GalleryFilterOptions choosenOption, PackageManager packageManager) {
+    public static Intent createGetContentIntent(GalleryFilterOptions choosenOption, PackageManager packageManager, boolean isMultipleSectionEnabled) {
         Intent intent = new Intent();
         ArrayList<String> mimeType = new ArrayList<>();
         switch (choosenOption) {
@@ -671,6 +671,9 @@ public class FileUtils {
                 mimeType.add("video/*");
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    if (isMultipleSectionEnabled) {
+                        intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
+                    }
                     intent.setType("image/*");
                     intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -678,21 +681,33 @@ public class FileUtils {
                 }
                 intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
+                if (isMultipleSectionEnabled) {
+                    intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
+                }
                 intent.setType("*/*");
                 intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
                 break;
             case IMAGE_ONLY:
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                if (isMultipleSectionEnabled) {
+                    intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
+                }
                 intent.setType("image/*");
                 mimeType.add("image/*");
                 break;
             case AUDIO_ONLY:
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
+                if (isMultipleSectionEnabled) {
+                    intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
+                }
                 intent.setType("audio/*");
                 mimeType.add("audio/*");
                 break;
             case VIDEO_ONLY:
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                if (isMultipleSectionEnabled) {
+                    intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
+                }
                 intent.setType("video/*");
                 mimeType.add("video/*");
                 break;

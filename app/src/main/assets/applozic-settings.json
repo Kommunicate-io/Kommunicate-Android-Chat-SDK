@@ -177,5 +177,6 @@
   "useDeviceDefaultLanguage": true,
   "toolbarTitleCenterAligned": false,
   "disableFormPostSubmit": false,
-  "chatBarTopLineViewColor": ""
+  "chatBarTopLineViewColor": "",
+  "isMultipleAttachmentSelectionEnabled": true
 }

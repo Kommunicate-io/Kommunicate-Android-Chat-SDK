@@ -30,4 +30,7 @@ public class KmConstants {
     public static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     public static final String KM_USER_LOCALE = "kmUserLocale";
     public static final String KM_USER_LANGUAGE_CODE = "kmUserLanguageCode";
+    public static final String HIDDEN = "hidden";
+    public static final String PSEUDONAME = "pseudoName";
+    public static final String KM_PSEUDO_USER = "KM_PSEUDO_USER";
 }

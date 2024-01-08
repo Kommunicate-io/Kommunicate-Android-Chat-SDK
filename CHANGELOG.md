@@ -3,6 +3,8 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Unreleased
+1) Added customization for multiple attachment selection
 ## Kommunicate Android SDK 2.9.0
 1) Fixed message status icon color customisation
 ## Kommunicate Android SDK 2.8.9

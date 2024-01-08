@@ -178,5 +178,5 @@
   "toolbarTitleCenterAligned": false,
   "disableFormPostSubmit": false,
   "chatBarTopLineViewColor": "",
-  "isMultipleAttachmentSelectionEnabled": true
+  "isMultipleAttachmentSelectionEnabled": false
 }

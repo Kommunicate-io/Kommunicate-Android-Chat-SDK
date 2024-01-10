@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -81,8 +82,11 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
      * will open either the general file attachment chooser
      */
     void openFileChooser() {
-        Intent contentChooserIntent = FileUtils.createGetContentIntent(kmAttachmentsController.getFilterOptions(alCustomizationSettings), getPackageManager());
+        Intent contentChooserIntent = FileUtils.createGetContentIntent(kmAttachmentsController.getFilterOptions(alCustomizationSettings), getPackageManager(), alCustomizationSettings.isMultipleAttachmentSelectionEnabled());
         contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        if (alCustomizationSettings.isMultipleAttachmentSelectionEnabled()){
+            contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
         Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
         startActivityForResult(intentPick, REQUEST_CODE_ATTACH_PHOTO);
     }
@@ -197,8 +201,10 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
             @Override
             public void preTaskUIMethod() {
-                progressDialog = ProgressDialog.show(MobiComAttachmentSelectorActivity.this, MobiComAttachmentSelectorActivity.this.getString(R.string.wait),
-                        MobiComAttachmentSelectorActivity.this.getString(R.string.km_contacts_loading_info), true);
+                if (progressDialog != null) {
+                    progressDialog = ProgressDialog.show(MobiComAttachmentSelectorActivity.this, MobiComAttachmentSelectorActivity.this.getString(R.string.wait),
+                            MobiComAttachmentSelectorActivity.this.getString(R.string.km_contacts_loading_info), true);
+                }
             }
 
             @Override
@@ -285,26 +291,45 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         }
 
         if (resultCode == Activity.RESULT_OK) {
-            Uri selectedFileUri = (intent == null ? null : intent.getData());
-            Utils.printLog(MobiComAttachmentSelectorActivity.this, TAG, "selectedFileUri :: " + selectedFileUri);
-            int returnCode = kmAttachmentsController.processFile(selectedFileUri, alCustomizationSettings, prePostUIMethodsFileAsyncTask);
+            if (intent.getClipData() != null){
+                ClipData clipData = intent.getClipData();
+                for (int index = 0; index < clipData.getItemCount(); index++){
 
-            switch (returnCode) {
-                case KmAttachmentsController.MAX_SIZE_EXCEEDED:
-                    KmToast.error(this, R.string.info_attachment_max_allowed_file_size, Toast.LENGTH_LONG).show();
-                    break;
-                case KmAttachmentsController.MIME_TYPE_EMPTY:
-                    Utils.printLog(this, TAG, "URI mime type is empty.");
-                    break;
-                case KmAttachmentsController.MIME_TYPE_NOT_SUPPORTED:
-                    KmToast.error(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
-                    break;
-                case KmAttachmentsController.FORMAT_EMPTY:
-                    Utils.printLog(this, TAG, "URI format(extension) is empty.");
-                    break;
+                    if (index == alCustomizationSettings.getMaxAttachmentAllowed()) {
+                        KmToast.makeText(this, "Maximum attachments allowed are " + alCustomizationSettings.getMaxAttachmentAllowed(), Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+
+                    ClipData.Item item = clipData.getItemAt(index);
+                    Uri selectedFileUri = item.getUri();
+                    processFile(selectedFileUri);
+                }
+            } else if (intent.getData() != null){
+                Uri selectedFileUri = intent.getData();
+                processFile(selectedFileUri);
             }
         }
         super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    protected void processFile(Uri uri) {
+        Utils.printLog(MobiComAttachmentSelectorActivity.this, TAG, "selectedFileUri :: " + uri);
+        int returnCode = kmAttachmentsController.processFile(uri, alCustomizationSettings, prePostUIMethodsFileAsyncTask);
+
+        switch (returnCode) {
+            case KmAttachmentsController.MAX_SIZE_EXCEEDED:
+                KmToast.error(this, R.string.info_attachment_max_allowed_file_size, Toast.LENGTH_LONG).show();
+                break;
+            case KmAttachmentsController.MIME_TYPE_EMPTY:
+                Utils.printLog(this, TAG, "URI mime type is empty.");
+                break;
+            case KmAttachmentsController.MIME_TYPE_NOT_SUPPORTED:
+                KmToast.error(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
+                break;
+            case KmAttachmentsController.FORMAT_EMPTY:
+                Utils.printLog(this, TAG, "URI format(extension) is empty.");
+                break;
+        }
     }
 
     @Override

@@ -5,6 +5,9 @@ The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-
 
 ## Unreleased
 1) Conversation assignment message UI update
+## Kommunicate Android SDK 2.9.1
+1) Added customisation for multiple attachment selection
+2) Fixed documents showing incorrect filename for non-english names
 ## Kommunicate Android SDK 2.9.0
 1) Fixed message status icon color customisation
 ## Kommunicate Android SDK 2.8.9

@@ -1140,7 +1140,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForStoragePermission(this)) {
             applozicPermission.requestStoragePermissions(KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
         } else {
-            Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager());
+            Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager(),true);
             contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
             Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));

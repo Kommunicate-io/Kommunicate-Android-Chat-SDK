@@ -1245,6 +1245,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void sendMessage(String message) {
+        isApiAutoSuggest = false;
         if (isCustomFieldMessage) {
             validateCustomInputRegex(message);
         } else {
@@ -4349,7 +4350,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             autoCompleteTextView.setAdapter(getAdapter((KmAutoSuggestion.Source[]) GsonUtils.getObjectFromJson(payloadJson, KmAutoSuggestion.Source[].class)));
                         }
                     } catch (Exception stringParseException) {
-                        //Data is of type object. Not implemented for now.
+                        autoCompleteTextView.setAdapter(getAdapter((KmAutoSuggestion.Source[]) GsonUtils.getObjectFromJson(payloadJson, KmAutoSuggestion.Source[].class)));
                     }
                 }
                 autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

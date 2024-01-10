@@ -149,6 +149,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean toolbarTitleCenterAligned = false;
     private boolean disableFormPostSubmit = false;
     private String chatBarTopLineViewColor = "";
+    private boolean isMultipleAttachmentSelectionEnabled = false;
 
     public String getStaticTopMessage() {
         return staticTopMessage;
@@ -774,6 +775,10 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isDisableFormPostSubmit() {
         return disableFormPostSubmit;
+    }
+
+    public boolean isMultipleAttachmentSelectionEnabled() {
+        return isMultipleAttachmentSelectionEnabled;
     }
 
     @Override

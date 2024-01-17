@@ -295,8 +295,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             View customViewHolder = layoutInflater.inflate(R.layout.km_custom_message_layout, parent, false);
             return new MyViewHolder3(customViewHolder);
         } else if (viewType == 4) {
-            View customMessageViewHolder = layoutInflater.inflate(R.layout.km_channel_custom_message_layout, parent, false);
-            return new MyViewHolder4(customMessageViewHolder);
+            if (alCustomizationSettings.isAgentApp()){
+                View customMessageViewHolder = layoutInflater.inflate(R.layout.km_channel_custom_message_layout, parent, false);
+                return new MyViewHolder4(customMessageViewHolder, alCustomizationSettings.isAgentApp());
+            } else {
+                View customMessageViewHolder = layoutInflater.inflate(R.layout.km_new_channel_custom_message, parent, false);
+                return new MyViewHolder4(customMessageViewHolder, alCustomizationSettings.isAgentApp());
+            }
         } else if (viewType == 5) {
             View callViewHolder = layoutInflater.inflate(R.layout.km_call_layout, parent, false);
             return new MyViewHolder5(callViewHolder);
@@ -368,11 +373,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 return;
             } else if (type == 4) {
                 MyViewHolder4 myViewHolder4 = (MyViewHolder4) holder;
-                GradientDrawable bgGradientDrawable = (GradientDrawable) myViewHolder4.channelMessageTextView.getBackground();
-                bgGradientDrawable.setColor(Color.parseColor(alCustomizationSettings.getChannelCustomMessageBgColor()));
-                bgGradientDrawable.setStroke(3, Color.parseColor(alCustomizationSettings.getChannelCustomMessageBorderColor()));
-                myViewHolder4.channelMessageTextView.setTextColor(Color.parseColor(alCustomizationSettings.getChannelCustomMessageTextColor()));
-                myViewHolder4.channelMessageTextView.setText(message.getMessage());
+                if (alCustomizationSettings.isAgentApp()){
+                    GradientDrawable bgGradientDrawable = (GradientDrawable) myViewHolder4.channelMessageTextView.getBackground();
+                    bgGradientDrawable.setColor(Color.parseColor(alCustomizationSettings.getChannelCustomMessageBgColor()));
+                    bgGradientDrawable.setStroke(3, Color.parseColor(alCustomizationSettings.getChannelCustomMessageBorderColor()));
+                    myViewHolder4.channelMessageTextView.setTextColor(Color.parseColor(alCustomizationSettings.getChannelCustomMessageTextColor()));
+                    myViewHolder4.channelMessageTextView.setText(message.getMessage());
+                } else {
+                    myViewHolder4.channelMessageTextView.setText(message.getLocalizationValue());
+                }
                 return;
             } else if (type == 5) {
                 MyViewHolder5 myViewHolder5 = (MyViewHolder5) holder;
@@ -1823,9 +1832,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     static class MyViewHolder4 extends RecyclerView.ViewHolder {
         TextView channelMessageTextView;
 
-        public MyViewHolder4(View itemView) {
+        public MyViewHolder4(View itemView, boolean isAgentApp) {
             super(itemView);
-            channelMessageTextView = (TextView) itemView.findViewById(R.id.channel_message);
+            if (isAgentApp){
+                channelMessageTextView = (TextView) itemView.findViewById(R.id.channel_message);
+            } else {
+                channelMessageTextView = (TextView) itemView.findViewById(R.id.km_transferred_to);
+            }
         }
     }
 

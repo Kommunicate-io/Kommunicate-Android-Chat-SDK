@@ -93,6 +93,7 @@ public class Message extends JsonMarker {
     public static final String STATUS_OPEN = "open";
     public static final String RICH_MESSAGE_CONTENT_TYPE = "300";
     private static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
+    private static final String LOCALIZATION_VALUE = "LOCALIZATION_VALUE";
 
     public Message() {
 
@@ -481,6 +482,10 @@ public class Message extends JsonMarker {
 
     public String getGroupAssignee() {
         return groupAssignee;
+    }
+
+    public String getLocalizationValue(){
+        return metadata != null ? metadata.get(LOCALIZATION_VALUE) : "";
     }
 
     public void setGroupAssignee(String groupAssignee) {

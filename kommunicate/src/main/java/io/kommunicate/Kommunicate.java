@@ -824,6 +824,7 @@ public class Kommunicate {
                         if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
                             if (appSettingModel.getChatWidget().isPseudonymsEnabled() && !TextUtils.isEmpty(appSettingModel.getResponse().getUserName())) {
                                 user.setDisplayName(appSettingModel.getResponse().getUserName());
+                                updateMetadataForAnonymousUser(user);
                             }
                         }
                     }
@@ -834,6 +835,16 @@ public class Kommunicate {
                 }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
         return user;
+    }
+
+    private static void updateMetadataForAnonymousUser(KMUser user){
+        Map<String,String> visitorMetadata = new HashMap<>();
+        visitorMetadata.put(KmConstants.HIDDEN,"true");
+        visitorMetadata.put(KmConstants.PSEUDONAME,"true");
+        String visitorMetadataString = GsonUtils.getJsonFromObject(visitorMetadata, Map.class);
+        Map<String,String> userMetadata = new HashMap<>();
+        userMetadata.put(KmConstants.KM_PSEUDO_USER,visitorMetadataString);
+        user.setMetadata(userMetadata);
     }
 
     private static String generateUserId() {

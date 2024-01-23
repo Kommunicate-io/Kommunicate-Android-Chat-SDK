@@ -281,12 +281,13 @@ public class MobiComMessageService {
         }
         if (syncMessageFeed != null && syncMessageFeed.getMessages() != null) {
             List<Message> messageList = syncMessageFeed.getMessages();
+            Long channelLastSyncTime = Long.parseLong(userpref.getChannelSyncTime());
 
             for (int i = messageList.size() - 1; i >= 0; i--) {
                 if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(messageList.get(i).getContentType())) {
                     if (messageList.get(i).isGroupMetaDataUpdated()) {
                         syncChannelForMetadata = true;
-                    } else {
+                    } else if (channelLastSyncTime == 0L || messageList.get(i).getCreatedAtTime() > channelLastSyncTime) {
                         syncChannel = true;
                     }
                     //Todo: fix this, what if there are mulitple messages.
@@ -449,10 +450,11 @@ public class MobiComMessageService {
         if (!baseContactService.isContactPresent(message.getContactIds())) {
             userService.processUserDetails(message.getContactIds());
         }
+        Long channelLastSyncTime = Long.parseLong(MobiComUserPreference.getInstance(context).getChannelSyncTime());
         if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())) {
             if (message.isGroupMetaDataUpdated()) {
                 ChannelService.getInstance(context).syncChannels(true);
-            } else {
+            } else if (channelLastSyncTime == 0L || message.getCreatedAtTime() > channelLastSyncTime) {
                 ChannelService.getInstance(context).syncChannels(false);
             }
         }

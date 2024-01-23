@@ -3518,7 +3518,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
-        if (Objects.equals(contact.getRoleType(), User.RoleType.BOT.getValue()) || !contact.isConnected()) {
+        if (User.RoleType.BOT.getValue().equals(contact.getRoleType()) || !contact.isConnected()) {
             kmAwayView.setVisibility(GONE);
         }
 

@@ -135,10 +135,12 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean singleThreaded;
         private String preChatGreetingMsg;
         private UploadOverride defaultUploadOverride;
+        private boolean disableChatWidget;
 
         public String getPosition() {
             return position;
         }
+        public boolean isDisableChatWidget() {return disableChatWidget;}
 
         public boolean isPseudonymsEnabled() {return pseudonymsEnabled;}
 

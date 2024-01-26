@@ -934,6 +934,9 @@ public class Kommunicate {
                     }
                     @Override
                     public void onFailure(Object error) {
+                        if (callback != null) {
+                            callback.onResult(false);
+                        }
                     }
                 }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 

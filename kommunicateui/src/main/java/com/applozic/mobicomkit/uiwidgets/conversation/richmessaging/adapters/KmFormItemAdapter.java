@@ -270,7 +270,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             }
                         }
 
-                        if (selectedIndex >= 0){
+                        if (selectedIndex >= 0) {
                             radioButtonSelectedIndices.put(position, selectedIndex);
                             formStateModel.setSelectedRadioButtonIndex(radioButtonSelectedIndices);
                             KmFormStateHelper.addFormState(messageKey, formStateModel);

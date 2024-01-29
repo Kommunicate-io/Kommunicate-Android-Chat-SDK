@@ -170,7 +170,7 @@
   "javaScriptEnabled": true,
   "restartConversationButtonVisibility": true,
   "hideChatInHelpcenter": true,
-  "checkboxAsMultipleButton": true,
+  "checkboxAsMultipleButton": false,
   "staticTopMessage": "",
   "staticTopIcon": "km_lock",
   "menuIconOnConversationScreen":"",

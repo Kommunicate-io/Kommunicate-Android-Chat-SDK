@@ -34,6 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -381,8 +383,11 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                             }
                             messageToSend.append(selectionModel.getName()).append(" : ").append(valueString).append("\n");
                         } else {
-                            messageToSend.append(selectionModel.getName()).append(" : ").append(formSelectedData.get(selectionModel.getName()).toString()).append("\n");
-
+                            String selectedData = "";
+                            if (!TextUtils.isEmpty(selectionModel.getName()) && ((String[])formSelectedData.get(selectionModel.getName())).length != 0 ) {
+                                selectedData = formSelectedData.get(selectionModel.getName()).toString();
+                            }
+                            messageToSend.append(selectionModel.getName()).append(" : ").append(selectedData).append("\n");
                         }
                     } else {
                         messageToSend.append(selectionModel.getName()).append(" : ").append("\n");

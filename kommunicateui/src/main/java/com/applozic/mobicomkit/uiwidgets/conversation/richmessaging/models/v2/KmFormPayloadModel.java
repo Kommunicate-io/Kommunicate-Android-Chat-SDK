@@ -6,11 +6,24 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
+import java.util.Map;
 
 public class KmFormPayloadModel<T> extends JsonMarker {
     public static final String KM_FORM_DATA = "formData";
     private String type;
     private T data;
+    private List<Options> options;
+    private String title;
+    private String name;
+    private String label;
+    private String value;
+    private String placeholder;
+    private String formAction;
+    private String message;
+    private String requestType;
+    private String postFormDataAsMessage;
+    private Boolean postBackToKommunicate;
+    private Map<String,String> metadata;
 
     public String getType() {
         return type;
@@ -55,6 +68,107 @@ public class KmFormPayloadModel<T> extends JsonMarker {
 
     public boolean isTypeAction() {
         return Type.ACTION.getValue().equals(type) || Type.SUBMIT.getValue().equals(type);
+    }
+
+    public List<Options> getOptions() {
+        return options;
+    }
+
+    public void setOptions(List<Options> options) {
+        this.options = options;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getPlaceholder() {
+        return placeholder;
+    }
+
+    public void setPlaceholder(String placeholder) {
+        this.placeholder = placeholder;
+    }
+
+    public String getFormAction() {
+        return formAction;
+    }
+
+    public void setFormAction(String formAction) {
+        this.formAction = formAction;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
+    }
+
+    public String getPostFormDataAsMessage() {
+        return postFormDataAsMessage;
+    }
+
+    public void setPostFormDataAsMessage(String postFormDataAsMessage) {
+        this.postFormDataAsMessage = postFormDataAsMessage;
+    }
+
+    public Boolean getPostBackToKommunicate() {
+        return postBackToKommunicate;
+    }
+
+    public void setPostBackToKommunicate(Boolean postBackToKommunicate) {
+        this.postBackToKommunicate = postBackToKommunicate;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
+    }
+
+    public KmRMActionModel<KmRMActionModel.SubmitButton> getDialogFlowActionModel(){
+        return new Gson().fromJson(GsonUtils.getJsonFromObject(this, KmFormPayloadModel.class), new TypeToken<KmRMActionModel<KmRMActionModel.SubmitButton>>() {
+        }.getType());
     }
 
     public static class Text extends JsonMarker {
@@ -335,8 +449,13 @@ public class KmFormPayloadModel<T> extends JsonMarker {
     }
 
     public KmFormPayloadModel.Selections getSelectionModel() {
-        return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmFormPayloadModel.Selections>() {
-        }.getType());
+        if (data != null) {
+            return new Gson().fromJson(GsonUtils.getJsonFromObject(data, Object.class), new TypeToken<KmFormPayloadModel.Selections>() {
+            }.getType());
+        } else {
+            return new Gson().fromJson(GsonUtils.getJsonFromObject(this, this.getClass()), new TypeToken<KmFormPayloadModel.Selections>() {
+            }.getType());
+        }
     }
 
     public KmRMActionModel<KmRMActionModel.SubmitButton> getAction() {

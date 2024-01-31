@@ -21,6 +21,9 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
+import com.applozic.mobicommons.json.GsonUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +63,11 @@ public class KmFormRichMessage extends KmRichMessage {
                 }
 
                 if (KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType()) || KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType()) || TextUtils.isEmpty(formPayloadModel.getType())) {
-                    actionModelList.add(formPayloadModel.getAction());
+                    if (formPayloadModel.getAction() != null){
+                        actionModelList.add(formPayloadModel.getAction());
+                    } else {
+                        actionModelList.add(formPayloadModel.getDialogFlowActionModel());
+                    }
                 }
             }
         }
@@ -78,7 +85,13 @@ public class KmFormRichMessage extends KmRichMessage {
                 final KmRMActionModel<KmRMActionModel.SubmitButton> submitButtonModel = (KmRMActionModel<KmRMActionModel.SubmitButton>) actionModelList.get(0);
                 itemTextView.setText(submitButtonModel.getName());
 
-                itemTextView.setText(((KmRMActionModel) actionModelList.get(0)).getName());
+                KmRMActionModel model = (KmRMActionModel) actionModelList.get(0);
+                if (!TextUtils.isEmpty(model.getName())){
+                    itemTextView.setText(model.getName());
+                } else if (!TextUtils.isEmpty(model.getLabel())){
+                    itemTextView.setText(model.getLabel());
+                }
+
                 itemTextView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -87,9 +100,17 @@ public class KmFormRichMessage extends KmRichMessage {
                                 submitButtonModel.setType(KmFormPayloadModel.Type.SUBMIT.getValue());
                             }
                             if (context != null && context.getApplicationContext() instanceof KmRichMessageListener) {
-                                ((KmRichMessageListener) context.getApplicationContext()).onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                                if (submitButtonModel.getAction() != null) {
+                                    ((KmRichMessageListener) context.getApplicationContext()).onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                                } else {
+                                    listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getDialogFlowAction(), null);
+                                }
                             } else {
-                                listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                                if (submitButtonModel.getAction() != null) {
+                                    listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getAction(), null);
+                                } else {
+                                    listener.onAction(context, submitButtonModel.getType(), message, submitButtonModel.getDialogFlowAction(), null);
+                                }
                             }
                         }
                     }

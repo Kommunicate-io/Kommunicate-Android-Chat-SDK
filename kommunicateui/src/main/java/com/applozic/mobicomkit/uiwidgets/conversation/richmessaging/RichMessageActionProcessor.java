@@ -384,8 +384,11 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                             messageToSend.append(selectionModel.getName()).append(" : ").append(valueString).append("\n");
                         } else {
                             String selectedData = "";
-                            if (!TextUtils.isEmpty(selectionModel.getName()) && ((String[])formSelectedData.get(selectionModel.getName())).length != 0 ) {
-                                selectedData = formSelectedData.get(selectionModel.getName()).toString();
+                            if (!TextUtils.isEmpty(selectionModel.getName())) {
+                                Object formDataObject = formSelectedData.get(selectionModel.getName());
+                                if ( (formDataObject instanceof String[] && ((String[])formSelectedData.get(selectionModel.getName())).length != 0) || (formDataObject instanceof String && ((String)formSelectedData.get(selectionModel.getName())).length() != 0) ) {
+                                    selectedData = formSelectedData.get(selectionModel.getName()).toString();
+                                }
                             }
                             messageToSend.append(selectionModel.getName()).append(" : ").append(selectedData).append("\n");
                         }

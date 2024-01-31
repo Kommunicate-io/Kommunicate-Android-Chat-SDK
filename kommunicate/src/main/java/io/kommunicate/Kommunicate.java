@@ -54,6 +54,7 @@ import io.kommunicate.callbacks.KMLogoutHandler;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.callbacks.KmChatWidgetCallback;
 import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
@@ -911,5 +912,33 @@ public class Kommunicate {
 
     public static void hideAssigneeStatus(Context context,Boolean hide) {
         BroadcastService.hideAssignee(context,hide);
+    }
+
+    public static void isChatWidgetDisabled(final KmChatWidgetCallback callback) {
+        final KmAppSettingModel appSettingModel = new KmAppSettingModel();
+
+        new KmAppSettingTask(ApplozicService.getAppContext(),
+                MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
+                new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
+                        boolean isDisabled = false;
+                        if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
+                            isDisabled =   appSettingModel.getChatWidget().isDisableChatWidget();
+
+                        }
+                        if (callback != null) {
+                            callback.onResult(isDisabled);
+                        }
+                    }
+                    @Override
+                    public void onFailure(Object error) {
+                        if (callback != null) {
+                            callback.onResult(false);
+                        }
+                    }
+                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
     }
 }

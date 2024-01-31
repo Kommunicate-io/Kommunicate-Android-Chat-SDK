@@ -3518,6 +3518,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
+        if (User.RoleType.BOT.getValue().equals(contact.getRoleType()) || !contact.isConnected()) {
+            kmAwayView.setVisibility(GONE);
+        }
+
         if (agentStatus == null) {
             agentStatus = this.agentStatus != null ? this.agentStatus : true; //default to true
         } else {
@@ -5343,7 +5347,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         return twentyFourHoursAgoMillis;
     }
     protected void restrictWhatsappConversation(Message lastMessage) {
-        if (alCustomizationSettings.isAgentApp()) {
+        if (alCustomizationSettings.isAgentApp() && channel.getMetadata() != null) {
             String conversationSource = channel.getMetadata().get(CONVERSATION_SOURCE);
             if (conversationSource != null){
                 for (String source : WHATSAPP_SOURCE) {

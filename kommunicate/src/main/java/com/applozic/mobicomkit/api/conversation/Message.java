@@ -96,9 +96,8 @@ public class Message extends JsonMarker {
     public static final String RICH_MESSAGE_CONTENT_TYPE = "300";
     private static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     private static final String LOCALIZATION_VALUE = "LOCALIZATION_VALUE";
-    private static final String LOCALIZATION_KEY = "LOCALIZATION_KEY";
-    private static final HashSet<String> hiddenKeys = new HashSet<>(Arrays.asList(
-            "STATUS_TO_SPAM", "STATUS_TO_CLOSED","STATUS_TO_OPEN"));
+    private static final HashSet<String> hiddenMetadataKeys = new HashSet<>(Arrays.asList(
+            "KM_STATUS")); // in future if there are some more hidden keys, just add here
     public Message() {
 
     }
@@ -708,7 +707,15 @@ public class Message extends JsonMarker {
     }
 
     private boolean containsHiddenKeys() {
-        return (metadata != null && !TextUtils.isEmpty(metadata.get(LOCALIZATION_KEY)) && hiddenKeys.contains(metadata.get(LOCALIZATION_KEY)));
+        if (metadata == null){
+            return false;
+        }
+        for (String key : hiddenMetadataKeys){
+            if (metadata.containsKey(key)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isGroupMetaDataUpdated() {

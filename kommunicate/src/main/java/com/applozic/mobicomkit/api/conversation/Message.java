@@ -21,8 +21,10 @@ import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelMetadata;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -94,7 +96,9 @@ public class Message extends JsonMarker {
     public static final String RICH_MESSAGE_CONTENT_TYPE = "300";
     private static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     private static final String LOCALIZATION_VALUE = "LOCALIZATION_VALUE";
-
+    private static final String LOCALIZATION_KEY = "LOCALIZATION_KEY";
+    private static final HashSet<String> hiddenKeys = new HashSet<>(Arrays.asList(
+            "STATUS_TO_SPAM", "STATUS_TO_CLOSED","STATUS_TO_OPEN"));
     public Message() {
 
     }
@@ -700,7 +704,11 @@ public class Message extends JsonMarker {
 
     public boolean hasHideKey() {
         int loggedInUserRole = MobiComUserPreference.getInstance(getAppContext()).getUserRoleType();
-        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType()) || hidden || (Message.MetaDataType.HIDDEN.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue())) && !(loggedInUserRole == User.RoleType.AGENT.getValue()));
+        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType()) || hidden || (Message.MetaDataType.HIDDEN.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))  || containsHiddenKeys() && !(loggedInUserRole == User.RoleType.AGENT.getValue()));
+    }
+
+    private boolean containsHiddenKeys() {
+        return (metadata != null && !TextUtils.isEmpty(metadata.get(LOCALIZATION_KEY)) && hiddenKeys.contains(metadata.get(LOCALIZATION_KEY)));
     }
 
     public boolean isGroupMetaDataUpdated() {

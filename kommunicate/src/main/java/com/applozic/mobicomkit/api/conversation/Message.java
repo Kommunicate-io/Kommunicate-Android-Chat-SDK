@@ -703,7 +703,7 @@ public class Message extends JsonMarker {
 
     public boolean hasHideKey() {
         int loggedInUserRole = MobiComUserPreference.getInstance(getAppContext()).getUserRoleType();
-        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType()) || hidden || (Message.MetaDataType.HIDDEN.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))  || containsHiddenKeys() && !(loggedInUserRole == User.RoleType.AGENT.getValue()));
+        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType()) || hidden || (loggedInUserRole != User.RoleType.AGENT.getValue() && ( Message.MetaDataType.HIDDEN.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue())) || containsHiddenKeys()));
     }
 
     private boolean containsHiddenKeys() {

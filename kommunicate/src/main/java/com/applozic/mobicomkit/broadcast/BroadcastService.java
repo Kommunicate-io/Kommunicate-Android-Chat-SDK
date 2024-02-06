@@ -11,11 +11,13 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
+import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
+import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -163,6 +165,11 @@ public class BroadcastService {
 
             if (MobiComUserPreference.getInstance(context).isLoggedIn()) {
                 Channel channel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());
+                BaseContactService baseContactService = new AppContactService(context);
+                UserService userService = UserService.getInstance(context);
+                if (!baseContactService.isContactPresent(message.getContactIds())) {
+                    userService.processUserDetails(message.getContactIds());
+                }
                 Contact contact = new AppContactService(context).getContactById(message.getContactIds());
 
                 if(!showNotification(context, contact, channel, message)) {

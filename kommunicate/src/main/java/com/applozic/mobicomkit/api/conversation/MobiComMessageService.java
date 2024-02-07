@@ -156,6 +156,7 @@ public class MobiComMessageService {
         message.setMessageId(messageToProcess.getMessageId());
         message.setKeyString(messageToProcess.getKeyString());
         message.setPairedMessageKeyString(messageToProcess.getPairedMessageKeyString());
+        message.setGroupAssignee(messageToProcess.getGroupAssignee());
 
         if (message.getMessage() != null && PersonalizedMessage.isPersonalized(message.getMessage())) {
             Contact contact = null;

@@ -986,6 +986,7 @@ public class Message extends JsonMarker {
                 ", status=" + status +
                 ", hidden=" + hidden +
                 ", replyMessage=" + replyMessage +
+                ", groupAssignee=" + groupAssignee +
                 '}';
     }
 }

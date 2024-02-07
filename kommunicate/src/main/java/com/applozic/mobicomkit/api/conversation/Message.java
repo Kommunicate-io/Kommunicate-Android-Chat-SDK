@@ -750,7 +750,8 @@ public class Message extends JsonMarker {
 
 
     public boolean isActionMessage() {
-        return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(KM_ASSIGN_TO) || getMetadata().containsKey(KM_ASSIGN_TEAM) || getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(AL_DELETE_MESSAGE_FOR_ALL_KEY));
+        boolean isAgent = MobiComUserPreference.getInstance(getAppContext()).getUserRoleType().equals(User.RoleType.AGENT.getValue());
+        return getMetadata() != null && ((isAgent && getMetadata().containsKey(BOT_ASSIGN)) || getMetadata().containsKey(KM_ASSIGN_TO) || getMetadata().containsKey(KM_ASSIGN_TEAM) || getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(AL_DELETE_MESSAGE_FOR_ALL_KEY));
     }
 
     public boolean isFeedbackMessage() {

@@ -268,7 +268,7 @@ public class Kommunicate {
             public void onSuccess(Object message) {
                 final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
                 if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
-                    if (appSettingModel.getResponse().isCollectLead()) {
+                    if (appSettingModel.getResponse().isCollectLead() && appSettingModel.getResponse().getLeadCollection() != null) {
                         Utils.printLog(context, TAG, "Lead Collection is enabled..Launching Lead Collection");
                         loginLeadUserAndOpenChat(context, appSettingModel, progressDialog, callback);
                     } else {

@@ -3,12 +3,15 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
-## Unreleased
+## Kommunicate Android SDK 2.9.2
 1) Conversation assignment message UI update
 2) Fixed anonymous icon not showing for anonymous android users in dashboard
 3) Added support for dialogflow fulfilment form
 3) group v5 API optimizations
 4) Fixed agent app notification issue
+5) Added support for chatwidget disabled flag
+6) Fixed autosuggestion
+7) Fixed channel messages showing in SDK
 ## Kommunicate Android SDK 2.9.1
 1) Added customisation for multiple attachment selection
 2) Fixed documents showing incorrect filename for non-english names

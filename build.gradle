@@ -7,7 +7,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.3'
+        classpath 'com.android.tools.build:gradle:7.4.0'
         classpath 'com.google.gms:google-services:4.3.8'
         //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.24.4"
     }

@@ -21,8 +21,10 @@ import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelMetadata;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -94,7 +96,8 @@ public class Message extends JsonMarker {
     public static final String RICH_MESSAGE_CONTENT_TYPE = "300";
     private static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     private static final String LOCALIZATION_VALUE = "LOCALIZATION_VALUE";
-
+    private static final HashSet<String> hiddenMetadataKeys = new HashSet<>(Arrays.asList(
+            "KM_STATUS","KM_ASSIGN_TO","KM_ASSIGN_TEAM")); // in future if there are some more hidden keys, just add here
     public Message() {
 
     }
@@ -700,7 +703,19 @@ public class Message extends JsonMarker {
 
     public boolean hasHideKey() {
         int loggedInUserRole = MobiComUserPreference.getInstance(getAppContext()).getUserRoleType();
-        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType()) || hidden || (Message.MetaDataType.HIDDEN.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue())) && !(loggedInUserRole == User.RoleType.AGENT.getValue()));
+        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType()) || hidden || (loggedInUserRole != User.RoleType.AGENT.getValue() && ( Message.MetaDataType.HIDDEN.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue())) || containsHiddenKeys()));
+    }
+
+    private boolean containsHiddenKeys() {
+        if (metadata == null){
+            return false;
+        }
+        for (String key : hiddenMetadataKeys){
+            if (metadata.containsKey(key)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isGroupMetaDataUpdated() {
@@ -735,7 +750,8 @@ public class Message extends JsonMarker {
 
 
     public boolean isActionMessage() {
-        return getMetadata() != null && (getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(KM_ASSIGN_TO) || getMetadata().containsKey(KM_ASSIGN_TEAM) || getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(AL_DELETE_MESSAGE_FOR_ALL_KEY));
+        boolean isAgent = MobiComUserPreference.getInstance(getAppContext()).getUserRoleType().equals(User.RoleType.AGENT.getValue());
+        return getMetadata() != null && ((isAgent && getMetadata().containsKey(BOT_ASSIGN)) || getMetadata().containsKey(KM_ASSIGN_TO) || getMetadata().containsKey(KM_ASSIGN_TEAM) || getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(AL_DELETE_MESSAGE_FOR_ALL_KEY));
     }
 
     public boolean isFeedbackMessage() {

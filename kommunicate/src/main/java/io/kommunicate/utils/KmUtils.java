@@ -100,7 +100,7 @@ public class KmUtils {
         gradientDrawable.setStroke(width, color);
     }
 
-    public static void setIconInsideTextView(TextView textView, int drawableRes, int color, int position, int padding) {
+    public static void setIconInsideTextView(TextView textView, int drawableRes, int color, int position, int padding, boolean isDarKMode) {
         if (position == LEFT_POSITION) {
             textView.setCompoundDrawablesWithIntrinsicBounds(drawableRes, 0, 0, 0);
         } else if (position == RIGHT_POSITION) {
@@ -109,6 +109,9 @@ public class KmUtils {
         textView.setCompoundDrawablePadding(padding);
         if (color != Color.TRANSPARENT) {
             textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+        }
+        if (isDarKMode){
+            textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
         }
     }
 

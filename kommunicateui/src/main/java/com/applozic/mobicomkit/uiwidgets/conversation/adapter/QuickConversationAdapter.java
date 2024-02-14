@@ -94,17 +94,19 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private ConversationUIService conversationUIService;
     private int loggedInUserRoleType;
     private String loggedInUserId;
+    private boolean isDarkMode;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
     }
 
-    public QuickConversationAdapter(final Context context, List<Message> messageList, EmojiconHandler emojiconHandler) {
+    public QuickConversationAdapter(final Context context, List<Message> messageList, EmojiconHandler emojiconHandler, final boolean isDarkMode) {
         this.context = context;
         this.emojiconHandler = emojiconHandler;
         this.contactService = new AppContactService(context);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.messageList = messageList;
+        this.isDarkMode = isDarkMode;
         conversationUIService = new ConversationUIService((FragmentActivity) context);
         loggedInUserRoleType = MobiComUserPreference.getInstance(context).getUserRoleType();
         loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
@@ -225,6 +227,17 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         }
                     }
                 }
+                if (isDarkMode) {
+                    myholder.smReceivers.setTextColor(context.getResources().getColor(R.color.messageReceiver_background_night));
+                    myholder.createdAtTime.setTextColor(context.getResources().getColor(R.color.createdAtTime_background_night));
+                    myholder.messageTextView.setTextColor(context.getResources().getColor(R.color.createdAtTime_background_night));
+                    myholder.attachmentIcon.setColorFilter(context.getResources().getColor(R.color.white));
+                } else {
+                    myholder.smReceivers.setTextColor(context.getResources().getColor(R.color.km_conversation_list_item_title_text_color));
+                    myholder.createdAtTime.setTextColor(context.getResources().getColor(R.color.km_conversation_list_item_created_at_time_text_color));
+                    myholder.messageTextView.setTextColor(context.getResources().getColor(R.color.km_conversation_list_message_text_color));
+                    myholder.attachmentIcon.clearColorFilter();
+                }
 
                 if (message.isVideoCallMessage()) {
                     createVideoCallView(message, myholder.attachmentIcon, myholder.messageTextView);
@@ -249,7 +262,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     }
                 }
                 else if(TextUtils.isEmpty(message.getMessage()) && message.isRichMessage()) {
-                    KmUtils.setIconInsideTextView(myholder.messageTextView, R.drawable.ic_messageicon, Color.TRANSPARENT, KmUtils.LEFT_POSITION, 20);
+                    myholder.attachmentIcon.setVisibility(View.GONE);
+                    KmUtils.setIconInsideTextView(myholder.messageTextView, R.drawable.ic_messageicon, Color.TRANSPARENT, KmUtils.LEFT_POSITION, 20, isDarkMode);
                     myholder.messageTextView.setText(DEFAULT_MSG_BODY);
                 }
                 else {
@@ -578,6 +592,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             attachmentIcon.setVisibility(View.VISIBLE);
             if (SOURCE_FACEBOOK.equals(channel.getMetadata().get(CONVERSATION_SOURCE))) {
                 attachmentIcon.setImageResource(R.drawable.ic_facebook_icon);
+            } else {
+                attachmentIcon.setVisibility(View.GONE);
             }
         } else {
             attachmentIcon.setVisibility(View.GONE);

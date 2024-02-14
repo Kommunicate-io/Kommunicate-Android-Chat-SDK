@@ -131,16 +131,31 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
+        LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
+        kmMessageLinearLayout.setVisibility(View.GONE);
+        boolean isDarkMode = false;
+        // uncomment these 4 lines for testing
+
+        /*
+        if (getContext() != null) {
+            isDarkMode = (getContext().getResources().getConfiguration().uiMode &
+                    Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+        }
+        */
 
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
-        recyclerView.setBackgroundColor(getResources().getColor(R.color.conversation_list_all_background));
+        if (isDarkMode) {
+            recyclerView.setBackgroundColor(getResources().getColor(R.color.conversation_list_all_background_night));
+        } else {
+            recyclerView.setBackgroundColor(getResources().getColor(R.color.conversation_list_all_background));
+        }
         recyclerView.setPadding(0, 0, 0, (int) DimensionsUtils.convertDpToPixel(95));
 
 
         if (messageList != null && !messageList.contains(null)) {
             messageList.add(null);
         }
-        recyclerAdapter = new QuickConversationAdapter(getContext(), messageList, null);
+        recyclerAdapter = new QuickConversationAdapter(getContext(), messageList, null,isDarkMode);
         recyclerAdapter.setAlCustomizationSettings(alCustomizationSettings);
 
         faqButtonLayout = getActivity().findViewById(R.id.faqButtonLayout);
@@ -210,7 +225,11 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         extendedSendingOptionLayout.setVisibility(View.GONE);
 
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
-        emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
+        if(isDarkMode) {
+            emptyTextView.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
+        }
 
         swipeLayout = (SwipeRefreshLayout) list.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,

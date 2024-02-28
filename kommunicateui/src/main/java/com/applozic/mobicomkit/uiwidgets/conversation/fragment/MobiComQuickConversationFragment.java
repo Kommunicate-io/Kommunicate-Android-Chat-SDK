@@ -131,8 +131,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
-        LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
-        kmMessageLinearLayout.setVisibility(View.GONE);
+        if (!alCustomizationSettings.isAgentApp()) {
+            LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
+            kmMessageLinearLayout.setVisibility(View.GONE);
+        }
         boolean isDarkMode = false;
         // uncomment these 4 lines for testing
 

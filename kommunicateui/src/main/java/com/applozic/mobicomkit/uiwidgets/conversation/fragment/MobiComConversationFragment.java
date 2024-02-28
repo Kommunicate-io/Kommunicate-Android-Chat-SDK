@@ -74,6 +74,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
+import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserBlockTask;
@@ -202,6 +203,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -4231,6 +4234,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
                 }
 
+                List<Long> readListToBeUpdated = new ArrayList<>();
+
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     Message message = messageList.get(i);
                     if (lastSentMessage == null && message.isTypeOutbox()) {
@@ -4239,10 +4244,21 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     if (!message.isRead() && !message.isTempDateType() && !message.isCustom()) {
                         if (message.getMessageId() != null) {
                             message.setRead(Boolean.TRUE);
-                            messageDatabaseService.updateMessageReadFlag(message.getMessageId(), true);
+                            readListToBeUpdated.add(message.getMessageId());
                         }
                     }
                 }
+
+                try {
+                    new Thread(()-> {
+                        for (Long messageId : readListToBeUpdated) {
+                            messageDatabaseService.updateMessageReadFlag(messageId, true);
+                        }
+                    }).start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
 
             restrictWhatsappConversation(lastUserMessage);

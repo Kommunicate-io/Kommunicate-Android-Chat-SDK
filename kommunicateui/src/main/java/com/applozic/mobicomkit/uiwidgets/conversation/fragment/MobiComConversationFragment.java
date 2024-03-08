@@ -74,7 +74,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserBlockTask;
@@ -229,6 +228,7 @@ import io.kommunicate.models.KmFeedback;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
@@ -243,7 +243,7 @@ import static java.util.Collections.disjoint;
  * reg
  * Created by devashish on 10/2/15.
  */
-public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, KmRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener, KmSpeechToText.KmTextListener, KmBotTypingDelayManager.MessageDispatcher {
+public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, KmRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener, KmSpeechToText.KmTextListener, KmBotTypingDelayManager.MessageDispatcher, KMAgentStatusHelper.DynamicAgentStatusChangeListener {
 
     public FrameLayout emoticonsFrameLayout,
             contextFrameLayout;
@@ -399,6 +399,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected Map<String, String> autoSuggestHeaders;
     protected String autoSuggestUrl;
     private Set<Message> botDelayMessageList;
+
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
     }
@@ -478,6 +479,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         messageImageLoader.setImageFadeIn(false);
         messageImageLoader.addImageCache((getActivity()).getSupportFragmentManager(), 0.1f);
         kmAudioRecordManager = new KmAudioRecordManager(getActivity());
+        KMAgentStatusHelper.setAgentStatusLister(this);
     }
 
     private void setupChatBackground() {
@@ -3516,8 +3518,36 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
+    public void updateAssigneeStatus(String assigneeId, KMAgentStatusHelper.KMAgentStatus status) {
+        if (fontManager != null && fontManager.getToolbarSubtitleFont() != null) {
+            toolbarSubtitleText.setTypeface(fontManager.getToolbarSubtitleFont());
+        } else {
+            toolbarSubtitleText.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+        }
+
+        if (status == KMAgentStatusHelper.KMAgentStatus.ONLINE ) {
+            toolbarSubtitleText.setText(ApplozicService.getContext(getContext()).getString(R.string.online));
+            setStatusDots(true,true);
+            showAwayMessage(false,null);
+        } else if (status == KMAgentStatusHelper.KMAgentStatus.OFFLINE) {
+            toolbarSubtitleText.setText(R.string.offline);
+            setStatusDots(false,true);
+            showAwayMessage(false,null);
+        } else if(status == KMAgentStatusHelper.KMAgentStatus.AWAY) {
+            toolbarSubtitleText.setText(R.string.away);
+            setStatusDots(true,false);
+            showAwayMessage(true,null);
+        }
+        toolbarSubtitleText.setVisibility(isCustomToolbarSubtitleDesign ? View.GONE : View.VISIBLE);
+    }
     public void switchContactStatus(Contact contact, Boolean agentStatus) {
         if (contact == null) {
+            return;
+        }
+
+
+        if (KMAgentStatusHelper.status != KMAgentStatusHelper.KMAgentStatus.DefaultStatus && (TextUtils.isEmpty(KMAgentStatusHelper.assigneeID) || Objects.equals(contact.getUserId(), KMAgentStatusHelper.assigneeID))){
+            updateAssigneeStatus(KMAgentStatusHelper.assigneeID,KMAgentStatusHelper.status);
             return;
         }
 

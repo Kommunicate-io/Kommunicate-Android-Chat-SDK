@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,10 @@ import android.widget.TextView;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.listners.AlCallback;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 
@@ -148,5 +151,11 @@ public class KmAwayView extends LinearLayout {
                  Utils.printLog(rootLinearLayout.getContext(), TAG, "Error: " + error);
             }
         });
+    }
+
+    public void setupTheme(boolean isDarkModeEnabled, AlCustomizationSettings alCustomizationSettings){
+        setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
+        awayMessageTv.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
+        askEmailTextView.setTextColor(isDarkModeEnabled ? Color.WHITE : getContext().getResources().getColor(R.color.km_away_message_text_color));
     }
 }

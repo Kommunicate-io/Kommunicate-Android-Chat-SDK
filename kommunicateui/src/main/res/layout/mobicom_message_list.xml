@@ -25,6 +25,7 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/km_message_list_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -346,7 +347,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                <LinearLayout
                     android:id="@+id/individual_message_send_layout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -461,7 +462,7 @@
                                 android:maxLines="6"
                                 android:minLines="2"
                                 android:textAlignment="viewStart"
-                                android:textColorHint="#8f8b8b"
+                                android:textColorHint="@color/km_text_color_hint"
                                 android:textSize="14sp" />
 
                         </RelativeLayout>

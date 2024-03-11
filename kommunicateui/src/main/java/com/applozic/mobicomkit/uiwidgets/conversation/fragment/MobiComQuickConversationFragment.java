@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -24,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -101,6 +103,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     Button startNewConv;
     RelativeLayout faqButtonLayout;
+    boolean isCurrentlyInDarkMode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,29 +136,18 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
         kmMessageLinearLayout.setVisibility(View.GONE);
-        boolean isDarkMode = false;
-        // uncomment these 4 lines for testing
-
-        /*
-        if (getContext() != null) {
-            isDarkMode = (getContext().getResources().getConfiguration().uiMode &
-                    Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
-        }
-        */
+        isCurrentlyInDarkMode = KmThemeHelper.getInstance(getContext(),alCustomizationSettings).isDarkModeEnabledForSDK();
 
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
-        if (isDarkMode) {
-            recyclerView.setBackgroundColor(getResources().getColor(R.color.conversation_list_all_background_night));
-        } else {
-            recyclerView.setBackgroundColor(getResources().getColor(R.color.conversation_list_all_background));
-        }
+//        recyclerView.setBackgroundColor(getResources().getColor(isCurrentlyInDarkMode ? R.color.dark_mode_default : R.color.conversation_list_all_background));
         recyclerView.setPadding(0, 0, 0, (int) DimensionsUtils.convertDpToPixel(95));
 
 
         if (messageList != null && !messageList.contains(null)) {
             messageList.add(null);
         }
-        recyclerAdapter = new QuickConversationAdapter(getContext(), messageList, null,isDarkMode);
+        recyclerAdapter = new QuickConversationAdapter(getContext(), messageList, null);
+        recyclerAdapter.setDarkMode(isCurrentlyInDarkMode);
         recyclerAdapter.setAlCustomizationSettings(alCustomizationSettings);
 
         faqButtonLayout = getActivity().findViewById(R.id.faqButtonLayout);
@@ -201,7 +193,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
 
         startNewConv = list.findViewById(R.id.start_new_conversation);
-        KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(alCustomizationSettings.getStartNewConversationButtonBackgroundColor()) ? Color.parseColor(alCustomizationSettings.getStartNewConversationButtonBackgroundColor()) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
+//        KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) ? Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
 
         if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             startNewConv.setVisibility(View.VISIBLE);
@@ -225,11 +217,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         extendedSendingOptionLayout.setVisibility(View.GONE);
 
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
-        if(isDarkMode) {
-            emptyTextView.setTextColor(getResources().getColor(R.color.white));
-        } else {
-            emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
-        }
+//        emptyTextView.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getNoConversationLabelTextColor().get(1).trim() : alCustomizationSettings.getNoConversationLabelTextColor().get(0).trim()));
 
         swipeLayout = (SwipeRefreshLayout) list.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
@@ -238,6 +226,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 android.R.color.holo_red_light);
 
         recyclerView.setLongClickable(true);
+        setupModes(isCurrentlyInDarkMode);
         registerForContextMenu(recyclerView);
         return list;
     }
@@ -251,6 +240,28 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 }
             }
         };
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        boolean newDarkModeStatus = KmThemeHelper.getInstance(getContext(),alCustomizationSettings).isDarkModeEnabledForSDK();
+        if (isCurrentlyInDarkMode != newDarkModeStatus) {
+            isCurrentlyInDarkMode = newDarkModeStatus;
+            if (newDarkModeStatus){
+                setupModes(true);
+            } else {
+                setupModes(false);
+            }
+        }
+    }
+
+    private void setupModes(boolean isDarkModeEnabled) {
+        emptyTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getNoConversationLabelTextColor().get(1).trim() : alCustomizationSettings.getNoConversationLabelTextColor().get(0).trim()));
+        KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) ? Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
+        recyclerView.setBackgroundColor(getResources().getColor(isCurrentlyInDarkMode ? R.color.dark_mode_default : R.color.conversation_list_all_background));
+        recyclerAdapter.setDarkMode(isDarkModeEnabled);
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     @Override

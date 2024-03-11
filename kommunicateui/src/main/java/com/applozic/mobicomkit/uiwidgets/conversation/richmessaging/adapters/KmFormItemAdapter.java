@@ -3,6 +3,9 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -41,6 +44,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFor
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadioGroup;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmSelectButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -319,6 +323,21 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 } else {
                                     final CheckBox checkBox = new CheckBox(context);
                                     checkBox.setGravity(Gravity.FILL);
+                                    if (KmThemeHelper.getInstance(context,alCustomizationSettings).isDarkModeEnabledForSDK()){
+                                        checkBox.setTextColor(Color.WHITE);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            checkBox.setButtonTintList(new ColorStateList(
+                                                    new int[][] {
+                                                            new int[] {android.R.attr.state_checked},
+                                                            new int[] {android.R.attr.state_enabled}
+                                                    },
+                                                    new int[] {
+                                                            Color.WHITE,
+                                                            Color.WHITE
+                                                    }
+                                            ));
+                                        }
+                                    }
                                     if (checkedBoxes.contains(index)){
                                         checkBox.setChecked(true);
                                     } else if (unCheckedBoxes.contains(index)){
@@ -633,7 +652,14 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             formLabel = itemView.findViewById(R.id.km_form_label_text);
+            KmThemeHelper themeHelper = KmThemeHelper.getInstance(context,alCustomizationSettings);
+            if (formLabel != null && themeHelper.isDarkModeEnabledForSDK()){
+                formLabel.setTextColor(context.getResources().getColor(R.color.white));
+            }
             formEditText = itemView.findViewById(R.id.km_form_edit_text);
+            if (formEditText != null && themeHelper.isDarkModeEnabledForSDK()){
+                formEditText.setTextColor(context.getResources().getColor(R.color.received_message_bg_color_night));
+            }
             formItemRootLayout = itemView.findViewById(R.id.km_form_item_root_layout);
             formFlowLayout = itemView.findViewById(R.id.km_form_selection_layout);
             formDatePicker = itemView.findViewById(R.id.km_form_date_picker);

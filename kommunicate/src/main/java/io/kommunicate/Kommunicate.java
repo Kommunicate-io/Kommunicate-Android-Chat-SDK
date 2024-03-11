@@ -22,7 +22,6 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
@@ -64,6 +63,7 @@ import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.preference.KmPreference;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -366,6 +366,18 @@ public class Kommunicate {
             }
         });
     }
+
+
+    /**
+     * To update the assignee status(online/offline/away) dynamically
+     *
+     * @param assigneeId  conversation assignee id
+     * @param status to update the assignee status
+     */
+    public static void updateAssigneeStatus(String assigneeId , KMAgentStatusHelper.KMAgentStatus status) {
+        KMAgentStatusHelper.updateAssigneeStatus(assigneeId,status);
+    }
+
 
     public static void logout(Context context, final KMLogoutHandler logoutHandler) {
         KMLogoutHandler handler = new KMLogoutHandler() {

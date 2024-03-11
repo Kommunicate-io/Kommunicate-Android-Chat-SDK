@@ -32,6 +32,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 
 import java.util.Objects;
 
+import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmConstants;
 
 public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment {
@@ -254,5 +255,10 @@ public class ConversationFragment extends MobiComConversationFragment implements
     @Override
     public void onGroupMute(Integer groupId) {
 
+    }
+
+    @Override
+    public void onAgentStatusChange(String assigneeId, KMAgentStatusHelper.KMAgentStatus status) {
+        updateAssigneeStatus(assigneeId,status);
     }
 }

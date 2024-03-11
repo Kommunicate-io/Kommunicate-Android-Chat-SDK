@@ -3519,7 +3519,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void updateAssigneeStatus(String assigneeId, KMAgentStatusHelper.KMAgentStatus status) {
         Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
-        if (!Objects.equals(assigneeContact.getUserId(), assigneeId)) return;
+        if (!TextUtils.isEmpty(assigneeId) && !Objects.equals(assigneeContact.getUserId(), assigneeId)) return;
 
         if (fontManager != null && fontManager.getToolbarSubtitleFont() != null) {
             toolbarSubtitleText.setTypeface(fontManager.getToolbarSubtitleFont());

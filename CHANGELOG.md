@@ -3,6 +3,8 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.9.3
+1) Added support for updating agent status dynamically
 ## Kommunicate Android SDK 2.9.2
 1) Conversation assignment message UI update
 2) Fixed anonymous icon not showing for anonymous android users in dashboard

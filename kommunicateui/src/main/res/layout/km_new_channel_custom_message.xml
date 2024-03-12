@@ -10,6 +10,7 @@
     android:paddingBottom="15dp">
 
     <View
+        android:id="@+id/km_transferred_to_left_bg"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginStart="3dp"
@@ -20,6 +21,7 @@
         android:background="@color/black" />
 
     <TextView
+        android:id="@+id/km_transferred_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
@@ -43,6 +45,7 @@
         android:textStyle="bold" />
 
     <View
+        android:id="@+id/km_transferred_to_right_bg"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginStart="3dp"

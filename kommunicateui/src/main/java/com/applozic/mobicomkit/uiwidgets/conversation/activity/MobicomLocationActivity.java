@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
@@ -74,6 +75,8 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     Marker myLocationMarker;
     KmPermissions kmPermissions;
     static final String TAG = "MobicomLocationActivity";
+    private LinearLayout locationLinearLayout;
+    private TextView sendLocationText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +103,12 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         kmPermissions = new KmPermissions(MobicomLocationActivity.this, layout);
+        locationLinearLayout = findViewById(R.id.km_location_linear_layout);
+        sendLocationText = findViewById(R.id.km_send_location_text);
+        if (KmThemeHelper.getInstance(this,alCustomizationSettings).isDarkModeEnabledForSDK()){
+            locationLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
+            sendLocationText.setTextColor(getResources().getColor(R.color.white));
+        }
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)

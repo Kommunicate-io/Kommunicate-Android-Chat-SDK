@@ -60,9 +60,9 @@ public class KmImageRMAdapter extends KmRichMessageAdapter {
             if (payloadModel != null) {
                 if (alCustomizationSettings != null) {
                     GradientDrawable bgShape = (GradientDrawable) imageViewHolder.rootLayout.getBackground();
-                    bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                    bgShape.setColor(message.isTypeOutbox() ? themeHelper.getSentMessageBackgroundColor() : Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getReceivedMessageBackgroundColor().get(1) : alCustomizationSettings.getReceivedMessageBorderColor().get(0)));
                     bgShape.setStroke(3, message.isTypeOutbox() ? themeHelper.getSentMessageBorderColor() :
-                            Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
+                            Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getReceivedMessageBorderColor().get(1) : alCustomizationSettings.getReceivedMessageBorderColor().get(0)));
                 }
                 if (!TextUtils.isEmpty(payloadModel.getUrl())) {
                     Glide.with(context)
@@ -75,7 +75,7 @@ public class KmImageRMAdapter extends KmRichMessageAdapter {
                 if (payloadModel.getCaption() != null && !TextUtils.isEmpty(payloadModel.getCaption().trim())) {
                     imageViewHolder.captionText.setVisibility(View.VISIBLE);
                     imageViewHolder.captionText.setText(payloadModel.getCaption());
-                    imageViewHolder.captionText.setTextColor(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                    imageViewHolder.captionText.setTextColor(Color.parseColor(message.isTypeOutbox() ? (themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageTextColor().get(1) : alCustomizationSettings.getSentMessageTextColor().get(0)) : (themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getReceivedMessageTextColor().get(1) : alCustomizationSettings.getReceivedMessageTextColor().get(0))));
                 } else {
                     imageViewHolder.captionText.setVisibility(View.GONE);
                 }

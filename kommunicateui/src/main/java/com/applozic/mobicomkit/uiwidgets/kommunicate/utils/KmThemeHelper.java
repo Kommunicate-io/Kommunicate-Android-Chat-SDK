@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.utils;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.text.TextUtils;
 
@@ -70,21 +71,21 @@ public class KmThemeHelper implements KmCallback {
 
     public int getToolbarTitleColor() {
         if (toolbarTitleColor == -1) {
-            toolbarTitleColor = parseColorWithDefault(alCustomizationSettings.getToolbarTitleColor(), context.getResources().getColor(R.color.toolbar_title_color));
+            toolbarTitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarTitleColor().get(1) : alCustomizationSettings.getToolbarTitleColor().get(0), context.getResources().getColor(R.color.toolbar_title_color));
         }
         return toolbarTitleColor;
     }
 
     public int getToolbarSubtitleColor() {
         if (toolbarSubtitleColor == -1) {
-            toolbarSubtitleColor = parseColorWithDefault(alCustomizationSettings.getToolbarSubtitleColor(), context.getResources().getColor(R.color.toolbar_subtitle_color));
+            toolbarSubtitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarSubtitleColor().get(1) : alCustomizationSettings.getToolbarSubtitleColor().get(0), context.getResources().getColor(R.color.toolbar_subtitle_color));
         }
         return toolbarSubtitleColor;
     }
 
     public int getSentMessageBackgroundColor() {
         if (sentMessageBackgroundColor == -1) {
-            String colorStr = alCustomizationSettings.getSentMessageBackgroundColor();
+            String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageBackgroundColor().get(1) : alCustomizationSettings.getSentMessageBackgroundColor().get(0);
 
             if (TextUtils.isEmpty(colorStr)) {
                 colorStr = appSettingPreferences.getPrimaryColor();
@@ -142,7 +143,7 @@ public class KmThemeHelper implements KmCallback {
 
     public int getSentMessageBorderColor() {
         if (sentMessageBorderColor == -1) {
-            String colorStr = alCustomizationSettings.getSentMessageBorderColor();
+            String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageBorderColor().get(1) : alCustomizationSettings.getSentMessageBorderColor().get(0);
 
             if (TextUtils.isEmpty(colorStr)) {
                 colorStr = appSettingPreferences.getPrimaryColor();
@@ -154,7 +155,7 @@ public class KmThemeHelper implements KmCallback {
 
     public int getSendButtonBackgroundColor() {
         if (sendButtonBackgroundColor == -1) {
-            String colorStr = alCustomizationSettings.getSendButtonBackgroundColor();
+            String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSendButtonBackgroundColor().get(1) : alCustomizationSettings.getSendButtonBackgroundColor().get(0);
 
             if (TextUtils.isEmpty(colorStr)) {
                 colorStr = appSettingPreferences.getPrimaryColor();
@@ -166,7 +167,7 @@ public class KmThemeHelper implements KmCallback {
 
     public int getMessageStatusIconColor() {
         if (messageStatusIconColor == -1) {
-            String colorStr = alCustomizationSettings.getMessageStatusIconColor();
+            String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0);
 
             if (TextUtils.isEmpty(colorStr)) {
                 colorStr = appSettingPreferences.getPrimaryColor();
@@ -186,23 +187,28 @@ public class KmThemeHelper implements KmCallback {
 
     public int getToolbarColor() {
         if (toolbarColor == -1) {
-            toolbarColor = parseColorWithDefault(alCustomizationSettings.getToolbarColor(), getPrimaryColor());
+            toolbarColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarColor().get(1) : alCustomizationSettings.getToolbarColor().get(0), getPrimaryColor());
         }
         return toolbarColor;
     }
 
     public int getStatusBarColor() {
         if (statusBarColor == -1) {
-            statusBarColor = parseColorWithDefault(alCustomizationSettings.getStatusBarColor(), getSecondaryColor());
+            statusBarColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getStatusBarColor().get(1) : alCustomizationSettings.getStatusBarColor().get(0), getSecondaryColor());
         }
         return statusBarColor;
     }
 
     public int getRichMessageThemeColor() {
         if (richMessageThemeColor == -1) {
-            richMessageThemeColor = parseColorWithDefault(alCustomizationSettings.getRichMessageThemeColor(), getPrimaryColor());
+            richMessageThemeColor = parseColorWithDefault(isDarkModeEnabledForSDK() ?  alCustomizationSettings.getRichMessageThemeColor().get(1) : alCustomizationSettings.getRichMessageThemeColor().get(0), getPrimaryColor());
         }
         return richMessageThemeColor;
+    }
+
+    public boolean isDarkModeEnabledForSDK() {
+        return !alCustomizationSettings.isAgentApp() && alCustomizationSettings.getUseDarkMode() && ((context.getResources().getConfiguration().uiMode &
+                Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
     }
 
     public static void clearInstance() {

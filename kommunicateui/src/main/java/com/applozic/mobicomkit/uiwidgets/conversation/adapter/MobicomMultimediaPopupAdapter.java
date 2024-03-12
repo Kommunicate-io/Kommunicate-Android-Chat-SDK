@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 
 import java.util.List;
 
@@ -56,8 +57,9 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
         TextView icon = (TextView) convertView.findViewById(R.id.mobicom_multimedia_icon);
         Typeface iconTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
         icon.setTypeface(iconTypeface);
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(context,new AlCustomizationSettings());
         TextView text = (TextView) convertView.findViewById(R.id.mobicom_multimedia_text);
-        icon.setTextColor(Color.parseColor(alCustomizationSettings.getAttachmentIconsBackgroundColor()));
+        icon.setTextColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAttachmentIconsBackgroundColor().get(1) : alCustomizationSettings.getAttachmentIconsBackgroundColor().get(0)));
         icon.setText(multimediaIcons.get(position));
         text.setText(multimediaText.get(position));
         return convertView;

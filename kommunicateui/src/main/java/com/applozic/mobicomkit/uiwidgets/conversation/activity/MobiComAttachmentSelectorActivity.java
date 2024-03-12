@@ -7,6 +7,10 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.NinePatchDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -74,6 +79,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     List<String> restrictedWords;
     private ArrayList<Uri> attachmentFileList = new ArrayList<>();
     private MobiComAttachmentGridViewAdapter imagesAdapter;
+    private LinearLayout idRootLinearLayout;
 
     KmAttachmentsController kmAttachmentsController;
     PrePostUIMethods prePostUIMethodsFileAsyncTask;
@@ -141,7 +147,15 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         cancelAttachment = (Button) findViewById(R.id.mobicom_attachment_cancel_btn);
         galleryImagesGridView = (GridView) findViewById(R.id.mobicom_attachment_grid_View);
         messageEditText = (EditText) findViewById(R.id.mobicom_attachment_edit_text);
-
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this,alCustomizationSettings);
+        if (themeHelper.isDarkModeEnabledForSDK()) {
+            idRootLinearLayout = findViewById(R.id.idRootLinearLayout);
+            idRootLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
+            NinePatchDrawable bgShape = (NinePatchDrawable) messageEditText.getBackground();
+            bgShape.setColorFilter(getResources().getColor(R.color.received_message_bg_color_night), android.graphics.PorterDuff.Mode.MULTIPLY);
+            messageEditText.setTextColor(getResources().getColor(R.color.chatbar_text_color));
+            messageEditText.setHintTextColor(getResources().getColor(R.color.chatbar_text_color));
+        }
         cancelAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

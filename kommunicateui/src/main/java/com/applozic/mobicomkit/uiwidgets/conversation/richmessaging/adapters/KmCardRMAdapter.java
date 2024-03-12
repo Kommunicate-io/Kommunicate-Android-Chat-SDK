@@ -1,6 +1,11 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -110,6 +115,15 @@ public class KmCardRMAdapter extends KmRichMessageAdapter {
         CardViewHolder viewHolder = (CardViewHolder) holder;
         if (payloadList != null) {
             final KmRichMessageModel.KmPayloadModel payloadModel = payloadList.get(position);
+            GradientDrawable drawable = (GradientDrawable) viewHolder.productPrice.getBackground();
+            if (themeHelper.isDarkModeEnabledForSDK()){
+                viewHolder.productName.setTextColor(Color.WHITE);
+                drawable.setColor(Color.BLACK);
+                viewHolder.productPrice.setTextColor(Color.WHITE);
+            } else {
+                drawable.setColor(context.getResources().getColor(R.color.km_white_color));
+            }
+            viewHolder.productPrice.setBackground(drawable);
 
             if (payloadModel.getHeader() != null && !TextUtils.isEmpty(payloadModel.getHeader().getImgSrc())) {
                 Glide.with(context).load(payloadModel.getHeader().getImgSrc()).into(viewHolder.productImage);

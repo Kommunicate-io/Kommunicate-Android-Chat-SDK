@@ -281,8 +281,15 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     public void onLocationChanged(Location location) {
         try {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+            boolean reloadMap = false;
             if (location != null) {
+                if (mCurrentLocation == null){
+                    reloadMap = true;
+                }
                 mCurrentLocation = location;
+                if (reloadMap) {
+                    mapFragment.getMapAsync(this);
+                }
             }
         } catch (Exception e) {
         }

@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:background="@color/applozic_dark_black_color"
         android:elevation="4dp"
-        android:paddingTop="10dp"
         android:theme="@style/Applozic_FullScreen_Theme"
         app:popupTheme="@style/Applozic_PopUpTheme"
         app:subtitleTextAppearance="@style/ToolbarSubtitle"

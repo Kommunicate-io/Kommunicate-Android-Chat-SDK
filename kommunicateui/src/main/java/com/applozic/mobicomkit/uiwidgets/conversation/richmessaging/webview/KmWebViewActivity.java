@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -61,10 +63,15 @@ public class KmWebViewActivity extends AppCompatActivity {
             alCustomizationSettings = new AlCustomizationSettings();
         }
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(themeHelper.getPrimaryColor()));
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().show();
 
-        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
+        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
 
         webView = findViewById(R.id.paymentWebView);
         loadingProgressBar = findViewById(R.id.loadingProgress);

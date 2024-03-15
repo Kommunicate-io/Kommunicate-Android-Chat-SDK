@@ -3,6 +3,11 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.9.4
+1) Added support for iframe in HTML type rich message
+2) Fixed location issues
+3) Image full screen view improvement
+4) Added back button in in-app browser
 ## Kommunicate Android SDK 2.9.3
 1) Added support for updating agent status dynamically
 ## Kommunicate Android SDK 2.9.2

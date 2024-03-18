@@ -9,7 +9,6 @@ import android.graphics.drawable.GradientDrawable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
@@ -255,8 +254,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 } else if (message.getContentType() == Message.ContentType.PRICE.getValue()) {
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, ConversationUIService.FINAL_PRICE_TEXT + message.getMessage(), emojiconHandler));
                 } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
-                    myholder.messageTextView.setText(Html.fromHtml(message.getMessage()));
-                    if (DetailedConversationAdapter.isEmailTypeMessage(message)) {
+                    KmUtils.setIconInsideTextView(myholder.messageTextView, R.drawable.ic_messageicon, Color.TRANSPARENT, KmUtils.LEFT_POSITION, 20, isDarkMode);                    if (DetailedConversationAdapter.isEmailTypeMessage(message)) {
+                    myholder.messageTextView.setText(DEFAULT_MSG_BODY);
                         myholder.attachmentIcon.setVisibility(View.VISIBLE);
                         myholder.attachmentIcon.setImageResource(R.drawable.email);
                     }
@@ -555,7 +554,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
 
                 switch (item.getItemId()) {
                     case 0:
-                        if(channel != null) {
+                        if (channel != null) {
                             conversationUIService.deleteChannel(context, channel);
                         }
                         break;

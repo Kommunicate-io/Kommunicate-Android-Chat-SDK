@@ -179,6 +179,6 @@
   "disableFormPostSubmit": false,
   "chatBarTopLineViewColor": "",
   "isMultipleAttachmentSelectionEnabled": false,
-  "isImageCompressionEnabled": true,
+  "isImageCompressionEnabled": false,
   "minimumCompressionThresholdForImagesInMB": 5
 }

@@ -178,5 +178,7 @@
   "toolbarTitleCenterAligned": false,
   "disableFormPostSubmit": false,
   "chatBarTopLineViewColor": "",
-  "isMultipleAttachmentSelectionEnabled": false
+  "isMultipleAttachmentSelectionEnabled": false,
+  "isImageCompressionEnabled": true,
+  "minimumCompressionThresholdForImagesInMB": 5
 }

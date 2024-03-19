@@ -61,14 +61,13 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
     }
 
     private Uri compressImage(Uri uri, Context context, String fileName) {
-        File tempFile = null;
         try {
             Bitmap originalBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, null);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             originalBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
 
-            tempFile = File.createTempFile(fileName,null, context.getCacheDir());
+            File tempFile = File.createTempFile(fileName,null, context.getCacheDir());
             tempFile.deleteOnExit();
 
             FileOutputStream fileOutputStream = new FileOutputStream(tempFile);

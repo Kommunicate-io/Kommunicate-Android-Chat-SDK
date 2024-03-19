@@ -69,6 +69,7 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
             originalBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
 
             tempFile = File.createTempFile(fileName,null, context.getCacheDir());
+            tempFile.deleteOnExit();
 
             FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
             fileOutputStream.write(outputStream.toByteArray());
@@ -78,14 +79,6 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
             return Uri.fromFile(tempFile);
         } catch (Exception e){
             e.printStackTrace();
-        } finally {
-            if (tempFile != null) {
-                try {
-                    tempFile.delete();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return null;
     }

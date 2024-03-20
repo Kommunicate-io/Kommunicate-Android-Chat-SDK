@@ -329,12 +329,19 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel<List<KmFormPayloadModel>> richMessageModel = new Gson().fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
             }.getType());
 
+            List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
+            if (TextUtils.isEmpty(submitButtonMessage)) {
+                for (KmFormPayloadModel model: formPayloadModelList) {
+                    if (model.isTypeAction()) {
+                        submitButtonMessage = model.getAction().getName();
+                        break;
+                    }
+                }
+            }
             StringBuilder messageToSend = new StringBuilder(submitButtonMessage);
             if (!TextUtils.isEmpty(messageToSend)) {
                 messageToSend.append("\n");
             }
-
-            List<KmFormPayloadModel> formPayloadModelList = richMessageModel.getFormModelList();
 
             for (KmFormPayloadModel model : formPayloadModelList) {
                 //Submit Button

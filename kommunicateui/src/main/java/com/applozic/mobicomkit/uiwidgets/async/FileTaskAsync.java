@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
+import com.applozic.mobicommons.file.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,7 +47,7 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
     @Override
     protected Boolean doInBackground(Void... voids) {
         if (isCompressionNeeded) {
-            uri = compressImage(uri,context,file.getName());
+            uri = FileUtils.compressImage(uri,context, file.getName());
         }
         if (fileClientService != null) {
             fileClientService.writeFile(uri, file);
@@ -57,30 +58,6 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
     @Override
     protected void onPostExecute(Boolean completed) {
         super.onPostExecute(completed);
-        prePostUIMethods.postTaskUIMethod(completed, file);
-    }
-
-    private Uri compressImage(Uri uri, Context context, String fileName) {
-        try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 2;
-            Bitmap originalBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            originalBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
-
-            File tempFile = File.createTempFile(fileName,null, context.getCacheDir());
-            tempFile.deleteOnExit();
-
-            FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-            fileOutputStream.write(outputStream.toByteArray());
-            fileOutputStream.flush();
-            fileOutputStream.close();
-
-            return Uri.fromFile(tempFile);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+        prePostUIMethods.postTaskUIMethod(uri, completed, file);
     }
 }

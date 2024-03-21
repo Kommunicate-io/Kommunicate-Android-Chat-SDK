@@ -2516,7 +2516,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void loadFile(Uri uri, File file) {
+    public void loadFile(Uri uri, File file, String mimeType) {
         if (uri == null || file == null) {
             KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.file_not_selected), Toast.LENGTH_LONG).show();
             return;
@@ -2529,7 +2529,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_file_attachment_error), Toast.LENGTH_LONG).show();
             return;
         }
-        String mimeType = ApplozicService.getContext(getContext()).getContentResolver().getType(uri);
+        if(TextUtils.isEmpty(mimeType)){
+            mimeType = ApplozicService.getContext(getContext()).getContentResolver().getType(uri);
+        }
         Cursor returnCursor =
                 ApplozicService.getContext(getContext()).getContentResolver().query(uri, null, null, null, null);
         if (returnCursor != null) {

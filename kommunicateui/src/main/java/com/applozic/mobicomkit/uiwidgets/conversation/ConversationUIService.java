@@ -237,7 +237,8 @@ public class ConversationUIService {
                 } else {
                     alCustomizationSettings = new AlCustomizationSettings();
                 }
-                if (alCustomizationSettings.isImageCompressionEnabled()) {
+                boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB());
+                if (isFileCompressionNeeded) {
                     new FileTaskAsync(file, selectedFileUri, getConversationFragment().getContext(), new PrePostUIMethods() {
                         @Override
                         public void preTaskUIMethod() {}
@@ -247,7 +248,7 @@ public class ConversationUIService {
                             getConversationFragment().loadFile(uri, file, mimeType);
                             Utils.printLog(fragmentActivity, TAG, "File uri: " + uri);
                         }
-                    }, FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB())).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
                     getConversationFragment().loadFile(selectedFileUri, file, null);
                     Utils.printLog(fragmentActivity, TAG, "File uri: " + selectedFileUri);

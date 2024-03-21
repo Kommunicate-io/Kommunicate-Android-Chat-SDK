@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,8 +73,8 @@ public class KmUtils {
         }
     }
 
-    public static void setDrawableTint(TextView textView, int colorId, int index) {
-        textView.getCompoundDrawables()[index]
+    public static void setDrawableTint(ImageView imageView, int colorId) {
+        imageView.getDrawable()
                 .setColorFilter(new PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN));
     }
 

@@ -73,6 +73,11 @@ public class KmUtils {
         }
     }
 
+    public static void setDrawableTint(TextView textView, int colorId, int index) {
+        textView.getCompoundDrawables()[index]
+                .setColorFilter(new PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN));
+    }
+
     public static void setDrawableTint(ImageView imageView, int colorId) {
         imageView.getDrawable()
                 .setColorFilter(new PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN));
@@ -111,7 +116,7 @@ public class KmUtils {
         if (color != Color.TRANSPARENT) {
             textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
         }
-        if (isDarKMode){
+        if (isDarKMode) {
             textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
         }
     }
@@ -163,7 +168,7 @@ public class KmUtils {
         FileMeta fileMeta = message.getFileMetas();
         if (fileMeta == null && message.getFilePaths() != null) {
             return new File(message.getFilePaths().get(0)).getName().replace(KmConstants.AWS_ENCRYPTED, "").replace(String.valueOf(message.getCreatedAtTime()), "");
-        } else if (message.getFilePaths() != null){
+        } else if (message.getFilePaths() != null) {
             return new File(message.getFilePaths().get(0)).getName().replace(KmConstants.AWS_ENCRYPTED, "").replace(String.valueOf(message.getCreatedAtTime()), "");
         }
         if (fileMeta != null && fileMeta.getName() != null) {

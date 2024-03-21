@@ -150,6 +150,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean disableFormPostSubmit = false;
     private String chatBarTopLineViewColor = "";
     private boolean isMultipleAttachmentSelectionEnabled = false;
+    private boolean isImageCompressionEnabled = false;
+    private int minimumCompressionThresholdForImagesInMB = 5;
 
     public String getStaticTopMessage() {
         return staticTopMessage;
@@ -779,6 +781,14 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isMultipleAttachmentSelectionEnabled() {
         return isMultipleAttachmentSelectionEnabled;
+    }
+
+    public boolean isImageCompressionEnabled() {
+        return isImageCompressionEnabled;
+    }
+
+    public int getMinimumCompressionThresholdForImagesInMB() {
+        return minimumCompressionThresholdForImagesInMB;
     }
 
     @Override

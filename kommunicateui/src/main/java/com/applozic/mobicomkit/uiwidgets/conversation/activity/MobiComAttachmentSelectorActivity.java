@@ -208,7 +208,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             }
 
             @Override
-            public void postTaskUIMethod(boolean completed, File file) {
+            public void postTaskUIMethod(Uri selectedFileUri, boolean completed, File file) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }

@@ -476,7 +476,7 @@
                             <ImageButton
                                 android:id="@+id/emoji_btn"
                                 android:layout_width="20dp"
-                                android:layout_height="18dp"
+                                android:layout_height="20dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
                                 android:background="@color/applozic_transparent_color"
@@ -484,50 +484,50 @@
 
                             <ImageButton
                                 android:id="@+id/camera_btn"
-                                android:layout_width="20dp"
-                                android:layout_height="16.3dp"
-                                android:layout_marginStart="29dp"
-                                android:layout_marginLeft="29dp"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginLeft="16dp"
                                 android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/camera" />
+                                android:src="@drawable/icon_camera" />
 
 
 
                             <ImageButton
                                 android:id="@+id/location_btn"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_marginStart="29dp"
-                                android:layout_marginLeft="29dp"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginLeft="16dp"
                                 android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/locaiton" />
+                                android:src="@drawable/icon_location" />
 
                             <ImageButton
                                 android:id="@+id/btn_video_capture"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_marginStart="29dp"
-                                android:layout_marginLeft="29dp"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginLeft="16dp"
                                 android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/km_ic_action_video" />
+                                android:src="@drawable/icon_video_camera" />
                             <ImageButton
                                 android:id="@+id/idMultiSelectGalleryButton"
-                                android:layout_width="20dp"
-                                android:layout_height="18dp"
-                                android:layout_marginStart="30dp"
-                                android:layout_marginLeft="30dp"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginLeft="16dp"
                                 android:background="@color/applozic_transparent_color"
                                 android:src="@drawable/km_multiselectgallery_icon"
-                                android:visibility="gone" />
+                                android:visibility="visible" />
 
                             <ImageButton
                                 android:id="@+id/file_as_attachment_btn"
-                                android:layout_width="20dp"
-                                android:layout_height="18.3dp"
-                                android:layout_marginStart="30dp"
-                                android:layout_marginLeft="30dp"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginLeft="16dp"
                                 android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/attachment" />
+                                android:src="@drawable/icon_attchment_file" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>

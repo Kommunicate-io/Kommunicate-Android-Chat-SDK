@@ -270,7 +270,6 @@ public class ConversationUIService {
 
                 if (selectedFilePath != null) {
                     getConversationFragment().loadFile(selectedFilePath, file, null);
-                    getConversationFragment().sendMessage("", Message.ContentType.VIDEO_MSG.getValue());
                 }
             }
 

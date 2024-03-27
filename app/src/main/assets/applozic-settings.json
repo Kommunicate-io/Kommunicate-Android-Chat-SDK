@@ -122,7 +122,8 @@
     ":location": true,
     ":camera": true,
     ":file": true,
-    ":audio": true
+    ":audio": true,
+    ":video": true
   },
   "editTextHintText": "",
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",

@@ -26,6 +26,7 @@ import io.kommunicate.utils.KmUtils;
 public class ButtonKmRichMessage extends KmRichMessage {
 
     public static final int QUICK_REPLY_TEMPLATE_ID = 6;
+    public static final int WEB_LINK_TEMPLATE_ID = 3;
 
     public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
         super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
@@ -108,7 +109,7 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
     public String getActionType(KmRichMessageModel.KmPayloadModel payloadModel, Short templateId) {
         if (payloadModel.getAction() == null) {
-            return templateId == QUICK_REPLY_TEMPLATE_ID ? QUICK_REPLY : SUBMIT_BUTTON;
+            return templateId == QUICK_REPLY_TEMPLATE_ID ? QUICK_REPLY : templateId == WEB_LINK_TEMPLATE_ID ? WEB_LINK : SUBMIT_BUTTON;
         }
         return payloadModel.getAction() != null && !TextUtils.isEmpty(payloadModel.getAction().getType()) ? payloadModel.getAction().getType() : payloadModel.getType();
     }

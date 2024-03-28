@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,6 +78,11 @@ public class KmUtils {
                 .setColorFilter(new PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN));
     }
 
+    public static void setDrawableTint(ImageView imageView, int colorId) {
+        imageView.getDrawable()
+                .setColorFilter(new PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN));
+    }
+
     public static void showToastAndLog(Context context, int messageResId) {
         Toast.makeText(context, messageResId, Toast.LENGTH_LONG).show();
         Utils.printLog(context, TAG, Utils.getString(context, messageResId));
@@ -110,7 +116,7 @@ public class KmUtils {
         if (color != Color.TRANSPARENT) {
             textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
         }
-        if (isDarKMode){
+        if (isDarKMode) {
             textView.getCompoundDrawables()[position].setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN));
         }
     }
@@ -162,7 +168,7 @@ public class KmUtils {
         FileMeta fileMeta = message.getFileMetas();
         if (fileMeta == null && message.getFilePaths() != null) {
             return new File(message.getFilePaths().get(0)).getName().replace(KmConstants.AWS_ENCRYPTED, "").replace(String.valueOf(message.getCreatedAtTime()), "");
-        } else if (message.getFilePaths() != null){
+        } else if (message.getFilePaths() != null) {
             return new File(message.getFilePaths().get(0)).getName().replace(KmConstants.AWS_ENCRYPTED, "").replace(String.valueOf(message.getCreatedAtTime()), "");
         }
         if (fileMeta != null && fileMeta.getName() != null) {

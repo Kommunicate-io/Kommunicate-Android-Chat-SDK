@@ -105,6 +105,7 @@ public class ListKmRichMessage extends KmRichMessage {
     }
 
     private List<KmRichMessageModel.KmElementModel> getFilteredList(boolean isMessageProcessed, List<KmRichMessageModel.KmElementModel> elementList) {
+       if (elementList == null) return new ArrayList<>();
         List<KmRichMessageModel.KmElementModel> newList = new ArrayList<>();
         for (KmRichMessageModel.KmElementModel element : elementList) {
             if (isMessageProcessed && hideMessage(themeHelper, element.getAction().getType())) {

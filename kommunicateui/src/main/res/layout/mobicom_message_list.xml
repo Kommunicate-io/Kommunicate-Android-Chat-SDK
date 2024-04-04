@@ -471,6 +471,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="fill_parent"
                             android:layout_marginTop="3dp"
+                            android:layout_marginBottom="3dp"
                             android:orientation="horizontal">
 
                             <ImageButton
@@ -517,8 +518,8 @@
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
                                 android:background="@color/applozic_transparent_color"
-                                android:src="@drawable/km_multiselectgallery_icon"
-                                android:visibility="visible" />
+                                android:src="@drawable/icon_gallery"
+                                android:visibility="gone" />
 
                             <ImageButton
                                 android:id="@+id/file_as_attachment_btn"

@@ -271,7 +271,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected ImageButton attachButton;
     protected Spinner sendType;
     protected LinearLayout individualMessageSendLayout, mainEditTextLinearLayout;
-    protected LinearLayout extendedSendingOptionLayout;
+    protected LinearLayout extendedSendingOptionLayout, attachmentIconLayout;
     protected RelativeLayout attachmentLayout;
     protected ProgressBar mediaUploadProgressBar;
     protected View spinnerLayout;
@@ -399,6 +399,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected Map<String, String> autoSuggestHeaders;
     protected String autoSuggestUrl;
     private Set<Message> botDelayMessageList;
+    private boolean isHandoverHappened = false;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -508,6 +509,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         conversationRootLayout = (RelativeLayout) list.findViewById(R.id.rl_conversation_layout);
+        attachmentIconLayout = (LinearLayout) list.findViewById(R.id.attachment_icon_layout);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
         linearLayoutManager = new KmLinearLayoutManager(getActivity());
         linearLayoutManager.setStackFromEnd(true);
@@ -1024,6 +1026,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         emoticonsBtn.setVisibility(View.GONE);
+
+        boolean hideAttachmentOptionsBeforeHandover = alCustomizationSettings.getHideAttachmentOptionsBeforeHandover();
+        if (hideAttachmentOptionsBeforeHandover) {
+            attachmentIconLayout.setVisibility(GONE);
+        }
 
         if (alCustomizationSettings.getAttachmentOptions() != null && !alCustomizationSettings.getAttachmentOptions().isEmpty()) {
             Map<String, Boolean> attachmentOptions = alCustomizationSettings.getAttachmentOptions();
@@ -2534,7 +2541,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_file_attachment_error), Toast.LENGTH_LONG).show();
             return;
         }
-        if(TextUtils.isEmpty(mimeType)){
+        if (TextUtils.isEmpty(mimeType)) {
             mimeType = ApplozicService.getContext(getContext()).getContentResolver().getType(uri);
         }
         Cursor returnCursor =
@@ -2573,6 +2580,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public synchronized boolean updateMessageList(Message message, boolean update) {
+        updateHandoverStatus(message);
         boolean toAdd = !messageList.contains(message);
         loadMore = true;
         if (update) {
@@ -3526,7 +3534,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void updateAssigneeStatus(String assigneeId, KMAgentStatusHelper.KMAgentStatus status) {
         Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
-        if (!TextUtils.isEmpty(assigneeId) && !Objects.equals(assigneeContact.getUserId(), assigneeId)) return;
+        if (!TextUtils.isEmpty(assigneeId) && !Objects.equals(assigneeContact.getUserId(), assigneeId))
+            return;
 
         if (fontManager != null && fontManager.getToolbarSubtitleFont() != null) {
             toolbarSubtitleText.setTypeface(fontManager.getToolbarSubtitleFont());
@@ -4151,6 +4160,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     for (int i = 1; i <= nextMessageList.size() - 1; i++) {
                         long dayDifference = DateUtils.daysBetween(new Date(nextMessageList.get(i - 1).getCreatedAtTime()), new Date(nextMessageList.get(i).getCreatedAtTime()));
 
+                        updateHandoverStatus(nextMessageList.get(i));
+
                         if (dayDifference >= 1) {
                             Message message = new Message();
                             message.setTempDateType(Short.valueOf("100"));
@@ -4447,6 +4458,21 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 customInputField = null;
                 isCustomFieldMessage = false;
+            }
+        }
+    }
+
+    public void updateHandoverStatus(Message message) {
+        if (!isHandoverHappened && !TextUtils.isEmpty(message.getMetadata().get("LOCALIZATION_VALUE"))) {
+            isHandoverHappened = true;
+            updateAttachmentOptionsVisibilityAfterHandover();
+        }
+    }
+
+    private void updateAttachmentOptionsVisibilityAfterHandover() {
+        if (isHandoverHappened && alCustomizationSettings.getHideAttachmentOptionsBeforeHandover()) {
+            if (attachmentIconLayout != null) {
+                attachmentIconLayout.setVisibility(VISIBLE);
             }
         }
     }

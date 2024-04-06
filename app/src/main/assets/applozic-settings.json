@@ -181,5 +181,6 @@
   "chatBarTopLineViewColor": "",
   "isMultipleAttachmentSelectionEnabled": false,
   "isImageCompressionEnabled": false,
-  "minimumCompressionThresholdForImagesInMB": 5
+  "minimumCompressionThresholdForImagesInMB": 5,
+  "hideAttachmentOptionsBeforeHandover": false
 }

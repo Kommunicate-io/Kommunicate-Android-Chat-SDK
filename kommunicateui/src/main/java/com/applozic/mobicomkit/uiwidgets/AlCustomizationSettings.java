@@ -32,7 +32,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String receivedMessageTextColor = "#646262";
     private String messageEditTextTextColor = "#000000";
     private String messageEditTextBackgroundColor = "";
-    private String autoSuggestionButtonBackgroundColor= "";
+    private String autoSuggestionButtonBackgroundColor = "";
     private String autoSuggestionButtonTextColor = "";
     private String sentMessageLinkTextColor = "#FFFFFFFF";
     private String receivedMessageLinkTextColor = "#5fba7d";
@@ -153,6 +153,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean isImageCompressionEnabled = false;
     private int minimumCompressionThresholdForImagesInMB = 5;
 
+    private boolean hideAttachmentOptionsBeforeHandover = false;
+
     public String getStaticTopMessage() {
         return staticTopMessage;
     }
@@ -164,17 +166,19 @@ public class AlCustomizationSettings extends JsonMarker {
     public String getMenuIconOnConversationScreen() {
         return menuIconOnConversationScreen;
     }
+
     public boolean isCheckboxAsMultipleButton() {
         return checkboxAsMultipleButton;
     }
+
     public boolean isRateConversationMenuOption() {
         return rateConversationMenuOption;
     }
-        
+
     public boolean isRestartConversationButtonVisibility() {
         return restartConversationButtonVisibility;
     }
-    
+
     public boolean isJavaScriptEnabled() {
         return javaScriptEnabled;
     }
@@ -619,8 +623,14 @@ public class AlCustomizationSettings extends JsonMarker {
     public String getMessageEditTextBackgroundColor() {
         return messageEditTextBackgroundColor;
     }
-    public String getAutoSuggestionButtonBackgroundColor() { return autoSuggestionButtonBackgroundColor; }
-    public String getAutoSuggestionButtonTextColor() { return autoSuggestionButtonTextColor; }
+
+    public String getAutoSuggestionButtonBackgroundColor() {
+        return autoSuggestionButtonBackgroundColor;
+    }
+
+    public String getAutoSuggestionButtonTextColor() {
+        return autoSuggestionButtonTextColor;
+    }
 
     public boolean isShowStartNewConversation() {
         return showStartNewConversation;
@@ -649,9 +659,11 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isAgentApp() {
         return isAgentApp;
     }
-    public boolean isUseDeviceDefaultLanguage(){
+
+    public boolean isUseDeviceDefaultLanguage() {
         return useDeviceDefaultLanguage;
     }
+
     public boolean isShowTypingIndicatorWhileFetchingResponse() {
         return showTypingIndicatorWhileFetchingResponse;
     }
@@ -719,6 +731,7 @@ public class AlCustomizationSettings extends JsonMarker {
     public String getToolbarTitleColor() {
         return toolbarTitleColor;
     }
+
     public String getChatBarTopLineViewColor() {
         return chatBarTopLineViewColor;
     }
@@ -791,6 +804,10 @@ public class AlCustomizationSettings extends JsonMarker {
         return minimumCompressionThresholdForImagesInMB;
     }
 
+    public boolean getHideAttachmentOptionsBeforeHandover() {
+        return hideAttachmentOptionsBeforeHandover;
+    }
+
     @Override
     public String toString() {
         return "AlCustomizationSettings{" +
@@ -855,7 +872,7 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", toolbarTitleColor=" + toolbarTitleColor +
                 ", toolbarSubtitleColor=" + toolbarSubtitleColor +
                 ", useDeviceDefaultLanguage=" + useDeviceDefaultLanguage +
-                ", showTypingIndicatorWhileFetchingResponse=" + showTypingIndicatorWhileFetchingResponse+
+                ", showTypingIndicatorWhileFetchingResponse=" + showTypingIndicatorWhileFetchingResponse +
                 '}';
     }
 }

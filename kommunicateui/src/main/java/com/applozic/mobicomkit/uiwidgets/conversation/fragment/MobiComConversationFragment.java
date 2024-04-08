@@ -202,8 +202,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -399,7 +397,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected Map<String, String> autoSuggestHeaders;
     protected String autoSuggestUrl;
     private Set<Message> botDelayMessageList;
-    private boolean isHandoverHappened = false;
+    private boolean isBotAssignee = true;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -1027,8 +1025,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         emoticonsBtn.setVisibility(View.GONE);
 
-        boolean hideAttachmentOptionsBeforeHandover = alCustomizationSettings.getHideAttachmentOptionsBeforeHandover();
-        if (hideAttachmentOptionsBeforeHandover) {
+        boolean hideAttachmentOptionsWithBots = alCustomizationSettings.getHideAttachmentOptionsWithBots();
+        if (hideAttachmentOptionsWithBots) {
             attachmentIconLayout.setVisibility(GONE);
         }
 
@@ -2580,7 +2578,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public synchronized boolean updateMessageList(Message message, boolean update) {
-        updateHandoverStatus(message);
+        updateBotTransferStatus(message);
         boolean toAdd = !messageList.contains(message);
         loadMore = true;
         if (update) {
@@ -4160,7 +4158,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     for (int i = 1; i <= nextMessageList.size() - 1; i++) {
                         long dayDifference = DateUtils.daysBetween(new Date(nextMessageList.get(i - 1).getCreatedAtTime()), new Date(nextMessageList.get(i).getCreatedAtTime()));
 
-                        updateHandoverStatus(nextMessageList.get(i));
+                        updateBotTransferStatus(nextMessageList.get(i));
 
                         if (dayDifference >= 1) {
                             Message message = new Message();
@@ -4462,15 +4460,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void updateHandoverStatus(Message message) {
-        if (!isHandoverHappened && !TextUtils.isEmpty(message.getMetadata().get("LOCALIZATION_VALUE"))) {
-            isHandoverHappened = true;
-            updateAttachmentOptionsVisibilityAfterHandover();
+    public void updateBotTransferStatus(Message message) {
+        if (isBotAssignee && !TextUtils.isEmpty(message.getMetadata().get("LOCALIZATION_VALUE"))) {
+            isBotAssignee = false;
+            updateAttachmentOptionsVisibility();
         }
     }
 
-    private void updateAttachmentOptionsVisibilityAfterHandover() {
-        if (isHandoverHappened && alCustomizationSettings.getHideAttachmentOptionsBeforeHandover()) {
+    private void updateAttachmentOptionsVisibility() {
+        if (!isBotAssignee && alCustomizationSettings.getHideAttachmentOptionsWithBots()) {
             if (attachmentIconLayout != null) {
                 attachmentIconLayout.setVisibility(VISIBLE);
             }

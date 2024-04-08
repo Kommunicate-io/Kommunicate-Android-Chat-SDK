@@ -153,7 +153,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean isImageCompressionEnabled = false;
     private int minimumCompressionThresholdForImagesInMB = 5;
 
-    private boolean hideAttachmentOptionsBeforeHandover = false;
+    private boolean hideAttachmentOptionsWithBots = false;
 
     public String getStaticTopMessage() {
         return staticTopMessage;
@@ -804,8 +804,8 @@ public class AlCustomizationSettings extends JsonMarker {
         return minimumCompressionThresholdForImagesInMB;
     }
 
-    public boolean getHideAttachmentOptionsBeforeHandover() {
-        return hideAttachmentOptionsBeforeHandover;
+    public boolean getHideAttachmentOptionsWithBots() {
+        return hideAttachmentOptionsWithBots;
     }
 
     @Override

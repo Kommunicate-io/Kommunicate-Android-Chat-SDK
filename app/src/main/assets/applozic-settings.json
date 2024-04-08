@@ -182,5 +182,5 @@
   "isMultipleAttachmentSelectionEnabled": false,
   "isImageCompressionEnabled": false,
   "minimumCompressionThresholdForImagesInMB": 5,
-  "hideAttachmentOptionsBeforeHandover": false
+  "hideAttachmentOptionsWithBots": false
 }

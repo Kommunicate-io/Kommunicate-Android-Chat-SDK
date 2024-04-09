@@ -1341,6 +1341,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     + message.getMessage()
                     + "</body></html>";
         }
+        webView.getSettings().setDomStorageEnabled(true);
         webView.loadDataWithBaseURL(null, styledHtml, "text/html", "charset=UTF-8", null);
     }
 

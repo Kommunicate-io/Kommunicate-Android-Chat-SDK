@@ -17,13 +17,13 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object customMessageBackgroundColor = "#e6e5ec";
     private Object sentMessageBackgroundColor = "";
     private Object startNewConversationButtonBackgroundColor = "";
-    private Object receivedMessageBackgroundColor = Arrays.asList("#e6e5ec","#313131");
+    private Object receivedMessageBackgroundColor = Arrays.asList("#e6e5ec", "#313131");
     private Object sendButtonBackgroundColor = "";
     private Object attachmentIconsBackgroundColor = "#FF03A9F4";
     private Object chatBackgroundColorOrDrawable;
     private Object editTextBackgroundColorOrDrawable;
     private Object editTextLayoutBackgroundColorOrDrawable;
-    private Object channelCustomMessageBgColor = Arrays.asList("#000000","#FFFFFFFF");
+    private Object channelCustomMessageBgColor = Arrays.asList("#000000", "#FFFFFFFF");
     private Object toolbarTitleColor = "#ffffff";
     private Object toolbarSubtitleColor = "#ffffff";
     private Object receiverNameTextColor = "#5C6677";
@@ -31,10 +31,10 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object sentContactMessageTextColor = "#5fba7d";
     private Object receivedContactMessageTextColor = "#646262";
     private Object sentMessageTextColor = "#FFFFFFFF";
-    private Object receivedMessageTextColor = Arrays.asList("#646262","#FFFFFF");
+    private Object receivedMessageTextColor = Arrays.asList("#646262", "#FFFFFF");
     private Object messageEditTextTextColor = "#000000";
     private Object messageEditTextBackgroundColor = "";
-    private Object autoSuggestionButtonBackgroundColor= "";
+    private Object autoSuggestionButtonBackgroundColor = "";
     private Object autoSuggestionButtonTextColor = "";
     private Object sentMessageLinkTextColor = "#FFFFFFFF";
     private Object receivedMessageLinkTextColor = "#5fba7d";
@@ -115,7 +115,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private String receivedMessageCreatedAtTimeColor;
     private boolean showStartNewConversation = true;
     private boolean enableAwayMessage = true;
-    private Object awayMessageTextColor = Arrays.asList("#A9A4A4","#FFFFFFFF");
+    private Object awayMessageTextColor = Arrays.asList("#A9A4A4", "#FFFFFFFF");
     private boolean isAgentApp = false;
     private boolean hideGroupSubtitle = false;
     private boolean disableGlobalStoragePermission = true;
@@ -152,6 +152,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean disableFormPostSubmit = false;
     private Object chatBarTopLineViewColor = "";
     private boolean isMultipleAttachmentSelectionEnabled = false;
+    private boolean isImageCompressionEnabled = false;
+    private int minimumCompressionThresholdForImagesInMB = 5;
     private boolean useDarkMode = true;
 
     public boolean getUseDarkMode() {
@@ -169,17 +171,19 @@ public class AlCustomizationSettings extends JsonMarker {
     public String getMenuIconOnConversationScreen() {
         return menuIconOnConversationScreen;
     }
+
     public boolean isCheckboxAsMultipleButton() {
         return checkboxAsMultipleButton;
     }
+
     public boolean isRateConversationMenuOption() {
         return rateConversationMenuOption;
     }
-        
+
     public boolean isRestartConversationButtonVisibility() {
         return restartConversationButtonVisibility;
     }
-    
+
     public boolean isJavaScriptEnabled() {
         return javaScriptEnabled;
     }
@@ -624,9 +628,11 @@ public class AlCustomizationSettings extends JsonMarker {
     public List<String> getMessageEditTextBackgroundColor() {
         return getColorList(messageEditTextBackgroundColor);
     }
+
     public List<String> getAutoSuggestionButtonBackgroundColor() {
         return getColorList(autoSuggestionButtonBackgroundColor);
     }
+
     public List<String> getAutoSuggestionButtonTextColor() {
         return getColorList(autoSuggestionButtonTextColor);
     }
@@ -658,9 +664,11 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isAgentApp() {
         return isAgentApp;
     }
-    public boolean isUseDeviceDefaultLanguage(){
+
+    public boolean isUseDeviceDefaultLanguage() {
         return useDeviceDefaultLanguage;
     }
+
     public boolean isShowTypingIndicatorWhileFetchingResponse() {
         return showTypingIndicatorWhileFetchingResponse;
     }
@@ -728,6 +736,7 @@ public class AlCustomizationSettings extends JsonMarker {
     public List<String> getToolbarTitleColor() {
         return getColorList(toolbarTitleColor);
     }
+
     public List<String> getChatBarTopLineViewColor() {
         return getColorList(chatBarTopLineViewColor);
     }
@@ -798,7 +807,7 @@ public class AlCustomizationSettings extends JsonMarker {
         } else if (color instanceof List) {
             return (List<String>) color;
         }
-        return Arrays.asList("","");
+        return Arrays.asList("", "");
     }
 
     @Override
@@ -865,7 +874,7 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", toolbarTitleColor=" + toolbarTitleColor +
                 ", toolbarSubtitleColor=" + toolbarSubtitleColor +
                 ", useDeviceDefaultLanguage=" + useDeviceDefaultLanguage +
-                ", showTypingIndicatorWhileFetchingResponse=" + showTypingIndicatorWhileFetchingResponse+
+                ", showTypingIndicatorWhileFetchingResponse=" + showTypingIndicatorWhileFetchingResponse +
                 '}';
     }
 }

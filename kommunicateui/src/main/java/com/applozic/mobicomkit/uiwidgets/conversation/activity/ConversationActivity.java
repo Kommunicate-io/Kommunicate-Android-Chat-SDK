@@ -483,7 +483,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
 
             @Override
-            public void postTaskUIMethod(boolean completed, File file) {
+            public void postTaskUIMethod(Uri uri, boolean completed, File file) {
                 //TODO: add the progress bar in the feedback fragment commit to here
                 //TODO: conversationUIService.getConversationFragment().hideProgressBar();
                 conversationUIService.sendAttachments(new ArrayList<>(Arrays.asList(Uri.parse(file.getAbsolutePath()))), "");

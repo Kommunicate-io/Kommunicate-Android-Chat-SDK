@@ -1326,7 +1326,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             lastSentMessage = message;
         }
     }
-
+  
     private void loadHtml(FrameLayout emailLayout, Message message) {
         WebView webView = emailLayout.findViewById(R.id.emailWebView);
         webViews.add(webView);

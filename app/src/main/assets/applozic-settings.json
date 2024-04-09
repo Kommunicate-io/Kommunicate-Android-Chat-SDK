@@ -122,7 +122,8 @@
     ":location": true,
     ":camera": true,
     ":file": true,
-    ":audio": true
+    ":audio": true,
+    ":video": false
   },
   "editTextHintText": "",
   "replyMessageLayoutSentMessageBackground": "#C0C0C0",
@@ -178,5 +179,7 @@
   "toolbarTitleCenterAligned": false,
   "disableFormPostSubmit": false,
   "chatBarTopLineViewColor": "",
-  "isMultipleAttachmentSelectionEnabled": false
+  "isMultipleAttachmentSelectionEnabled": false,
+  "isImageCompressionEnabled": false,
+  "minimumCompressionThresholdForImagesInMB": 5
 }

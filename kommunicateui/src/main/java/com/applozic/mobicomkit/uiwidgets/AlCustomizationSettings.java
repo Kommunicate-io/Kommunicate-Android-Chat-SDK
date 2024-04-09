@@ -800,7 +800,7 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isMultipleAttachmentSelectionEnabled() {
         return isMultipleAttachmentSelectionEnabled;
     }
-
+  
     private List<String> getColorList(Object color) {
         if (color instanceof String) {
             return Arrays.asList((String) color, (String) color);
@@ -808,6 +808,14 @@ public class AlCustomizationSettings extends JsonMarker {
             return (List<String>) color;
         }
         return Arrays.asList("", "");
+    }
+  
+    public boolean isImageCompressionEnabled() {
+        return isImageCompressionEnabled;
+    }
+  
+    public int getMinimumCompressionThresholdForImagesInMB() {
+        return minimumCompressionThresholdForImagesInMB;
     }
 
     @Override

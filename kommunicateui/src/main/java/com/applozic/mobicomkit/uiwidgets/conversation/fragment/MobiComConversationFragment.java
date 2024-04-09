@@ -335,7 +335,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean onSelected;
     protected ImageCache imageCache;
     protected RecyclerView messageTemplateView;
-    protected ImageButton cameraButton, locationButton, fileAttachmentButton, multiSelectGalleryButton, videoButton;
+    protected ImageButton cameraButton, locationButton, fileAttachmentButton, multiSelectGalleryButton;
     protected WeakReference<KmRecordButton> recordButtonWeakReference;
     protected RecyclerView recyclerView;
     protected RecyclerViewPositionHelper recyclerViewPositionHelper;
@@ -711,7 +711,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         messageTemplateView = (RecyclerView) list.findViewById(R.id.mobicomMessageTemplateView);
         applozicLabel = list.findViewById(R.id.applozicLabel);
         cameraButton = list.findViewById(R.id.camera_btn);
-        videoButton = list.findViewById(R.id.btn_video_capture);
         locationButton = list.findViewById(R.id.location_btn);
         fileAttachmentButton = list.findViewById(R.id.file_as_attachment_btn);
         multiSelectGalleryButton = list.findViewById(R.id.idMultiSelectGalleryButton);
@@ -1097,10 +1096,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             if (attachmentOptions.containsKey(":camera")) {
                 cameraButton.setVisibility(attachmentOptions.get(":camera") ? VISIBLE : View.GONE);
-            }
-
-            if (attachmentOptions.containsKey(":video")) {
-                videoButton.setVisibility(attachmentOptions.get(":video") ? VISIBLE : GONE);
             }
 
             if (attachmentOptions.containsKey(":file")) {
@@ -2589,7 +2584,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void loadFile(Uri uri, File file, String mimeType) {
+    public void loadFile(Uri uri, File file) {
         if (uri == null || file == null) {
             KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.file_not_selected), Toast.LENGTH_LONG).show();
             return;
@@ -2602,9 +2597,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_file_attachment_error), Toast.LENGTH_LONG).show();
             return;
         }
-        if(TextUtils.isEmpty(mimeType)){
-            mimeType = ApplozicService.getContext(getContext()).getContentResolver().getType(uri);
-        }
+        String mimeType = ApplozicService.getContext(getContext()).getContentResolver().getType(uri);
         Cursor returnCursor =
                 ApplozicService.getContext(getContext()).getContentResolver().query(uri, null, null, null, null);
         if (returnCursor != null) {
@@ -4829,28 +4822,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             public void onAction(boolean didGrant) {
                                 if (didGrant) {
                                     ((ConversationActivity) getActivity()).processCameraAction();
-                                }
-                            }
-                        });
-                    }
-                }
-            }
-        });
-
-        videoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlEventManager.getInstance().sendOnAttachmentClick("video");
-                emoticonsFrameLayout.setVisibility(View.GONE);
-                if (getActivity() != null) {
-                    if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
-                        ((ConversationActivity) getActivity()).processVideoRecording();
-                    } else {
-                        ((KmStoragePermissionListener) getActivity()).checkPermission(new KmStoragePermission() {
-                            @Override
-                            public void onAction(boolean didGrant) {
-                                if (didGrant) {
-                                    ((ConversationActivity) getActivity()).processVideoRecording();
                                 }
                             }
                         });

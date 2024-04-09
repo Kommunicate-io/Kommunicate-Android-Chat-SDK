@@ -7,14 +7,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -38,7 +35,6 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.async.FileTaskAsync;
 import com.applozic.mobicomkit.uiwidgets.async.KmChannelDeleteTask;
 import com.applozic.mobicomkit.uiwidgets.async.KmChannelLeaveMember;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
@@ -48,10 +44,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragm
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MessageInfoFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmFragmentGetter;
-import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.LocationInfo;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -209,50 +203,14 @@ public class ConversationUIService {
                     selectedFileUri = ((ConversationActivity) fragmentActivity).getCapturedImageUri();
                     file = ((ConversationActivity) fragmentActivity).getFileObject();
                 }
-                String mimeType = FileUtils.getMimeTypeByContentUriOrOther(getConversationFragment().getContext(), selectedFileUri);
                 MediaScannerConnection.scanFile(fragmentActivity,
                         new String[]{file.getAbsolutePath()}, null,
                         new MediaScannerConnection.OnScanCompletedListener() {
                             public void onScanCompleted(String path, Uri uri) {
                             }
                         });
-                Log.d("xcode photo : ",Thread.currentThread().getName());
-                long fileSize = 0;
-                try {
-                    Cursor returnCursor =
-                            getConversationFragment().getContext().getContentResolver().query(selectedFileUri, null, null, null, null);
-                    if (returnCursor != null) {
-                        int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
-                        returnCursor.moveToFirst();
-                        fileSize = returnCursor.getLong(sizeIndex);
-                        returnCursor.close();
-                    }
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                String jsonString = FileUtils.loadSettingsJsonFile(getConversationFragment().getContext());
-                AlCustomizationSettings alCustomizationSettings;
-                if (!TextUtils.isEmpty(jsonString)) {
-                    alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
-                } else {
-                    alCustomizationSettings = new AlCustomizationSettings();
-                }
-                boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB());
-                if (isFileCompressionNeeded) {
-                    new FileTaskAsync(file, selectedFileUri, getConversationFragment().getContext(), new PrePostUIMethods() {
-                        @Override
-                        public void preTaskUIMethod() {}
-
-                        @Override
-                        public void postTaskUIMethod(Uri uri, boolean completed, File file) {
-                            getConversationFragment().loadFile(uri, file, mimeType);
-                            Utils.printLog(fragmentActivity, TAG, "File uri: " + uri);
-                        }
-                    }, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else {
-                    getConversationFragment().loadFile(selectedFileUri, file, null);
-                    Utils.printLog(fragmentActivity, TAG, "File uri: " + selectedFileUri);
-                }
+                getConversationFragment().loadFile(selectedFileUri, file);
+                Utils.printLog(fragmentActivity, TAG, "File uri: " + selectedFileUri);
             }
 
             if (requestCode == REQUEST_CODE_CONTACT_GROUP_SELECTION && resultCode == Activity.RESULT_OK) {
@@ -269,7 +227,8 @@ public class ConversationUIService {
                 }
 
                 if (selectedFilePath != null) {
-                    getConversationFragment().loadFile(selectedFilePath, file, null);
+                    getConversationFragment().loadFile(selectedFilePath, file);
+                    getConversationFragment().sendMessage("", Message.ContentType.VIDEO_MSG.getValue());
                 }
             }
 

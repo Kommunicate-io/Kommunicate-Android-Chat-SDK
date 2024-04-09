@@ -1,7 +1,5 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks;
 
-import android.net.Uri;
-
 import java.io.File;
 
 /**
@@ -15,5 +13,5 @@ import java.io.File;
 public interface PrePostUIMethods {
     void preTaskUIMethod();
 
-    void postTaskUIMethod(Uri uri, boolean completed, File file);
+    void postTaskUIMethod(boolean completed, File file);
 }

@@ -1331,6 +1331,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         WebView webView = emailLayout.findViewById(R.id.emailWebView);
         webViews.add(webView);
         webView.getSettings().setJavaScriptEnabled(alCustomizationSettings.isJavaScriptEnabled());
+
         String styledHtml = message.getMessage();
 
         if (isDarkModeEnabled) {
@@ -1341,7 +1342,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     + message.getMessage()
                     + "</body></html>";
         }
-        webView.loadDataWithBaseURL(null, styledHtml, "text/html", "charset=UTF-8", null);
+
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.loadDataWithBaseURL(null, message.getMessage(), "text/html", "charset=UTF-8", null);
     }
 
     public static boolean isEmailTypeMessage(Message message) {

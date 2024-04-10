@@ -157,6 +157,7 @@ public class KmAttachmentsController {
     public int processFile(Uri selectedFileUri, AlCustomizationSettings alCustomizationSettings, PrePostUIMethods prePostUIMethods) {
         if (selectedFileUri != null) {
             String fileName;
+            long fileSize = 0;
             try {
                 long maxFileSize = alCustomizationSettings.getMaxAttachmentSizeAllowed() * 1024 * 1024;
                 Cursor returnCursor =
@@ -164,7 +165,7 @@ public class KmAttachmentsController {
                 if (returnCursor != null) {
                     int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
                     returnCursor.moveToFirst();
-                    Long fileSize = returnCursor.getLong(sizeIndex);
+                    fileSize = returnCursor.getLong(sizeIndex);
                     returnCursor.close();
                     if (fileSize > maxFileSize) {
                         Utils.printLog(context, TAG, context.getResources().getString(R.string.info_attachment_max_allowed_file_size));
@@ -192,7 +193,7 @@ public class KmAttachmentsController {
                     }
                 }
                 File mediaFile = FileClientService.getFilePath(fileName, context.getApplicationContext(), mimeType);
-                new FileTaskAsync(mediaFile, selectedFileUri, context, prePostUIMethods).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new FileTaskAsync(mediaFile, selectedFileUri, context, prePostUIMethods, FileUtils.isCompressionNeeded(context, selectedFileUri, fileSize, alCustomizationSettings.isImageCompressionEnabled(), alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB())).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } catch (Exception e) {
                 e.printStackTrace();
                 return EXCEPTION_OCCURED;

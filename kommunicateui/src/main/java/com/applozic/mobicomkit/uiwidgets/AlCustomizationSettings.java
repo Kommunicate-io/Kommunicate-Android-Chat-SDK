@@ -153,7 +153,10 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object chatBarTopLineViewColor = "";
     private boolean isMultipleAttachmentSelectionEnabled = false;
     private boolean useDarkMode = true;
-
+    private boolean isImageCompressionEnabled = false;
+    private int minimumCompressionThresholdForImagesInMB = 5;
+  
+  
     public boolean getUseDarkMode() {
         return useDarkMode;
     }
@@ -799,6 +802,14 @@ public class AlCustomizationSettings extends JsonMarker {
             return (List<String>) color;
         }
         return Arrays.asList("","");
+    }
+
+    public boolean isImageCompressionEnabled() {
+        return isImageCompressionEnabled;
+    }
+
+    public int getMinimumCompressionThresholdForImagesInMB() {
+        return minimumCompressionThresholdForImagesInMB;
     }
 
     @Override

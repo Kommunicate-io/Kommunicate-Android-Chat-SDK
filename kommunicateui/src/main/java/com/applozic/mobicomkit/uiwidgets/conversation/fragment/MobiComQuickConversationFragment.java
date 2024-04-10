@@ -137,7 +137,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         isCurrentlyInDarkMode = KmThemeHelper.getInstance(getContext(),alCustomizationSettings).isDarkModeEnabledForSDK();
         if (!alCustomizationSettings.isAgentApp()) {
             LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
-            kmMessageLinearLayout.setVisibility(View.GONE);
+            if (kmMessageLinearLayout != null) {
+                kmMessageLinearLayout.setVisibility(View.GONE);
+            }
         }
 
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);

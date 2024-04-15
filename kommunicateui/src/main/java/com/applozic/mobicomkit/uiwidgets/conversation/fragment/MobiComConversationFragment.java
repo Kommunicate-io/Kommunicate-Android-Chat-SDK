@@ -397,7 +397,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected Map<String, String> autoSuggestHeaders;
     protected String autoSuggestUrl;
     private Set<Message> botDelayMessageList;
-    private boolean isBotAssignee = true;
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -2028,6 +2027,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 userNotAbleToChatLayout.setVisibility(View.GONE);
                 toggleMessageSendLayoutVisibility();
+                toggleAttachmentLayoutVisibility();
             }
         }
 
@@ -2578,7 +2578,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public synchronized boolean updateMessageList(Message message, boolean update) {
-        updateBotTransferStatus(message);
         boolean toAdd = !messageList.contains(message);
         loadMore = true;
         if (update) {
@@ -4158,8 +4157,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     for (int i = 1; i <= nextMessageList.size() - 1; i++) {
                         long dayDifference = DateUtils.daysBetween(new Date(nextMessageList.get(i - 1).getCreatedAtTime()), new Date(nextMessageList.get(i).getCreatedAtTime()));
 
-                        updateBotTransferStatus(nextMessageList.get(i));
-
                         if (dayDifference >= 1) {
                             Message message = new Message();
                             message.setTempDateType(Short.valueOf("100"));
@@ -4460,18 +4457,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void updateBotTransferStatus(Message message) {
-        if (isBotAssignee && !TextUtils.isEmpty(message.getMetadata().get("LOCALIZATION_VALUE"))) {
-            isBotAssignee = false;
-            updateAttachmentOptionsVisibility();
-        }
-    }
+    private void toggleAttachmentLayoutVisibility() {
+        if (alCustomizationSettings.getHideAttachmentOptionsWithBots() && attachmentIconLayout != null) {
+            Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
+            boolean isBotAssignee = User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType());
 
-    private void updateAttachmentOptionsVisibility() {
-        if (!isBotAssignee && alCustomizationSettings.getHideAttachmentOptionsWithBots()) {
-            if (attachmentIconLayout != null) {
-                attachmentIconLayout.setVisibility(VISIBLE);
-            }
+            attachmentIconLayout.setVisibility(isBotAssignee ? GONE : VISIBLE);
         }
     }
 
@@ -4967,6 +4958,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 kmFeedbackView.setVisibility(View.GONE);
                 toggleMessageSendLayoutVisibility();
+                toggleAttachmentLayoutVisibility();
                 mainDivider.setVisibility(VISIBLE);
             }
         }
@@ -5416,6 +5408,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         toggleMessageSendLayoutVisibility();
+        toggleAttachmentLayoutVisibility();
     }
 
     protected void toggleMessageSendLayoutVisibility() {

@@ -1,5 +1,11 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmCustomInputModel.UpdateUserDetails;
+import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
+import static java.util.Collections.disjoint;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,7 +20,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -63,12 +68,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.appcompat.view.menu.MenuItemImpl;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -207,20 +210,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.Timer;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.kommunicate.async.KmGetDataAsyncTask;
-import io.kommunicate.models.KmAutoSuggestionModel;
-import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.async.AgentGetStatusTask;
 import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmGetBotTypeTask;
+import io.kommunicate.async.KmGetDataAsyncTask;
 import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
@@ -229,7 +228,9 @@ import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.KmApiResponse;
+import io.kommunicate.models.KmAutoSuggestionModel;
 import io.kommunicate.models.KmFeedback;
+import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
@@ -237,12 +238,6 @@ import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmCustomInputModel.UpdateUserDetails;
-import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
-import static java.util.Collections.disjoint;
 
 /**
  * reg
@@ -423,7 +418,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         boolean newDarkModeStatus = themeHelper.isDarkModeEnabledForSDK();
         if (isCurrentlyInDarkMode != newDarkModeStatus) {
             isCurrentlyInDarkMode = newDarkModeStatus;
-            if (newDarkModeStatus){
+            if (newDarkModeStatus) {
                 setupModes(true);
             } else {
                 setupModes(false);
@@ -509,7 +504,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private void setupModes(boolean isDarkModeEnabled) {
         int currentModeColor = Color.WHITE;
         int currentModePrimaryColor = getResources().getColor(R.color.applozic_transparent_color);
-        if (getView() != null){
+        if (getView() != null) {
             kmTypingView = getView().findViewById(R.id.idKmTypingView);
         }
         if (isDarkModeEnabled) {
@@ -532,17 +527,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             messageEditText.setTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextTextColor().get(0)));
             messageEditText.setHintTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextHintTextColor().get(0)));
         }
-        kmAwayView.setupTheme(isDarkModeEnabled,alCustomizationSettings);
+        kmAwayView.setupTheme(isDarkModeEnabled, alCustomizationSettings);
         kmAwayView.setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
         kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
-        messageListLinearLayout.setBackgroundColor(currentModeColor);
-        recyclerView.setBackgroundColor(isDarkModeEnabled ? currentModeColor : currentModePrimaryColor);
-        individualMessageSendLayout.setBackgroundColor(currentModeColor);
+        individualMessageSendLayout.setBackgroundColor(themeHelper.parseColorWithDefault(
+                isDarkModeEnabled ? alCustomizationSettings.getMessageEditTextBackgroundColor().get(1) : alCustomizationSettings.getMessageEditTextBackgroundColor().get(0),
+                currentModeColor)
+        );
         if (recyclerDetailConversationAdapter != null) {
             recyclerDetailConversationAdapter.setupDarkMode(isDarkModeEnabled);
             recyclerDetailConversationAdapter.notifyDataSetChanged();
         }
-
+        setupChatBackground();
     }
 
     private void setupChatBackground() {
@@ -550,7 +546,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBackgroundColorOrDrawable().get(1) : alCustomizationSettings.getChatBackgroundColorOrDrawable().get(0))) {
             String customChatBackground = isCurrentlyInDarkMode ? alCustomizationSettings.getChatBackgroundColorOrDrawable().get(1) : alCustomizationSettings.getChatBackgroundColorOrDrawable().get(0);
             if (customChatBackground.contains("#")) {
-                if(customChatBackground.length() == STANDARD_HEX_COLOR_CODE_LENGTH || customChatBackground.length() == STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH){
+                if (customChatBackground.length() == STANDARD_HEX_COLOR_CODE_LENGTH || customChatBackground.length() == STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH) {
                     conversationRootLayout.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBackgroundColorOrDrawable().get(1) : alCustomizationSettings.getChatBackgroundColorOrDrawable().get(0)));
                 }
             } else {
@@ -670,10 +666,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         mainDivider = list.findViewById(R.id.idMainDividerLine);
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
-        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBarTopLineViewColor().get(1) : alCustomizationSettings.getChatBarTopLineViewColor().get(0))){
+        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBarTopLineViewColor().get(1) : alCustomizationSettings.getChatBarTopLineViewColor().get(0))) {
             mainDivider.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBarTopLineViewColor().get(1) : alCustomizationSettings.getChatBarTopLineViewColor().get(0)));
         }
-        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageEditTextBackgroundColor().get(1) : alCustomizationSettings.getMessageEditTextBackgroundColor().get(0))){
+        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageEditTextBackgroundColor().get(1) : alCustomizationSettings.getMessageEditTextBackgroundColor().get(0))) {
             individualMessageSendLayout.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageEditTextBackgroundColor().get(1) : alCustomizationSettings.getMessageEditTextBackgroundColor().get(0)));
         }
 
@@ -778,7 +774,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         emptyTextView.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getNoConversationLabelTextColor().get(1).trim() : alCustomizationSettings.getNoConversationLabelTextColor().get(0).trim()));
         emoticonsBtn.setOnClickListener(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        if(alCustomizationSettings.getInnerTimestampDesign() || !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0))) {
+        if (alCustomizationSettings.getInnerTimestampDesign() || !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0))) {
             sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
             deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
             readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
@@ -2602,7 +2598,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_file_attachment_error), Toast.LENGTH_LONG).show();
             return;
         }
-        if(TextUtils.isEmpty(mimeType)){
+        if (TextUtils.isEmpty(mimeType)) {
             mimeType = ApplozicService.getContext(getContext()).getContentResolver().getType(uri);
         }
         Cursor returnCursor =
@@ -3594,7 +3590,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void updateAssigneeStatus(String assigneeId, KMAgentStatusHelper.KMAgentStatus status) {
         Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
-        if (!TextUtils.isEmpty(assigneeId) && !Objects.equals(assigneeContact.getUserId(), assigneeId)) return;
+        if (!TextUtils.isEmpty(assigneeId) && !Objects.equals(assigneeContact.getUserId(), assigneeId))
+            return;
 
         if (fontManager != null && fontManager.getToolbarSubtitleFont() != null) {
             toolbarSubtitleText.setTypeface(fontManager.getToolbarSubtitleFont());

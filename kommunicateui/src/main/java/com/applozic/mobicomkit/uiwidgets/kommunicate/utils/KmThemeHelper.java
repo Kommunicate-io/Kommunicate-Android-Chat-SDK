@@ -63,35 +63,27 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getPrimaryColor() {
-        if (primaryColor == -1) {
-            primaryColor = parseColorWithDefault(appSettingPreferences.getPrimaryColor(), context.getResources().getColor(R.color.applozic_theme_color_primary));
-        }
+        primaryColor = parseColorWithDefault(appSettingPreferences.getPrimaryColor(), context.getResources().getColor(R.color.applozic_theme_color_primary));
         return primaryColor;
     }
 
     public int getToolbarTitleColor() {
-        if (toolbarTitleColor == -1) {
-            toolbarTitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarTitleColor().get(1) : alCustomizationSettings.getToolbarTitleColor().get(0), context.getResources().getColor(R.color.toolbar_title_color));
-        }
+        toolbarTitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarTitleColor().get(1) : alCustomizationSettings.getToolbarTitleColor().get(0), context.getResources().getColor(R.color.toolbar_title_color));
         return toolbarTitleColor;
     }
 
     public int getToolbarSubtitleColor() {
-        if (toolbarSubtitleColor == -1) {
-            toolbarSubtitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarSubtitleColor().get(1) : alCustomizationSettings.getToolbarSubtitleColor().get(0), context.getResources().getColor(R.color.toolbar_subtitle_color));
-        }
+        toolbarSubtitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarSubtitleColor().get(1) : alCustomizationSettings.getToolbarSubtitleColor().get(0), context.getResources().getColor(R.color.toolbar_subtitle_color));
         return toolbarSubtitleColor;
     }
 
     public int getSentMessageBackgroundColor() {
-        if (sentMessageBackgroundColor == -1) {
-            String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageBackgroundColor().get(1) : alCustomizationSettings.getSentMessageBackgroundColor().get(0);
+        String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageBackgroundColor().get(1) : alCustomizationSettings.getSentMessageBackgroundColor().get(0);
 
-            if (TextUtils.isEmpty(colorStr)) {
-                colorStr = appSettingPreferences.getPrimaryColor();
-            }
-            sentMessageBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
+        if (TextUtils.isEmpty(colorStr)) {
+            colorStr = appSettingPreferences.getPrimaryColor();
         }
+        sentMessageBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
         return sentMessageBackgroundColor;
     }
 
@@ -113,6 +105,7 @@ public class KmThemeHelper implements KmCallback {
     public boolean isDisableFormPostSubmit() {
         return alCustomizationSettings.isDisableFormPostSubmit();
     }
+
     public boolean isHidePostCTA() {
         if (getHidePostCTA().isEmpty()) {
             return false;
@@ -142,67 +135,53 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getSentMessageBorderColor() {
-        if (sentMessageBorderColor == -1) {
-            String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageBorderColor().get(1) : alCustomizationSettings.getSentMessageBorderColor().get(0);
+        String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageBorderColor().get(1) : alCustomizationSettings.getSentMessageBorderColor().get(0);
 
-            if (TextUtils.isEmpty(colorStr)) {
-                colorStr = appSettingPreferences.getPrimaryColor();
-            }
-            sentMessageBorderColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
+        if (TextUtils.isEmpty(colorStr)) {
+            colorStr = appSettingPreferences.getPrimaryColor();
         }
+        sentMessageBorderColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
         return sentMessageBorderColor;
     }
 
     public int getSendButtonBackgroundColor() {
-        if (sendButtonBackgroundColor == -1) {
-            String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSendButtonBackgroundColor().get(1) : alCustomizationSettings.getSendButtonBackgroundColor().get(0);
+        String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSendButtonBackgroundColor().get(1) : alCustomizationSettings.getSendButtonBackgroundColor().get(0);
 
-            if (TextUtils.isEmpty(colorStr)) {
-                colorStr = appSettingPreferences.getPrimaryColor();
-            }
-            sendButtonBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
+        if (TextUtils.isEmpty(colorStr)) {
+            colorStr = appSettingPreferences.getPrimaryColor();
         }
+        sendButtonBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
         return sendButtonBackgroundColor;
     }
 
     public int getMessageStatusIconColor() {
-        if (messageStatusIconColor == -1) {
-            String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0);
+        String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0);
 
-            if (TextUtils.isEmpty(colorStr)) {
-                colorStr = appSettingPreferences.getPrimaryColor();
-            }
-
-            messageStatusIconColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.message_status_icon_colors));
+        if (TextUtils.isEmpty(colorStr)) {
+            colorStr = appSettingPreferences.getPrimaryColor();
         }
+
+        messageStatusIconColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.message_status_icon_colors));
         return messageStatusIconColor;
     }
 
     public int getSecondaryColor() {
-        if (secondaryColor == -1) {
-            secondaryColor = parseColorWithDefault(appSettingPreferences.getSecondaryColor(), context.getResources().getColor(R.color.applozic_theme_color_primary_dark));
-        }
+        secondaryColor = parseColorWithDefault(appSettingPreferences.getSecondaryColor(), context.getResources().getColor(R.color.applozic_theme_color_primary_dark));
         return secondaryColor;
     }
 
     public int getToolbarColor() {
-        if (toolbarColor == -1) {
-            toolbarColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarColor().get(1) : alCustomizationSettings.getToolbarColor().get(0), getPrimaryColor());
-        }
+        toolbarColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarColor().get(1) : alCustomizationSettings.getToolbarColor().get(0), getPrimaryColor());
         return toolbarColor;
     }
 
     public int getStatusBarColor() {
-        if (statusBarColor == -1) {
-            statusBarColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getStatusBarColor().get(1) : alCustomizationSettings.getStatusBarColor().get(0), getSecondaryColor());
-        }
+        statusBarColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getStatusBarColor().get(1) : alCustomizationSettings.getStatusBarColor().get(0), getSecondaryColor());
         return statusBarColor;
     }
 
     public int getRichMessageThemeColor() {
-        if (richMessageThemeColor == -1) {
-            richMessageThemeColor = parseColorWithDefault(isDarkModeEnabledForSDK() ?  alCustomizationSettings.getRichMessageThemeColor().get(1) : alCustomizationSettings.getRichMessageThemeColor().get(0), getPrimaryColor());
-        }
+        richMessageThemeColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getRichMessageThemeColor().get(1) : alCustomizationSettings.getRichMessageThemeColor().get(0), getPrimaryColor());
         return richMessageThemeColor;
     }
 

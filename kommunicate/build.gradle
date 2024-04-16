@@ -28,10 +28,6 @@ android {
         buildConfigField "String","EU_CHAT_SERVER_URL",'"https://chat-eu.kommunicate.io"'
         buildConfigField "String", "EU_API_SERVER_URL", '"https://api-eu.kommunicate.io"'
         buildConfigField "String", "MQTT_URL_EU", '"tcp://socket-eu.kommunicate.io:1883"'
-
-
-
-
     }
 
     buildTypes {

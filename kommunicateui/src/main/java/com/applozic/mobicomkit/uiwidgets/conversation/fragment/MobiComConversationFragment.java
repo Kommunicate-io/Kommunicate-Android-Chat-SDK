@@ -502,38 +502,31 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void setupModes(boolean isDarkModeEnabled) {
-        int currentModeColor = Color.WHITE;
-        int currentModePrimaryColor = getResources().getColor(R.color.applozic_transparent_color);
+        int currentModeColor = isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE;
+        int currentModePrimaryColor = themeHelper.parseColorWithDefault(KmAppSettingPreferences.getInstance().getPrimaryColor(), getResources().getColor(R.color.dark_mode_default));
         if (getView() != null) {
             kmTypingView = getView().findViewById(R.id.idKmTypingView);
         }
-        if (isDarkModeEnabled) {
-            currentModeColor = getResources().getColor(R.color.dark_mode_default);
-            currentModePrimaryColor = themeHelper.parseColorWithDefault(KmAppSettingPreferences.getInstance().getPrimaryColor(), getResources().getColor(R.color.dark_mode_default));
-            fileAttachmentButton.getDrawable().setColorFilter(currentModePrimaryColor, PorterDuff.Mode.SRC_IN);
-            emoticonsBtn.getDrawable().setColorFilter(currentModePrimaryColor, PorterDuff.Mode.SRC_IN);
-            cameraButton.getDrawable().setColorFilter(currentModePrimaryColor, PorterDuff.Mode.SRC_IN);
-            locationButton.getDrawable().setColorFilter(currentModePrimaryColor, PorterDuff.Mode.SRC_IN);
-            recordButton.getDrawable().setColorFilter(currentModePrimaryColor, PorterDuff.Mode.SRC_IN);
-            messageEditText.setTextColor(getResources().getColor(R.color.chatbar_text_color));
-            messageEditText.setHintTextColor(getResources().getColor(R.color.chatbar_text_color));
-            emptyTextView.setTextColor(Color.WHITE);
-        } else {
-            fileAttachmentButton.getDrawable().clearColorFilter();
-            emoticonsBtn.getDrawable().clearColorFilter();
-            cameraButton.getDrawable().clearColorFilter();
-            locationButton.getDrawable().clearColorFilter();
-            recordButton.getDrawable().clearColorFilter();
-            messageEditText.setTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextTextColor().get(0)));
-            messageEditText.setHintTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextHintTextColor().get(0)));
-        }
+
+        int iconColor = themeHelper.parseColorWithDefault(alCustomizationSettings.getAttachmentIconsBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModePrimaryColor);
+        fileAttachmentButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        emoticonsBtn.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        cameraButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        videoButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        locationButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+        recordButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
+
+        messageEditText.setTextColor(themeHelper.parseColorWithDefault(alCustomizationSettings.getMessageEditTextTextColor().get(isDarkModeEnabled ? 1 : 0),
+                getResources().getColor(R.color.chatbar_text_color)));
+        messageEditText.setHintTextColor(themeHelper.parseColorWithDefault(alCustomizationSettings.getMessageEditTextHintTextColor().get(isDarkModeEnabled ? 1 : 0),
+                getResources().getColor(R.color.chatbar_text_color)));
+
         kmAwayView.setupTheme(isDarkModeEnabled, alCustomizationSettings);
         kmAwayView.setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
         kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
         individualMessageSendLayout.setBackgroundColor(themeHelper.parseColorWithDefault(
-                isDarkModeEnabled ? alCustomizationSettings.getMessageEditTextBackgroundColor().get(1) : alCustomizationSettings.getMessageEditTextBackgroundColor().get(0),
-                currentModeColor)
-        );
+                alCustomizationSettings.getMessageEditTextBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModeColor
+        ));
         if (recyclerDetailConversationAdapter != null) {
             recyclerDetailConversationAdapter.setupDarkMode(isDarkModeEnabled);
             recyclerDetailConversationAdapter.notifyDataSetChanged();
@@ -828,9 +821,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             messageEditText.setTypeface(fontManager.getMessageEditTextFont());
         }
 
-        messageEditText.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageEditTextTextColor().get(1) : alCustomizationSettings.getMessageEditTextTextColor().get(0)));
-
-        messageEditText.setHintTextColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageEditTextHintTextColor().get(1) : alCustomizationSettings.getMessageEditTextHintTextColor().get(0)));
+        messageEditText.setTextColor(themeHelper.parseColorWithDefault(alCustomizationSettings.getMessageEditTextTextColor().get(isCurrentlyInDarkMode ? 1 : 0),
+                getResources().getColor(R.color.chatbar_text_color)));
+        messageEditText.setHintTextColor(themeHelper.parseColorWithDefault(alCustomizationSettings.getMessageEditTextHintTextColor().get(isCurrentlyInDarkMode ? 1 : 0),
+                getResources().getColor(R.color.chatbar_text_color)));
 
         userNotAbleToChatLayout = (LinearLayout) list.findViewById(R.id.user_not_able_to_chat_layout);
         userNotAbleToChatTextView = (TextView) userNotAbleToChatLayout.findViewById(R.id.user_not_able_to_chat_textView);
@@ -1134,9 +1128,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         };
 
-        if (isCurrentlyInDarkMode) {
-            setupModes(true);
-        }
+        setupModes(isCurrentlyInDarkMode);
 
         return list;
     }

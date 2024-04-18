@@ -1,13 +1,18 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.IdRes;
@@ -15,9 +20,15 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicommons.json.GsonUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.lang.annotation.Retention;
@@ -42,10 +53,22 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
     private FeedbackRatingGroup feedbackRatingGroup;
 
     private FeedbackFragmentListener feedbackFragmentListener;
+    private KmThemeHelper themeHelper;
+
+    private boolean isCurrentlyInDarkMode;
+    private LinearLayout feedbackContainer;
+    private TextView textViewTitle, textViewPoor, textViewAverage, textViewGood;
+
 
     public static final int RATING_POOR = 1;
     public static final int RATING_AVERAGE = 5;
     public static final int RATING_GOOD = 10;
+
+    // default colors for light and dark modes
+    private final Pair<String, String> feedbackContainerColor = new Pair<>("#FFFFFF", "#1F1E1E");
+    private final Pair<String, String> textViewTitleColor = new Pair<>("#000000", "#FFFFFF");
+    private final Pair<String, String> textViewRatingColor = new Pair<>("#808080", "#919191");
+    private final Pair<String, String> editTextFeedbackCommentHintColor = new Pair<>("#808080", "#919191");
 
     //using IntDef to replace enum
     @Retention(RetentionPolicy.SOURCE)
@@ -92,6 +115,48 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String jsonString = FileUtils.loadSettingsJsonFile(ApplozicService.getContext(getContext()));
+        AlCustomizationSettings alCustomizationSettings;
+        if (!TextUtils.isEmpty(jsonString)) {
+            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+        } else {
+            alCustomizationSettings = new AlCustomizationSettings();
+        }
+        themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
+        isCurrentlyInDarkMode = themeHelper.isDarkModeEnabledForSDK();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        boolean newDarkModeStatus = themeHelper.isDarkModeEnabledForSDK();
+        if (isCurrentlyInDarkMode != newDarkModeStatus) {
+            isCurrentlyInDarkMode = newDarkModeStatus;
+        }
+        setupModes(isCurrentlyInDarkMode);
+    }
+
+    private void setupModes(boolean isCurrentlyInDarkMode) {
+        if (feedbackContainer != null) {
+            feedbackContainer.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? feedbackContainerColor.second : feedbackContainerColor.first));
+        }
+        if (textViewTitle != null) {
+            textViewTitle.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? textViewTitleColor.second : textViewTitleColor.first));
+        }
+        if (textViewPoor != null) {
+            textViewPoor.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? textViewRatingColor.second : textViewRatingColor.first));
+        }
+        if (textViewAverage != null) {
+            textViewAverage.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? textViewRatingColor.second : textViewRatingColor.first));
+        }
+        if (textViewGood != null) {
+            textViewGood.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? textViewRatingColor.second : textViewRatingColor.first));
+        }
+        if (editTextFeedbackComment != null) {
+            editTextFeedbackComment.setBackgroundResource(isCurrentlyInDarkMode ? R.drawable.edit_text_bg_night : R.drawable.edit_text_bg);
+            editTextFeedbackComment.setHintTextColor(Color.parseColor(isCurrentlyInDarkMode ? editTextFeedbackCommentHintColor.second : editTextFeedbackCommentHintColor.first));
+            editTextFeedbackComment.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? textViewTitleColor.second : textViewTitleColor.first));
+        }
     }
 
     @Nullable
@@ -99,6 +164,11 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.feedback_rating_layout, container, false);
 
+        feedbackContainer = view.findViewById(R.id.idFeedbackContainer);
+        textViewTitle = view.findViewById(R.id.idTextViewTitle);
+        textViewPoor = view.findViewById(R.id.idTextPoor);
+        textViewAverage = view.findViewById(R.id.idTextAverage);
+        textViewGood = view.findViewById(R.id.idTextGood);
         editTextFeedbackComment = view.findViewById(R.id.idEditTextFeedback);
         buttonSubmitFeedback = view.findViewById(R.id.idButtonSubmit);
 
@@ -139,6 +209,8 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
             }
         });
 
+        setupModes(isCurrentlyInDarkMode);
+
         return view;
     }
 
@@ -175,7 +247,7 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
         if (editTextFeedbackComment.getVisibility() == View.GONE) {
             editTextFeedbackComment.setVisibility(View.VISIBLE);
         }
-        if(buttonSubmitFeedback.getVisibility() == View.GONE) {
+        if (buttonSubmitFeedback.getVisibility() == View.GONE) {
             buttonSubmitFeedback.setVisibility(View.VISIBLE);
         }
 

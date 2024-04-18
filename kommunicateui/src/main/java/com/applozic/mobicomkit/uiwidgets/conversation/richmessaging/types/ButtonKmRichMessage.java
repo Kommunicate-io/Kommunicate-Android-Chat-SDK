@@ -28,8 +28,8 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
     public static final int QUICK_REPLY_TEMPLATE_ID = 6;
 
-    public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
-        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
+    public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled );
     }
 
     @Override

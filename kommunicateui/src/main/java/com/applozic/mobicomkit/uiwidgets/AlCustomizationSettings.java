@@ -111,8 +111,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean groupInfoScreenVisible = true;
     private boolean forwardOption = false;
     private Boolean innerTimestampDesign = false;
-    private String sentMessageCreatedAtTimeColor;
-    private String receivedMessageCreatedAtTimeColor;
+    private Object sentMessageCreatedAtTimeColor = "";
+    private Object receivedMessageCreatedAtTimeColor = "";
     private boolean showStartNewConversation = true;
     private boolean enableAwayMessage = true;
     private Object awayMessageTextColor = Arrays.asList("#A9A4A4","#FFFFFFFF");
@@ -604,16 +604,16 @@ public class AlCustomizationSettings extends JsonMarker {
         return messageTemplate;
     }
 
-    public String getSentMessageCreatedAtTimeColor() {
-        return sentMessageCreatedAtTimeColor;
+    public List<String> getSentMessageCreatedAtTimeColor() {
+        return getColorList(sentMessageCreatedAtTimeColor);
     }
 
     public void setSentMessageCreatedAtTimeColor(String sentMessageCreatedAtTimeColor) {
         this.sentMessageCreatedAtTimeColor = sentMessageCreatedAtTimeColor;
     }
 
-    public String getReceivedMessageCreatedAtTimeColor() {
-        return receivedMessageCreatedAtTimeColor;
+    public List<String> getReceivedMessageCreatedAtTimeColor() {
+        return getColorList(receivedMessageCreatedAtTimeColor);
     }
 
     public void setReceivedMessageCreatedAtTimeColor(String receivedMessageCreatedAtTimeColor) {

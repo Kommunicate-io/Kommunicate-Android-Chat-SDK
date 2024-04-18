@@ -15,8 +15,8 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 
 public class CardTypeKmRichMessage extends KmRichMessage {
 
-    public CardTypeKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
-        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
+    public CardTypeKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
     }
 
     @Override

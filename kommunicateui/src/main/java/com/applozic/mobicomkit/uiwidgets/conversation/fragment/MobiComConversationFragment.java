@@ -418,11 +418,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         boolean newDarkModeStatus = themeHelper.isDarkModeEnabledForSDK();
         if (isCurrentlyInDarkMode != newDarkModeStatus) {
             isCurrentlyInDarkMode = newDarkModeStatus;
-            if (newDarkModeStatus) {
-                setupModes(true);
-            } else {
-                setupModes(false);
-            }
+            setupModes(newDarkModeStatus);
         }
     }
 
@@ -527,6 +523,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         individualMessageSendLayout.setBackgroundColor(themeHelper.parseColorWithDefault(
                 alCustomizationSettings.getMessageEditTextBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModeColor
         ));
+        setupDotColorStatus();
         if (recyclerDetailConversationAdapter != null) {
             recyclerDetailConversationAdapter.setupDarkMode(isDarkModeEnabled);
             recyclerDetailConversationAdapter.notifyDataSetChanged();
@@ -619,9 +616,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             toolbarOnlineColorDot = customToolbarLayout.findViewById(R.id.onlineTextView);
             toolbarOfflineColorDot = customToolbarLayout.findViewById(R.id.offlineTextView);
             toolbarAwayColorDot = customToolbarLayout.findViewById(R.id.awayTextView);
-            KmUtils.setGradientStrokeColor(toolbarOnlineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
-            KmUtils.setGradientStrokeColor(toolbarOfflineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
-            KmUtils.setGradientStrokeColor(toolbarAwayColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
+            setupDotColorStatus();
 
             toolbarAlphabeticImage = customToolbarLayout.findViewById(R.id.toolbarAlphabeticImage);
 
@@ -1131,6 +1126,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setupModes(isCurrentlyInDarkMode);
 
         return list;
+    }
+
+    private void setupDotColorStatus() {
+        KmUtils.setGradientStrokeColor(toolbarOnlineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
+        KmUtils.setGradientStrokeColor(toolbarOfflineColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
+        KmUtils.setGradientStrokeColor(toolbarAwayColorDot, DimensionsUtils.convertDpToPx(1), themeHelper.getToolbarColor());
     }
 
     public void newCustomToolbarDesign() {

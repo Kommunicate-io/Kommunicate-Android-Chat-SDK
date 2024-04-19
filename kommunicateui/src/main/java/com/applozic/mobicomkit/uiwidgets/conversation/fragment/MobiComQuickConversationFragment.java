@@ -134,7 +134,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
-        isCurrentlyInDarkMode = KmThemeHelper.getInstance(getContext(),alCustomizationSettings).isDarkModeEnabledForSDK();
+        isCurrentlyInDarkMode = KmThemeHelper.getInstance(getContext(), alCustomizationSettings).isDarkModeEnabledForSDK();
         if (!alCustomizationSettings.isAgentApp()) {
             LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
             if (kmMessageLinearLayout != null) {
@@ -183,7 +183,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerView.setAdapter(recyclerAdapter);
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(false);
-        if(!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
+        ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getToolbarTitleColor());
+        if (!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
             Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.km_baseline_more_vert);
             toolbar.setOverflowIcon(overflowIcon);
         }
@@ -249,18 +250,15 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        boolean newDarkModeStatus = KmThemeHelper.getInstance(getContext(),alCustomizationSettings).isDarkModeEnabledForSDK();
+        boolean newDarkModeStatus = KmThemeHelper.getInstance(getContext(), alCustomizationSettings).isDarkModeEnabledForSDK();
         if (isCurrentlyInDarkMode != newDarkModeStatus) {
             isCurrentlyInDarkMode = newDarkModeStatus;
-            if (newDarkModeStatus){
-                setupModes(true);
-            } else {
-                setupModes(false);
-            }
+            setupModes(newDarkModeStatus);
         }
     }
 
     private void setupModes(boolean isDarkModeEnabled) {
+        ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getToolbarTitleColor());
         emptyTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getNoConversationLabelTextColor().get(1).trim() : alCustomizationSettings.getNoConversationLabelTextColor().get(0).trim()));
         KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) ? Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
         recyclerView.setBackgroundColor(getResources().getColor(isCurrentlyInDarkMode ? R.color.dark_mode_default : R.color.conversation_list_all_background));
@@ -286,16 +284,16 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
             menu.findItem(R.id.logout).setVisible(true);
         }
 
-        if(!alCustomizationSettings.isAgentApp() && alCustomizationSettings.isToolbarTitleCenterAligned()) {
+        if (!alCustomizationSettings.isAgentApp() && alCustomizationSettings.isToolbarTitleCenterAligned()) {
             if (alCustomizationSettings.isProfileOption() || alCustomizationSettings.isMessageSearchOption() || alCustomizationSettings.isLogoutOption()) {
-                centerToolbarTitle(toolbar,true);
+                centerToolbarTitle(toolbar, true);
             } else {
-                centerToolbarTitle(toolbar,false);
+                centerToolbarTitle(toolbar, false);
             }
         }
     }
 
-    private void centerToolbarTitle(Toolbar myToolbar , boolean isOverflowMenuVisible) {
+    private void centerToolbarTitle(Toolbar myToolbar, boolean isOverflowMenuVisible) {
         TextView toolbarTitle = myToolbar.findViewById(R.id.km_conversation_text_view);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) toolbarTitle.getLayoutParams();
         toolbarTitle.setGravity(Gravity.CENTER);

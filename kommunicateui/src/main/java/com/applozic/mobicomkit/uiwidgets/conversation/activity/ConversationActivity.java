@@ -371,12 +371,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
-        if (!alCustomizationSettings.getStatusBarColor().isEmpty()) {
-            KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
-        } else {
-            KmUtils.setStatusBarColor(this, themeHelper.getPrimaryColor());
-        }
-
+        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
         setSupportActionBar(toolbar);
         setToolbarTitleSubtitleColorFromSettings();
 
@@ -510,6 +505,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private void setupModes() {
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
+        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
         setToolbarTitleSubtitleColorFromSettings();
     }
 

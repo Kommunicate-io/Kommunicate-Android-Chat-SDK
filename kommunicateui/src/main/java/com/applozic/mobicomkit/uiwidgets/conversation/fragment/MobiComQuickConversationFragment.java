@@ -103,6 +103,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     Button startNewConv;
     RelativeLayout faqButtonLayout;
+    KmThemeHelper themeHelper;
     boolean isCurrentlyInDarkMode;
 
     @Override
@@ -114,6 +115,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+        themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
         syncCallService = SyncCallService.getInstance(getActivity());
         conversationUIService = new ConversationUIService(getActivity());
         baseContactService = new AppContactService(getActivity());
@@ -134,7 +136,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
-        isCurrentlyInDarkMode = KmThemeHelper.getInstance(getContext(), alCustomizationSettings).isDarkModeEnabledForSDK();
+        isCurrentlyInDarkMode = themeHelper.isDarkModeEnabledForSDK();
         if (!alCustomizationSettings.isAgentApp()) {
             LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
             if (kmMessageLinearLayout != null) {
@@ -170,7 +172,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                     }
                 });
             }
-            conversationTextView.setTextColor(KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getToolbarTitleColor());
+            conversationTextView.setTextColor(themeHelper.getToolbarTitleColor());
         } else {
             TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
             textView.setVisibility(View.GONE);
@@ -183,7 +185,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerView.setAdapter(recyclerAdapter);
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(false);
-        ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getToolbarTitleColor());
+        ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(themeHelper.getToolbarTitleColor());
         if (!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
             Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.km_baseline_more_vert);
             toolbar.setOverflowIcon(overflowIcon);
@@ -250,7 +252,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        boolean newDarkModeStatus = KmThemeHelper.getInstance(getContext(), alCustomizationSettings).isDarkModeEnabledForSDK();
+        boolean newDarkModeStatus = themeHelper.isDarkModeEnabledForSDK();
         if (isCurrentlyInDarkMode != newDarkModeStatus) {
             isCurrentlyInDarkMode = newDarkModeStatus;
             setupModes(newDarkModeStatus);
@@ -258,9 +260,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     }
 
     private void setupModes(boolean isDarkModeEnabled) {
-        ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getToolbarTitleColor());
+        ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(themeHelper.getToolbarTitleColor());
         emptyTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getNoConversationLabelTextColor().get(1).trim() : alCustomizationSettings.getNoConversationLabelTextColor().get(0).trim()));
-        KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) ? Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
+        KmUtils.setGradientSolidColor(startNewConv, themeHelper.parseColorWithDefault(alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(isDarkModeEnabled ? 1 : 0),
+                themeHelper.parseColorWithDefault(alCustomizationSettings.getToolbarColor().get(isDarkModeEnabled ? 1 : 0), themeHelper.getPrimaryColor())));
         recyclerView.setBackgroundColor(getResources().getColor(isCurrentlyInDarkMode ? R.color.dark_mode_default : R.color.conversation_list_all_background));
         recyclerAdapter.setDarkMode(isDarkModeEnabled);
         recyclerAdapter.notifyDataSetChanged();

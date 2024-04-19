@@ -504,7 +504,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             kmTypingView = getView().findViewById(R.id.idKmTypingView);
         }
 
-        int iconColor = themeHelper.parseColorWithDefault(alCustomizationSettings.getAttachmentIconsBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModePrimaryColor);
+        int iconColor = themeHelper.parseColorWithDefault(alCustomizationSettings.getAttachmentIconsBackgroundColor().get(isDarkModeEnabled ? 1 : 0),
+                themeHelper.parseColorWithDefault(alCustomizationSettings.getToolbarColor().get(isDarkModeEnabled ? 1 : 0), currentModePrimaryColor));
         fileAttachmentButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         emoticonsBtn.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         cameraButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);

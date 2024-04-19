@@ -547,6 +547,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     conversationRootLayout.setBackgroundResource(resourceId);
                 }
             }
+        } else {
+            conversationRootLayout.setBackgroundColor(isCurrentlyInDarkMode ? Color.BLACK : Color.WHITE);
         }
 
     }

@@ -20,7 +20,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object receivedMessageBackgroundColor = Arrays.asList("#e6e5ec","#313131");
     private Object sendButtonBackgroundColor = "";
     private Object attachmentIconsBackgroundColor = "";
-    private Object chatBackgroundColorOrDrawable;
+    private Object chatBackgroundColorOrDrawable = Arrays.asList("#FFFFFF", "#000000");
     private Object editTextBackgroundColorOrDrawable;
     private Object editTextLayoutBackgroundColorOrDrawable;
     private Object channelCustomMessageBgColor = Arrays.asList("#000000","#FFFFFFFF");
@@ -32,7 +32,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object receivedContactMessageTextColor = "#646262";
     private Object sentMessageTextColor = "#FFFFFFFF";
     private Object receivedMessageTextColor = Arrays.asList("#646262","#FFFFFF");
-    private Object messageEditTextTextColor = "#000000";
+    private Object messageEditTextTextColor = Arrays.asList("#000000", "#FFFFFF");
     private Object messageEditTextBackgroundColor = "";
     private Object autoSuggestionButtonBackgroundColor= "";
     private Object autoSuggestionButtonTextColor = "";

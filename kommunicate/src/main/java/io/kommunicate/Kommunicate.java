@@ -515,6 +515,10 @@ public class Kommunicate {
         Applozic.getInstance(context).setCustomNotificationSound(path);
     }
 
+    public static void setNotificationColor(Context context, String color) {
+        Applozic.getInstance(context).setNotificationColor(color);
+    }
+
     @Deprecated
     public static void openParticularConversation(Context context, Integer groupId) {
         try {

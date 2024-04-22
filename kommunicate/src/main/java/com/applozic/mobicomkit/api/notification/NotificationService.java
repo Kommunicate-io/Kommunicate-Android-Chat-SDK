@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -70,6 +71,7 @@ public class NotificationService {
     private NotificationChannels notificationChannels;
     private String[] constArray = {MobiComKitConstants.LOCATION, MobiComKitConstants.AUDIO, MobiComKitConstants.VIDEO, MobiComKitConstants.ATTACHMENT};
     private String notificationFilePath;
+    private String notificationColor;
     public static final String BADGE_COUNT = "BADGE_COUNT";
     public static final String NO_ALERT = "NO_ALERT";
     private final Integer notificationIconColor;
@@ -86,7 +88,8 @@ public class NotificationService {
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.notificationDisableThreshold = applozicClient.getNotificationMuteThreshold();
         this.notificationFilePath = Applozic.getInstance(context).getCustomNotificationSound();
-        this.notificationIconColor = Utils.getMetaDataValueForResources(context,NOTIFICATION_SMALL_ICON_COLOR);
+        this.notificationColor = Applozic.getInstance(context).getNotificationColor();
+        this.notificationIconColor = Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_COLOR);
 
         notificationChannels = new NotificationChannels(context, notificationFilePath);
 
@@ -153,9 +156,8 @@ public class NotificationService {
             pendingIntent = PendingIntent.getActivity(context,
                     (int) (System.currentTimeMillis() & 0xfffffff),
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE );
-        }
-        else {
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        } else {
             pendingIntent = PendingIntent.getActivity(context,
                     (int) (System.currentTimeMillis() & 0xfffffff),
                     intent,
@@ -170,8 +172,8 @@ public class NotificationService {
                         .setPriority(muteNotifications(index) ? NotificationCompat.PRIORITY_LOW : NotificationCompat.PRIORITY_HIGH)
                         .setWhen(System.currentTimeMillis());
 
-        if(notificationIconColor != null)
-            mBuilder.setColor(ContextCompat.getColor(context,notificationIconColor));
+        if (notificationIconColor != null)
+            mBuilder.setColor(ContextCompat.getColor(context, notificationIconColor));
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             mBuilder.setGroup(GROUP_KEY);
@@ -382,7 +384,7 @@ public class NotificationService {
     public void notifyUserForNormalMessage(Contact contact, Channel channel, Message message, int index) {
         String notificationText;
         NotificationInfo notificationInfo = getNotificationInfo(contact, channel, message);
-        if(notificationInfo == null) {
+        if (notificationInfo == null) {
             return;
         }
         Bitmap notificationIconBitmap = notificationInfo.notificationIconBitmap;
@@ -400,21 +402,17 @@ public class NotificationService {
             notificationText = message.getMessage();
         }
 
-        if(TextUtils.isEmpty(notificationText))
-        {
+        if (TextUtils.isEmpty(notificationText)) {
             List<Message> unreadMessages = messageDatabaseService.getUnreadMessages();
-            for (Message unreadMessage : unreadMessages)
-            {
-                if (!TextUtils.isEmpty(unreadMessage.getMessage()))
-                {
+            for (Message unreadMessage : unreadMessages) {
+                if (!TextUtils.isEmpty(unreadMessage.getMessage())) {
                     notificationText = unreadMessage.getMessage();
                     break;
                 }
             }
         }
 
-        if(TextUtils.isEmpty(notificationText))
-        {
+        if (TextUtils.isEmpty(notificationText)) {
             notificationText = NOTIFICATION_TEXT_NOT_AVAILABLE;
         }
 
@@ -462,6 +460,13 @@ public class NotificationService {
                 .setContentTitle(notificationInfo.title)
                 .setContentText(channel != null && !(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) ? (displayNameContact != null ? (displayNameContact.getDisplayName() + ": " + getSpannedText(notificationText)) : "" + getSpannedText(notificationText)) : getSpannedText(notificationText));
 
+        try {
+            int color = Color.parseColor(notificationColor);
+            mBuilder.setColor(color);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if(notificationInfo.notificationIconColor != null)
             mBuilder.setColor(ContextCompat.getColor(context,notificationInfo.notificationIconColor));
 
@@ -503,7 +508,7 @@ public class NotificationService {
 
     public void startCallNotification(Contact contact, Message message, String isAudioCallOnly, String callId) {
         NotificationInfo notificationInfo = getNotificationInfo(contact, null, message);
-        if(notificationInfo == null) {
+        if (notificationInfo == null) {
             return;
         }
 
@@ -524,8 +529,7 @@ public class NotificationService {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
                     fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        }
-        else {
+        } else {
             fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
                     fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
@@ -536,13 +540,13 @@ public class NotificationService {
                         .setSmallIcon(notificationInfo.smallIconResourceId)
                         .setContentTitle("Incoming call from " + notificationInfo.title + ".")
                         .setContentText("Tap to open call screen.")
-                        .setVibrate(new long[] {2000L, 1000L, 2000L, 1000L})
+                        .setVibrate(new long[]{2000L, 1000L, 2000L, 1000L})
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setCategory(NotificationCompat.CATEGORY_CALL)
                         .setFullScreenIntent(fullScreenPendingIntent, true);
 
-        if(notificationInfo.notificationIconColor != null)
+        if (notificationInfo.notificationIconColor != null)
             notificationBuilder.setColor(notificationInfo.notificationIconColor);
 
         Notification incomingCallNotification = notificationBuilder.build();

@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit;
 
 import static io.kommunicate.utils.KmConstants.KM_USER_LANGUAGE_CODE;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -37,8 +38,8 @@ import com.applozic.mobicommons.task.AlTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import io.kommunicate.KmSettings;
 
 /**
@@ -51,6 +52,7 @@ public class Applozic {
     private static final String MY_PREFERENCE = "applozic_preference_key";
     private static final String NOTIFICATION_CHANNEL_VERSION_STATE = "NOTIFICATION_CHANNEL_VERSION_STATE";
     private static final String CUSTOM_NOTIFICATION_SOUND = "CUSTOM_NOTIFICATION_SOUND";
+    private static final String NOTIFICATION_COLOR = "NOTIFICATION_COLOR";
     public static Applozic applozic;
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -136,6 +138,15 @@ public class Applozic {
         return sharedPreferences.getString(CUSTOM_NOTIFICATION_SOUND, null);
     }
 
+    public Applozic setNotificationColor(String color) {
+        sharedPreferences.edit().putString(NOTIFICATION_COLOR, color).commit();
+        return this;
+    }
+
+    public String getNotificationColor() {
+        return sharedPreferences.getString(NOTIFICATION_COLOR, null);
+    }
+
     public static void disconnectPublish(Context context, String deviceKeyString, String userKeyString, boolean useEncrypted) {
         if (!TextUtils.isEmpty(userKeyString) && !TextUtils.isEmpty(deviceKeyString)) {
             Intent intent = new Intent(context, ApplozicMqttIntentService.class);
@@ -211,12 +222,14 @@ public class Applozic {
         subscribeIntent.putStringArrayListExtra(ApplozicMqttIntentService.TEAM_TOPIC_LIST, teams);
         ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
     }
+
     public static void unSubscribeToTeamTopic(Context context, boolean useEncrypted) {
         Intent subscribeIntent = new Intent(context, ApplozicMqttIntentService.class);
         subscribeIntent.putExtra(ApplozicMqttIntentService.DISCONNECT_FROM_TEAM_TOPIC, true);
         subscribeIntent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
         ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
     }
+
     public static void subscribeToTyping(Context context, Channel channel, Contact contact) {
         Intent intent = new Intent(context, ApplozicMqttIntentService.class);
         if (channel != null) {

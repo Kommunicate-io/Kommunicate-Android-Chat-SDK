@@ -22,6 +22,7 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
+import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
@@ -513,6 +514,19 @@ public class Kommunicate {
 
     public static void setNotificationSoundPath(Context context, String path) {
         Applozic.getInstance(context).setCustomNotificationSound(path);
+    }
+
+    public  static  void setServerConfiguration(Context context,KMServerConfiguration configuration){
+        if (configuration == KMServerConfiguration.EUCONFIGURATION) {
+            ALSpecificSettings.getInstance(context).setAlBaseUrl(BuildConfig.EU_CHAT_SERVER_URL);
+            ALSpecificSettings.getInstance(context).setKmBaseUrl(BuildConfig.EU_API_SERVER_URL);
+            MobiComUserPreference.getInstance(context).setMqttBrokerUrl(BuildConfig.MQTT_URL_EU);
+        } else {
+            ALSpecificSettings.getInstance(context).setAlBaseUrl(BuildConfig.CHAT_SERVER_URL);
+            ALSpecificSettings.getInstance(context).setKmBaseUrl(BuildConfig.API_SERVER_URL);
+            MobiComUserPreference.getInstance(context).setMqttBrokerUrl(BuildConfig.MQTT_URL);
+
+        }
     }
 
     @Deprecated

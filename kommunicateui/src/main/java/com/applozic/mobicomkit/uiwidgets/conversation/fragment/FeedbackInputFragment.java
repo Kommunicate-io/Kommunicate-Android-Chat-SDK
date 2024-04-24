@@ -19,6 +19,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.broadcast.AlEventManager;

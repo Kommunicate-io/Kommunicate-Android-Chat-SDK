@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -75,13 +76,19 @@ public class KmTypingView extends LinearLayout {
 
     private void setupBackground() {
         GradientDrawable bgShape;
-            bgShape = (GradientDrawable) parentLayout.getBackground();
+        bgShape = (GradientDrawable) parentLayout.getBackground();
+        AlCustomizationSettings alCustomizationSettings = new AlCustomizationSettings();
 
         if (bgShape != null) {
-            String bgColor = new AlCustomizationSettings().getReceivedMessageBackgroundColor();
+            KmThemeHelper themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
+            String bgColor = themeHelper.isDarkModeEnabledForSDK() ? new AlCustomizationSettings().getReceivedMessageBackgroundColor().get(1) : new AlCustomizationSettings().getReceivedMessageBackgroundColor().get(0);
             bgShape.setColor(Color.parseColor(bgColor));
             bgShape.setStroke(3, Color.parseColor(bgColor));
-
+            if (themeHelper.isDarkModeEnabledForSDK() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                firstDot.getBackground().setTint(Color.WHITE);
+                secondDot.getBackground().setTint(Color.WHITE);
+                thirdDot.getBackground().setTint(Color.WHITE);
+            }
         }
     }
 

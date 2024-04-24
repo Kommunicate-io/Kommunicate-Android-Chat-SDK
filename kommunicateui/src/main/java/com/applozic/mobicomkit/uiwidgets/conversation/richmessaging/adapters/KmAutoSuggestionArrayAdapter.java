@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 
 public class KmAutoSuggestionArrayAdapter<T> extends ArrayAdapter<T> {
 
@@ -53,12 +54,13 @@ public class KmAutoSuggestionArrayAdapter<T> extends ArrayAdapter<T> {
 
         LinearLayout autoSuggestionRowLayout = (LinearLayout)convertView.findViewById(R.id.km_auto_suggestion_row_layout);
         TextView nameView = (TextView) convertView.findViewById(R.id.km_name_tv);
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(getContext(),alCustomizationSettings);
 
-        if (!TextUtils.isEmpty(alCustomizationSettings.getAutoSuggestionButtonBackgroundColor())){
-            autoSuggestionRowLayout.setBackgroundColor(Color.parseColor(alCustomizationSettings.getAutoSuggestionButtonBackgroundColor()));
+        if (!TextUtils.isEmpty(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAutoSuggestionButtonBackgroundColor().get(1) : alCustomizationSettings.getAutoSuggestionButtonBackgroundColor().get(0))){
+            autoSuggestionRowLayout.setBackgroundColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAutoSuggestionButtonBackgroundColor().get(1) : alCustomizationSettings.getAutoSuggestionButtonBackgroundColor().get(0)));
         }
-        if (!TextUtils.isEmpty(alCustomizationSettings.getAutoSuggestionButtonTextColor())){
-           nameView.setTextColor(Color.parseColor(alCustomizationSettings.getAutoSuggestionButtonTextColor()));
+        if (!TextUtils.isEmpty(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAutoSuggestionButtonTextColor().get(1) : alCustomizationSettings.getAutoSuggestionButtonTextColor().get(0))){
+           nameView.setTextColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAutoSuggestionButtonTextColor().get(1) : alCustomizationSettings.getAutoSuggestionButtonTextColor().get(0)));
         }
 
         T source = fullList.get(position);

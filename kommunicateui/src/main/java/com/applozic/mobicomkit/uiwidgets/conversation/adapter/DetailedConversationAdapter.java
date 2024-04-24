@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -109,6 +111,7 @@ import java.util.List;
 import java.util.Locale;
 
 import androidx.vectordrawable.graphics.drawable.AnimatorInflaterCompat;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
@@ -158,12 +161,17 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private Message lastSentMessage;
     private List<WebView> webViews = new ArrayList<>();
     private boolean useInnerTimeStampDesign;
+    private boolean isDarkModeEnabled = false;
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
         themeHelper = KmThemeHelper.getInstance(context, alCustomizationSettings);
         initRadius();
         useInnerTimeStampDesign = alCustomizationSettings.getInnerTimestampDesign();
+    }
+
+    public void setupDarkMode(boolean isDarkModeEnabled) {
+        this.isDarkModeEnabled = isDarkModeEnabled;
     }
 
     public void setFontManager(KmFontManager fontManager) {
@@ -255,13 +263,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         imageThumbnailLoader.setImageFadeIn(false);
         imageThumbnailLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
 
-        if(useInnerTimeStampDesign || (alCustomizationSettings != null && !TextUtils.isEmpty(alCustomizationSettings.getMessageStatusIconColor()))) {
+        if (useInnerTimeStampDesign || (alCustomizationSettings != null && !TextUtils.isEmpty(isDarkModeEnabled ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0)))) {
             sentIcon = context.getResources().getDrawable(R.drawable.km_sent_icon_c);
             deliveredIcon = context.getResources().getDrawable(R.drawable.km_delivered_icon_c);
             readIcon = context.getResources().getDrawable(R.drawable.km_read_icon_c);
             pendingIcon = context.getResources().getDrawable(R.drawable.km_pending_icon_c);
-        }
-        else {
+        } else {
             sentIcon = AppCompatResources.getDrawable(context, R.drawable.km_sent_icon);
             deliveredIcon = AppCompatResources.getDrawable(context, R.drawable.km_delivered_icon);
             readIcon = AppCompatResources.getDrawable(context, R.drawable.km_read_icon);
@@ -295,7 +302,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             View customViewHolder = layoutInflater.inflate(R.layout.km_custom_message_layout, parent, false);
             return new MyViewHolder3(customViewHolder);
         } else if (viewType == 4) {
-            if (alCustomizationSettings.isAgentApp()){
+            if (alCustomizationSettings.isAgentApp()) {
                 View customMessageViewHolder = layoutInflater.inflate(R.layout.km_channel_custom_message_layout, parent, false);
                 return new MyViewHolder4(customMessageViewHolder, alCustomizationSettings.isAgentApp());
             } else {
@@ -310,24 +317,22 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             return new MyViewHolder6(feedbackViewHolder);
         } else if (viewType == 0) {
             View mainThreadView;
-            if(useInnerTimeStampDesign) {
+            if (useInnerTimeStampDesign) {
                 mainThreadView = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
-            }
-            else {
+            } else {
                 mainThreadView = layoutInflater.inflate(R.layout.km_received_message_list_view, parent, false);
             }
             return new MyViewHolder(mainThreadView);
-        } else if(viewType == 7) {
+        } else if (viewType == 7) {
             View feedbackViewHolder = layoutInflater.inflate(R.layout.km_static_top_message, parent, false);
             return new StaticMessageHolder(feedbackViewHolder);
-        } else if(viewType == 8) {
+        } else if (viewType == 8) {
             View typingViewHolder = layoutInflater.inflate(R.layout.km_typing_indicator_layout, parent, false);
-            return new TypingMessageHolder(typingViewHolder);
+            return new TypingMessageHolder(typingViewHolder, isDarkModeEnabled);
         }
-        if(useInnerTimeStampDesign) {
+        if (useInnerTimeStampDesign) {
             view = layoutInflater.inflate(R.layout.mobicom_sent_message_list_view, parent, false);
-        }
-        else {
+        } else {
             view = layoutInflater.inflate(R.layout.km_sent_message_list_view, parent, false);
         }
         return new MyViewHolder(view);
@@ -342,7 +347,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             if (type == 7) {
                 StaticMessageHolder messageHolder = (StaticMessageHolder) holder;
                 messageHolder.topMessageTextView.setText(alCustomizationSettings.getStaticTopMessage());
-                if(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage())) {
+                if (!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage())) {
                     messageHolder.topMessageImageView.setImageResource(context.getResources().getIdentifier(alCustomizationSettings.getStaticTopIcon(), "drawable", context.getPackageName()));
                 }
 
@@ -352,8 +357,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat("EEEE");
                 Date date = new Date(message.getCreatedAtTime());
 
-                myViewHolder2.dateView.setTextColor(Color.parseColor(alCustomizationSettings.getConversationDateTextColor().trim()));
-                myViewHolder2.dayTextView.setTextColor(Color.parseColor(alCustomizationSettings.getConversationDayTextColor().trim()));
+                myViewHolder2.dateView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getConversationDateTextColor().get(1).trim() : alCustomizationSettings.getConversationDateTextColor().get(0).trim()));
+                myViewHolder2.dayTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getConversationDayTextColor().get(1).trim() : alCustomizationSettings.getConversationDayTextColor().get(0).trim()));
 
                 if (DateUtils.isSameDay(message.getCreatedAtTime())) {
                     myViewHolder2.dayTextView.setVisibility(View.VISIBLE);
@@ -373,14 +378,20 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 return;
             } else if (type == 4) {
                 MyViewHolder4 myViewHolder4 = (MyViewHolder4) holder;
-                if (alCustomizationSettings.isAgentApp()){
+                if (alCustomizationSettings.isAgentApp()) {
                     GradientDrawable bgGradientDrawable = (GradientDrawable) myViewHolder4.channelMessageTextView.getBackground();
-                    bgGradientDrawable.setColor(Color.parseColor(alCustomizationSettings.getChannelCustomMessageBgColor()));
-                    bgGradientDrawable.setStroke(3, Color.parseColor(alCustomizationSettings.getChannelCustomMessageBorderColor()));
-                    myViewHolder4.channelMessageTextView.setTextColor(Color.parseColor(alCustomizationSettings.getChannelCustomMessageTextColor()));
+                    bgGradientDrawable.setColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) :
+                            alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
+                    bgGradientDrawable.setStroke(3, Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBorderColor().get(1) : alCustomizationSettings.getChannelCustomMessageBorderColor().get(0)));
+                    myViewHolder4.channelMessageTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageTextColor().get(1) : alCustomizationSettings.getChannelCustomMessageTextColor().get(0)));
                     myViewHolder4.channelMessageTextView.setText(message.getMessage());
                 } else {
                     myViewHolder4.channelMessageTextView.setText(message.getLocalizationValue());
+                    myViewHolder4.channelMessageTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageTextColor().get(1) : alCustomizationSettings.getChannelCustomMessageTextColor().get(0)));
+                    myViewHolder4.channelMessageStaticText.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageTextColor().get(1) : alCustomizationSettings.getChannelCustomMessageTextColor().get(0)));
+                    myViewHolder4.channelMessageLeftBg.setBackgroundColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) : alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
+                    myViewHolder4.channelMessageRightBg.setBackgroundColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) : alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
+
                 }
                 return;
             } else if (type == 5) {
@@ -447,9 +458,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myViewholder6.textViewFeedbackText.setText(context.getString(R.string.rating_text));
                     }
                 }
-            } else if(type == 8) {
+            } else if (type == 8) {
                 TypingMessageHolder typingMessageHolder = (TypingMessageHolder) holder;
-                if(messageList.size() -1 != position) {
+                typingMessageHolder.setupDarkMode(isDarkModeEnabled);
+                if (messageList.size() - 1 != position) {
                     ((TypingMessageHolder) holder).parentLayout.setVisibility(GONE);
                 } else {
                     ((TypingMessageHolder) holder).parentLayout.setVisibility(View.VISIBLE);
@@ -471,20 +483,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             int index = messageList.indexOf(message);
             boolean hideRecursiveImages = false;
             boolean showTimestamp;
-            if(useInnerTimeStampDesign) {
+            if (useInnerTimeStampDesign) {
                 showTimestamp = message.isTypeOutbox() || index == messageList.size() - 1 || !messageList.get(index + 1).isRichMessage();
-            }
-            else if(message.isTypeOutbox()) {
-                    showTimestamp = index == messageList.size() - 1
-                            || messageList.get(index + 1).getCreatedAtTime() -  message.getCreatedAtTime() > KmConstants.MESSAGE_CLUBBING_TIME_FRAME
-                            || !messageList.get(index + 1).isTypeOutbox();
-                }
-            else {
-                    showTimestamp = index == messageList.size() - 1
-                            || messageList.get(index + 1).getCreatedAtTime() -  message.getCreatedAtTime() > KmConstants.MESSAGE_CLUBBING_TIME_FRAME
-                            || messageList.get(index + 1).isTypeOutbox()
-                            || !message.getContactIds().equals(messageList.get(index + 1).getContactIds())
-                            || messageList.get(index + 1).isActionMessage();
+            } else if (message.isTypeOutbox()) {
+                showTimestamp = index == messageList.size() - 1
+                        || messageList.get(index + 1).getCreatedAtTime() - message.getCreatedAtTime() > KmConstants.MESSAGE_CLUBBING_TIME_FRAME
+                        || !messageList.get(index + 1).isTypeOutbox();
+            } else {
+                showTimestamp = index == messageList.size() - 1
+                        || messageList.get(index + 1).getCreatedAtTime() - message.getCreatedAtTime() > KmConstants.MESSAGE_CLUBBING_TIME_FRAME
+                        || messageList.get(index + 1).isTypeOutbox()
+                        || !message.getContactIds().equals(messageList.get(index + 1).getContactIds())
+                        || messageList.get(index + 1).isActionMessage();
             }
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) myHolder.messageRootLayout.getLayoutParams();
@@ -536,13 +546,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     String displayName;
 
                     myHolder.replyRelativeLayout.setBackgroundColor(message.isTypeOutbox() ?
-                            Color.parseColor(alCustomizationSettings.getReplyMessageLayoutSentMessageBackground()) : Color.parseColor(alCustomizationSettings.getReplyMessageLayoutReceivedMessageBackground()));
+                            Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReplyMessageLayoutSentMessageBackground().get(1) : alCustomizationSettings.getReplyMessageLayoutSentMessageBackground().get(0)) : Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReplyMessageLayoutReceivedMessageBackground().get(1) : alCustomizationSettings.getReplyMessageLayoutReceivedMessageBackground().get(0)));
 
                     myHolder.replyNameTextView.setTextColor(message.isTypeOutbox() ?
-                            Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+                            Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getSentMessageTextColor().get(1) : alCustomizationSettings.getSentMessageTextColor().get(0)) : Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageTextColor().get(1) : alCustomizationSettings.getReceivedMessageTextColor().get(0)));
 
                     myHolder.replyMessageTextView.setTextColor(message.isTypeOutbox() ?
-                            Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+                            Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getSentMessageTextColor().get(1) : alCustomizationSettings.getSentMessageTextColor().get(0)) : Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageTextColor().get(1) : alCustomizationSettings.getReceivedMessageTextColor().get(0)));
 
                     if (msg.getGroupId() != null) {
                         if (MobiComUserPreference.getInstance(context).getUserId().equals(msg.getContactIds()) || TextUtils.isEmpty(msg.getContactIds())) {
@@ -628,13 +638,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.imageViewPhoto.setVisibility(View.GONE);
                             myHolder.imageViewRLayout.setVisibility(View.GONE);
                         }
-                        myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                        myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? (isDarkModeEnabled ? alCustomizationSettings.getSentMessageTextColor().get(1) : alCustomizationSettings.getSentMessageTextColor().get(0)) : (isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageTextColor().get(1) : alCustomizationSettings.getReceivedMessageTextColor().get(0))));
                     } else if (msg.getContentType() == Message.ContentType.LOCATION.getValue()) {
                         myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
                         myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
                         myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                         myHolder.replyMessageTextView.setText(context.getString(R.string.al_location_string));
-                        myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                        myHolder.imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? (isDarkModeEnabled ? alCustomizationSettings.getSentMessageTextColor().get(1) : alCustomizationSettings.getSentMessageTextColor().get(0)) : (isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageTextColor().get(1) : alCustomizationSettings.getReceivedMessageTextColor().get(0))));
                         myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_location_on_white_24dp);
                         loadImage.setLoadingImage(R.drawable.km_map_offline_thumbnail);
                         loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage(), geoApiKey), myHolder.imageViewPhoto);
@@ -699,18 +709,22 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     });
                 }
                 String customBotName = KmUtils.getCustomBotName(message, context);
-                if(!TextUtils.isEmpty(customBotName)) {
+                if (!TextUtils.isEmpty(customBotName)) {
                     myHolder.nameTextView.setText(customBotName);
                 } else {
                     myHolder.nameTextView.setText(contactDisplayName.getDisplayName());
                 }
-                myHolder.nameTextView.setTextColor(Color.parseColor(alCustomizationSettings.getReceiverNameTextColor()));
+                myHolder.nameTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceiverNameTextColor().get(1) : alCustomizationSettings.getReceiverNameTextColor().get(0)));
             }
 
-            if (message.isTypeOutbox() && !TextUtils.isEmpty(alCustomizationSettings.getSentMessageCreatedAtTimeColor())) {
-                myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getSentMessageCreatedAtTimeColor()));
-            } else if(!TextUtils.isEmpty(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor())){
-                myHolder.createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
+            if (message.isTypeOutbox()) {
+                myHolder.createdAtTime.setTextColor(
+                        themeHelper.parseColorWithDefault(alCustomizationSettings.getSentMessageCreatedAtTimeColor().get(isDarkModeEnabled ? 1 : 0),
+                                Color.parseColor("#808080")));
+            } else {
+                myHolder.createdAtTime.setTextColor(
+                        themeHelper.parseColorWithDefault(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor().get(isDarkModeEnabled ? 1 : 0),
+                                Color.parseColor("#808080")));
             }
 
             if (isHtmlTypeMessage(message)) {
@@ -787,10 +801,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     myHolder.statusImageView.setImageDrawable(null);
                 }
             } else if (!message.isSentToServer() && message.isTypeOutbox()) {
-                if(useInnerTimeStampDesign) {
+                if (useInnerTimeStampDesign) {
                     myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(pendingIcon, null, null, null);
-                }
-                else {
+                } else {
                     myHolder.statusImageView.setImageDrawable(pendingIcon);
                 }
             } else if (message.getKeyString() != null && message.isTypeOutbox() && message.isSentToServer()) {
@@ -800,16 +813,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 } else {
                     statusIcon = (message.getDelivered() ? deliveredIcon : sentIcon);
                 }
-                if(useInnerTimeStampDesign) {
+                if (useInnerTimeStampDesign) {
                     myHolder.statusTextView.setCompoundDrawablesWithIntrinsicBounds(statusIcon, null, null, null);
-                }
-                else {
+                } else {
                     myHolder.statusImageView.setImageDrawable(statusIcon);
                 }
 
-               //
-            }
-            else {
+                //
+            } else {
                 //donothing
             }
 
@@ -1075,15 +1086,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 myHolder.createdAtTime.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
             } else {
                 myHolder.timestampLayout.setVisibility(showTimestamp && !message.isRichMessage() ? View.VISIBLE : GONE);
-                if(index != messageList.size() - 1 && !message.isRichMessage() && !messageList.get(index + 1).isRichMessage()) {
+                if (index != messageList.size() - 1 && !message.isRichMessage() && !messageList.get(index + 1).isRichMessage()) {
                     myHolder.messageTextLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             myHolder.timestampLayout.setVisibility(View.VISIBLE);
                         }
                     });
-                }
-                else {
+                } else {
                     myHolder.messageTextLayout.setOnClickListener(null);
                 }
 
@@ -1098,9 +1108,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             if (myHolder.messageTextView != null) {
                 myHolder.messageTextView.setTextColor(message.isTypeOutbox() ?
-                        Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+                        Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getSentMessageTextColor().get(1) : alCustomizationSettings.getSentMessageTextColor().get(0)) : Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageTextColor().get(1) : alCustomizationSettings.getReceivedMessageTextColor().get(0)));
                 myHolder.messageTextView.setLinkTextColor(message.isTypeOutbox() ?
-                        Color.parseColor(alCustomizationSettings.getSentMessageLinkTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageLinkTextColor()));
+                        Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getSentMessageLinkTextColor().get(1) : alCustomizationSettings.getSentMessageLinkTextColor().get(0)) : Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageLinkTextColor().get(1) : alCustomizationSettings.getReceivedMessageLinkTextColor().get(0)));
 
                 if (message.getContentType() == Message.ContentType.TEXT_URL.getValue()) {
                     try {
@@ -1190,7 +1200,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                 myHolder.richMessageLayout.setVisibility(View.VISIBLE);
                 try {
-                    KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings, showTimestamp).createRichMessage(isMessageProcessed(message));
+                    KmRichMessageFactory.getInstance().getRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled).createRichMessage(isMessageProcessed(message));
                 } catch (Exception e) {
                     e.printStackTrace();
                     myHolder.richMessageLayout.setVisibility(View.GONE);
@@ -1240,7 +1250,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     //TODO: Show Info and Delete menu with sync and layout fix
                     for (int i = 0; i < menuItems.length; i++) {
 
-                        if(menuItems[i].equals(context.getString(R.string.info))) {
+                        if (menuItems[i].equals(context.getString(R.string.info))) {
                             continue;
                         }
                         if (!(message.isGroupMessage() && message.isTypeOutbox() && message.isSentToServer()) && menuItems[i].equals(context.getResources().getString(R.string.info))) {
@@ -1250,7 +1260,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 menuItems[i].equals(context.getResources().getString(R.string.copy))) {
                             continue;
                         }
-                        if (menuItems[i].equals(context.getResources().getString(R.string.delete_for_all)) && (!message.isTypeOutbox() || !alCustomizationSettings.isAgentApp() )) {
+                        if (menuItems[i].equals(context.getResources().getString(R.string.delete_for_all)) && (!message.isTypeOutbox() || !alCustomizationSettings.isAgentApp())) {
                             continue;
                         }
                         if (((channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || message.isCall() || (message.hasAttachment() && !message.isAttachmentDownloaded()) || message.isVideoOrAudioCallMessage()) && (menuItems[i].equals(context.getResources().getString(R.string.forward)) ||
@@ -1289,15 +1299,16 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     //insert new item and only update item which requires updated and not the whole layout
     public void onItemInserted(int position) {
         notifyItemInserted(position);
-        while(position != 0 &&
-                (messageList.get(position).getCreatedAtTime() - messageList.get(position-1).getCreatedAtTime() < KmConstants.MESSAGE_CLUBBING_TIME_FRAME)
-        && (messageList.get(position).getType().equals(messageList.get(position-1).getType()))){
+        while (position != 0 &&
+                (messageList.get(position).getCreatedAtTime() - messageList.get(position - 1).getCreatedAtTime() < KmConstants.MESSAGE_CLUBBING_TIME_FRAME)
+                && (messageList.get(position).getType().equals(messageList.get(position - 1).getType()))) {
             notifyItemChanged(position - 1);
             position--;
         }
     }
+
     protected Pair<Integer, Integer> getReceivedMessageBgColors(Contact contact, Message message) {
-        return new Pair<>(isHtmlTypeMessage(message) ? Color.WHITE : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()), Color.parseColor(alCustomizationSettings.getReceivedMessageBorderColor()));
+        return new Pair<>(isHtmlTypeMessage(message) ? (isDarkModeEnabled ? context.getResources().getColor(R.color.dark_mode_default) : Color.WHITE) : Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageBackgroundColor().get(1) : alCustomizationSettings.getReceivedMessageBackgroundColor().get(0)), Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageBorderColor().get(1) : alCustomizationSettings.getReceivedMessageBorderColor().get(0)));
     }
 
     private boolean isMessageProcessed(Message message) {
@@ -1317,6 +1328,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         WebView webView = emailLayout.findViewById(R.id.emailWebView);
         webViews.add(webView);
         webView.getSettings().setJavaScriptEnabled(alCustomizationSettings.isJavaScriptEnabled());
+
+        String styledHtml = message.getMessage();
+
+        if (isDarkModeEnabled) {
+            webView.setBackgroundColor(context.getResources().getColor(R.color.dark_mode_default));
+            styledHtml = "<html><body style='color: "
+                    + String.format("#%06X", (0xFFFFFF & context.getResources().getColor(R.color.white)))
+                    + ";'>"
+                    + message.getMessage()
+                    + "</body></html>";
+        }
+
         webView.getSettings().setDomStorageEnabled(true);
         webView.loadDataWithBaseURL(null, message.getMessage(), "text/html", "charset=UTF-8", null);
     }
@@ -1338,7 +1361,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             VCFContactData data = parser.parseCVFContactData(message.getFilePaths().get(0));
             myViewHolder.shareContactName.setText(data.getName());
 
-            int resId = message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor());
+            int resId = message.isTypeOutbox() ? Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getSentMessageTextColor().get(1) : alCustomizationSettings.getSentMessageTextColor().get(0)) : Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageTextColor().get(1) : alCustomizationSettings.getReceivedMessageTextColor().get(0));
             myViewHolder.shareContactName.setTextColor(resId);
             myViewHolder.shareContactNo.setTextColor(resId);
             myViewHolder.shareEmailContact.setTextColor(resId);
@@ -1426,7 +1449,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private void showAttachmentIconAndText(TextView attachedFile, final Message message, final String mimeType) {
 
         attachedFile.setTextColor(message.isTypeOutbox() ?
-                Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+                Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getSentMessageTextColor().get(1) : alCustomizationSettings.getSentMessageTextColor().get(0)) : Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getReceivedMessageTextColor().get(1) : alCustomizationSettings.getReceivedMessageTextColor().get(0)));
         attachedFile.setText(KmUtils.getAttachmentName(message));
         attachedFile.setVisibility(View.VISIBLE);
         attachedFile.setOnClickListener(new View.OnClickListener() {
@@ -1477,7 +1500,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         try {
             final String mimeType = FileUtils.getMimeType(smListItem.getFilePaths().get(0));
             if (mimeType != null) {
-                if(smListItem.getFileMetas() == null) {
+                if (smListItem.getFileMetas() == null) {
                     KmToast.error(context, "File not uploaded, please retry", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -1518,7 +1541,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         if (message == null) {
             return 0;
         }
-        if(message.isInitialFirstMessage()) {
+        if (message.isInitialFirstMessage()) {
             return 7;
         }
         if (message.isTempDateType()) {
@@ -1537,7 +1560,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         if (message.isVideoCallMessage()) {
             return 5;
         }
-        if(message.isTypingMessage()) {
+        if (message.isTypingMessage()) {
             return 8;
         }
 
@@ -1632,7 +1655,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     public void refreshWebView() {
         if (webViews != null) {
-            for(WebView webView : webViews) {
+            for (WebView webView : webViews) {
                 webView.reload();
             }
         }
@@ -1742,14 +1765,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             viaEmailView = customView.findViewById(R.id.via_email_text_view);
             statusIconBackground = customView.findViewById(R.id.statusIconBackground);
 
-            if(useInnerTimeStampDesign) {
+            if (useInnerTimeStampDesign) {
                 if (statusIconBackground != null) {
                     KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getMessageStatusIconColor());
                 }
-            }
-            else {
-                if(statusIconBackground != null){
-                    if (!TextUtils.isEmpty(alCustomizationSettings.getMessageStatusIconColor())) {
+            } else {
+                if (statusIconBackground != null) {
+                    if (!TextUtils.isEmpty(isDarkModeEnabled ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0))) {
                         KmUtils.setGradientSolidColor(statusIconBackground, themeHelper.getMessageStatusIconColor());
                     } else {
                         statusIconBackground.setVisibility(GONE);
@@ -1758,7 +1780,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 timestampLayout = customView.findViewById(R.id.timestampLayout);
                 statusImageView = customView.findViewById(R.id.statusImageView);
             }
-
 
 
             shareContactImage = (ImageView) mainContactShareLayout.findViewById(R.id.contact_share_image);
@@ -1832,13 +1853,19 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     static class MyViewHolder4 extends RecyclerView.ViewHolder {
         TextView channelMessageTextView;
+        TextView channelMessageStaticText;
+        View channelMessageLeftBg;
+        View channelMessageRightBg;
 
         public MyViewHolder4(View itemView, boolean isAgentApp) {
             super(itemView);
-            if (isAgentApp){
+            if (isAgentApp) {
                 channelMessageTextView = (TextView) itemView.findViewById(R.id.channel_message);
             } else {
                 channelMessageTextView = (TextView) itemView.findViewById(R.id.km_transferred_to);
+                channelMessageStaticText = (TextView) itemView.findViewById(R.id.km_transferred_text);
+                channelMessageLeftBg = (View) itemView.findViewById(R.id.km_transferred_to_left_bg);
+                channelMessageRightBg = (View) itemView.findViewById(R.id.km_transferred_to_right_bg);
             }
         }
     }
@@ -1888,11 +1915,14 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     static class TypingMessageHolder extends RecyclerView.ViewHolder {
         LinearLayout parentLayout;
-         TextView firstDot;
-         TextView secondDot;
-         TextView thirdDot;
-        public TypingMessageHolder(@NonNull View itemView) {
+        TextView firstDot;
+        TextView secondDot;
+        TextView thirdDot;
+        boolean isDarkModeEnabled;
+
+        public TypingMessageHolder(@NonNull View itemView, boolean isDarkModeEnabled) {
             super(itemView);
+            this.isDarkModeEnabled = isDarkModeEnabled;
             parentLayout = itemView.findViewById(R.id.typing_linear_layout);
             firstDot = itemView.findViewById(R.id.typing_first_dot);
             secondDot = itemView.findViewById(R.id.typing_second_dot);
@@ -1900,14 +1930,20 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             setupBackground();
             startTypingAnimation();
         }
+
         private void setupBackground() {
             GradientDrawable bgShape;
             bgShape = (GradientDrawable) parentLayout.getBackground();
 
             if (bgShape != null) {
-                String bgColor = new AlCustomizationSettings().getReceivedMessageBackgroundColor();
+                String bgColor = isDarkModeEnabled ? new AlCustomizationSettings().getReceivedMessageBackgroundColor().get(1) : new AlCustomizationSettings().getReceivedMessageBackgroundColor().get(0);
                 bgShape.setColor(Color.parseColor(bgColor));
                 bgShape.setStroke(3, Color.parseColor(bgColor));
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                firstDot.getBackground().setTint(isDarkModeEnabled ? Color.WHITE : Color.BLACK);
+                secondDot.getBackground().setTint(isDarkModeEnabled ? Color.WHITE : Color.BLACK);
+                thirdDot.getBackground().setTint(isDarkModeEnabled ? Color.WHITE : Color.BLACK);
             }
         }
 
@@ -1926,6 +1962,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             thirdAnimatorSet.setStartDelay(400);
             thirdAnimatorSet.setTarget(thirdDot);
             thirdAnimatorSet.start();
+        }
+
+        void setupDarkMode(boolean isDarkModeEnabled) {
+            this.isDarkModeEnabled = isDarkModeEnabled;
+            setupBackground();
         }
     }
 }

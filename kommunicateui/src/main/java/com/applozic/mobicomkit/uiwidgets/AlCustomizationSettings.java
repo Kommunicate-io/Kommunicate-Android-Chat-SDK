@@ -4,6 +4,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.MobicomMessageTemplate;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFontModel;
 import com.applozic.mobicommons.json.JsonMarker;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,49 +14,49 @@ import java.util.Map;
 public class AlCustomizationSettings extends JsonMarker {
     public static final int DEFAULT_MESSAGE_CHAR_LIMIT = 2000;
 
-    private String customMessageBackgroundColor = "#e6e5ec";
-    private String sentMessageBackgroundColor = "";
-    private String startNewConversationButtonBackgroundColor = "";
-    private String receivedMessageBackgroundColor = "#e6e5ec";
-    private String sendButtonBackgroundColor = "";
-    private String attachmentIconsBackgroundColor = "#FF03A9F4";
-    private String chatBackgroundColorOrDrawable;
-    private String editTextBackgroundColorOrDrawable;
-    private String editTextLayoutBackgroundColorOrDrawable;
-    private String channelCustomMessageBgColor = "#cccccc";
-    private String toolbarTitleColor = "#ffffff";
-    private String toolbarSubtitleColor = "#ffffff";
-    private String receiverNameTextColor = "#5C6677";
+    private Object customMessageBackgroundColor = "#e6e5ec";
+    private Object sentMessageBackgroundColor = "";
+    private Object startNewConversationButtonBackgroundColor = "";
+    private Object receivedMessageBackgroundColor = Arrays.asList("#e6e5ec","#313131");
+    private Object sendButtonBackgroundColor = "";
+    private Object attachmentIconsBackgroundColor = "";
+    private Object chatBackgroundColorOrDrawable = Arrays.asList("#FFFFFF", "#000000");
+    private Object editTextBackgroundColorOrDrawable;
+    private Object editTextLayoutBackgroundColorOrDrawable;
+    private Object channelCustomMessageBgColor = Arrays.asList("#000000","#FFFFFFFF");
+    private Object toolbarTitleColor = "#ffffff";
+    private Object toolbarSubtitleColor = "#ffffff";
+    private Object receiverNameTextColor = "#5C6677";
 
-    private String sentContactMessageTextColor = "#5fba7d";
-    private String receivedContactMessageTextColor = "#646262";
-    private String sentMessageTextColor = "#FFFFFFFF";
-    private String receivedMessageTextColor = "#646262";
-    private String messageEditTextTextColor = "#000000";
-    private String messageEditTextBackgroundColor = "";
-    private String autoSuggestionButtonBackgroundColor= "";
-    private String autoSuggestionButtonTextColor = "";
-    private String sentMessageLinkTextColor = "#FFFFFFFF";
-    private String receivedMessageLinkTextColor = "#5fba7d";
-    private String messageEditTextHintTextColor = "#bdbdbd";
-    private String typingTextColor;
-    private String noConversationLabelTextColor = "#000000";
-    private String conversationDateTextColor = "#333333";
-    private String conversationDayTextColor = "#333333";
-    private String messageTimeTextColor = "#ede6e6";
-    private String channelCustomMessageTextColor = "#666666";
-    private String sentMessageBorderColor = "";
-    private String receivedMessageBorderColor = "#e6e5ec";
-    private String channelCustomMessageBorderColor = "#cccccc";
-    private String collapsingToolbarLayoutColor = "#5c5aa7";
-    private String groupParticipantsTextColor = "#5c5aa7";
-    private String groupDeleteButtonBackgroundColor = "#5c5aa7";
-    private String groupExitButtonBackgroundColor = "#5c5aa7";
-    private String adminTextColor = "#5c5aa7";
-    private String adminBackgroundColor = "#FFFFFFFF";
+    private Object sentContactMessageTextColor = "#5fba7d";
+    private Object receivedContactMessageTextColor = "#646262";
+    private Object sentMessageTextColor = "#FFFFFFFF";
+    private Object receivedMessageTextColor = Arrays.asList("#646262","#FFFFFF");
+    private Object messageEditTextTextColor = Arrays.asList("#000000", "#FFFFFF");
+    private Object messageEditTextBackgroundColor = "";
+    private Object autoSuggestionButtonBackgroundColor= "";
+    private Object autoSuggestionButtonTextColor = "";
+    private Object sentMessageLinkTextColor = "#FFFFFFFF";
+    private Object receivedMessageLinkTextColor = "#5fba7d";
+    private Object messageEditTextHintTextColor = "#bdbdbd";
+    private Object typingTextColor;
+    private Object noConversationLabelTextColor = Arrays.asList("#000000", "#FFFFFFFF");
+    private Object conversationDateTextColor = Arrays.asList("#333333", "#FFFFFFFF");
+    private Object conversationDayTextColor = Arrays.asList("#333333", "#FFFFFFFF");
+    private Object messageTimeTextColor = "#ede6e6";
+    private Object channelCustomMessageTextColor = Arrays.asList("#000000", "#FFFFFFFF");
+    private Object sentMessageBorderColor = "";
+    private Object receivedMessageBorderColor = "#e6e5ec";
+    private Object channelCustomMessageBorderColor = "#cccccc";
+    private Object collapsingToolbarLayoutColor = "#5c5aa7";
+    private Object groupParticipantsTextColor = "#5c5aa7";
+    private Object groupDeleteButtonBackgroundColor = "#5c5aa7";
+    private Object groupExitButtonBackgroundColor = "#5c5aa7";
+    private Object adminTextColor = "#5c5aa7";
+    private Object adminBackgroundColor = "#FFFFFFFF";
     private String attachCameraIconName = "applozic_ic_action_camera_new";
-    private String adminBorderColor = "#5c5aa7";
-    private String userNotAbleToChatTextColor = "#000000";
+    private Object adminBorderColor = "#5c5aa7";
+    private Object userNotAbleToChatTextColor = "#000000";
     private String chatBackgroundImageName;
 
     private String audioPermissionNotFoundMsg;
@@ -90,8 +92,8 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean muteOption = true;
     private MobicomMessageTemplate messageTemplate;
     private String logoutPackageName = "kommunicate.io.sample.MainActivity";
-    private boolean logoutOption = false;
-    private boolean logoutOptionFromConversation = false;
+    private boolean logoutOption = true;
+    private boolean logoutOptionFromConversation = true;
     private int defaultGroupType = 2;
     private boolean muteUserChatOption = false;
     private String restrictedWordRegex;
@@ -100,20 +102,20 @@ public class AlCustomizationSettings extends JsonMarker {
     private int maxAttachmentSizeAllowed = 30;
     private int messageCharacterLimit = DEFAULT_MESSAGE_CHAR_LIMIT;
     private int totalOnlineUsers = 0;
-    private String themeColorPrimary;
-    private String themeColorPrimaryDark;
+    private Object themeColorPrimary;
+    private Object themeColorPrimaryDark;
     private String editTextHintText = "";
     private boolean replyOption = false;
-    private String replyMessageLayoutSentMessageBackground = "#C0C0C0";
-    private String replyMessageLayoutReceivedMessageBackground = "#F5F5F5";
+    private Object replyMessageLayoutSentMessageBackground = "#C0C0C0";
+    private Object replyMessageLayoutReceivedMessageBackground = "#F5F5F5";
     private boolean groupInfoScreenVisible = true;
     private boolean forwardOption = false;
     private Boolean innerTimestampDesign = false;
-    private String sentMessageCreatedAtTimeColor;
-    private String receivedMessageCreatedAtTimeColor;
+    private Object sentMessageCreatedAtTimeColor = "";
+    private Object receivedMessageCreatedAtTimeColor = "";
     private boolean showStartNewConversation = true;
     private boolean enableAwayMessage = true;
-    private String awayMessageTextColor = "#A9A4A4";
+    private Object awayMessageTextColor = Arrays.asList("#A9A4A4","#FFFFFFFF");
     private boolean isAgentApp = false;
     private boolean hideGroupSubtitle = false;
     private boolean disableGlobalStoragePermission = true;
@@ -123,15 +125,15 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean showTypingIndicatorWhileFetchingResponse = false;
     private Map<String, Boolean> filterGallery;
     private boolean enableShareConversation = false;
-    private String messageStatusIconColor = "";
+    private Object messageStatusIconColor = "";
     private float[] sentMessageCornerRadii;
     private float[] receivedMessageCornerRadii;
     private KmFontModel fontModel;
     private boolean isFaqOptionEnabled = false;
     private boolean[] enableFaqOption = {true, false};
-    private String toolbarColor = "";
-    private String statusBarColor = "";
-    private String richMessageThemeColor = "";
+    private Object toolbarColor = "";
+    private Object statusBarColor = "";
+    private Object richMessageThemeColor = "";
     private Map<String, Boolean> attachmentOptions;
     private KmSpeechSetting textToSpeech;
     private KmSpeechSetting speechToText;
@@ -148,10 +150,16 @@ public class AlCustomizationSettings extends JsonMarker {
     private String menuIconOnConversationScreen = "";
     private boolean toolbarTitleCenterAligned = false;
     private boolean disableFormPostSubmit = false;
-    private String chatBarTopLineViewColor = "";
+    private Object chatBarTopLineViewColor = "";
     private boolean isMultipleAttachmentSelectionEnabled = false;
+    private boolean useDarkMode = true;
     private boolean isImageCompressionEnabled = false;
     private int minimumCompressionThresholdForImagesInMB = 5;
+  
+  
+    public boolean getUseDarkMode() {
+        return useDarkMode;
+    }
 
     public String getStaticTopMessage() {
         return staticTopMessage;
@@ -197,17 +205,17 @@ public class AlCustomizationSettings extends JsonMarker {
         return noConversationLabel;
     }
 
-    public String getCustomMessageBackgroundColor() {
-        return customMessageBackgroundColor;
+    public List<String> getCustomMessageBackgroundColor() {
+        return getColorList(customMessageBackgroundColor);
     }
 
 
-    public String getSentMessageBackgroundColor() {
-        return sentMessageBackgroundColor;
+    public List<String> getSentMessageBackgroundColor() {
+        return getColorList(sentMessageBackgroundColor);
     }
 
-    public String getReceivedMessageBackgroundColor() {
-        return receivedMessageBackgroundColor;
+    public List<String> getReceivedMessageBackgroundColor() {
+        return getColorList(receivedMessageBackgroundColor);
     }
 
     public boolean isOnlineStatusMasterList() {
@@ -218,8 +226,8 @@ public class AlCustomizationSettings extends JsonMarker {
         return priceWidget;
     }
 
-    public String getSendButtonBackgroundColor() {
-        return sendButtonBackgroundColor;
+    public List<String> getSendButtonBackgroundColor() {
+        return getColorList(sendButtonBackgroundColor);
     }
 
     public boolean isImageCompression() {
@@ -231,8 +239,8 @@ public class AlCustomizationSettings extends JsonMarker {
         return inviteFriendsInContactActivity;
     }
 
-    public String getAttachmentIconsBackgroundColor() {
-        return attachmentIconsBackgroundColor;
+    public List<String> getAttachmentIconsBackgroundColor() {
+        return getColorList(attachmentIconsBackgroundColor);
     }
 
     public boolean isLocationShareViaMap() {
@@ -243,36 +251,36 @@ public class AlCustomizationSettings extends JsonMarker {
         return conversationContactImageVisibility;
     }
 
-    public String getSentContactMessageTextColor() {
-        return sentContactMessageTextColor;
+    public List<String> getSentContactMessageTextColor() {
+        return getColorList(sentContactMessageTextColor);
     }
 
-    public String getReceivedContactMessageTextColor() {
-        return receivedContactMessageTextColor;
+    public List<String> getReceivedContactMessageTextColor() {
+        return getColorList(receivedContactMessageTextColor);
     }
 
-    public String getSentMessageTextColor() {
-        return sentMessageTextColor;
+    public List<String> getSentMessageTextColor() {
+        return getColorList(sentMessageTextColor);
     }
 
-    public String getReceivedMessageTextColor() {
-        return receivedMessageTextColor;
+    public List<String> getReceivedMessageTextColor() {
+        return getColorList(receivedMessageTextColor);
     }
 
-    public String getSentMessageBorderColor() {
-        return sentMessageBorderColor;
+    public List<String> getSentMessageBorderColor() {
+        return getColorList(sentMessageBorderColor);
     }
 
-    public String getReceivedMessageBorderColor() {
-        return receivedMessageBorderColor;
+    public List<String> getReceivedMessageBorderColor() {
+        return getColorList(receivedMessageBorderColor);
     }
 
-    public String getChatBackgroundColorOrDrawable() {
-        return chatBackgroundColorOrDrawable;
+    public List<String> getChatBackgroundColorOrDrawable() {
+        return getColorList(chatBackgroundColorOrDrawable);
     }
 
-    public String getMessageEditTextTextColor() {
-        return messageEditTextTextColor;
+    public List<String> getMessageEditTextTextColor() {
+        return getColorList(messageEditTextTextColor);
     }
 
     public String getAudioPermissionNotFoundMsg() {
@@ -291,16 +299,16 @@ public class AlCustomizationSettings extends JsonMarker {
         return showActionDialWithOutCalling;
     }
 
-    public String getSentMessageLinkTextColor() {
-        return sentMessageLinkTextColor;
+    public List<String> getSentMessageLinkTextColor() {
+        return getColorList(sentMessageLinkTextColor);
     }
 
-    public String getReceivedMessageLinkTextColor() {
-        return receivedMessageLinkTextColor;
+    public List<String> getReceivedMessageLinkTextColor() {
+        return getColorList(receivedMessageLinkTextColor);
     }
 
-    public String getMessageEditTextHintTextColor() {
-        return messageEditTextHintTextColor;
+    public List<String> getMessageEditTextHintTextColor() {
+        return getColorList(messageEditTextHintTextColor);
     }
 
     public boolean isHideGroupAddMembersButton() {
@@ -320,48 +328,48 @@ public class AlCustomizationSettings extends JsonMarker {
     }
 
 
-    public String getEditTextBackgroundColorOrDrawable() {
-        return editTextBackgroundColorOrDrawable;
+    public List<String> getEditTextBackgroundColorOrDrawable() {
+        return getColorList(editTextBackgroundColorOrDrawable);
     }
 
-    public String getEditTextLayoutBackgroundColorOrDrawable() {
-        return editTextLayoutBackgroundColorOrDrawable;
+    public List<String> getEditTextLayoutBackgroundColorOrDrawable() {
+        return getColorList(editTextLayoutBackgroundColorOrDrawable);
     }
 
-    public String getTypingTextColor() {
-        return typingTextColor;
+    public List<String> getTypingTextColor() {
+        return getColorList(typingTextColor);
     }
 
     public boolean isProfileOption() {
         return profileOption;
     }
 
-    public String getNoConversationLabelTextColor() {
-        return noConversationLabelTextColor;
+    public List<String> getNoConversationLabelTextColor() {
+        return getColorList(noConversationLabelTextColor);
     }
 
-    public String getConversationDateTextColor() {
-        return conversationDateTextColor;
+    public List<String> getConversationDateTextColor() {
+        return getColorList(conversationDateTextColor);
     }
 
-    public String getConversationDayTextColor() {
-        return conversationDayTextColor;
+    public List<String> getConversationDayTextColor() {
+        return getColorList(conversationDayTextColor);
     }
 
-    public String getMessageTimeTextColor() {
-        return messageTimeTextColor;
+    public List<String> getMessageTimeTextColor() {
+        return getColorList(messageTimeTextColor);
     }
 
-    public String getChannelCustomMessageBgColor() {
-        return channelCustomMessageBgColor;
+    public List<String> getChannelCustomMessageBgColor() {
+        return getColorList(channelCustomMessageBgColor);
     }
 
-    public String getChannelCustomMessageBorderColor() {
-        return channelCustomMessageBorderColor;
+    public List<String> getChannelCustomMessageBorderColor() {
+        return getColorList(channelCustomMessageBorderColor);
     }
 
-    public String getChannelCustomMessageTextColor() {
-        return channelCustomMessageTextColor;
+    public List<String> getChannelCustomMessageTextColor() {
+        return getColorList(channelCustomMessageTextColor);
     }
 
     public String getNoSearchFoundForChatMessages() {
@@ -398,40 +406,40 @@ public class AlCustomizationSettings extends JsonMarker {
         return totalOnlineUsers;
     }
 
-    public String getCollapsingToolbarLayoutColor() {
-        return collapsingToolbarLayoutColor;
+    public List<String> getCollapsingToolbarLayoutColor() {
+        return getColorList(collapsingToolbarLayoutColor);
     }
 
-    public String getGroupParticipantsTextColor() {
-        return groupParticipantsTextColor;
+    public List<String> getGroupParticipantsTextColor() {
+        return getColorList(groupParticipantsTextColor);
     }
 
-    public String getGroupExitButtonBackgroundColor() {
-        return groupExitButtonBackgroundColor;
+    public List<String> getGroupExitButtonBackgroundColor() {
+        return getColorList(groupExitButtonBackgroundColor);
     }
 
-    public String getGroupDeleteButtonBackgroundColor() {
-        return groupDeleteButtonBackgroundColor;
+    public List<String> getGroupDeleteButtonBackgroundColor() {
+        return getColorList(groupDeleteButtonBackgroundColor);
     }
 
-    public String getAdminTextColor() {
-        return adminTextColor;
+    public List<String> getAdminTextColor() {
+        return getColorList(adminTextColor);
     }
 
-    public String getAdminBackgroundColor() {
-        return adminBackgroundColor;
+    public List<String> getAdminBackgroundColor() {
+        return getColorList(adminBackgroundColor);
     }
 
     public String getAttachCameraIconName() {
         return attachCameraIconName;
     }
 
-    public String getAdminBorderColor() {
-        return adminBorderColor;
+    public List<String> getAdminBorderColor() {
+        return getColorList(adminBorderColor);
     }
 
-    public String getUserNotAbleToChatTextColor() {
-        return userNotAbleToChatTextColor;
+    public List<String> getUserNotAbleToChatTextColor() {
+        return getColorList(userNotAbleToChatTextColor);
     }
 
     public String getChatBackgroundImageName() {
@@ -528,12 +536,12 @@ public class AlCustomizationSettings extends JsonMarker {
         this.logoutPackageName = logoutPackageName;
     }
 
-    public String getThemeColorPrimary() {
-        return themeColorPrimary;
+    public List<String> getThemeColorPrimary() {
+        return getColorList(themeColorPrimary);
     }
 
-    public String getThemeColorPrimaryDark() {
-        return themeColorPrimaryDark;
+    public List<String> getThemeColorPrimaryDark() {
+        return getColorList(themeColorPrimaryDark);
     }
 
     public String getEditTextHintText() {
@@ -548,12 +556,12 @@ public class AlCustomizationSettings extends JsonMarker {
         this.replyOption = replyOption;
     }
 
-    public String getReplyMessageLayoutSentMessageBackground() {
-        return replyMessageLayoutSentMessageBackground;
+    public List<String> getReplyMessageLayoutSentMessageBackground() {
+        return getColorList(replyMessageLayoutSentMessageBackground);
     }
 
-    public String getReplyMessageLayoutReceivedMessageBackground() {
-        return replyMessageLayoutReceivedMessageBackground;
+    public List<String> getReplyMessageLayoutReceivedMessageBackground() {
+        return getColorList(replyMessageLayoutReceivedMessageBackground);
     }
 
     public void setUserChatMuteOption(boolean muteUserChatOption) {
@@ -596,31 +604,35 @@ public class AlCustomizationSettings extends JsonMarker {
         return messageTemplate;
     }
 
-    public String getSentMessageCreatedAtTimeColor() {
-        return sentMessageCreatedAtTimeColor;
+    public List<String> getSentMessageCreatedAtTimeColor() {
+        return getColorList(sentMessageCreatedAtTimeColor);
     }
 
     public void setSentMessageCreatedAtTimeColor(String sentMessageCreatedAtTimeColor) {
         this.sentMessageCreatedAtTimeColor = sentMessageCreatedAtTimeColor;
     }
 
-    public String getReceivedMessageCreatedAtTimeColor() {
-        return receivedMessageCreatedAtTimeColor;
+    public List<String> getReceivedMessageCreatedAtTimeColor() {
+        return getColorList(receivedMessageCreatedAtTimeColor);
     }
 
     public void setReceivedMessageCreatedAtTimeColor(String receivedMessageCreatedAtTimeColor) {
         this.receivedMessageCreatedAtTimeColor = receivedMessageCreatedAtTimeColor;
     }
 
-    public String getStartNewConversationButtonBackgroundColor() {
-        return startNewConversationButtonBackgroundColor;
+    public List<String> getStartNewConversationButtonBackgroundColor() {
+        return getColorList(startNewConversationButtonBackgroundColor);
     }
 
-    public String getMessageEditTextBackgroundColor() {
-        return messageEditTextBackgroundColor;
+    public List<String> getMessageEditTextBackgroundColor() {
+        return getColorList(messageEditTextBackgroundColor);
     }
-    public String getAutoSuggestionButtonBackgroundColor() { return autoSuggestionButtonBackgroundColor; }
-    public String getAutoSuggestionButtonTextColor() { return autoSuggestionButtonTextColor; }
+    public List<String> getAutoSuggestionButtonBackgroundColor() {
+        return getColorList(autoSuggestionButtonBackgroundColor);
+    }
+    public List<String> getAutoSuggestionButtonTextColor() {
+        return getColorList(autoSuggestionButtonTextColor);
+    }
 
     public boolean isShowStartNewConversation() {
         return showStartNewConversation;
@@ -638,8 +650,8 @@ public class AlCustomizationSettings extends JsonMarker {
         this.enableAwayMessage = enableAwayMessage;
     }
 
-    public String getAwayMessageTextColor() {
-        return awayMessageTextColor;
+    public List<String> getAwayMessageTextColor() {
+        return getColorList(awayMessageTextColor);
     }
 
     public void setAwayMessageTextColor(String awayMessageTextColor) {
@@ -704,8 +716,8 @@ public class AlCustomizationSettings extends JsonMarker {
         return enableFaqOption[screen - 1];
     }
 
-    public String getMessageStatusIconColor() {
-        return messageStatusIconColor;
+    public List<String> getMessageStatusIconColor() {
+        return getColorList(messageStatusIconColor);
     }
 
     public void setMessageStatusIconColor(String messageStatusIconColor) {
@@ -716,35 +728,35 @@ public class AlCustomizationSettings extends JsonMarker {
         return restrictedWordRegex;
     }
 
-    public String getToolbarTitleColor() {
-        return toolbarTitleColor;
+    public List<String> getToolbarTitleColor() {
+        return getColorList(toolbarTitleColor);
     }
-    public String getChatBarTopLineViewColor() {
-        return chatBarTopLineViewColor;
+    public List<String> getChatBarTopLineViewColor() {
+        return getColorList(chatBarTopLineViewColor);
     }
 
     public void setToolbarTitleColor(String toolbarTitleColor) {
         this.toolbarTitleColor = toolbarTitleColor;
     }
 
-    public String getToolbarSubtitleColor() {
-        return toolbarSubtitleColor;
+    public List<String> getToolbarSubtitleColor() {
+        return getColorList(toolbarSubtitleColor);
     }
 
     public void setToolbarSubtitleColor(String toolbarSubtitleColor) {
         this.toolbarSubtitleColor = toolbarSubtitleColor;
     }
 
-    public String getToolbarColor() {
-        return toolbarColor;
+    public List<String> getToolbarColor() {
+        return getColorList(toolbarColor);
     }
 
-    public String getStatusBarColor() {
-        return statusBarColor;
+    public List<String> getStatusBarColor() {
+        return getColorList(statusBarColor);
     }
 
-    public String getRichMessageThemeColor() {
-        return richMessageThemeColor;
+    public List<String> getRichMessageThemeColor() {
+        return getColorList(richMessageThemeColor);
     }
 
     public boolean isRestrictMessageTypingWithBots() {
@@ -759,8 +771,8 @@ public class AlCustomizationSettings extends JsonMarker {
         return speechToText == null ? new KmSpeechSetting() : speechToText;
     }
 
-    public String getReceiverNameTextColor() {
-        return receiverNameTextColor;
+    public List<String> getReceiverNameTextColor() {
+        return getColorList(receiverNameTextColor);
     }
 
     public Map<String, Boolean> isHidePostCTA() {
@@ -781,6 +793,15 @@ public class AlCustomizationSettings extends JsonMarker {
 
     public boolean isMultipleAttachmentSelectionEnabled() {
         return isMultipleAttachmentSelectionEnabled;
+    }
+
+    private List<String> getColorList(Object color) {
+        if (color instanceof String) {
+            return Arrays.asList((String) color, (String) color);
+        } else if (color instanceof List) {
+            return (List<String>) color;
+        }
+        return Arrays.asList("","");
     }
 
     public boolean isImageCompressionEnabled() {

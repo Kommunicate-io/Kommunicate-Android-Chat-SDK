@@ -1,6 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,8 +35,8 @@ import io.kommunicate.utils.KmUtils;
 
 public class KmFormRichMessage extends KmRichMessage {
 
-    public KmFormRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
-        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
+    public KmFormRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
     }
 
     @Override
@@ -43,6 +46,12 @@ public class KmFormRichMessage extends KmRichMessage {
         LinearLayoutManager formLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         alFormLayoutRecycler.setLayoutManager(formLayoutManager);
         final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString(), alCustomizationSettings);
+        GradientDrawable drawable = (GradientDrawable) alFormLayoutRecycler.getBackground();
+        if (themeHelper.isDarkModeEnabledForSDK()) {
+            drawable.setColorFilter(context.getResources().getColor(R.color.received_message_bg_color_night), PorterDuff.Mode.MULTIPLY);
+        } else {
+            drawable.clearColorFilter();
+        }
         alFormLayoutRecycler.setAdapter(formItemAdapter);
         alFormLayoutRecycler.removeOnItemTouchListener(formListenerTrue);
         alFormLayoutRecycler.removeOnItemTouchListener(formListenerFalse);
@@ -63,7 +72,7 @@ public class KmFormRichMessage extends KmRichMessage {
                 }
 
                 if (KmFormPayloadModel.Type.SUBMIT.getValue().equals(formPayloadModel.getType()) || KmFormPayloadModel.Type.ACTION.getValue().equals(formPayloadModel.getType()) || TextUtils.isEmpty(formPayloadModel.getType())) {
-                    if (formPayloadModel.getAction() != null){
+                    if (formPayloadModel.getAction() != null) {
                         actionModelList.add(formPayloadModel.getAction());
                     } else {
                         actionModelList.add(formPayloadModel.getDialogFlowActionModel());
@@ -80,15 +89,19 @@ public class KmFormRichMessage extends KmRichMessage {
                 TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
                 KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getRichMessageThemeColor());
-                itemTextView.setTextColor(themeHelper.getRichMessageThemeColor());
+                if (themeHelper.isDarkModeEnabledForSDK()) {
+                    itemTextView.setTextColor(Color.WHITE);
+                } else {
+                    itemTextView.setTextColor(themeHelper.getRichMessageThemeColor());
+                }
 
                 final KmRMActionModel<KmRMActionModel.SubmitButton> submitButtonModel = (KmRMActionModel<KmRMActionModel.SubmitButton>) actionModelList.get(0);
                 itemTextView.setText(submitButtonModel.getName());
 
                 KmRMActionModel model = (KmRMActionModel) actionModelList.get(0);
-                if (!TextUtils.isEmpty(model.getName())){
+                if (!TextUtils.isEmpty(model.getName())) {
                     itemTextView.setText(model.getName());
-                } else if (!TextUtils.isEmpty(model.getLabel())){
+                } else if (!TextUtils.isEmpty(model.getLabel())) {
                     itemTextView.setText(model.getLabel());
                 }
 

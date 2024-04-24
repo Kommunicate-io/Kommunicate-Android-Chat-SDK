@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.types;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +28,8 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
     public static final int QUICK_REPLY_TEMPLATE_ID = 6;
 
-    public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
-        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
+    public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled );
     }
 
     @Override
@@ -46,7 +47,11 @@ public class ButtonKmRichMessage extends KmRichMessage {
             TextView itemTextView = view.findViewById(R.id.singleTextItem);
 
             KmUtils.setGradientStrokeColor(itemTextView, DimensionsUtils.convertDpToPx(1), themeHelper.getRichMessageThemeColor());
-            itemTextView.setTextColor(themeHelper.getRichMessageThemeColor());
+            if (themeHelper.isDarkModeEnabledForSDK()){
+                itemTextView.setTextColor(Color.WHITE);
+            } else {
+                itemTextView.setTextColor(themeHelper.getRichMessageThemeColor());
+            }
 
             //for 3 and 11 use name, for 6 use title
             String buttonTitle = (model.getTemplateId() == 3 || model.getTemplateId() == 11) ?

@@ -14,8 +14,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.Km
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 
 public class VideoRichMessage extends KmRichMessage {
-    public VideoRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
-        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp);
+    public VideoRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
     }
 
     @Override

@@ -116,6 +116,7 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
         String jsonString = FileUtils.loadSettingsJsonFile(ApplozicService.getContext(getContext()));
         AlCustomizationSettings alCustomizationSettings;
         if (!TextUtils.isEmpty(jsonString)) {

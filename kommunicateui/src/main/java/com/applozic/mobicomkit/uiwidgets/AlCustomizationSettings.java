@@ -54,6 +54,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object groupExitButtonBackgroundColor = "#5c5aa7";
     private Object adminTextColor = "#5c5aa7";
     private Object adminBackgroundColor = "#FFFFFFFF";
+
     private String attachCameraIconName = "applozic_ic_action_camera_new";
     private Object adminBorderColor = "#5c5aa7";
     private Object userNotAbleToChatTextColor = "#000000";
@@ -161,6 +162,8 @@ public class AlCustomizationSettings extends JsonMarker {
         return useDarkMode;
     }
 
+    private boolean hideAttachmentOptionsWithBots = false;
+
     public String getStaticTopMessage() {
         return staticTopMessage;
     }
@@ -172,17 +175,19 @@ public class AlCustomizationSettings extends JsonMarker {
     public String getMenuIconOnConversationScreen() {
         return menuIconOnConversationScreen;
     }
+
     public boolean isCheckboxAsMultipleButton() {
         return checkboxAsMultipleButton;
     }
+
     public boolean isRateConversationMenuOption() {
         return rateConversationMenuOption;
     }
-        
+
     public boolean isRestartConversationButtonVisibility() {
         return restartConversationButtonVisibility;
     }
-    
+
     public boolean isJavaScriptEnabled() {
         return javaScriptEnabled;
     }
@@ -661,9 +666,11 @@ public class AlCustomizationSettings extends JsonMarker {
     public boolean isAgentApp() {
         return isAgentApp;
     }
-    public boolean isUseDeviceDefaultLanguage(){
+
+    public boolean isUseDeviceDefaultLanguage() {
         return useDeviceDefaultLanguage;
     }
+
     public boolean isShowTypingIndicatorWhileFetchingResponse() {
         return showTypingIndicatorWhileFetchingResponse;
     }
@@ -731,6 +738,7 @@ public class AlCustomizationSettings extends JsonMarker {
     public List<String> getToolbarTitleColor() {
         return getColorList(toolbarTitleColor);
     }
+
     public List<String> getChatBarTopLineViewColor() {
         return getColorList(chatBarTopLineViewColor);
     }
@@ -812,6 +820,10 @@ public class AlCustomizationSettings extends JsonMarker {
         return minimumCompressionThresholdForImagesInMB;
     }
 
+    public boolean getHideAttachmentOptionsWithBots() {
+        return hideAttachmentOptionsWithBots;
+    }
+
     @Override
     public String toString() {
         return "AlCustomizationSettings{" +
@@ -876,7 +888,7 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", toolbarTitleColor=" + toolbarTitleColor +
                 ", toolbarSubtitleColor=" + toolbarSubtitleColor +
                 ", useDeviceDefaultLanguage=" + useDeviceDefaultLanguage +
-                ", showTypingIndicatorWhileFetchingResponse=" + showTypingIndicatorWhileFetchingResponse+
+                ", showTypingIndicatorWhileFetchingResponse=" + showTypingIndicatorWhileFetchingResponse +
                 '}';
     }
 }

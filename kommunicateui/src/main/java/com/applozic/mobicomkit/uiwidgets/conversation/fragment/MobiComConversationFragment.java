@@ -271,7 +271,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected ImageButton attachButton;
     protected Spinner sendType;
     protected LinearLayout individualMessageSendLayout, mainEditTextLinearLayout;
-    protected LinearLayout extendedSendingOptionLayout;
+    protected LinearLayout extendedSendingOptionLayout, attachmentIconLayout;
     protected RelativeLayout attachmentLayout;
     protected ProgressBar mediaUploadProgressBar;
     protected View spinnerLayout;
@@ -558,6 +558,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         conversationRootLayout = (RelativeLayout) list.findViewById(R.id.rl_conversation_layout);
+        attachmentIconLayout = (LinearLayout) list.findViewById(R.id.attachment_icon_layout);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
         linearLayoutManager = new KmLinearLayoutManager(getActivity());
         linearLayoutManager.setStackFromEnd(true);
@@ -1075,6 +1076,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         emoticonsBtn.setVisibility(View.GONE);
+
+        boolean hideAttachmentOptionsWithBots = alCustomizationSettings.getHideAttachmentOptionsWithBots();
+        if (hideAttachmentOptionsWithBots) {
+            attachmentIconLayout.setVisibility(GONE);
+        }
 
         if (alCustomizationSettings.getAttachmentOptions() != null && !alCustomizationSettings.getAttachmentOptions().isEmpty()) {
             Map<String, Boolean> attachmentOptions = alCustomizationSettings.getAttachmentOptions();
@@ -2082,6 +2088,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 userNotAbleToChatLayout.setVisibility(View.GONE);
                 toggleMessageSendLayoutVisibility();
+                toggleAttachmentLayoutVisibility();
             }
         }
 
@@ -4512,6 +4519,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
+    private void toggleAttachmentLayoutVisibility() {
+        if (alCustomizationSettings.getHideAttachmentOptionsWithBots() && attachmentIconLayout != null) {
+            Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
+            boolean isBotAssignee = User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType());
+
+            attachmentIconLayout.setVisibility(isBotAssignee ? GONE : VISIBLE);
+        }
+    }
+
     private void updateUserFromCustomInput(String message) {
         String fieldType = customInputField.getKM_FIELD().getFieldType();
         String field = customInputField.getKM_FIELD().getField();
@@ -5004,6 +5020,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 kmFeedbackView.setVisibility(View.GONE);
                 toggleMessageSendLayoutVisibility();
+                toggleAttachmentLayoutVisibility();
                 mainDivider.setVisibility(VISIBLE);
             }
         }
@@ -5453,6 +5470,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         toggleMessageSendLayoutVisibility();
+        toggleAttachmentLayoutVisibility();
     }
 
     protected void toggleMessageSendLayoutVisibility() {

@@ -88,7 +88,7 @@ public class NotificationService {
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.notificationDisableThreshold = applozicClient.getNotificationMuteThreshold();
         this.notificationFilePath = Applozic.getInstance(context).getCustomNotificationSound();
-        this.notificationColor = Applozic.getInstance(context).getNotificationColor();
+        this.notificationColor = Applozic.getInstance(context).getNotificationIconTintColor();
         this.notificationIconColor = Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_COLOR);
 
         notificationChannels = new NotificationChannels(context, notificationFilePath);

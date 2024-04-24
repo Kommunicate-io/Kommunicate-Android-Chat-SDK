@@ -52,7 +52,7 @@ public class Applozic {
     private static final String MY_PREFERENCE = "applozic_preference_key";
     private static final String NOTIFICATION_CHANNEL_VERSION_STATE = "NOTIFICATION_CHANNEL_VERSION_STATE";
     private static final String CUSTOM_NOTIFICATION_SOUND = "CUSTOM_NOTIFICATION_SOUND";
-    private static final String NOTIFICATION_COLOR = "NOTIFICATION_COLOR";
+    private static final String NOTIFICATION_ICON_TINT_COLOR = "NOTIFICATION_ICON_TINT_COLOR";
     public static Applozic applozic;
     private SharedPreferences sharedPreferences;
     private Context context;
@@ -138,13 +138,13 @@ public class Applozic {
         return sharedPreferences.getString(CUSTOM_NOTIFICATION_SOUND, null);
     }
 
-    public Applozic setNotificationColor(String color) {
-        sharedPreferences.edit().putString(NOTIFICATION_COLOR, color).commit();
+    public Applozic setNotificationIconTintColor(String color) {
+        sharedPreferences.edit().putString(NOTIFICATION_ICON_TINT_COLOR, color).commit();
         return this;
     }
 
-    public String getNotificationColor() {
-        return sharedPreferences.getString(NOTIFICATION_COLOR, null);
+    public String getNotificationIconTintColor() {
+        return sharedPreferences.getString(NOTIFICATION_ICON_TINT_COLOR, null);
     }
 
     public static void disconnectPublish(Context context, String deviceKeyString, String userKeyString, boolean useEncrypted) {

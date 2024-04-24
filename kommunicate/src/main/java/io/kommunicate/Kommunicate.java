@@ -516,8 +516,8 @@ public class Kommunicate {
         Applozic.getInstance(context).setCustomNotificationSound(path);
     }
 
-    public static void setNotificationColor(Context context, String color) {
-        Applozic.getInstance(context).setNotificationColor(color);
+    public static void setNotificationIconTintColor(Context context, String color) {
+        Applozic.getInstance(context).setNotificationIconTintColor(color);
     }
   
     public  static  void setServerConfiguration(Context context,KMServerConfiguration configuration){

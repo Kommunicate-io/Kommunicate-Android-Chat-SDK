@@ -34,8 +34,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -224,8 +222,31 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         } else if (object instanceof KmRichMessageModel.KmButtonModel) {
             KmRichMessageModel.KmButtonModel buttonModel = (KmRichMessageModel.KmButtonModel) object;
             if (buttonModel.getAction() != null && buttonModel.getAction().getPayload() != null) {
-                openWebLink(GsonUtils.getJsonFromObject(buttonModel.getAction().getPayload().getFormData(), KmRichMessageModel.KmFormDataModel.class)
-                        , buttonModel.getAction().getPayload().getFormAction());
+                Map<String, String> localeMetadata = new HashMap<>();
+                localeMetadata.put(null, null);
+                String replyText = buttonModel.getAction().getPayload().getReplyText();
+                if (TextUtils.isEmpty(replyText)) {
+                    replyText = buttonModel.getName();
+                }
+                sendMessage(replyText, localeMetadata, Message.ContentType.DEFAULT.getValue());
+                if (!buttonModel.getAction().getPayload().getFormAction().isEmpty()) {
+                    new KmPostDataAsyncTask(context,
+                            buttonModel.getAction().getPayload().getFormAction(),
+                            null,
+                            buttonModel.getAction().getPayload().getRequestType(),
+                            buttonModel.getAction().getPayload().getFormData().toString(),
+                            new KmCallback() {
+                                @Override
+                                public void onSuccess(Object messageString) {
+                                    Utils.printLog(context, TAG, "Submit post success : " + messageString);
+                                }
+
+                                @Override
+                                public void onFailure(Object error) {
+                                    Utils.printLog(context, TAG, "Submit post error : " + error);
+                                }
+                            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                }
             }
         } else if (object instanceof KmRichMessageModel) {
             KmRichMessageModel model = (KmRichMessageModel) object;

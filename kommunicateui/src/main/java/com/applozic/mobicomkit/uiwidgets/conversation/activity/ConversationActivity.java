@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -32,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -181,6 +183,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private LinearLayout serviceDisconnectionLayout;
     private KmStoragePermission alStoragePermission;
     private RelativeLayout customToolbarLayout;
+    private KmThemeHelper themeHelper;
+    private Toolbar toolbar;
     KmAttachmentsController kmAttachmentsController;
     PrePostUIMethods prePostUIMethods;
 
@@ -204,7 +208,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         fragmentTransaction.addToBackStack(fragmentTag);
         fragmentTransaction.commitAllowingStateLoss();
-        if(!supportFragmentManager.isDestroyed()){
+        if (!supportFragmentManager.isDestroyed()) {
             supportFragmentManager.executePendingTransactions();
         }
         //Log.i(TAG, "BackStackEntryCount: " + supportFragmentManager.getBackStackEntryCount());
@@ -262,7 +266,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     protected void onStop() {
         super.onStop();
-        if(KmChatWidget.getInstance(this) == null) {
+        if (KmChatWidget.getInstance(this) == null) {
             Applozic.disconnectPublish(this);
         }
     }
@@ -354,6 +358,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+        themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
         if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundImageName())) {
             resourceId = getResources().getIdentifier(alCustomizationSettings.getChatBackgroundImageName(), "drawable", getPackageName());
         }
@@ -361,18 +366,13 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             getWindow().setBackgroundDrawableResource(resourceId);
         }
         setContentView(R.layout.quickconversion_activity);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        toolbar = findViewById(R.id.my_toolbar);
 
-        customToolbarLayout = myToolbar.findViewById(R.id.custom_toolbar_root_layout);
-        myToolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getToolbarColor());
-        customToolbarLayout.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getToolbarColor());
-        if (!alCustomizationSettings.getStatusBarColor().isEmpty()) {
-            KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
-        } else {
-            KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
-        }
-
-        setSupportActionBar(myToolbar);
+        customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
+        toolbar.setBackgroundColor(themeHelper.getToolbarColor());
+        customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
+        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+        setSupportActionBar(toolbar);
         setToolbarTitleSubtitleColorFromSettings();
 
         baseContactService = new AppContactService(this);
@@ -491,16 +491,29 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         };
 
         AlEventManager.getInstance().sendOnPluginLaunchEvent();
-        if(alCustomizationSettings.isUseDeviceDefaultLanguage()){
+        if (alCustomizationSettings.isUseDeviceDefaultLanguage()) {
             Applozic.setDefaultLanguage(this);
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setupModes();
+    }
+
+    private void setupModes() {
+        toolbar.setBackgroundColor(themeHelper.getToolbarColor());
+        customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
+        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+        setToolbarTitleSubtitleColorFromSettings();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         //setIntent(intent);
-        if(intent != null && intent.getBooleanExtra(KmConstants.CLOSE_CONVERSATION_SCREEN, false)) {
+        if (intent != null && intent.getBooleanExtra(KmConstants.CLOSE_CONVERSATION_SCREEN, false)) {
             this.finish();
         }
         if (!MobiComUserPreference.getInstance(this).isLoggedIn()) {
@@ -521,10 +534,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     if (intent.getExtras().getBoolean("sentFromNotification")) {
                         String keyString = intent.getStringExtra("keyString");
                         Message message = null;
-                        if(!TextUtils.isEmpty(keyString)) {
+                        if (!TextUtils.isEmpty(keyString)) {
                             message = new MessageDatabaseService(this).getMessage(keyString);
                         }
-                        if(message == null){
+                        if (message == null) {
                             String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
                             if (!TextUtils.isEmpty(messageJson)) {
                                 message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
@@ -633,15 +646,13 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (customToolbarLayout == null) {
             return;
         }
-
-        KmThemeHelper kmThemeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
-        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_title)).setTextColor(kmThemeHelper.getToolbarTitleColor());
-        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_subtitle)).setTextColor(kmThemeHelper.getToolbarSubtitleColor());
+        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_title)).setTextColor(themeHelper.getToolbarTitleColor());
+        ((TextView) customToolbarLayout.findViewById(R.id.toolbar_subtitle)).setTextColor(themeHelper.getToolbarSubtitleColor());
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if(permissions == null || grantResults == null){
+        if (permissions == null || grantResults == null) {
             return;
         }
         if (requestCode == PermissionsUtils.REQUEST_STORAGE) {
@@ -807,8 +818,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } catch (ClassCastException e) {
 
             }
-        }
-        else if(id == android.R.id.home) {
+        } else if (id == android.R.id.home) {
             AlEventManager.getInstance().sendOnBackButtonClicked(getSupportFragmentManager().getBackStackEntryCount() > 1);
         }
         return false;
@@ -818,20 +828,20 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     public void onQuickConversationFragmentItemClick(final Message message, final Integer conversationId, final String searchString) {
         this.currentConversationId = conversationId;
         new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            final Channel clickedChannel = ChannelService.getInstance(ConversationActivity.this).getChannelByChannelKey(message.getGroupId());
-                            clickedChannel.setGroupUsers(ChannelService.getInstance(ConversationActivity.this).getListOfUsersFromChannelUserMapper(clickedChannel.getKey()));
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    channel = clickedChannel;
-                                    conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, null, channel, conversationId, searchString, null, null);
-                                    addFragment(ConversationActivity.this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
-                                }
-                            });
-                        }
-                    }).start();
+            @Override
+            public void run() {
+                final Channel clickedChannel = ChannelService.getInstance(ConversationActivity.this).getChannelByChannelKey(message.getGroupId());
+                clickedChannel.setGroupUsers(ChannelService.getInstance(ConversationActivity.this).getListOfUsersFromChannelUserMapper(clickedChannel.getKey()));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        channel = clickedChannel;
+                        conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, null, channel, conversationId, searchString, null, null);
+                        addFragment(ConversationActivity.this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override
@@ -1140,7 +1150,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForStoragePermission(this)) {
             applozicPermission.requestStoragePermissions(KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
         } else {
-            Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager(),true);
+            Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager(), true);
             contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
             Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));

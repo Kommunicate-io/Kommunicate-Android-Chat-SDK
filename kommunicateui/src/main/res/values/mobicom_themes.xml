@@ -20,6 +20,7 @@
     <style name="ApplozicTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/applozic_theme_color_primary</item>
         <item name="colorPrimaryDark">@color/applozic_theme_color_primary_dark</item>
+        <item name="android:forceDarkAllowed">false</item>
         <item name="colorAccent">@color/applozic_theme_color_primary</item>
         <item name="windowActionModeOverlay">true</item>
     </style>

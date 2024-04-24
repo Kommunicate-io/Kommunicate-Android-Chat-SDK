@@ -99,13 +99,16 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         this.alCustomizationSettings = alCustomizationSettings;
     }
 
-    public QuickConversationAdapter(final Context context, List<Message> messageList, EmojiconHandler emojiconHandler, final boolean isDarkMode) {
+    public void setDarkMode(boolean isDarkMode) {
+        this.isDarkMode = isDarkMode;
+    }
+
+    public QuickConversationAdapter(final Context context, List<Message> messageList, EmojiconHandler emojiconHandler) {
         this.context = context;
         this.emojiconHandler = emojiconHandler;
         this.contactService = new AppContactService(context);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.messageList = messageList;
-        this.isDarkMode = isDarkMode;
         conversationUIService = new ConversationUIService((FragmentActivity) context);
         loggedInUserRoleType = MobiComUserPreference.getInstance(context).getUserRoleType();
         loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();

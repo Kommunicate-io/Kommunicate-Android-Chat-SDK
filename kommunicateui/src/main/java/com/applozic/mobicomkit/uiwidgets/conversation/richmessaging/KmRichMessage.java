@@ -73,9 +73,10 @@ public abstract class KmRichMessage {
     protected Gson gson;
     protected TextView createdAtTime;
     protected boolean showTimestamp;
+    protected boolean isDarkModeEnabled;
 
 
-    public KmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp) {
+    public KmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
         this.context = context;
         this.message = message;
         this.listener = listener;
@@ -86,6 +87,7 @@ public abstract class KmRichMessage {
         this.model = (KmRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), KmRichMessageModel.class);
         this.kmRichMessageModel = gson.fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel>() {
         }.getType());
+        this.isDarkModeEnabled = isDarkModeEnabled;
         themeHelper = KmThemeHelper.getInstance(context, alCustomizationSettings);
     }
 
@@ -107,9 +109,10 @@ public abstract class KmRichMessage {
         createdAtTime = containerView.findViewById(R.id.createdAt);
         createdAtTime.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
         createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
-        if(!TextUtils.isEmpty(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor())) {
-            createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor()));
-        }
+        createdAtTime.setTextColor(
+                themeHelper.parseColorWithDefault(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor().get(isDarkModeEnabled ? 1 : 0),
+                        Color.parseColor("#808080"))
+        );
 
         handleLayoutVisibilities(model.getTemplateId());
     }

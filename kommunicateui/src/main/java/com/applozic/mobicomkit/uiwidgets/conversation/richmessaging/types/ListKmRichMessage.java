@@ -14,6 +14,7 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmActionButtonRMAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmListRMAdapter;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmRichMessageAdapterFactory;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
@@ -66,26 +67,18 @@ public class ListKmRichMessage extends KmRichMessage {
                     }
 
                     if (payload.getButtons() != null) {
-
-                        final List<KmRichMessageModel.KmButtonModel> action = payload.getButtons();
-
-                        if (!showAction(isMessageProcessed, action.get(0))) {
-                            setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton1), null, action.get(0), payload, model);
-                        }
-
-                        if (action.size() > 1) {
-                            if (!showAction(isMessageProcessed, action.get(1))) {
-                                setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton2), listItemLayout.findViewById(R.id.actionDivider2), action.get(1), payload, model);
+                        final List<KmRichMessageModel.KmButtonModel> actionButtons = payload.getButtons();
+                        final List<KmRichMessageModel.KmButtonModel> actionButtonsToBeShown = new ArrayList<>();
+                        for (KmRichMessageModel.KmButtonModel actionButton : actionButtons) {
+                            if (!showAction(isMessageProcessed, actionButton)) {
+                                actionButtonsToBeShown.add(actionButton);
                             }
                         }
-
-                        if (action.size() > 2) {
-                            if (!showAction(isMessageProcessed, action.get(2))) {
-                                setActionTextView((TextView) listItemLayout.findViewById(R.id.actionButton3), listItemLayout.findViewById(R.id.actionDivider3), action.get(2), payload, model);
-                            }
-
-                        }
-
+                        RecyclerView actionButtonRecycler = listItemLayout.findViewById(R.id.alActionButtonRecycler);
+                        LinearLayoutManager actionButtonLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
+                        actionButtonRecycler.setLayoutManager(actionButtonLayoutManager);
+                        KmActionButtonRMAdapter actionButtonAdapter = (KmActionButtonRMAdapter) KmRichMessageAdapterFactory.getInstance().getActionButtonRMAdapter(context, message, actionButtonsToBeShown, listener, themeHelper);
+                        actionButtonRecycler.setAdapter(actionButtonAdapter);
                     }
                 }
 

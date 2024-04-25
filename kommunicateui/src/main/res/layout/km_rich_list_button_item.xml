@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/km_list_item_divider_color" />
+
+    <TextView
+        android:id="@+id/tv_action_button_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="11dp"
+        android:drawablePadding="4dp"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:letterSpacing="0.07"
+        android:maxLines="1"
+        android:text=""
+        android:textColor="@color/km_list_item_action_color"
+        android:textSize="15sp"
+        android:textStyle="normal"
+        android:visibility="gone" />
+</RelativeLayout>

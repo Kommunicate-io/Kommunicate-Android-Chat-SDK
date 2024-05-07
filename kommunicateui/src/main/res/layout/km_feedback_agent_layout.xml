@@ -58,6 +58,7 @@
             android:layout_weight="1"
             android:text="@string/user_rating_text"
             android:textStyle="italic"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/idRatingImage"
             app:layout_constraintHorizontal_bias="0.5"
@@ -67,8 +68,8 @@
 
         <ImageView
             android:id="@+id/idRatingImage"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

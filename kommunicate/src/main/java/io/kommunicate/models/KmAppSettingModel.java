@@ -136,6 +136,7 @@ public class KmAppSettingModel extends JsonMarker {
         private String preChatGreetingMsg;
         private UploadOverride defaultUploadOverride;
         private boolean disableChatWidget;
+        private int csatRatingBase = 3;
 
         public String getPosition() {
             return position;
@@ -216,6 +217,14 @@ public class KmAppSettingModel extends JsonMarker {
 
         public boolean isSingleThreaded() {
             return singleThreaded;
+        }
+
+        public int getCsatRatingBase() {
+            return csatRatingBase;
+        }
+
+        public void setCsatRatingBase(int csatRatingBase) {
+            this.csatRatingBase = csatRatingBase;
         }
     }
 

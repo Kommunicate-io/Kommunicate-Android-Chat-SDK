@@ -470,8 +470,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myViewholder6.textViewFeedbackComment.setText(comment);
 
 
-                    }
-                    else {
+                    } else {
                         switch (ratingValue) {
                             case FeedbackInputFragment.RATING_POOR:
                                 myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_sad_1));
@@ -502,9 +501,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myViewholder6.textViewFeedbackText.setText(context.getString(R.string.rating_text));
                         }
                     }
-
-
-
                 }
             } else if (type == 8) {
                 TypingMessageHolder typingMessageHolder = (TypingMessageHolder) holder;

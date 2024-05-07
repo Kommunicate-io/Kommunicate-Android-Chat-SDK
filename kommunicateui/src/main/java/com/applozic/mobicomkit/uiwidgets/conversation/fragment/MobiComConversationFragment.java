@@ -1327,11 +1327,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void openFeedbackFragment() {
-//        if (KmAppSettingPreferences.getInstance().getRatingBase() != 3) {
+        if (KmAppSettingPreferences.getInstance().getRatingBase() != 3) {
              openFiveStarRatingFragment();
-//        } else {
-//            openEmojiFeedbackFragment();
-//        }
+        } else {
+            openEmojiFeedbackFragment();
+        }
     }
 
     @SuppressLint("MissingPermission")

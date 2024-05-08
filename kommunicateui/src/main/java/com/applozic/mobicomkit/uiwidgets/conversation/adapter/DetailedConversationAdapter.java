@@ -433,7 +433,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     JSONObject jsonObject = new JSONObject(message.getMetadata().get("feedback"));
                     int ratingValue = (int) jsonObject.get("rating");
-                    if (KmAppSettingPreferences.getInstance().getRatingBase() == 5) {
+                    if (KmAppSettingPreferences.getInstance().getRatingBase() != 3) {
                         switch (ratingValue) {
                             case 1:
                                 myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context,  R.drawable.star));

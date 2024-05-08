@@ -427,7 +427,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     }
                 }
-            } else if (type == 6 && KmAppSettingPreferences.getInstance().getRatingBase() == 3)  {
+            } else if (type == 6)  {
                 MyViewHolder6 myViewholder6 = (MyViewHolder6) holder;
                 if (message.getMetadata() != null) {
 

@@ -1,18 +1,17 @@
 package com.applozic.mobicomkit.uiwidgets.attachmentview;
 
+import static android.view.View.GONE;
+import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
-
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import io.kommunicate.utils.KmUtils;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +22,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.attachment.AttachmentManager;
 import com.applozic.mobicomkit.api.attachment.AttachmentTask;
@@ -30,6 +32,7 @@ import com.applozic.mobicomkit.api.attachment.AttachmentViewProperties;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
@@ -40,8 +43,7 @@ import com.applozic.mobicommons.json.GsonUtils;
 
 import java.io.File;
 
-import static android.view.View.GONE;
-import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
+import io.kommunicate.utils.KmUtils;
 
 /**
  * Created by devashish on 22/07/16.
@@ -72,6 +74,8 @@ public class KmDocumentView {
     private KmStoragePermissionListener kmStoragePermissionListener;
     private Handler mHandler = new Handler();
 
+    private AlCustomizationSettings alCustomizationSettings = new AlCustomizationSettings();
+
 
     public KmDocumentView(Context context, KmStoragePermissionListener kmStoragePermissionListener) {
         this.context = context;
@@ -99,7 +103,11 @@ public class KmDocumentView {
         }
 
         if (audio_duration_textView != null) {
-            audio_duration_textView.setTextColor(context.getResources().getColor(message.isTypeOutbox() ? R.color.white : R.color.black));
+            if (isAgentApp()) {
+                audio_duration_textView.setTextColor(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor().get(0) : alCustomizationSettings.getReceivedMessageTextColor().get(0)));
+            } else {
+                audio_duration_textView.setTextColor(context.getResources().getColor(message.isTypeOutbox() ? R.color.white : R.color.black));
+            }
         }
         progressBar.getIndeterminateDrawable().setColorFilter(message.isTypeOutbox() ? context.getResources().getColor(R.color.applozic_green_color) : context.getResources().getColor(R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY);
         cancelIcon.setColorFilter(message.isTypeOutbox() ? R.color.white : R.color.black, android.graphics.PorterDuff.Mode.MULTIPLY);
@@ -127,9 +135,13 @@ public class KmDocumentView {
                 setDocumentIcon(mimeType, docIcon);
             }
         }
-
-        fileText.setTextColor(ContextCompat.getColor(context, message.isTypeOutbox() ? R.color.message_text_color : R.color.km_received_message_text_color));
-        audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? 0xFFFFFFFF : 0xFFFFB242, PorterDuff.Mode.MULTIPLY);
+        if (isAgentApp()) {
+            fileText.setTextColor(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor().get(0) : alCustomizationSettings.getReceivedMessageTextColor().get(0)));
+            audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor().get(0)) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor().get(0)), PorterDuff.Mode.MULTIPLY);
+        } else {
+            audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? 0xFFFFFFFF : 0xFFFFB242, PorterDuff.Mode.MULTIPLY);
+            fileText.setTextColor(ContextCompat.getColor(context, message.isTypeOutbox() ? R.color.message_text_color : R.color.km_received_message_text_color));
+        }
         cancelIcon.setVisibility(message.isTypeOutbox() ? GONE : View.VISIBLE);
         setupAttachmentView();
         registerEvents();
@@ -206,6 +218,18 @@ public class KmDocumentView {
                 }
             }
         }
+    }
+
+    private boolean isAgentApp() {
+        boolean isAgentApp = false;
+        if (context != null) {
+            String jsonString = FileUtils.loadSettingsJsonFile(context);
+            if (!TextUtils.isEmpty(jsonString)) {
+                alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+                isAgentApp = alCustomizationSettings.isAgentApp();
+            }
+        }
+        return isAgentApp;
     }
 
     private void showRetry() {
@@ -349,10 +373,9 @@ public class KmDocumentView {
 
     public void playAudio() {
         final String mimeType;
-        if(message.getFileMetas() != null && message.getFileMetas().getName() != null) {
+        if (message.getFileMetas() != null && message.getFileMetas().getName() != null) {
             mimeType = FileUtils.getMimeType(message.getFileMetas().getName());
-        }
-        else {
+        } else {
             mimeType = null;
         }
         if (Utils.hasNougat()) {

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".conversation.fragment.FeedbackInputFragmentv2">
+
+    <LinearLayout
+        android:id="@+id/feedback_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/btn_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="18dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/ic_clear_v2" />
+
+        <TextView
+            android:id="@+id/tv_feedback_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="16sp"
+            android:text="How satisfied you are with the conversation?"
+            android:textColor="#1C1C1C"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="3dp"
+            android:textStyle="bold"
+            />
+        <LinearLayout
+            android:id="@+id/ll_star"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="16dp"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            >
+            <ImageView
+                android:id="@+id/iv_star_one"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/icon_empty_star"
+                android:layout_marginHorizontal="8dp"/>
+            <ImageView
+                android:id="@+id/iv_star_two"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/icon_empty_star"
+                android:layout_marginHorizontal="8dp"/>
+            <ImageView
+                android:id="@+id/iv_star_three"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/icon_empty_star"
+                android:layout_marginHorizontal="8dp"/>
+            <ImageView
+                android:id="@+id/iv_star_four"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/icon_empty_star"
+                android:layout_marginHorizontal="8dp"/>
+            <ImageView
+                android:id="@+id/iv_star_five"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/icon_empty_star"
+                android:layout_marginHorizontal="8dp"/>
+            
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_feedback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add feedback(optional)"
+            android:textColor="#1C1C1C"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            />
+        <EditText
+            android:id="@+id/et_feedback_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_text_bg_v2"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="Enter your feedback..."
+            android:textColorHint="#67757E"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/blue_button"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:text="Submit"
+            android:textAllCaps="false"
+            android:textColor="@color/km_white_color"
+            android:visibility="visible" />
+
+    </LinearLayout>
+
+
+
+</androidx.core.widget.NestedScrollView>
+

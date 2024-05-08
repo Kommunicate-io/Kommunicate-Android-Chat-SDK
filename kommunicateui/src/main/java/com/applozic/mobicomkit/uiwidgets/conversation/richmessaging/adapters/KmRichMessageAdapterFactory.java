@@ -52,4 +52,8 @@ public class KmRichMessageAdapterFactory {
     public KmRichMessageAdapter getListRMAdapter(Context context, Message message, List<KmRichMessageModel.KmElementModel> elementList, Map<String, Object> replyMetadata, KmRichMessageListener messageListener, AlCustomizationSettings alCustomizationSettings, boolean isMessageProcessed) {
         return new KmListRMAdapter(context, message, elementList, replyMetadata, messageListener, KmThemeHelper.getInstance(context, alCustomizationSettings));
     }
+
+    public KmActionButtonRMAdapter getActionButtonRMAdapter(Context context, Message message, List<KmRichMessageModel.KmButtonModel> actionButtonList, KmRichMessageListener messageListener, KmThemeHelper themeHelper) {
+        return new KmActionButtonRMAdapter(context, message, actionButtonList, messageListener, themeHelper);
+    }
 }

@@ -86,79 +86,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/km_list_item_divider_color" />
-
-        <TextView
-            android:id="@+id/actionButton1"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/alActionButtonRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="11dp"
-            android:drawablePadding="4dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:letterSpacing="0.07"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="@color/km_list_item_action_color"
-            android:textSize="15sp"
-            android:textStyle="normal"
-            android:visibility="gone" />
-
-        <View
-            android:id="@+id/actionDivider2"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/km_list_item_divider_color"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/actionButton2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="11dp"
-            android:drawablePadding="4dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:letterSpacing="0.07"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="@color/km_list_item_action_color"
-            android:textSize="15sp"
-            android:textStyle="normal"
-            android:visibility="gone" />
-
-        <View
-            android:id="@+id/actionDivider3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/km_list_item_divider_color"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/actionButton3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="11dp"
-            android:layout_marginBottom="11dp"
-            android:drawablePadding="4dp"
-            android:ellipsize="end"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:letterSpacing="0.07"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="@color/km_list_item_action_color"
-            android:textSize="15sp"
-            android:textStyle="normal"
-            android:visibility="gone" />
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/createdAt"
         android:layout_width="wrap_content"
@@ -166,11 +100,10 @@
         android:layout_marginLeft="3dp"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:text="time"
         android:paddingStart="5dp"
         android:paddingLeft="5dp"
         android:paddingBottom="6dp"
+        android:text="time"
         android:textColor="@color/km_received_message_created_at_time_text_color"
-        android:textSize="10sp"
-         />
+        android:textSize="10sp" />
 </LinearLayout>

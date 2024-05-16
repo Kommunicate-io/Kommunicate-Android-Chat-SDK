@@ -8,7 +8,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+
 import androidx.fragment.app.FragmentManager;
+
+import android.media.MediaMetadataRetriever;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,11 +19,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import io.kommunicate.BuildConfig;
+
+import com.applozic.mobicomkit.api.attachment.urlservice.URLServiceProvider;
+import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicommons.task.AlAsyncTask;
 import com.applozic.mobicommons.task.AlTask;
 
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
 
 /**
  * This class wraps up completing some arbitrary long running work when loading a bitmap to an
@@ -185,18 +194,22 @@ public abstract class ImageLoader {
      * @param imageView The ImageView to bind the downloaded image to.
      */
     public void loadImage(Object data, ImageView imageView) {
-        loadImage(data, imageView, null, null);
+        loadImage(null, data, imageView, null, null);
+    }
+
+    public void loadImage(Context context, Object data, ImageView imageView) {
+        loadImage(context, data, imageView, null, null);
     }
 
     public void loadImage(Object data, ImageView imageView, TextView textView) {
-        loadImage(data, imageView, null, textView);
+        loadImage(null, data, imageView, null, textView);
     }
 
     public void loadImage(Object data, ImageView imageView, ProgressBar progressBar) {
-        loadImage(data, imageView, progressBar, null);
+        loadImage(null, data, imageView, progressBar, null);
     }
 
-    public void loadImage(Object data, ImageView imageView, ProgressBar progressBar, TextView textView) {
+    public void loadImage(Context context, Object data, ImageView imageView, ProgressBar progressBar, TextView textView) {
         if (data == null) {
             imageView.setImageBitmap(mLoadingBitmap);
             return;
@@ -215,7 +228,7 @@ public abstract class ImageLoader {
                 progressBar.setVisibility(View.GONE);
             }
         } else if (cancelPotentialWork(data, imageView)) {
-            final BitmapWorkerTask task = new BitmapWorkerTask(imageView, progressBar, textView, data);
+            final BitmapWorkerTask task = new BitmapWorkerTask(context, imageView, progressBar, textView, data);
             final AsyncDrawable asyncDrawable =
                     new AsyncDrawable(mResources, mLoadingBitmap, task);
             imageView.setImageDrawable(asyncDrawable);
@@ -333,6 +346,7 @@ public abstract class ImageLoader {
      */
     private class BitmapWorkerTask extends AlAsyncTask<Void, Bitmap> {
         private final WeakReference<ImageView> imageViewReference;
+        private Context context;
         private Object data;
         private ProgressBar progressBar;
         private TextView textView;
@@ -342,8 +356,9 @@ public abstract class ImageLoader {
             this.progressBar = progressBar;
         }
 
-        public BitmapWorkerTask(ImageView imageView, ProgressBar progressBar, TextView textView, Object data) {
+        public BitmapWorkerTask(Context context, ImageView imageView, ProgressBar progressBar, TextView textView, Object data) {
             imageViewReference = new WeakReference<ImageView>(imageView);
+            this.context = context;
             this.progressBar = progressBar;
             this.textView = textView;
             this.data = data;
@@ -398,6 +413,19 @@ public abstract class ImageLoader {
             // flag is not set, then call the main process method (as implemented by a subclass)
             if (!isCancelled() && getAttachedImageView() != null) {
                 bitmap = processBitmap(data);
+
+            }
+
+            if (bitmap == null) {
+                try {
+                    HttpURLConnection conn = new URLServiceProvider(context).getDownloadConnection((Message) data);
+                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    retriever.setDataSource(String.valueOf(conn.getURL()), new HashMap<String, String>());
+                    long timeUs = 2 * 1000000L;
+                    bitmap = retriever.getFrameAtTime(timeUs);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             // If the bitmap was processed and the image cache is available, then add the processed

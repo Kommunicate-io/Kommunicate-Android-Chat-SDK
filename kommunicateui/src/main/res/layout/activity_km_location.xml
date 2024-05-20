@@ -6,13 +6,15 @@
     android:layout_height="match_parent"
     android:background="@color/location_activity_background"
     android:focusableInTouchMode="true"
+    android:weightSum="1"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_map_screen"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="0dp"
         android:background="?attr/colorPrimary"
+        android:layout_weight="0.075"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -23,17 +25,19 @@
         android:id="@+id/map"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="0dp"
+        android:layout_weight="0.825"/>
 
     <RelativeLayout
         android:id="@+id/sendLocation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:elevation="4dp"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp">
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <ImageView
             android:id="@+id/locationIcon"
@@ -41,11 +45,11 @@
             android:layout_height="48dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="35dp"
-            android:layout_marginStart="35dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:background="@drawable/button_circle"
             android:scaleType="center"
+            android:layout_centerVertical="true"
             android:src="@drawable/km_ic_my_location_white_18dp" />
 
         <TextView

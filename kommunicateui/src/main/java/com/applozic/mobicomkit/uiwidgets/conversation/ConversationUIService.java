@@ -216,7 +216,7 @@ public class ConversationUIService {
                             public void onScanCompleted(String path, Uri uri) {
                             }
                         });
-                Log.d("xcode photo : ",Thread.currentThread().getName());
+                Log.d("xcode photo : ", Thread.currentThread().getName());
                 long fileSize = 0;
                 try {
                     Cursor returnCursor =
@@ -227,7 +227,7 @@ public class ConversationUIService {
                         fileSize = returnCursor.getLong(sizeIndex);
                         returnCursor.close();
                     }
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 String jsonString = FileUtils.loadSettingsJsonFile(getConversationFragment().getContext());
@@ -237,11 +237,12 @@ public class ConversationUIService {
                 } else {
                     alCustomizationSettings = new AlCustomizationSettings();
                 }
-                boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB());
+                boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB(), true, alCustomizationSettings.getMinimumCompressionThresholdForVideosInMB());
                 if (isFileCompressionNeeded) {
                     new FileTaskAsync(file, selectedFileUri, getConversationFragment().getContext(), new PrePostUIMethods() {
                         @Override
-                        public void preTaskUIMethod() {}
+                        public void preTaskUIMethod() {
+                        }
 
                         @Override
                         public void postTaskUIMethod(Uri uri, boolean completed, File file) {
@@ -260,7 +261,7 @@ public class ConversationUIService {
             }
             if (requestCode == MultimediaOptionFragment.REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY && resultCode == Activity.RESULT_OK) {
 
-                Uri selectedFilePath = ((ConversationActivity) fragmentActivity).getVideoFileUri();
+                Uri selectedFileUri = ((ConversationActivity) fragmentActivity).getVideoFileUri();
 
                 File file = ((ConversationActivity) fragmentActivity).getFileObject();
 
@@ -268,8 +269,54 @@ public class ConversationUIService {
                     FileUtils.getLastModifiedFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/").renameTo(file);
                 }
 
-                if (selectedFilePath != null) {
-                    getConversationFragment().loadFile(selectedFilePath, file, null);
+                if (selectedFileUri != null) {
+                    long fileSize = 0;
+                    try {
+                        Cursor returnCursor =
+                                getConversationFragment().getContext().getContentResolver().query(selectedFileUri, null, null, null, null);
+                        if (returnCursor != null) {
+                            int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                            returnCursor.moveToFirst();
+                            fileSize = returnCursor.getLong(sizeIndex);
+                            returnCursor.close();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    String jsonString = FileUtils.loadSettingsJsonFile(getConversationFragment().getContext());
+                    AlCustomizationSettings alCustomizationSettings;
+                    if (!TextUtils.isEmpty(jsonString)) {
+                        alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+                    } else {
+                        alCustomizationSettings = new AlCustomizationSettings();
+                    }
+                    String mimeType = FileUtils.getMimeTypeByContentUriOrOther(getConversationFragment().getContext(), selectedFileUri);
+                    boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB(), true, alCustomizationSettings.getMinimumCompressionThresholdForVideosInMB());
+                    if (isFileCompressionNeeded) {
+                        new FileTaskAsync(file, selectedFileUri, getConversationFragment().getContext(), new PrePostUIMethods() {
+                            ProgressDialog progressDialog = new ProgressDialog(getConversationFragment().getContext());
+
+                            @Override
+                            public void preTaskUIMethod() {
+                                if (progressDialog != null) {
+                                    progressDialog = ProgressDialog.show(getConversationFragment().getContext(), getConversationFragment().getContext().getString(R.string.wait),
+                                            getConversationFragment().getContext().getString(R.string.km_contacts_loading_info), true);
+                                }
+                            }
+
+                            @Override
+                            public void postTaskUIMethod(Uri uri, boolean completed, File file) {
+                                if (progressDialog != null && progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                                getConversationFragment().loadFile(uri, file, mimeType);
+                                Utils.printLog(fragmentActivity, TAG, "File uri: " + uri);
+                            }
+                        }, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    } else {
+                        getConversationFragment().loadFile(selectedFileUri, file, null);
+                        Utils.printLog(fragmentActivity, TAG, "File uri: " + selectedFileUri);
+                    }
                 }
             }
 
@@ -672,7 +719,7 @@ public class ConversationUIService {
     }
 
     public void sendMessage(String message) {
-        if(BroadcastService.isIndividual()) {
+        if (BroadcastService.isIndividual()) {
             getConversationFragment().sendMessage(message);
         }
     }
@@ -882,13 +929,14 @@ public class ConversationUIService {
     }
 
     public void setAutoText(String preFilled) {
-        if(BroadcastService.isQuick()){
+        if (BroadcastService.isQuick()) {
             return;
         }
         getConversationFragment().setAutoTextOnEditText(preFilled);
     }
+
     public void hideAssigneeStatus(Boolean hide) {
-        if(BroadcastService.isQuick()){
+        if (BroadcastService.isQuick()) {
             return;
         }
         getConversationFragment().hideAssigneeStatus(hide);

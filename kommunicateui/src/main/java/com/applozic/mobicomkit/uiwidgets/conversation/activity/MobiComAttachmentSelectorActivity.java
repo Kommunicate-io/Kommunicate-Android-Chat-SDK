@@ -90,7 +90,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     void openFileChooser() {
         Intent contentChooserIntent = FileUtils.createGetContentIntent(kmAttachmentsController.getFilterOptions(alCustomizationSettings), getPackageManager(), alCustomizationSettings.isMultipleAttachmentSelectionEnabled());
         contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        if (alCustomizationSettings.isMultipleAttachmentSelectionEnabled()){
+        if (alCustomizationSettings.isMultipleAttachmentSelectionEnabled()) {
             contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         }
         Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
@@ -147,7 +147,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         cancelAttachment = (Button) findViewById(R.id.mobicom_attachment_cancel_btn);
         galleryImagesGridView = (GridView) findViewById(R.id.mobicom_attachment_grid_View);
         messageEditText = (EditText) findViewById(R.id.mobicom_attachment_edit_text);
-        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this,alCustomizationSettings);
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
         if (themeHelper.isDarkModeEnabledForSDK()) {
             idRootLinearLayout = findViewById(R.id.idRootLinearLayout);
             idRootLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
@@ -211,7 +211,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
         //what to do before and after the doInBackground of the FileTaskAsync
         prePostUIMethodsFileAsyncTask = new PrePostUIMethods() {
-            ProgressDialog progressDialog;
+            ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
 
             @Override
             public void preTaskUIMethod() {
@@ -265,10 +265,10 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
                             }
                         }).setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                    }
-                });
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                            }
+                        });
                 alertDialog.setTitle(alCustomizationSettings.getRestrictedWordMessage());
                 alertDialog.setCancelable(true);
                 alertDialog.create().show();
@@ -305,9 +305,9 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         }
 
         if (resultCode == Activity.RESULT_OK) {
-            if (intent.getClipData() != null){
+            if (intent.getClipData() != null) {
                 ClipData clipData = intent.getClipData();
-                for (int index = 0; index < clipData.getItemCount(); index++){
+                for (int index = 0; index < clipData.getItemCount(); index++) {
 
                     if (index == alCustomizationSettings.getMaxAttachmentAllowed()) {
                         KmToast.makeText(this, "Maximum attachments allowed are " + alCustomizationSettings.getMaxAttachmentAllowed(), Toast.LENGTH_SHORT).show();
@@ -318,7 +318,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                     Uri selectedFileUri = item.getUri();
                     processFile(selectedFileUri);
                 }
-            } else if (intent.getData() != null){
+            } else if (intent.getData() != null) {
                 Uri selectedFileUri = intent.getData();
                 processFile(selectedFileUri);
             }

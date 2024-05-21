@@ -39,6 +39,7 @@ import android.webkit.MimeTypeMap;
 
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageUtils;
+import com.iceteck.silicompressorr.SiliCompressor;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -55,7 +56,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -470,7 +470,7 @@ public class FileUtils {
         StringBuffer sb = new StringBuffer();
         String line;
         try {
-            if(Arrays.asList(context.getAssets().list("")).contains("kommunicate-settings.json")) {
+            if (Arrays.asList(context.getAssets().list("")).contains("kommunicate-settings.json")) {
                 br = new BufferedReader(new InputStreamReader(context.getAssets().open(
                         "kommunicate-settings.json"), "UTF-8"));
             } else {
@@ -1022,7 +1022,7 @@ public class FileUtils {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             originalBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
 
-            File tempFile = File.createTempFile(fileName,null, context.getCacheDir());
+            File tempFile = File.createTempFile(fileName, null, context.getCacheDir());
             tempFile.deleteOnExit();
 
             FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
@@ -1031,23 +1031,36 @@ public class FileUtils {
             fileOutputStream.close();
 
             return Uri.fromFile(tempFile);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public static boolean isCompressionNeeded(Context context, Uri uri, long fileSize, boolean isImageCompressionEnabled, int minimumCompressionThresholdForImagesInMB) {
-        if (!isImageCompressionEnabled) {
-            return false;
+    public static Uri compressVideo(Context context, Uri uri, File file) {
+        String filePath = null;
+        try {
+            filePath = SiliCompressor.with(context).compressVideo(uri, file.getAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        String mimeType = FileUtils.getMimeTypeByContentUriOrOther(context,uri);
-        boolean isMemeTypeImage = !TextUtils.isEmpty(mimeType) && mimeType.contains("image/");
-        if (!isMemeTypeImage) {
-            return false;
-        }
-        long limitForCompression = (long) minimumCompressionThresholdForImagesInMB * 1024 * 1024;
-        return fileSize >= limitForCompression;
+        return Uri.fromFile(new File(filePath));
     }
 
+    public static boolean isCompressionNeeded(Context context, Uri uri, long fileSize, boolean isImageCompressionEnabled,
+                                              int minimumCompressionThresholdForImagesInMB, boolean isVideoCompressionEnabled,
+                                              int minimumCompressionThresholdForVideosInMB) {
+        if (!isImageCompressionEnabled && !isVideoCompressionEnabled) {
+            return false;
+        }
+        String mimeType = FileUtils.getMimeTypeByContentUriOrOther(context, uri);
+        if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image/") && isImageCompressionEnabled) {
+            long limitForCompression = (long) minimumCompressionThresholdForImagesInMB * 1024 * 1024;
+            return fileSize >= limitForCompression;
+        } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video/") && isVideoCompressionEnabled) {
+            long limitForCompression = (long) minimumCompressionThresholdForVideosInMB * 1024 * 1024;
+            return fileSize >= limitForCompression;
+        }
+        return false;
+    }
 }

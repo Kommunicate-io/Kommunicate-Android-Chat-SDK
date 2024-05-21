@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
@@ -20,6 +21,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -77,13 +79,16 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     static final String TAG = "MobicomLocationActivity";
     private LinearLayout locationLinearLayout;
     private TextView sendLocationText;
+    private Toolbar toolbar;
+    private KmThemeHelper themeHelper;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_km_location);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_map_screen);
+        toolbar = findViewById(R.id.toolbar_map_screen);
         toolbar.setTitle(getResources().getString(R.string.send_location));
         setSupportActionBar(toolbar);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
@@ -92,12 +97,16 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+        themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
 
-        toolbar.setBackgroundColor(KmThemeHelper.getInstance(this, alCustomizationSettings).getToolbarColor());
+        toolbar.setBackgroundColor(themeHelper.getToolbarColor());
+        toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), KmThemeHelper.getInstance(this, alCustomizationSettings).getPrimaryColor());
-        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
+        int iconColor = themeHelper.parseColorWithDefault(alCustomizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
+                themeHelper.parseColorWithDefault(alCustomizationSettings.getToolbarColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0), themeHelper.getPrimaryColor()));
+        KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), iconColor);
+        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
 
         layout = (LinearLayout) findViewById(R.id.footerAd);
         sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);
@@ -105,7 +114,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         kmPermissions = new KmPermissions(MobicomLocationActivity.this, layout);
         locationLinearLayout = findViewById(R.id.km_location_linear_layout);
         sendLocationText = findViewById(R.id.km_send_location_text);
-        if (KmThemeHelper.getInstance(this,alCustomizationSettings).isDarkModeEnabledForSDK()){
+        if (themeHelper.isDarkModeEnabledForSDK()) {
             locationLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
             sendLocationText.setTextColor(getResources().getColor(R.color.white));
         }
@@ -292,7 +301,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
             boolean reloadMap = false;
             if (location != null) {
-                if (mCurrentLocation == null){
+                if (mCurrentLocation == null) {
                     reloadMap = true;
                 }
                 mCurrentLocation = location;
@@ -344,5 +353,4 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
 }

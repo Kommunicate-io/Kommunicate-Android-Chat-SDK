@@ -87,6 +87,7 @@
   "statusBarColor": "",
   "richMessageThemeColor": "",
   "restrictMessageTypingWithBots": false,
+  "useDarkMode": true,
   "enableFaqOption": [
     true,
     false

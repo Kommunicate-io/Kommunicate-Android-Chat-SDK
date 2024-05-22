@@ -70,6 +70,7 @@ public class KmWebViewActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().show();
+        toolbar.setBackgroundColor(themeHelper.getToolbarColor());
 
         KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
 

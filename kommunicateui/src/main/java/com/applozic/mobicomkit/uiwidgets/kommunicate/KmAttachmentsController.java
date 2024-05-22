@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
@@ -17,12 +18,15 @@ import com.applozic.mobicomkit.uiwidgets.async.FileTaskAsync;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
+import com.iceteck.silicompressorr.SiliCompressor;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -193,7 +197,13 @@ public class KmAttachmentsController {
                     }
                 }
                 File mediaFile = FileClientService.getFilePath(fileName, context.getApplicationContext(), mimeType);
-                new FileTaskAsync(mediaFile, selectedFileUri, context, prePostUIMethods, FileUtils.isCompressionNeeded(context, selectedFileUri, fileSize, alCustomizationSettings.isImageCompressionEnabled(), alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB())).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                new FileTaskAsync(mediaFile, selectedFileUri, context, prePostUIMethods,
+                        FileUtils.isCompressionNeeded(
+                                context, selectedFileUri, fileSize, alCustomizationSettings.isImageCompressionEnabled(),
+                                alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB(),
+                                alCustomizationSettings.isVideoCompressionEnabled(),
+                                alCustomizationSettings.getMinimumCompressionThresholdForVideosInMB())
+                ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } catch (Exception e) {
                 e.printStackTrace();
                 return EXCEPTION_OCCURED;

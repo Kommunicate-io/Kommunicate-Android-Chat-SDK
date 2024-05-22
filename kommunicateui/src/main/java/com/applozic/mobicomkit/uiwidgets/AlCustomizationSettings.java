@@ -17,13 +17,13 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object customMessageBackgroundColor = "#e6e5ec";
     private Object sentMessageBackgroundColor = "";
     private Object startNewConversationButtonBackgroundColor = "";
-    private Object receivedMessageBackgroundColor = Arrays.asList("#e6e5ec","#313131");
+    private Object receivedMessageBackgroundColor = Arrays.asList("#e6e5ec", "#313131");
     private Object sendButtonBackgroundColor = "";
     private Object attachmentIconsBackgroundColor = "";
     private Object chatBackgroundColorOrDrawable = Arrays.asList("#FFFFFF", "#000000");
     private Object editTextBackgroundColorOrDrawable;
     private Object editTextLayoutBackgroundColorOrDrawable;
-    private Object channelCustomMessageBgColor = Arrays.asList("#000000","#FFFFFFFF");
+    private Object channelCustomMessageBgColor = Arrays.asList("#000000", "#FFFFFFFF");
     private Object toolbarTitleColor = "#ffffff";
     private Object toolbarSubtitleColor = "#ffffff";
     private Object receiverNameTextColor = "#5C6677";
@@ -31,10 +31,10 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object sentContactMessageTextColor = "#5fba7d";
     private Object receivedContactMessageTextColor = "#646262";
     private Object sentMessageTextColor = "#FFFFFFFF";
-    private Object receivedMessageTextColor = Arrays.asList("#646262","#FFFFFF");
+    private Object receivedMessageTextColor = Arrays.asList("#646262", "#FFFFFF");
     private Object messageEditTextTextColor = Arrays.asList("#000000", "#FFFFFF");
     private Object messageEditTextBackgroundColor = "";
-    private Object autoSuggestionButtonBackgroundColor= "";
+    private Object autoSuggestionButtonBackgroundColor = "";
     private Object autoSuggestionButtonTextColor = "";
     private Object sentMessageLinkTextColor = "#FFFFFFFF";
     private Object receivedMessageLinkTextColor = "#5fba7d";
@@ -116,7 +116,7 @@ public class AlCustomizationSettings extends JsonMarker {
     private Object receivedMessageCreatedAtTimeColor = "";
     private boolean showStartNewConversation = true;
     private boolean enableAwayMessage = true;
-    private Object awayMessageTextColor = Arrays.asList("#A9A4A4","#FFFFFFFF");
+    private Object awayMessageTextColor = Arrays.asList("#A9A4A4", "#FFFFFFFF");
     private boolean isAgentApp = false;
     private boolean hideGroupSubtitle = false;
     private boolean disableGlobalStoragePermission = true;
@@ -156,8 +156,10 @@ public class AlCustomizationSettings extends JsonMarker {
     private boolean useDarkMode = true;
     private boolean isImageCompressionEnabled = false;
     private int minimumCompressionThresholdForImagesInMB = 5;
-  
-  
+    private boolean isVideoCompressionEnabled = false;
+    private int minimumCompressionThresholdForVideosInMB = 5;
+
+
     public boolean getUseDarkMode() {
         return useDarkMode;
     }
@@ -632,9 +634,11 @@ public class AlCustomizationSettings extends JsonMarker {
     public List<String> getMessageEditTextBackgroundColor() {
         return getColorList(messageEditTextBackgroundColor);
     }
+
     public List<String> getAutoSuggestionButtonBackgroundColor() {
         return getColorList(autoSuggestionButtonBackgroundColor);
     }
+
     public List<String> getAutoSuggestionButtonTextColor() {
         return getColorList(autoSuggestionButtonTextColor);
     }
@@ -809,15 +813,23 @@ public class AlCustomizationSettings extends JsonMarker {
         } else if (color instanceof List) {
             return (List<String>) color;
         }
-        return Arrays.asList("","");
+        return Arrays.asList("", "");
     }
 
     public boolean isImageCompressionEnabled() {
         return isImageCompressionEnabled;
     }
 
+    public boolean isVideoCompressionEnabled() {
+        return isVideoCompressionEnabled;
+    }
+
     public int getMinimumCompressionThresholdForImagesInMB() {
         return minimumCompressionThresholdForImagesInMB;
+    }
+
+    public int getMinimumCompressionThresholdForVideosInMB() {
+        return minimumCompressionThresholdForVideosInMB;
     }
 
     public boolean getHideAttachmentOptionsWithBots() {

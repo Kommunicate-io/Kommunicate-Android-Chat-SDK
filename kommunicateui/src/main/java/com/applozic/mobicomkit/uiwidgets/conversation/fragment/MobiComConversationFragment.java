@@ -4652,7 +4652,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 conversationService.sendMessage(messageToResend, messageIntentClass);
                 break;
             case 3:
-                if (alCustomizationSettings.isAgentApp()) {
+                if (alCustomizationSettings.isAgentApp() && message.isTypeOutbox()) {
                     deleteForAll(message, position);
                 } else {
                     String messageKeyString = message.getKeyString();

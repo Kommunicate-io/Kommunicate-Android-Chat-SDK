@@ -4641,21 +4641,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
                 break;
             case 1:
-                new MessageDeleteTask(getContext(), message.getKeyString(), true, new AlCallback() {
-                    @Override
-                    public void onSuccess(Object response) {
-                        if (getContext() != null) {
-                            deleteMessageFromDeviceList(message.getKeyString());
-                            recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
-                            KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Object error) {
-                        KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
-                    }
-                }).execute();
+                deleteForAll(message, position);
                 break;
             case 2:
                 messageDatabaseService.deleteMessageFromDb(message);
@@ -4666,10 +4652,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 conversationService.sendMessage(messageToResend, messageIntentClass);
                 break;
             case 3:
-                String messageKeyString = message.getKeyString();
-                new DeleteConversationAsyncTask(conversationService, message, contact).execute();
-                deleteMessageFromDeviceList(messageKeyString);
-                recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
+                if (alCustomizationSettings.isAgentApp()) {
+                    deleteForAll(message, position);
+                } else {
+                    String messageKeyString = message.getKeyString();
+                    new DeleteConversationAsyncTask(conversationService, message, contact).execute();
+                    deleteMessageFromDeviceList(messageKeyString);
+                    recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
+                }
                 break;
             case 4:
                 String messageJson = GsonUtils.getJsonFromObject(message, Message.class);
@@ -4820,6 +4810,24 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 Utils.printLog(getContext(), TAG, "Default switch case.");
         }
         return true;
+    }
+
+    private void deleteForAll(Message message, int position) {
+        new MessageDeleteTask(getContext(), message.getKeyString(), true, new AlCallback() {
+            @Override
+            public void onSuccess(Object response) {
+                if (getContext() != null) {
+                    deleteMessageFromDeviceList(message.getKeyString());
+                    recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
+                    KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onError(Object error) {
+                KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
+            }
+        }).execute();
     }
 
     public void processAttachmentIconsClick() {

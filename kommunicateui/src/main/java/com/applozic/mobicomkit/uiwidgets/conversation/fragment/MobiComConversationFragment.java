@@ -2620,23 +2620,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         attachmentLayout.setVisibility(VISIBLE);
         if (mimeType != null && (mimeType.startsWith("image") || mimeType.startsWith("video"))) {
-            if (mimeType.startsWith("image")) {
-                sendMessage();
-            } else {
-                attachedFile.setVisibility(View.GONE);
-                int reqWidth = mediaContainer.getWidth();
-                int reqHeight = mediaContainer.getHeight();
-                if (reqWidth == 0 || reqHeight == 0) {
-                    DisplayMetrics displaymetrics = new DisplayMetrics();
-                    if (getActivity() != null) {
-                        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                    }
-                    reqHeight = displaymetrics.heightPixels;
-                    reqWidth = displaymetrics.widthPixels;
-                }
-                previewThumbnail = FileUtils.getPreview(filePath, reqWidth, reqHeight, alCustomizationSettings.isImageCompression(), mimeType);
-                mediaContainer.setImageBitmap(previewThumbnail);
-            }
+            sendMessage();
         } else {
             attachedFile.setVisibility(VISIBLE);
             mediaContainer.setImageBitmap(null);

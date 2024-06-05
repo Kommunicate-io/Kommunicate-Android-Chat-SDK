@@ -1260,7 +1260,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                 menuItems[i].equals(context.getResources().getString(R.string.copy))) {
                             continue;
                         }
-                        if (menuItems[i].equals(context.getResources().getString(R.string.delete_for_all)) && (!message.isTypeOutbox() || !alCustomizationSettings.isAgentApp())) {
+                        if (menuItems[i].equals(context.getResources().getString(R.string.delete_for_all))) {
                             continue;
                         }
                         if (((channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) || message.isCall() || (message.hasAttachment() && !message.isAttachmentDownloaded()) || message.isVideoOrAudioCallMessage()) && (menuItems[i].equals(context.getResources().getString(R.string.forward)) ||

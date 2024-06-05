@@ -280,38 +280,42 @@ public class MobiComMessageService {
             //Todo: Replace it with mobicomkit gcm registration
             // C2DMessaging.register(context);
         }
-        if (syncMessageFeed != null && syncMessageFeed.getMessages() != null) {
-            List<Message> messageList = syncMessageFeed.getMessages();
-            Long channelLastSyncTime = Long.parseLong(userpref.getChannelSyncTime());
+        if (syncMessageFeed.getMessages() != null) {
+            if (!syncMessageFeed.getMessages().isEmpty()) {
+                List<Message> messageList = syncMessageFeed.getMessages();
+                Long channelLastSyncTime = Long.parseLong(userpref.getChannelSyncTime());
 
-            for (int i = messageList.size() - 1; i >= 0; i--) {
-                if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(messageList.get(i).getContentType())) {
-                    if (messageList.get(i).isGroupMetaDataUpdated()) {
-                        syncChannelForMetadata = true;
-                    } else if (channelLastSyncTime == 0L || messageList.get(i).getCreatedAtTime() > channelLastSyncTime) {
-                        syncChannel = true;
+                for (int i = messageList.size() - 1; i >= 0; i--) {
+                    if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(messageList.get(i).getContentType())) {
+                        if (messageList.get(i).isGroupMetaDataUpdated()) {
+                            syncChannelForMetadata = true;
+                        } else if (channelLastSyncTime == 0L || messageList.get(i).getCreatedAtTime() > channelLastSyncTime) {
+                            syncChannel = true;
+                        }
+                        //Todo: fix this, what if there are mulitple messages.
+                        ChannelService.isUpdateTitle = true;
                     }
-                    //Todo: fix this, what if there are mulitple messages.
-                    ChannelService.isUpdateTitle = true;
+                    if (Message.ContentType.BLOCK_NOTIFICATION_IN_GROUP.getValue().equals(messageList.get(i).getContentType())) {
+                        syncGroupOfTwoForBlockList = true;
+                    }
+                    processMessage(messageList.get(i), messageList.get(i).getTo(), ((messageList.size() - 1) - i));
+                    MobiComUserPreference.getInstance(context).setLastInboxSyncTime(messageList.get(i).getCreatedAtTime());
                 }
-                if (Message.ContentType.BLOCK_NOTIFICATION_IN_GROUP.getValue().equals(messageList.get(i).getContentType())) {
-                    syncGroupOfTwoForBlockList = true;
-                }
-                processMessage(messageList.get(i), messageList.get(i).getTo(), ((messageList.size() - 1) - i));
-                MobiComUserPreference.getInstance(context).setLastInboxSyncTime(messageList.get(i).getCreatedAtTime());
-            }
 
-            if (syncChannel) {
-                ChannelService.getInstance(context).syncChannels(false);
-            }
-            if (syncChannelForMetadata) {
-                ChannelService.getInstance(context).syncChannels(true);
-            }
-            if (syncGroupOfTwoForBlockList) {
-                UserService.getInstance(context).processSyncUserBlock();
+                if (syncChannel) {
+                    ChannelService.getInstance(context).syncChannels(false);
+                }
+                if (syncChannelForMetadata) {
+                    ChannelService.getInstance(context).syncChannels(true);
+                }
+                if (syncGroupOfTwoForBlockList) {
+                    UserService.getInstance(context).processSyncUserBlock();
+                }
+                userpref.setLastSyncTime(String.valueOf(syncMessageFeed.getLastSyncTime()));
+            } else {
+                userpref.setLastSyncTime(String.valueOf(System.currentTimeMillis()));
             }
             updateDeliveredStatus(syncMessageFeed.getDeliveredMessageKeys());
-            userpref.setLastSyncTime(String.valueOf(syncMessageFeed.getLastSyncTime()));
         }
     }
 
@@ -325,8 +329,8 @@ public class MobiComMessageService {
             List<Message> messageList = syncMessageFeed.getMessages();
             for (final Message message : messageList) {
                 if (message != null) {
-                    if(message.isDeletedForAll()) {
-                        if(message.getGroupId() != null) {
+                    if (message.isDeletedForAll()) {
+                        if (message.getGroupId() != null) {
                             messageDatabaseService.decreaseChannelUnreadCount(message.getGroupId());
                         }
                         messageDatabaseService.deleteMessage(message, null);
@@ -504,15 +508,15 @@ public class MobiComMessageService {
             addMTMessage(message, 0);
             MobiComUserPreference.getInstance(context).setLastSyncTime(String.valueOf(message.getCreatedAtTime()));
         }
-        if(baseContactService.isContactPresent(message.getContactIds())) {
+        if (baseContactService.isContactPresent(message.getContactIds())) {
             Contact contact = baseContactService.getContactById(message.getContactIds());
-            if((contact.getRoleType() == null || contact.getRoleType() == 0 || contact.getUserId() != null) && contact.getUserId().equals(message.getSupportCustomerName())) {
+            if ((contact.getRoleType() == null || contact.getRoleType() == 0 || contact.getUserId() != null) && contact.getUserId().equals(message.getSupportCustomerName())) {
                 contact.setRoleType(User.RoleType.USER_ROLE.getValue());
                 baseContactService.updateContact(contact);
             }
         }
         if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())) {
-            if(channel != null) {
+            if (channel != null) {
                 channel.setConversationAssignee(message.getAssigneId());
                 ChannelService.getInstance(context).updateChannel(channel);
             }

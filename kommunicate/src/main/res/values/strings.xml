@@ -4,6 +4,7 @@
     <string name="km_prechat_processing_wait_info">Please wait, launching conversation..</string>
     <string name="applozic_userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
     <string name="km_whatsapp_restriction">The last message received from this contact was over 24 hours ago. To send Template message, go to the dashboard.</string>
+    <string name="km_teammode_restriction">You can no longer send messages to this conversation as it has been assigned to a different team.</string>
     <!--Kommunicate conversation errors-->
     <string name="km_method_needs_activity_context">This method needs Activity context</string>
     <string name="km_chat_builder_cannot_be_null">Chat Builder cannot be null</string>

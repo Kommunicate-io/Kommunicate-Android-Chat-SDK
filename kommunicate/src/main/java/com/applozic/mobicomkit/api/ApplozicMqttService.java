@@ -524,9 +524,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 if (NOTIFICATION_TYPE.MESSAGE_SENT.getValue().equals(mqttMessageResponse.getType())) {
                                     GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
                                     Message sentMessageSync = messageResponse.getMessage();
-
-                                    if (TextUtils.isEmpty(sentMessageSync.getTo()) ||
-                                            TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserId()) ||
+                                    if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserId()) ||
                                             sentMessageSync.getTo().equals(MobiComUserPreference.getInstance(context).getUserId())) {
                                         if (sentMessageSync.getGroupId() != null) {
 

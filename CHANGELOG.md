@@ -3,6 +3,14 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.9.7
+1) Added customization for video compression
+2) Added support for video thumbnail preview
+3) Fixed issue of multiple sync call for same time
+4) Fixed issue of action buttons count in List Rich Message
+5) Fixed issue of auto refresh chats
+6) Fixed issue team mode chat restriction
+7) Added support for dark mode customization
 ## Kommunicate Android SDK 2.9.6
 1) Added support for EU Servers 
 ## Kommunicate Android SDK 2.9.5

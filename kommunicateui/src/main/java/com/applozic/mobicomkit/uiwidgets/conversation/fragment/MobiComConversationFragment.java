@@ -4359,7 +4359,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             restrictWhatsappConversation(lastUserMessage);
-            restrictNonTeamMemberConversation(null);
+            if (alCustomizationSettings.isAgentApp()) {
+                restrictNonTeamMemberConversation(null);
+            }
             if (recyclerDetailConversationAdapter != null) {
                 recyclerDetailConversationAdapter.setLastSentMessage(lastSentMessage);
             }
@@ -5528,20 +5530,22 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected void restrictNonTeamMemberConversation(ArrayList<String> teams) {
-        if (teams != null) {
-            localTeams = teams;
-        }
-        if (messageList.isEmpty() || (localTeams != null && localTeams.isEmpty())) {
-            return;
-        }
-        Channel messageChannel = ChannelService.getInstance(requireContext()).getChannel(messageList.get(messageList.size() - 1).getGroupId());
-        String messageTeamId = messageChannel.getTeamId();
-        if (localTeams != null && !localTeams.contains(messageTeamId) &&
-                alCustomizationSettings.isAgentApp() && channel.getMetadata() != null) {
-            individualMessageSendLayout.setVisibility(View.GONE);
-            recordLayout.setVisibility(GONE);
-            userNotAbleToChatTextView.setText(R.string.km_teammode_restriction);
-            userNotAbleToChatLayout.setVisibility(VISIBLE);
+        if (getActivity() != null) {
+            if (teams != null) {
+                localTeams = teams;
+            }
+            if (messageList.isEmpty() || (localTeams != null && localTeams.isEmpty())) {
+                return;
+            }
+            Channel messageChannel = ChannelService.getInstance(getActivity()).getChannel(messageList.get(messageList.size() - 1).getGroupId());
+            String messageTeamId = messageChannel.getTeamId();
+            if (localTeams != null && !localTeams.contains(messageTeamId) &&
+                   channel.getMetadata() != null) {
+                individualMessageSendLayout.setVisibility(View.GONE);
+                recordLayout.setVisibility(GONE);
+                userNotAbleToChatTextView.setText(R.string.km_teammode_restriction);
+                userNotAbleToChatLayout.setVisibility(VISIBLE);
+            }
         }
     }
 }

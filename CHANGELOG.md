@@ -3,6 +3,9 @@
 The changelog for [Kommunicate-Android-Chat-SDK](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK). Also see the
 [releases](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/releases) on Github.
 
+## Kommunicate Android SDK 2.9.8
+1) Fixed crash issue due to non team mode restrict feature
+2) Fixed attachment text color issue in Agent App
 ## Kommunicate Android SDK 2.9.7
 1) Added customization for video compression
 2) Added support for video thumbnail preview

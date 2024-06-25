@@ -516,6 +516,10 @@ public class Kommunicate {
         Applozic.getInstance(context).setCustomNotificationSound(path);
     }
 
+    public static void setNotificationIconTintColor(Context context, String color) {
+        Applozic.getInstance(context).setNotificationIconTintColor(color);
+    }
+  
     public  static  void setServerConfiguration(Context context,KMServerConfiguration configuration){
         if (configuration == KMServerConfiguration.EUCONFIGURATION) {
             ALSpecificSettings.getInstance(context).setAlBaseUrl(BuildConfig.EU_CHAT_SERVER_URL);

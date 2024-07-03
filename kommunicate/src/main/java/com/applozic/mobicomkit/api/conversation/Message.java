@@ -751,7 +751,13 @@ public class Message extends JsonMarker {
 
     public boolean isActionMessage() {
         boolean isAgent = MobiComUserPreference.getInstance(getAppContext()).getUserRoleType().equals(User.RoleType.AGENT.getValue());
-        return getMetadata() != null && ((isAgent && getMetadata().containsKey(BOT_ASSIGN)) || getMetadata().containsKey(KM_ASSIGN_TO) || getMetadata().containsKey(KM_ASSIGN_TEAM) ||getMetadata().containsKey(BOT_ASSIGN)|| getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(AL_DELETE_MESSAGE_FOR_ALL_KEY));
+        return getMetadata() != null && ((isAgent && getMetadata().containsKey(BOT_ASSIGN)) || getMetadata().containsKey(KM_ASSIGN_TO) || getMetadata().containsKey(KM_ASSIGN_TEAM) || getMetadata().containsKey(BOT_ASSIGN)|| getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(AL_DELETE_MESSAGE_FOR_ALL_KEY));
+    }
+
+    // TODO: This same as above. But have used for Rich Message HidepostCTA. Because no role needed for RMs.
+    public boolean isActionMessageForHidePostCTA() {
+        return getMetadata() != null && getMetadata().containsKey(BOT_ASSIGN) || getMetadata().containsKey(KM_ASSIGN_TO) || getMetadata().containsKey(KM_ASSIGN_TEAM) || getMetadata().containsKey(BOT_ASSIGN)|| getMetadata().containsKey(CONVERSATION_STATUS) || getMetadata().containsKey(AL_DELETE_MESSAGE_FOR_ALL_KEY);
+
     }
 
     public boolean isFeedbackMessage() {

@@ -1313,7 +1313,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     private boolean isMessageProcessed(Message message) {
         if (themeHelper.isHidePostCTA() || themeHelper.isDisableFormPostSubmit()) {
-            return lastSentMessage != null && lastSentMessage.getCreatedAtTime() > message.getCreatedAtTime();
+            return lastSentMessage != null && lastSentMessage.getCreatedAtTime() > message.getCreatedAtTime() && !lastSentMessage.isActionMessage();
         }
         return false;
     }

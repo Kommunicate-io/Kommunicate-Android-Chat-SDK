@@ -4335,7 +4335,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     Message message = messageList.get(i);
-                    if (lastSentMessage == null && message.isTypeOutbox()) {
+                    if (lastSentMessage == null && message.isTypeOutbox() && message.getContentType() != 10) {
                         lastSentMessage = message;
                     }
                     if (!message.isRead() && !message.isTempDateType() && !message.isCustom()) {

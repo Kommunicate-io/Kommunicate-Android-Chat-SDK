@@ -77,6 +77,7 @@ public class KmUserClientService extends UserClientService {
     private static final String APPLICATION_WEB_ADMIN = "?roleNameList=APPLICATION_WEB_ADMIN&";
     private static final String KB_SEARCH_ID = "/kb/search?appId=";
     private static final String CHANNELINFO_NOT_NULL = "ChannelInfo cannot be null";
+    private static final String APPLI_ID = "?applicationId=";
 
     public KmUserClientService(Context context) {
         super(context);
@@ -304,7 +305,7 @@ public class KmUserClientService extends UserClientService {
         }
 
         try {
-            String url = getKmBaseUrl() + GET_AGENT_DETAILS + "?applicationId=" + applicationKey.trim() + "&userName=" + URLEncoder.encode(userId, "UTF-8").trim();
+            String url = getKmBaseUrl() + GET_AGENT_DETAILS + APPLI_ID + applicationKey.trim() + "&userName=" + URLEncoder.encode(userId, "UTF-8").trim();
             String response = getResponse(url, APPLI_JSON, "application/json, text/plain, */*");
             Utils.printLog(context, TAG, "User details GET method response: " + response);
             return response;

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical">
+    <!-- simplified -->
+    <!--<TextView
+          android:id="@+id/no_conversation"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center"
+          android:visibility="visible"
+          android:layout_gravity="center"
+          android:text="@string/no_conversation" />-->
+
+    <TextView
+        android:id="@+id/info_broadcast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingBottom="4dp"
+        android:paddingTop="10dp"
+        android:text="@string/info_broadcast_message"
+        android:visibility="gone" />
+
+    <!--<Button
+        android:id="@+id/start_new_conversation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/contact_name"
+        android:gravity="center"
+        android:drawableLeft="@drawable/applozic_ic_action_add"
+        android:layout_margin="2dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="Start New"
+        android:textColor="@android:color/white"
+        android:textColorLink="#4e4e4e"
+        android:textStyle="normal"
+        android:typeface="normal"
+        android:visibility="gone"
+        android:layout_gravity="center" />-->
+
+    <ProgressBar
+        android:id="@+id/load_more_progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="false"
+        android:visibility="visible" />
+
+</LinearLayout>

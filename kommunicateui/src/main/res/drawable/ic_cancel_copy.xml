@@ -1,0 +1,4 @@
+<vector android:height="24dp" android:viewportHeight="11"
+    android:viewportWidth="11" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="@color/km_cancel_icon_color" android:fillType="nonZero" android:pathData="M5.623,4.726L1.886,0.99a0.634,0.634 0,0 0,-0.897 0.897l3.737,3.736a0.423,0.423 0,0 1,0 0.597L0.99,9.957a0.634,0.634 0,0 0,0.897 0.897l3.736,-3.737a0.423,0.423 0,0 1,0.597 0l3.737,3.736a0.634,0.634 0,0 0,0.897 -0.897L7.116,6.22a0.423,0.423 0,0 1,0 -0.597l3.736,-3.737A0.634,0.634 0,0 0,9.956 0.99L6.22,4.727a0.423,0.423 0,0 1,-0.597 0z"/>
+</vector>

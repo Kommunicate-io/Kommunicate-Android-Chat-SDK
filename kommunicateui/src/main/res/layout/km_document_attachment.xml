@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/attachment_doc_relative_layout"
+    android:layout_width="220dp"
+    android:layout_height="60dp"
+    android:background="@android:color/transparent"
+    android:visibility="gone">
+
+    <SeekBar
+        android:id="@+id/applozic_audio_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:thumbTint="@color/applozic_lite_gray_color"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/download_doc_linear_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/download_doc_relative_layout"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@color/applozic_theme_color_primary"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/applozic_download_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/circle_arrow_down_download" />
+
+            <TextView
+                android:id="@+id/applozic_doc_file_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/applozic_download_image"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/kb45"
+                android:textColor="@color/km_white_color" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/retry_doc_relative_layout"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@color/applozic_theme_color_primary"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/applozic_retry__image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/circle_arrow_upload" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/applozic_retry__image"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/attachment_retry"
+                android:textColor="@color/km_white_color"
+                android:textSize="10sp" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/applozic_doc_download_progress_rl"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/applozic_doc_download_progress"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/km_upload_dot"
+                android:indeterminate="true"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/download_calcle_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/km_ic_action_cancel" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/applozic_doc_downloaded"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/doc_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_documentreceive" />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/audio_duration_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="@color/km_white_color"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/applozic_doc_file_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxLines="3"
+            android:text=""
+            android:textColor="@color/km_white_color"
+            android:textSize="15sp" />
+    </LinearLayout>
+</RelativeLayout>

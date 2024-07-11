@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Kommunicate</string>
+    <string name="unable_to_create_conversation">Unable to create conversation</string>
+    <string name="km_prechat_processing_wait_info">Please wait, launching conversation..</string>
+    <string name="applozic_userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
+    <string name="km_whatsapp_restriction">The last message received from this contact was over 24 hours ago. To send Template message, go to the dashboard.</string>
+    <string name="km_teammode_restriction">You can no longer send messages to this conversation as it has been assigned to a different team.</string>
+    <!--Kommunicate conversation errors-->
+    <string name="km_method_needs_activity_context">This method needs Activity context</string>
+    <string name="km_chat_builder_cannot_be_null">Chat Builder cannot be null</string>
+    <string name="km_context_cannot_be_null">Chat Builder cannot be null</string>
+    <string name="km_app_id_cannot_be_null">APP_ID cannot be empty</string>
+    <string name="km_conversation_builder_cannot_be_null">Conversation Builder cannot be null</string>
+    <string name="km_agent_list_empty_error">Agent Id list cannot be null or empty</string>
+    <string name="km_default_support_group_name">Conversations</string>
+    <string name="km_ok_button">OK</string>
+    <string name="km_set_app_id">You need to replace the &lt;Your-App-ID&gt; in the app level build.gradle file with your actual appId from Kommunicate dashboard</string>
+    <string name="km_clear_app_data">You just changed the AppId, please clear the app data or logout/login the user again in Kommunicate for the new AppId to reflect</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="holo_blue">#FF33B5E5</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="dark_black">#ff000000</color>
+    <color name="location_activity_background">#FFFAFAFA</color>
+
+
+    <color name="people_activity_main_color">#ff3B94D9</color>
+    <color name="people_activity_action_bar_color">#ff3B94D9</color>
+    <color name="people_activity_primary_dark_color">#ff206ca7</color>
+</resources>

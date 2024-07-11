@@ -1,0 +1,59 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+
+    ext {
+        agp_version = '7.4.0'
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$agp_version"
+        classpath 'com.google.gms:google-services:4.3.8'
+        //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.24.4"
+    }
+}
+
+allprojects {
+    /*apply plugin: 'com.jfrog.artifactory'
+    apply plugin: 'maven-publish'*/
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+/*artifactoryPublish.skip = true
+artifactory {
+    contextUrl = 'https://kommunicate.jfrog.io/artifactory'
+    Properties localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+    publish {
+        repository {
+            repoKey = 'kommunicate-android-sdk'
+            username = localProperties['artifactory.username']
+            password = localProperties['artifactory.password']
+        }
+        defaults {
+            // Reference to Gradle publications defined in the build script.
+            // This is how we tell the Artifactory Plugin which artifacts should be
+            // published to Artifactory.
+            publications('aar')
+            publishArtifacts = true
+            // Properties to be attached to the published artifacts.
+            properties = ['qa.level': 'basic', 'dev.team': 'core']
+            publishPom = true // Publish generated POM files to Artifactory (true by default)
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+subprojects {
+    tasks.withType(Javadoc).all { enabled = false }
+}*/

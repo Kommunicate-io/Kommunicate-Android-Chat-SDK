@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ActionBar styles -->
+    <style name="ApplozicActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/mobitexter_main_color</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@color/mobitexter_main_color</item>
+
+    </style>
+
+</resources>

@@ -1,0 +1,126 @@
+apply plugin: 'com.android.library'
+rootProject.allprojects {
+    repositories {
+        maven {
+            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
+        }
+    }
+}
+
+android {
+    compileSdkVersion 34
+    buildToolsVersion '28.0.3'
+
+    lintOptions {
+        abortOnError false
+    }
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 34
+        versionCode 1
+        versionName "2.9.8"
+        consumerProguardFiles 'proguard-rules.txt'
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project(':kommunicate')
+    //api 'io.kommunicate.sdk:kommunicate:2.6.6'
+    api 'com.google.firebase:firebase-messaging:20.1.0'
+    api 'com.google.android.gms:play-services-maps:17.0.0'
+    api 'com.google.android.gms:play-services-location:17.0.0'
+    api 'de.hdodenhof:circleimageview:2.2.0'
+    api 'com.github.bumptech.glide:glide:4.9.0'
+    api 'androidx.cardview:cardview:1.0.0'
+    api 'com.google.android.material:material:1.3.0'
+    api "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    //Note: use this in case customization is not required
+}
+
+/*task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    failOnError false // add this line
+    source = android.sourceSets.main.java.srcDirs
+    //source = android.sourceSets.main.allJava
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId = 'io.kommunicate.sdk'
+            artifactId = project.getName()
+            version = android.defaultConfig.versionName
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+            artifact(javadocJar)
+            artifact(sourcesJar)
+            //generate POM
+            pom.withXml {
+                def node = asNode()
+                def dependenciesNode = node.appendNode('dependencies')
+                def dependencies = { Dependency dep ->
+                    if (dep.group == null || dep.name == null || dep.name == "unspecified") {
+                        return
+                    }
+                    def dependencyGroup
+                    if (dep.group == "Kommunicate-Android-Chat-SDK") { //
+                        dependencyGroup = groupId
+                    } else {
+                        dependencyGroup = dep.group
+                    }
+                    def dependencyVersion
+                    //"fix" for compile projects
+                    if (dep.version == "unspecified" || dep.version == null) {
+                        dependencyVersion = version
+                    } else {
+                        dependencyVersion = dep.version
+                    }
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', dependencyGroup)
+                    dependencyNode.appendNode('artifactId', dep.name)
+                    dependencyNode.appendNode('version', dependencyVersion)
+                    if (!dep.transitive) {
+                        // If this dependency is transitive, we should force exclude all its dependencies them from the POM
+                        def exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
+                        exclusionNode.appendNode('groupId', '*')
+                        exclusionNode.appendNode('artifactId', '*')
+                    } else if (!dep.properties.excludeRules.empty) {
+                        // Otherwise add specified exclude rules
+                        def exclusionsNode = dependencyNode.appendNode('exclusions')
+                        dep.properties.excludeRules.each { ExcludeRule rule ->
+                            def exclusion = exclusionsNode.appendNode('exclusion')
+                            exclusion.appendNode('groupId', rule.group ?: '*')
+                            exclusion.appendNode('artifactId', rule.module ?: '*')
+                        }
+                    }
+                }
+                // List all dependencies and write to POM
+                configurations.api.getAllDependencies().each dependencies
+                configurations.implementation.getAllDependencies().each dependencies
+            }
+        }
+    }
+}
+artifactoryPublish {
+    publications(publishing.publications.aar)
+}*/
+
+

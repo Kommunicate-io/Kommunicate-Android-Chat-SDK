@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/applozic_transparent_color"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/alphabeticImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/mobiframework_circular_text_view"
+        android:gravity="center"
+        android:textColor="@color/km_white_color"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/contactImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:padding="5dp"
+        app:srcCompat="@drawable/km_ic_contact_picture_180_holo_light"
+        android:visibility="visible" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/applzoic_name_cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:clickable="false"
+            app:cardCornerRadius="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/name"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_black_color"
+                    android:textDirection="locale"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_user_profile_text_color"
+                    android:textDirection="locale"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/applzoic_last_sean_status_cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/applzoic_name_cardView"
+            android:layout_marginTop="5dp"
+            android:clickable="false"
+            android:visibility="visible"
+            app:cardCornerRadius="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/status"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_black_color"
+                    android:textDirection="locale"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/applozic_user_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_user_profile_text_color"
+                    android:textDirection="locale"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/applzoic_email_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/applzoic_last_sean_status_cardView"
+            android:layout_marginTop="5dp"
+            android:clickable="false"
+            android:visibility="gone"
+            app:cardCornerRadius="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/email"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/black"
+                    android:textDirection="locale"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_user_profile_text_color"
+                    android:textDirection="locale"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/applozic_user_phone_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/applzoic_email_cardview"
+            android:layout_marginTop="5dp"
+            android:clickable="false"
+            android:visibility="visible"
+            app:cardCornerRadius="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="5dp"
+                    android:text="@string/phone"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_black_color"
+                    android:textDirection="locale"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingBottom="10dp"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/km_user_profile_text_color"
+                    android:textDirection="locale"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+
+</LinearLayout>

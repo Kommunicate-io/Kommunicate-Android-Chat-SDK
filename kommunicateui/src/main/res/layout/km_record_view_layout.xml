@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp"
+    android:visibility="visible">
+
+
+    <LinearLayout
+        android:id="@+id/recording_text_layout"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/record_circle"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/km_record_circle" />
+
+        <TextView
+            android:id="@+id/recording_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="6dp"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.04"
+            android:text="@string/km_recording_text"
+            android:textColor="@color/km_record_circle_color"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+    </LinearLayout>
+
+    <Chronometer
+        android:id="@+id/counter_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recording_text_layout"
+        android:layout_marginStart="19dp"
+        android:layout_marginLeft="19dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:letterSpacing="0.04"
+        android:text="00:00"
+        android:textColor="@color/km_audio_record_counter_text_color"
+        android:textSize="12sp"
+        android:textStyle="normal" />
+
+    <LinearLayout
+        android:id="@+id/slide_to_cancel_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_toEndOf="@+id/recording_text_layout"
+        android:layout_toRightOf="@+id/recording_text_layout"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotationY="@integer/locale_mirror_flip"
+            android:src="@drawable/slide_arrow_left"
+            />
+
+        <TextView
+            android:id="@+id/slide_to_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.04"
+            android:text="@string/slide_to_cancel"
+            android:textColor="@color/km_slide_to_cancel_text_color"
+            android:textSize="12sp"
+            android:textStyle="normal" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/basket_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:visibility="visible" />
+</RelativeLayout>

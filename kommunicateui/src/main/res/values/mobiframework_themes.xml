@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="ContactTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/ContactActionBar</item>
+        <item name="actionBarStyle">@style/ContactActionBar</item>
+        <!-- Set AppCompat’s color theming attrs -->
+        <item name="colorPrimary">@color/people_activity_main_color</item>
+        <item name="colorPrimaryDark">@color/people_activity_primary_dark_color</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
+</resources>

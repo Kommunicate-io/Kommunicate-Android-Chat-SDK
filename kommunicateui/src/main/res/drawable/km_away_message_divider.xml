@@ -1,0 +1,12 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item>
+        <shape>
+            <solid android:color="@color/km_white_color" />
+            <stroke
+                android:dashGap="2dp"
+                android:dashWidth="4dp"
+                android:width="1dp"
+                android:color="@color/applozic_theme_color_primary" />
+        </shape>
+    </item>
+</layer-list>

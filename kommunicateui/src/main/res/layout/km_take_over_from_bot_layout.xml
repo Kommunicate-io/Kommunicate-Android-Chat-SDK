@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/kmTakeOverFromBotLayout"
+    android:layout_width="match_parent"
+    android:layout_height="42dp"
+    android:layout_marginBottom="5dp"
+    android:background="@color/km_take_over_from_bot_layout_background_color"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/kmOnlineIndicator"
+        android:layout_width="7dp"
+        android:layout_height="7dp"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginLeft="9dp"
+        android:background="@drawable/take_over_from_bot_online_circle"
+        android:textColor="@color/km_online_dot_color" />
+
+    <TextView
+        android:id="@+id/kmAssignedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginLeft="11dp"
+        android:layout_toEndOf="@+id/kmOnlineIndicator"
+        android:layout_toRightOf="@+id/kmOnlineIndicator"
+        android:fontFamily="sans-serif-light"
+        android:letterSpacing="0.03"
+        android:text="@string/km_active_bots_text"
+        android:textColor="@color/km_take_over_from_bot_text_color"
+        android:textSize="13sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/kmAssignedBotNameTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_toStartOf="@+id/kmTakeOverFromBotButton"
+        android:layout_toLeftOf="@+id/kmTakeOverFromBotButton"
+        android:layout_toEndOf="@+id/kmAssignedText"
+        android:layout_toRightOf="@+id/kmAssignedText"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-regular"
+        android:letterSpacing="0.03"
+        android:maxLines="1"
+        android:text="@string/km_default_assigned_bot_name"
+        android:textColor="@color/km_take_over_from_bot_name_color"
+        android:textSize="13sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/kmTakeOverFromBotButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="end"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/km_take_over_from_bot_button_background"
+        android:fontFamily="sans-serif"
+        android:padding="7dp"
+        android:text="@string/km_take_over_from_bot_button_text"
+        android:textColor="@color/km_take_over_from_bot_button_background_color"
+        android:textSize="13sp"
+        android:textStyle="normal" />
+</RelativeLayout>

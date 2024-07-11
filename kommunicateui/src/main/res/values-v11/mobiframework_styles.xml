@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- API Level 11 and above specific resource files. Some of these styles allow us to use new
+     system styles or attributes introduced in API Level 11 and others allow overriding already
+     defined style that are only suitable for older OS versions (such as quickContactBadgeStyle).-->
+
+<resources>
+
+    <style name="listViewActivatedStyle">
+        <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
+    </style>
+
+    <style name="quickContactBadgeStyle" />
+
+    <style name="addressButton" parent="@android:style/Widget.Holo.Button.Borderless" />
+
+</resources>

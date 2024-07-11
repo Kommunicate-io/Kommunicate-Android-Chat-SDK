@@ -1,0 +1,181 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/messageLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="3dp"
+    android:gravity="end"
+    android:longClickable="true"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/messageTextLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="70dp"
+        android:layout_marginLeft="70dp"
+        android:elevation="1dp"
+        android:gravity="end|center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/messageTextInsideLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/km_sent_message"
+            android:minHeight="40dp"
+            android:minWidth="94dp"
+            android:orientation="vertical"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:paddingTop="6dp">
+
+            <include layout="@layout/reply_message_layout" />
+
+            <TextView
+                android:id="@+id/via_email_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:drawableStart="@drawable/forward"
+                android:drawableLeft="@drawable/forward"
+                android:drawablePadding="7dp"
+                android:fontFamily="sans-serif-light"
+                android:letterSpacing="0.04"
+                android:text="@string/via_email_text"
+                android:textColor="@color/km_via_email_text_color"
+                android:textSize="13sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:id="@+id/attached_file"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/km_ic_action_attachment"
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/km_ic_action_attachment"
+                android:textAlignment="gravity"
+                android:textColor="@color/km_white_color"
+                android:textDirection="locale"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <include layout="@layout/mobicom_attachment_preview_layout" />
+
+            <include layout="@layout/mobicom_contact_share_layout" />
+
+            <include layout="@layout/mobicom_chat_location_view" />
+
+            <include layout="@layout/km_document_attachment" />
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="3dp"
+                android:autoLink="all"
+                android:maxEms="14"
+                android:text=""
+                android:textColor="@color/sent_message_text_color"
+                android:textDirection="locale"
+                android:textSize="14sp"
+                android:visibility="visible" />
+
+            <FrameLayout
+                android:id="@+id/emailLayout"
+                android:layout_width="240dp"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <WebView
+                    android:id="@+id/emailWebView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/createdAtTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|end|bottom"
+                android:layout_marginBottom="3dp"
+                android:fontFamily="sans-serif"
+                android:letterSpacing="0.01"
+                android:text=""
+                android:textColor="@color/km_sent_message_created_at_time_text_color"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/selfDestruct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:paddingEnd="8dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="8dp"
+            android:paddingStart="2dp"
+            android:text="@string/self_destruct"
+            android:textColor="@color/message_details_text_color"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="4dp">
+
+            <View
+                android:id="@+id/statusIconBackground"
+                android:layout_width="11dp"
+                android:layout_height="11dp"
+                android:background="@drawable/km_status_icon_background" />
+
+            <TextView
+                android:id="@+id/statusImage"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="center" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <include layout="@layout/km_rich_message_sender_layout" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/statusMainLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/messageTextLayout"
+        android:layout_marginEnd="21dp"
+        android:layout_marginRight="21dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="14dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:letterSpacing="0.01"
+            android:text="Read"
+            android:textColor="#a6a2a2"
+            android:textSize="12sp"
+            android:visibility="gone" />
+    </LinearLayout>
+</RelativeLayout>

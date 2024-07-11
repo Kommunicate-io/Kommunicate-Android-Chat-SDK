@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="secret_message_timer_array">
+        <item>Self Destruct</item>
+        <item>Off</item>
+        <item>1 min</item>
+        <item>2 mins</item>
+        <item>5 mins</item>
+        <item>10 mins</item>
+    </string-array>
+
+    <string-array name="send_type_options">
+        <item>SMS</item>
+        <item>MT</item>
+    </string-array>
+
+    <!-- Scheduled Message strings -->
+
+    <string-array name="schedule_menu">
+        <item>Copy</item>
+        <item>Cancel</item>
+    </string-array>
+
+
+    <string-array name="menu">
+        <item>Copy</item>
+        <item>Delete for All</item>
+        <item>Resend</item>
+        <item>Delete</item>
+        <item>Info</item>
+        <item>Share</item>
+        <item>Reply</item>
+    </string-array>
+
+    <string-array name="conversation_options_menu">
+        <item>Delete conversation</item>
+        <item>Delete group</item>
+        <item>Exit group</item>
+    </string-array>
+
+    <!--Group member list menu -->
+    <string-array name="channel_users_menu_option">
+        <item>Message</item>
+        <item>Remove</item>
+        <item>Make group admin</item>
+    </string-array>
+</resources>

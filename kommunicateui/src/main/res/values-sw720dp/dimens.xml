@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- On devices with much larger screen sizes, such as a 10" tablet like Nexus 10, bump up the
+         common padding value to add some extra white space which makes the layouts feel more
+         suitable for the larger screen. -->
+    <dimen name="padding">32dp</dimen>
+    <dimen name="listview_item_padding">16dp</dimen>
+    <dimen name="left_menu_item_text_size">16sp</dimen>
+    <dimen name="message_text_size">20sp</dimen>
+</resources>

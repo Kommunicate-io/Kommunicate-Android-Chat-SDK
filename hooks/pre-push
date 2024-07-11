@@ -1,0 +1,122 @@
+#!/bin/bash
+
+# Instructions:
+# 1) Download the checkstyle(code inspector) jar from https://github.com/checkstyle/checkstyle/releases/
+#    NOTE: preffered version 8.28
+# 1 a) Install wget and unzip. (sudo apt install wget unzip) or (brew install wget) and (brew install unzip)
+# 2) Copy the "pre-push" script in the ./hooks folder to .git/hooks folder. (.git is hidden)
+# 3) Set the location of the checkstyle jar with "git config --add checkstyle.jar <location of jar>" (Optional: It will download the checkstyle jar automatically if u don't set the git config)
+# 4) Set the location of the checkstyle .xml check file with "git config --add checkstyle.checkfile <location of checkfile>" (Optional: It will look for the file by the name of "google_checks.xml if u don't specify the config variable."
+# 5) Optionally if you don't have it already set the location of the java executale with "git config --add java.command <path to java executale> [optional defaults to assuming it's in your path]"
+#
+# * Checkstyle will run before you push to github. It can be bypassed by adding a --no-verify flag (can be used right now during testing, though it's not preffered)
+# * The checkstyle check file uses the official google style guide with the major modification of using 4 spaces as the base indentation offset instead of 2.
+# * Feel free to modify the check file or provide the input so I can do it.
+# * Use the Checkstyle-IDEA plugin to help with scanning files in the IDE.
+# 
+#
+# TO BETTER CODE!
+
+remote="$1"
+url="$2"
+
+z40=0000000000000000000000000000000000000000
+
+while read local_ref local_sha remote_ref remote_sha
+do
+	#checking the formatting and exiting accordingly        
+	function checkstyle() {
+		echo "Checking formatting of files..."
+		java_command=""
+		if [[ -z "$3" ]];
+		  then
+		  java_command="java"
+		fi
+
+		#get the files changed between local HEAD commit and remote HEAD commit
+		diff_files=`git diff --name-only $local_sha $remote_sha`
+                
+		#converting diff files string to array		
+		diff_files=(${diff_files//\\n/ })
+		
+		flag=0
+
+		#iterating through files and running checkstyle on them
+		for (( i=0; i<${#diff_files[@]}; i++ ))
+		  do
+		  FILE="${diff_files[$i]}"
+		  if [[ -e "$FILE" && $(echo $FILE | grep ".*\.java") ]];
+		    then
+		    output=`$java_command -jar $1 -c $2 $FILE`
+		    string_output="$output"
+                    
+                    echo "FILE: $FILE"
+		    
+                    if [[ $($java_command -jar $1 -c $2 $FILE | grep 'WARN') ]];
+		      then 
+		      echo "$output"
+                      flag=1
+		      else 
+		      echo "No code style issues."
+		    fi
+		    
+                    echo "=NEXT="
+		  fi
+		done
+		
+                echo "=FINAL END="
+		
+                exit $flag
+        }
+	
+	#setting up the configurations $1 -- checkstyle path, $2 -- configurations file path 
+	function check_configs_then_run() {        	
+		check_file=`git config --get checkstyle.checkfile`;
+		if [[ $? == 1 ]]
+ 		then
+		check_file="hooks/google_checks.xml"
+		fi
+                checkstyle_jar=`git config --get checkstyle.jar`;
+		if [[ $? == 1 ]]
+ 		then
+		checkstyle_jar="checkstyle-8.28-all.jar"
+		fi
+                java_command=`git config --get java.command`;
+
+		if [[ -e "$checkstyle_jar" ]]
+		then
+		echo "Checkstyle jar found: $checkstyle_jar"
+		echo "Proceeding with checking..."
+		else
+		echo "Checkstyle jar not found."
+		echo "Downloading checkstyle jar..."
+		wget https://github.com/checkstyle/checkstyle/releases/download/checkstyle-8.28/checkstyle-8.28-all.jar
+        if [[ $? == 1 ]]
+		then
+		echo "Couldn't download checkstyle jar. Exiting."
+		exit 1
+		fi
+		fi
+
+		if [[ -z "$check_file" ]];
+		then
+			echo "You do not seem to be configured correctly for codestyle checking. Have:  1. checkstyle's jar file somewhere 2. a checkstyle XML check file somewhere 3. To configure git: * git config --add checkstyle.jar <location of jar> * git config --add checkstyle.checkfile <location of checkfile> * git config --add java.command <path to java executale> [optional defaults to assuming it's in your path]"
+			exit 1
+		else
+			checkstyle $checkstyle_jar $check_file $java_command
+		fi
+	}
+
+        if [[ "$remote_sha" == $z40 ]];
+        then
+	# New branch, examine all commits
+	range="$local_sha"
+	else
+	# Update to existing branch, examine new commits
+	range="$remote_sha..$local_sha"
+	fi
+	#check the code		
+	check_configs_then_run		
+done
+
+exit 0

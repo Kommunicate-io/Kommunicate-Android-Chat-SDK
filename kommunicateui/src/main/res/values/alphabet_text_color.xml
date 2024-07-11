@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_non_alpha">#FFF1F1F1</color>
+    <color name="alphabet_text_a">#FFF6D2CE</color>
+    <color name="alphabet_text_b">#FFFAC3D7</color>
+    <color name="alphabet_text_c">#FFE1BEE6</color>
+    <color name="alphabet_text_d">#FFD2C5E9</color>
+    <color name="alphabet_text_e">#FFC9CCEA</color>
+    <color name="alphabet_text_f">#FFC3D7FA</color>
+    <color name="alphabet_text_g">#FFC5EBFC</color>
+    <color name="alphabet_text_h">#FFC8F0F5</color>
+    <color name="alphabet_text_i">#FFB6E0DD</color>
+    <color name="alphabet_text_j">#FFB9E1CD</color>
+    <color name="alphabet_text_k">#FFDAECC6</color>
+    <color name="alphabet_text_l">#FFF8FAE6</color>
+    <color name="alphabet_text_m">#FFFFFCE2</color>
+    <color name="alphabet_text_n">#FFFAE6B4</color>
+    <color name="alphabet_text_o">#FFFFE1B4</color>
+    <color name="alphabet_text_p">#FFFFC8B9</color>
+    <color name="alphabet_text_q">#FFF1F1F1</color>
+    <color name="alphabet_text_r">#FFD2DCDE</color>
+    <color name="alphabet_text_s">#FFD7CDC8</color>
+    <color name="alphabet_text_t">#FFD9D9D9</color>
+    <color name="alphabet_text_u">#FFEDEEF8</color>
+    <color name="alphabet_text_v">#FFEFE9F6</color>
+    <color name="alphabet_text_w">#FFF1F1F1</color>
+    <color name="alphabet_text_x">#FFE8F8FA</color>
+    <color name="alphabet_text_y">#FFEBE4E4</color>
+    <color name="alphabet_text_z">#FFDDEDCA</color>
+
+</resources>

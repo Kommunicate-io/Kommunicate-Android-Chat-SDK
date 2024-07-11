@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Kommunicate</string>
+    <string name="login_or_sign_up_info">Login</string>
+    <string name="login_as_vistor">Login as visitor</string>
+    <string name="privacy_policy">By signing up, you agree to the <a href='https://www.applozic.com/privacy.html'>privacy policy</a></string>
+    <string name="some_error_occured">Some error occurred</string>
+    <string name="login_as_visitor_info">When logging in as visitor, you don\'t need to fill the email and password fields.
+        Clicking the \'Login as visitor\' button will log you in with a random userId</string>
+    <string name="invalid_app_id_error">Looks like you have not added your application Id in your app level build.gradle file. Please provide your application ID in app level build.gradle file\'s defaultConfig <a href='https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK'>Refer here</a>. Replace &lt;Your-APP-ID&gt; with the application ID obtained from Kommunicate dashboard.</string>
+</resources>

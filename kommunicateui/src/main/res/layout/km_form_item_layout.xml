@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/km_form_item_root_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/km_form_label_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/km_form_edit_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:width="240dp"
+        android:height="32dp"
+        android:background="@drawable/km_form_edit_text_background"
+        android:gravity="start"
+        android:padding="5dp"
+        android:scrollbars="vertical"
+        android:textSize="14sp" />
+
+    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout
+        android:id="@+id/km_form_selection_layout"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/km_form_date_picker"
+        android:layout_width="240dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/km_form_edit_text_background"
+        android:maxLines="1"
+        android:padding="5dp"
+        android:textColor="@color/km_black_color"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/km_form_dropdown_list_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/km_form_edit_text_background"
+        android:visibility="gone">
+
+        <Spinner
+            android:id="@+id/km_form_dropdown_list"
+            android:layout_width="240dp"
+            android:layout_height="32dp"
+            android:maxLines="1"
+            android:padding="5dp"
+            android:textSize="14sp" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/km_form_validation_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/km_toast_error_color"
+        android:visibility="gone" />
+</LinearLayout>

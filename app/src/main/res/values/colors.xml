@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!--<color name="message_status_icon_colors" tools:override="true">#FF4081</color>
+    <color name="applozic_theme_color" tools:override="true">#FFB3E5FC</color>
+    <color name="applozic_theme_color_primary" tools:override="true">#FF4081</color>
+    <color name="applozic_theme_color_primary_dark" tools:override="true">#FF4081</color>
+    <color name="applozic_theme_color_accent" tools:override="true">#3F51B5</color>
+    <color name="default_start_new_button_color" tools:override="true">#FF4081</color>-->
+</resources>

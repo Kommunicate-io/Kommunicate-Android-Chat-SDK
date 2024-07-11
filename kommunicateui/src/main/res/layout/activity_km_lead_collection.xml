@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/prechatLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:visibility="invisible"
+                android:layout_marginTop="25dp">
+
+                <View
+                    android:layout_width="68.8dp"
+                    android:layout_height="68.8dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/km_prechat_collection_background" />
+
+                <ImageView
+                    android:id="@+id/launcherImage"
+                    android:layout_width="39.8dp"
+                    android:layout_height="39.8dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/start_1" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/kmPreChatGreetingText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="45dp"
+                android:layout_marginLeft="45dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="45dp"
+                android:layout_marginRight="45dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center_horizontal"
+                android:letterSpacing="0.05"
+                android:text="@string/prechat_screen_text"
+                android:textColor="@color/km_prechat_text_color"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/kmPreChatRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="37dp"
+                android:layout_marginLeft="37dp"
+                android:layout_marginTop="46dp"
+                android:layout_marginEnd="39dp"
+                android:layout_marginRight="39dp"
+                android:layout_marginBottom="8dp"
+                android:nestedScrollingEnabled="false" />
+
+            <Button
+                android:id="@+id/start_conversation"
+                android:layout_width="248dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="54dp"
+                android:layout_marginBottom="25dp"
+                android:background="@drawable/start_new_conv_shape"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.04"
+                android:text="@string/start_conversation"
+                android:textAllCaps="false"
+                android:textColor="@color/default_start_new_button_text_color"
+                android:textSize="14sp"
+                android:visibility="visible" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

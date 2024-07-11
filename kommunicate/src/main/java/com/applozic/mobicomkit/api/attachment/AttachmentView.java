@@ -34,7 +34,7 @@ import com.applozic.mobicomkit.api.conversation.Message;
  * This class extends the standard Android ImageView View class with some features
  * that are useful for downloading, decoding, and displaying Picasa images.
  */
-public class AttachmentView extends ImageView {
+public class AttachmentView extends androidx.appcompat.widget.AppCompatImageView {
 
     // Indicates if caching should be used
     private boolean mCacheFlag = true;

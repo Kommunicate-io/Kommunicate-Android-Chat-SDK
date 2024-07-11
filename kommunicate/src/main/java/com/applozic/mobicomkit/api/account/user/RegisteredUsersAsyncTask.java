@@ -32,7 +32,6 @@ public class RegisteredUsersAsyncTask extends AlAsyncTask<Void, Boolean> {
         this.userService = UserService.getInstance(context);
     }
 
-
     public RegisteredUsersAsyncTask(Context context, TaskListener listener, int numberOfUsersToFetch, long lastTimeFetched, Message message, String messageContent, boolean callForRegistered) {
         this.callForRegistered = callForRegistered;
         this.message = message;

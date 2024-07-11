@@ -105,6 +105,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     RelativeLayout faqButtonLayout;
     KmThemeHelper themeHelper;
     boolean isCurrentlyInDarkMode;
+    private static final String SUCCESS = "success";
+    private static final String KM_START_NEW_CONVERSATION = "KmStartNewConversation";
+    private static final String START_NEW_CHAT = "startNewChat";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -212,11 +215,11 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
             @Override
             public void onClick(View v) {
                 if (ApplozicService.getContext(getContext()) instanceof KmActionCallback) {
-                    ((KmActionCallback) ApplozicService.getContext(getContext())).onReceive(getContext(), null, "startNewChat");
+                    ((KmActionCallback) ApplozicService.getContext(getContext())).onReceive(getContext(), null, START_NEW_CHAT);
                 } else {
                     KmHelper.setStartNewChat(getActivity());
                 }
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(new Intent("KmStartNewConversation"));
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(new Intent(KM_START_NEW_CONVERSATION));
             }
         });
 
@@ -528,7 +531,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         if (getActivity() == null) {
             return;
         }
-        if ("success".equals(response)) {
+        if (SUCCESS.equals(response)) {
             this.getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

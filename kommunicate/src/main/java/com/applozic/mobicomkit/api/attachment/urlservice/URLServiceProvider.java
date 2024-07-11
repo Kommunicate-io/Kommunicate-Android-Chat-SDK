@@ -17,6 +17,7 @@ public class URLServiceProvider {
     private URLService defaultUrlService;
     private URLService S3UrlService;
     private MobiComKitClientService mobiComKitClientService;
+    private static final String err_msg = "Error connecting";
 
     public URLServiceProvider(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -56,7 +57,7 @@ public class URLServiceProvider {
         try {
                 connection = getUrlService(context, message).getAttachmentConnection(message);
         } catch (Exception e) {
-            throw new IOException("Error connecting");
+            throw new IOException(err_msg);
         }
         return connection;
     }
@@ -65,7 +66,7 @@ public class URLServiceProvider {
         try {
                 return getUrlService(context, message).getThumbnailURL(message);
         } catch (Exception e) {
-            throw new IOException("Error connecting");
+            throw new IOException(err_msg);
         }
     }
 

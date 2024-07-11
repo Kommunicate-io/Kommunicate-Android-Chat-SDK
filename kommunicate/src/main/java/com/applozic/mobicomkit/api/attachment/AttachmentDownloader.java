@@ -48,7 +48,6 @@ import java.util.ArrayList;
  * PhotoDownloadRunnable object communicate through the fields of the PhotoTask.
  */
 class AttachmentDownloader extends MobiComKitClientService implements Runnable {
-
     // Constants for indicating the state of the download
     static final int HTTP_STATE_FAILED = -1;
     static final int HTTP_STATE_STARTED = 0;

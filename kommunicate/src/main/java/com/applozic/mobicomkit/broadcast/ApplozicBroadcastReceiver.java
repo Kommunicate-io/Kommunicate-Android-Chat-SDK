@@ -17,7 +17,12 @@ import com.applozic.mobicommons.json.GsonUtils;
 
 public class ApplozicBroadcastReceiver extends BroadcastReceiver {
 
+
     private static final String TAG = "ApplozicUIReceiver";
+    private static final String loadMore = "loadMore";
+    private static final String contactNumber = "contactNumber";
+    private static final String contactId = "contactId";
+
     private ApplozicUIListener applozicUIListener;
 
     public ApplozicBroadcastReceiver(ApplozicUIListener listener) {
@@ -26,6 +31,7 @@ public class ApplozicBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         String action = intent.getAction();
         Message message = null;
         String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
@@ -54,21 +60,21 @@ public class ApplozicBroadcastReceiver extends BroadcastReceiver {
         String userId = message != null ? message.getContactIds() : "";
 
         if (BroadcastService.INTENT_ACTIONS.LOAD_MORE.toString().equals(action)) {
-            applozicUIListener.onLoadMore(intent.getBooleanExtra("loadMore", true));
+            applozicUIListener.onLoadMore(intent.getBooleanExtra(loadMore, true));
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_SYNC_ACK_FROM_SERVER.toString().equals(action)) {
             applozicUIListener.onMessageSent(message);
         } else if (BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString().equals(intent.getAction())) {
             applozicUIListener.onMessageSync(message, keyString);
         } else if (BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString().equals(intent.getAction())) {
-            userId = intent.getStringExtra("contactNumbers");
+            userId = intent.getStringExtra(contactNumber);
             applozicUIListener.onMessageDeleted(keyString, userId);
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_DELIVERY.toString().equals(action) ||
                 BroadcastService.INTENT_ACTIONS.MESSAGE_READ_AND_DELIVERED.toString().equals(action)) {
             applozicUIListener.onMessageDelivered(message, userId);
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_DELIVERY_FOR_CONTACT.toString().equals(action)) {
-            applozicUIListener.onAllMessagesDelivered(intent.getStringExtra("contactId"));
+            applozicUIListener.onAllMessagesDelivered(intent.getStringExtra(contactId));
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_READ_AND_DELIVERED_FOR_CONTECT.toString().equals(action)) {
-            applozicUIListener.onAllMessagesRead(intent.getStringExtra("contactId"));
+            applozicUIListener.onAllMessagesRead(intent.getStringExtra(contactId));
         } else if (BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString().equals(action)) {
             String contactNumber = intent.getStringExtra("contactNumber");
             Integer channelKey = intent.getIntExtra("channelKey", 0);
@@ -79,7 +85,7 @@ public class ApplozicBroadcastReceiver extends BroadcastReceiver {
             String isTyping = intent.getStringExtra("isTyping");
             applozicUIListener.onUpdateTypingStatus(currentUserId, isTyping);
         } else if (BroadcastService.INTENT_ACTIONS.UPDATE_LAST_SEEN_AT_TIME.toString().equals(action)) {
-            applozicUIListener.onUpdateLastSeen(intent.getStringExtra("contactId"));
+            applozicUIListener.onUpdateLastSeen(intent.getStringExtra(contactId));
         } else if (BroadcastService.INTENT_ACTIONS.MQTT_DISCONNECTED.toString().equals(action)) {
             applozicUIListener.onMqttDisconnected();
         } else if (BroadcastService.INTENT_ACTIONS.MQTT_CONNECTED.toString().equals(action)) {
@@ -95,7 +101,7 @@ public class ApplozicBroadcastReceiver extends BroadcastReceiver {
             boolean isGroup = intent.getBooleanExtra("isGroup", false);
             applozicUIListener.onConversationRead(currentId, isGroup);
         } else if (BroadcastService.INTENT_ACTIONS.UPDATE_USER_DETAIL.toString().equals(action)) {
-            applozicUIListener.onUserDetailUpdated(intent.getStringExtra("contactId"));
+            applozicUIListener.onUserDetailUpdated(intent.getStringExtra(contactId));
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_METADATA_UPDATE.toString().equals(action)) {
             applozicUIListener.onMessageMetadataUpdated(keyString);
         } else if (BroadcastService.INTENT_ACTIONS.MUTE_USER_CHAT.toString().equals(action)) {

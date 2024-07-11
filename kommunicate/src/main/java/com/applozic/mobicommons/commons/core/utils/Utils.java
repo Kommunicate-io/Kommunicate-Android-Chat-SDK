@@ -41,6 +41,7 @@ import java.util.HashMap;
 public class Utils {
 
     private static final String TAG = "Utils";
+    private static final String MAIN_FOLDER_NAME = "main_folder_name";
 
     // Prevents instantiation.
     private Utils() {
@@ -342,7 +343,7 @@ public class Utils {
             String fileName = "/" + ALSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
             BufferedWriter bufferedWriter = null;
             try {
-                String folder = "/" + Utils.getMetaDataValue(context, "main_folder_name");
+                String folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_NAME);
                 File dir = new File(context.getFilesDir().getAbsolutePath() + folder);
                 if (!dir.exists()) {
                     dir.mkdirs();
@@ -373,7 +374,7 @@ public class Utils {
     public static Uri getTextLogFileUri(Context context) {
         try {
             String fileName = "/" + ALSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
-            String folder = "/" + Utils.getMetaDataValue(context, "main_folder_name");
+            String folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_NAME);
             File dir = new File(context.getFilesDir().getAbsolutePath() + folder);
             File textLogFile = new File(dir, fileName);
             if (hasNougat()) {

@@ -22,6 +22,7 @@ public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
     private String type;
     private Exception exception;
     private KmFaqTaskListener listener;
+    private static final String ACCESS_KEY = "Unable to get Access key";
 
     public KMHelpDocsKeyTask(Context context, String type, KmFaqTaskListener listener) {
         this.context = new WeakReference<Context>(context);
@@ -50,7 +51,7 @@ public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
         if (s != null) {
             listener.onSuccess(context.get(), s);
         } else {
-            listener.onFailure(context.get(), exception, "Unable to get Access key");
+            listener.onFailure(context.get(), exception, ACCESS_KEY);
         }
     }
 

@@ -29,6 +29,7 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
     private KMStartChatHandler startChatHandler;
     KMGroupInfo groupInfo;
     Exception e;
+    private static final String ERR_OCCURED = "Some error occurred";
 
     public KmCreateConversationTask(Context context, Integer groupId, String userId, String applicationId, String agentId, KmCreateConversationHandler handler) {
         this.context = new WeakReference<Context>(context);
@@ -70,7 +71,7 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
                     handler.onFailure(context.get(), e, response.getCode());
                 }
             } else {
-                handler.onFailure(context.get(), e, "Some error occurred");
+                handler.onFailure(context.get(), e, ERR_OCCURED);
             }
         }
 

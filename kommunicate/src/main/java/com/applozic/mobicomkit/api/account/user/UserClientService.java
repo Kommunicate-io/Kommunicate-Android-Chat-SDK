@@ -205,7 +205,6 @@ public class UserClientService extends MobiComKitClientService {
         String url = getAppVersionUpdateUrl() + "?appVersionCode=" + MOBICOMKIT_VERSION_CODE + "&deviceKey=" + deviceKeyString;
         String response = httpRequestUtils.getResponse(url, "text/plain", "text/plain");
         Utils.printLog(context, TAG, "Version update response: " + response);
-
     }
 
     public Map<String, String> getUserInfo(Set<String> userIds) throws JSONException, UnsupportedEncodingException {

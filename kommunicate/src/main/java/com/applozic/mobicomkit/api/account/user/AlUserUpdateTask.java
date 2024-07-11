@@ -13,6 +13,7 @@ public class AlUserUpdateTask extends AlAsyncTask<Void, ApiResponse> {
     private User user;
     private AlCallback callback;
     private boolean isForEmail;
+    private static final String error_msg = "error";
 
     public AlUserUpdateTask(Context context, User user, boolean isForEmail, AlCallback callback) {
         this.context = new WeakReference<>(context);
@@ -41,7 +42,7 @@ public class AlUserUpdateTask extends AlAsyncTask<Void, ApiResponse> {
                     callback.onError(apiResponse.getErrorResponse());
                 }
             } else {
-                callback.onError("error");
+                callback.onError(error_msg);
             }
         }
     }

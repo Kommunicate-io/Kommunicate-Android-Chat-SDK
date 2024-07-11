@@ -22,6 +22,11 @@ public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
     private KmRichMessageListener listener;
     public static final String KM_AUTO_SUGGESTION_ACTION = "KM_AUTO_SUGGESTION_ACTION";
     public static final String KM_AUTO_SUGGESTION_TYPED_TEXT = "TYPED_TEXT";
+    private static final String CANT_MOVE_CURSOR = "Could not move cursor to position ";
+    private static final String BINDING_VIEWHOLDER = " when trying to bind viewholder";
+    private static final String GET_ITEM_ID = " when trying to get an item id";
+    private static final String CANT_BIND_INVALID_CURSOR_STATE = "Cannot bind viewholder when cursor is in invalid state.";
+    private static final String CANT_LOOKUP_INVALID_CURSOR_STATE = "Cannot lookup item id when cursor is in invalid state."
     private Cursor mCursor;
     private boolean mDataValid;
     private int mRowIDColumn;
@@ -41,10 +46,10 @@ public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (!mDataValid) {
-            throw new IllegalStateException("Cannot bind viewholder when cursor is in invalid state.");
+            throw new IllegalStateException(CANT_BIND_INVALID_CURSOR_STATE);
         }
         if (!mCursor.moveToPosition(position)) {
-            throw new IllegalStateException("Could not move cursor to position " + position + " when trying to bind viewholder");
+            throw new IllegalStateException(CANT_MOVE_CURSOR + position + BINDING_VIEWHOLDER);
         }
 
         KmQuickReplyViewHolder mViewHolder = (KmQuickReplyViewHolder) holder;
@@ -79,10 +84,10 @@ public class KmAutoSuggestionAdapter extends RecyclerView.Adapter {
     @Override
     public long getItemId(int position) {
         if (!mDataValid) {
-            throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
+            throw new IllegalStateException(CANT_LOOKUP_INVALID_CURSOR_STATE);
         }
         if (!mCursor.moveToPosition(position)) {
-            throw new IllegalStateException("Could not move cursor to position " + position + " when trying to get an item id");
+            throw new IllegalStateException(CANT_MOVE_CURSOR + position + GET_ITEM_ID);
         }
 
         return mCursor.getLong(mRowIDColumn);

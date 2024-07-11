@@ -50,6 +50,12 @@ public class KmWebViewActivity extends AppCompatActivity {
     public static final String DEFAULT_REQUEST_TYPE = "application/x-www-form-urlencoded";
     public static final String REQUEST_TYPE_JSON = "json";
     public static final String Al_WEB_VIEW_BUNDLE = "alWebViewBundle";
+    private static final String BODY_ONLOAD = "<body onload='form1.submit()'>";
+    private static final String HTML_HEAD_HEAD = "<html><head></head>";
+    private static final String FORMID_ACTION = "<form id='form1' action='%s' method='%s'>";
+    private static final String INPUT_NAME_HIDDEN = "<input name='%s' type='hidden' value='%s' />";
+    private static final String FORM_BODY_HTML = "</form></body></html>";
+    private static final String text_html = "text/html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,16 +134,16 @@ public class KmWebViewActivity extends AppCompatActivity {
                                   Collection<Map.Entry<String, String>> postData) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("<html><head></head>");
-        sb.append("<body onload='form1.submit()'>");
-        sb.append(String.format("<form id='form1' action='%s' method='%s'>", url, "post"));
+        sb.append(HTML_HEAD_HEAD);
+        sb.append(BODY_ONLOAD);
+        sb.append(String.format(FORMID_ACTION));
 
         for (Map.Entry<String, String> item : postData) {
-            sb.append(String.format("<input name='%s' type='hidden' value='%s' />", item.getKey(), item.getValue()));
+            sb.append(String.format(INPUT_NAME_HIDDEN, item.getKey(), item.getValue()));
         }
-        sb.append("</form></body></html>");
+        sb.append(FORM_BODY_HTML);
 
-        webView.loadData(sb.toString(), "text/html", "utf-8");
+        webView.loadData(sb.toString(), text_html, "utf-8");
     }
 
     @Override

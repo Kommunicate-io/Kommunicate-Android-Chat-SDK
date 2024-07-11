@@ -24,10 +24,9 @@ public class KmFeedback {
     private String createdAt;
     private String updatedAt;
     private String deleteAt;
+    private static final String timeFormat = "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'";
 
-    public int getGroupId() {
-        return groupId;
-    }
+    public int getGroupId() { return groupId; }
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
@@ -72,7 +71,7 @@ public class KmFeedback {
     public boolean isLatestFeedbackSubmitted(long messageTimeStamp) {
         try {
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(timeFormat);
             calendar.setTime(dateFormat.parse(getUpdatedAt()));
             long messageTimeOffset = new Date(messageTimeStamp - Calendar.getInstance().getTimeZone().getOffset(messageTimeStamp)).getTime();
             return calendar.getTimeInMillis() > messageTimeOffset;

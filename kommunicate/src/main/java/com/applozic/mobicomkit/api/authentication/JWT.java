@@ -33,6 +33,8 @@ public class JWT {
     private JWTPayload payload;
     private String signature;
     private final String token;
+    private static final String base64_exception = "Received bytes didn't correspond to a valid Base64 encoded string.";
+    private static final String invalid_json = "The token's payload had an invalid JSON format.";
 
     public JWT(@NonNull String token) {
         this.token = token;
@@ -190,7 +192,7 @@ public class JWT {
             byte[] bytes = Base64.decode(string, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
             decoded = new String(bytes, Charset.defaultCharset());
         } catch (IllegalArgumentException e) {
-            throw new DecodeException("Received bytes didn't correspond to a valid Base64 encoded string.", e);
+            throw new DecodeException(base64_exception, e);
         }
         return decoded;
     }
@@ -200,7 +202,7 @@ public class JWT {
         try {
             payload = getGson().fromJson(json, typeOfT);
         } catch (Exception e) {
-            throw new DecodeException("The token's payload had an invalid JSON format.", e);
+            throw new DecodeException(invalid_json, e);
         }
         return payload;
     }
@@ -211,7 +213,7 @@ public class JWT {
                     @Override
                     public JWTPayload deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         if (json.isJsonNull() || !json.isJsonObject()) {
-                            throw new DecodeException("The token's payload had an invalid JSON format.");
+                            throw new DecodeException(invalid_json);
                         }
 
                         JsonObject object = json.getAsJsonObject();

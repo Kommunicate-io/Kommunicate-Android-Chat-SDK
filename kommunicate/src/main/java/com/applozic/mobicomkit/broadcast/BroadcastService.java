@@ -38,7 +38,7 @@ public class BroadcastService {
 
     private static final String TAG = "BroadcastService";
     private static final String MOBICOMKIT_ALL = "MOBICOMKIT_ALL";
-
+    public static final String no_alert = "NO_ALERT"
     public static String currentUserId = null;
     public static Integer parentGroupKey = null;
     public static Integer currentConversationId = null;
@@ -198,7 +198,7 @@ public class BroadcastService {
             return false;
         }
         if(User.RoleType.USER_ROLE.getValue().equals(userPreference.getUserRoleType())) {
-            return !(message.getMetadata() != null && message.getMetadata().containsKey("NO_ALERT") && "true".equals(message.getMetadata().get("NO_ALERT")));
+            return !(message.getMetadata() != null && message.getMetadata().containsKey(no_alert) && "true".equals(message.getMetadata().get(no_alert)));
         }
         if (userPreference.isNotifyEverybody()) {
             if (User.RoleType.BOT.getValue().equals(new AppContactService(context).getContactById(TextUtils.isEmpty(channel.getConversationAssignee()) ? message.getGroupAssignee() : channel.getConversationAssignee()).getRoleType())) {

@@ -140,6 +140,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected static final long UPDATE_INTERVAL = 500;
     protected static final long FASTEST_INTERVAL = 1;
     private static final String LOAD_FILE = "loadFile";
+    private static final String text_plain = "text/plain";
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private static final String API_KYE_STRING = "YOUR_GEO_API_KEY";
     private static final String CAPTURED_IMAGE_URI = "capturedImageUri";
@@ -147,6 +148,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private static final String SHARE_TEXT = "share_text";
     public static final String CONTACTS_GROUP_ID = "CONTACTS_GROUP_ID";
     private static final String TAG = "ConversationActivity";
+    private static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
+    private static final String UPPER_JPEG = "JPEG_";
+    private static final String LOWER_jpeg = ".jpeg";
+    private static final String CONTACT_ID = "CONTACT_ID";
+    private static final String SENT_FROM_NOTIFICATION = "sentFromNotification";
     private static Uri capturedImageUri;
     private static String inviteMessage;
     private static int retry;
@@ -531,7 +537,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 serviceDisconnectionLayout.setVisibility(View.VISIBLE);
             } else {
                 if (intent.getExtras() != null) {
-                    if (intent.getExtras().getBoolean("sentFromNotification")) {
+                    if (intent.getExtras().getBoolean(SENT_FROM_NOTIFICATION)) {
                         String keyString = intent.getStringExtra("keyString");
                         Message message = null;
                         if (!TextUtils.isEmpty(keyString)) {
@@ -797,7 +803,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else if (id == R.id.shareOptions) {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setAction(Intent.ACTION_SEND)
-                    .setType("text/plain").putExtra(Intent.EXTRA_TEXT, inviteMessage);
+                    .setType(text_plain).putExtra(Intent.EXTRA_TEXT, inviteMessage);
             startActivity(Intent.createChooser(intent, "Share Via"));
             return super.onOptionsItemSelected(item);
         } else if (id == R.id.logout) {
@@ -1013,7 +1019,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 String activityName = KommunicateSetting.getInstance(this).getActivityCallback(KommunicateSetting.RequestCode.VIDEO_CALL);
                 Class activityToOpen = Class.forName(activityName);
                 Intent intent = new Intent(this, activityToOpen);
-                intent.putExtra("CONTACT_ID", contact.getUserId());
+                intent.putExtra(CONTACT_ID, contact.getUserId());
                 startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1036,7 +1042,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 String activityName = KommunicateSetting.getInstance(this).getActivityCallback(KommunicateSetting.RequestCode.AUDIO_CALL);
                 Class activityToOpen = Class.forName(activityName);
                 Intent intent = new Intent(this, activityToOpen);
-                intent.putExtra("CONTACT_ID", contact.getUserId());
+                intent.putExtra(CONTACT_ID, contact.getUserId());
                 startActivity(intent);
                 return;
             }
@@ -1091,8 +1097,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void imageCapture() {
         try {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
+            String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+            String imageFileName = UPPER_JPEG + timeStamp + "_" + LOWER_jpeg;
 
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
 
@@ -1162,7 +1168,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         try {
             Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
             String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
 
             mediaFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "video/mp4");
@@ -1212,8 +1218,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     public Uri getCurrentImageUri() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_" + ".jpeg";
+        String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+        String imageFileName = UPPER_JPEG + timeStamp + "_" + LOWER_jpeg;
         profilePhotoFile = FileClientService.getFilePath(imageFileName, getApplicationContext(), "image/jpeg");
         imageUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", profilePhotoFile);
         return imageUri;

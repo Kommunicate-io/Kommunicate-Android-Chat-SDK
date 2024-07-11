@@ -19,6 +19,8 @@ import io.kommunicate.services.KmUserClientService;
  * you can modify it to get user(agent) details if required
  */
 public class AgentGetStatusTask extends AsyncTask<Void, Void, String> {
+    private static final String RESPONSE_NULL_STRING_NOT_EMPTY = "Response object is null, but the response string isn't empty or null.";
+    private static final String RESPONSE_NULL = "The response string is null.";
     private WeakReference<Context> contextWeakReference;
     private String userId;
     private KmAgentGetStatusHandler kmAgentGetStatusHandler;
@@ -44,14 +46,14 @@ public class AgentGetStatusTask extends AsyncTask<Void, Void, String> {
                 if (agentAPIResponse != null && agentAPIResponse.getResponse() != null && !agentAPIResponse.getResponse().isEmpty()) {
                     kmAgentGetStatusHandler.onFinished(agentAPIResponse.getResponse().get(0).status == 1);
                 } else {
-                    kmAgentGetStatusHandler.onError("Response object is null, but the response string isn't empty or null.");
+                    kmAgentGetStatusHandler.onError(RESPONSE_NULL_STRING_NOT_EMPTY);
                 }
             } catch (Exception exception) {
                 exception.printStackTrace();
                 kmAgentGetStatusHandler.onError(exception.getMessage());
             }
         } else {
-            kmAgentGetStatusHandler.onError("The response string is null.");
+            kmAgentGetStatusHandler.onError(RESPONSE_NULL);
         }
     }
 

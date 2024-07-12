@@ -61,6 +61,7 @@ public class FileClientService extends MobiComKitClientService {
     private static final String MAIN_FOLDER_META_DATA = "main_folder_name";
     private HttpRequestUtils httpRequestUtils;
     private MobiComKitClientService mobiComKitClientService;
+    private static final String text_card = "text/x-vCard";
 
     public FileClientService(Context context) {
         super(context);
@@ -78,7 +79,7 @@ public class FileClientService extends MobiComKitClientService {
                 folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_IMAGES_FOLDER;
             } else if (contentType.startsWith("video")) {
                 folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_VIDEOS_FOLDER;
-            } else if (contentType.equalsIgnoreCase("text/x-vCard")) {
+            } else if (contentType.equalsIgnoreCase(text_card)) {
                 folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_CONTACT_FOLDER;
             }
             if (isThumbnail) {

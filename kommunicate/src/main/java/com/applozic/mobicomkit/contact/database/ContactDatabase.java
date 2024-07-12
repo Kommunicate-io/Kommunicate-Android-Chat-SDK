@@ -33,6 +33,7 @@ public class ContactDatabase {
     private Context context = null;
     private MobiComUserPreference userPreferences;
     private MobiComDatabaseHelper dbHelper;
+    private static final String cursor_query = "c.userId AS _id,c.fullName,c.contactNO,c.displayName,c.contactImageURL,c.contactImageLocalURI,c.email,c.applicationId,c.connected,c.lastSeenAt,c.unreadCount,c.blocked,c.blockedBy,c.status,c.contactType,c.userTypeId,c.deletedAtTime,c.notificationAfterTime,c.userRoleType,c.lastMessagedAt,c.userMetadata";
 
     public ContactDatabase(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -145,7 +146,7 @@ public class ContactDatabase {
                 return null;
             }
             SQLiteDatabase database = dbHelper.getReadableDatabase();
-            cursor = database.query("contact c", new String[]{"c.userId AS _id,c.fullName,c.contactNO,c.displayName,c.contactImageURL,c.contactImageLocalURI,c.email,c.applicationId,c.connected,c.lastSeenAt,c.unreadCount,c.blocked,c.blockedBy,c.status,c.contactType,c.userTypeId,c.deletedAtTime,c.notificationAfterTime,c.userRoleType,c.lastMessagedAt,c.userMetadata"}, "userId = ?", new String[]{id}, null, null, null);
+            cursor = database.query("contact c", new String[]{cursor_query}, "userId = ?", new String[]{id}, null, null, null);
             if (cursor != null) {
                 if (cursor.getCount() > 0) {
                     cursor.moveToFirst();

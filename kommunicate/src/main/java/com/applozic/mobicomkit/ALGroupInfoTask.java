@@ -43,6 +43,9 @@ public class ALGroupInfoTask extends AlAsyncTask<Void, ALGroupInfoTask.ChannelMo
     private static final String CHANNEL_INFO_URL = "/rest/ws/group/info";
     private static final String GROUP_ID = "groupId";
     private static final String CLIENT_GROUPID = "clientGroupId";
+    private static final String SUCCESS_SERVER = "Success, fetched from server";
+    private static final String SUCCESS_LOCALDB = "Success, found in local DB";
+
 
 
     public ALGroupInfoTask(Context context, Integer groupId, String clientGroupId, boolean isUserListRequest, ChannelInfoListener listener) {
@@ -108,7 +111,7 @@ public class ALGroupInfoTask extends AlAsyncTask<Void, ALGroupInfoTask.ChannelMo
                     infoModel.setUserList(users);
                 }
                 infoModel.setChannel(model.getChannel());
-                listener.onSuccess(infoModel, "Success, found in local DB", context);
+                listener.onSuccess(infoModel, SUCCESS_LOCALDB, context);
             } else {
                 if (model.getChannelFeedApiResponse() != null) {
                     if (model.getChannelFeedApiResponse().isSuccess()) {
@@ -130,7 +133,7 @@ public class ALGroupInfoTask extends AlAsyncTask<Void, ALGroupInfoTask.ChannelMo
                                 }
                                 infoModel.setChannel(channel);
 
-                                listener.onSuccess(infoModel, "Success, fetched from server", context);
+                                listener.onSuccess(infoModel, SUCCESS_SERVER, context);
                             }
                         }
                     } else {

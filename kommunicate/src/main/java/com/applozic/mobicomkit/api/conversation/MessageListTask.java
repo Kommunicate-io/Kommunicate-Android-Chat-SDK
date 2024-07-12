@@ -31,6 +31,7 @@ public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
     private boolean isForMessageList;
     private ApplozicException exception;
     private String searchString;
+    private static final String INTERNAL_ERR = "Some internal error occurred";
 
     public MessageListTask(Context context, String searchString, Contact contact, Channel channel, Long startTime, Long endTime, MessageListHandler handler, boolean isForMessageList) {
         this.context = new WeakReference<Context>(context);
@@ -54,7 +55,7 @@ public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
             }
 
             if (messageList == null && exception == null) {
-                exception = new ApplozicException("Some internal error occurred");
+                exception = new ApplozicException(INTERNAL_ERR);
             }
 
             if (isForMessageList) {

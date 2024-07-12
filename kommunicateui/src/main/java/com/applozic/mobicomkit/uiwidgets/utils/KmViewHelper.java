@@ -23,6 +23,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class KmViewHelper {
 
+    private static final String PDF = "pdf";
+    private static final String TXT = "txt";
+    private static final String DOC = "doc";
+    private static final String TXT_PLAIN = "text/plain";
     public static void loadContactImage(Context context, CircleImageView imageView, TextView textView, Contact contact, int placeholderImage) {
         try {
             textView.setVisibility(View.VISIBLE);
@@ -91,10 +95,10 @@ public class KmViewHelper {
             documentIcon.setImageResource(R.drawable.ic_documentreceive);
             return;
         }
-        if (mimeType.contains("pdf")) {
+        if (mimeType.contains(PDF)) {
             documentIcon.setImageResource(R.drawable.km_pdf_icon);
         }
-        else if(mimeType.contains("txt") || mimeType.contains("doc") || mimeType.contains("text/plain")) {
+        else if(mimeType.contains(TXT) || mimeType.contains(DOC) || mimeType.contains(TXT_PLAIN)) {
             documentIcon.setImageResource(R.drawable.km_doc_icon);
         } else {
             documentIcon.setImageResource(R.drawable.ic_documentreceive);

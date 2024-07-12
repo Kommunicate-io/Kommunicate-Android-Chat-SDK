@@ -40,8 +40,15 @@ import android.widget.Scroller;
 public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView {
 
     private static final String DEBUG = "DEBUG";
-
-    //
+    private static final String TOUCH_IMAGE_VIEW_NOT_SUPPORTED = "TouchImageView does not support FIT_START or FIT_END";
+    private static final String ZOOMED_RECT_NOT_SUPPORTED = "getZoomedRect() not supported with FIT_XY";
+    private static final String INSTANCE_STATE = "instanceState";
+    private static final String IMAGE_RENDERED = "imageRendered";
+    private static final String MATCH_VIEW_HEIGHT = "matchViewHeight";
+    private static final String MATCH_VIEW_WIDTH = "matchViewWidth";
+    private static final String VIEW_HEIGHT = "viewHeight";
+    private static final String VIEW_WIDTH= "viewWidth";
+    private static final String SAVE_SCALE = "saveScale";
     // SuperMin and SuperMax multipliers. Determine how much the image can be
     // zoomed below or above the zoom boundaries, before animating back to the
     // min/max zoom boundary.
@@ -181,7 +188,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
     @Override
     public void setScaleType(ScaleType type) {
         if (type == ScaleType.FIT_START || type == ScaleType.FIT_END) {
-            throw new UnsupportedOperationException("TouchImageView does not support FIT_START or FIT_END");
+            throw new UnsupportedOperationException(TOUCH_IMAGE_VIEW_NOT_SUPPORTED);
         }
         if (type == ScaleType.MATRIX) {
             super.setScaleType(ScaleType.MATRIX);
@@ -219,7 +226,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
      */
     public RectF getZoomedRect() {
         if (mScaleType == ScaleType.FIT_XY) {
-            throw new UnsupportedOperationException("getZoomedRect() not supported with FIT_XY");
+            throw new UnsupportedOperationException(ZOOMED_RECT_NOT_SUPPORTED);
         }
         PointF topLeft = transformCoordTouchToBitmap(0, 0, true);
         PointF bottomRight = transformCoordTouchToBitmap(viewWidth, viewHeight, true);
@@ -247,15 +254,15 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
     @Override
     public Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("instanceState", super.onSaveInstanceState());
-        bundle.putFloat("saveScale", normalizedScale);
-        bundle.putFloat("matchViewHeight", matchViewHeight);
-        bundle.putFloat("matchViewWidth", matchViewWidth);
-        bundle.putInt("viewWidth", viewWidth);
-        bundle.putInt("viewHeight", viewHeight);
+        bundle.putParcelable(INSTANCE_STATE, super.onSaveInstanceState());
+        bundle.putFloat(SAVE_SCALE, normalizedScale);
+        bundle.putFloat(MATCH_VIEW_HEIGHT, matchViewHeight);
+        bundle.putFloat(MATCH_VIEW_WIDTH, matchViewWidth);
+        bundle.putInt(VIEW_WIDTH, viewWidth);
+        bundle.putInt(VIEW_HEIGHT, viewHeight);
         matrix.getValues(m);
         bundle.putFloatArray("matrix", m);
-        bundle.putBoolean("imageRendered", imageRenderedAtLeastOnce);
+        bundle.putBoolean(IMAGE_RENDERED, imageRenderedAtLeastOnce);
         return bundle;
     }
 
@@ -263,15 +270,15 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
     public void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
-            normalizedScale = bundle.getFloat("saveScale");
+            normalizedScale = bundle.getFloat(SAVE_SCALE);
             m = bundle.getFloatArray("matrix");
             prevMatrix.setValues(m);
-            prevMatchViewHeight = bundle.getFloat("matchViewHeight");
-            prevMatchViewWidth = bundle.getFloat("matchViewWidth");
-            prevViewHeight = bundle.getInt("viewHeight");
-            prevViewWidth = bundle.getInt("viewWidth");
-            imageRenderedAtLeastOnce = bundle.getBoolean("imageRendered");
-            super.onRestoreInstanceState(bundle.getParcelable("instanceState"));
+            prevMatchViewHeight = bundle.getFloat(MATCH_VIEW_HEIGHT);
+            prevMatchViewWidth = bundle.getFloat(MATCH_VIEW_WIDTH);
+            prevViewHeight = bundle.getInt(VIEW_HEIGHT);
+            prevViewWidth = bundle.getInt(VIEW_WIDTH);
+            imageRenderedAtLeastOnce = bundle.getBoolean(IMAGE_RENDERED);
+            super.onRestoreInstanceState(bundle.getParcelable(INSTANCE_STATE));
             return;
         }
 
@@ -598,7 +605,7 @@ public class TouchImageView extends androidx.appcompat.widget.AppCompatImageView
                 //
                 // FIT_START and FIT_END not supported
                 //
-                throw new UnsupportedOperationException("TouchImageView does not support FIT_START or FIT_END");
+                throw new UnsupportedOperationException(TOUCH_IMAGE_VIEW_NOT_SUPPORTED);
 
         }
 

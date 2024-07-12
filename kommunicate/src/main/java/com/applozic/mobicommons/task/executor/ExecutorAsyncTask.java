@@ -33,6 +33,11 @@ public abstract class ExecutorAsyncTask<Progress, Result> extends BaseAsyncTask<
     private final @NonNull Handler handler = new Handler(Looper.getMainLooper());
     FutureTask<Result> future;
 
+    private static final String CannotExecuteTask = "Cannot execute task:";
+    private static final String TaskRunning = " the task is already running.";
+    private static final String TaskExecuted = " the task has already been executed ";
+    private static final String TaskExecuteOnlyOnce = "(a task can be executed only once)";
+    private static final String Error_Occured_While_Executing = "An error occurred while executing doInBackground()";
     private final AtomicBoolean cancelled = new AtomicBoolean();
     private final AtomicBoolean taskInvoked = new AtomicBoolean();
     private Status status = Status.PENDING;
@@ -55,7 +60,11 @@ public abstract class ExecutorAsyncTask<Progress, Result> extends BaseAsyncTask<
                 Binder.flushPendingCommands();
             } catch (Throwable t) {
                 cancelled.set(true);
-                throw t;
+                try {
+                    throw t;
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
             } finally {
                 status = Status.FINISHED;
                 postResult(result);
@@ -69,12 +78,12 @@ public abstract class ExecutorAsyncTask<Progress, Result> extends BaseAsyncTask<
         if (status != Status.PENDING) {
             switch (status) {
                 case RUNNING:
-                    throw new IllegalStateException("Cannot execute task:"
-                            + " the task is already running.");
+                    throw new IllegalStateException(CannotExecuteTask
+                            + TaskRunning);
                 case FINISHED:
-                    throw new IllegalStateException("Cannot execute task:"
-                            + " the task has already been executed "
-                            + "(a task can be executed only once)");
+                    throw new IllegalStateException(CannotExecuteTask
+                            + TaskExecuted
+                            + TaskExecuteOnlyOnce);
             }
         }
 
@@ -92,7 +101,7 @@ public abstract class ExecutorAsyncTask<Progress, Result> extends BaseAsyncTask<
                 } catch (InterruptedException e) {
                     android.util.Log.w(TAG, e);
                 } catch (ExecutionException e) {
-                    throw new RuntimeException("An error occurred while executing doInBackground()", e.getCause());
+                    throw new RuntimeException(Error_Occured_While_Executing, e.getCause());
                 } catch (CancellationException e) {
                     postResultIfNotInvoked(null);
                 }

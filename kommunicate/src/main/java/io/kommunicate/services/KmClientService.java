@@ -36,6 +36,11 @@ public class KmClientService extends MobiComKitClientService {
     private static final String CONVERSATION_FEEDBACK_URL = "/feedback";
     public static final String APP_SETTING_URL = "/users/v3/chat/plugin/settings?appId=";
     private static final String CHANGE_CONVERSATION_ASSIGNEE_URL = "/rest/ws/group/assignee/change?groupId=";
+    private static final String SEND_MSG_TRUE = "/v2?sendAsMessage=true";
+    private static final String AWAY_MSG = "/awaymessage?conversationId=";
+    private static final String APPLI_PATH = "/applications/";
+    private static final String APPLI_JSON = "application/json";
+    private static final String HIDE_CHAT = "&hideChat=true";
 
     private static final String TAG = "KmClientService";
     private String faqPageName = null;
@@ -54,7 +59,7 @@ public class KmClientService extends MobiComKitClientService {
     }
 
     private String getFeedbackPostUrl() {
-        return getKmBaseUrl() + CONVERSATION_FEEDBACK_URL + "/v2?sendAsMessage=true";
+        return getKmBaseUrl() + CONVERSATION_FEEDBACK_URL + SEND_MSG_TRUE;
     }
 
     public String getConversationShareUrl() {
@@ -66,7 +71,7 @@ public class KmClientService extends MobiComKitClientService {
     }
 
     private String getAwayMessageUrl() {
-        return getKmBaseUrl() + "/applications/";
+        return getKmBaseUrl() + APPLI_PATH;
     }
 
     private String getAppSettingUrl() {
@@ -77,13 +82,13 @@ public class KmClientService extends MobiComKitClientService {
         StringBuilder urlBuilder = new StringBuilder(getAwayMessageUrl());
         if (!TextUtils.isEmpty(appKey)) {
             urlBuilder.append(appKey);
-            urlBuilder.append("/awaymessage?conversationId=");
+            urlBuilder.append(AWAY_MSG);
         }
         if (groupId != null && !groupId.equals(0)) {
             urlBuilder.append(groupId);
         }
 
-        return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+        return httpRequestUtils.getResponse(urlBuilder.toString(), APPLI_JSON, APPLI_JSON);
     }
 
     public String switchConversationAssignee(Integer groupId, String assigneeId, boolean switchAssignee, boolean sendNotifyMessage, boolean takeOverFromBot) {
@@ -102,18 +107,18 @@ public class KmClientService extends MobiComKitClientService {
     }
 
     public String getKmAutoSuggestions() {
-        return httpRequestUtils.getResponse(getKmAutoSuggestionUrl() + getApplicationKey(context) + KM_AUTO_SUGGESTION_ENDPOINT, "application/json", "application/json");
+        return httpRequestUtils.getResponse(getKmAutoSuggestionUrl() + getApplicationKey(context) + KM_AUTO_SUGGESTION_ENDPOINT, APPLI_JSON, APPLI_JSON);
     }
 
     public String getAppSetting(String appId) {
-        return httpRequestUtils.getResponse(getAppSettingUrl() + appId, "application/json", "application/json");
+        return httpRequestUtils.getResponse(getAppSettingUrl() + appId, APPLI_JSON, APPLI_JSON);
     }
 
     public String getHelpCenterUrl(boolean hideChat) {
         if(faqPageName!=null)
-            return getKmMappedUrl(KM_HELPCENTER) + FAQ_PAGE_ENDPOINT + faqPageName+ HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context) + (hideChat ? "&hideChat=true" : "");
+            return getKmMappedUrl(KM_HELPCENTER) + FAQ_PAGE_ENDPOINT + faqPageName+ HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context) + (hideChat ? HIDE_CHAT : "");
         else
-            return getKmMappedUrl(KM_HELPCENTER) + HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context) + (hideChat ? "&hideChat=true" : "");
+            return getKmMappedUrl(KM_HELPCENTER) + HELCENTER_APPID_ENDPOINT + MobiComKitClientService.getApplicationKey(context) + (hideChat ? HIDE_CHAT : "");
     }
 
     public String getKmMappedUrl(String urlMapper) {
@@ -168,7 +173,7 @@ public class KmClientService extends MobiComKitClientService {
         }
 
         try {
-            String response = httpRequestUtils.postData(getFeedbackPostUrl(), "application/json", "application/json", jsonObject.toString());
+            String response = httpRequestUtils.postData(getFeedbackPostUrl(), APPLI_JSON, APPLI_JSON, jsonObject.toString());
 
             Utils.printLog(context, TAG, "Post feedback response : " + response);
 
@@ -192,7 +197,7 @@ public class KmClientService extends MobiComKitClientService {
             urlBuilder.append(conversationId);
         }
 
-        String response = httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+        String response = httpRequestUtils.getResponse(urlBuilder.toString(), APPLI_JSON, APPLI_JSON);
 
         Utils.printLog(context, TAG, "Get feedback response: " + response);
 

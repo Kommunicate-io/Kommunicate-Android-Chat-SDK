@@ -26,7 +26,16 @@ import com.applozic.mobicommons.people.contact.Contact;
 public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
 
     private static final String TAG = "MTBroadcastReceiver";
-
+    private static final String HIDE_ASSIGNEE = "hideAssignee";
+    private static final String PREFILLED = "preFilled";
+    private static final String USERID = "userId";
+    private static final String CONTACT_NUMBERS = "contactNumbers";
+    private static final String CONTACT_ID = "contactId";
+    private static final String CURR_ID = "currentId";
+    private static final String IS_GROUP = "isGroup";
+    private static final String RES_ID = "resId";
+    private static final String IS_TYPING = "isTyping";
+    private static final String LOAD_MORE = "loadMore";
     private ConversationUIService conversationUIService;
     private BaseContactService baseContactService;
     private boolean hideActionMessages;
@@ -73,29 +82,29 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
         String userId = message != null ? message.getContactIds() : "";
 
         if (BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString().equals(action)) {
-            InstructionUtil.showInstruction(context, intent.getIntExtra("resId", -1), intent.getBooleanExtra("actionable", false), R.color.instruction_color);
+            InstructionUtil.showInstruction(context, intent.getIntExtra(RES_ID, -1), intent.getBooleanExtra("actionable", false), R.color.instruction_color);
         } else if (BroadcastService.INTENT_ACTIONS.UPDATE_CHANNEL_NAME.toString().equals(action)) {
             conversationUIService.updateChannelName();
         } else if (BroadcastService.INTENT_ACTIONS.FIRST_TIME_SYNC_COMPLETE.toString().equals(action)) {
             conversationUIService.downloadConversations(true);
         } else if (BroadcastService.INTENT_ACTIONS.LOAD_MORE.toString().equals(action)) {
-            conversationUIService.setLoadMore(intent.getBooleanExtra("loadMore", true));
+            conversationUIService.setLoadMore(intent.getBooleanExtra(LOAD_MORE, true));
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_SYNC_ACK_FROM_SERVER.toString().equals(action)) {
             conversationUIService.updateMessageKeyString(message);
         } else if (BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString().equals(intent.getAction())) {
             conversationUIService.syncMessages(message, keyString);
         } else if (BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString().equals(intent.getAction())) {
-            userId = intent.getStringExtra("contactNumbers");
+            userId = intent.getStringExtra(CONTACT_NUMBERS);
             conversationUIService.deleteMessage(keyString, userId, message);
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_DELIVERY.toString().equals(action) ||
                 BroadcastService.INTENT_ACTIONS.MESSAGE_READ_AND_DELIVERED.toString().equals(action)) {
             conversationUIService.updateDeliveryStatus(message, userId);
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_DELIVERY_FOR_CONTACT.toString().equals(action)) {
-            conversationUIService.updateDeliveryStatusForContact(intent.getStringExtra("contactId"));
+            conversationUIService.updateDeliveryStatusForContact(intent.getStringExtra(CONTACT_ID));
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_READ_AND_DELIVERED_FOR_CONTECT.toString().equals(action)) {
-            conversationUIService.updateReadStatusForContact(intent.getStringExtra("contactId"));
+            conversationUIService.updateReadStatusForContact(intent.getStringExtra(CONTACT_ID));
         } else if (BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString().equals(action)) {
-            String contactNumber = intent.getStringExtra("contactNumber");
+            String contactNumber = intent.getStringExtra(CONTACT_NUMBERS);
             Integer channelKey = intent.getIntExtra("channelKey", 0);
             String response = intent.getStringExtra("response");
             Contact contact = null;
@@ -110,11 +119,11 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_ATTACHMENT_DOWNLOAD_FAILD.toString().equals(action) && message != null) {
             conversationUIService.updateDownloadFailed(message);
         } else if (BroadcastService.INTENT_ACTIONS.UPDATE_TYPING_STATUS.toString().equals(action)) {
-            String currentUserId = intent.getStringExtra("userId");
-            String isTyping = intent.getStringExtra("isTyping");
+            String currentUserId = intent.getStringExtra(USERID);
+            String isTyping = intent.getStringExtra(IS_TYPING);
             conversationUIService.updateTypingStatus(currentUserId, isTyping);
         } else if (BroadcastService.INTENT_ACTIONS.UPDATE_LAST_SEEN_AT_TIME.toString().equals(action)) {
-            conversationUIService.updateLastSeenStatus(intent.getStringExtra("contactId"));
+            conversationUIService.updateLastSeenStatus(intent.getStringExtra(CONTACT_ID));
         } else if (BroadcastService.INTENT_ACTIONS.MQTT_DISCONNECTED.toString().equals(action)) {
             conversationUIService.reconnectMQTT();
         } else if (BroadcastService.INTENT_ACTIONS.CHANNEL_SYNC.toString().equals(action)) {
@@ -122,22 +131,22 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
         } else if (BroadcastService.INTENT_ACTIONS.UPDATE_TITLE_SUBTITLE.toString().equals(action)) {
             conversationUIService.updateTitleAndSubtitle();
         } else if (BroadcastService.INTENT_ACTIONS.CONVERSATION_READ.toString().equals(action)) {
-            String currentId = intent.getStringExtra("currentId");
-            boolean isGroup = intent.getBooleanExtra("isGroup", false);
+            String currentId = intent.getStringExtra(CURR_ID);
+            boolean isGroup = intent.getBooleanExtra(IS_GROUP, false);
             conversationUIService.updateConversationRead(currentId, isGroup);
         } else if (BroadcastService.INTENT_ACTIONS.UPDATE_USER_DETAIL.toString().equals(action)) {
-            conversationUIService.updateUserInfo(intent.getStringExtra("contactId"));
+            conversationUIService.updateUserInfo(intent.getStringExtra(CONTACT_ID));
         } else if (BroadcastService.INTENT_ACTIONS.MESSAGE_METADATA_UPDATE.toString().equals(action)) {
             conversationUIService.updateMessageMetadata(keyString);
         } else if (BroadcastService.INTENT_ACTIONS.MUTE_USER_CHAT.toString().equals(action)) {
-            conversationUIService.muteUserChat(intent.getBooleanExtra("mute", false), intent.getStringExtra("userId"));
+            conversationUIService.muteUserChat(intent.getBooleanExtra("mute", false), intent.getStringExtra(USERID));
         } else if(BroadcastService.INTENT_ACTIONS.AGENT_STATUS.toString().equals(action)) {
-            conversationUIService.updateAgentStatus(intent.getStringExtra("userId"), intent.getIntExtra("status", KmConstants.STATUS_ONLINE));
+            conversationUIService.updateAgentStatus(intent.getStringExtra(USERID), intent.getIntExtra("status", KmConstants.STATUS_ONLINE));
         } else if (BroadcastService.INTENT_ACTIONS.ACTION_POPULATE_CHAT_TEXT.toString().equals(action)) {
-            String preFilledText = intent.getStringExtra("preFilled");
+            String preFilledText = intent.getStringExtra(PREFILLED);
             conversationUIService.setAutoText(preFilledText);
         } else if (BroadcastService.INTENT_ACTIONS.HIDE_ASSIGNEE_STATUS.toString().equals(action)){
-            Boolean hide = intent.getBooleanExtra("hideAssignee",false);
+            Boolean hide = intent.getBooleanExtra(HIDE_ASSIGNEE,false);
             conversationUIService.hideAssigneeStatus(hide);
         }
     }

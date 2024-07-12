@@ -13,8 +13,10 @@ import java.util.TimeZone;
  */
 
 public class ALSpecificSettings {
+    private static final String APPLOZIC_SUPPORT = "support@applozic.com";
     private static final String MY_PREFERENCE = "applozic_internal_preference_key";
     private SharedPreferences sharedPreferences;
+    private static final String KOMMUNICATE_LOGS = "kommunicate_logs";
     private static ALSpecificSettings applozicSettings;
     private static final String DATABASE_NAME = "DATABASE_NAME";
     private static final String ENABLE_TEXT_LOGGING = "ENABLE_TEXT_LOGGING";
@@ -60,7 +62,7 @@ public class ALSpecificSettings {
     }
 
     public String getTextLogFileName() {
-        return sharedPreferences.getString(TEXT_LOG_FILE_NAME, "kommunicate_logs");
+        return sharedPreferences.getString(TEXT_LOG_FILE_NAME, KOMMUNICATE_LOGS);
     }
 
     public String getAlBaseUrl() {
@@ -82,7 +84,7 @@ public class ALSpecificSettings {
     }
 
     public String getSupportEmailId() {
-        return sharedPreferences.getString(AL_SUPPORT_EMAIL_ID, "support@applozic.com");
+        return sharedPreferences.getString(AL_SUPPORT_EMAIL_ID, APPLOZIC_SUPPORT);
     }
 
     public ALSpecificSettings setSupportEmailId(String emailId) {

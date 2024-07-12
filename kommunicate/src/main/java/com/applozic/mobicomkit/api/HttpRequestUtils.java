@@ -41,6 +41,11 @@ public class HttpRequestUtils {
     private static final String APZ_PRODUCT_APP_HEADER = "Apz-Product-App";
     public static boolean isRefreshTokenInProgress = false;
     private Context context;
+    private static final String ACCEPT = "Accept";
+    private static final String appli_json = "application/json";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String PATCH = "PATCH";
+    private static final String POST = "POST";
 
 
     public HttpRequestUtils(Context context) {
@@ -104,12 +109,12 @@ public class HttpRequestUtils {
             }
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(isPatchRequest ? "PATCH" : "POST");
+            connection.setRequestMethod(isPatchRequest ? PATCH : POST);
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
-            connection.setRequestProperty("Content-Type", !TextUtils.isEmpty(contentType) ? contentType : "application/json");
-            connection.setRequestProperty("Accept", !TextUtils.isEmpty(accept) ? accept : "application/json");
+            connection.setRequestProperty(CONTENT_TYPE, !TextUtils.isEmpty(contentType) ? contentType : appli_json);
+            connection.setRequestProperty(ACCEPT, !TextUtils.isEmpty(accept) ? accept : appli_json);
 
             if (isForAuth) {
                 addHeadersForAuthToken(connection, userId);
@@ -183,10 +188,10 @@ public class HttpRequestUtils {
             connection.setDoInput(true);
 
             if (!TextUtils.isEmpty(contentType)) {
-                connection.setRequestProperty("Content-Type", contentType);
+                connection.setRequestProperty(CONTENT_TYPE, contentType);
             }
             if (!TextUtils.isEmpty(accept)) {
-                connection.setRequestProperty("Accept", accept);
+                connection.setRequestProperty(ACCEPT, accept);
             }
             addGlobalHeaders(connection, userId);
             connection.connect();

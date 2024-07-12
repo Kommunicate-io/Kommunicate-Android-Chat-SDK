@@ -92,6 +92,7 @@ public class AttachmentManager {
 
     // Sets the maximum threadpool size to 8
     private static final int MAXIMUM_POOL_SIZE = 8;
+    private static final String download_failed = "Download failed";
 
     /**
      * NOTE: This is the number of total available cores. On current versions of
@@ -238,7 +239,7 @@ public class AttachmentManager {
                         case DOWNLOAD_FAILED:
                             //localView.setStatusResource(R.drawable.imagedownloadfailed);
                             attachmentTask.getMessage().setAttDownloadInProgress(false);
-                            attachmentTask.getDownloadHandler().onCompleted(null, new ApplozicException("Download failed"));
+                            attachmentTask.getDownloadHandler().onCompleted(null, new ApplozicException(download_failed));
                             // Attempts to re-use the Task object
                             recycleTask(attachmentTask);
                             break;

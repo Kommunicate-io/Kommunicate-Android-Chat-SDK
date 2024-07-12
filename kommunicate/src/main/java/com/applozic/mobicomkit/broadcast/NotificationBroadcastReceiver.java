@@ -25,6 +25,9 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
 
     public static String LAUNCH_APP = "applozic.LAUNCH_APP";
     public static String TAG = "NotificationBroadcastReceiver";
+    private static final String android_path = "vnd.android-dir/mms-sms";
+    private static final String sms_body = "sms_body";
+    private static final String ACTIVITY_OPEN = "activity.open.on.notification";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -32,7 +35,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         String actionName = intent.getAction();
 
         String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
-        String activityToOpen = Utils.getMetaDataValueForReceiver(context, NotificationBroadcastReceiver.class.getName(), "activity.open.on.notification");
+        String activityToOpen = Utils.getMetaDataValueForReceiver(context, NotificationBroadcastReceiver.class.getName(), ACTIVITY_OPEN);
         Intent newIntent;
         if (actionName.equals(LAUNCH_APP)) {
             String messageText = getMessageText(intent) == null ? null : getMessageText(intent).toString();
@@ -64,8 +67,8 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             }
             newIntent = new Intent(context, activity);
             newIntent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, messageJson);
-            newIntent.putExtra("sms_body", "text");
-            newIntent.setType("vnd.android-dir/mms-sms");
+            newIntent.putExtra(sms_body, "text");
+            newIntent.setType(android_path);
             newIntent.setAction(NotificationBroadcastReceiver.LAUNCH_APP);
             newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(newIntent);

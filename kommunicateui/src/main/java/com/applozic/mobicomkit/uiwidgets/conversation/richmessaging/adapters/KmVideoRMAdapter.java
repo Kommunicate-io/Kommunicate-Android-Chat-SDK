@@ -41,6 +41,11 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
     private List<KmRichMessageModel.KmPayloadModel> payloadList;
     double currentPos, totalDuration;
     private AlCustomizationSettings alCustomizationSettings;
+    private static final String PATH_ONE = "<iframe width=\"100%\" height=\"100%\" src=\"";
+    private static final String PATH_TWO = "\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
+    private static final String text_html = "text/html";
+    private static final String TIME_WITH_HR = "%02d:%02d:%02d";
+    private static final String TIME_WITHOUT_HR = "%02d:%02d";
 
 
     KmVideoRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed, AlCustomizationSettings alCustomizationSettings) {
@@ -90,8 +95,8 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
                 }
 
                 holder.webViewRoot.setVisibility(View.VISIBLE);
-                String currentUrl = "<iframe width=\"100%\" height=\"100%\" src=\"" + payloadModel.getUrl() + "\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
-                holder.webview.loadData(currentUrl, "text/html", "utf-8");
+                String currentUrl = PATH_ONE + payloadModel.getUrl() + PATH_TWO;
+                holder.webview.loadData(currentUrl, text_html, "utf-8");
             } else if (!TextUtils.isEmpty(payloadModel.getUrl())) {
                 holder.webViewRoot.setVisibility(View.GONE);
                 if (!TextUtils.isEmpty(payloadModel.getCaption())) {
@@ -242,9 +247,9 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         int scs = duration % 60000 / 1000;
 
         if (hrs > 0) {
-            videoTime = String.format("%02d:%02d:%02d", hrs, mns, scs);
+            videoTime = String.format(TIME_WITH_HR, hrs, mns, scs);
         } else {
-            videoTime = String.format("%02d:%02d", mns, scs);
+            videoTime = String.format(TIME_WITHOUT_HR, mns, scs);
         }
         return videoTime;
     }

@@ -23,6 +23,7 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
     List<String> multimediaIcons;
     List<String> multimediaText;
     AlCustomizationSettings alCustomizationSettings;
+    private static final String FONTS = "fonts/fontawesome-webfont.ttf";
 
     public MobicomMultimediaPopupAdapter(Context context, List<String> multimediaIcons, List<String> multimediaText) {
         this.context = context;
@@ -55,7 +56,7 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
         convertView = inflater.inflate(R.layout.mobicom_individual_multimedia_option_item, null);
 
         TextView icon = (TextView) convertView.findViewById(R.id.mobicom_multimedia_icon);
-        Typeface iconTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
+        Typeface iconTypeface = Typeface.createFromAsset(context.getAssets(), FONTS);
         icon.setTypeface(iconTypeface);
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(context,new AlCustomizationSettings());
         TextView text = (TextView) convertView.findViewById(R.id.mobicom_multimedia_text);

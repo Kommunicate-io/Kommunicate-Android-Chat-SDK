@@ -30,6 +30,11 @@ public class ApplozicMultipartUtility {
     private OutputStream outputStream;
     private PrintWriter writer;
     private boolean isUploadOveridden;
+    private static final String content_type = "Content-Type";
+    private static final String multipart_form = "multipart/form-data; boundary=";
+    private static final String server_exception = "Server exception with status code: ";
+    private static final String content_disposition = "Content-Disposition: form-data; name=\"";
+
 
     public ApplozicMultipartUtility(String requestURL, String charset, Context context)
             throws IOException {
@@ -41,13 +46,11 @@ public class ApplozicMultipartUtility {
         httpConn.setUseCaches(false);
         httpConn.setDoOutput(true);
         httpConn.setDoInput(true);
-        httpConn.setRequestProperty("Content-Type",
-                "multipart/form-data; boundary=" + boundary);
+        httpConn.setRequestProperty(content_type, multipart_form + boundary);
         HttpRequestUtils httpRequestUtils = new HttpRequestUtils(context);
         httpRequestUtils.addGlobalHeaders(httpConn, null);
         outputStream = httpConn.getOutputStream();
-        writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),
-                true);
+        writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
     }
 
     public ApplozicMultipartUtility(String requestURL, HashMap<String, String> headers, Context context) throws IOException {
@@ -58,8 +61,7 @@ public class ApplozicMultipartUtility {
         httpConn.setUseCaches(false);
         httpConn.setDoOutput(true);
         httpConn.setDoInput(true);
-        httpConn.setRequestProperty("Content-Type",
-                "multipart/form-data; boundary=" + boundary);
+        httpConn.setRequestProperty(content_type,multipart_form + boundary);
         if(headers != null && !headers.isEmpty()) {
             for(Map.Entry<String, String> entry : headers.entrySet()) {
                 httpConn.setRequestProperty(entry.getKey(), entry.getValue());
@@ -71,8 +73,7 @@ public class ApplozicMultipartUtility {
     }
     public void addFormField(String name, String contentType, String value) {
         writer.append("--" + boundary).append(LINE_FEED);
-        writer.append("Content-Disposition: form-data; name=\"" + name + "\";")
-                .append(LINE_FEED);
+        writer.append(content_disposition + name + "\";").append(LINE_FEED);
         writer.append("Content-Type: ").append(contentType).append(LINE_FEED);
         writer.append(LINE_FEED);
         writer.append(value).append(LINE_FEED);
@@ -83,14 +84,8 @@ public class ApplozicMultipartUtility {
             throws IOException, InterruptedException {
         String fileName = uploadFile.getName();
         writer.append("--" + boundary).append(LINE_FEED);
-        writer.append(
-                "Content-Disposition: form-data; name=\"" + fieldName
-                        + "\"; filename=\"" + (isUploadOveridden? "" : AWS_ENCRYPTED) + fileName + "\"")
-                .append(LINE_FEED);
-        writer.append(
-                "Content-Type: "
-                        + URLConnection.guessContentTypeFromName(fileName))
-                .append(LINE_FEED);
+        writer.append(content_disposition + fieldName + "\"; filename=\"" + (isUploadOveridden? "" : AWS_ENCRYPTED) + fileName + "\"").append(LINE_FEED);
+        writer.append("Content-Type: " + URLConnection.guessContentTypeFromName(fileName)).append(LINE_FEED);
         writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
         writer.append(LINE_FEED);
         writer.flush();
@@ -163,7 +158,7 @@ public class ApplozicMultipartUtility {
                     sb.append(line);
                 }
             } else {
-                throw new IOException("Server exception with status code: " + status);
+                throw new IOException(server_exception + status);
             }
 
         } catch (Exception e) {

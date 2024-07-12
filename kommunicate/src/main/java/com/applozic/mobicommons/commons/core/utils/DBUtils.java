@@ -11,9 +11,11 @@ import android.util.Log;
 public class DBUtils {
 
     private static final String TAG = "DBUtils";
+    private static final String SQLITE_MASTER = "sqlite_master";
+    private static final String TABLE_NAME = "tbl_name";
 
     public static boolean isTableExists(SQLiteDatabase database, String tableName) {
-        Cursor cursor = database.query(true, "sqlite_master", new String[]{"tbl_name"}, "tbl_name = ?", new String[]{String.valueOf(tableName)}, null, null, null, null);
+        Cursor cursor = database.query(true, SQLITE_MASTER, new String[]{TABLE_NAME}, "tbl_name = ?", new String[]{String.valueOf(tableName)}, null, null, null, null);
 
         if (cursor != null) {
             if (cursor.getCount() > 0) {

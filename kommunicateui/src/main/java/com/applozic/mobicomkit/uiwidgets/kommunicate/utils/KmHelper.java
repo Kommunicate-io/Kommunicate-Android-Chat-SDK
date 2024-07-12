@@ -34,6 +34,9 @@ import io.kommunicate.users.KMUser;
 
 public class KmHelper {
 
+    private static final String CREATING_CONVERSATION_MSG = "Creating conversation, please wait...";
+    private static final String PLEASE_WAIT_MSG = "Please wait...";
+
     public static void performLogout(Context context, final Object object) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage(Utils.getString(context, R.string.logout_info_text));
@@ -64,7 +67,7 @@ public class KmHelper {
 
     public static void setStartNewUniqueChat(final Context context, final List<String> agentIds, List<String> botIds) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Creating conversation, please wait...");
+        dialog.setMessage(CREATING_CONVERSATION_MSG);
         dialog.setCancelable(false);
         dialog.show();
 
@@ -117,7 +120,7 @@ public class KmHelper {
 
     public static void performLogin(final Context context, User user) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Please wait...");
+        dialog.setMessage(PLEASE_WAIT_MSG);
         dialog.setCancelable(false);
         dialog.show();
 

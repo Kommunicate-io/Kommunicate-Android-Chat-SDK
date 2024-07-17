@@ -100,7 +100,7 @@ public class KmHttpClient {
         return null;
     }
 
-    public String getResponseWithException(String urlString, String contentType, String accept, Map<String, String> headers) throws Throwable {
+    public String getResponseWithException(String urlString, String contentType, String accept, Map<String, String> headers) throws Exception {
         Utils.printLog(context, TAG, "Calling url **[GET]** : " + urlString);
 
         HttpURLConnection connection = null;

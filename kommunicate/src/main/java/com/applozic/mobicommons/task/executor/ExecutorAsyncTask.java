@@ -60,11 +60,11 @@ public abstract class ExecutorAsyncTask<Progress, Result> extends BaseAsyncTask<
                 Binder.flushPendingCommands();
             } catch (Throwable t) {
                 cancelled.set(true);
-                try {
-                    throw t;
-                } catch (Throwable e) {
-                    throw new RuntimeException(e);
-                }
+//                try {
+//                    throw t;
+//                } catch (Throwable e) {
+//                    throw new RuntimeException(e);
+//                }
             } finally {
                 status = Status.FINISHED;
                 postResult(result);

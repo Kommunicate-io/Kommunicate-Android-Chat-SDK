@@ -423,12 +423,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private static final String TEMPLATE_MSG = "templateMessage";
     private static final String APPLI_JSON = "application/json";
 
-    /*
-    autoSuggestionMetadata.put("KM_EVENT", "QUICKREPLY_CLICK");
-                            autoSuggestionMetadata.put("skipBot", "true");
-                            autoSuggestionMetadata.put("category", "HIDDEN");
-                            sendMessage("KM_EVENT_QUICKREPLY_CLICK", autoSuggestionMetadata, null, null, Message.ContentType.DEFAULT.getValue());
-    * */
 
 
 

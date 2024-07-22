@@ -30,7 +30,6 @@ public class VideoCallNotificationHelper {
 
     public static final String CALL_STARTED = "CALL_STARTED";
     public static final String CALL_END = "CALL_END";
-    public static final String CALL_BUSY = "CALL_BUSY";
     public static final String MSG_TYPE = "MSG_TYPE";
     public static final String CALL_ID = "CALL_ID";
     public static final String CALL_DIALED = "CALL_DIALED";
@@ -42,13 +41,10 @@ public class VideoCallNotificationHelper {
     public static final int MAX_NOTIFICATION_RING_DURATION = 30 * 1000;
     public static final String NOTIFICATION_ACTIVITY_NAME = "com.applozic.audiovideo.activity.CallActivity";
     public static final String CALL_DURATION = "CALL_DURATION";
-    public static final String CONTACT_ID = "CONTACT_ID";
     private static final String TAG = "CallNotiHandler";
     String videoCallId;
     Context context;
     boolean isAudioOnly;
-    private static final String AUDIO_CALL = "Audio call";
-    private static final String VIDEO_CALL = "Video call";
 
     private MobiComConversationService conversationService;
     private AppContactService baseContactService;
@@ -69,13 +65,13 @@ public class VideoCallNotificationHelper {
 
         String type = metaDataMap.get(MSG_TYPE);
 
-        String audioORVideoCallPrefix = Boolean.valueOf(metaDataMap.get(CALL_AUDIO_ONLY)) ? AUDIO_CALL : VIDEO_CALL;
+        String audioORVideoCallPrefix = Boolean.valueOf(metaDataMap.get(CALL_AUDIO_ONLY)) ? "Audio call" : "Video call";
         if (type.equals(CALL_STARTED)) {
             return audioORVideoCallPrefix + " started";
         } else if (type.equals(CALL_END)) {
             return audioORVideoCallPrefix;
         } else if (type.equals(CALL_REJECTED)) {
-            return CALL_BUSY;
+            return "Call busy";
         } else {
             return "Missed " + audioORVideoCallPrefix;
         }
@@ -95,7 +91,7 @@ public class VideoCallNotificationHelper {
     public static void buildVideoCallNotification(Context context, Message message, int index) {
         Map<String, String> metaDataMap = message.getMetadata();
         Contact contact = new AppContactService(context).getContactById(message.getContactIds());
-        String audioORVideoCallPrefix = Boolean.valueOf(metaDataMap.get(CALL_AUDIO_ONLY)) ? AUDIO_CALL : VIDEO_CALL;
+        String audioORVideoCallPrefix = Boolean.valueOf(metaDataMap.get(CALL_AUDIO_ONLY)) ? "audio call " : "video call ";
         if (metaDataMap.get(VideoCallNotificationHelper.MSG_TYPE).equals(VideoCallNotificationHelper.CALL_MISSED)) {
             Message message1 = new Message(message);
             message1.setMessage("You missed " + audioORVideoCallPrefix + " from " + contact.getDisplayName());
@@ -271,7 +267,7 @@ public class VideoCallNotificationHelper {
 
         Message statusMessage = getVideoCallStatusMessage(contact);
         statusMessage.setMetadata(getVideoCallEndMap(duration));
-        statusMessage.setMessage(CALL_END);
+        statusMessage.setMessage("Call End");
         conversationService.sendMessage(statusMessage, MessageIntentService.class);
 
     }
@@ -340,7 +336,7 @@ public class VideoCallNotificationHelper {
 
                 Contact contact = baseContactService.getContactById(message.getContactIds());
                 Message statusMessage = getVideoCallStatusMessage(contact);
-                statusMessage.setMessage(CALL_BUSY);
+                statusMessage.setMessage("Call Busy");
                 statusMessage.setMetadata(getRejectedCallMap());
                 conversationService.sendMessage(statusMessage, MessageIntentService.class);
 
@@ -392,7 +388,7 @@ public class VideoCallNotificationHelper {
         if (BroadcastService.videoCallAcitivityOpend) {
 
             Intent intent = new Intent(MobiComKitConstants.APPLOZIC_VIDEO_DIALED);
-            intent.putExtra(CONTACT_ID, msg.getTo());
+            intent.putExtra("CONTACT_ID", msg.getTo());
             intent.putExtra(CALL_ID, videoCallId);
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             return;
@@ -427,7 +423,7 @@ public class VideoCallNotificationHelper {
         }
         Intent intent1 = new Intent(context, activityToOpen);
         intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent1.putExtra(CONTACT_ID, msg.getTo());
+        intent1.putExtra("CONTACT_ID", msg.getTo());
         intent1.putExtra(CALL_ID, videoCallId);
 
         if (!TextUtils.isEmpty(isAudioCallOnly) && "true".equals(isAudioCallOnly)) {
@@ -440,7 +436,7 @@ public class VideoCallNotificationHelper {
     public void sendVideoCallMissedMessage(Contact contactToCall, String callId) {
         Message notificationMessage = getVideoCallStatusMessage(contactToCall);
         notificationMessage.setMetadata(getMissedCallMap());
-        notificationMessage.setMessage(CALL_MISSED);
+        notificationMessage.setMessage("Call Missed");
         conversationService.sendMessage(notificationMessage, MessageIntentService.class);
 
     }

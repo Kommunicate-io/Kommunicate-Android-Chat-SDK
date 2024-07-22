@@ -31,8 +31,6 @@ import java.util.List;
 public class ApplozicConversation {
 
     private static final String MESSAGE_STATUS_TOPIC = "message-status";
-    private static final String not_message_attachement = "Message does not have Attachment";
-    private static final String attachment_downloaded = "Attachment for the message already downloaded";
 
     public static void getLatestMessageList(Context context, String searchString, boolean isScroll, MessageListHandler handler) {
         if (!isScroll) {
@@ -83,11 +81,11 @@ public class ApplozicConversation {
             return;
         }
         if (!message.hasAttachment()) {
-            e = new ApplozicException(not_message_attachement);
+            e = new ApplozicException("Message does not have Attachment");
             handler.onProgressUpdate(0, e);
             handler.onCompleted(null, e);
         } else if (message.isAttachmentDownloaded()) {
-            e = new ApplozicException(attachment_downloaded);
+            e = new ApplozicException("Attachment for the message already downloaded");
             handler.onProgressUpdate(0, e);
             handler.onCompleted(null, e);
         } else {

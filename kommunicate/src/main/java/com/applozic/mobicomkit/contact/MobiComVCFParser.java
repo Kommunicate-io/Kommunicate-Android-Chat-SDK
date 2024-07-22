@@ -22,8 +22,6 @@ public class MobiComVCFParser {
     public static final String BEGIN_VCARD = "BEGIN:VCARD";
     public static final String END_VCARD = "END:VCARD";
     public static final String VERSION = "VERSION:2.1";
-    public static final String PHOTO = "PHOTO";
-    public static final String EMAIL = "EMAIL";
 
     public VCFContactData vcfContactData;
 
@@ -77,13 +75,13 @@ public class MobiComVCFParser {
                     if (tokens.length == 2) {
                         contactBuffer.append(tokens[1] + "\n");
                     }
-                } else if (sLine.startsWith(PHOTO)) {
+                } else if (sLine.startsWith("PHOTO")) {
 
                     String[] tokens = sLine.split(":");
                     if (tokens.length >= 2) {
                         imageByteCode = new StringBuffer().append(tokens[1]);
                     }
-                } else if (sLine.startsWith(EMAIL)) {
+                } else if (sLine.startsWith("EMAIL")) {
                     String[] tokens = sLine.split(":");
                     if (tokens.length >= 2) {
                         vcfContactData.setEmail(tokens[1]);

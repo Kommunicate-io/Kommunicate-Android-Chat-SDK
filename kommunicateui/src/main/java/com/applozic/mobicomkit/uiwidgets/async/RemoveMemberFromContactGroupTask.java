@@ -23,7 +23,6 @@ public class RemoveMemberFromContactGroupTask extends AsyncTask<Void, Void, ApiR
     RemoveGroupMemberListener listener;
     String failureResponse;
     ChannelService channelService;
-    private static final String ERR_OCCURRED = "Some Error occurred";
 
     public RemoveMemberFromContactGroupTask(Context context, String groupName, String groupType, String userId, RemoveGroupMemberListener listener) {
         this.context = new WeakReference<>(context).get();
@@ -40,7 +39,7 @@ public class RemoveMemberFromContactGroupTask extends AsyncTask<Void, Void, ApiR
             if (groupName != null && userId != null) {
                 apiResponse = channelService.removeMemberFromContactGroup(groupName, groupType, userId);
                 if (apiResponse != null && !apiResponse.isSuccess()) {
-                    e = new Exception(ERR_OCCURRED);
+                    e = new Exception("Error Occcured");
                     failureResponse = apiResponse.toString();
                 }
             }

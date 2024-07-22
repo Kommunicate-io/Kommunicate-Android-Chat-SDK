@@ -82,30 +82,6 @@ public class Kommunicate {
     public static final String KM_ALREADY_LOGGED_IN_STATUS = "ALREADY_LOGGED_IN";
     public static final String PLACEHOLDER_APP_ID = "<Your-APP-ID>";
     static private String faqPageName;
-    private static final String APPLICATION_KEY = "APPLICATION_KEY";
-    private static final String ALPHA_NUMS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private static final String REDUCE_AGENTS_BOTS = "Please reduce the number of agents or bots";
-    private static final String USERID_CANT_BE_NULL = "UserId cannot be null";
-    private static final String ADD_ATLEAST_ONE_AGENT = "Please add at-least one Agent";
-    private static final String PUSH_TOKEN_CANTBE_NULL = "Push token cannot be null or empty";
-    private static final String GET_ARTICLES = "getArticles";
-    private static final String GET_SELECTED_ARTICLES = "getSelectedArticles";
-    private static final String GET_ANSWERS = "getAnswers";
-    private static final String GET_DASHBOARD_FAQ = "getDashboardFaq";
-    private static final String CREATE_GROUP_MSG = "CREATE_GROUP_MESSAGE";
-    private static final String REMOVE_MEMBER_MSG = "REMOVE_MEMBER_MESSAGE";
-    private static final String ADD_MEMBER_MSG = "ADD_MEMBER_MESSAGE";
-    private static final String JOIN_MEMBER_MSG = "JOIN_MEMBER_MESSAGE";
-    private static final String GROUP_NAME_CHANGE_MSG = "GROUP_NAME_CHANGE_MESSAGE";
-    private static final String GROUP_ICON_CHANGE_MSG = "GROUP_ICON_CHANGE_MESSAGE";
-    private static final String GROUP_LEFT_MSG = "GROUP_LEFT_MESSAGE";
-    private static final String DELETED_GROUP_MESSAGE = "DELETED_GROUP_MESSAGE";
-    private static final String USER_ROLE_UPDATED_MESSAGE = "GROUP_USER_ROLE_UPDATED_MESSAGE";
-    private static final String META_DATA_UPDATED_MESSAGE = "GROUP_META_DATA_UPDATED_MESSAGE";
-    private static final String AGENTID_CANTBE_NULL = "Agent Id list cannot be null or empty";
-    private static final String KM_CHAT_BUILDER_CANTBE_NULL = "KmChatBuilder cannot be null";
-    private static final String NEEDS_ACTIVITY_CONTEXT = "This method needs Activity context";
-    private static final String LAUNCHED_CHAT_LIST = "Successfully launched chat list";
 
     public static void setFaqPageName(String faqPageName) {
         Kommunicate.faqPageName = faqPageName;
@@ -209,7 +185,7 @@ public class Kommunicate {
      */
     public static void launchLeadCollection(final Context context, final ProgressDialog progressDialog, List<KmPrechatInputModel> inputModelList, final String preChatGreetings, final KmPrechatCallback<KMUser> callback) throws KmException {
         if (!(context instanceof Activity)) {
-            throw new KmException(NEEDS_ACTIVITY_CONTEXT);
+            throw new KmException("This method needs Activity context");
         }
 
         ResultReceiver resultReceiver = new ResultReceiver(null) {
@@ -462,7 +438,7 @@ public class Kommunicate {
             Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
             context.startActivity(intent);
             if (callback != null) {
-                callback.onSuccess(LAUNCHED_CHAT_LIST);
+                callback.onSuccess("Successfully launched chat list");
             }
         } catch (ClassNotFoundException e) {
             if (callback != null) {
@@ -473,7 +449,7 @@ public class Kommunicate {
 
     public static void launchPrechatWithResult(final Context context, final KmPrechatCallback<KMUser> callback) throws KmException {
         if (!(context instanceof Activity)) {
-            throw new KmException(NEEDS_ACTIVITY_CONTEXT);
+            throw new KmException("This method needs Activity context");
         }
 
         ResultReceiver resultReceiver = new ResultReceiver(null) {
@@ -499,7 +475,7 @@ public class Kommunicate {
 
     public static void launchPrechatWithResult(final Context context, List<KmPrechatInputModel> inputModelList, final KmPrechatCallback<Map<String, String>> callback) {
         if (!(context instanceof Activity) && callback != null) {
-            callback.onError(NEEDS_ACTIVITY_CONTEXT);
+            callback.onError("This method needs Activity context");
         }
 
         ResultReceiver resultReceiver = new ResultReceiver(null) {
@@ -568,7 +544,7 @@ public class Kommunicate {
     @Deprecated
     public static void startConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
         if (chatBuilder == null) {
-            throw new KmException(KM_CHAT_BUILDER_CANTBE_NULL);
+            throw new KmException("KmChatBuilder cannot be null");
         }
 
         if (chatBuilder.getAgentIds() == null || chatBuilder.getAgentIds().isEmpty()) {
@@ -620,7 +596,7 @@ public class Kommunicate {
         KMGroupInfo channelInfo = new KMGroupInfo(TextUtils.isEmpty(chatBuilder.getChatName()) ? Utils.getString(chatBuilder.getContext(), R.string.km_default_support_group_name) : chatBuilder.getChatName(), new ArrayList<String>());
 
         if (chatBuilder.getAgentIds() == null || chatBuilder.getAgentIds().isEmpty()) {
-            throw new KmException(AGENTID_CANTBE_NULL);
+            throw new KmException("Agent Id list cannot be null or empty");
         }
         for (String agentId : chatBuilder.getAgentIds()) {
             users.add(channelInfo.new GroupUser().setUserId(agentId).setGroupRole(1));
@@ -651,16 +627,16 @@ public class Kommunicate {
         }
 
         Map<String, String> metadata = new HashMap<>();
-        metadata.put(CREATE_GROUP_MSG, "");
-        metadata.put(REMOVE_MEMBER_MSG, "");
-        metadata.put(ADD_MEMBER_MSG, "");
-        metadata.put(JOIN_MEMBER_MSG, "");
-        metadata.put(GROUP_NAME_CHANGE_MSG, "");
-        metadata.put(GROUP_ICON_CHANGE_MSG, "");
-        metadata.put(GROUP_LEFT_MSG, "");
-        metadata.put(DELETED_GROUP_MESSAGE, "");
-        metadata.put(USER_ROLE_UPDATED_MESSAGE, "");
-        metadata.put(META_DATA_UPDATED_MESSAGE, "");
+        metadata.put("CREATE_GROUP_MESSAGE", "");
+        metadata.put("REMOVE_MEMBER_MESSAGE", "");
+        metadata.put("ADD_MEMBER_MESSAGE", "");
+        metadata.put("JOIN_MEMBER_MESSAGE", "");
+        metadata.put("GROUP_NAME_CHANGE_MESSAGE", "");
+        metadata.put("GROUP_ICON_CHANGE_MESSAGE", "");
+        metadata.put("GROUP_LEFT_MESSAGE", "");
+        metadata.put("DELETED_GROUP_MESSAGE", "");
+        metadata.put("GROUP_USER_ROLE_UPDATED_MESSAGE", "");
+        metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
         metadata.put("HIDE", "true");
 
         if (!TextUtils.isEmpty(chatBuilder.getConversationAssignee())) {
@@ -719,13 +695,13 @@ public class Kommunicate {
 
     public static void getFaqs(Context context, String type, String helpDocsKey, String data, KmFaqTaskListener listener) {
         KMFaqTask task = new KMFaqTask(context, helpDocsKey, data, listener);
-        if (GET_ARTICLES.equals(type)) {
+        if ("getArticles".equals(type)) {
             task.forArticleRequest();
-        } else if (GET_SELECTED_ARTICLES.equals(type)) {
+        } else if ("getSelectedArticles".equals(type)) {
             task.forSelectedArticles();
-        } else if (GET_ANSWERS.equals(type)) {
+        } else if ("getAnswers".equals(type)) {
             task.forAnswerRequest();
-        } else if (GET_DASHBOARD_FAQ.equals(type)) {
+        } else if ("getDashboardFaq".equals(type)) {
             task.forDashboardFaq();
         }
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -742,7 +718,7 @@ public class Kommunicate {
     public static void registerForPushNotification(final Context context, String token, final KmPushNotificationHandler listener) {
         if (TextUtils.isEmpty(token)) {
             if (listener != null) {
-                listener.onFailure(null, new KmException(PUSH_TOKEN_CANTBE_NULL));
+                listener.onFailure(null, new KmException("Push token cannot be null or empty"));
             }
             return;
         }
@@ -820,11 +796,11 @@ public class Kommunicate {
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
 
         if (agentIds == null || agentIds.isEmpty()) {
-            throw new KmException(ADD_ATLEAST_ONE_AGENT);
+            throw new KmException("Please add at-least one Agent");
         }
 
         if (TextUtils.isEmpty(userId)) {
-            throw new KmException(USERID_CANT_BE_NULL);
+            throw new KmException("UserId cannot be null");
         }
 
         Collections.sort(agentIds);
@@ -857,7 +833,7 @@ public class Kommunicate {
         }
 
         if (sb.toString().length() > 255) {
-            throw new KmException(REDUCE_AGENTS_BOTS);
+            throw new KmException("Please reduce the number of agents or bots");
         }
 
         return sb.toString();
@@ -901,7 +877,7 @@ public class Kommunicate {
     private static String generateUserId() {
         StringBuilder text = new StringBuilder("");
         SecureRandom random = new SecureRandom();
-        String possible = ALPHA_NUMS;
+        String possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         for (int i = 0; i < 32; i++) {
             text.append(possible.charAt(random.nextInt(possible.length())));
@@ -953,7 +929,7 @@ public class Kommunicate {
     }
 
     public static void removeApplicationKey(Context context) {
-        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove(APPLICATION_KEY).commit();
+        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove("APPLICATION_KEY").commit();
     }
 
     public static void setChatText(Context context, String PreFilledText) {

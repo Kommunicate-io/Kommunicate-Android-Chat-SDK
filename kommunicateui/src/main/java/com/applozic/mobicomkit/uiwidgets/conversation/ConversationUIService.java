@@ -107,9 +107,6 @@ public class ConversationUIService {
     private BaseContactService baseContactService;
     private NotificationManager notificationManager;
     private boolean isActionMessageHidden;
-    private static final String LATITUDE = "latitude";
-    private static final String LONGITUDE = "longitude";
-    public static final String DCIM_CAMERA = "/DCIM/Camera/";
 
     public ConversationUIService(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
@@ -269,7 +266,7 @@ public class ConversationUIService {
                 File file = ((ConversationActivity) fragmentActivity).getFileObject();
 
                 if (!(file != null && file.exists())) {
-                    FileUtils.getLastModifiedFile(Environment.getExternalStorageDirectory().getAbsolutePath() + DCIM_CAMERA).renameTo(file);
+                    FileUtils.getLastModifiedFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/").renameTo(file);
                 }
 
                 if (selectedFileUri != null) {
@@ -332,8 +329,8 @@ public class ConversationUIService {
             }
 
             if (requestCode == MultimediaOptionFragment.REQUEST_CODE_SEND_LOCATION && resultCode == Activity.RESULT_OK) {
-                Double latitude = intent.getDoubleExtra(LATITUDE, 0);
-                Double longitude = intent.getDoubleExtra(LONGITUDE, 0);
+                Double latitude = intent.getDoubleExtra("latitude", 0);
+                Double longitude = intent.getDoubleExtra("longitude", 0);
                 //TODO: put your location(lat/lon ) in constructor.
                 LocationInfo info = new LocationInfo(latitude, longitude);
                 String locationInfo = GsonUtils.getJsonFromObject(info, LocationInfo.class);
@@ -605,7 +602,7 @@ public class ConversationUIService {
 
     public void deleteConversation(Contact contact, Integer channelKey, String response) {
         if (BroadcastService.isIndividual()) {
-            if (SUCCESS.equals(response)) {
+            if ("success".equals(response)) {
                 getConversationFragment().clearList();
             } else {
                 if (!Utils.isInternetAvailable(fragmentActivity)) {
@@ -822,7 +819,7 @@ public class ConversationUIService {
 
         String userId = intent.getStringExtra(USER_ID);
         if (TextUtils.isEmpty(userId)) {
-            userId = intent.getStringExtra(CONTACT_ID);
+            userId = intent.getStringExtra("contactId");
         }
 
         if (!TextUtils.isEmpty(userId)) {

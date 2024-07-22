@@ -25,10 +25,6 @@ public class KmHttpClient {
 
     private static final String TAG = "KmHttpClient";
     private Context context;
-    private static final String ACCEPT = "Accept";
-    private static final String CONTENT_TYPE = "Content-Type";
-    private static final String POST = "POST";
-    private static final String GET = "GET";
 
     public KmHttpClient(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -44,15 +40,15 @@ public class KmHttpClient {
             }
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(POST);
+            connection.setRequestMethod("POST");
             connection.setDoInput(true);
             connection.setDoOutput(true);
 
             if (!TextUtils.isEmpty(contentType)) {
-                connection.setRequestProperty(CONTENT_TYPE, contentType);
+                connection.setRequestProperty("Content-Type", contentType);
             }
             if (!TextUtils.isEmpty(accept)) {
-                connection.setRequestProperty(ACCEPT, accept);
+                connection.setRequestProperty("Accept", accept);
             }
             connection.connect();
 
@@ -111,15 +107,15 @@ public class KmHttpClient {
             url = new URL(urlString);
             connection = (HttpURLConnection) url.openConnection();
             connection.setInstanceFollowRedirects(true);
-            connection.setRequestMethod(GET);
+            connection.setRequestMethod("GET");
             connection.setUseCaches(false);
             connection.setDoInput(true);
 
             if (!TextUtils.isEmpty(contentType)) {
-                connection.setRequestProperty(CONTENT_TYPE, contentType);
+                connection.setRequestProperty("Content-Type", contentType);
             }
             if (!TextUtils.isEmpty(accept)) {
-                connection.setRequestProperty(ACCEPT, accept);
+                connection.setRequestProperty("Accept", accept);
             }
             if(headers != null && !headers.isEmpty()) {
                 for (Map.Entry<String, String> header : headers.entrySet()) {

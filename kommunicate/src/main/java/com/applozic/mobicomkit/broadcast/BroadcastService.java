@@ -38,7 +38,7 @@ public class BroadcastService {
 
     private static final String TAG = "BroadcastService";
     private static final String MOBICOMKIT_ALL = "MOBICOMKIT_ALL";
-    public static final String no_alert = "NO_ALERT";
+
     public static String currentUserId = null;
     public static Integer parentGroupKey = null;
     public static Integer currentConversationId = null;
@@ -48,9 +48,6 @@ public class BroadcastService {
     public static int lastIndexForChats = 0;
     private static boolean contextBasedChatEnabled = false;
     public static String currentUserProfileUserId = null;
-    public static final String LOAD_MORE = "loadMore";
-    private static final String CONTACT_NUMBERS = "contactNumbers";
-    private static final String KEY_STRING = "keyString";
 
     public static void selectMobiComKitAll() {
         currentUserId = MOBICOMKIT_ALL;
@@ -83,7 +80,7 @@ public class BroadcastService {
         Intent intent = new Intent();
         intent.setAction(INTENT_ACTIONS.LOAD_MORE.toString());
         intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.putExtra(LOAD_MORE, loadMore);
+        intent.putExtra("loadMore", loadMore);
         sendBroadcast(context, intent);
     }
 
@@ -128,8 +125,8 @@ public class BroadcastService {
         Utils.printLog(context, TAG, "Sending message delete broadcast for " + action);
         Intent intentDelete = new Intent();
         intentDelete.setAction(action);
-        intentDelete.putExtra(KEY_STRING, keyString);
-        intentDelete.putExtra(CONTACT_NUMBERS, contactNumbers);
+        intentDelete.putExtra("keyString", keyString);
+        intentDelete.putExtra("contactNumbers", contactNumbers);
         intentDelete.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(message, Message.class));
 
         intentDelete.addCategory(Intent.CATEGORY_DEFAULT);
@@ -201,7 +198,7 @@ public class BroadcastService {
             return false;
         }
         if(User.RoleType.USER_ROLE.getValue().equals(userPreference.getUserRoleType())) {
-            return !(message.getMetadata() != null && message.getMetadata().containsKey(no_alert) && "true".equals(message.getMetadata().get(no_alert)));
+            return !(message.getMetadata() != null && message.getMetadata().containsKey("NO_ALERT") && "true".equals(message.getMetadata().get("NO_ALERT")));
         }
         if (userPreference.isNotifyEverybody()) {
             if (User.RoleType.BOT.getValue().equals(new AppContactService(context).getContactById(TextUtils.isEmpty(channel.getConversationAssignee()) ? message.getGroupAssignee() : channel.getConversationAssignee()).getRoleType())) {
@@ -271,7 +268,7 @@ public class BroadcastService {
             AlMessageEvent messageEvent = new AlMessageEvent().setAction(AlMessageEvent.ActionType.MESSAGE_METADATA_UPDATED).setMessageKey(messageKey);
             Intent intent = new Intent();
             intent.setAction(action);
-            intent.putExtra(KEY_STRING, messageKey);
+            intent.putExtra("keyString", messageKey);
 
             if (groupId != null) {
                 messageEvent.setGroupId(groupId);

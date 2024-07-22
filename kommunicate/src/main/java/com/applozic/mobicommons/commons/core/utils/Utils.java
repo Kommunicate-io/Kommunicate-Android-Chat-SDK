@@ -42,12 +42,6 @@ public class Utils {
 
     private static final String TAG = "Utils";
 
-    private static final String MAIN_FOLDER_NAME = "main_folder_name";
-    private static final String CONTENT_TYPE = "contentType";
-    private static final String TEMPLATE_ID = "templateId";
-    private static final String PAYLOAD = "payload";
-    private static final String COM_PACKAGE_NAME = "com.package.name";
-    private static final String APPLOZIC_PROVIDER = ".applozic.provider";
     // Prevents instantiation.
     private Utils() {
     }
@@ -348,7 +342,7 @@ public class Utils {
             String fileName = "/" + ALSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
             BufferedWriter bufferedWriter = null;
             try {
-                String folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_NAME);
+                String folder = "/" + Utils.getMetaDataValue(context, "main_folder_name");
                 File dir = new File(context.getFilesDir().getAbsolutePath() + folder);
                 if (!dir.exists()) {
                     dir.mkdirs();
@@ -379,11 +373,11 @@ public class Utils {
     public static Uri getTextLogFileUri(Context context) {
         try {
             String fileName = "/" + ALSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
-            String folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_NAME);
+            String folder = "/" + Utils.getMetaDataValue(context, "main_folder_name");
             File dir = new File(context.getFilesDir().getAbsolutePath() + folder);
             File textLogFile = new File(dir, fileName);
             if (hasNougat()) {
-                return ALFileProvider.getUriForFile(ApplozicService.getContext(context), getMetaDataValue(context, COM_PACKAGE_NAME) + APPLOZIC_PROVIDER, textLogFile);
+                return ALFileProvider.getUriForFile(ApplozicService.getContext(context), getMetaDataValue(context, "com.package.name") + ".applozic.provider", textLogFile);
             }
             return Uri.fromFile(textLogFile);
         } catch (Exception e) {
@@ -409,9 +403,9 @@ public class Utils {
             JSONObject jsonObject = new JSONObject(string);
             JSONObject jsonObjec2 = new JSONObject(jsonObject.getString("metadata"));
             HashMap<String, String> newMetadata = new HashMap<>();
-            newMetadata.put(PAYLOAD, jsonObjec2.getString(PAYLOAD));
-            newMetadata.put(TEMPLATE_ID, jsonObjec2.getString(TEMPLATE_ID));
-            newMetadata.put(CONTENT_TYPE, "300");
+            newMetadata.put("payload", jsonObjec2.getString("payload"));
+            newMetadata.put("templateId", jsonObjec2.getString("templateId"));
+            newMetadata.put("contentType", "300");
             return newMetadata;
         } catch (JSONException e) {
             e.printStackTrace();

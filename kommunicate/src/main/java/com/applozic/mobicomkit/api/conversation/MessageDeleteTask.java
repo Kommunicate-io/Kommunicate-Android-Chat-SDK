@@ -16,7 +16,6 @@ public class MessageDeleteTask extends AlAsyncTask<Void, String> {
     private Exception exception;
     private MobiComMessageService mobiComMessageService;
     private AlCallback callback;
-    private static final String INTERNAL_ERR = "Some internal error occurred";
 
     public MessageDeleteTask(Context context, String messageKey, boolean deleteForAll, AlCallback callback) {
         this.context = new WeakReference<>(context);
@@ -44,7 +43,7 @@ public class MessageDeleteTask extends AlAsyncTask<Void, String> {
             if (!TextUtils.isEmpty(response)) {
                 callback.onSuccess(response);
             } else {
-                callback.onError(exception != null ? exception.getLocalizedMessage() : INTERNAL_ERR);
+                callback.onError(exception != null ? exception.getLocalizedMessage() : "Some internal error occurred");
             }
         }
     }

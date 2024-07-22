@@ -46,7 +46,7 @@ import java.util.List;
 public class FeedbackInputFragment extends BottomSheetDialogFragment implements View.OnClickListener {
 
     private static final String TAG = "FeedbackInputFragment";
-    private static final String FeedbackFragmentListener = "Implement FeedbackFragmentListener in your parent fragment.";
+
     private EditText editTextFeedbackComment;
     private Button buttonSubmitFeedback;
     private Button buttonCloseFragment;
@@ -109,7 +109,7 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
         super.onAttach(context);
         if (!FeedbackFragmentListener.class.isAssignableFrom(MobiComConversationFragment.class)) {
             Utils.printLog(context, TAG, "Implement FeedbackFragmentListener in your parent fragment.");
-            throw new ClassCastException(FeedbackFragmentListener);
+            throw new ClassCastException("Implement FeedbackFragmentListener in your parent fragment.");
         }
     }
 

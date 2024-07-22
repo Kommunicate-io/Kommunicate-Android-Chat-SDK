@@ -55,7 +55,6 @@ public class SecurityUtils {
     public static final String AES = "AES";
     public static final String RSA = "RSA";
 
-    private static final String APPLOZIC_INC = ", O=ApplozicInc";
     private static final String CIPHER_AES = "AES/CBC/PKCS5PADDING";
     private static final String CIPHER_RSA = "RSA/ECB/PKCS1Padding";
     private static final String RSA_KEY_ALIAS = "ApplozicRSAKey";
@@ -63,11 +62,9 @@ public class SecurityUtils {
     private static final String CRYPTO_SHARED_PREF = "security_shared_preferences"; //name for the shared pref storing the AES encryption key
     private static final String AES_ENCRYPTION_KEY = "aesencryptionkey"; //key for the AES encryption key entry
 
-    private static final String ALGO_AES_RSA = "The algorithm parameter that is passed to the method must either be \"AES\" or \"RSA\".";
     public static final String VERSION_CODE = "version_code";
     public static final String CURRENT_VERSION = "1.0";
     public static final String AES_KEY_ENCRYPTED = "aeskeyencrypted";
-    public static final String Algo_Parameter_Exception = "Please provide RSA public or private key when passing cryptAlgorithm == \"RSA\".";
 
     public static Locale localeBeforeChange;
 
@@ -115,7 +112,7 @@ public class SecurityUtils {
             AlgorithmParameterSpec spec;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                 spec = new KeyGenParameterSpec.Builder(RSA_KEY_ALIAS, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                        .setCertificateSubject(new X500Principal("CN=" + RSA_KEY_ALIAS + APPLOZIC_INC))
+                        .setCertificateSubject(new X500Principal("CN=" + RSA_KEY_ALIAS + ", O=ApplozicInc"))
                         .setCertificateSerialNumber(BigInteger.valueOf(123456))
                         .setCertificateNotBefore(start.getTime())
                         .setCertificateNotAfter(end.getTime())
@@ -124,7 +121,7 @@ public class SecurityUtils {
             } else {
                 spec = new KeyPairGeneratorSpec.Builder(context.getApplicationContext())
                         .setAlias(RSA_KEY_ALIAS)
-                        .setSubject(new X500Principal("CN=" + RSA_KEY_ALIAS + APPLOZIC_INC))
+                        .setSubject(new X500Principal("CN=" + RSA_KEY_ALIAS + ", O=ApplozicInc"))
                         .setSerialNumber(BigInteger.valueOf(123456))
                         .setStartDate(start.getTime())
                         .setEndDate(end.getTime())
@@ -152,7 +149,7 @@ public class SecurityUtils {
      */
     public static KeyPair getRSAKeyPair(Context context) {
         try {
-            KeyStore keyStore = KeyStore.getInstance(RSA_PROVIDER);
+            KeyStore keyStore = KeyStore.getInstance("AndroidKeyStore");
             keyStore.load(null);
 
             //generate the public and private keys to encrypt/decrypt the AES key
@@ -264,11 +261,11 @@ public class SecurityUtils {
             cipher = Cipher.getInstance(CIPHER_RSA);
             Key keyRSA = cryptMode == Cipher.DECRYPT_MODE ? keyPairRSA.getPrivate() : keyPairRSA.getPublic();
             if (keyRSA == null) {
-                throw new InvalidAlgorithmParameterException(Algo_Parameter_Exception);
+                throw new InvalidAlgorithmParameterException("Please provide RSA public or private key when passing cryptAlgorithm == \"RSA\".");
             }
             cipher.init(cryptMode, keyRSA);
         } else {
-            throw new NoSuchAlgorithmException(ALGO_AES_RSA);
+            throw new NoSuchAlgorithmException("The algorithm parameter that is passed to the method must either be \"AES\" or \"RSA\".");
         }
         return cipher;
     }

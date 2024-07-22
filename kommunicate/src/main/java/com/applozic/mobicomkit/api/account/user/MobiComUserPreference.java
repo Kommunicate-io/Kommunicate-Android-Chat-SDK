@@ -92,6 +92,8 @@ public class MobiComUserPreference {
     private SharedPreferences sharedPreferences;
     private Context context;
     private String countryCode;
+    private static final String data_path = "/data/data/";
+    private static final String shared_pref_path = "/shared_prefs/";
 
 
     private MobiComUserPreference(Context context) {
@@ -111,9 +113,9 @@ public class MobiComUserPreference {
     }
 
     public synchronized static void renameSharedPrefFile(Context context) {
-        File oldFile = new File("/data/data/" + Utils.getPackageName(context) + "/shared_prefs/" + MobiComKitClientService.getApplicationKey(context) + ".xml");
+        File oldFile = new File(data_path + Utils.getPackageName(context) + shared_pref_path + MobiComKitClientService.getApplicationKey(context) + ".xml");
         if (oldFile.exists()) {
-            oldFile.renameTo(new File("/data/data/" + Utils.getPackageName(context) + "/shared_prefs/" + MobiComUserPreference.AL_USER_PREF_KEY + ".xml"));
+            oldFile.renameTo(new File(data_path + Utils.getPackageName(context) + shared_pref_path + MobiComUserPreference.AL_USER_PREF_KEY + ".xml"));
         }
     }
 

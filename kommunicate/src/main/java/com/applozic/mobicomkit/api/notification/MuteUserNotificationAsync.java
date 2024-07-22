@@ -16,12 +16,14 @@ import java.lang.ref.WeakReference;
  */
 
 public class MuteUserNotificationAsync extends AlAsyncTask<Void, ApiResponse> {
-
+    private static final String err_msg = "Some error occurred";
+    private static final String SUCCESS = "success";
     TaskListener listener;
     Long notificationAfterTime;
     WeakReference<Context> context;
     String userId;
     ApiResponse response;
+    private static final String success_msg = "Successfully muted/unmuted user";
 
     public MuteUserNotificationAsync(TaskListener listener, Long notificationAfterTime, String userId, Context context) {
         this.listener = listener;
@@ -40,15 +42,15 @@ public class MuteUserNotificationAsync extends AlAsyncTask<Void, ApiResponse> {
         super.onPostExecute(apiResponse);
 
         if (apiResponse == null) {
-            listener.onFailure("Some error occurred", context.get());
+            listener.onFailure(err_msg, context.get());
         } else {
-            if ("success".equals(apiResponse.getStatus())) {
-                listener.onSuccess("Successfully muted/unmuted user", context.get());
+            if (SUCCESS.equals(apiResponse.getStatus())) {
+                listener.onSuccess(success_msg, context.get());
             } else {
                 if (apiResponse.getErrorResponse() != null) {
                     listener.onFailure(GsonUtils.getJsonFromObject(apiResponse.getErrorResponse().toArray(new ErrorResponseFeed[apiResponse.getErrorResponse().size()]), ErrorResponseFeed[].class), context.get());
                 } else {
-                    listener.onFailure("Some unknown error occurred", context.get());
+                    listener.onFailure(err_msg, context.get());
                 }
             }
         }

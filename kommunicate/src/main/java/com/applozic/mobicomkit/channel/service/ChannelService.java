@@ -52,6 +52,7 @@ public class ChannelService {
     private BaseContactService baseContactService;
     private UserService userService;
     private String loggedInUserId;
+    private static final String SUCCESS = "success";
 
     private ChannelService(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -521,7 +522,7 @@ public class ChannelService {
 
     public String processChannelDeleteConversation(Channel channel, Context context) {
         String response = new MobiComConversationService(context).deleteSync(null, channel, null);
-        if (!TextUtils.isEmpty(response) && "success".equals(response)) {
+        if (!TextUtils.isEmpty(response) && SUCCESS.equals(response)) {
             channelDatabaseService.deleteChannelUserMappers(channel.getKey());
             channelDatabaseService.deleteChannel(channel.getKey());
         }
@@ -822,7 +823,7 @@ public class ChannelService {
                 processChildGroupKeysForChannelSync(channelFeed.getChildKeys());
             }
             if (channel.isDeleted() && ApplozicClient.getInstance(context).isSkipDeletedGroups()) {
-                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, channel.getKey(), "success");
+                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, channel.getKey(), SUCCESS);
             }
         }
     }
@@ -847,7 +848,7 @@ public class ChannelService {
         if(channelKey != null && channelKey != 0) {
             channelDatabaseService.deleteChannel(channelKey);
             channelDatabaseService.deleteChannelUserMappers(channelKey);
-            BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, channelKey, "success");
+            BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, channelKey, SUCCESS);
 
         }
     }

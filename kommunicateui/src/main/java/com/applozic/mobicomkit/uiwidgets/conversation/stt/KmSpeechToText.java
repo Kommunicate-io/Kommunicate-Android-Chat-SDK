@@ -30,6 +30,7 @@ public class KmSpeechToText implements RecognitionListener {
     private boolean isStopped;
     private String languageCode;
     private AlCustomizationSettings alCustomizationSettings;
+    private static final String BEGINNING_OF_SPEECH = "Beginning of speech";
 
     public KmSpeechToText(Activity context, KmRecordButton recordButton, KmTextListener listener, AlCustomizationSettings alCustomizationSettings) {
         this.context = context;
@@ -77,7 +78,7 @@ public class KmSpeechToText implements RecognitionListener {
 
     @Override
     public void onBeginningOfSpeech() {
-        Utils.printLog(context, TAG, "Beginning of speech");
+        Utils.printLog(context, TAG, BEGINNING_OF_SPEECH);
     }
 
     @Override

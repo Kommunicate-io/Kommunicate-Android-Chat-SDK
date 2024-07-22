@@ -33,6 +33,8 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
     FileClientService fileClientService;
     File file;
     Uri uri;
+    private static final String IMAGE = "image/";
+    private static final String VIDEO = "video/";
 
     PrePostUIMethods prePostUIMethods;
     boolean isCompressionNeeded;
@@ -56,9 +58,9 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
     protected Boolean doInBackground(Void... voids) {
         if (isCompressionNeeded) {
             String mimeType = FileUtils.getMimeTypeByContentUriOrOther(context, uri);
-            if (!TextUtils.isEmpty(mimeType) && mimeType.contains("image/")) {
+            if (!TextUtils.isEmpty(mimeType) && mimeType.contains(IMAGE)) {
                 uri = FileUtils.compressImage(uri, context, file.getName());
-            } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains("video/")) {
+            } else if (!TextUtils.isEmpty(mimeType) && mimeType.contains(VIDEO)) {
                 uri = FileUtils.compressVideo(context, uri, file);
             }
         }

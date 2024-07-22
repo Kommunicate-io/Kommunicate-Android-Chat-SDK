@@ -80,6 +80,12 @@ public class KommunicateSetting {
     private static final String HIDE_GROUP_SUBTITLE = "HIDE_GROUP_SUBTITLE";
     private static final String PARENT_ACTIVITY_INTENT = "PARENT_ACTIVITY_INTENT";
     private static final String RESTRICTED_WORDS_REGEX = "RESTRICTED_WORDS_REGEX";
+    private static final String MESSAGE_TAP_VALUE = "1905";
+    private static final String PROFILE_VIEW_VALUE = "1903";
+    private static final String USER_BLOCK_VALUE = "1904";
+    private static final String USER_LOGOUT_VALUE = "1905";
+    private static final String VIDEO_CALL_VALUE = "1906";
+    private static final String AUDIO_CALL_VALUE = "1907";
     public static KommunicateSetting kommunicateSetting;
     public SharedPreferences sharedPreferences;
     private Context context;
@@ -753,12 +759,12 @@ public class KommunicateSetting {
 
     public enum RequestCode {
 
-        MESSAGE_TAP(Integer.valueOf("1905")),
-        PROFILE_VIEW(Integer.valueOf("1903")),
-        USER_BLOCK(Integer.valueOf("1904")),
-        USER_LOOUT(Integer.valueOf("1905")),
-        VIDEO_CALL(Integer.valueOf("1906")),
-        AUDIO_CALL(Integer.valueOf("1907"));
+        MESSAGE_TAP(Integer.valueOf(MESSAGE_TAP_VALUE)),
+        PROFILE_VIEW(Integer.valueOf(PROFILE_VIEW_VALUE)),
+        USER_BLOCK(Integer.valueOf(USER_BLOCK_VALUE)),
+        USER_LOGOUT(Integer.valueOf(USER_LOGOUT_VALUE)),
+        VIDEO_CALL(Integer.valueOf(VIDEO_CALL_VALUE)),
+        AUDIO_CALL(Integer.valueOf(AUDIO_CALL_VALUE));
 
         private Integer value;
 

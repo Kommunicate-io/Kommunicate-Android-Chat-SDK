@@ -15,6 +15,8 @@ public class KmAutoSuggestionsAsyncTask extends AsyncTask<Void, Void, KmApiRespo
 
     private KmService kmService;
     private KmAutoSuggestionListener listener;
+    private static final String ERR_OCCURED = "Some error occurred";
+
 
     public KmAutoSuggestionsAsyncTask(Context context, KmAutoSuggestionListener listener) {
         this.listener = listener;
@@ -35,10 +37,10 @@ public class KmAutoSuggestionsAsyncTask extends AsyncTask<Void, Void, KmApiRespo
                 if (KmApiResponse.KM_AUTO_SUGGESSTION_SUCCESS_RESPONSE.equals(apiResponse.getCode())) {
                     listener.onSuccess(apiResponse.getData());
                 } else {
-                    listener.onFailure(apiResponse.getData() != null ? GsonUtils.getJsonFromObject(apiResponse.getData().toArray(), KmAutoSuggestionModel[].class) : "Some error occurred");
+                    listener.onFailure(apiResponse.getData() != null ? GsonUtils.getJsonFromObject(apiResponse.getData().toArray(), KmAutoSuggestionModel[].class) : ERR_OCCURED);
                 }
             } else {
-                listener.onFailure("Some error occurred");
+                listener.onFailure(ERR_OCCURED);
             }
         }
     }

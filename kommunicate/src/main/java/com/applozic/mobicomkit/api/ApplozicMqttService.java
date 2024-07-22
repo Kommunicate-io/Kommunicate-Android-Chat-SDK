@@ -48,6 +48,11 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
     private static final String MQTT_ENCRYPTION_TOPIC = "encr-";
     private static final String SUPPORT_GROUP_TOPIC = "support-channel";
     private static final String TEAM_TOPIC = "teamid";
+    private static final String KM_REMOVE_GROUP = "KM_REMOVE_GROUP";
+    private static final String SUCCESS = "success";
+    private static final String MESSAGE_RECEIVED = "MESSAGE_RECEIVED";
+    private static final String MSG_DELIVERED = "MT_MESSAGE_DELIVERED";
+    private static final String MSG_DELIVERED_READ = "MT_MESSAGE_DELIVERED_READ";
 
     private static ApplozicMqttService applozicMqttService;
     private AlMqttClient client;
@@ -426,7 +431,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 AlEventManager.getInstance().postMqttEventData(mqttMessageResponse);
 
                                 Utils.printLog(context, TAG, "MQTT message type: " + mqttMessageResponse.getType());
-                                if (NOTIFICATION_TYPE.MESSAGE_RECEIVED.getValue().equals(mqttMessageResponse.getType()) || "MESSAGE_RECEIVED".equals(mqttMessageResponse.getType())) {
+                                if (NOTIFICATION_TYPE.MESSAGE_RECEIVED.getValue().equals(mqttMessageResponse.getType()) || MESSAGE_RECEIVED.equals(mqttMessageResponse.getType())) {
 
                                     GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
                                     if (messageResponse == null) {
@@ -449,7 +454,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                         } else {
                                             if (message.isGroupDeleteAction()) {
                                                 syncCallService.deleteChannelConversationThread(message.getGroupId());
-                                                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, message.getGroupId(), "success");
+                                                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, message.getGroupId(), SUCCESS);
                                             }
                                             syncCallService.syncMessages(null);
                                         }
@@ -459,7 +464,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 }
 
                                 if (NOTIFICATION_TYPE.MESSAGE_DELIVERED.getValue().equals(mqttMessageResponse.getType())
-                                        || "MT_MESSAGE_DELIVERED".equals(mqttMessageResponse.getType())) {
+                                        || MSG_DELIVERED.equals(mqttMessageResponse.getType())) {
                                     String[] splitKeyString = (mqttMessageResponse.getMessage()).toString().split(",");
                                     String keyString = splitKeyString[0];
                                     //String userId = splitKeyString[1];
@@ -467,7 +472,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                 }
 
                                 if (NOTIFICATION_TYPE.MESSAGE_DELIVERED_AND_READ.getValue().equals(mqttMessageResponse.getType())
-                                        || "MT_MESSAGE_DELIVERED_READ".equals(mqttMessageResponse.getType())) {
+                                        || MSG_DELIVERED_READ.equals(mqttMessageResponse.getType())) {
                                     String[] splitKeyString = (mqttMessageResponse.getMessage()).toString().split(",");
                                     String keyString = splitKeyString[0];
                                     syncCallService.updateReadStatus(keyString);
@@ -504,13 +509,13 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
 
                                 if (NOTIFICATION_TYPE.CONVERSATION_DELETED.getValue().equals(mqttMessageResponse.getType())) {
                                     syncCallService.deleteConversationThread(mqttMessageResponse.getMessage().toString());
-                                    BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), mqttMessageResponse.getMessage().toString(), 0, "success");
+                                    BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), mqttMessageResponse.getMessage().toString(), 0, SUCCESS);
                                 }
 
                                 if (NOTIFICATION_TYPE.GROUP_CONVERSATION_DELETED.getValue().equals(mqttMessageResponse.getType())) {
                                     InstantMessageResponse instantMessageResponse = (InstantMessageResponse) GsonUtils.getObjectFromJson(messageDataString, InstantMessageResponse.class);
                                     syncCallService.deleteChannelConversationThread(instantMessageResponse.getMessage());
-                                    BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, Integer.valueOf(instantMessageResponse.getMessage()), "success");
+                                    BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, Integer.valueOf(instantMessageResponse.getMessage()), SUCCESS);
                                 }
 
                                 if (NOTIFICATION_TYPE.MESSAGE_DELETED.getValue().equals(mqttMessageResponse.getType())) {
@@ -632,8 +637,8 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                                         GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
                                         Message message = messageResponse.getMessage();
                                         if(messageResponse.getMessage() != null && message.getMetadata() != null
-                                        && message.getMetadata().containsKey("KM_REMOVE_GROUP")
-                                        && "true".equals(message.getMetadata().get("KM_REMOVE_GROUP"))) {
+                                        && message.getMetadata().containsKey(KM_REMOVE_GROUP)
+                                        && "true".equals(message.getMetadata().get(KM_REMOVE_GROUP))) {
                                             ChannelService.getInstance(context).deleteChannelFromDb(messageResponse.getMessage().getGroupId());
                                         }
                                     } catch (Exception e) {

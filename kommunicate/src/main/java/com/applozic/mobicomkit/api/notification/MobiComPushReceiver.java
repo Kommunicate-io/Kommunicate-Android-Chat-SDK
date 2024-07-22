@@ -41,6 +41,9 @@ MobiComPushReceiver {
     public static final String UNBLOCKED_TO = "UNBLOCKED_TO";
     private static final String TAG = "MobiComPushReceiver";
     private static Queue<String> notificationIdList = new LinkedList<String>();
+    private static final String collapse_key = "collapse_key";
+    private static final String SUCCESS = "success";
+    private static final String NULL = "null";
 
     static {
         notificationKeyList.add("APPLOZIC_01"); // 0 for MESSAGE_RECEIVED //done
@@ -93,7 +96,7 @@ MobiComPushReceiver {
         if (bundle == null) {
             return false;
         }
-        String payLoad = bundle.getString("collapse_key");
+        String payLoad = bundle.getString(collapse_key);
         Log.d(TAG, "Received notification");
 
         if (payLoad != null && payLoad.contains(MTCOM_PREFIX) || notificationKeyList.contains(payLoad)) {
@@ -260,7 +263,7 @@ MobiComPushReceiver {
                 addPushNotificationId(deleteConversationResponse.getId());
                 MobiComConversationService conversationService = new MobiComConversationService(context);
                 conversationService.deleteConversationFromDevice(deleteConversationResponse.getMessage().toString());
-                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), deleteConversationResponse.getMessage().toString(), 0, "success");
+                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), deleteConversationResponse.getMessage().toString(), 0, SUCCESS);
             }
 
             if (!TextUtils.isEmpty(deleteConversationForChannel)) {
@@ -270,7 +273,7 @@ MobiComPushReceiver {
                 }
                 addPushNotificationId(instantMessageResponse.getId());
                 syncCallService.deleteChannelConversationThread(instantMessageResponse.getMessage());
-                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, Integer.valueOf(instantMessageResponse.getMessage()), "success");
+                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, Integer.valueOf(instantMessageResponse.getMessage()), SUCCESS);
             }
 
             if (!TextUtils.isEmpty(userConnected)) {
@@ -291,7 +294,7 @@ MobiComPushReceiver {
                 String[] parts = userDisconnectedResponse.getMessage().toString().split(",");
                 String userId = parts[0];
                 Date lastSeenAt = new Date();
-                if (parts.length >= 2 && !parts[1].equals("null")) {
+                if (parts.length >= 2 && !parts[1].equals(NULL)) {
                     lastSeenAt = new Date(Long.valueOf(parts[1]));
                 }
                 syncCallService.updateConnectedStatus(userId, lastSeenAt, false);
@@ -342,7 +345,7 @@ MobiComPushReceiver {
                     bgThread.start();
                     if (messageObj.getGroupId() != null && messageObj.isGroupDeleteAction()) {
                         syncCallService.deleteChannelConversationThread(messageObj.getGroupId());
-                        BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, messageObj.getGroupId(), "success");
+                        BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, messageObj.getGroupId(), SUCCESS);
                     }
                 } else {
                     syncCallService.syncMessages(null);

@@ -59,7 +59,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MessageInfoFragment extends Fragment {
 
     public static final String MESSAGE_ARGUMENT_KEY = "MESSAGE";
-    private static final String IMAGE = "image";
     private static final String TAG = "MessageInfoFragment";
     Message message = null;
     AttachmentView attachmentView;
@@ -226,7 +225,7 @@ public class MessageInfoFragment extends Fragment {
         if (message.getMessage() != null) {
             messageText.setText(message.getMessage());
         }
-        if (fileMeta.getContentType().contains(IMAGE)) {
+        if (fileMeta.getContentType().contains("image")) {
             attachmentView.setVisibility(View.VISIBLE);
             attachmentInconView.setVisibility(View.GONE);
             attachmentFilename.setVisibility(View.GONE);

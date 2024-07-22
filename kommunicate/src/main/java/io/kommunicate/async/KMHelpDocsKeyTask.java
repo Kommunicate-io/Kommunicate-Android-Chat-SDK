@@ -22,8 +22,6 @@ public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
     private String type;
     private Exception exception;
     private KmFaqTaskListener listener;
-    private static final String ACCESS_KEY = "Unable to get Access key";
-    private static final String SUCCESS = "SUCCESS";
 
     public KMHelpDocsKeyTask(Context context, String type, KmFaqTaskListener listener) {
         this.context = new WeakReference<Context>(context);
@@ -52,14 +50,14 @@ public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
         if (s != null) {
             listener.onSuccess(context.get(), s);
         } else {
-            listener.onFailure(context.get(), exception, ACCESS_KEY);
+            listener.onFailure(context.get(), exception, "Unable to get Access key");
         }
     }
 
     private String parseHelpDocsKey(String data) {
         try {
             KmHelpDocKey helpDocKey = (KmHelpDocKey) GsonUtils.getObjectFromJson(data, KmHelpDocKey.class);
-            if (helpDocKey != null && SUCCESS.equals(helpDocKey.getCode()) && !helpDocKey.getMessage().isEmpty()) {
+            if (helpDocKey != null && "SUCCESS".equals(helpDocKey.getCode()) && !helpDocKey.getMessage().isEmpty()) {
                 KmPreference.getInstance(context.get()).setHelpDocsKey(helpDocKey.getMessage().get(0).getAccessKey());
                 return helpDocKey.getMessage().get(0).getAccessKey();
             }

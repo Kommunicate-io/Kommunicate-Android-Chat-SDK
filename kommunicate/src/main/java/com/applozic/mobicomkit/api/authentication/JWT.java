@@ -33,12 +33,6 @@ public class JWT {
     private JWTPayload payload;
     private String signature;
     private final String token;
-    private static final String base64_exception = "Received bytes didn't correspond to a valid Base64 encoded string.";
-    private static final String invalid_json = "The token's payload had an invalid JSON format.";
-    private static final String LEEWAY_SHOULD_BE_POSITIVE = "The leeway must be a positive value.";
-    private static final String CREATED_AT_TIME = "createdAtTime";
-    private static final String VALID_UPTO = "validUpto";
-    private static final String TOKEN_EXPECTED_THREE_PARTS = "The token was expected to have 3 parts, but got %s.";
 
     public JWT(@NonNull String token) {
         this.token = token;
@@ -47,7 +41,7 @@ public class JWT {
 
     public boolean isExpired(long leeway) {
         if (leeway < 0) {
-            throw new IllegalArgumentException(LEEWAY_SHOULD_BE_POSITIVE);
+            throw new IllegalArgumentException("The leeway must be a positive value.");
         }
         long todayTime = (long) (Math.floor(new Date().getTime() / 1000) * 1000); //truncate millis
         Date futureToday = new Date(todayTime + leeway * 1000);
@@ -184,7 +178,7 @@ public class JWT {
             parts = new String[]{parts[0], parts[1], ""};
         }
         if (parts.length != 3) {
-            throw new DecodeException(String.format(TOKEN_EXPECTED_THREE_PARTS, parts.length));
+            throw new DecodeException(String.format("The token was expected to have 3 parts, but got %s.", parts.length));
         }
         return parts;
     }
@@ -196,7 +190,7 @@ public class JWT {
             byte[] bytes = Base64.decode(string, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING);
             decoded = new String(bytes, Charset.defaultCharset());
         } catch (IllegalArgumentException e) {
-            throw new DecodeException(base64_exception, e);
+            throw new DecodeException("Received bytes didn't correspond to a valid Base64 encoded string.", e);
         }
         return decoded;
     }
@@ -206,7 +200,7 @@ public class JWT {
         try {
             payload = getGson().fromJson(json, typeOfT);
         } catch (Exception e) {
-            throw new DecodeException(invalid_json, e);
+            throw new DecodeException("The token's payload had an invalid JSON format.", e);
         }
         return payload;
     }
@@ -217,7 +211,7 @@ public class JWT {
                     @Override
                     public JWTPayload deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         if (json.isJsonNull() || !json.isJsonObject()) {
-                            throw new DecodeException(invalid_json);
+                            throw new DecodeException("The token's payload had an invalid JSON format.");
                         }
 
                         JsonObject object = json.getAsJsonObject();
@@ -279,8 +273,8 @@ public class JWT {
         JWT jwtService = new JWT(token);
         MobiComUserPreference.getInstance(context)
                 .setUserAuthToken(token)
-                .setTokenCreatedAtTime(jwtService.getClaim(CREATED_AT_TIME).asLong())
-                .setTokenValidUptoMins(jwtService.getClaim(VALID_UPTO).asInt());
+                .setTokenCreatedAtTime(jwtService.getClaim("createdAtTime").asLong())
+                .setTokenValidUptoMins(jwtService.getClaim("validUpto").asInt());
         HttpRequestUtils.isRefreshTokenInProgress = false;
     }
 }

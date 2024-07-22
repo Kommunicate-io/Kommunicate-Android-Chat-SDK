@@ -38,7 +38,6 @@ public class KmAwayView extends LinearLayout {
     private Channel channel;
     private boolean isUserAnonymous;
     private boolean isCollectEmailOnAwayEnabled;
-    private static final String KM_FAIL_ERROR = "km_mail_error";
 
     public LinearLayout inflateView(Context context) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -96,7 +95,7 @@ public class KmAwayView extends LinearLayout {
 
     public void showInvalidEmail() {
         askEmailTextView.setText(rootLinearLayout.getContext().getString(R.string.invalid_email));
-        askEmailImageView.setImageDrawable(VectorDrawableCompat.create(getResources(), getResources().getIdentifier(KM_FAIL_ERROR, "drawable", rootLinearLayout.getContext().getPackageName()), null));
+        askEmailImageView.setImageDrawable(VectorDrawableCompat.create(getResources(), getResources().getIdentifier("km_mail_error", "drawable", rootLinearLayout.getContext().getPackageName()), null));
     }
 
     public TextView getAwayMessageTv() {

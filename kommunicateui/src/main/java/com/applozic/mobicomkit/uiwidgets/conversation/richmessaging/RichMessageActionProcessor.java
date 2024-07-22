@@ -49,30 +49,6 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     private KmRichMessageListener richMessageListener;
     public static final String NOTIFY_ITEM_CHANGE = "notifyItemChange";
     private static final String TAG = "AlRichMessageAction";
-    private static final String DETAILS_SUBMITTED = "Your details have been submitted";
-    private static final String GUEST_DETAIL = "guestDetail";
-    private static final String PERSON_INFO = "personInfo";
-    private static final String SESSION_ID = "sessionId";
-    private static final String SKIPBOT = "skipBot";
-    private static final String HOTEL_RESULT_IDX = "HotelResultIndex";
-    private static final String NO_OF_ROOMS = "NoOfRooms";
-    private static final String ROOM_IDX = "RoomIndex";
-    private static final String BLOCK_HOTEL_ROOM = "blockHotelRoom";
-    private static final String BOOK_HOTEL = "Book Hotel ";
-    private static final String ROOM = ", Room ";
-    private static final String GET_ROOM_DETAIL = "Get room detail of ";
-    private static final String RESULT_IDX = "resutIndex";
-    private static final String HOTEL_SELECTED = "hotelSelected";
-    private static final String GUEST_TYPE_ID = "guestTypeId";
-    private static final String IS_ROOM_GUEST_JSON = "isRoomGuestJSON";
-    private static final String ROOM_GUEST_JSON = "roomGuestJson";
-    private static final String APPLI_JSON = "application/json";
-    private static final String REPLY_TEXT = "replyText";
-    private static final String ADULTS = "ADULTS";
-    private static final String ROOM = "Room ";
-    private static final String GUEST = " Guest ";
-    private static final String CHILDREN = " Children ";
-
 
     public RichMessageActionProcessor(KmRichMessageListener richMessageListener) {
         this.richMessageListener = richMessageListener;
@@ -280,7 +256,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
                    String payloadString = model.getPayload();
                    JSONArray payloadArray = new JSONArray(payloadString);
                    JSONObject jsonObject = payloadArray.getJSONObject(0);
-                   String replyText = jsonObject.getString(REPLY_TEXT);
+                   String replyText = jsonObject.getString("replyText");
                    sendMessage(replyText,localeMetadata, Message.ContentType.DEFAULT.getValue());
                    if (!model.getFormAction().isEmpty()) {
                        new KmPostDataAsyncTask(context,
@@ -349,7 +325,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             new KmPostDataAsyncTask(context,
                     submitButtonModel.getFormAction(),
                     null,
-                    KmWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType()) ? APPLI_JSON : KmWebViewActivity.DEFAULT_REQUEST_TYPE,
+                    KmWebViewActivity.REQUEST_TYPE_JSON.equals(submitButtonModel.getRequestType()) ? "application/json" : KmWebViewActivity.DEFAULT_REQUEST_TYPE,
                     GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class),
                     new KmCallback() {
                         @Override
@@ -548,7 +524,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
             new KmPostDataAsyncTask(context,
                     payloadModel.getAction().getFormAction(),
                     null,
-                    KmWebViewActivity.REQUEST_TYPE_JSON.equals(payloadModel.getRequestType()) ? APPLI_JSON : KmWebViewActivity.DEFAULT_REQUEST_TYPE,
+                    KmWebViewActivity.REQUEST_TYPE_JSON.equals(payloadModel.getRequestType()) ? "application/json" : KmWebViewActivity.DEFAULT_REQUEST_TYPE,
                     GsonUtils.getJsonFromObject(payloadModel.getFormData(), KmRichMessageModel.KmFormDataModel.class),
                     new KmCallback() {
                         @Override
@@ -579,20 +555,21 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     }
 
     public void sendGuestListMessage(List<KmGuestCountModel> guestList, Map<String, String> replyMetadata) {
+
         Map<String, String> metadata = new HashMap<>();
-        metadata.put(GUEST_TYPE_ID, ADULTS);
-        metadata.put(IS_ROOM_GUEST_JSON, "true");
-        metadata.put(ROOM_GUEST_JSON, GsonUtils.getJsonFromObject(guestList, List.class));
+        metadata.put("guestTypeId", "ADULTS");
+        metadata.put("isRoomGuestJSON", "true");
+        metadata.put("roomGuestJson", GsonUtils.getJsonFromObject(guestList, List.class));
 
         StringBuilder message = new StringBuilder("");
         int count = 0;
 
         for (KmGuestCountModel guestModel : guestList) {
-            message.append(ROOM);
+            message.append("Room ");
             message.append(count + 1);
-            message.append(GUEST);
+            message.append(" Guest ");
             message.append(guestModel.getNoOfAdults());
-            message.append(CHILDREN);
+            message.append(" Children ");
             message.append(guestModel.getNoOfChild());
             message.append(", ");
         }
@@ -606,12 +583,12 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
     public void sendHotelDetailMessage(KmHotelBookingModel hotel, Map<String, String> replyMetadata) {
         Map<String, String> metadata = new HashMap<>();
-        metadata.put(HOTEL_SELECTED, "true");
-        metadata.put(RESULT_IDX, String.valueOf(hotel.getResultIndex()));
-        metadata.put(SESSION_ID, hotel.getSessionId());
-        metadata.put(SKIPBOT, "true");
+        metadata.put("hotelSelected", "true");
+        metadata.put("resultIndex", String.valueOf(hotel.getResultIndex()));
+        metadata.put("sessionId", hotel.getSessionId());
+        metadata.put("skipBot", "true");
 
-        String message = GET_ROOM_DETAIL + hotel.getHotelName();
+        String message = "Get room detail of " + hotel.getHotelName();
 
         if (replyMetadata != null) {
             metadata.putAll(replyMetadata);
@@ -622,34 +599,34 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
     public void sendRoomDetailsMessage(KmHotelBookingModel hotel, Map<String, String> replyMetadata) {
         Map<String, String> metadata = new HashMap<>();
-        metadata.put(HOTEL_RESULT_IDX, String.valueOf(hotel.getHotelResultIndex()));
-        metadata.put(NO_OF_ROOMS, String.valueOf(hotel.getNoOfRooms()));
-        metadata.put(ROOM_IDX, String.valueOf(hotel.getRoomIndex()));
-        metadata.put(BLOCK_HOTEL_ROOM, "true");
-        metadata.put(SESSION_ID, hotel.getSessionId());
-        metadata.put(SKIPBOT, "true");
+        metadata.put("HotelResultIndex", String.valueOf(hotel.getHotelResultIndex()));
+        metadata.put("NoOfRooms", String.valueOf(hotel.getNoOfRooms()));
+        metadata.put("RoomIndex", String.valueOf(hotel.getRoomIndex()));
+        metadata.put("blockHotelRoom", "true");
+        metadata.put("sessionId", hotel.getSessionId());
+        metadata.put("skipBot", "true");
 
         if (replyMetadata != null) {
             metadata.putAll(replyMetadata);
         }
 
-        String message = BOOK_HOTEL + hotel.getHotelName() + ROOM + hotel.getRoomTypeName();
+        String message = "Book Hotel " + hotel.getHotelName() + ", Room " + hotel.getRoomTypeName();
 
         sendMessage(message, metadata, Message.ContentType.DEFAULT.getValue());
     }
 
     public void sendBookingDetailsMessage(KmBookingDetailsModel model, Map<String, String> replyMetadata) {
         Map<String, String> metadata = new HashMap<>();
-        metadata.put(GUEST_DETAIL, "true");
-        metadata.put(PERSON_INFO, GsonUtils.getJsonFromObject(model.getPersonInfo(), KmBookingDetailsModel.ALBookingDetails.class));
-        metadata.put(SESSION_ID, model.getSessionId());
-        metadata.put(SKIPBOT, "true");
+        metadata.put("guestDetail", "true");
+        metadata.put("personInfo", GsonUtils.getJsonFromObject(model.getPersonInfo(), KmBookingDetailsModel.ALBookingDetails.class));
+        metadata.put("sessionId", model.getSessionId());
+        metadata.put("skipBot", "true");
 
         if (replyMetadata != null) {
             metadata.putAll(replyMetadata);
         }
 
-        sendMessage(DETAILS_SUBMITTED, metadata, Message.ContentType.DEFAULT.getValue());
+        sendMessage("Your details have been submitted", metadata, Message.ContentType.DEFAULT.getValue());
     }
 
     public void loadImageOnFullScreen(Context context, String action, KmRichMessageModel.KmPayloadModel payloadModel) {

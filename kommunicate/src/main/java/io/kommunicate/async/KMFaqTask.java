@@ -24,7 +24,6 @@ public class KMFaqTask extends AsyncTask<Void, Void, String> {
 
     private WeakReference<Context> context;
     private boolean isArticleRequest = false;
-    private static final String SUCCESS = "SUCCESS";
     private boolean isSelectedArticleRequest = false;
     private boolean isAnswerRequest = false;
     private boolean isDashBoardFaqRequest = false;
@@ -99,7 +98,7 @@ public class KMFaqTask extends AsyncTask<Void, Void, String> {
                 } else {
                     try {
                         KmArticleModel model = (KmArticleModel) GsonUtils.getObjectFromJson(s, KmArticleModel.class);
-                        if (model != null && (model.getArticles() != null || model.getArticle() != null || SUCCESS.equals(model.getCode()))) {
+                        if (model != null && (model.getArticles() != null || model.getArticle() != null || "SUCCESS".equals(model.getCode()))) {
                             listener.onSuccess(context.get(), s);
                         }
                     } catch (Exception e) {

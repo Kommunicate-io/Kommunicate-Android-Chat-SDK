@@ -18,7 +18,6 @@ public class KmChannelService {
     private static final String CHANNEL_USER_X = "channel_User_X";
     private static KmChannelService kmChannelService;
     private MobiComDatabaseHelper dbHelper;
-    private static final String CHANNEL_KEY_ROLE = "channelKey = ? and role = ?";
 
     private KmChannelService(Context context) {
         this.dbHelper = MobiComDatabaseHelper.getInstance(context);
@@ -35,7 +34,7 @@ public class KmChannelService {
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-            Cursor cursor = db.query(CHANNEL_USER_X, null, CHANNEL_KEY_ROLE, new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
+            Cursor cursor = db.query(CHANNEL_USER_X, null, "channelKey = ? and role = ?", new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
             List<ChannelUserMapper> channelUserMappers = getListOfUsers(cursor);
 
             cursor.close();
@@ -56,7 +55,7 @@ public class KmChannelService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.query(CHANNEL_USER_X, null, CHANNEL_KEY_ROLE, new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
+            cursor = db.query(CHANNEL_USER_X, null, "channelKey = ? and role = ?", new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
 
             return getListOfUserIds(cursor);
         } catch (Exception e) {

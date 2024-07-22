@@ -27,9 +27,6 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
     private KmFeedback kmFeedback; //will pe passed null if getting the feedback
     private KmFeedbackDetails kmFeedbackDetails;
     private KmFeedbackCallback kmFeedbackCallback;
-    private static final String TASK_CANCELLED = "Task cancelled.";
-    private static final String FEEDBACK_NULL = "Feedback Response string null.";
-    private static final String KMFeedback_ID_NULL = "KmFeedback and conversation id parameters null";
     Exception e;
 
     public KmConversationFeedbackTask(Context context, KmFeedback kmFeedback, KmFeedbackDetails kmFeedbackDetails, KmFeedbackCallback kmFeedbackCallback) {
@@ -45,7 +42,7 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
             String conversationId = kmFeedbackDetails.getConversationId();
             if (kmFeedback == null) {
                 if (conversationId == null || TextUtils.isEmpty(conversationId)) {
-                    throw new Exception(KMFeedback_ID_NULL);
+                    throw new Exception("KmFeedback and conversation id parameters null");
                 }
                 return new KmService(contextWeakReference.get()).getConversationFeedback(conversationId);
             } else {
@@ -64,7 +61,7 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
             kmFeedbackCallback.onFailure(contextWeakReference.get(), e, response);
         } else {
             if (response == null) {
-                kmFeedbackCallback.onFailure(contextWeakReference.get(), new Exception(FEEDBACK_NULL), null);
+                kmFeedbackCallback.onFailure(contextWeakReference.get(), new Exception("Feedback Response string null."), null);
             } else {
                 try {
                     KmApiResponse<KmFeedback> kmApiResponse;
@@ -82,7 +79,7 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
 
     @Override
     protected void onCancelled() {
-        kmFeedbackCallback.onFailure(contextWeakReference.get(), e, TASK_CANCELLED);
+        kmFeedbackCallback.onFailure(contextWeakReference.get(), e, "Task cancelled.");
     }
 
     public static class KmFeedbackDetails {

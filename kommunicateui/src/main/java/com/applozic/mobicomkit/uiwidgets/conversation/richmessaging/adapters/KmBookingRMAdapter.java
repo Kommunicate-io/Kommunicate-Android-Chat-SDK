@@ -53,7 +53,6 @@ public class KmBookingRMAdapter extends KmRichMessageAdapter {
     public final int MIN_GUEST_COUNT = 0;
     public final int MAX_CHILD_GUEST_COUNT = 2;
     public final int MAX_RATING_VALUE = 5;
-    private static final String TITLE_STAR = "Title *";
 
     KmBookingRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper) {
         super(context, model, listener, message, themeHelper);
@@ -490,7 +489,7 @@ public class KmBookingRMAdapter extends KmRichMessageAdapter {
                         || TextUtils.isEmpty(holder.lastNameEt.getText().toString().trim())
                         || TextUtils.isEmpty(holder.emailIdEt.getText().toString().trim())
                         || TextUtils.isEmpty(holder.firstNameEt.getText().toString().trim())
-                        || TITLE_STAR.equals(titleList.get(holder.titleSpinner.getSelectedItemPosition()))) {
+                        || "Title *".equals(titleList.get(holder.titleSpinner.getSelectedItemPosition()))) {
                     Toast.makeText(context, R.string.mandatory_fields, Toast.LENGTH_SHORT).show();
                 } else {
                     bookingDetails.setTitle(titleList.get(holder.titleSpinner.getSelectedItemPosition()));

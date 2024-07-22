@@ -14,7 +14,6 @@ public class PeopleClientService extends MobiComKitClientService {
     public static final String GOOGLE_CONTACT_URL = "/rest/ws/user/session/contact/google/list";
     public static final String PLATFORM_CONTACT_URL = "/rest/ws/user/session/contact/google/list";
     private HttpRequestUtils httpRequestUtils;
-    private static final String appli_path = "application/json";
 
 
     public PeopleClientService(Context context) {
@@ -32,11 +31,11 @@ public class PeopleClientService extends MobiComKitClientService {
 
 
     public String getGoogleContacts(int page) {
-        return httpRequestUtils.getResponse(getGoogleContactUrl() + "?page=" + page, appli_path, appli_path);
+        return httpRequestUtils.getResponse(getGoogleContactUrl() + "?page=" + page, "application/json", "application/json");
     }
 
     public String getContactsInCurrentPlatform() {
-        return httpRequestUtils.getResponse(getPlatformContactUrl() + "?mtexter=true", appli_path, appli_path);
+        return httpRequestUtils.getResponse(getPlatformContactUrl() + "?mtexter=true", "application/json", "application/json");
     }
 
     public void addContacts(String url, ContactList contactList, boolean completed) throws Exception {
@@ -45,6 +44,6 @@ public class PeopleClientService extends MobiComKitClientService {
         if (completed) {
             url = url + "?completed=true";
         }
-        httpRequestUtils.postData(url, appli_path, null, requestString);
+        httpRequestUtils.postData(url, "application/json", null, requestString);
     }
 }

@@ -31,7 +31,6 @@ public class KmSettings {
     public static final String KM_CHAT_CONTEXT = "KM_CHAT_CONTEXT";
     public static final String KM_LANGUAGE_UPDATE_KEY = "kmUserLanguageCode";
     public static final String KM_CONVERSATION_METADATA = "conversationMetadata";
-    private static final String UNABLE_TO_UPDATE = "Unable to update";
 
     /**
      * will update the metadata object with the KM_CHAT_CONTEXT field
@@ -112,7 +111,7 @@ public class KmSettings {
                     public void onFailure(Object error) {
                         Utils.printLog(null, TAG, "Failed to update conversation assignee for : " + channel.getKey());
                         if (callback != null) {
-                            callback.onFailure(new KmException(UNABLE_TO_UPDATE));
+                            callback.onFailure(new KmException("Unable to update"));
                         }
                     }
                 }).execute();
@@ -164,7 +163,7 @@ public class KmSettings {
                         public void onFailure(Context context) {
                             Utils.printLog(context, TAG, "Failed to update conversation metadata for : " + channel.getKey());
                             if (callback != null) {
-                                callback.onFailure(new KmException(UNABLE_TO_UPDATE));
+                                callback.onFailure(new KmException("Unable to update"));
                             }
                         }
                     });

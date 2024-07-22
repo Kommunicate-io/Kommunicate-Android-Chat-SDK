@@ -16,7 +16,6 @@ public class AlUserSearchTask extends AlAsyncTask<Void, List<Contact>> {
     private Exception exception;
     private UserService userService;
     private AlUserSearchHandler listener;
-    private static final String EMPTY_SEARCH = "Empty search string";
 
     public AlUserSearchTask(Context context, String searchString, AlUserSearchHandler listener) {
         this.context = new WeakReference<>(context);
@@ -28,7 +27,7 @@ public class AlUserSearchTask extends AlAsyncTask<Void, List<Contact>> {
     @Override
     protected List<Contact> doInBackground() {
         if (searchString == null) {
-            exception = new ApplozicException(EMPTY_SEARCH);
+            exception = new ApplozicException("Empty search string");
             return null;
         }
 

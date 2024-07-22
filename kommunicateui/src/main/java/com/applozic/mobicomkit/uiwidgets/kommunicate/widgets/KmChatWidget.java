@@ -64,7 +64,6 @@ public class KmChatWidget {
     private int width, height;
     private static final String TAG = "KmChatWidget";
     public static final String LEFT = "left";
-    public static final String IMAGE = "image";
     public static final String RIGHT = "right";
 
     /**
@@ -103,7 +102,7 @@ public class KmChatWidget {
         unreadCountText = rootView.findViewById(R.id.unreadSmsCount);
         KmFloatingView = (ImageView) rootView.findViewById(R.id.km_floating_widget);
         kmChatWidgetHelper = new KmChatWidgetHelper(this, mContext);
-        AlEventManager.getInstance().registerUIListener(TAG, kmChatWidgetHelper);
+        AlEventManager.getInstance().registerUIListener("KmChatWidget", kmChatWidgetHelper);
         setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,7 +174,7 @@ public class KmChatWidget {
                     kmChatWidgetModel = appSettingModel.getResponse().getChatWidget();
                     config.gravity = kmChatWidgetModel.getPosition().equals(LEFT) ? KmChatWidgetConfig.GRAVITY.LEFT_BOTTOM : KmChatWidgetConfig.GRAVITY.RIGHT_BOTTOM;
                     DrawableCompat.setTint(DrawableCompat.wrap(frameLayout.getBackground()), Color.parseColor(kmChatWidgetModel.getPrimaryColor()));
-                    if (kmChatWidgetModel.getIconIndex().equals(IMAGE)) {
+                    if (kmChatWidgetModel.getIconIndex().equals("image")) {
                         ImageLoader loadImage = new ImageLoader(mContext, ImageUtils.getLargestScreenDimension((Activity) mContext)) {
                             @Override
                             protected Bitmap processBitmap(Object data) {

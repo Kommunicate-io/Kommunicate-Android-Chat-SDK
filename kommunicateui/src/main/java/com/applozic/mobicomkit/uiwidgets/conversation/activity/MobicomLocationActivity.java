@@ -77,8 +77,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     Marker myLocationMarker;
     KmPermissions kmPermissions;
     static final String TAG = "MobicomLocationActivity";
-    private static final String LATITUDE = "latitude";
-    private static final String LONGITUDE = "longitude";
     private LinearLayout locationLinearLayout;
     private TextView sendLocationText;
     private Toolbar toolbar;
@@ -177,8 +175,8 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                     Utils.printLog(MobicomLocationActivity.this, TAG, "On click of send location button");
                     if (myLocationMarker != null) {
                         Intent intent = new Intent();
-                        intent.putExtra(LATITUDE, myLocationMarker.getPosition().latitude);
-                        intent.putExtra(LONGITUDE, myLocationMarker.getPosition().longitude);
+                        intent.putExtra("latitude", myLocationMarker.getPosition().latitude);
+                        intent.putExtra("longitude", myLocationMarker.getPosition().longitude);
                         setResult(RESULT_OK, intent);
                         finish();
                     }

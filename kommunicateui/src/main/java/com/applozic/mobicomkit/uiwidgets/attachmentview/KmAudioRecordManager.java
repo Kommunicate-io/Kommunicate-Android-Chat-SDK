@@ -48,8 +48,6 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
     int bytesPerElement = 2; // 2 bytes in 16bit format
     private static final String AUDIO_TAG = "AUD_";
     private String FILE_FORMAT = ".pcm";
-    private static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
-    private static final String AUDIO_M4A = "audio/m4a";
 
 
     public KmAudioRecordManager(FragmentActivity context) {
@@ -62,8 +60,8 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
     }
 
     public void prepareDefaultFileData() {
-        String audioFileName = AUDIO_TAG + new SimpleDateFormat(DATE_FORMAT).format(new Date()) + FILE_FORMAT;
-        setOutputFile(FileClientService.getFilePath(audioFileName, context.getApplicationContext(), AUDIO_M4A).getAbsolutePath());
+        String audioFileName = AUDIO_TAG + new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + FILE_FORMAT;
+        setOutputFile(FileClientService.getFilePath(audioFileName, context.getApplicationContext(), "audio/m4a").getAbsolutePath());
     }
 
     public void recordAudio() {

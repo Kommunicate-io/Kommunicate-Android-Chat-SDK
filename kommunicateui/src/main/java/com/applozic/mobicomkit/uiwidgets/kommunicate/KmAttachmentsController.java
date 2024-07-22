@@ -45,11 +45,8 @@ public class KmAttachmentsController {
     public static final int FORMAT_EMPTY = -4;
     public static final int EXCEPTION_OCCURED = -10;
     public static final int FILE_PROCESSING_DONE = 1;
-    private static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
+
     public static final int NO_OF_MULTI_SELECTIONS_ALLOWED = 20;
-    private static final String AUDIO = "audio/";
-    private static final String VIDEO = "video/";
-    private static final String IMAGE = "image/";
 
     public KmAttachmentsController(Context context) {
         this.context = context;
@@ -141,13 +138,13 @@ public class KmAttachmentsController {
             case ALL_FILES:
                 return true;
             case IMAGE_VIDEO:
-                return mimeType.contains(IMAGE) || mimeType.contains(VIDEO);
+                return mimeType.contains("image/") || mimeType.contains("video/");
             case IMAGE_ONLY:
-                return mimeType.contains(IMAGE);
+                return mimeType.contains("image/");
             case VIDEO_ONLY:
-                return mimeType.contains(VIDEO);
+                return mimeType.contains("video/");
             case AUDIO_ONLY:
-                return mimeType.contains(AUDIO);
+                return mimeType.contains("audio/");
         }
         return false;
     }
@@ -187,7 +184,7 @@ public class KmAttachmentsController {
                     //Toast.makeText(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
                     return MIME_TYPE_NOT_SUPPORTED;
                 }
-                String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                 //because images are selected multiple and quickly (milliseconds better in such a situation)
                 timeStamp = timeStamp + "_" + System.currentTimeMillis();
                 fileName = FileUtils.getFileName(context, selectedFileUri);

@@ -18,7 +18,6 @@ public class KmAssigneeUpdateTask extends AlAsyncTask<Void, String> {
     private boolean takeOverFromBot;
     private KmCallback callback;
     private KmClientService clientService;
-    private static final String FAILURE_MSG = "Failed to update Assignee";
 
     public KmAssigneeUpdateTask(Integer conversationId, String assigneeId, KmCallback callback) {
         this(conversationId, assigneeId, true, true, true, callback);
@@ -51,10 +50,10 @@ public class KmAssigneeUpdateTask extends AlAsyncTask<Void, String> {
                         callback.onFailure(apiResponse.getErrorResponse());
                     }
                 } else {
-                    callback.onFailure(FAILURE_MSG);
+                    callback.onFailure("Failed to update Assignee");
                 }
             } else {
-                callback.onFailure(FAILURE_MSG);
+                callback.onFailure("Failed to update Assignee");
             }
         }
         super.onPostExecute(s);

@@ -24,7 +24,6 @@ public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
     private Integer groupId;
     private KmAwayMessageHandler handler;
     private Exception exception;
-    private static final String SUCCESS = "SUCCESS";
 
     public KmAwayMessageTask(Context context, Integer groupId, KmAwayMessageHandler handler) {
         this.context = new WeakReference<Context>(context);
@@ -58,7 +57,7 @@ public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
             }
 
             if (response != null) {
-                if (SUCCESS.equals(response.getCode())) {
+                if ("SUCCESS".equals(response.getCode())) {
                     handler.onSuccess(context.get(), response.getData());
                 } else {
                     handler.onFailure(context.get(), exception, s);

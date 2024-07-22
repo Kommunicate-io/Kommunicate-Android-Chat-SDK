@@ -15,16 +15,6 @@ import android.provider.MediaStore;
  */
 public class FilePathFinder {
 
-    private static final String CONTENT_PUBLIC_DOWNLOADS = "content://downloads/public_downloads";
-    private static final String PRIMARY = "primary";
-    private static final String IMAGE = "image";
-    private static final String VIDEO = "video";
-    private static final String AUDIO = "audio";
-    private static final String CONTENT = "content";
-    private static final String FILE = "file";
-    private static final String COM_ANDROID_EXTERNAL_STORAGE = "com.android.externalstorage.documents";
-    private static final String COM_ANDROID_DOWNLOADS = "com.android.providers.downloads.documents";
-    private static final String COM_ANDROID_MEDIA = "com.android.providers.media.documents";
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
      * Framework Documents, as well as the _data field for the MediaStore and
@@ -47,7 +37,7 @@ public class FilePathFinder {
                 final String[] split = docId.split(":");
                 final String type = split[0];
 
-                if (PRIMARY.equalsIgnoreCase(type)) {
+                if ("primary".equalsIgnoreCase(type)) {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
 
@@ -58,7 +48,7 @@ public class FilePathFinder {
 
                 final String id = DocumentsContract.getDocumentId(uri);
                 final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse(CONTENT_PUBLIC_DOWNLOADS), Long.valueOf(id));
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 
                 return getDataColumn(context, contentUri, null, null);
             }
@@ -69,11 +59,11 @@ public class FilePathFinder {
                 final String type = split[0];
 
                 Uri contentUri = null;
-                if (IMAGE.equals(type)) {
+                if ("image".equals(type)) {
                     contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                } else if (VIDEO.equals(type)) {
+                } else if ("video".equals(type)) {
                     contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                } else if (AUDIO.equals(type)) {
+                } else if ("audio".equals(type)) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
                 }
 
@@ -86,11 +76,11 @@ public class FilePathFinder {
             }
         }
         // MediaStore (and general)
-        else if (CONTENT.equalsIgnoreCase(uri.getScheme())) {
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
             return getDataColumn(context, uri, null, null);
         }
         // File
-        else if (FILE.equalsIgnoreCase(uri.getScheme())) {
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
             return uri.getPath();
         }
 
@@ -136,7 +126,7 @@ public class FilePathFinder {
      * @return Whether the Uri authority is ExternalStorageProvider.
      */
     public static boolean isExternalStorageDocument(Uri uri) {
-        return COM_ANDROID_EXTERNAL_STORAGE.equals(uri.getAuthority());
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
     /**
@@ -144,7 +134,7 @@ public class FilePathFinder {
      * @return Whether the Uri authority is DownloadsProvider.
      */
     public static boolean isDownloadsDocument(Uri uri) {
-        return COM_ANDROID_DOWNLOADS.equals(uri.getAuthority());
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
     /**
@@ -152,7 +142,7 @@ public class FilePathFinder {
      * @return Whether the Uri authority is MediaProvider.
      */
     public static boolean isMediaDocument(Uri uri) {
-        return COM_ANDROID_MEDIA.equals(uri.getAuthority());
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
     // Convert the image URI to the direct file system path of the image file

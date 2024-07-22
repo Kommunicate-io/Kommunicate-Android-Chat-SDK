@@ -71,14 +71,7 @@ public class MobiComConversationService {
     public static final int UPLOAD_COMPLETED = 4;
     public static final int MESSAGE_SENT = 5;
     private boolean isHideActionMessage = false;
-    private static final String ERROR = "error";
-    private static final String SUCCESS = "success";
-    private static final String SAME_MSG = "Both messages are same.";
-    private static final String NO_ATTACHMENT = "Message does not have any attachment";
-    private static final String response_from_server = "Received response from server for Messages: ";
-    private static final String unauth_access = "UnAuthorized Access";
-    private static final String conversation_Pxys = "conversationPxys";
-    private static final String group_Feeds = "groupFeeds";
+
 
     public MobiComConversationService(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -150,7 +143,7 @@ public class MobiComConversationService {
         ApplozicException e = null;
 
         if (!message.hasAttachment()) {
-            e = new ApplozicException(NO_ATTACHMENT);
+            e = new ApplozicException("Message does not have any attachment");
             if (handler != null) {
                 handler.onUploadStarted(e, null);
                 handler.onProgressUpdate(0, e, null);
@@ -200,12 +193,12 @@ public class MobiComConversationService {
         String data = null;
         try {
             data = messageClientService.getMessages(contact, channel, startTime, endTime, conversationId, isSkipRead);
-            Utils.printLog(context, TAG, response_from_server + data);
+            Utils.printLog(context, TAG, "Received response from server for Messages: " + data);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        if (data == null || TextUtils.isEmpty(data) || data.equals(unauth_access) || !data.contains("{")) {
+        if (data == null || TextUtils.isEmpty(data) || data.equals("UnAuthorized Access") || !data.contains("{")) {
             return new NetworkListDecorator<>(null, true);
         }
 
@@ -275,12 +268,12 @@ public class MobiComConversationService {
         String data = null;
         try {
             data = messageClientService.getMessages(contact, channel, startTime, endTime, conversationId, isSkipRead);
-            Utils.printLog(context, TAG, response_from_server + data);
+            Utils.printLog(context, TAG, "Received response from server for Messages: " + data);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        if (data == null || TextUtils.isEmpty(data) || data.equals(unauth_access) || !data.contains("{")) {
+        if (data == null || TextUtils.isEmpty(data) || data.equals("UnAuthorized Access") || !data.contains("{")) {
             return null;
         }
 
@@ -370,13 +363,13 @@ public class MobiComConversationService {
         String data;
         try {
             data = messageClientService.getMessages(contact, channel, startTime, endTime, conversationId, isSkipRead);
-            Utils.printLog(context, TAG, response_from_server + data);
+            Utils.printLog(context, TAG, "Received response from server for Messages: " + data);
         } catch (Exception ex) {
             ex.printStackTrace();
             return cachedMessageList;
         }
 
-        if (data == null || TextUtils.isEmpty(data) || data.equals(unauth_access) || !data.contains("{")) {
+        if (data == null || TextUtils.isEmpty(data) || data.equals("UnAuthorized Access") || !data.contains("{")) {
             //Note: currently not supporting syncing old channel messages from server
             if (channel != null && channel.getKey() != null) {
                 return cachedMessageList;
@@ -401,16 +394,16 @@ public class MobiComConversationService {
                 processUserDetails(userDetails);
             }
 
-            if (jsonObject.has(group_Feeds)) {
-                channelFeedResponse = parser.parse(data).getAsJsonObject().get(group_Feeds).toString();
+            if (jsonObject.has("groupFeeds")) {
+                channelFeedResponse = parser.parse(data).getAsJsonObject().get("groupFeeds").toString();
                 ChannelFeed[] channelFeeds = (ChannelFeed[]) GsonUtils.getObjectFromJson(channelFeedResponse, ChannelFeed[].class);
                 ChannelService.getInstance(context).processChannelFeedList(channelFeeds, false);
                 if (channel != null && !isServerCallNotRequired) {
                     BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.UPDATE_TITLE_SUBTITLE.toString());
                 }
             }
-            if (jsonObject.has(conversation_Pxys)) {
-                conversationPxyResponse = parser.parse(data).getAsJsonObject().get(conversation_Pxys).toString();
+            if (jsonObject.has("conversationPxys")) {
+                conversationPxyResponse = parser.parse(data).getAsJsonObject().get("conversationPxys").toString();
                 Conversation[] conversationPxy = (Conversation[]) GsonUtils.getObjectFromJson(conversationPxyResponse, Conversation[].class);
                 ConversationService.getInstance(context).processConversationArray(conversationPxy, channel, contact);
             }
@@ -421,7 +414,7 @@ public class MobiComConversationService {
 
             if (messages != null && messages.length > 0 && cachedMessageList.size() > 0 && cachedMessageList.get(0).isLocalMessage()) {
                 if (cachedMessageList.get(0).equals(messages[0])) {
-                    Utils.printLog(context, TAG, SAME_MSG);
+                    Utils.printLog(context, TAG, "Both messages are same.");
                     deleteMessage(cachedMessageList.get(0));
                 }
             }
@@ -556,13 +549,13 @@ public class MobiComConversationService {
         String data;
         try {
             data = messageClientService.getMessages(contact, channel, startTime, endTime, conversationId, isSkipRead);
-            Utils.printLog(context, TAG, response_from_server + data);
+            Utils.printLog(context, TAG, "Received response from server for Messages: " + data);
         } catch (Exception ex) {
             ex.printStackTrace();
             return new NetworkListDecorator<>(cachedMessageList, true);
         }
 
-        if (data == null || TextUtils.isEmpty(data) || data.equals(unauth_access) || !data.contains("{")) {
+        if (data == null || TextUtils.isEmpty(data) || data.equals("UnAuthorized Access") || !data.contains("{")) {
             //Note: currently not supporting syncing old channel messages from server
             if (channel != null && channel.getKey() != null) {
                 return new NetworkListDecorator<>(cachedMessageList, true);
@@ -589,16 +582,16 @@ public class MobiComConversationService {
                 processUserDetails(userDetails);
             }
 
-            if (jsonObject.has(group_Feeds)) {
-                channelFeedResponse = parser.parse(data).getAsJsonObject().get(group_Feeds).toString();
+            if (jsonObject.has("groupFeeds")) {
+                channelFeedResponse = parser.parse(data).getAsJsonObject().get("groupFeeds").toString();
                 ChannelFeed[] channelFeeds = (ChannelFeed[]) GsonUtils.getObjectFromJson(channelFeedResponse, ChannelFeed[].class);
                 ChannelService.getInstance(context).processChannelFeedList(channelFeeds, false);
                 if (channel != null && !isServerCallNotRequired) {
                     BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.UPDATE_TITLE_SUBTITLE.toString());
                 }
             }
-            if (jsonObject.has(conversation_Pxys)) {
-                conversationPxyResponse = parser.parse(data).getAsJsonObject().get(conversation_Pxys).toString();
+            if (jsonObject.has("conversationPxys")) {
+                conversationPxyResponse = parser.parse(data).getAsJsonObject().get("conversationPxys").toString();
                 Conversation[] conversationPxy = (Conversation[]) GsonUtils.getObjectFromJson(conversationPxyResponse, Conversation[].class);
                 ConversationService.getInstance(context).processConversationArray(conversationPxy, channel, contact);
             }
@@ -609,7 +602,7 @@ public class MobiComConversationService {
 
             if (messages != null && messages.length > 0 && cachedMessageList.size() > 0 && cachedMessageList.get(0).isLocalMessage()) {
                 if (cachedMessageList.get(0).equals(messages[0])) {
-                    Utils.printLog(context, TAG, SAME_MSG);
+                    Utils.printLog(context, TAG, "Both messages are same.");
                     deleteMessage(cachedMessageList.get(0));
                 }
             }
@@ -783,7 +776,7 @@ public class MobiComConversationService {
 
             if (messages != null && messages.length > 0 && cachedConversationList.size() > 0 && cachedConversationList.get(0).isLocalMessage()) {
                 if (cachedConversationList.get(0).equals(messages[0])) {
-                    Utils.printLog(context, TAG, SAME_MSG);
+                    Utils.printLog(context, TAG, "Both messages are same.");
                     deleteMessage(cachedConversationList.get(0));
                 }
             }
@@ -926,7 +919,7 @@ public class MobiComConversationService {
                 if (jsonObject.has("status")) {
                     status = jsonObject.getString("status");
                 }
-                if (!TextUtils.isEmpty(status) && SUCCESS.equals(status)) {
+                if (!TextUtils.isEmpty(status) && "success".equals(status)) {
                     String responseString = jsonObject.getString("response");
                     String messageResponse = parser.parse(responseString).getAsJsonObject().get("message").toString();
                     if (!TextUtils.isEmpty(messageResponse)) {
@@ -956,7 +949,7 @@ public class MobiComConversationService {
             return true;
         }
         String response = messageClientService.deleteMessage(message, contact);
-        if (SUCCESS.equals(response)) {
+        if ("success".equals(response)) {
             deleteMessageFromDevice(message, contact != null ? contact.getContactIds() : null);
         } else {
             messageDatabaseService.updateDeleteSyncStatus(message, "1");
@@ -995,7 +988,7 @@ public class MobiComConversationService {
             thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
             thread.start();
         }
-        BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), contact.getContactIds(), 0, SUCCESS);
+        BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), contact.getContactIds(), 0, "success");
     }
 
     public String deleteSync(final Contact contact, final Channel channel, Integer conversationId) {
@@ -1004,7 +997,7 @@ public class MobiComConversationService {
             response = messageClientService.syncDeleteConversationThreadFromServer(contact, channel);
         }
 
-        if (!TextUtils.isEmpty(response) && SUCCESS.equals(response)) {
+        if (!TextUtils.isEmpty(response) && "success".equals(response)) {
             if (contact != null) {
                 messageDatabaseService.deleteConversation(contact.getContactIds());
                 if (conversationId != null && conversationId != 0) {
@@ -1027,7 +1020,7 @@ public class MobiComConversationService {
     public synchronized void processLastSeenAtStatus() {
         try {
             SyncUserDetailsResponse userDetailsResponse = messageClientService.getUserDetailsList(MobiComUserPreference.getInstance(context).getLastSeenAtSyncTime());
-            if (userDetailsResponse != null && userDetailsResponse.getResponse() != null && SUCCESS.equals(userDetailsResponse.getStatus())) {
+            if (userDetailsResponse != null && userDetailsResponse.getResponse() != null && "success".equals(userDetailsResponse.getStatus())) {
                 processUserDetails(userDetailsResponse);
             }
         } catch (Exception e) {
@@ -1091,7 +1084,7 @@ public class MobiComConversationService {
             String e = null;
             String oldMessageKey = null;
             if (bundle != null) {
-                e = bundle.getString(ERROR);
+                e = bundle.getString("error");
                 oldMessageKey = bundle.getString(MobiComKitConstants.OLD_MESSAGE_KEY_INTENT_EXTRA);
             }
 

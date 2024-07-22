@@ -27,8 +27,6 @@ public class KmGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, 
     private List<String> groupIds;
     private List<String> groupNames;
     private GetMembersFromGroupIdListListener listener;
-    private static final String ERR_OCCURRED = "Some Error occurred";
-    private static final String FETCH_SUCCESS = "Successfully fetched";
 
     public KmGetMembersFromContactGroupListTask(Context context, GetMembersFromGroupIdListListener listener, List<String> groupIds, List<String> groupNames, String groupType) {
         this.context = new WeakReference<Context>(context);
@@ -55,13 +53,13 @@ public class KmGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, 
                         }
                         model.setMembers(contactIds.toArray(new String[contactIds.size()]));
                         UserService.getInstance(context.get()).processUserDetailsByUserIds(contactIds);
-                        model.setResponse(FETCH_SUCCESS);
+                        model.setResponse("Successfully fetched");
                     }
                 } else if (response.getErrorResponse() != null) {
                     model.setResponse(GsonUtils.getJsonFromObject(response.getErrorResponse(), ErrorResponseFeed[].class));
                 }
             } else {
-                model.setResponse(ERR_OCCURRED);
+                model.setResponse("Some Error occurred");
             }
         } catch (Exception e) {
             e.printStackTrace();

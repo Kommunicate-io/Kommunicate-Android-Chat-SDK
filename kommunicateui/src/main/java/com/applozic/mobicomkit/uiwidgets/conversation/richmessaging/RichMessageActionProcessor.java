@@ -69,7 +69,6 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     private static final String APPLI_JSON = "application/json";
     private static final String REPLY_TEXT = "replyText";
     private static final String ADULTS = "ADULTS";
-    private static final String ROOM = "Room ";
     private static final String GUEST = " Guest ";
     private static final String CHILDREN = " Children ";
 
@@ -588,7 +587,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         int count = 0;
 
         for (KmGuestCountModel guestModel : guestList) {
-            message.append(ROOM);
+            message.append("Room ");
             message.append(count + 1);
             message.append(GUEST);
             message.append(guestModel.getNoOfAdults());

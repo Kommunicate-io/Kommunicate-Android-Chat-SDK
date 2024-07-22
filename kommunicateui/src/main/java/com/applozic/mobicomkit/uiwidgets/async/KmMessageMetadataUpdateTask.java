@@ -21,6 +21,9 @@ public class KmMessageMetadataUpdateTask extends AsyncTask<Void, Void, ApiRespon
     private String key;
     private Map<String, String> metadata;
     private MessageMetadataListener listener;
+    private static final String ERR_OCCURRED = "Some Error occurred";
+    private static final String METADATA_UPDATED_SUCCESS = "Metadata updated successfully for messsage key : ";
+    private static final String SUCCESS = "success";
 
     public KmMessageMetadataUpdateTask(Context context, String key, Map<String, String> metadata, MessageMetadataListener listener) {
         this.context = new WeakReference<Context>(context);
@@ -39,12 +42,12 @@ public class KmMessageMetadataUpdateTask extends AsyncTask<Void, Void, ApiRespon
         super.onPostExecute(apiResponse);
 
         if (apiResponse == null) {
-            listener.onFailure(context.get(), "Some error occurred");
-        } else if (!"success".equals(apiResponse.getStatus()) && apiResponse.getErrorResponse() != null) {
+            listener.onFailure(context.get(), ERR_OCCURRED);
+        } else if (!SUCCESS.equals(apiResponse.getStatus()) && apiResponse.getErrorResponse() != null) {
             listener.onFailure(context.get(), apiResponse.getErrorResponse().toString());
-        } else if ("success".equals(apiResponse.getStatus())) {
+        } else if (SUCCESS.equals(apiResponse.getStatus())) {
             new MessageDatabaseService(context.get()).updateMessageMetadata(key, metadata);
-            listener.onSuccess(context.get(), "Metadata updated successfully for messsage key : " + key);
+            listener.onSuccess(context.get(), METADATA_UPDATED_SUCCESS + key);
         }
     }
 

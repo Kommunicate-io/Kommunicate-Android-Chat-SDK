@@ -14,6 +14,11 @@ import java.util.concurrent.TimeUnit;
  * Created by devashish on 28/11/14.
  */
 public class DateUtils {
+    private static final String SIMPLE_DATE_FORMAT = "EEE, MMM dd, yyyy hh:mm aa";
+    private static final String SIMPLE_DATE = "hh:mm aa";
+    private static final String FULL_DATE = "dd MMM";
+    private static final String FULL_DATE_WITH_YEAR = "dd MMM yyyy";
+    private static final String AFRICA_POOL = "0.africa.pool.ntp.org";
 
     public static boolean isSameDay(Long timestamp) {
         Calendar calendarForCurrent = Calendar.getInstance();
@@ -29,21 +34,21 @@ public class DateUtils {
     public static String getFormattedDate(Long timestamp) {
         // boolean sameDay = isSameDay(timestamp);
         Date date = new Date(timestamp);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
-        SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd MMM");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(SIMPLE_DATE);
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat(FULL_DATE);
         return simpleDateFormat.format(date).toUpperCase();
     }
 
     public static String getDate(Long timestamp) {
         Date date = new Date(timestamp);
-        SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd MMM yyyy");
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat(FULL_DATE_WITH_YEAR);
         return fullDateFormat.format(date);
     }
 
     public static long getTimeDiffFromUtc() {
         SntpClient sntpClient = new SntpClient();
         long diff = 0;
-        if (sntpClient.requestTime("0.africa.pool.ntp.org", 30000)) {
+        if (sntpClient.requestTime(AFRICA_POOL, 30000)) {
             long utcTime = sntpClient.getNtpTime() + SystemClock.elapsedRealtime() - sntpClient.getNtpTimeReference();
             diff = utcTime - System.currentTimeMillis();
         }
@@ -53,8 +58,8 @@ public class DateUtils {
     public static String getFormattedDateAndTime(Context context, Long timestamp, int justNow, int min, int hr) {
         boolean sameDay = isSameDay(timestamp);
         Date date = new Date(timestamp);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm aa");
-        SimpleDateFormat fullDateFormat = new SimpleDateFormat("dd MMM");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(SIMPLE_DATE);
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat(FULL_DATE);
         Date newDate = new Date();
 
         try {
@@ -152,7 +157,7 @@ public class DateUtils {
 
     public static String getDateAndTimeInDefaultFormat(long timestamp) {
         Date date = new Date(timestamp);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE, MMM dd, yyyy hh:mm aa");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(SIMPLE_DATE_FORMAT);
         return simpleDateFormat.format(date);
     }
 

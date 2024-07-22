@@ -21,6 +21,8 @@ public class AlTotalUnreadCountTask extends AlAsyncTask<Void, Integer> {
     private TaskListener callback;
     private WeakReference<Context> weakReferenceContext;
     MessageDatabaseService messageDatabaseService;
+    private static final String groupFeeds = "groupFeeds";
+    private static final String err_msg = "Failed to fetch the unread count";
 
     public AlTotalUnreadCountTask(Context context, TaskListener callback) {
         this.callback = callback;
@@ -33,8 +35,8 @@ public class AlTotalUnreadCountTask extends AlAsyncTask<Void, Integer> {
         try {
             String message = new MessageClientService(ApplozicService.getContextFromWeak(weakReferenceContext)).getMessages(null,null,null,null,null,false);
             JsonObject messageObject = JsonParser.parseString(message).getAsJsonObject();
-            if (messageObject.has("groupFeeds")) {
-                String channelFeedResponse = messageObject.get("groupFeeds").toString();
+            if (messageObject.has(groupFeeds)) {
+                String channelFeedResponse = messageObject.get(groupFeeds).toString();
                 ChannelFeed[] channelFeeds = (ChannelFeed[]) GsonUtils.getObjectFromJson(channelFeedResponse, ChannelFeed[].class);
                 int totalUnreadCount = 0;
                 for (ChannelFeed channelFeed : channelFeeds){
@@ -56,7 +58,7 @@ public class AlTotalUnreadCountTask extends AlAsyncTask<Void, Integer> {
             if (unreadCount != null) {
                 callback.onSuccess(unreadCount);
             } else {
-                callback.onFailure("Failed to fetch the unread count");
+                callback.onFailure(err_msg);
             }
         }
     }

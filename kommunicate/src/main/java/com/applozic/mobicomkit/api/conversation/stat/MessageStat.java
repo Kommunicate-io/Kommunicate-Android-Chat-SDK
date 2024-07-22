@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class MessageStat implements Serializable {
 
+    private static final String messageStat_listStat = "MessageStat{" + "statList=";
     @SerializedName("stat")
     private List<Stat> statList;
 
@@ -23,6 +24,6 @@ public class MessageStat implements Serializable {
 
     @Override
     public String toString() {
-        return "MessageStat{" + "statList=" + statList + "}";
+        return messageStat_listStat + statList + "}";
     }
 }

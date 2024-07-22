@@ -51,13 +51,13 @@ import static com.applozic.mobicomkit.api.HttpRequestUtils.DEVICE_KEY_HEADER;
 
 public class KmUserClientService extends UserClientService {
     private static String TAG = "KmUserClientService";
-
+    private static final String INVALID_USERNAME_PASSWORD = "Invalid uername/password";
     public static final String AUTHORIZATION = "Authorization";
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String ACCEPT = "Accept";
     public static final String GET = "GET";
     public static final String UTF_8 = "UTF-8";
-
+    private static final String INVALID_RESPONSE = "Invalid response";
     private static final String USER_LIST_FILTER_URL = "/rest/ws/user/v3/filter?startIndex=";
     private static final String USER_LOGIN_API = "/login";
     private static final String GET_APPLICATION_LIST = "/rest/ws/user/getlist";
@@ -69,6 +69,14 @@ public class KmUserClientService extends UserClientService {
     private static final String BOTS_BASE_URL = "/rest/ws/botdetails/";
     private static final String GET_AGENT_DETAILS = "/users/list";
     public HttpRequestUtils httpRequestUtils;
+    private static final String INVALID_CREDENTIALS = "INVALID_CREDENTIALS";
+    private static final String INVALID_APPLI_ID = "Invalid Application Id";
+    private static final String SERVICE_UNAVAILABLE = "503 Service Unavailable";
+    private static final String APPLI_JSON = "application/json";
+    private static final String NO_INTERNET_CONN = "No Internet Connection";
+    private static final String APPLICATION_WEB_ADMIN = "?roleNameList=APPLICATION_WEB_ADMIN&";
+    private static final String KB_SEARCH_ID = "/kb/search?appId=";
+    private static final String CHANNELINFO_NOT_NULL = "ChannelInfo cannot be null";
 
     public KmUserClientService(Context context) {
         super(context);
@@ -119,7 +127,7 @@ public class KmUserClientService extends UserClientService {
                 }
             }
 
-            return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+            return httpRequestUtils.getResponse(urlBuilder.toString(), APPLI_JSON, APPLI_JSON);
         } catch (Exception e) {
             throw e;
         }
@@ -140,7 +148,7 @@ public class KmUserClientService extends UserClientService {
         }
 
         try {
-            String response = httpRequestUtils.postData(getConversationUrl(), "application/json", "application/json", jsonObject.toString());
+            String response = httpRequestUtils.postData(getConversationUrl(), APPLI_JSON, APPLI_JSON, jsonObject.toString());
             Utils.printLog(context, TAG, "Response : " + response);
             return response;
         } catch (Exception e) {
@@ -151,11 +159,11 @@ public class KmUserClientService extends UserClientService {
 
     public String createConversation(KMGroupInfo channelInfo) throws Exception {
         if (channelInfo == null) {
-            throw new KmException("ChannelInfo cannot be null");
+            throw new KmException(CHANNELINFO_NOT_NULL);
         }
 
         String channelJson = GsonUtils.getJsonFromObject(channelInfo, KMGroupInfo.class);
-        return httpRequestUtils.postData(getCreateConversationUrl(), "application/json", "application/json", channelJson);
+        return httpRequestUtils.postData(getCreateConversationUrl(), APPLI_JSON, APPLI_JSON, channelJson);
     }
 
     public String getHelpDocsKey(String appKey, String type) throws Exception {
@@ -169,7 +177,7 @@ public class KmUserClientService extends UserClientService {
         }
 
         try {
-            return httpRequestUtils.getResponse(urlBuilder.toString(), "application/json", "application/json");
+            return httpRequestUtils.getResponse(urlBuilder.toString(), APPLI_JSON, APPLI_JSON);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -185,7 +193,7 @@ public class KmUserClientService extends UserClientService {
         }
 
         try {
-            return getResponse(urlBuilder.toString(), "application/json", "application/json");
+            return getResponse(urlBuilder.toString(), APPLI_JSON, APPLI_JSON);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -198,7 +206,7 @@ public class KmUserClientService extends UserClientService {
         urlBuilder.append(helpDocsKey).append("&q=").append(queryString);
 
         try {
-            return getResponse(urlBuilder.toString(), "application/json", "application/json");
+            return getResponse(urlBuilder.toString(), APPLI_JSON, APPLI_JSON);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -211,7 +219,7 @@ public class KmUserClientService extends UserClientService {
         urlBuilder.append("/").append(articleId).append("?key=").append(helpDocsKey);
 
         try {
-            return getResponse(urlBuilder.toString(), "application/json", "application/json");
+            return getResponse(urlBuilder.toString(), APPLI_JSON, APPLI_JSON);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -221,13 +229,13 @@ public class KmUserClientService extends UserClientService {
 
     public String getDashboardFaq(String appKey, String articleId) throws Exception {
         StringBuilder urlBuilder = new StringBuilder(getKmBaseUrl());
-        urlBuilder.append("/kb/search?appId=").append(appKey);
+        urlBuilder.append(KB_SEARCH_ID).append(appKey);
         if (!TextUtils.isEmpty(articleId)) {
             urlBuilder.append("&articleId=").append(articleId);
         }
 
         try {
-            return getResponse(urlBuilder.toString(), "application/json", "application/json");
+            return getResponse(urlBuilder.toString(), APPLI_JSON, APPLI_JSON);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -240,8 +248,8 @@ public class KmUserClientService extends UserClientService {
             return null;
         }
         try {
-            String url = getApplicationListUrl() + "?roleNameList=APPLICATION_WEB_ADMIN&" + (isEmailId ? "emailId=" : "userId=") + URLEncoder.encode(userId, "UTF-8");
-            return httpRequestUtils.getResponse(url, "application/json", "application/json");
+            String url = getApplicationListUrl() + APPLICATION_WEB_ADMIN + (isEmailId ? "emailId=" : "userId=") + URLEncoder.encode(userId, "UTF-8");
+            return httpRequestUtils.getResponse(url, APPLI_JSON, APPLI_JSON);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -272,7 +280,7 @@ public class KmUserClientService extends UserClientService {
             if (TextUtils.isEmpty(appKey)) {
                 return null;
             }
-            return httpRequestUtils.getResponse(getAgentListUrl() + appKey, "application/json", "application/json");
+            return httpRequestUtils.getResponse(getAgentListUrl() + appKey, APPLI_JSON, APPLI_JSON);
         } catch (Exception e) {
             throw new KmException(e.getMessage());
         }
@@ -283,7 +291,7 @@ public class KmUserClientService extends UserClientService {
     }
 
     public String getBotDetail(String botId) {
-        String response = httpRequestUtils.getResponse(getBotDetailUrl(botId), "application/json", "application/json");
+        String response = httpRequestUtils.getResponse(getBotDetailUrl(botId), APPLI_JSON, APPLI_JSON);
         Utils.printLog(context, TAG, "Bot detail response: " + response);
         return response;
     }
@@ -297,7 +305,7 @@ public class KmUserClientService extends UserClientService {
 
         try {
             String url = getKmBaseUrl() + GET_AGENT_DETAILS + "?applicationId=" + applicationKey.trim() + "&userName=" + URLEncoder.encode(userId, "UTF-8").trim();
-            String response = getResponse(url, "application/json", "application/json, text/plain, */*");
+            String response = getResponse(url, APPLI_JSON, "application/json, text/plain, */*");
             Utils.printLog(context, TAG, "User details GET method response: " + response);
             return response;
         } catch (Exception exception) {
@@ -334,7 +342,7 @@ public class KmUserClientService extends UserClientService {
         Utils.printLog(context, TAG, "Net status" + Utils.isInternetAvailable(context.getApplicationContext()));
 
         if (!Utils.isInternetAvailable(context.getApplicationContext())) {
-            throw new ConnectException("No Internet Connection");
+            throw new ConnectException(NO_INTERNET_CONN);
         }
 
 //        Log.i(TAG, "App Id is: " + getApplicationKey(context));
@@ -345,15 +353,15 @@ public class KmUserClientService extends UserClientService {
         Utils.printLog(context, TAG, "Registration response is: " + response);
 
         if (TextUtils.isEmpty(response) || response.contains("<html")) {
-            throw new Exception("503 Service Unavailable");
+            throw new Exception(SERVICE_UNAVAILABLE);
 //            return null;
         }
         if (response.contains(INVALID_APP_ID)) {
-            throw new InvalidApplicationException("Invalid Application Id");
+            throw new InvalidApplicationException(INVALID_APPLI_ID);
         }
         //final RegistrationResponse registrationResponse = gson.fromJson(response, RegistrationResponse.class);
 
-        if ((new JSONObject(response)).optString("code").equals("INVALID_CREDENTIALS")) {
+        if ((new JSONObject(response)).optString("code").equals(INVALID_CREDENTIALS)) {
             throw new UnAuthoriseException(((new JSONObject(response)).optString("message")) + "");
         }
 
@@ -365,12 +373,12 @@ public class KmUserClientService extends UserClientService {
 
         if (registrationResponse == null) {
             RegistrationResponse invalidResponse = new RegistrationResponse();
-            invalidResponse.setMessage("Invalid response");
+            invalidResponse.setMessage(INVALID_RESPONSE);
             return invalidResponse;
         }
 
         if (registrationResponse.isPasswordInvalid()) {
-            throw new UnAuthoriseException("Invalid uername/password");
+            throw new UnAuthoriseException(INVALID_USERNAME_PASSWORD);
         }
         Utils.printLog(context, "Registration response ", "is " + registrationResponse);
         if (registrationResponse.getNotificationResponse() != null) {

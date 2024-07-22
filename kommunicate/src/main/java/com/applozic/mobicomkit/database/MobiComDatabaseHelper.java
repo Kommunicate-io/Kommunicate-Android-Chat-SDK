@@ -282,7 +282,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         //Store Database name in shared preference ...
-        if (!DBUtils.isTableExists(database, "sms")) {
+        if (!DBUtils.isTableExists(database, SMS)) {
             database.execSQL(CREATE_SMS_TABLE);
         }
         if (!DBUtils.isTableExists(database, SCHEDULE_SMS_TABLE_NAME)) {
@@ -317,7 +317,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
                     + oldVersion + " to " + newVersion
                     + ", which will destroy all old data");
 
-            if (!DBUtils.isTableExists(database, "sms")) {
+            if (!DBUtils.isTableExists(database, SMS)) {
                 database.execSQL(CREATE_SMS_TABLE);
             }
             if (!DBUtils.isTableExists(database, SCHEDULE_SMS_TABLE_NAME)) {
@@ -332,13 +332,13 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
             if (!DBUtils.isTableExists(database, CONVERSATION)) {
                 database.execSQL(CREATE_CONVERSATION_TABLE);
             }
-            if (!DBUtils.existsColumnInTable(database, "sms", "deleted")) {
+            if (!DBUtils.existsColumnInTable(database, SMS, "deleted")) {
                 database.execSQL(ALTER_SMS_TABLE_FOR_DELETE_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "sms", "applicationId")) {
+            if (!DBUtils.existsColumnInTable(database, SMS, APPLICATION_ID)) {
                 database.execSQL(ALTER_SMS_TABLE_FOR__APPLICATION_ID_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "contact", "applicationId")) {
+            if (!DBUtils.existsColumnInTable(database, "contact", APPLICATION_ID)) {
                 database.execSQL(ALTER_CONTACT_TABLE_FOR_APPLICATION_ID_COLUMN);
             }
             if (!DBUtils.existsColumnInTable(database, "contact", UNREAD_COUNT)) {
@@ -356,25 +356,25 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
             if (!DBUtils.existsColumnInTable(database, "contact", BLOCKED_BY)) {
                 database.execSQL(ALTER_CONTACT_TABLE_BLOCKED_BY_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "sms", MESSAGE_CONTENT_TYPE)) {
+            if (!DBUtils.existsColumnInTable(database, SMS, MESSAGE_CONTENT_TYPE)) {
                 database.execSQL(ALTER_SMS_TABLE_FOR_CONTENT_TYPE_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "sms", MESSAGE_METADATA)) {
+            if (!DBUtils.existsColumnInTable(database, SMS, MESSAGE_METADATA)) {
                 database.execSQL(ALTER_SMS_TABLE_FOR_METADATA_TYPE_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "sms", CONVERSATION_ID)) {
+            if (!DBUtils.existsColumnInTable(database, SMS, CONVERSATION_ID)) {
                 database.execSQL(ALTER_MESSAGE_TABLE_FOR_CONVERSATION_ID_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "sms", TOPIC_ID)) {
+            if (!DBUtils.existsColumnInTable(database, SMS, TOPIC_ID)) {
                 database.execSQL(ALTER_MESSAGE_TABLE_FOR_TOPIC_ID_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "channel", CHANNEL_IMAGE_URL)) {
+            if (!DBUtils.existsColumnInTable(database, CHANNEL, CHANNEL_IMAGE_URL)) {
                 database.execSQL(ALTER_CHANNEL_TABLE_FOR_IMAGE_URL_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "channel", CHANNEL_IMAGE_LOCAL_URI)) {
+            if (!DBUtils.existsColumnInTable(database, CHANNEL, CHANNEL_IMAGE_LOCAL_URI)) {
                 database.execSQL(ALTER_CHANNEL_TABLE_FOR_IMAGE_LOCAL_URI_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "channel", CLIENT_GROUP_ID)) {
+            if (!DBUtils.existsColumnInTable(database, CHANNEL, CLIENT_GROUP_ID)) {
                 database.execSQL(ALTER_CHANNEL_TABLE_FOR_CLIENT_GROUP_ID);
             }
             if (!DBUtils.existsColumnInTable(database, CHANNEL, UNREAD_COUNT)) {
@@ -392,10 +392,10 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
             if (!DBUtils.existsColumnInTable(database, "contact", USER_TYPE_ID)) {
                 database.execSQL(ALTER_CONTACT_TABLE_FOR_USER_TYPE_ID_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "channel", NOTIFICATION_AFTER_TIME)) {
+            if (!DBUtils.existsColumnInTable(database, CHANNEL, NOTIFICATION_AFTER_TIME)) {
                 database.execSQL(ALTER_CHANNEL_TABLE_FOR_NOTIFICATION_AFTER_TIME_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "channel", DELETED_AT)) {
+            if (!DBUtils.existsColumnInTable(database, CHANNEL, DELETED_AT)) {
                 database.execSQL(ALTER_CHANNEL_TABLE_FOR_DELETED_AT_COLUMN);
             }
             if (!DBUtils.existsColumnInTable(database, "contact", DELETED_AT)) {
@@ -422,10 +422,10 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
             if (!DBUtils.existsColumnInTable(database, CONTACT_TABLE_NAME, LAST_MESSAGED_AT)) {
                 database.execSQL(ALTER_CONTACT_TABLE_FOR_LAST_MESSAGED_AT);
             }
-            if (!DBUtils.existsColumnInTable(database, "sms", URL)) {
+            if (!DBUtils.existsColumnInTable(database, SMS, URL)) {
                 database.execSQL(ALTER_SMS_TABLE_FOR_FILE_URL);
             }
-            if (!DBUtils.existsColumnInTable(database, "CHANNEL_USER_X", ROLE)) {
+            if (!DBUtils.existsColumnInTable(database, CHANNEL_USER_X, ROLE)) {
                 database.execSQL(ALTER_CHANNEL_USER_MAPPER_TABLE_FOR_ROLE);
             }
             if (!DBUtils.existsColumnInTable(database, "contact", APPLOZIC_TYPE)) {
@@ -447,7 +447,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
             if (!DBUtils.existsColumnInTable(database, CHANNEL, PARENT_CLIENT_GROUP_ID)) {
                 database.execSQL(ALTER_CHANNEL_TABLE_FOR_PARENT_CLIENT_GROUP_ID_COLUMN);
             }
-            if (!DBUtils.existsColumnInTable(database, "sms", THUMBNAIL_BLOB_KEY)) {
+            if (!DBUtils.existsColumnInTable(database, SMS, THUMBNAIL_BLOB_KEY)) {
                 database.execSQL(ALTER_CREATE_SMS_TABLE_FOR_THUMBNAIL_BLOB_KEY);
             }
 

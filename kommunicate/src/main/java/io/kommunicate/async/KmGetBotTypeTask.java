@@ -18,6 +18,7 @@ import io.kommunicate.services.KmUserService;
 
 public class KmGetBotTypeTask extends AsyncTask<Void, Void, String> {
 
+    private static final String RESPONSE_STRING_NULL = "Response string for bot details null.";
     private String botId;
     private KmUserService userService;
     private KmCallback callback;
@@ -39,7 +40,7 @@ public class KmGetBotTypeTask extends AsyncTask<Void, Void, String> {
     protected void onPostExecute(String response) {
         if (callback != null) {
             if (TextUtils.isEmpty(response)) {
-               callback.onFailure("Response string for bot details null.");
+               callback.onFailure(RESPONSE_STRING_NULL);
             } else {
                 Type responseClassType = new TypeToken<MessageTypeKmApiResponse<List<BotDetailsResponseData>>>() { }.getType();
                 try {

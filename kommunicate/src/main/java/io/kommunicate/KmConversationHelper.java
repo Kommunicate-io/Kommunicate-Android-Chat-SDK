@@ -64,6 +64,20 @@ public class KmConversationHelper {
     private static final String TAG = "KmConversationHelper";
     public static final String GROUP_CREATION_URL = "GROUP_CREATION_URL";
     public static final String SINGLE_THREADED = "IS_SINGLE_THREADED";
+    private static final String REDUCE_noOf_AGENTS = "Please reduce the number of agents or bots";
+    private static final String NO_METADATA_FOUND = "No Metadata found in conversation";
+    private static final String CREATE_GROUP_MSG = "CREATE_GROUP_MESSAGE";
+    private static final String REMOVE_MEMBER_MSG = "REMOVE_MEMBER_MESSAGE";
+    private static final String ADD_MEMBER_MSG = "ADD_MEMBER_MESSAGE";
+    private static final String JOIN_MEMBER_MSG = "JOIN_MEMBER_MESSAGE";
+    private static final String GROUP_NAME_CHANGE_MSG = "GROUP_NAME_CHANGE_MESSAGE";
+    private static final String GROUP_ICON_CHANGE_MSG = "GROUP_ICON_CHANGE_MESSAGE";
+    private static final String GROUP_LEFT_MSG = "GROUP_LEFT_MESSAGE";
+    private static final String DELETED_GROUP_MESSAGE = "DELETED_GROUP_MESSAGE";
+    private static final String USER_ROLE_UPDATED_MESSAGE = "GROUP_USER_ROLE_UPDATED_MESSAGE";
+    private static final String META_DATA_UPDATED_MESSAGE = "GROUP_META_DATA_UPDATED_MESSAGE";
+    private static final String ANDROID = "Android: ";
+
 
     public static void openConversation(final Context context, final boolean skipConversationList, final Integer conversationId, final KmCallback callback) throws KmException {
         if (!(context instanceof Activity)) {
@@ -645,23 +659,23 @@ public class KmConversationHelper {
         }
 
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("CREATE_GROUP_MESSAGE", "");
-        metadata.put("REMOVE_MEMBER_MESSAGE", "");
-        metadata.put("ADD_MEMBER_MESSAGE", "");
-        metadata.put("JOIN_MEMBER_MESSAGE", "");
-        metadata.put("GROUP_NAME_CHANGE_MESSAGE", "");
-        metadata.put("GROUP_ICON_CHANGE_MESSAGE", "");
-        metadata.put("GROUP_LEFT_MESSAGE", "");
-        metadata.put("DELETED_GROUP_MESSAGE", "");
-        metadata.put("GROUP_USER_ROLE_UPDATED_MESSAGE", "");
-        metadata.put("GROUP_META_DATA_UPDATED_MESSAGE", "");
+        metadata.put(CREATE_GROUP_MSG, "");
+        metadata.put(REMOVE_MEMBER_MSG, "");
+        metadata.put(ADD_MEMBER_MSG, "");
+        metadata.put(JOIN_MEMBER_MSG, "");
+        metadata.put(GROUP_NAME_CHANGE_MSG, "");
+        metadata.put(GROUP_ICON_CHANGE_MSG, "");
+        metadata.put(GROUP_LEFT_MSG, "");
+        metadata.put(DELETED_GROUP_MESSAGE, "");
+        metadata.put(USER_ROLE_UPDATED_MESSAGE, "");
+        metadata.put(META_DATA_UPDATED_MESSAGE, "");
         metadata.put("HIDE", "true");
         String appName = conversationBuilder.getContext().getApplicationInfo().loadLabel(conversationBuilder.getContext().getPackageManager()).toString();
         if (!TextUtils.isEmpty(appName)) {
-            String label = "Android: " + appName;
+            String label = ANDROID + appName;
             metadata.put(GROUP_CREATION_URL, label);
         } else {
-            String label = "Android: " + Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey();
+            String label = ANDROID + Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey();
             metadata.put(GROUP_CREATION_URL, label);
         }
         String languageCode = AlPrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
@@ -827,16 +841,16 @@ public class KmConversationHelper {
                     if (channel != null && channel.getMetadata() != null) {
                         Map<String, String> channelMetadata = channel.getMetadata();
                         if (channelMetadata != null) {
-                            channelMetadata.remove("CREATE_GROUP_MESSAGE");
-                            channelMetadata.remove("REMOVE_MEMBER_MESSAGE");
-                            channelMetadata.remove("ADD_MEMBER_MESSAGE");
-                            channelMetadata.remove("JOIN_MEMBER_MESSAGE");
-                            channelMetadata.remove("GROUP_NAME_CHANGE_MESSAGE");
-                            channelMetadata.remove("GROUP_ICON_CHANGE_MESSAGE");
-                            channelMetadata.remove("GROUP_LEFT_MESSAGE");
-                            channelMetadata.remove("DELETED_GROUP_MESSAGE");
-                            channelMetadata.remove("GROUP_USER_ROLE_UPDATED_MESSAGE");
-                            channelMetadata.remove("GROUP_META_DATA_UPDATED_MESSAGE");
+                            channelMetadata.remove(CREATE_GROUP_MSG);
+                            channelMetadata.remove(REMOVE_MEMBER_MSG);
+                            channelMetadata.remove(ADD_MEMBER_MSG);
+                            channelMetadata.remove(JOIN_MEMBER_MSG);
+                            channelMetadata.remove(GROUP_NAME_CHANGE_MSG);
+                            channelMetadata.remove(GROUP_ICON_CHANGE_MSG);
+                            channelMetadata.remove(GROUP_LEFT_MSG);
+                            channelMetadata.remove(DELETED_GROUP_MESSAGE);
+                            channelMetadata.remove(USER_ROLE_UPDATED_MESSAGE);
+                            channelMetadata.remove(META_DATA_UPDATED_MESSAGE);
                             channelMetadata.remove("HIDE");
                             channelMetadata.remove(CONVERSATION_ASSIGNEE);
                             channelMetadata.remove(SKIP_ROUTING);
@@ -847,7 +861,7 @@ public class KmConversationHelper {
                             callback.onSuccess(channelMetadata);
                         }
                     } else {
-                        callback.onSuccess("No Metadata found in conversation");
+                        callback.onSuccess(NO_METADATA_FOUND);
                     }
                 }
             }
@@ -908,7 +922,7 @@ public class KmConversationHelper {
         }
 
         if (sb.toString().length() > 255) {
-            throw new KmException("Please reduce the number of agents or bots");
+            throw new KmException(REDUCE_noOf_AGENTS);
         }
 
         return sb.toString();

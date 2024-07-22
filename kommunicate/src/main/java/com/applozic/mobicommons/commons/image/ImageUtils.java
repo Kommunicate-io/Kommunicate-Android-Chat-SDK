@@ -29,6 +29,7 @@ public class ImageUtils {
 
     private static final String TAG = "ImageUtils";
     private static Context context;
+    private static final String image_path = "image/jpeg";
 
     public ImageUtils(Context context) {
         this.context = context;
@@ -37,7 +38,7 @@ public class ImageUtils {
     public static void addImageToGallery(final String filePath, final Context context) {
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.Images.Media.MIME_TYPE, image_path);
         values.put(MediaStore.MediaColumns.DATA, filePath);
 
         context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);

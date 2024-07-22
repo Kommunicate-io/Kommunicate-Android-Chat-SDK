@@ -35,6 +35,7 @@ public class KmRichMessageFactory {
     public final static int MIXED_BUTTON_RICH_MESSAGE = 11;
     public final static int VIDEO_RICH_MESSAGE = 14;
     public final static int FORM_RICH_MESSAGE = 12;
+    private static final String TEMPLATE_ID = "templateId";
 
     //factory class is a singleton
     private KmRichMessageFactory() {
@@ -51,8 +52,8 @@ public class KmRichMessageFactory {
 
     public KmRichMessage getRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
         int type = -1;
-        if (message.getMetadata().containsKey("templateId")) {
-            type = Integer.parseInt(message.getMetadata().get("templateId"));
+        if (message.getMetadata().containsKey(TEMPLATE_ID)) {
+            type = Integer.parseInt(message.getMetadata().get(TEMPLATE_ID));
         }
 
         if (type == KmRichMessageFactory.CARD_RICH_MESSAGE) {

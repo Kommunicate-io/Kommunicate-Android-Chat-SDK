@@ -29,6 +29,7 @@ public class WearableNotificationWithVoice {
     int actionTitleId;
     int notificationId;
     PendingIntent pendingIntent;
+    private static final String PENDING_ERROR = "Either pendingIntent or handler class requires.";
 
     /**
      * @param notificationBuilder
@@ -66,7 +67,7 @@ public class WearableNotificationWithVoice {
      */
     public void sendNotification() throws Exception {
         if (pendingIntent == null && notificationHandler == null) {
-            throw new RuntimeException("Either pendingIntent or handler class requires.");
+            throw new RuntimeException(PENDING_ERROR);
         }
         //Action action = buildWearableAction(); removed remote input action for now
         Notification notification = notificationBuilder.extend(new WearableExtender()).build();

@@ -30,6 +30,8 @@ public class PermissionsUtils {
     public static String[] PERMISSIONS_STORAGE = getStoragePermission();
     public static String[] PERMISSIONS_RECORD_AUDIO = {Manifest.permission.RECORD_AUDIO};
     public static String[] PERMISSION_CAMERA = {Manifest.permission.CAMERA};
+    private static final String ANDROID_RECORD_AUDIO = "android.permission.RECORD_AUDIO";
+    private static final String ANDROID_READ_MEDIA = "android.permission.READ_MEDIA";
 
 
     private static String[] getStoragePermission() {
@@ -46,7 +48,7 @@ public class PermissionsUtils {
                 PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
                 List<String> permissions = new ArrayList<>();
                 for (String permission : info.requestedPermissions){
-                    if (permission.contains("android.permission.READ_MEDIA")){
+                    if (permission.contains(ANDROID_READ_MEDIA)){
                         permissions.add(permission);
                     }
                 }
@@ -148,7 +150,7 @@ public class PermissionsUtils {
     }
 
     public static boolean isAudioRecordingPermissionGranted(Context context) {
-        String permission = "android.permission.RECORD_AUDIO";
+        String permission = ANDROID_RECORD_AUDIO;
         int res = context.checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }

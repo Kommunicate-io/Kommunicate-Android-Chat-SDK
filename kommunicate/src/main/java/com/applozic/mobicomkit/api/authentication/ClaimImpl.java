@@ -19,6 +19,8 @@ import java.util.List;
 class ClaimImpl extends BaseClaim {
 
     private final JsonElement value;
+    private static final String arr_decode_msg_fail = "Failed to decode claim as array";
+    private static final String list_decode_msg_fail = "Failed to decode claim as list";
 
     ClaimImpl(@NonNull JsonElement value) {
         this.value = value;
@@ -94,7 +96,7 @@ class ClaimImpl extends BaseClaim {
             }
             return arr;
         } catch (JsonSyntaxException e) {
-            throw new DecodeException("Failed to decode claim as array", e);
+            throw new DecodeException(arr_decode_msg_fail, e);
         }
     }
 
@@ -112,7 +114,7 @@ class ClaimImpl extends BaseClaim {
             }
             return list;
         } catch (JsonSyntaxException e) {
-            throw new DecodeException("Failed to decode claim as list", e);
+            throw new DecodeException(list_decode_msg_fail, e);
         }
     }
 

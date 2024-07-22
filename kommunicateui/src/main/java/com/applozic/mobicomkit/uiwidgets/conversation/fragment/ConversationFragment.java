@@ -42,6 +42,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
     protected static final String CHANNEL = "CHANNEL";
     protected static final String CONVERSATION_ID = "CONVERSATION_ID";
     protected static final String SEARCH_STRING = "SEARCH_STRING";
+    private static final String GMAP_LINK = "http://maps.google.com/?q=";
     protected InputMethodManager inputMethodManager;
     protected Bundle bundle;
 
@@ -91,7 +92,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
         } else {
             address = "";
         }
-        this.messageEditText.setText(address + "http://maps.google.com/?q=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude());
+        this.messageEditText.setText(address + GMAP_LINK + currentLocation.getLatitude() + "," + currentLocation.getLongitude());
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

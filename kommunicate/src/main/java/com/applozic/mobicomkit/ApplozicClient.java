@@ -57,6 +57,9 @@ public class ApplozicClient {
     private static final String MAX_CREATED_AT_KEY = "mck.sms.createdAt.max";
     private static final String AL_CONVERSATION_LIST_PAGE_SIZE_KEY = "AL_CONVERSATION_LIST_PAGE_SIZE_KEY";
     private static final int conversationListDefaultMainPageSize = 60;
+    private static final String APPLOZIC_CONTACT_PIC = "applozic_ic_contact_picture_holo_light";
+    private static final String APPLOZIC_GROUP_ICON = "applozic_group_icon";
+    private static final String LIST_CALL = "LIST_CALL";
 
     public static ApplozicClient applozicClient;
     public SharedPreferences sharedPreferences;
@@ -161,7 +164,7 @@ public class ApplozicClient {
     }
 
     public String getDefaultContactImage() {
-        return sharedPreferences.getString(CONTACT_DEFAULT_IMAGE, "applozic_ic_contact_picture_holo_light");
+        return sharedPreferences.getString(CONTACT_DEFAULT_IMAGE, APPLOZIC_CONTACT_PIC);
     }
 
     public ApplozicClient setDefaultContactImage(String imageName) {
@@ -170,7 +173,7 @@ public class ApplozicClient {
     }
 
     public String getDefaultChannelImage() {
-        return sharedPreferences.getString(GROUP_DEFAULT_IMAGE, "applozic_group_icon");
+        return sharedPreferences.getString(GROUP_DEFAULT_IMAGE, APPLOZIC_GROUP_ICON);
     }
 
     public ApplozicClient setDefaultChannelImage(String groupImageName) {
@@ -355,7 +358,7 @@ public class ApplozicClient {
     public String getServerSyncCallKey(Contact contact, Channel channel, Integer conversationId) {
 
         if (contact == null && channel == null) {
-            return SERVER_SYNC + "LIST_CALL";
+            return SERVER_SYNC + LIST_CALL;
         }
 
         return SERVER_SYNC.replace("[CONVERSATION]", (conversationId != null && conversationId != 0) ? String.valueOf(conversationId) : "")

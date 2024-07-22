@@ -1,6 +1,5 @@
 package com.applozic.mobicomkit.api.conversation.database;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -36,51 +35,13 @@ import java.util.Map;
 public class MessageDatabaseService {
 
     private static final String TAG = "MessageDatabaseService";
-    private static final String size = "size";
-    private static final String name = "name";
+
     public static List<Message> recentlyAddedMessage = new ArrayList<Message>();
     private Context context = null;
     private MobiComDatabaseHelper dbHelper;
     private boolean hideActionMessages = false;
     private boolean skipDeletedGroups;
-    private static final String id = "id";
-    private static final String keyString = "keyString";
-    private static final String type = "type";
-    private static final String source = "source";
-    private static final String storeOnDevice = "storeOnDevice";
-    private static final String contactNumbers = "contactNumbers";
-    private static final String createdAt = "createdAt";
-    private static final String blobKeyString = "blobKeyString";
-    private static final String metaFileKeyString = "metaFileKeyString";
-    private static final String thumbnailBlobKey = "thumbnailBlobKey";
-    private static final String channelKey_AND= "channelKey = ? AND ";
-    private static final String contactNumbers_AND = "contactNumbers = ? AND ";
-    private static final String createdAt_AND = "createdAt >= ? AND ";
-    private static final String conversationID_AND = "conversationId = ? AND ";
-    private static final String deleted_AND = "deleted = ? AND ";
-    private static final String reply_AND = "replyMessage != ? AND ";
-    private static final String hidden_AND = "hidden = ? AND ";
-    private static final String typeAnd = "type != ? AND type != ? AND ";
-    private static final String status_03 = "status in (0,3) AND ";
-    private static final String serverOps = "sentToServer = ? and canceled = ? and deleted = ?";
-    private static final String channelKey_like = "channelKey = ? and metadata like ?";
-    private static final String contactAnd_Message = "contactNumbers = ? AND message = ?";
-    private static final String toNumbers = "toNumbers";
-    private static final String applicationId = "applicationId";
-    private static final String sentToServer = "sentToServer";
-    private static final String thumbnailUrl = "thumbnailUrl";
-    private static final String status_notin_5 = "status not in (5)";
-    private static final String status_notin_4_5 = "status not in (4,5)";
-    private static final String clientgroup_AND = "clientGroupId = ? AND ";
-    private static final String messageContentType_10 = "messageContentType in (10) ";
-    private static final String m_message = " and (m.message like ? ";
-    private static final String c_channel = " or c.channelName like ?)";
-    private static final String deleted_messageContent__replyMessage = "deleted = 0 AND messageContentType NOT IN (10,11,102,103) AND replyMessage NOT IN (2) AND type NOT IN (6,7) AND hidden = 0 AND message like ?";
-    private static final String hidden_deleted_messageContent = "m.hidden = 0 AND m.deleted = 0 AND m.messageContentType not in (11,102) AND m.type not in (6, 7) AND ch.type = 10 AND ch.deletedAtTime is NULL AND";
-    private static final String kmStatus_1_2 = " ch.kmStatus in (1, 2)";
-    private static final String km_status = " ch.kmStatus = ?";
-    private static final String m_createdAt = " AND m.createdAt < ?";
-    private static final String contactNo_And_channelKey = "contactNumbers=? AND channelKey = 0";
+
 
     public MessageDatabaseService(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -89,18 +50,17 @@ public class MessageDatabaseService {
         skipDeletedGroups = ApplozicClient.getInstance(context).isSkipDeletedGroups();
     }
 
-    @SuppressLint("Range")
     public static Message getMessage(Cursor cursor) {
         Message message = new Message();
-        message.setMessageId(cursor.getLong(cursor.getColumnIndex(id)));
-        message.setKeyString(cursor.getString(cursor.getColumnIndex(keyString)));
-        message.setType(cursor.getShort(cursor.getColumnIndex(type)));
-        message.setSource(cursor.getShort(cursor.getColumnIndex(source)));
+        message.setMessageId(cursor.getLong(cursor.getColumnIndex("id")));
+        message.setKeyString(cursor.getString(cursor.getColumnIndex("keyString")));
+        message.setType(cursor.getShort(cursor.getColumnIndex("type")));
+        message.setSource(cursor.getShort(cursor.getColumnIndex("source")));
         Long storeOnDevice = cursor.getLong(cursor.getColumnIndex("storeOnDevice"));
         message.setStoreOnDevice(storeOnDevice != null && storeOnDevice.intValue() == 1);
         String contactNumbers = cursor.getString(cursor.getColumnIndex("contactNumbers"));
         message.setContactIds(contactNumbers);
-        message.setCreatedAtTime(cursor.getLong(cursor.getColumnIndex(createdAt)));
+        message.setCreatedAtTime(cursor.getLong(cursor.getColumnIndex("createdAt")));
         Long delivered = cursor.getLong(cursor.getColumnIndex("delivered"));
         message.setDelivered(delivered != null && delivered.intValue() == 1);
 
@@ -151,13 +111,13 @@ public class MessageDatabaseService {
             message.setGroupId(channelKey);
         }
 
-        if (cursor.getString(cursor.getColumnIndex(blobKeyString)) == null) {
+        if (cursor.getString(cursor.getColumnIndex("blobKeyString")) == null) {
             //file is not present...  Don't set anything ...
         } else {
             FileMeta fileMeta = new FileMeta();
-            fileMeta.setKeyString(cursor.getString(cursor.getColumnIndex(metaFileKeyString)));
-            fileMeta.setBlobKeyString(cursor.getString(cursor.getColumnIndex(blobKeyString)));
-            fileMeta.setThumbnailBlobKey(cursor.getString(cursor.getColumnIndex(thumbnailBlobKey)));
+            fileMeta.setKeyString(cursor.getString(cursor.getColumnIndex("metaFileKeyString")));
+            fileMeta.setBlobKeyString(cursor.getString(cursor.getColumnIndex("blobKeyString")));
+            fileMeta.setThumbnailBlobKey(cursor.getString(cursor.getColumnIndex("thumbnailBlobKey")));
             fileMeta.setThumbnailUrl(cursor.getString(cursor.getColumnIndex("thumbnailUrl")));
             fileMeta.setSize(cursor.getInt(cursor.getColumnIndex("size")));
             fileMeta.setName(cursor.getString(cursor.getColumnIndex("name")));
@@ -247,41 +207,41 @@ public class MessageDatabaseService {
         List<String> structuredNameParamsList = new ArrayList<String>();
 
         if (channel != null && channel.getKey() != null) {
-            structuredNameWhere += channelKey_AND;
+            structuredNameWhere += "channelKey = ? AND ";
             structuredNameParamsList.add(String.valueOf(channel.getKey()));
         } else {
-            structuredNameWhere += channelKey_AND;
+            structuredNameWhere += "channelKey = ? AND ";
             structuredNameParamsList.add("0");
         }
         if (contact != null && !TextUtils.isEmpty(contact.getContactIds())) {
-            structuredNameWhere += contactNumbers_AND;
+            structuredNameWhere += "contactNumbers = ? AND ";
             structuredNameParamsList.add(contact.getContactIds());
         }
         if (startTime != null) {
-            structuredNameWhere += createdAt_AND;
+            structuredNameWhere += "createdAt >= ? AND ";
             structuredNameParamsList.add(String.valueOf(startTime));
         }
         if (endTime != null) {
-            structuredNameWhere += createdAt_AND;
+            structuredNameWhere += "createdAt < ? AND ";
             structuredNameParamsList.add(String.valueOf(endTime));
         }
         if (BroadcastService.isContextBasedChatEnabled() && conversationId != null && conversationId != 0) {
-            structuredNameWhere += conversationID_AND;
+            structuredNameWhere += "conversationId = ? AND ";
             structuredNameParamsList.add(String.valueOf(conversationId));
         }
         structuredNameWhere += "messageContentType not in ( ?,? ) AND ";
         structuredNameParamsList.add(String.valueOf(Message.ContentType.HIDDEN.getValue()));
         structuredNameParamsList.add(String.valueOf(Message.ContentType.VIDEO_CALL_NOTIFICATION_MSG.getValue()));
-        structuredNameWhere += deleted_AND;
+        structuredNameWhere += "deleted = ? AND ";
         structuredNameParamsList.add("0");
-        structuredNameWhere += hidden_AND;
+        structuredNameWhere += "hidden = ? AND ";
         structuredNameParamsList.add("0");
-        structuredNameWhere += reply_AND;
+        structuredNameWhere += "replyMessage != ? AND ";
         structuredNameParamsList.add(String.valueOf(Message.ReplyMessage.HIDE_MESSAGE.getValue()));
 
         MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(context);
         if (!userPreferences.isDisplayCallRecordEnable()) {
-            structuredNameWhere += typeAnd;
+            structuredNameWhere += "type != ? AND type != ? AND ";
             structuredNameParamsList.add(String.valueOf(Message.MessageType.CALL_INCOMING.getValue()));
             structuredNameParamsList.add(String.valueOf(Message.MessageType.CALL_OUTGOING.getValue()));
         }
@@ -303,7 +263,7 @@ public class MessageDatabaseService {
         String structuredNameWhere = "";
         List<String> structuredNameParamsList = new ArrayList<String>();
         structuredNameWhere += "messageContentType not in (11) AND ";
-        structuredNameWhere += status_03;
+        structuredNameWhere += "status in (0,3) AND ";
         structuredNameWhere += "type = ? ";
         structuredNameParamsList.add(String.valueOf(Message.MessageType.MT_INBOX.getValue()));
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -314,7 +274,7 @@ public class MessageDatabaseService {
     public List<Message> getPendingMessages() {
         String structuredNameWhere = "";
         List<String> structuredNameParamsList = new ArrayList<String>();
-        structuredNameWhere += serverOps;
+        structuredNameWhere += "sentToServer = ? and canceled = ? and deleted = ?";
         structuredNameParamsList.add("0");
         structuredNameParamsList.add("0");
         structuredNameParamsList.add("0");
@@ -329,7 +289,7 @@ public class MessageDatabaseService {
             return null;
         }
         try {
-            Cursor cursor = dbHelper.getReadableDatabase().query("sms", null, channelKey_like, new String[]{String.valueOf(channelKey), "%" + Message.CONVERSATION_STATUS + "%"}, null, null, "createdAt DESC", "1");
+            Cursor cursor = dbHelper.getReadableDatabase().query("sms", null, "channelKey = ? and metadata like ?", new String[]{String.valueOf(channelKey), "%" + Message.CONVERSATION_STATUS + "%"}, null, null, "createdAt DESC", "1");
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
                 return getMessage(cursor);
@@ -376,7 +336,7 @@ public class MessageDatabaseService {
         String structuredNameWhere = "";
         List<String> structuredNameParamsList = new ArrayList<String>();
 
-        structuredNameWhere += contactAnd_Message;
+        structuredNameWhere += "contactNumbers = ? AND message = ?";
         structuredNameParamsList.add(contactNumber);
         structuredNameParamsList.add(message);
 
@@ -524,8 +484,8 @@ public class MessageDatabaseService {
             FileMeta fileMeta = message.getFileMetas();
             if (fileMeta != null) {
                 values.put("thumbnailUrl", fileMeta.getThumbnailUrl());
-                values.put(size, fileMeta.getSize());
-                values.put(name, fileMeta.getName());
+                values.put("size", fileMeta.getSize());
+                values.put("name", fileMeta.getName());
                 values.put("contentType", fileMeta.getContentType());
                 values.put("metaFileKeyString", fileMeta.getKeyString());
                 values.put("blobKeyString", fileMeta.getBlobKeyString());
@@ -610,21 +570,21 @@ public class MessageDatabaseService {
 
         try {
             ContentValues values = new ContentValues();
-            values.put(toNumbers, message.getTo());
+            values.put("toNumbers", message.getTo());
             values.put("message", message.getMessage());
-            values.put(createdAt, message.getCreatedAtTime());
-            values.put(storeOnDevice, message.isStoreOnDevice());
+            values.put("createdAt", message.getCreatedAtTime());
+            values.put("storeOnDevice", message.isStoreOnDevice());
             values.put("delivered", message.getDelivered());
             values.put("scheduledAt", message.getScheduledAt());
             values.put("type", message.getType());
-            values.put(contactNumbers, message.getContactIds());
-            values.put(sentToServer, message.isSentToServer());
+            values.put("contactNumbers", message.getContactIds());
+            values.put("sentToServer", message.isSentToServer());
             values.put("keyString", message.getKeyString());
             values.put("source", message.getSource());
             values.put("timeToLive", message.getTimeToLive());
             values.put("canceled", message.isCanceled());
             values.put("read", message.isRead() ? 1 : 0);
-            values.put(applicationId, message.getApplicationId());
+            values.put("applicationId", message.getApplicationId());
             values.put(MobiComDatabaseHelper.MESSAGE_CONTENT_TYPE, message.getContentType());
             values.put(MobiComDatabaseHelper.STATUS, message.getStatus());
             values.put(MobiComDatabaseHelper.CONVERSATION_ID, message.getConversationId());
@@ -652,13 +612,13 @@ public class MessageDatabaseService {
             if (message.getFileMetas() != null) {
                 FileMeta fileMeta = message.getFileMetas();
                 if (fileMeta != null) {
-                    values.put(thumbnailUrl, fileMeta.getThumbnailUrl());
-                    values.put(size, fileMeta.getSize());
-                    values.put(name, fileMeta.getName());
+                    values.put("thumbnailUrl", fileMeta.getThumbnailUrl());
+                    values.put("size", fileMeta.getSize());
+                    values.put("name", fileMeta.getName());
                     values.put("contentType", fileMeta.getContentType());
-                    values.put(metaFileKeyString, fileMeta.getKeyString());
-                    values.put(blobKeyString, fileMeta.getBlobKeyString());
-                    values.put(thumbnailBlobKey, fileMeta.getThumbnailBlobKey());
+                    values.put("metaFileKeyString", fileMeta.getKeyString());
+                    values.put("blobKeyString", fileMeta.getBlobKeyString());
+                    values.put("thumbnailBlobKey", fileMeta.getThumbnailBlobKey());
                     values.put("url", fileMeta.getUrl());
                 }
             }
@@ -684,13 +644,13 @@ public class MessageDatabaseService {
         try {
             SQLiteDatabase database = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
-            String whereClause = "contactNumbers= " + contactId + " and ";
+            String whereClause = "contactNumbers= '" + contactId + "' and ";
             values.put("delivered", "1");
             if (markRead) {
-                whereClause = whereClause + status_notin_5;
+                whereClause = whereClause + "status not in (5)";
                 values.put("status", String.valueOf(Message.Status.DELIVERED_AND_READ.getValue()));
             } else {
-                whereClause = whereClause + status_notin_4_5;
+                whereClause = whereClause + "status not in (4,5)";
                 values.put("status", String.valueOf(Message.Status.DELIVERED.getValue()));
             }
             whereClause = whereClause + " and type=5 ";
@@ -728,8 +688,8 @@ public class MessageDatabaseService {
         try {
             ContentValues values = new ContentValues();
             values.put("keyString", keyString);
-            values.put(sentToServer, "1");
-            values.put(createdAt, message.getSentMessageTimeAtServer());
+            values.put("sentToServer", "1");
+            values.put("createdAt", message.getSentMessageTimeAtServer());
             dbHelper.getWritableDatabase().update("sms", values, "id=" + message.getMessageId(), null);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -761,8 +721,8 @@ public class MessageDatabaseService {
     public void updateMessage(Long id, Long createdAt, String KeyString, boolean isSentToServer) {
         ContentValues values = new ContentValues();
         values.put("createdAt", createdAt);
-        values.put(keyString, KeyString);
-        values.put(sentToServer, isSentToServer);
+        values.put("keyString", KeyString);
+        values.put("sentToServer", isSentToServer);
         dbHelper.getWritableDatabase().update("sms", values, "id=" + id, null);
         dbHelper.close();
     }
@@ -947,14 +907,14 @@ public class MessageDatabaseService {
         String structuredNameWhere = "";
         List<String> structuredNameParamsList = new ArrayList<String>();
         if (channelKey != null && channelKey != 0) {
-            structuredNameWhere = channelKey_AND;
+            structuredNameWhere = "channelKey = ? AND ";
             structuredNameParamsList.add(String.valueOf(channelKey));
         } else if (!TextUtils.isEmpty(clientGroupId)) {
-            structuredNameWhere = clientgroup_AND;
+            structuredNameWhere = "clientGroupId = ? AND ";
             structuredNameParamsList.add(clientGroupId);
         }
 
-        structuredNameWhere += messageContentType_10;
+        structuredNameWhere += "messageContentType in (10) ";
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query("sms", null, structuredNameWhere, structuredNameParamsList.toArray(new String[structuredNameParamsList.size()]), null, null, "createdAt desc");
         return getMessageList(cursor);
@@ -1006,7 +966,8 @@ public class MessageDatabaseService {
             String searchCaluse = "";
 
             if (!TextUtils.isEmpty(searchText)) {
-                searchCaluse += m_message + c_channel;
+                searchCaluse += " and (m.message like ? "
+                        + " or c.channelName like ?)";
                 channelKeysArray.add("%" + searchText.replaceAll("'", "''") + "%");
                 channelKeysArray.add("%" + searchText.replaceAll("'", "''") + "%");
             }
@@ -1074,7 +1035,7 @@ public class MessageDatabaseService {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
             if (!TextUtils.isEmpty(searchText)) {
-                cursor = db.query("sms", null, deleted_messageContent__replyMessage, new String[]{"%" + searchText.replaceAll("'", "''") + "%"}, null, null, "createdAt DESC");
+                cursor = db.query("sms", null, "deleted = 0 AND messageContentType NOT IN (10,11,102,103) AND replyMessage NOT IN (2) AND type NOT IN (6,7) AND hidden = 0 AND message like ?", new String[]{"%" + searchText.replaceAll("'", "''") + "%"}, null, null, "createdAt DESC");
             } else {
                 String messageTypeClause = "";
                 String messageTypeJoinClause = "";
@@ -1167,16 +1128,16 @@ public class MessageDatabaseService {
             } else {
 
                 List<String> selectionArgs = new ArrayList<>();
-                String selection = hidden_deleted_messageContent;
+                String selection = "m.hidden = 0 AND m.deleted = 0 AND m.messageContentType not in (11,102) AND m.type not in (6, 7) AND ch.type = 10 AND ch.deletedAtTime is NULL AND";
                 if (status == 2) {
-                    selection += kmStatus_1_2;
+                    selection += " ch.kmStatus in (1, 2)";
                 } else {
-                    selection += km_status;
+                    selection += " ch.kmStatus = ?";
                     selectionArgs.add(String.valueOf(status));
                 }
 
                 if (lastFetchTime != null && lastFetchTime > 0) {
-                    selection += m_createdAt;
+                    selection += " AND m.createdAt < ?";
                     selectionArgs.add(String.valueOf(lastFetchTime));
                 }
 
@@ -1238,7 +1199,7 @@ public class MessageDatabaseService {
 
     public void deleteConversation(String contactNumber) {
         Utils.printLog(context, TAG, "Deleting conversation for contactNumber: " + contactNumber);
-        int deletedRows = dbHelper.getWritableDatabase().delete("sms", contactNo_And_channelKey, new String[]{contactNumber});
+        int deletedRows = dbHelper.getWritableDatabase().delete("sms", "contactNumbers=? AND channelKey = 0", new String[]{contactNumber});
         updateContactUnreadCountToZero(contactNumber);
         dbHelper.close();
         Utils.printLog(context, TAG, "Delete " + deletedRows + " messages.");
@@ -1381,7 +1342,7 @@ public class MessageDatabaseService {
             selection = "contactNumbers = ? AND ";
             selectionArgs.add(contactId);
         }
-        selection += (downloadedOnly ? " filePaths" : blobKeyString) + " IS NOT NULL";
+        selection += (downloadedOnly ? " filePaths" : " blobKeyString") + " IS NOT NULL";
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(MobiComDatabaseHelper.SMS_TABLE_NAME, null, selection, selectionArgs.toArray(new String[0]), null, null, "createdAt DESC");
         return getMessageList(cursor);

@@ -14,7 +14,7 @@ public class MessageStatClientService extends MobiComKitClientService {
 
     public static final String MESSAGE_STAT_URL = "/rest/ws/sms/stat/update";
     private static final String TAG = "MessageStatClientService";
-    private static final String application_json = "application/json";
+
 
     public MessageStatClientService(Context context) {
         super(context);
@@ -27,7 +27,7 @@ public class MessageStatClientService extends MobiComKitClientService {
 
     public String sendMessageStat(MessageStat messageStat) {
         try {
-            return new HttpRequestUtils(context).postData(getMessageStatUrl(), application_json, null, GsonUtils.getJsonFromObject(messageStat, MessageStat.class));
+            return new HttpRequestUtils(context).postData(getMessageStatUrl(), "application/json", null, GsonUtils.getJsonFromObject(messageStat, MessageStat.class));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -29,7 +29,6 @@ public class KommunicateAudioManager implements AudioManager.OnAudioFocusChangeL
     private Context context;
     private AudioManager audioManager;
     private int minute, second;
-    private static final String TIME_FORMAT = "%02d:%02d";
 
     private KommunicateAudioManager(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -118,7 +117,7 @@ public class KommunicateAudioManager implements AudioManager.OnAudioFocusChangeL
                 int min = duration / 60;
                 int seconds = duration % 60;
                 if (view != null && view.audio_duration_textView != null) {
-                    view.audio_duration_textView.setText(String.format(TIME_FORMAT, min, seconds));
+                    view.audio_duration_textView.setText(String.format("%02d:%02d", min, seconds));
                 }
 
                 if (fromUser) {
@@ -205,7 +204,7 @@ public class KommunicateAudioManager implements AudioManager.OnAudioFocusChangeL
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return String.format(TIME_FORMAT, minute, second);
+        return String.format("%02d:%02d", minute, second);
     }
 
     public void updateAudioDuration(final TextView durationTextView, String filePath) {
@@ -224,7 +223,7 @@ public class KommunicateAudioManager implements AudioManager.OnAudioFocusChangeL
                     int minutes = currentProgress / 60;
                     int seconds = (currentProgress % 60);
                     if (durationTextView != null) {
-                        durationTextView.setText(String.format(TIME_FORMAT, minutes, seconds));
+                        durationTextView.setText(String.format("%02d:%02d", minutes, seconds));
                     }
                     mediaPlayer.release();
                 }

@@ -73,18 +73,6 @@ public class NotificationService {
     public static final String BADGE_COUNT = "BADGE_COUNT";
     public static final String NO_ALERT = "NO_ALERT";
     private final Integer notificationIconColor;
-    private static final String TESTING_NOTIF = "Testing notification";
-    private static final String KOMMUNICATE = "Kommunicate";
-    private static final String INCOMING_CALL_INFO = "Incoming call from ";
-    private static final String OPEN_CALL_SCREEN = "Tap to open call screen.";
-    private static final String CONTACT_ID = "CONTACT_ID";
-    private static final String android_dir = "vnd.android-dir/mms-sms";
-    private static final String contextBasedChat = "contextBasedChat";
-    private static final String sent_from_notification = "sentFromNotification";
-    private static final String key_String = "keyString";
-    private static final String group_Id = "groupId";
-    private static final String take_Order = "takeOrder";
-    private static final String ACTIVITY_OPEN = "activity.open.on.notification";
 
     public NotificationService(int iconResourceID, Context context, int wearable_action_label, int wearable_action_title, int wearable_send_icon) {
         this.context = context;
@@ -94,7 +82,7 @@ public class NotificationService {
         this.wearable_send_icon = wearable_send_icon;
         this.applozicClient = ApplozicClient.getInstance(context);
         this.appContactService = new AppContactService(context);
-        this.activityToOpen = Utils.getMetaDataValue(context, ACTIVITY_OPEN);
+        this.activityToOpen = Utils.getMetaDataValue(context, "activity.open.on.notification");
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.notificationDisableThreshold = applozicClient.getNotificationMuteThreshold();
         this.notificationFilePath = Applozic.getInstance(context).getCustomNotificationSound();
@@ -152,13 +140,13 @@ public class NotificationService {
             intent.putExtra(MobiComKitConstants.QUICK_LIST, true);
         }
         if (applozicClient.isChatListOnNotificationIsHidden()) {
-            intent.putExtra(take_Order, true);
+            intent.putExtra("takeOrder", true);
         }
         if (applozicClient.isContextBasedChat()) {
-            intent.putExtra(contextBasedChat, true);
+            intent.putExtra("contextBasedChat", true);
         }
         intent.putExtra("sms_body", "text");
-        intent.setType(android_dir);
+        intent.setType("vnd.android-dir/mms-sms");
 
         PendingIntent pendingIntent = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -438,17 +426,17 @@ public class NotificationService {
         }
 
         Intent intent = new Intent(context, activity);
-        intent.putExtra(key_String, message.getKeyString());
-        intent.putExtra(group_Id, message.getGroupId());
+        intent.putExtra("keyString", message.getKeyString());
+        intent.putExtra("groupId", message.getGroupId());
         if (applozicClient.isChatListOnNotificationIsHidden()) {
-            intent.putExtra(take_Order, true);
+            intent.putExtra("takeOrder", true);
         }
         if (applozicClient.isContextBasedChat()) {
-            intent.putExtra(contextBasedChat, true);
+            intent.putExtra("contextBasedChat", true);
         }
-        intent.putExtra(sent_from_notification, true);
+        intent.putExtra("sentFromNotification", true);
         intent.putExtra("sms_body", "text");
-        intent.setType(android_dir);
+        intent.setType("vnd.android-dir/mms-sms");
 
         PendingIntent pendingIntent = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -526,7 +514,7 @@ public class NotificationService {
             e.printStackTrace();
         }
         fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        fullScreenIntent.putExtra(CONTACT_ID, message.getTo());
+        fullScreenIntent.putExtra("CONTACT_ID", message.getTo());
         fullScreenIntent.putExtra(CALL_ID, callId);
         if (!TextUtils.isEmpty(isAudioCallOnly) && "true".equals(isAudioCallOnly)) {
             fullScreenIntent.putExtra(CALL_AUDIO_ONLY, true);
@@ -546,8 +534,8 @@ public class NotificationService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, notificationChannels.getCallChannelId())
                         .setSmallIcon(notificationInfo.smallIconResourceId)
-                        .setContentTitle(INCOMING_CALL_INFO + notificationInfo.title + ".")
-                        .setContentText(OPEN_CALL_SCREEN)
+                        .setContentTitle("Incoming call from " + notificationInfo.title + ".")
+                        .setContentText("Tap to open call screen.")
                         .setVibrate(new long[] {2000L, 1000L, 2000L, 1000L})
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -593,8 +581,8 @@ public class NotificationService {
         Integer smallIconResourceId = Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_METADATA) != null ? Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_METADATA) : iconResourceId;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationChannels.getDefaultChannelId(false))
                 .setSmallIcon(smallIconResourceId)
-                .setContentTitle(KOMMUNICATE)
-                .setContentText(TESTING_NOTIF)
+                .setContentTitle("Kommunicate")
+                .setContentText("Testing notification")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(123, builder.build());

@@ -55,8 +55,6 @@ public class Applozic {
     private SharedPreferences sharedPreferences;
     private Context context;
     private ApplozicBroadcastReceiver applozicBroadcastReceiver;
-    private static final String USER_LOGGED_IN = "User already Logged in";
-
 
     private Applozic(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -257,7 +255,7 @@ public class Applozic {
     public static void loginUser(Context context, User user, AlLoginHandler loginHandler) {
         if (MobiComUserPreference.getInstance(context).isLoggedIn()) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
-            registrationResponse.setMessage(USER_LOGGED_IN);
+            registrationResponse.setMessage("User already Logged in");
             loginHandler.onSuccess(registrationResponse, context);
         } else {
             AlTask.execute(new UserLoginTask(user, loginHandler, context));
@@ -267,7 +265,7 @@ public class Applozic {
     public static void connectUser(Context context, User user, AlLoginHandler loginHandler) {
         if (isConnected(context)) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
-            registrationResponse.setMessage(USER_LOGGED_IN);
+            registrationResponse.setMessage("User already Logged in");
             Contact contact = new ContactDatabase(context).getContactById(MobiComUserPreference.getInstance(context).getUserId());
             if (contact != null) {
                 registrationResponse.setUserId(contact.getUserId());
@@ -307,7 +305,7 @@ public class Applozic {
     public static void loginUser(Context context, User user, boolean withLoggedInCheck, AlLoginHandler loginHandler) {
         if (withLoggedInCheck && MobiComUserPreference.getInstance(context).isLoggedIn()) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
-            registrationResponse.setMessage(USER_LOGGED_IN);
+            registrationResponse.setMessage("User already Logged in");
             loginHandler.onSuccess(registrationResponse, context);
         } else {
             AlTask.execute(new UserLoginTask(user, loginHandler, context));

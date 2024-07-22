@@ -29,8 +29,6 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
     private KMStartChatHandler startChatHandler;
     KMGroupInfo groupInfo;
     Exception e;
-    private static final String ERR_OCCURED = "Some error occurred";
-    private static final String SUCCESS = "SUCCESS";
 
     public KmCreateConversationTask(Context context, Integer groupId, String userId, String applicationId, String agentId, KmCreateConversationHandler handler) {
         this.context = new WeakReference<Context>(context);
@@ -66,19 +64,19 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
 
         if (handler != null) {
             if (response != null) {
-                if (SUCCESS.equals(response.getCode())) {
+                if ("SUCCESS".equals(response.getCode())) {
                     handler.onSuccess(context.get(), response);
                 } else {
                     handler.onFailure(context.get(), e, response.getCode());
                 }
             } else {
-                handler.onFailure(context.get(), e, ERR_OCCURED);
+                handler.onFailure(context.get(), e, "Some error occurred");
             }
         }
 
         if (startChatHandler != null) {
                if (response != null) {
-                if (SUCCESS.equalsIgnoreCase(response.getStatus())) {
+                if ("SUCCESS".equalsIgnoreCase(response.getStatus())) {
                     startChatHandler.onSuccess(ChannelService.getInstance(context.get()).getChannel(response.getResponse()), context.get());
                 } else {
                     startChatHandler.onFailure(response, context.get());

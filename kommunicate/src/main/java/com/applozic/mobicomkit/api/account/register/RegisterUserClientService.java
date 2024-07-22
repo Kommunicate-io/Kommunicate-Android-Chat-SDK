@@ -43,11 +43,6 @@ public class RegisterUserClientService extends MobiComKitClientService {
     private static final String TAG = "RegisterUserClient";
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private HttpRequestUtils httpRequestUtils;
-    private static final String EMPTY_USER_ID = "userId cannot be empty";
-    private static final String INVALID_USER_ID = "Invalid userId. Spacing and set of special characters ^!$%&*:(), are not accepted. \nOnly english language characters are accepted";
-    private static final String OFFLINE_STATUS = "No Internet Connection";
-    private static final String SERVICE_UNAVAILABLE = "503 Service Unavailable";
-    private static final String application_JSON = "application/json";
 
     public RegisterUserClientService(Context context) {
         this.context = ApplozicService.getContext(context);
@@ -88,11 +83,11 @@ public class RegisterUserClientService extends MobiComKitClientService {
         }
 
         if (TextUtils.isEmpty(user.getUserId())) {
-            throw new ApplozicException(EMPTY_USER_ID);
+            throw new ApplozicException("userId cannot be empty");
         }
 
         if (!user.isValidUserId()) {
-            throw new ApplozicException(INVALID_USER_ID);
+            throw new ApplozicException("Invalid userId. Spacing and set of special characters ^!$%&*:(), are not accepted. \nOnly english language characters are accepted");
         }
 
         MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
@@ -109,7 +104,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
         Utils.printLog(context, TAG, "Net status" + Utils.isInternetAvailable(context.getApplicationContext()));
 
         if (!Utils.isInternetAvailable(context.getApplicationContext())) {
-            throw new ConnectException(OFFLINE_STATUS);
+            throw new ConnectException("No Internet Connection");
         }
 
         HttpRequestUtils.isRefreshTokenInProgress = true;
@@ -119,7 +114,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
         Utils.printLog(context, TAG, "Registration response is: " + response);
 
         if (TextUtils.isEmpty(response) || response.contains("<html")) {
-            throw new Exception(SERVICE_UNAVAILABLE);
+            throw new Exception("503 Service Unavailable");
         }
 
         final RegistrationResponse registrationResponse = gson.fromJson(response, RegistrationResponse.class);
@@ -342,7 +337,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
 
     public void syncAccountStatus() {
         try {
-            String response = httpRequestUtils.getResponse(getPricingPackageUrl(), application_JSON, application_JSON);
+            String response = httpRequestUtils.getResponse(getPricingPackageUrl(), "application/json", "application/json");
             Utils.printLog(context, TAG, "Pricing package response: " + response);
             ApiResponse apiResponse = (ApiResponse) GsonUtils.getObjectFromJson(response, ApiResponse.class);
             if (apiResponse.getResponse() != null) {

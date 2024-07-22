@@ -12,7 +12,6 @@ public class Stat implements Serializable {
     private Short smsTypeId;
     private int normalSmsCount;
     private int selfDestructSmsCount;
-    private static final String smsTypeId_stat = "stat{" + "smsTypeId=";
 
     public Short getSourceId() {
         return sourceId;
@@ -48,7 +47,7 @@ public class Stat implements Serializable {
 
     @Override
     public String toString() {
-        return smsTypeId_stat + smsTypeId + ", normalSmsCount=" + normalSmsCount + ", selfDestructSmsCount=" + selfDestructSmsCount + "}";
+        return "stat{" + "smsTypeId=" + smsTypeId + ", normalSmsCount=" + normalSmsCount + ", selfDestructSmsCount=" + selfDestructSmsCount + "}";
     }
 
 }

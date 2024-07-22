@@ -72,13 +72,6 @@ public class FileUtils {
     public static final String MIME_TYPE_VIDEO = "video/*";
     public static final String MIME_TYPE_APP = "application/*";
     public static final String HIDDEN_PREFIX = ".";
-    private static final String CONTENT_PUBLIC_DOWNLOADS = "content://downloads/public_downloads";
-    private static final String COM_ANDROID_EXTERNAL_STORAGE = "com.android.externalstorage.documents";
-    private static final String COM_ANDROID_DOWNLOADS = "com.android.providers.downloads.documents";
-    private static final String COM_ANDROID_MEDIA = "com.android.providers.media.documents";
-    private static final String COM_ANDROID_APP_PHOTOS = "com.google.android.apps.photos.content";
-    private static final String KOMMUNICATE_SETTINGS_JSON = "kommunicate-settings.json";
-    private static final String APPLOZIC_SETTINGS_JSON = "applozic-settings.json";
 
     public enum GalleryFilterOptions {
         ALL_FILES,
@@ -255,7 +248,7 @@ public class FileUtils {
      * @author paulburke
      */
     public static boolean isExternalStorageDocument(Uri uri) {
-        return COM_ANDROID_EXTERNAL_STORAGE.equals(uri.getAuthority());
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
     /**
@@ -264,7 +257,7 @@ public class FileUtils {
      * @author paulburke
      */
     public static boolean isDownloadsDocument(Uri uri) {
-        return COM_ANDROID_DOWNLOADS.equals(uri.getAuthority());
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
     /**
@@ -273,7 +266,7 @@ public class FileUtils {
      * @author paulburke
      */
     public static boolean isMediaDocument(Uri uri) {
-        return COM_ANDROID_MEDIA.equals(uri.getAuthority());
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
     /**
@@ -281,7 +274,7 @@ public class FileUtils {
      * @return Whether the Uri authority is Google Photos.
      */
     public static boolean isGooglePhotosUri(Uri uri) {
-        return COM_ANDROID_APP_PHOTOS.equals(uri.getAuthority());
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
     /**
@@ -375,7 +368,7 @@ public class FileUtils {
                 try {
                     final String id = DocumentsContract.getDocumentId(uri);
                     final Uri contentUri = ContentUris.withAppendedId(
-                            Uri.parse(CONTENT_PUBLIC_DOWNLOADS), Long.valueOf(id));
+                            Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 
                     return getDataColumn(context, contentUri, null, null);
                 } catch (NumberFormatException e) {
@@ -477,12 +470,12 @@ public class FileUtils {
         StringBuffer sb = new StringBuffer();
         String line;
         try {
-            if (Arrays.asList(context.getAssets().list("")).contains(KOMMUNICATE_SETTINGS_JSON)) {
+            if (Arrays.asList(context.getAssets().list("")).contains("kommunicate-settings.json")) {
                 br = new BufferedReader(new InputStreamReader(context.getAssets().open(
-                        KOMMUNICATE_SETTINGS_JSON), "UTF-8"));
+                        "kommunicate-settings.json"), "UTF-8"));
             } else {
                 br = new BufferedReader(new InputStreamReader(context.getAssets().open(
-                        APPLOZIC_SETTINGS_JSON), "UTF-8"));
+                        "applozic-settings.json"), "UTF-8"));
             }
             if (br != null) {
                 while ((line = br.readLine()) != null) {
@@ -491,7 +484,7 @@ public class FileUtils {
             }
         } catch (IOException ioe) {
             File dir = new File(context.getFilesDir().getAbsolutePath());
-            File file = new File(dir, KOMMUNICATE_SETTINGS_JSON);
+            File file = new File(dir, "kommunicate-settings.json");
             try {
                 br = new BufferedReader(new FileReader(file));
                 while ((line = br.readLine()) != null) {
@@ -674,15 +667,15 @@ public class FileUtils {
                 return intent;
             case IMAGE_VIDEO:
                 /// Multiple mimetypes are not supported in ACTION_PICK
-                mimeType.add(MIME_TYPE_IMAGE);
-                mimeType.add(MIME_TYPE_VIDEO);
+                mimeType.add("image/*");
+                mimeType.add("video/*");
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     intent = new Intent(Intent.ACTION_GET_CONTENT);
                     if (isMultipleSectionEnabled) {
                         intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
                     }
-                    intent.setType(MIME_TYPE_IMAGE);
-                    intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{MIME_TYPE_IMAGE, MIME_TYPE_VIDEO});
+                    intent.setType("image/*");
+                    intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     break;
                 }
@@ -692,31 +685,31 @@ public class FileUtils {
                     intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
                 }
                 intent.setType("*/*");
-                intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{MIME_TYPE_IMAGE, MIME_TYPE_VIDEO});
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
                 break;
             case IMAGE_ONLY:
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 if (isMultipleSectionEnabled) {
                     intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
                 }
-                intent.setType(MIME_TYPE_IMAGE);
-                mimeType.add(MIME_TYPE_IMAGE);
+                intent.setType("image/*");
+                mimeType.add("image/*");
                 break;
             case AUDIO_ONLY:
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
                 if (isMultipleSectionEnabled) {
                     intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
                 }
-                intent.setType(MIME_TYPE_AUDIO);
-                mimeType.add(MIME_TYPE_AUDIO);
+                intent.setType("audio/*");
+                mimeType.add("audio/*");
                 break;
             case VIDEO_ONLY:
                 intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
                 if (isMultipleSectionEnabled) {
                     intent.addCategory(Intent.ACTION_SEND_MULTIPLE);
                 }
-                intent.setType(MIME_TYPE_VIDEO);
-                mimeType.add(MIME_TYPE_VIDEO);
+                intent.setType("video/*");
+                mimeType.add("video/*");
                 break;
         }
         if (intent.resolveActivity(packageManager) == null) {

@@ -26,7 +26,6 @@ import java.io.IOException;
 public class LocalStorageProvider extends DocumentsProvider {
 
     public static final String AUTHORITY = "com.ianhanniballake.localstorage.documents";
-    private static final String INTERNAL_STORAGE = "internal storage";
 
     /**
      * Default root projection: everything but Root.COLUMN_MIME_TYPES
@@ -59,7 +58,7 @@ public class LocalStorageProvider extends DocumentsProvider {
         // These columns are required
         row.add(Root.COLUMN_ROOT_ID, homeDir.getAbsolutePath());
         row.add(Root.COLUMN_DOCUMENT_ID, homeDir.getAbsolutePath());
-        row.add(Root.COLUMN_TITLE, INTERNAL_STORAGE);
+        row.add(Root.COLUMN_TITLE, "internal storage");
         row.add(Root.COLUMN_FLAGS, Root.FLAG_LOCAL_ONLY | Root.FLAG_SUPPORTS_CREATE);
         //row.add(Root.COLUMN_ICON, R.drawable.ic_provider);
         // These columns are optional

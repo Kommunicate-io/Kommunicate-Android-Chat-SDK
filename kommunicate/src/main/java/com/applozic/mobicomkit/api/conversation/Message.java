@@ -515,45 +515,45 @@ public class Message extends JsonMarker {
     }
 
     public String getAttachmentType() {
-        String type = "no attachment";
+        String type = "no_attachment";
 
         if (getContentType() == Message.ContentType.LOCATION.getValue()) {
-            type = LOCATION;
+            type = "location";
         } else if (getContentType() == Message.ContentType.AUDIO_MSG.getValue()) {
-            type = AUDIO;
+            type = "audio";
         } else if (getContentType() == Message.ContentType.VIDEO_MSG.getValue()) {
-            type = VIDEO;
+            type = "video";
         } else if (getContentType() == Message.ContentType.ATTACHMENT.getValue()) {
             if (getFilePaths() != null) {
                 String filePath = getFilePaths().get(getFilePaths().size() - 1);
                 String mimeType = FileUtils.getMimeType(filePath);
 
                 if (mimeType != null) {
-                    if (mimeType.startsWith(IMAGE)) {
-                        type = IMAGE;
-                    } else if (mimeType.startsWith(AUDIO)) {
-                        type = AUDIO;
-                    } else if (mimeType.startsWith(VIDEO)) {
-                        type = VIDEO;
+                    if (mimeType.startsWith("image")) {
+                        type = "image";
+                    } else if (mimeType.startsWith("audio")) {
+                        type = "audio";
+                    } else if (mimeType.startsWith("video")) {
+                        type = "video";
                     } else {
                         type = "others";
                     }
                 }
             } else if (getFileMetas() != null) {
-                if (getFileMetas().getContentType().contains(IMAGE)) {
-                    type = IMAGE;
-                } else if (getFileMetas().getContentType().contains(AUDIO)) {
-                    type = AUDIO;
-                } else if (getFileMetas().getContentType().contains(VIDEO)) {
-                    type = VIDEO;
+                if (getFileMetas().getContentType().contains("image")) {
+                    type = "image";
+                } else if (getFileMetas().getContentType().contains("audio")) {
+                    type = "audio";
+                } else if (getFileMetas().getContentType().contains("video")) {
+                    type = "video";
                 } else {
                     type = "others";
                 }
             }
         } else if (getContentType() == Message.ContentType.CONTACT_MSG.getValue()) {
-            type = CONTACT;
+            type = "contact";
         } else if (hasAttachment()) {
-            type = OTHER;
+            type = "others";
         }
         return type;
     }

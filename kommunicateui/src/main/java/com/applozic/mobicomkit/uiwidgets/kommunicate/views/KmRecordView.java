@@ -50,9 +50,6 @@ public class KmRecordView extends FrameLayout {
     private MediaPlayer player;
     private KmAnimationHelper animationHelper;
     private boolean isSpeechToTextEnabled;
-    private static final String CANCEL = "cancel";
-    private static final String START = "start";
-    private static final String STOP = "stop";
 
     public KmRecordView(Context context) {
         super(context);
@@ -188,7 +185,7 @@ public class KmRecordView extends FrameLayout {
     protected void onActionDown(KmRecordButton recordBtn) {
         if (recordListener != null) {
             recordListener.onRecordStart();
-            AlEventManager.getInstance().sendOnVoiceButtonClick(START);
+            AlEventManager.getInstance().sendOnVoiceButtonClick("start");
 
         }
         if(!PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
@@ -243,7 +240,7 @@ public class KmRecordView extends FrameLayout {
                     animationHelper.setStartRecorded(false);
                     if (recordListener != null)
                         recordListener.onRecordCancel();
-                    AlEventManager.getInstance().sendOnVoiceButtonClick(CANCEL);
+                    AlEventManager.getInstance().sendOnVoiceButtonClick("cancel");
 
                 } else {
                     if (motionEvent.getRawX() > initialX) {
@@ -323,7 +320,7 @@ public class KmRecordView extends FrameLayout {
         } else {
             if (recordListener != null && !isSwiped)
                 recordListener.onRecordFinish(elapsedTime);
-                AlEventManager.getInstance().sendOnVoiceButtonClick(STOP);
+                AlEventManager.getInstance().sendOnVoiceButtonClick("stop");
 
 
             animationHelper.setStartRecorded(false);

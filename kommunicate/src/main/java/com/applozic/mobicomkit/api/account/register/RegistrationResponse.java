@@ -34,9 +34,6 @@ public class RegistrationResponse extends JsonMarker {
     private boolean deactivate;
     private Short encryptionType;
     private String encryptionIV;
-    public static final String PASSWORD_INVALID = "PASSWORD_INVALID";
-    public static final String PASSWORD_REQUIRED = "PASSWORD_REQUIRED";
-    private static final String REGISTERED_WITHOUT_REGISTRATION_ID = "REGISTERED.WITHOUTREGISTRATIONID";
 
     public Short getEncryptionType() {
         return encryptionType;
@@ -113,7 +110,7 @@ public class RegistrationResponse extends JsonMarker {
     }
 
     public boolean isPasswordInvalid() {
-        return (!TextUtils.isEmpty(message) && (PASSWORD_INVALID.equals(message) || PASSWORD_REQUIRED.equals(message)));
+        return (!TextUtils.isEmpty(message) && ("PASSWORD_INVALID".equals(message) || "PASSWORD_REQUIRED".equals(message)));
     }
 
     public Short getPricingPackage() {
@@ -240,7 +237,7 @@ public class RegistrationResponse extends JsonMarker {
     }
 
     public static enum SuccessResponse {
-        UPDATED("UPDATED"), REGISTERED("REGISTERED"), REGISTERED_WITHOUTREGISTRATIONID(REGISTERED_WITHOUT_REGISTRATION_ID);
+        UPDATED("UPDATED"), REGISTERED("REGISTERED"), REGISTERED_WITHOUTREGISTRATIONID("REGISTERED.WITHOUTREGISTRATIONID");
         private final String value;
 
         private SuccessResponse(String c) {

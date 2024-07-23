@@ -332,7 +332,7 @@ public class KmDocumentView {
 
         mainLayout.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (!isDownloadRequire()) { return; } // The following code will not be executed if the file is already downloaded.
+                if (!isDownloadRequire()) { return; } // The following code will not be executed if the file is not downloaded.
                 if (kmStoragePermissionListener.isPermissionGranted()) {
                     playAudio();
                 } else {

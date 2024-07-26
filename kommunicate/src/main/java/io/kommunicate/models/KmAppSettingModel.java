@@ -302,7 +302,8 @@ public class KmAppSettingModel extends JsonMarker {
         private List<Short> conversationResolve = null;
         @SerializedName("hideAssigneeChange")
         private List<Short> hideAssigneeChange = null;
-
+        @SerializedName("conversation.takeOverFromBot")
+        private List<Short> conversationTakeOverFromBot = null;
 
         public boolean isRestrictSpamBtn() {
             return restrictSpamBtn;
@@ -321,6 +322,10 @@ public class KmAppSettingModel extends JsonMarker {
             return conversationAll;
         }
 
+        public List<Short> getShowTakeOverFromBot() {
+            return  conversationTakeOverFromBot;
+        }
+
         public void setConversationAll(List<Short> conversationAll) {
             this.conversationAll = conversationAll;
         }
@@ -333,6 +338,9 @@ public class KmAppSettingModel extends JsonMarker {
             this.conversationResolve = conversationResolve;
         }
 
+        public  void setShowTakeOverFromBot(List<Short> conversationTakeOverFromBot) {
+            this.conversationTakeOverFromBot = conversationTakeOverFromBot;
+        }
 
         public boolean isHideAssignToDropdown() {
             return hideAssignToDropdown;

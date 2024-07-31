@@ -230,7 +230,11 @@ public class Kommunicate {
      * @param callback       the callback to update status
      */
 
-    public static void launchConversationWithPreChat(final Context context, final ProgressDialog progressDialog, final KmCallback callback) {
+    public static void launchConversationWithPreChat(final Context context, final ProgressDialog progressDialog, final KmCallback callback) throws KmException  {
+        if (!(context instanceof Activity)) {
+            throw new KmException("This method needs Activity context");
+        }
+
         final KMUser kmUser = getVisitor();
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();

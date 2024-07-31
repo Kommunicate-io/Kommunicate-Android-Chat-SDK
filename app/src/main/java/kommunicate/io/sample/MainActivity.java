@@ -102,20 +102,24 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 Kommunicate.init(MainActivity.this, APP_ID);
-                Kommunicate.launchConversationWithPreChat(MainActivity.this, progressDialog, new KmCallback() {
-                    @Override
-                    public void onSuccess(Object message) {
-                        finish();
-                        progressDialog.dismiss();
-                    }
+                try {
+                    Kommunicate.launchConversationWithPreChat(MainActivity.this, progressDialog, new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            finish();
+                            progressDialog.dismiss();
+                        }
 
-                    @Override
-                    public void onFailure(Object error) {
-                        progressDialog.dismiss();
-                        createLoginErrorDialog(null, (Exception) error);
+                        @Override
+                        public void onFailure(Object error) {
+                            progressDialog.dismiss();
+                            createLoginErrorDialog(null, (Exception) error);
 
-                    }
-                });
+                        }
+                    });
+                } catch (KmException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

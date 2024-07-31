@@ -433,22 +433,28 @@ public class KmConversationHelper {
                 }
             }
             if (conversationBuilder.isWithPreChat()) {
-                Kommunicate.launchConversationWithPreChat(conversationBuilder.getContext(), null, new KmCallback() {
-                    @Override
-                    public void onSuccess(Object message) {
-                        if (callback != null) {
-                            callback.onSuccess(message);
+                try {
+                    Kommunicate.launchConversationWithPreChat(conversationBuilder.getContext(), null, new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            if (callback != null) {
+                                callback.onSuccess(message);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Object error) {
-                        if (callback != null) {
-                            callback.onFailure(error);
+                        @Override
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                            Utils.printLog(conversationBuilder.getContext(), TAG, "Failed to launch conversation with pre-chat: " + error);
                         }
-                        Utils.printLog(conversationBuilder.getContext(), TAG, "Failed to launch conversation with pre-chat: " + error);
+                    });
+                } catch (KmException e) {
+                    if (callback != null) {
+                        callback.onFailure(e);
                     }
-                });
+                }
             } else {
                 KMUser kmUser;
 

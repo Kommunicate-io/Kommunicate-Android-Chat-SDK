@@ -29,7 +29,6 @@
             android:text="How satisfied you are with the conversation?"
             android:textColor="#1C1C1C"
             android:layout_marginHorizontal="16dp"
-            android:gravity="center_horizontal"
             android:lineSpacingExtra="3dp"
             android:textStyle="bold"
             />

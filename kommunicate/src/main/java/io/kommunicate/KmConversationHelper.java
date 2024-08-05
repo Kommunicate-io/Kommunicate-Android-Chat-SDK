@@ -434,15 +434,20 @@ public class KmConversationHelper {
             }
             if (conversationBuilder.isWithPreChat()) {
                 try {
-                    Kommunicate.launchPrechatWithResult(conversationBuilder.getContext(), new KmPrechatCallback<KMUser>() {
+                    Kommunicate.launchConversationWithPreChat(conversationBuilder.getContext(), null, new KmCallback() {
                         @Override
-                        public void onReceive(KMUser user, Context context, ResultReceiver finishActivityReceiver) {
-                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), finishActivityReceiver, callback), callback));
+                        public void onSuccess(Object message) {
+                            if (callback != null) {
+                                callback.onSuccess(message);
+                            }
                         }
 
                         @Override
-                        public void onError(String error) {
-
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                            Utils.printLog(conversationBuilder.getContext(), TAG, "Failed to launch conversation with pre-chat: " + error);
                         }
                     });
                 } catch (KmException e) {

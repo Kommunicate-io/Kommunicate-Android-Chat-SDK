@@ -113,6 +113,7 @@ import java.util.Locale;
 import androidx.vectordrawable.graphics.drawable.AnimatorInflaterCompat;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -438,7 +439,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     }
                 }
-            } else if (type == 6) {
+            } else if (type == 6)  {
                 MyViewHolder6 myViewholder6 = (MyViewHolder6) holder;
                 if (message.getMetadata() != null) {
                     JSONObject jsonObject = new JSONObject(message.getMetadata().get(FEEDBACK));
@@ -467,7 +468,35 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     if (alCustomizationSettings.isAgentApp()) {
                         myViewholder6.textViewFeedbackText.setText(context.getString(R.string.user_rating_text));
                     } else {
-                        myViewholder6.textViewFeedbackText.setText(context.getString(R.string.rating_text));
+                        switch (ratingValue) {
+                            case FeedbackInputFragment.RATING_POOR:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_sad_1));
+                                break;
+                            case FeedbackInputFragment.RATING_AVERAGE:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
+                                break;
+                            case FeedbackInputFragment.RATING_GOOD:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_happy));
+                                break;
+                            default:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
+
+                        }
+                        myViewholder6.textViewFeedbackText.setVisibility(View.VISIBLE);
+
+                        if (!jsonObject.has("comments")) {
+                            myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
+                            return;
+                        }
+                        String comment = String.valueOf(jsonObject.get("comments"));
+                        myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
+                        myViewholder6.textViewFeedbackComment.setText(comment);
+
+                        if (alCustomizationSettings.isAgentApp()) {
+                            myViewholder6.textViewFeedbackText.setText(context.getString(R.string.user_rating_text));
+                        } else {
+                            myViewholder6.textViewFeedbackText.setText(context.getString(R.string.rating_text));
+                        }
                     }
                 }
             } else if (type == 8) {

@@ -331,6 +331,25 @@ public class KmDocumentView {
             }
         });
 
+        mainLayout.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!isDownloadRequire()) { return; } // The following code will not be executed if the file is not downloaded.
+                if (kmStoragePermissionListener.isPermissionGranted()) {
+                    playAudio();
+                } else {
+                    kmStoragePermissionListener.checkPermission(new KmStoragePermission() {
+                        @Override
+                        public void onAction(boolean didGrant) {
+                            if (didGrant) {
+                                playAudio();
+                            }
+                        }
+                    });
+                }
+            }
+
+        });
+
         downloadedLayout.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {

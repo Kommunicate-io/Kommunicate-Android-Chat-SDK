@@ -136,6 +136,7 @@ public class KmAppSettingModel extends JsonMarker {
         private String preChatGreetingMsg;
         private UploadOverride defaultUploadOverride;
         private boolean disableChatWidget;
+        private int csatRatingBase = 3;
 
         public String getPosition() {
             return position;
@@ -216,6 +217,14 @@ public class KmAppSettingModel extends JsonMarker {
 
         public boolean isSingleThreaded() {
             return singleThreaded;
+        }
+
+        public int getCsatRatingBase() {
+            return csatRatingBase;
+        }
+
+        public void setCsatRatingBase(int csatRatingBase) {
+            this.csatRatingBase = csatRatingBase;
         }
     }
 
@@ -302,7 +311,8 @@ public class KmAppSettingModel extends JsonMarker {
         private List<Short> conversationResolve = null;
         @SerializedName("hideAssigneeChange")
         private List<Short> hideAssigneeChange = null;
-
+        @SerializedName("conversation.takeOverFromBot")
+        private List<Short> conversationTakeOverFromBot = null;
 
         public boolean isRestrictSpamBtn() {
             return restrictSpamBtn;
@@ -321,6 +331,10 @@ public class KmAppSettingModel extends JsonMarker {
             return conversationAll;
         }
 
+        public List<Short> getShowTakeOverFromBot() {
+            return  conversationTakeOverFromBot;
+        }
+
         public void setConversationAll(List<Short> conversationAll) {
             this.conversationAll = conversationAll;
         }
@@ -333,6 +347,9 @@ public class KmAppSettingModel extends JsonMarker {
             this.conversationResolve = conversationResolve;
         }
 
+        public  void setShowTakeOverFromBot(List<Short> conversationTakeOverFromBot) {
+            this.conversationTakeOverFromBot = conversationTakeOverFromBot;
+        }
 
         public boolean isHideAssignToDropdown() {
             return hideAssignToDropdown;

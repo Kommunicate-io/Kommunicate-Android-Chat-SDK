@@ -243,7 +243,7 @@ import io.kommunicate.utils.KmUtils;
  * reg
  * Created by devashish on 10/2/15.
  */
-public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, KmRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, ApplozicUIListener, KmSpeechToText.KmTextListener, KmBotTypingDelayManager.MessageDispatcher, KMAgentStatusHelper.DynamicAgentStatusChangeListener {
+public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, KmRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, FeedbackInputFragmentv2.FeedbackSubmissionListener, ApplozicUIListener, KmSpeechToText.KmTextListener, KmBotTypingDelayManager.MessageDispatcher, KMAgentStatusHelper.DynamicAgentStatusChangeListener {
 
     public FrameLayout emoticonsFrameLayout,
             contextFrameLayout;
@@ -370,6 +370,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected String loggedInUserId;
     protected String messageSearchString;
     protected FeedbackInputFragment feedBackFragment;
+
+    protected FeedbackInputFragmentv2 feedbackInputFragmentv2;
     protected KmFeedbackView kmFeedbackView;
     protected View mainDivider;
     protected FrameLayout frameLayoutProgressbar;
@@ -494,6 +496,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         feedBackFragment = new FeedbackInputFragment();
         feedBackFragment.setFeedbackFragmentListener(this);
+        //Five Star
+        feedbackInputFragmentv2 = new FeedbackInputFragmentv2();
+        feedbackInputFragmentv2.setRatingSubmitListener(this);
 
         conversationUIService = new ConversationUIService(getActivity());
         syncCallService = SyncCallService.getInstance(getActivity());
@@ -1321,7 +1326,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void onUserMute(boolean mute, String userId) {
     }
 
-    public void openFeedbackFragment() {
+    public void openFiveStarRatingFragment() {
+        if (feedbackInputFragmentv2 == null) {
+            feedbackInputFragmentv2 = new FeedbackInputFragmentv2();
+            feedbackInputFragmentv2.setRatingSubmitListener(this);
+        }
+
+        getActivity().getSupportFragmentManager().executePendingTransactions();
+        if (!feedbackInputFragmentv2.isVisible() && !feedbackInputFragmentv2.isAdded()) {
+            feedbackInputFragmentv2.show(getActivity().getSupportFragmentManager(), FeedbackInputFragment.getFragTag());
+        }
+    }
+
+    public void openEmojiFeedbackFragment() {
         if (feedBackFragment == null) {
             feedBackFragment = new FeedbackInputFragment();
             feedBackFragment.setFeedbackFragmentListener(this);
@@ -1332,6 +1349,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             feedBackFragment.show(getActivity().getSupportFragmentManager(), FeedbackInputFragment.getFragTag());
         }
         AlEventManager.getInstance().sendOnRateConversationClick();
+
+    }
+
+    public void openFeedbackFragment() {
+        if (KmAppSettingPreferences.getInstance().getRatingBase() != 3) {
+             openFiveStarRatingFragment();
+        } else {
+            openEmojiFeedbackFragment();
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -5424,6 +5450,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmAutoSuggestionAdapter.swapCursor(c);
     }
 
+
     /**
      * set the feed back of the given conversation when the submit button on feedback fragment is pressed.
      *
@@ -5443,6 +5470,33 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         kmFeedback.setRating(ratingValue);
         AlEventManager.getInstance().sendOnSubmitRatingClicked(channel.getKey(), ratingValue, feedback);
+        Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
+        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
+            @Override
+            public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+                //kmFeedbackView.showFeedback(context, kmFeedback);
+            }
+
+            @Override
+            public void onFailure(Context context, Exception e, String response) {
+                Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
+                KmToast.error(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onFeedbackFragmentV2SubmitButtonPressed(int ratingValue, String feedback) {
+        final KmFeedback kmFeedback = new KmFeedback();
+        kmFeedback.setGroupId(channel.getKey());
+
+        if (!TextUtils.isEmpty(feedback)) {
+            String[] feedbackArray = new String[1];
+            feedbackArray[0] = feedback;
+            kmFeedback.setComments(feedbackArray);
+        }
+
+        kmFeedback.setRating(ratingValue);
         Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
         KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
             @Override

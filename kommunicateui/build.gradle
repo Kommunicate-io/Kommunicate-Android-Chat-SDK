@@ -18,7 +18,7 @@ android {
         minSdkVersion 17
         targetSdkVersion 34
         versionCode 1
-        versionName "2.9.10"
+        versionName "2.9.11"
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
     }
@@ -35,7 +35,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicate')
-    //api 'io.kommunicate.sdk:kommunicate:2.6.6'
+//    api 'io.kommunicate.sdk:kommunicate:2.9.11'
     api 'com.google.firebase:firebase-messaging:20.1.0'
     api 'com.google.android.gms:play-services-maps:17.0.0'
     api 'com.google.android.gms:play-services-location:17.0.0'

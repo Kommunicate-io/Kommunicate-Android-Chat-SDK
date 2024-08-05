@@ -37,6 +37,8 @@ public class KmAppSettingPreferences {
     private static final String UPLOAD_OVERRIDE_HEADER = "UPLOAD_OVERRIDE_HEADER";
     public static final String SINGLE_THREADED = "IS_SINGLE_THREADED";
 
+    public static final String RATING_BASE = "RATING_BASE";
+
     private KmAppSettingPreferences() {
         preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
     }
@@ -60,11 +62,12 @@ public class KmAppSettingPreferences {
                 setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
                 setKmBotMessageDelayInterval(appSetting.getChatWidget().getBotMessageDelayInterval());
                 setChatSessionDeleteTime(appSetting.getChatWidget().getSessionTimeout());
-                if(appSetting.getChatWidget().getDefaultUploadOverride() != null) {
-                setUploadOverrideUrl(appSetting.getChatWidget().getDefaultUploadOverride().getUrl());
-                setUploadOverrideHeader(appSetting.getChatWidget().getDefaultUploadOverride().getHeaders());
+                if (appSetting.getChatWidget().getDefaultUploadOverride() != null) {
+                    setUploadOverrideUrl(appSetting.getChatWidget().getDefaultUploadOverride().getUrl());
+                    setUploadOverrideHeader(appSetting.getChatWidget().getDefaultUploadOverride().getHeaders());
                 }
                 checkIsSingleThreaded(appSetting.getChatWidget().isSingleThreaded());
+                setRatingBase(appSetting.getChatWidget().getCsatRatingBase());
             }
             if (appSetting.getResponse() != null) {
                 setCollectFeedback(appSetting.getResponse().isCollectFeedback());
@@ -72,12 +75,13 @@ public class KmAppSettingPreferences {
             }
         }
     }
-    public void checkIsSingleThreaded(boolean isSingleConversation){
+
+    public void checkIsSingleThreaded(boolean isSingleConversation) {
         alpreferences = ApplozicService.getAppContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         if (alpreferences != null) {
             boolean isSingleThreaded = alpreferences.getBoolean(SINGLE_THREADED, false);
             if (isSingleConversation != isSingleThreaded) {
-                alpreferences.edit().putBoolean(SINGLE_THREADED,isSingleConversation).apply();
+                alpreferences.edit().putBoolean(SINGLE_THREADED, isSingleConversation).apply();
             }
         }
     }
@@ -145,10 +149,21 @@ public class KmAppSettingPreferences {
         return preferences.getString(UPLOAD_OVERRIDE_URL, "");
     }
 
+
+    public KmAppSettingPreferences setRatingBase(int ratingBase) {
+        preferences.edit().putInt(RATING_BASE, ratingBase).apply();
+        return this;
+    }
+
+    public int getRatingBase() {
+        return preferences.getInt(RATING_BASE, 3);
+    }
+
     public KmAppSettingPreferences setUploadOverrideHeader(HashMap<String, String> headers) {
         preferences.edit().putString(UPLOAD_OVERRIDE_HEADER, GsonUtils.getJsonFromObject(headers, HashMap.class)).commit();
         return this;
     }
+
     public HashMap<String, String> getUploadOverrideHeader() {
         return (HashMap<String, String>) GsonUtils.getObjectFromJson(preferences.getString(UPLOAD_OVERRIDE_HEADER, null), HashMap.class);
     }

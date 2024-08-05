@@ -48,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String APP_ID = BuildConfig.APP_ID;
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
     private static final String SKIPBOT = "skipbot";
-    private static final String LOGGING_IN = "Logging in..";
-    private static final String PLEASE_WAIT = "Please wait...";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setTitle(LOGGING_IN);
-                    progressDialog.setMessage(PLEASE_WAIT);
+                    progressDialog.setTitle(getString(R.string.login));
+                    progressDialog.setMessage(getString(R.string.please_wait));
                     progressDialog.setCancelable(false);
                     progressDialog.show();
                     initLoginData(mUserId.getText().toString().trim(), mPassword.getText().toString().trim(), progressDialog);
@@ -100,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                progressDialog.setTitle(LOGGING_IN);
-                progressDialog.setMessage(PLEASE_WAIT);
+                progressDialog.setTitle(getString(R.string.login));
+                progressDialog.setMessage(getString(R.string.please_wait));
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 Kommunicate.init(MainActivity.this, APP_ID);

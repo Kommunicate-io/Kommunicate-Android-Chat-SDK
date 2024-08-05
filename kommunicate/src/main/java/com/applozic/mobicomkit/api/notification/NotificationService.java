@@ -42,6 +42,8 @@ import java.util.List;
 import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper.CALL_AUDIO_ONLY;
 import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper.CALL_ID;
 
+import io.kommunicate.R;
+
 /**
  * Created with IntelliJ IDEA.
  * User: devashish
@@ -73,10 +75,7 @@ public class NotificationService {
     public static final String BADGE_COUNT = "BADGE_COUNT";
     public static final String NO_ALERT = "NO_ALERT";
     private final Integer notificationIconColor;
-    private static final String TESTING_NOTIF = "Testing notification";
     private static final String KOMMUNICATE = "Kommunicate";
-    private static final String INCOMING_CALL_INFO = "Incoming call from ";
-    private static final String OPEN_CALL_SCREEN = "Tap to open call screen.";
     private static final String CONTACT_ID = "CONTACT_ID";
     private static final String android_dir = "vnd.android-dir/mms-sms";
     private static final String contextBasedChat = "contextBasedChat";
@@ -546,8 +545,8 @@ public class NotificationService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, notificationChannels.getCallChannelId())
                         .setSmallIcon(notificationInfo.smallIconResourceId)
-                        .setContentTitle(INCOMING_CALL_INFO + notificationInfo.title + ".")
-                        .setContentText(OPEN_CALL_SCREEN)
+                        .setContentTitle(context.getString(R.string.incomming_call) + notificationInfo.title + ".")
+                        .setContentText(context.getString(R.string.open_call))
                         .setVibrate(new long[] {2000L, 1000L, 2000L, 1000L})
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -594,7 +593,7 @@ public class NotificationService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationChannels.getDefaultChannelId(false))
                 .setSmallIcon(smallIconResourceId)
                 .setContentTitle(KOMMUNICATE)
-                .setContentText(TESTING_NOTIF)
+                .setContentText(context.getString(R.string.notification_testing))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(123, builder.build());

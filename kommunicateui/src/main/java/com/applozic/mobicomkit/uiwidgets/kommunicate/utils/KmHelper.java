@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
@@ -33,9 +35,6 @@ import io.kommunicate.users.KMUser;
 
 
 public class KmHelper {
-
-    private static final String CREATING_CONVERSATION_MSG = "Creating conversation, please wait...";
-    private static final String PLEASE_WAIT_MSG = "Please wait...";
 
     public static void performLogout(Context context, final Object object) {
         final ProgressDialog dialog = new ProgressDialog(context);
@@ -67,7 +66,7 @@ public class KmHelper {
 
     public static void setStartNewUniqueChat(final Context context, final List<String> agentIds, List<String> botIds) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage(CREATING_CONVERSATION_MSG);
+        dialog.setMessage(context.getString(R.string.create_conv_msg));
         dialog.setCancelable(false);
         dialog.show();
 
@@ -120,7 +119,7 @@ public class KmHelper {
 
     public static void performLogin(final Context context, User user) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage(PLEASE_WAIT_MSG);
+        dialog.setMessage(context.getString(R.string.please_wait));
         dialog.setCancelable(false);
         dialog.show();
 

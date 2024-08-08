@@ -488,7 +488,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
                             return;
                         }
-                        String comment = String.valueOf(jsonObject.get("comments"));
                         myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
                         myViewholder6.textViewFeedbackComment.setText(comment);
 

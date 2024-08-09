@@ -51,6 +51,7 @@ public class KmUtils {
     public static final String BOT_CUSTOMIZATION = "bot_customization";
     public static final String NAME = "name";
     public static final String ID = "id";
+    private static final String NO_CLASS_FOUND = "No class found for name : ";
 
 
     public static boolean isServiceDisconnected(Context context, boolean isAgentApp, RelativeLayout customToolbarLayout) {
@@ -205,7 +206,7 @@ public class KmUtils {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new ClassNotFoundException("No class found for name : " + className);
+            throw new ClassNotFoundException(NO_CLASS_FOUND + className);
         }
     }
 }

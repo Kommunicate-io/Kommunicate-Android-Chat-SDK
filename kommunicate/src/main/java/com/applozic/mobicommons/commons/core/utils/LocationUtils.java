@@ -21,6 +21,9 @@ import io.kommunicate.BuildConfig;
 public class LocationUtils {
 
     private static final String TAG = "LocationUtils";
+    private static final String MAP_URL = "&zoom=17&size=400x400&maptype=roadmap&format=png&visual_refresh=true&markers=";
+    private static final String ILLEGAL_ARG = "Illegal arguments ";
+    private static final String PASSED_TO_ADDRESS = " passed to address service";
 
     public static String getAddress(Context context, Location loc) {
         try {
@@ -36,11 +39,11 @@ public class LocationUtils {
                     return null;
                 } catch (IllegalArgumentException e2) {
                     // Error message to post in the log
-                    String errorString = "Illegal arguments " +
+                    String errorString = ILLEGAL_ARG +
                             Double.toString(loc.getLatitude()) +
                             " , " +
                             Double.toString(loc.getLongitude()) +
-                            " passed to address service";
+                            PASSED_TO_ADDRESS;
                     Log.e(TAG, errorString);
                     e2.printStackTrace();
                     return null;
@@ -77,7 +80,7 @@ public class LocationUtils {
 
         final String staticMapUrl = BuildConfig.GOOGLE_API_SERVER_URL +
         "center=" + location
-                + "&zoom=17&size=400x400&maptype=roadmap&format=png&visual_refresh=true&markers=" + location
+                + MAP_URL + location
                 + "&key="+geoApiKey;
 
         return staticMapUrl;

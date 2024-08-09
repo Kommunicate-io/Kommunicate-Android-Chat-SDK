@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import io.kommunicate.KmSettings;
+import io.kommunicate.R;
 
 /**
  * Created by sunil on 29/8/16.
@@ -255,7 +256,7 @@ public class Applozic {
     public static void loginUser(Context context, User user, AlLoginHandler loginHandler) {
         if (MobiComUserPreference.getInstance(context).isLoggedIn()) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
-            registrationResponse.setMessage("User already Logged in");
+            registrationResponse.setMessage(context.getString(R.string.user_logged_in));
             loginHandler.onSuccess(registrationResponse, context);
         } else {
             AlTask.execute(new UserLoginTask(user, loginHandler, context));
@@ -265,7 +266,7 @@ public class Applozic {
     public static void connectUser(Context context, User user, AlLoginHandler loginHandler) {
         if (isConnected(context)) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
-            registrationResponse.setMessage("User already Logged in");
+            registrationResponse.setMessage(context.getString(R.string.user_logged_in));
             Contact contact = new ContactDatabase(context).getContactById(MobiComUserPreference.getInstance(context).getUserId());
             if (contact != null) {
                 registrationResponse.setUserId(contact.getUserId());
@@ -305,7 +306,7 @@ public class Applozic {
     public static void loginUser(Context context, User user, boolean withLoggedInCheck, AlLoginHandler loginHandler) {
         if (withLoggedInCheck && MobiComUserPreference.getInstance(context).isLoggedIn()) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
-            registrationResponse.setMessage("User already Logged in");
+            registrationResponse.setMessage(context.getString(R.string.user_logged_in));
             loginHandler.onSuccess(registrationResponse, context);
         } else {
             AlTask.execute(new UserLoginTask(user, loginHandler, context));

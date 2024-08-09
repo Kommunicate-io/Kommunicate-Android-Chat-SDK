@@ -26,6 +26,8 @@ public class InstructionUtil {
     private static final String instruction_open_conversation_thread = "instruction_open_conversation_thread";
     private static final String instruction_go_back_to_recent_conversation_list = "instruction_go_back_to_recent_conversation_list";
     private static final String instruction_long_press_message = "instruction_long_press_message";
+    private static final String RES_ID = "resId";
+    private static final String ACTIONABLE = "actionable";
     public static boolean enabled = true;
 
     public static void init(Context context) {
@@ -47,8 +49,8 @@ public class InstructionUtil {
                 Intent intentUpdate = new Intent();
                 intentUpdate.setAction(action);
                 intentUpdate.addCategory(Intent.CATEGORY_DEFAULT);
-                intentUpdate.putExtra("resId", resId);
-                intentUpdate.putExtra("actionable", actionable);
+                intentUpdate.putExtra(RES_ID, resId);
+                intentUpdate.putExtra(ACTIONABLE, actionable);
                 BroadcastService.sendBroadcast(context, intentUpdate);
             }
         }, delay);

@@ -73,8 +73,9 @@ public class KmDocumentView {
     private boolean mCacheFlag = false;
     private KmStoragePermissionListener kmStoragePermissionListener;
     private Handler mHandler = new Handler();
-
+    private static final String AUDIO = "audio";
     private AlCustomizationSettings alCustomizationSettings = new AlCustomizationSettings();
+    private static final String AUDIO_DURATION = "00:00";
 
 
     public KmDocumentView(Context context, KmStoragePermissionListener kmStoragePermissionListener) {
@@ -112,7 +113,7 @@ public class KmDocumentView {
         progressBar.getIndeterminateDrawable().setColorFilter(message.isTypeOutbox() ? context.getResources().getColor(R.color.applozic_green_color) : context.getResources().getColor(R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY);
         cancelIcon.setColorFilter(message.isTypeOutbox() ? R.color.white : R.color.black, android.graphics.PorterDuff.Mode.MULTIPLY);
         if (message.getFileMetas() != null) {
-            if (message.getFileMetas().getContentType().contains("audio")) {
+            if (message.getFileMetas().getContentType().contains(AUDIO)) {
                 setAudioIcons();
                 updateApplozicSeekBar();
             } else {
@@ -124,7 +125,7 @@ public class KmDocumentView {
         } else if (message.getFilePaths() != null) {
             filePath = message.getFilePaths().get(0);
             mimeType = FileUtils.getMimeType(filePath);
-            if (mimeType != null && mimeType.contains("audio")) {
+            if (mimeType != null && mimeType.contains(AUDIO)) {
                 setAudioIcons();
                 updateApplozicSeekBar();
             } else {
@@ -158,7 +159,7 @@ public class KmDocumentView {
             if (message.getFilePaths() != null) {
                 String mimeType = FileUtils.getMimeType(message.getFilePaths().get(0));
                 if (mimeType != null) {
-                    if (mimeType.contains("audio")) {
+                    if (mimeType.contains(AUDIO)) {
                         setAudioIcons();
                         fileText.setVisibility(GONE);
                         audio_duration_textView.setVisibility(View.VISIBLE);
@@ -177,7 +178,7 @@ public class KmDocumentView {
 
         if (message.getFileMetas() != null && message.getFilePaths() == null) {
             sizeTextView.setText(message.getFileMetas().getSizeInReadableFormat());
-            if (!(message.getFileMetas().getContentType().contains("audio"))) {
+            if (!(message.getFileMetas().getContentType().contains(AUDIO))) {
                 fileText.setText(KmUtils.getAttachmentName(message));
                 audioseekbar.setVisibility(GONE);
                 audio_duration_textView.setVisibility(GONE);
@@ -188,7 +189,7 @@ public class KmDocumentView {
                     audio_duration_textView.setVisibility(View.VISIBLE);
                 } else {
                     audio_duration_textView.setVisibility(View.VISIBLE);
-                    audio_duration_textView.setText("00:00");
+                    audio_duration_textView.setText(AUDIO_DURATION);
                 }
                 setAudioIcons();
                 audioseekbar.setVisibility(View.VISIBLE);
@@ -197,7 +198,7 @@ public class KmDocumentView {
             if (message.getFilePaths() != null) {
                 filePath = message.getFilePaths().get(0);
                 mimeType = FileUtils.getMimeType(filePath);
-                if (mimeType != null && !(mimeType.contains("audio"))) {
+                if (mimeType != null && !(mimeType.contains(AUDIO))) {
                     fileText.setText(KmUtils.getAttachmentName(message));
                     audioseekbar.setVisibility(GONE);
                     audio_duration_textView.setVisibility(GONE);
@@ -209,7 +210,7 @@ public class KmDocumentView {
                         audio_duration_textView.setVisibility(View.VISIBLE);
                     } else {
                         audio_duration_textView.setVisibility(View.VISIBLE);
-                        audio_duration_textView.setText("00:00");
+                        audio_duration_textView.setText(AUDIO_DURATION);
                     }
                     fileText.setVisibility(GONE);
                     docIcon.setVisibility(GONE);
@@ -403,7 +404,7 @@ public class KmDocumentView {
             uri = Uri.fromFile(new File(message.getFilePaths().get(0)));
             Log.i(TAG, uri.toString());
         }
-        if (mimeType != null && mimeType.contains("audio")) {
+        if (mimeType != null && mimeType.contains(AUDIO)) {
             KommunicateAudioManager.getInstance(context).play(uri, KmDocumentView.this);
             setAudioIcons();
             updateApplozicSeekBar();

@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     boolean exit = false;
     public static final String APP_ID = BuildConfig.APP_ID;
     private static final String INVALID_APP_ID = "INVALID_APPLICATIONID";
+    private static final String SKIPBOT = "skipbot";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setTitle("Logging in..");
-                    progressDialog.setMessage("Please wait...");
+                    progressDialog.setTitle(getString(R.string.login));
+                    progressDialog.setMessage(getString(R.string.please_wait));
                     progressDialog.setCancelable(false);
                     progressDialog.show();
                     initLoginData(mUserId.getText().toString().trim(), mPassword.getText().toString().trim(), progressDialog);
@@ -97,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                progressDialog.setTitle("Logging in..");
-                progressDialog.setMessage("Please wait...");
+                progressDialog.setTitle(getString(R.string.login));
+                progressDialog.setMessage(getString(R.string.please_wait));
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 Kommunicate.init(MainActivity.this, APP_ID);
@@ -205,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                     ApplozicClient.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
                 } else {
                     Map<String, String> metadata = new HashMap<>();
-                    metadata.put("skipBot", "true");
+                    metadata.put(SKIPBOT, "true");
                     ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
 

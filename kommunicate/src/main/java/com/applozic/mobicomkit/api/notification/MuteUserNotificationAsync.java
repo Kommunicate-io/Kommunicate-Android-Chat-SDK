@@ -10,13 +10,15 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import io.kommunicate.R;
+
 
 /**
  * Created by reytum on 20/11/17.
  */
 
 public class MuteUserNotificationAsync extends AlAsyncTask<Void, ApiResponse> {
-
+    private static final String SUCCESS = "success";
     TaskListener listener;
     Long notificationAfterTime;
     WeakReference<Context> context;
@@ -40,15 +42,15 @@ public class MuteUserNotificationAsync extends AlAsyncTask<Void, ApiResponse> {
         super.onPostExecute(apiResponse);
 
         if (apiResponse == null) {
-            listener.onFailure("Some error occurred", context.get());
+            listener.onFailure(context.get().getString(R.string.mute_err), context.get());
         } else {
-            if ("success".equals(apiResponse.getStatus())) {
-                listener.onSuccess("Successfully muted/unmuted user", context.get());
+            if (SUCCESS.equals(apiResponse.getStatus())) {
+                listener.onSuccess(context.get().getString(R.string.mute_notification), context.get());
             } else {
                 if (apiResponse.getErrorResponse() != null) {
                     listener.onFailure(GsonUtils.getJsonFromObject(apiResponse.getErrorResponse().toArray(new ErrorResponseFeed[apiResponse.getErrorResponse().size()]), ErrorResponseFeed[].class), context.get());
                 } else {
-                    listener.onFailure("Some unknown error occurred", context.get());
+                    listener.onFailure(context.get().getString(R.string.mute_err), context.get());
                 }
             }
         }

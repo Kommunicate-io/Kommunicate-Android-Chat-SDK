@@ -10,7 +10,7 @@ public class AlMessageReportTask extends AlAsyncTask<Void, String> {
     private String messageKey;
     private MobiComConversationService conversationService;
     private AlCallback alCallback;
-
+    private static final String error = "error";
 
     public AlMessageReportTask(String messageKey, MobiComConversationService conversationService, AlCallback alCallback) {
         this.messageKey = messageKey;
@@ -32,10 +32,10 @@ public class AlMessageReportTask extends AlAsyncTask<Void, String> {
                 if (response.isSuccess()) {
                     alCallback.onSuccess(response.getResponse());
                 } else {
-                    alCallback.onError("error");
+                    alCallback.onError(error);
                 }
             } else {
-                alCallback.onError("error");
+                alCallback.onError(error);
             }
         }
     }

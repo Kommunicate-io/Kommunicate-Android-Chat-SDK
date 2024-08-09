@@ -163,6 +163,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private List<WebView> webViews = new ArrayList<>();
     private boolean useInnerTimeStampDesign;
     private boolean isDarkModeEnabled = false;
+    private static final String IMAGE = "image";
+    private static final String VIDEO = "video";
+    private static final String AUDIO = "audio";
+    private static final String TEXT_XCARD = "text/x-vcard";
+    private static final String GMAP_LINK = "http://maps.google.com/maps?q=";
+    private static final String SELF_DESTRUCT_IN = "Self destruct in ";
+    private static final String PARSE_COLOR = "#808080";
+    private static final String COMMENTS = "comments";
+    private static final String RATING = "rating";
+    private static final String FEEDBACK = "feedback";
+    private static final String DAY_FORMAT = "EEEE";
+    private static final String DATE_FORMAT = "MMM dd, yyyy";
 
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
@@ -354,8 +366,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             } else if (type == 2) {
                 MyViewHolder2 myViewHolder2 = (MyViewHolder2) holder;
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM dd, yyyy");
-                SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat("EEEE");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+                SimpleDateFormat simpleDateFormatDay = new SimpleDateFormat(DAY_FORMAT);
                 Date date = new Date(message.getCreatedAtTime());
 
                 myViewHolder2.dateView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getConversationDateTextColor().get(1).trim() : alCustomizationSettings.getConversationDateTextColor().get(0).trim()));
@@ -430,46 +442,31 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             } else if (type == 6)  {
                 MyViewHolder6 myViewholder6 = (MyViewHolder6) holder;
                 if (message.getMetadata() != null) {
+                    JSONObject jsonObject = new JSONObject(message.getMetadata().get(FEEDBACK));
+                    int ratingValue = (int) jsonObject.get(RATING);
+                    switch (ratingValue) {
+                        case FeedbackInputFragment.RATING_POOR:
+                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_sad_1));
+                            break;
+                        case FeedbackInputFragment.RATING_AVERAGE:
+                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
+                            break;
+                        case FeedbackInputFragment.RATING_GOOD:
+                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_happy));
+                            break;
+                        default:
+                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
 
-                    JSONObject jsonObject = new JSONObject(message.getMetadata().get("feedback"));
-                    int ratingValue = (int) jsonObject.get("rating");
-                    if (KmAppSettingPreferences.getInstance().getRatingBase() != 3) {
-                        switch (ratingValue) {
-                            case 1:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context,  R.drawable.star));
-                                break;
-                            case 2:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context,  R.drawable.ic_two_star_filled));
-                                break;
-                            case 3:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context,  R.drawable.ic_three_star_filled));
-                                break;
-                            case 4:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_four_star_filled));
-                                break;
-                            case 5:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_five_star_filled));
-                                break;
-                            default:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_three_star_filled));
-                        }
-                        if (alCustomizationSettings.isAgentApp()) {
-                            myViewholder6.textViewFeedbackText.setText(context.getString(R.string.user_rating_text));
-                            myViewholder6.textViewFeedbackText.setVisibility(View.VISIBLE);
-
-                        } else {
-                            myViewholder6.textViewFeedbackText.setText("");
-                            myViewholder6.textViewFeedbackText.setVisibility(GONE);
-                        }
-                        if (!jsonObject.has("comments")) {
-                            myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
-                            return;
-                        }
-                        String comment = String.valueOf(jsonObject.get("comments"));
-                        myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
-                        myViewholder6.textViewFeedbackComment.setText(comment);
-
-
+                    }
+                    if (!jsonObject.has(COMMENTS)) {
+                        myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
+                        return;
+                    }
+                    String comment = String.valueOf(jsonObject.get(COMMENTS));
+                    myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
+                    myViewholder6.textViewFeedbackComment.setText(comment);
+                    if (alCustomizationSettings.isAgentApp()) {
+                        myViewholder6.textViewFeedbackText.setText(context.getString(R.string.user_rating_text));
                     } else {
                         switch (ratingValue) {
                             case FeedbackInputFragment.RATING_POOR:
@@ -491,7 +488,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
                             return;
                         }
-                        String comment = String.valueOf(jsonObject.get("comments"));
                         myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
                         myViewholder6.textViewFeedbackComment.setText(comment);
 
@@ -616,7 +612,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     if (msg.hasAttachment()) {
                         FileMeta fileMeta = msg.getFileMetas();
                         myHolder.imageViewForAttachmentType.setVisibility(View.VISIBLE);
-                        if (fileMeta.getContentType().contains("image")) {
+                        if (fileMeta.getContentType().contains(IMAGE)) {
                             myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_image_camera_alt);
                             if (TextUtils.isEmpty(msg.getMessage())) {
                                 myHolder.replyMessageTextView.setText(context.getString(R.string.photo_string));
@@ -626,7 +622,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.imageViewPhoto.setVisibility(View.VISIBLE);
                             myHolder.imageViewRLayout.setVisibility(View.VISIBLE);
                             imageThumbnailLoader.loadImage(msg, myHolder.imageViewPhoto);
-                        } else if (fileMeta.getContentType().contains("video")) {
+                        } else if (fileMeta.getContentType().contains(VIDEO)) {
                             myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_action_video);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                                 if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
@@ -648,7 +644,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     myHolder.imageViewPhoto.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(msg.getFilePaths().get(0)));
                                 }
                             }
-                        } else if (fileMeta.getContentType().contains("audio")) {
+                        } else if (fileMeta.getContentType().contains(AUDIO)) {
                             myHolder.imageViewForAttachmentType.setImageResource(R.drawable.km_ic_music_note);
                             if (TextUtils.isEmpty(msg.getMessage())) {
                                 myHolder.replyMessageTextView.setText(context.getString(R.string.audio_string));
@@ -764,11 +760,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             if (message.isTypeOutbox()) {
                 myHolder.createdAtTime.setTextColor(
                         themeHelper.parseColorWithDefault(alCustomizationSettings.getSentMessageCreatedAtTimeColor().get(isDarkModeEnabled ? 1 : 0),
-                                Color.parseColor("#808080")));
+                                Color.parseColor(PARSE_COLOR)));
             } else {
                 myHolder.createdAtTime.setTextColor(
                         themeHelper.parseColorWithDefault(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor().get(isDarkModeEnabled ? 1 : 0),
-                                Color.parseColor("#808080")));
+                                Color.parseColor(PARSE_COLOR)));
             }
 
             if (isHtmlTypeMessage(message)) {
@@ -811,7 +807,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             if (individual && message.getTimeToLive() != null) {
                 myHolder.selfDestruct
-                        .setText("Self destruct in " + message.getTimeToLive() + " mins");
+                        .setText(SELF_DESTRUCT_IN + message.getTimeToLive() + " mins");
                 myHolder.selfDestruct.setVisibility(View.VISIBLE);
             } else {
                 myHolder.selfDestruct.setText("");
@@ -908,7 +904,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             if (message.hasAttachment() && myHolder.attachedFile != null & !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
                 myHolder.mainAttachmentLayout.setLayoutParams(getImageLayoutParam(false));
                 myHolder.mainAttachmentLayout.setVisibility(View.VISIBLE);
-                if (message.getFileMetas() != null && (message.getFileMetas().getContentType().contains("image") || message.getFileMetas().getContentType().contains("video"))) {
+                if (message.getFileMetas() != null && (message.getFileMetas().getContentType().contains(IMAGE) || message.getFileMetas().getContentType().contains(VIDEO))) {
                     myHolder.attachedFile.setVisibility(View.GONE);
                 }
                 if (message.isAttachmentDownloaded()) {
@@ -919,7 +915,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     for (final String filePath : message.getFilePaths()) {
                         filePaths[i++] = filePath;
                         final String mimeType = FileUtils.getMimeType(filePath);
-                        if (mimeType != null && mimeType.startsWith("image")) {
+                        if (mimeType != null && mimeType.startsWith(IMAGE)) {
                             myHolder.attachmentView.setVisibility(View.GONE);
                             myHolder.videoIcon.setVisibility(View.GONE);
                             myHolder.preview.setVisibility(View.VISIBLE);
@@ -932,7 +928,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             myHolder.attachedFile.setVisibility(View.GONE);
                             myHolder.attachmentView.setProressBar(myHolder.mediaDownloadProgressBar);
                             myHolder.attachmentView.setDownloadProgressLayout(myHolder.attachmentDownloadProgressLayout);
-                        } else if (mimeType != null && mimeType.startsWith("video")) {
+                        } else if (mimeType != null && mimeType.startsWith(VIDEO)) {
                             myHolder.preview.setVisibility(View.VISIBLE);
                             myHolder.videoIcon.setVisibility(View.VISIBLE);
                             myHolder.mediaDownloadProgressBar.setVisibility(View.GONE);
@@ -979,7 +975,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     showPreview(message, myHolder.preview, myHolder.attachmentDownloadLayout);
                     FileMeta fileMeta = message.getFileMetas();
                     final String mimeType = FileUtils.getMimeType(fileMeta.getName());
-                    if (!fileMeta.getContentType().contains("image") && !fileMeta.getContentType().contains("video")) {
+                    if (!fileMeta.getContentType().contains(IMAGE) && !fileMeta.getContentType().contains(VIDEO)) {
                         showAttachmentIconAndText(myHolder.attachedFile, message, mimeType);
                     }
                     myHolder.downloadSizeTextView.setText(fileMeta.getSizeInReadableFormat());
@@ -1001,7 +997,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         myHolder.attachmentDownloadProgressLayout.setVisibility(View.GONE);
                         myHolder.downloadSizeTextView.setText(fileMeta.getSizeInReadableFormat());
                         final String mimeType = FileUtils.getMimeType(fileMeta.getName());
-                        if (!fileMeta.getContentType().contains("image") && !fileMeta.getContentType().contains("video")) {
+                        if (!fileMeta.getContentType().contains(IMAGE) && !fileMeta.getContentType().contains(VIDEO)) {
                             showAttachmentIconAndText(myHolder.attachedFile, message, mimeType);
                         }
                     }
@@ -1180,7 +1176,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     myHolder.mapImageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?q=" + LocationUtils.getLocationFromMessage(message.getMessage()));
+                            String uri = String.format(Locale.ENGLISH, GMAP_LINK + LocationUtils.getLocationFromMessage(message.getMessage()));
                             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                             context.startActivity(intent);
                         }
@@ -1357,13 +1353,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     private boolean isMessageProcessed(Message message) {
         if (themeHelper.isHidePostCTA() || themeHelper.isDisableFormPostSubmit()) {
-            return lastSentMessage != null && lastSentMessage.getCreatedAtTime() > message.getCreatedAtTime() && !lastSentMessage.isActionMessage();
+            return lastSentMessage != null && lastSentMessage.getCreatedAtTime() > message.getCreatedAtTime();
         }
         return false;
     }
 
     public void updateLastSentMessage(Message message) {
-        if ((themeHelper.isHidePostCTA() || themeHelper.isDisableFormPostSubmit()) && message.isTypeOutbox() && message.getContentType() != 10) {
+        if ((themeHelper.isHidePostCTA() || themeHelper.isDisableFormPostSubmit()) && message.isTypeOutbox()) {
             lastSentMessage = message;
         }
     }
@@ -1443,7 +1439,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                         }
                         try {
-                            intent.setDataAndType(outputUri, "text/x-vcard");
+                            intent.setDataAndType(outputUri, TEXT_XCARD);
                             context.startActivity(intent);
                         } catch (ActivityNotFoundException activityNotFoundException) {
                             KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
@@ -1462,7 +1458,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                                     outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
                                 }
                                 try {
-                                    intent.setDataAndType(outputUri, "text/x-vcard");
+                                    intent.setDataAndType(outputUri, TEXT_XCARD);
                                     context.startActivity(intent);
                                 } catch (ActivityNotFoundException activityNotFoundException) {
                                     KmToast.error(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
@@ -1548,12 +1544,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     KmToast.error(context, "File not uploaded, please retry", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (mimeType.startsWith("image")) {
+                if (mimeType.startsWith(IMAGE)) {
                     Intent intent = new Intent(context, FullScreenImageActivity.class);
                     intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(smListItem, Message.class));
                     ((MobiComKitActivityInterface) context).startActivityForResult(intent, MobiComKitActivityInterface.REQUEST_CODE_FULL_SCREEN_ACTION);
                 }
-                if (mimeType.startsWith("video")) {
+                if (mimeType.startsWith(VIDEO)) {
                     if (smListItem.isAttachmentDownloaded()) {
                         Intent intentVideo = new Intent();
                         intentVideo.setAction(Intent.ACTION_VIEW);
@@ -1707,12 +1703,12 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
     private boolean isNormalAttachment(Message message) {
         if (message.getFileMetas() != null) {
-            return !(message.getFileMetas().getContentType().contains("image") || message.getFileMetas().getContentType().contains("video") || message.isContactMessage());
+            return !(message.getFileMetas().getContentType().contains(IMAGE) || message.getFileMetas().getContentType().contains(VIDEO) || message.isContactMessage());
         } else if (message.getFilePaths() != null) {
             String filePath = message.getFilePaths().get(0);
             final String mimeType = FileUtils.getMimeType(filePath);
             if (mimeType != null) {
-                return !(mimeType.contains("image") || mimeType.contains("video") || message.isContactMessage());
+                return !(mimeType.contains(IMAGE) || mimeType.contains(VIDEO) || message.isContactMessage());
             }
         }
         return false;

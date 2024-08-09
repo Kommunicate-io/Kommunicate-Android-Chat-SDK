@@ -42,6 +42,8 @@ import java.util.List;
 import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper.CALL_AUDIO_ONLY;
 import static com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper.CALL_ID;
 
+import io.kommunicate.R;
+
 /**
  * Created with IntelliJ IDEA.
  * User: devashish
@@ -73,6 +75,15 @@ public class NotificationService {
     public static final String BADGE_COUNT = "BADGE_COUNT";
     public static final String NO_ALERT = "NO_ALERT";
     private final Integer notificationIconColor;
+    private static final String KOMMUNICATE = "Kommunicate";
+    private static final String CONTACT_ID = "CONTACT_ID";
+    private static final String android_dir = "vnd.android-dir/mms-sms";
+    private static final String contextBasedChat = "contextBasedChat";
+    private static final String sent_from_notification = "sentFromNotification";
+    private static final String key_String = "keyString";
+    private static final String group_Id = "groupId";
+    private static final String take_Order = "takeOrder";
+    private static final String ACTIVITY_OPEN = "activity.open.on.notification";
 
     public NotificationService(int iconResourceID, Context context, int wearable_action_label, int wearable_action_title, int wearable_send_icon) {
         this.context = context;
@@ -82,7 +93,7 @@ public class NotificationService {
         this.wearable_send_icon = wearable_send_icon;
         this.applozicClient = ApplozicClient.getInstance(context);
         this.appContactService = new AppContactService(context);
-        this.activityToOpen = Utils.getMetaDataValue(context, "activity.open.on.notification");
+        this.activityToOpen = Utils.getMetaDataValue(context, ACTIVITY_OPEN);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.notificationDisableThreshold = applozicClient.getNotificationMuteThreshold();
         this.notificationFilePath = Applozic.getInstance(context).getCustomNotificationSound();
@@ -140,13 +151,13 @@ public class NotificationService {
             intent.putExtra(MobiComKitConstants.QUICK_LIST, true);
         }
         if (applozicClient.isChatListOnNotificationIsHidden()) {
-            intent.putExtra("takeOrder", true);
+            intent.putExtra(take_Order, true);
         }
         if (applozicClient.isContextBasedChat()) {
-            intent.putExtra("contextBasedChat", true);
+            intent.putExtra(contextBasedChat, true);
         }
         intent.putExtra("sms_body", "text");
-        intent.setType("vnd.android-dir/mms-sms");
+        intent.setType(android_dir);
 
         PendingIntent pendingIntent = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -426,17 +437,17 @@ public class NotificationService {
         }
 
         Intent intent = new Intent(context, activity);
-        intent.putExtra("keyString", message.getKeyString());
-        intent.putExtra("groupId", message.getGroupId());
+        intent.putExtra(key_String, message.getKeyString());
+        intent.putExtra(group_Id, message.getGroupId());
         if (applozicClient.isChatListOnNotificationIsHidden()) {
-            intent.putExtra("takeOrder", true);
+            intent.putExtra(take_Order, true);
         }
         if (applozicClient.isContextBasedChat()) {
-            intent.putExtra("contextBasedChat", true);
+            intent.putExtra(contextBasedChat, true);
         }
-        intent.putExtra("sentFromNotification", true);
+        intent.putExtra(sent_from_notification, true);
         intent.putExtra("sms_body", "text");
-        intent.setType("vnd.android-dir/mms-sms");
+        intent.setType(android_dir);
 
         PendingIntent pendingIntent = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -514,7 +525,7 @@ public class NotificationService {
             e.printStackTrace();
         }
         fullScreenIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        fullScreenIntent.putExtra("CONTACT_ID", message.getTo());
+        fullScreenIntent.putExtra(CONTACT_ID, message.getTo());
         fullScreenIntent.putExtra(CALL_ID, callId);
         if (!TextUtils.isEmpty(isAudioCallOnly) && "true".equals(isAudioCallOnly)) {
             fullScreenIntent.putExtra(CALL_AUDIO_ONLY, true);
@@ -534,8 +545,8 @@ public class NotificationService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, notificationChannels.getCallChannelId())
                         .setSmallIcon(notificationInfo.smallIconResourceId)
-                        .setContentTitle("Incoming call from " + notificationInfo.title + ".")
-                        .setContentText("Tap to open call screen.")
+                        .setContentTitle(context.getString(R.string.incomming_call) + notificationInfo.title + ".")
+                        .setContentText(context.getString(R.string.open_call))
                         .setVibrate(new long[] {2000L, 1000L, 2000L, 1000L})
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -581,8 +592,8 @@ public class NotificationService {
         Integer smallIconResourceId = Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_METADATA) != null ? Utils.getMetaDataValueForResources(context, NOTIFICATION_SMALL_ICON_METADATA) : iconResourceId;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, notificationChannels.getDefaultChannelId(false))
                 .setSmallIcon(smallIconResourceId)
-                .setContentTitle("Kommunicate")
-                .setContentText("Testing notification")
+                .setContentTitle(KOMMUNICATE)
+                .setContentText(context.getString(R.string.notification_testing))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(123, builder.build());

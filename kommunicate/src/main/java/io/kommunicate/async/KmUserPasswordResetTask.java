@@ -17,6 +17,7 @@ public class KmUserPasswordResetTask extends AsyncTask<Void, Void, String> {
     private String userId;
     private String applicationId;
     private KmPassResetHandler handler;
+    private static final String ERR_OCCURED = "Some error occurred";
 
     public KmUserPasswordResetTask(Context context, String userId, String applicationId, KmPassResetHandler handler) {
         this.context = new WeakReference<Context>(context);
@@ -38,7 +39,7 @@ public class KmUserPasswordResetTask extends AsyncTask<Void, Void, String> {
             if (s != null) {
                 handler.onSuccess(context.get(), s);
             } else {
-                handler.onFailure(context.get(), "Some error occurred");
+                handler.onFailure(context.get(), ERR_OCCURED);
             }
         }
     }

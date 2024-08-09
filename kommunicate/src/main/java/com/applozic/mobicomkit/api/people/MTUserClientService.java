@@ -17,6 +17,9 @@ import java.net.URLEncoder;
 public class MTUserClientService extends MobiComKitClientService {
 
     public static final String CHECK_FOR_MT_USER = "/rest/ws/contact/v2/ismtexter";
+    private static final String REQUEST_SRC = "?requestSource=1&contactNumber=";
+    private static final String appli_path = "application/json";
+    private static final String text_path = "text/plain";
 
     public MTUserClientService(Context context) {
         super(context);
@@ -29,7 +32,7 @@ public class MTUserClientService extends MobiComKitClientService {
     public ContactContent getContactContent(String contactNumber) {
         String response = null;
         try {
-            response = new HttpRequestUtils(context).getResponse(getCheckForMtUser() + "?requestSource=1&contactNumber=" + URLEncoder.encode(contactNumber, "UTF-8"), "text/plain", "application/json");
+            response = new HttpRequestUtils(context).getResponse(getCheckForMtUser() + REQUEST_SRC + URLEncoder.encode(contactNumber, "UTF-8"), text_path, appli_path);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

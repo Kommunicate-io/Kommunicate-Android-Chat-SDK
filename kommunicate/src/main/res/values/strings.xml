@@ -16,4 +16,10 @@
     <string name="km_ok_button">OK</string>
     <string name="km_set_app_id">You need to replace the &lt;Your-App-ID&gt; in the app level build.gradle file with your actual appId from Kommunicate dashboard</string>
     <string name="km_clear_app_data">You just changed the AppId, please clear the app data or logout/login the user again in Kommunicate for the new AppId to reflect</string>
+    <string name="user_logged_in">User already Logged in</string>
+    <string name="incomming_call">Incoming call from</string>
+    <string name="open_call">Tap to open call screen.</string>
+    <string name="notification_testing">Testing notification</string>
+    <string name="mute_notification">Successfully muted/unmuted user</string>
+    <string name="mute_err">Some error occurred</string>
 </resources>

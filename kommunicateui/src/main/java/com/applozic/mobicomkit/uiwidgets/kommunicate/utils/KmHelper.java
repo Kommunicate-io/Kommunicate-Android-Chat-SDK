@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
@@ -64,7 +66,7 @@ public class KmHelper {
 
     public static void setStartNewUniqueChat(final Context context, final List<String> agentIds, List<String> botIds) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Creating conversation, please wait...");
+        dialog.setMessage(context.getString(R.string.create_conv_msg));
         dialog.setCancelable(false);
         dialog.show();
 
@@ -117,7 +119,7 @@ public class KmHelper {
 
     public static void performLogin(final Context context, User user) {
         final ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage("Please wait...");
+        dialog.setMessage(context.getString(R.string.please_wait));
         dialog.setCancelable(false);
         dialog.show();
 

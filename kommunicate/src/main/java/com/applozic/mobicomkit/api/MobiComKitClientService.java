@@ -37,6 +37,8 @@ public class MobiComKitClientService {
     public static String FILE_BASE_URL_METADATA_KEY = "com.applozic.attachment.url";
     public static String FILE_UPLOAD_METADATA_KEY = "com.applozic.attachment.upload.endpoint";
     public static String FILE_DOWNLOAD_METADATA_KEY = "com.applozic.attachment.download.endpoint";
+    public static final String conn_err = "Error connecting";
+    public static final String NOT_HTTP_CONN = "Not an HTTP connection";
 
     public MobiComKitClientService() {
 
@@ -120,7 +122,7 @@ public class MobiComKitClientService {
         URLConnection conn = url.openConnection();
 
         if (!(conn instanceof HttpURLConnection))
-            throw new IOException("Not an HTTP connection");
+            throw new IOException(NOT_HTTP_CONN);
 
         try {
             httpConn = (HttpURLConnection) conn;
@@ -129,7 +131,7 @@ public class MobiComKitClientService {
             httpConn.setRequestMethod("GET");
             httpConn.connect();
         } catch (Exception ex) {
-            throw new IOException("Error connecting");
+            throw new IOException(conn_err);
         }
         return httpConn;
     }

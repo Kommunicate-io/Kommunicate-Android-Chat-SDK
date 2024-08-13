@@ -99,6 +99,9 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
@@ -1333,7 +1336,33 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     view.dispatchTouchEvent(MotionEvent.obtain(0, 0, MotionEvent.ACTION_CANCEL, 0f, 0f, 0));
                 }
             });
+
+            if (showSourceURls(message, position)) {
+                String json = message.getMetadata().get("sourceUrls");
+                if(json == null) {
+                    return;
+                }
+                myHolder.sourceText.setVisibility(View.VISIBLE);
+                myHolder.sourceUrls.setVisibility(View.VISIBLE);
+                myHolder.sourceUrlDivider.setVisibility(View.VISIBLE);
+                JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
+                String[] urls = new Gson().fromJson(jsonObject.get("urls"), String[].class);
+                StringBuilder urlsView = new StringBuilder();
+                for(String url : urls) {
+                    urlsView.append(url);
+                    urlsView.append("\n");
+                }
+                myHolder.sourceUrls.setText(urlsView);
+            }
         }
+    }
+
+    private boolean showSourceURls(Message message, int position) {
+        return message.getContentType() == 0
+                && getItemViewType(position) == 0
+                && !message.getMessage().isEmpty()
+                && message.getType() == 4
+                && message.getMetadata().containsKey("sourceUrls");
     }
 
     //insert new item and only update item which requires updated and not the whole layout
@@ -1760,6 +1789,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         View statusIconBackground;
         LinearLayout timestampLayout;
         ImageView statusImageView;
+        View sourceUrlDivider;
+        TextView sourceText;
+        TextView sourceUrls;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1804,6 +1836,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             emailLayout = customView.findViewById(R.id.emailLayout);
             viaEmailView = customView.findViewById(R.id.via_email_text_view);
             statusIconBackground = customView.findViewById(R.id.statusIconBackground);
+            sourceUrlDivider = customView.findViewById(R.id.src_divider);
+            sourceText = customView.findViewById(R.id.sources);
+            sourceUrls = customView.findViewById(R.id.src_urls_textview);
 
             if (useInnerTimeStampDesign) {
                 if (statusIconBackground != null) {

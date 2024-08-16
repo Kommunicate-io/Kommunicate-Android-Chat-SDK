@@ -18,6 +18,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.text.style.UnderlineSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -61,6 +62,7 @@ import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.api.conversation.stat.SourceUrl;
 import com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
@@ -102,10 +104,12 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,6 +125,8 @@ import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.GONE;
+import static androidx.core.content.ContextCompat.startActivity;
+import static com.applozic.mobicomkit.api.conversation.stat.SourceUrl.SOURCE_URL;
 
 /**
  * Created by adarsh on 4/7/15.
@@ -1338,23 +1344,42 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             });
 
             if (showSourceURls(message, position)) {
-                String json = message.getMetadata().get("sourceUrls");
+                String json = message.getMetadata().get(SOURCE_URL);
                 if(json == null) {
                     return;
                 }
                 myHolder.sourceText.setVisibility(View.VISIBLE);
-                myHolder.sourceUrls.setVisibility(View.VISIBLE);
+                myHolder.urlsLayout.setVisibility(View.VISIBLE);
                 myHolder.sourceUrlDivider.setVisibility(View.VISIBLE);
-                JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-                String[] urls = new Gson().fromJson(jsonObject.get("urls"), String[].class);
-                StringBuilder urlsView = new StringBuilder();
-                for(String url : urls) {
-                    urlsView.append(url);
-                    urlsView.append("\n");
+
+                Type listType = new TypeToken<List<SourceUrl>>() {}.getType();
+                List<SourceUrl> links = GsonUtils.getObjectFromJson(json, listType);
+
+                myHolder.urlsLayout.removeAllViews();
+                for(SourceUrl url : links) {
+                    SpannableString content = new SpannableString(url.getTitle());
+                    content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+
+                    View view = LayoutInflater
+                            .from(myHolder.urlsLayout.getContext())
+                            .inflate(R.layout.km_link_view, null, false);
+
+                    TextView tv =  view.findViewById(R.id.src_urls_textview);
+                    tv.setText(content);
+
+                    view.setOnClickListener((data) -> {
+                        openURL(view.getContext(), url.getUrl());
+                    });
+                    myHolder.urlsLayout.addView(view);
                 }
-                myHolder.sourceUrls.setText(urlsView);
             }
         }
+    }
+
+    private void openURL(Context context, String url) {
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        context.startActivity(intent);
     }
 
     private boolean showSourceURls(Message message, int position) {
@@ -1362,7 +1387,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 && getItemViewType(position) == 0
                 && !message.getMessage().isEmpty()
                 && message.getType() == 4
-                && message.getMetadata().containsKey("sourceUrls");
+                && message.getMetadata().containsKey(SOURCE_URL);
     }
 
     //insert new item and only update item which requires updated and not the whole layout
@@ -1791,7 +1816,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         ImageView statusImageView;
         View sourceUrlDivider;
         TextView sourceText;
-        TextView sourceUrls;
+        LinearLayout urlsLayout;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1838,7 +1863,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             statusIconBackground = customView.findViewById(R.id.statusIconBackground);
             sourceUrlDivider = customView.findViewById(R.id.src_divider);
             sourceText = customView.findViewById(R.id.sources);
-            sourceUrls = customView.findViewById(R.id.src_urls_textview);
+            urlsLayout = customView.findViewById(R.id.linksView);
 
             if (useInnerTimeStampDesign) {
                 if (statusIconBackground != null) {

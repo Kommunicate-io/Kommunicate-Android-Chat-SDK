@@ -1383,7 +1383,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     }
 
     private boolean showSourceURls(Message message, int position) {
-        return message.getContentType() == 0
+        return message.getMetadata() != null
+                && message.getContentType() == 0
                 && getItemViewType(position) == 0
                 && !message.getMessage().isEmpty()
                 && message.getType() == 4

@@ -1,0 +1,20 @@
+digraph {
+  graph [label="Kommunicate-Android-Chat-SDK\n ",labelloc=t,fontsize=30,ranksep=1.4];
+  node [style=filled, fillcolor="#bbbbbb"];
+  rankdir=TB;
+
+  # Projects
+
+  ":app" [fillcolor="#baffc9"];
+  ":kommunicate" [fillcolor="#baffc9"];
+  ":kommunicateui" [fillcolor="#baffc9"];
+
+  {rank = same;}
+
+  # Dependencies
+
+  ":app" -> ":app"
+  ":kommunicate" -> ":kommunicate"
+  ":kommunicateui" -> ":kommunicate"
+  ":kommunicateui" -> ":kommunicateui"
+}

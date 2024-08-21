@@ -37,6 +37,9 @@
 
     <application
         android:name="kommunicate.io.sample.KommunicateApplication"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher_without_shape"
         android:label="@string/app_name"
         android:supportsRtl="true"

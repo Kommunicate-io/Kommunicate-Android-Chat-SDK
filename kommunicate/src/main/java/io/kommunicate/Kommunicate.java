@@ -127,7 +127,7 @@ public class Kommunicate {
     }
 
     public static void init(Context context, String applicationKey) {
-        init(context, applicationKey, KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
+        init(context, applicationKey, true);
     }
 
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {

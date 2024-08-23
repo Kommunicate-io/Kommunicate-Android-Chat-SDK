@@ -21,6 +21,7 @@ import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
+import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.ApplozicService;
@@ -65,6 +66,7 @@ import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.preference.KmPreference;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KMAgentStatusHelper;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -115,7 +117,8 @@ public class Kommunicate {
         return faqPageName;
     }
 
-    public static void init(Context context, String applicationKey) {
+    public static void init(Context context, String applicationKey, Boolean enableDeviceRootDetection) {
+        KmAppSettingPreferences.getInstance().setRootDetection(enableDeviceRootDetection);
         if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
             KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
         } else {
@@ -123,7 +126,16 @@ public class Kommunicate {
         }
     }
 
+    public static void init(Context context, String applicationKey) {
+        init(context, applicationKey, KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
+    }
+
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {
+        if(KmUtils.isDeviceRooted() && handler != null) {
+            handler.onFailure(null, new IllegalStateException(Utils.getString(context, R.string.km_device_rooted)));
+            return;
+        }
+
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
             if (loggedInUserId.equals(kmUser.getUserId())) {
@@ -257,6 +269,11 @@ public class Kommunicate {
     public static void launchConversationWithPreChat(final Context context, final ProgressDialog progressDialog, final KmCallback callback) throws KmException  {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
+        }
+
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(context, R.string.km_device_rooted)));
+            return;
         }
 
         final KMUser kmUser = getVisitor();

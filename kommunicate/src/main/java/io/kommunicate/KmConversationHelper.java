@@ -159,6 +159,11 @@ public class KmConversationHelper {
             return;
         }
 
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(launchChat.getContext(), R.string.km_device_rooted)));
+            return;
+        }
+
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
             try {
                 Kommunicate.startConversation(launchChat,
@@ -228,6 +233,11 @@ public class KmConversationHelper {
                 Utils.printLog(null, TAG, Utils.getString(null, R.string.km_context_cannot_be_null));
                 callback.onFailure(Utils.getString(launchChat.getContext(), R.string.km_context_cannot_be_null));
             }
+            return;
+        }
+
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(launchChat.getContext(), R.string.km_device_rooted)));
             return;
         }
 
@@ -423,6 +433,11 @@ public class KmConversationHelper {
                 Utils.printLog(null, TAG, Utils.getString(null, R.string.km_context_cannot_be_null));
                 callback.onFailure(Utils.getString(conversationBuilder.getContext(), R.string.km_context_cannot_be_null));
             }
+            return;
+        }
+
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(conversationBuilder.getContext(), R.string.km_device_rooted)));
             return;
         }
 

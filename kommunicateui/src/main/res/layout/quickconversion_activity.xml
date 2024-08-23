@@ -64,6 +64,8 @@
         <include layout="@layout/km_custom_toolbar_layout" />
     </androidx.appcompat.widget.Toolbar>
 
+    <include layout="@layout/km_device_rooted_layout" />
+
     <include layout="@layout/km_service_disconnection_layout" />
 
     <RelativeLayout

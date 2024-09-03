@@ -1,9 +1,18 @@
 package com.applozic.mobicommons.commons.core.utils;
 
+import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteStatement;
+
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.applozic.mobicomkit.api.MobiComKitClientService;
+import com.applozic.mobicommons.ALSpecificSettings;
+import com.applozic.mobicommons.ApplozicService;
+
+import java.io.File;
 
 /**
  * Created by devashish on 25/1/15.
@@ -43,6 +52,57 @@ public class DBUtils {
             if (mCursor != null) {
                 mCursor.close();
             }
+        }
+    }
+
+    public static boolean isDatabaseEncrypted(Context context, String dbName) {
+        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
+        File dbFile = context.getDatabasePath(dbName);
+
+        // Attempt to open the database with the given password
+        SQLiteDatabase db = null;
+        try {
+            db = SQLiteDatabase.openDatabase(dbFile.getPath(), appId, null, SQLiteDatabase.OPEN_READONLY);
+            db.close();
+            return true;
+        } catch (net.sqlcipher.database.SQLiteException e) {
+            return false;
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close();
+            }
+        }
+    }
+
+    public static void migrateToSQLCypher(Context context, String dbName) {
+        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
+        // Open your existing unencrypted database
+        File originalFile = context.getDatabasePath(dbName + ".db");
+
+        // Open a new encrypted database
+        SQLiteDatabase encryptedDb = SQLiteDatabase.openOrCreateDatabase(originalFile, appId, null);
+
+        // Migrate your data by copying from the old unencrypted database to the new encrypted database
+        try {
+            originalFile.renameTo(context.getDatabasePath("unencrypted_temp.db"));
+
+            // Open the original unencrypted database
+            SQLiteDatabase unencryptedDb = SQLiteDatabase.openDatabase(originalFile.getPath(), "", null, SQLiteDatabase.OPEN_READWRITE);
+
+            // Copy data from unencrypted to encrypted database
+            unencryptedDb.execSQL("ATTACH DATABASE '" + encryptedDb.getPath() + "' AS encrypted_db KEY '" + appId + "';");
+            unencryptedDb.execSQL("SELECT sqlcipher_export('encrypted_db');");
+            unencryptedDb.execSQL("DETACH DATABASE encrypted_db;");
+
+            // Close both databases
+            unencryptedDb.close();
+            encryptedDb.close();
+
+            // Delete the unencrypted database
+            originalFile.delete();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

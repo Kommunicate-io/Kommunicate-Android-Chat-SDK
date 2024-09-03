@@ -1,8 +1,10 @@
 package io.kommunicate.network;
 
-import android.util.Log;
+import static com.google.gson.internal.$Gson$Types.arrayOf;
 
+import java.security.KeyManagementException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -26,24 +28,26 @@ public class SSLPinningConfig {
 
             @Override
             public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                if (chain.length == 0) {
+                    throw new CertificateException("Certificate chain is empty");
+                }
+
+                X509Certificate certificate = chain[0];
+                PublicKey publicKey = certificate.getPublicKey();
+                byte[] publicKeyBytes = publicKey.getEncoded();
+
+                MessageDigest md = null;
                 try {
-                    if (chain.length == 0) {
-                        throw new CertificateException("Certificate chain is empty");
-                    }
+                    md = MessageDigest.getInstance("SHA-256");
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+                byte[] publicKeyHash = md.digest(publicKeyBytes);
+                String publicKeyHashBase64 = android.util.Base64.encodeToString(publicKeyHash, android.util.Base64.NO_WRAP);
 
-                    X509Certificate certificate = chain[0];
-                    PublicKey publicKey = certificate.getPublicKey();
-                    byte[] publicKeyBytes = publicKey.getEncoded();
-
-                    MessageDigest md = MessageDigest.getInstance("SHA-256");
-                    byte[] publicKeyHash = md.digest(publicKeyBytes);
-                    String publicKeyHashBase64 = android.util.Base64.encodeToString(publicKeyHash, android.util.Base64.NO_WRAP);
-
-                    if (!Objects.equals(publicKeyHashBase64, expectedPublicKeyHash)) {
-                        throw new CertificateException("Public key pinning failure");
-                    }
-                }catch (Exception e) {
-                    Log.d("Invalid certificate", Objects.requireNonNull(e.getMessage()));
+                if (!Objects.equals(publicKeyHashBase64, expectedPublicKeyHash)) {
+                    throw new CertificateException("Public key pinning failure");
                 }
             }
 
@@ -57,10 +61,14 @@ public class SSLPinningConfig {
         try {
             sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, new TrustManager[] {trustManager}, null);
-        }catch (Exception e) {
-            Log.d("Invalid certificate", Objects.requireNonNull(e.getMessage()));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        assert sslContext != null;
+
         return sslContext.getSocketFactory();
     }
 }

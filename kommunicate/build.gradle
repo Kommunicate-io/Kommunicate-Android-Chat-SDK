@@ -46,6 +46,7 @@ dependencies {
     api 'androidx.appcompat:appcompat:1.2.0'
     api 'com.google.code.gson:gson:2.8.6'
     api 'com.iceteck.silicompressorr:silicompressor:2.2.4'
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.0'
     api('com.googlecode.mp4parser:isoparser:1.0.6') {
         exclude(
                 group : "org.aspectj",

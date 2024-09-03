@@ -1,8 +1,8 @@
 package com.applozic.mobicomkit.database;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 import android.text.TextUtils;
 
 import com.applozic.mobicommons.ALSpecificSettings;
@@ -12,6 +12,8 @@ import com.applozic.mobicomkit.api.account.user.UserClientService;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DBUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+
+import java.io.File;
 
 public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
@@ -253,6 +255,10 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        SQLiteDatabase.loadLibs(context);
+        if (!DBUtils.isDatabaseEncrypted(context, name)) {
+            DBUtils.migrateToSQLCypher(context, name);
+        }
     }
 
     public static MobiComDatabaseHelper getInstance(Context context) {
@@ -265,16 +271,16 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         return sInstance;
     }
 
-    @Override
     public SQLiteDatabase getReadableDatabase() {
-        SQLiteDatabase database = super.getReadableDatabase();
+        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
+        SQLiteDatabase database = super.getReadableDatabase(appId);
         database.enableWriteAheadLogging();
         return database;
     }
 
-    @Override
     public SQLiteDatabase getWritableDatabase() {
-        SQLiteDatabase database = super.getWritableDatabase();
+        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
+        SQLiteDatabase database = super.getWritableDatabase(appId);
         database.enableWriteAheadLogging();
         return database;
     }

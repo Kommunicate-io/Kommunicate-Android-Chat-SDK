@@ -1,22 +1,19 @@
-apply plugin: 'com.android.library'
-
-rootProject.allprojects {
-    repositories {
-        maven {
-            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
-        }
-    }
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
 }
+
 android {
-    compileSdkVersion 34
+    namespace = "io.kommunicate"
 
     lintOptions {
         abortOnError false
     }
 
     defaultConfig {
-        minSdkVersion 17
+        compileSdk 34
         targetSdkVersion 34
+        minSdkVersion 17
         versionCode 1
         versionName "2.10.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -36,17 +33,27 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
-    api 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
-    api 'androidx.appcompat:appcompat:1.2.0'
-    api 'com.google.code.gson:gson:2.8.6'
-    api 'com.iceteck.silicompressorr:silicompressor:2.2.4'
-    api('com.googlecode.mp4parser:isoparser:1.0.6') {
+    implementation libs.core.ktx
+    api libs.org.eclipse.paho.client.mqttv3
+    api libs.localbroadcastmanager
+    api libs.appcompat
+    api libs.gson
+    api libs.silicompressor
+    api(libs.isoparser) {
         exclude(
                 group : "org.aspectj",
                 module: "aspectjrt"

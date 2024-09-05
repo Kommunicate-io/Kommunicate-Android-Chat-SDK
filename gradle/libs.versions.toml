@@ -20,6 +20,7 @@ playServicesLocation = "17.0.0"
 playServicesMaps = "17.0.0"
 silicompressor = "2.2.4"
 swiperefreshlayout = "1.1.0"
+googleSecret = "2.0.1"
 
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
@@ -46,3 +47,4 @@ android-library = { id = "com.android.library", version.ref = "androidGradlePlug
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 jfrog = { id = "com.jfrog.artifactory", version.ref = "jfrogVersion" }
+google-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleSecret"}

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
+    <string name="km_prechat_processing_wait_info">Please wait, launching conversation..</string>
+    <string name="km_whatsapp_restriction">The last message received from this contact was over 24 hours ago. To send Template message, go to the dashboard.</string>
+    <string name="km_teammode_restriction">You can no longer send messages to this conversation as it has been assigned to a different team.</string>
     <string name="internet_connection_not_available">No internet connection.</string>
     <string name="you_need_network_access_for_delete">You need to have network access for deleting conversation.</string>
     <string name="km_server_error">Oops! You caught an error, try again later.</string>

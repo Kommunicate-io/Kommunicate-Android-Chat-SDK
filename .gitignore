@@ -3,5 +3,5 @@
 *.idea
 /.gradle
 /.idea
-/gradle
-/local.properties
+/.kotlin
+local.properties

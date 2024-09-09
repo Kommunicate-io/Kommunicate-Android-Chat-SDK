@@ -242,10 +242,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             });
             snackbar.setDuration(Snackbar.LENGTH_LONG);
             ViewGroup group = (ViewGroup) snackbar.getView();
-            TextView textView = (TextView) group.findViewById(R.id.snackbar_action);
+            TextView textView = (TextView) group.findViewById(com.google.android.material.R.id.snackbar_action);
             textView.setTextColor(Color.YELLOW);
             group.setBackgroundColor(getResources().getColor(R.color.error_background_color));
-            TextView txtView = (TextView) group.findViewById(R.id.snackbar_text);
+            TextView txtView = (TextView) group.findViewById(com.google.android.material.R.id.snackbar_text);
             txtView.setMaxLines(5);
             snackbar.show();
         } catch (Exception e) {

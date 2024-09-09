@@ -24,8 +24,8 @@ public class GsonUtils {
         return new GsonBuilder().setPrettyPrinting().create().toJson(object, type);
     }
 
-    public static Object getObjectFromJson(String json, Type type) {
-        return new GsonBuilder().create().fromJson(json, type);
+    public static <T> T getObjectFromJson(String json, Type type) {
+        return (T) new GsonBuilder().create().fromJson(json, type);
     }
 
     public static Object getObjectListFromJson(String json, String key, Type type) {

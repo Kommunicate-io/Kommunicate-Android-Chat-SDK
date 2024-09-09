@@ -1,74 +1,80 @@
-package io.kommunicate.network;
+package io.kommunicate.network
 
-import static com.google.gson.internal.$Gson$Types.arrayOf;
+import android.annotation.SuppressLint
+import android.util.Base64
+import io.kommunicate.BuildConfig
+import java.security.KeyManagementException
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
-import java.security.KeyManagementException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.Objects;
+object SSLPinningConfig {
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+    @JvmStatic
+    @Synchronized
+    fun createPinnedSSLSocketFactory(): SSLSocketFactory {
+        val expectedPublicKeyHash = arrayOf(
+            BuildConfig.apiKommunicateIo,
+            BuildConfig.apiEuKommunicateIo,
+            BuildConfig.apiCaKommunicateIo,
+            BuildConfig.apiTestKommuncateIo,
+            BuildConfig.kommunicateIo,
+            BuildConfig.apiInKommunicateIo
+        )
 
-public class SSLPinningConfig {
-
-    public synchronized static SSLSocketFactory createPinnedSSLSocketFactory() {
-        String expectedPublicKeyHash = "";
-
-        TrustManager trustManager = new X509TrustManager() {
-            @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        val trustManager: TrustManager = @SuppressLint("CustomX509TrustManager")
+        object : X509TrustManager {
+            @Throws(CertificateException::class)
+            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
                 // No client side authentication implemented
             }
 
-            @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                if (chain.length == 0) {
-                    throw new CertificateException("Certificate chain is empty");
+            @Throws(CertificateException::class)
+            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+                if (chain.isEmpty()) {
+                    throw CertificateException("Certificate chain is empty")
                 }
 
-                X509Certificate certificate = chain[0];
-                PublicKey publicKey = certificate.getPublicKey();
-                byte[] publicKeyBytes = publicKey.getEncoded();
+                val certificate = chain[0]
+                val publicKeyBytes = certificate.publicKey.encoded
 
-                MessageDigest md = null;
-                try {
-                    md = MessageDigest.getInstance("SHA-256");
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
+                val md: MessageDigest = try {
+                    MessageDigest.getInstance("SHA-256")
+                } catch (e: NoSuchAlgorithmException) {
+                    e.printStackTrace()
+                    throw RuntimeException(e)
                 }
-                byte[] publicKeyHash = md.digest(publicKeyBytes);
-                String publicKeyHashBase64 = android.util.Base64.encodeToString(publicKeyHash, android.util.Base64.NO_WRAP);
 
-                if (!Objects.equals(publicKeyHashBase64, expectedPublicKeyHash)) {
-                    throw new CertificateException("Public key pinning failure");
+                val publicKeyHash = md.digest(publicKeyBytes)
+                val publicKeyHashBase64 = Base64.encodeToString(publicKeyHash, Base64.NO_WRAP)
+
+                if (!expectedPublicKeyHash.contains(publicKeyHashBase64)) {
+                    throw CertificateException("Public key pinning failure")
                 }
             }
 
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return new X509Certificate[0];
+            override fun getAcceptedIssuers(): Array<X509Certificate?> {
+                return arrayOfNulls(0)
             }
-        };
-
-        SSLContext sslContext = null;
-        try {
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, new TrustManager[] {trustManager}, null);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
         }
 
-        return sslContext.getSocketFactory();
+        var sslContext: SSLContext? = null
+        try {
+            sslContext = SSLContext.getInstance("TLS")
+            sslContext.init(null, arrayOf(trustManager), null)
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+            throw RuntimeException(e)
+        } catch (e: KeyManagementException) {
+            e.printStackTrace()
+            throw RuntimeException(e)
+        }
+
+        return sslContext.socketFactory
     }
 }

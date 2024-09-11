@@ -11,9 +11,9 @@ android {
     }
 
     defaultConfig {
+        minSdkVersion 21
         compileSdk 34
         targetSdkVersion 34
-        minSdkVersion 17
         versionCode 1
         versionName "2.10.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -53,6 +53,7 @@ dependencies {
     api libs.appcompat
     api libs.gson
     api libs.silicompressor
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.0'
     api(libs.isoparser) {
         exclude(
                 group : "org.aspectj",

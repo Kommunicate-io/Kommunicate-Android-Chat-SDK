@@ -74,38 +74,6 @@ public class DBUtils {
         }
     }
 
-    public static void migrateToSQLCypher(Context context, String dbName) {
-        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
-        // Open your existing unencrypted database
-        File originalFile = context.getDatabasePath(dbName + ".db");
-
-        // Open a new encrypted database
-        SQLiteDatabase encryptedDb = SQLiteDatabase.openOrCreateDatabase(originalFile, appId, null);
-
-        // Migrate your data by copying from the old unencrypted database to the new encrypted database
-        try {
-            originalFile.renameTo(context.getDatabasePath("unencrypted_temp.db"));
-
-            // Open the original unencrypted database
-            SQLiteDatabase unencryptedDb = SQLiteDatabase.openDatabase(originalFile.getPath(), "", null, SQLiteDatabase.OPEN_READWRITE);
-
-            // Copy data from unencrypted to encrypted database
-            unencryptedDb.execSQL("ATTACH DATABASE '" + encryptedDb.getPath() + "' AS encrypted_db KEY '" + appId + "';");
-            unencryptedDb.execSQL("SELECT sqlcipher_export('encrypted_db');");
-            unencryptedDb.execSQL("DETACH DATABASE encrypted_db;");
-
-            // Close both databases
-            unencryptedDb.close();
-            encryptedDb.close();
-
-            // Delete the unencrypted database
-            originalFile.delete();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static boolean isTableEmpty(SQLiteDatabase database, String table) {
         String sql = "SELECT COUNT(*) FROM " + table;
         SQLiteStatement statement = database.compileStatement(sql);

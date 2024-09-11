@@ -15,6 +15,8 @@ import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.io.File;
 
+import io.kommunicate.database.DatabaseMigrationHelper;
+
 public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
     public static final int DB_VERSION = 35;
@@ -257,7 +259,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
         SQLiteDatabase.loadLibs(context);
         if (!DBUtils.isDatabaseEncrypted(context, name)) {
-            DBUtils.migrateToSQLCypher(context, name);
+            DatabaseMigrationHelper.migrateDatabase(context, name + ".db");
         }
     }
 

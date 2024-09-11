@@ -259,7 +259,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
         SQLiteDatabase.loadLibs(context);
         if (!DBUtils.isDatabaseEncrypted(context, name)) {
-            DatabaseMigrationHelper.migrateDatabase(context, name + ".db");
+            DatabaseMigrationHelper.migrateDatabase(context, name);
         }
     }
 

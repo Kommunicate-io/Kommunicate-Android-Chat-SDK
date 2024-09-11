@@ -11,14 +11,23 @@ object DatabaseMigrationHelper {
     private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
 
     @JvmStatic
-    fun migrateDatabase(context: Context, dbName: String?) {
+    fun migrateDatabase(context: Context, dbName: String) {
+        val databaseName = if(context.getDatabasePath(dbName).exists()) {
+            dbName
+        } else if(context.getDatabasePath(dbName.removeSuffix(".db")).exists()) {
+            dbName.removeSuffix(".db")
+        } else {
+            return
+        }
+
         val password =
             MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context))
+
         // Load SQLCipher libraries
         SQLiteDatabase.loadLibs(context)
 
         // File paths for unencrypted and temporary encrypted databases
-        val unencryptedDbFile = context.getDatabasePath(dbName)
+        val unencryptedDbFile = context.getDatabasePath(databaseName)
         val encryptedTempDbFile = context.getDatabasePath(TEMP_ENCRYPTED_DB_NAME)
 
         if (!unencryptedDbFile.exists()) {

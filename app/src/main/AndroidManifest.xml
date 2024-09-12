@@ -64,8 +64,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAGVIsWxU7lkCuoodgI6FGXmDN5J11VJFk"/>
-<!--            android:value="AIzaSyDHQzh-cDfo-aY9_Q1fZFiZtaurg57eY7k" />-->
+            android:value="${GOOGLE_KEY}"/>
 
         <service
             android:name="kommunicate.io.sample.pushnotification.FcmListenerService"

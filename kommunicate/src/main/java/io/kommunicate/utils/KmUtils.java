@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -72,6 +73,33 @@ public class KmUtils {
         } else {
             view.setBackground(ContextCompat.getDrawable(context, resId));
         }
+    }
+
+    public static boolean isDeviceRooted() {
+        KmAppSettingPreferences preferences = KmAppSettingPreferences.getInstance();
+        if (!preferences.isRootDetectionEnabled()) {
+            return false;
+        }
+
+        boolean isRooted = false;
+        Process process = null;
+
+        try {
+            process = Runtime.getRuntime().exec("su");
+            isRooted = true;
+        } catch (Exception ex) {
+            Log.d("RootDetection", "Process creation/execution failed " + ex.getMessage());
+        } finally {
+            if (process != null) {
+                try {
+                    process.destroy();
+                } catch (Exception e) {
+                    Log.d("RootDetection", "Process termination failed " + e.getMessage());
+                }
+            }
+        }
+
+        return isRooted;
     }
 
     public static void setDrawableTint(TextView textView, int colorId, int index) {

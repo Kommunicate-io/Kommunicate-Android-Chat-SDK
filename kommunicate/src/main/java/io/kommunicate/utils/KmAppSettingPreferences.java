@@ -36,6 +36,7 @@ public class KmAppSettingPreferences {
     private static final String UPLOAD_OVERRIDE_URL = "UPLOAD_OVERRIDE_URL";
     private static final String UPLOAD_OVERRIDE_HEADER = "UPLOAD_OVERRIDE_HEADER";
     public static final String SINGLE_THREADED = "IS_SINGLE_THREADED";
+    public static final String ROOT_DETECTION = "ROOT_DETECTION";
 
     public static final String RATING_BASE = "RATING_BASE";
 
@@ -74,6 +75,14 @@ public class KmAppSettingPreferences {
                 setHidePostCTA(appSetting.getResponse().isHidePostCTA());
             }
         }
+    }
+
+    public void setRootDetection(boolean isEnabled) {
+        preferences.edit().putBoolean(ROOT_DETECTION, isEnabled).apply();
+    }
+
+    public boolean isRootDetectionEnabled() {
+        return preferences.getBoolean(ROOT_DETECTION, true);
     }
 
     public void checkIsSingleThreaded(boolean isSingleConversation) {

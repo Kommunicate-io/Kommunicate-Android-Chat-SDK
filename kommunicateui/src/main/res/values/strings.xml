@@ -41,6 +41,8 @@
     <string name="km_contacts_loading_error">You need to have network access for loading contacts.</string>
     <string name="km_enter_group_name">Please enter a group name to proceed..</string>
     <string name="snap_text">Oh Snap!</string>
+    <string name="root_text">Your device is rooted!</string>
+    <string name="root_device_message">You can\'t use the Kommunicate SDK in this device as it\'s rooted.</string>
     <string name="account_disconnection_message">We’re sorry but messaging is not \navailable at the moment,\nPlease contact support for more details.</string>
     <string name="powered_by_kommunicate_message">We are powered by Kommunicate.</string>
     <string name="share_using">Share using</string>

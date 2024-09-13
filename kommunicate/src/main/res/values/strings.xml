@@ -7,6 +7,7 @@
     <string name="km_chat_builder_cannot_be_null">Chat Builder cannot be null</string>
     <string name="km_context_cannot_be_null">Chat Builder cannot be null</string>
     <string name="km_app_id_cannot_be_null">APP_ID cannot be empty</string>
+    <string name="km_device_rooted">SDK Initialization failed, as your device is rooted.</string>
     <string name="km_conversation_builder_cannot_be_null">Conversation Builder cannot be null</string>
     <string name="km_agent_list_empty_error">Agent Id list cannot be null or empty</string>
     <string name="km_default_support_group_name">Conversations</string>

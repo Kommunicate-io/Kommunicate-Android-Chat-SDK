@@ -8,8 +8,8 @@ public class KmAutoSuggestionModel extends JsonMarker {
     private String category;
     private String content;
     private boolean deleted;
-    private long created_at;
-    private long updated_at;
+    private String created_at;
+    private String updated_at;
     private String userName;
     private long id;
     private boolean supportsRichMessage = false;
@@ -61,19 +61,19 @@ public class KmAutoSuggestionModel extends JsonMarker {
         this.deleted = deleted;
     }
 
-    public long getCreatedAt() {
+    public String getCreatedAt() {
         return created_at;
     }
 
-    public void setCreatedAt(long created_at) {
+    public void setCreatedAt(String created_at) {
         this.created_at = created_at;
     }
 
-    public long getUpdatedAt() {
+    public String getUpdatedAt() {
         return updated_at;
     }
 
-    public void setUpdatedAt(long updated_at) {
+    public void setUpdatedAt(String updated_at) {
         this.updated_at = updated_at;
     }
 

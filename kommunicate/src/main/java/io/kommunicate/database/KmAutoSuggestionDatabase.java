@@ -39,8 +39,8 @@ public class KmAutoSuggestionDatabase {
         autoSuggestionModel.setId(cursor.getLong(cursor.getColumnIndex(KmDatabaseHelper.ID)));
         autoSuggestionModel.setCategory(cursor.getString(cursor.getColumnIndex(KmDatabaseHelper.CATEGORY)));
         autoSuggestionModel.setContent(cursor.getString(cursor.getColumnIndex(KmDatabaseHelper.CONTENT)));
-        autoSuggestionModel.setCreatedAt(cursor.getLong(cursor.getColumnIndex(KmDatabaseHelper.CREATED_AT)));
-        autoSuggestionModel.setUpdatedAt(cursor.getLong(cursor.getColumnIndex(KmDatabaseHelper.UPDATED_AT)));
+        autoSuggestionModel.setCreatedAt(cursor.getString(cursor.getColumnIndex(KmDatabaseHelper.CREATED_AT)));
+        autoSuggestionModel.setUpdatedAt(cursor.getString(cursor.getColumnIndex(KmDatabaseHelper.UPDATED_AT)));
         autoSuggestionModel.setDeleted(cursor.getInt(cursor.getColumnIndex(KmDatabaseHelper.DELETED)) == 1);
         autoSuggestionModel.setName(cursor.getString(cursor.getColumnIndex(KmDatabaseHelper.NAME)));
         autoSuggestionModel.setType(cursor.getString(cursor.getColumnIndex(KmDatabaseHelper.TYPE)));

@@ -4,30 +4,48 @@ appcompat = "1.2.0"
 circleimageview = "2.2.0"
 cardview = "1.0.0"
 constraintlayout = "2.0.4"
-coreKtx = "1.9.0"
+coreKtx = "1.13.1"
+espressoCore = "3.6.1"
+fakeKeystore = "2.0.0"
 firebaseMessaging = "20.1.0"
 flexbox = "3.0.0"
 glide = "4.9.0"
 googleServices = '4.3.8'
 gson = "2.8.6"
 isoparser = "1.0.6"
+javaClient = "8.0.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
 kotlinVersion = '2.0.10'
 jfrogVersion = '5.2.3'
+kotlinxCoroutinesCore = "1.7.3"
 material = "1.3.0"
 multidex = "2.0.1"
 orgEclipsePahoClientMqttv3 = "1.2.0"
 localbroadcastmanager = "1.0.0"
 playServicesLocation = "17.0.0"
 playServicesMaps = "17.0.0"
+retrofit = "2.11.0"
+robolectric = "4.13"
+runner = "1.6.2"
+seleniumJava = "4.1.0"
 silicompressor = "2.2.4"
 swiperefreshlayout = "1.1.0"
 googleSecret = "2.0.1"
+coreKtxVersion = "1.6.1"
 
 [libraries]
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+core = { module = "androidx.test:core", version.ref = "coreKtxVersion" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoCore" }
+espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoCore" }
+ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+fake-keystore = { module = "io.matthewnelson.encrypted-storage:fake-keystore", version.ref = "fakeKeystore" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
@@ -35,13 +53,24 @@ gms-play-services-location = { module = "com.google.android.gms:play-services-lo
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 isoparser = { module = "com.googlecode.mp4parser:isoparser", version.ref = "isoparser" }
+java-client = { module = "io.appium:java-client", version.ref = "javaClient" }
+junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 localbroadcastmanager = { module = "androidx.localbroadcastmanager:localbroadcastmanager", version.ref = "localbroadcastmanager" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
 multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 org-eclipse-paho-client-mqttv3 = { module = "org.eclipse.paho:org.eclipse.paho.client.mqttv3", version.ref = "orgEclipsePahoClientMqttv3" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+rules = { module = "androidx.test:rules", version.ref = "coreKtxVersion" }
+runner = { module = "androidx.test:runner", version.ref = "runner" }
+selenium-java = { module = "org.seleniumhq.selenium:selenium-java", version.ref = "seleniumJava" }
 silicompressor = { module = "com.iceteck.silicompressorr:silicompressor", version.ref = "silicompressor" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

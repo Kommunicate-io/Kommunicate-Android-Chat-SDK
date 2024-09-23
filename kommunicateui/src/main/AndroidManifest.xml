@@ -43,6 +43,7 @@
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
             android:configChanges="keyboardHidden|screenSize|locale|smallestScreenSize|screenLayout|orientation|uiMode"
             android:label="@string/app_name"
+            android:exported="false"
             android:launchMode="singleTask"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />
@@ -51,6 +52,7 @@
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:exported="false"
             android:theme="@style/ApplozicTheme"
             android:windowSoftInputMode="adjustResize" />
 
@@ -58,6 +60,7 @@
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
+            android:exported="false"
             android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
             android:theme="@style/Applozic_FullScreen_Theme"
             tools:node="merge">
@@ -73,6 +76,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
             android:launchMode="singleTop"
+            android:exported="false"
             android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />
@@ -87,6 +91,7 @@
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"
+            android:exported="false"
             android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             android:windowSoftInputMode="stateHidden|adjustResize">

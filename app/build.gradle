@@ -40,18 +40,37 @@ android {
     buildFeatures {
         buildConfig true
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api project(':kommunicateui')
     //implementation 'io.kommunicate.sdk:kommunicateui:2.2.2'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.core:core-ktx:1.13.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation libs.appcompat
+    implementation libs.multidex
+    implementation libs.core.ktx
+    implementation libs.retrofit
+    implementation libs.converter.gson
+    implementation libs.okhttp
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
+    testImplementation libs.junit
+    testImplementation libs.java.client
+    testImplementation libs.selenium.java
+    testImplementation libs.robolectric
+    androidTestImplementation libs.espresso.contrib
+    androidTestImplementation libs.espresso.intents
+    androidTestImplementation libs.test.core.ktx
+    androidTestImplementation libs.rules
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.runner
+    androidTestImplementation libs.espresso.core
 }
 
 secrets {

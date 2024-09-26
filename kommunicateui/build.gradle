@@ -12,7 +12,7 @@ android {
     defaultConfig {
         compileSdk 34
         targetSdkVersion 34
-        minSdkVersion 17
+        minSdkVersion 21
         versionCode 1
         versionName "2.10.2"
         buildToolsVersion = '34.0.0'

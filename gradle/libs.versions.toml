@@ -14,6 +14,7 @@ isoparser = "1.0.6"
 kotlinVersion = '2.0.10'
 jfrogVersion = '5.2.3'
 material = "1.3.0"
+multidex = "2.0.1"
 orgEclipsePahoClientMqttv3 = "1.2.0"
 localbroadcastmanager = "1.0.0"
 playServicesLocation = "17.0.0"
@@ -36,6 +37,7 @@ appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat"
 isoparser = { module = "com.googlecode.mp4parser:isoparser", version.ref = "isoparser" }
 localbroadcastmanager = { module = "androidx.localbroadcastmanager:localbroadcastmanager", version.ref = "localbroadcastmanager" }
 material = { module = "com.google.android.material:material", version.ref = "material" }
+multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
 org-eclipse-paho-client-mqttv3 = { module = "org.eclipse.paho:org.eclipse.paho.client.mqttv3", version.ref = "orgEclipsePahoClientMqttv3" }
 play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 silicompressor = { module = "com.iceteck.silicompressorr:silicompressor", version.ref = "silicompressor" }

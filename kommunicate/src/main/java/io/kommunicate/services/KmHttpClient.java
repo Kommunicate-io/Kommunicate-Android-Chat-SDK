@@ -20,6 +20,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.crypto.IllegalBlockSizeException;
+import javax.net.ssl.HttpsURLConnection;
+
+import io.kommunicate.network.SSLPinningConfig;
 
 public class KmHttpClient {
 
@@ -36,14 +39,15 @@ public class KmHttpClient {
 
     public String postData(String urlString, String contentType, String accept, String data) throws Exception {
         Utils.printLog(context, TAG, "Calling url: " + urlString);
-        HttpURLConnection connection;
+        HttpsURLConnection connection;
         URL url;
         try {
             if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
                 data = EncryptionUtils.encrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(), data, MobiComUserPreference.getInstance(context).getEncryptionIV());
             }
             url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
             connection.setRequestMethod(POST);
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -103,13 +107,14 @@ public class KmHttpClient {
     public String getResponseWithException(String urlString, String contentType, String accept, Map<String, String> headers) throws Exception {
         Utils.printLog(context, TAG, "Calling url **[GET]** : " + urlString);
 
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
         URL url;
 
         try {
             url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
             connection.setInstanceFollowRedirects(true);
             connection.setRequestMethod(GET);
             connection.setUseCaches(false);

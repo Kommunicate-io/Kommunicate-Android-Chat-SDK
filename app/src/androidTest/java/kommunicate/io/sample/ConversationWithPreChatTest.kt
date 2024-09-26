@@ -3,6 +3,7 @@ package kommunicate.io.sample
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.ResultReceiver
+import android.util.Log
 import android.view.View
 import android.widget.Spinner
 import androidx.lifecycle.lifecycleScope
@@ -51,6 +52,7 @@ import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThrows
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
@@ -59,6 +61,7 @@ import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import com.applozic.mobicomkit.uiwidgets.R as Rui
 
 
@@ -325,21 +328,23 @@ class ConversationWithPreChatTest {
         val tempUserPhone = getRandomString(10, true)
         val tempGender = "Female"
 
-        mActivityRule.onActivity {
-            val user = KMUser().apply {
-                userId = tempUserMail
-                email = tempUserMail
-                displayName = tempName
-                contactNumber = tempUserPhone
-                metadata = mapOf("gender" to tempGender)
+        assertThrows(NullPointerException::class.java) {
+            mActivityRule.onActivity {
+                val user = KMUser().apply {
+                    email = tempUserMail
+                    displayName = tempName
+                    contactNumber = tempUserPhone
+                    metadata = mapOf("gender" to tempGender)
+                }
+                it.lifecycleScope.launch {
+                    buildAndLaunchConversationWithUser(it, user)
+                    fail("the user object is created even when the userid is not passed")
+                }
             }
-            it.lifecycleScope.launch {
-                buildAndLaunchConversationWithUser(it, user)
-            }
-        }
 
-        onView(isRoot())
-            .perform(waitFor(10000))
+            onView(isRoot())
+                .perform(waitFor(10000))
+        }
     }
 
     @Test
@@ -381,8 +386,7 @@ class ConversationWithPreChatTest {
                     continuation.resume(true)
                 }
                 override fun onFailure(error: Any) {
-                    fail("unable to launch the conversation with kmUser reason: $error")
-                    continuation.cancel(Exception(error as String))
+                    continuation.resumeWithException(error as NullPointerException)
                 }
             })
         }

@@ -6,3 +6,4 @@
 /.kotlin
 *.hprof
 local.properties
+/release.secrets.properties

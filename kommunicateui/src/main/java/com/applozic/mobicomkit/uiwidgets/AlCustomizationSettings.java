@@ -832,11 +832,11 @@ public class AlCustomizationSettings extends JsonMarker {
         return minimumCompressionThresholdForVideosInMB;
     }
 
-    public boolean getHideAttachmentOptionsWithBots() {
+    public boolean isHideAttachmentOptionsWithBots() {
         return hideAttachmentOptionsWithBots;
     }
 
-    public boolean getHideChatBarWithBots() {
+    public boolean isHideChatBarWithBots() {
         return hideChatBarWithBots;
     }
 

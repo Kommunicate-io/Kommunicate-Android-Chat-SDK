@@ -1110,7 +1110,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         emoticonsBtn.setVisibility(View.GONE);
 
-        boolean hideAttachmentOptionsWithBots = alCustomizationSettings.getHideAttachmentOptionsWithBots();
+        boolean hideAttachmentOptionsWithBots = alCustomizationSettings.isHideAttachmentOptionsWithBots();
         if (hideAttachmentOptionsWithBots) {
             attachmentIconLayout.setVisibility(GONE);
         }
@@ -4566,7 +4566,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void toggleAttachmentLayoutVisibility() {
-        if (alCustomizationSettings.getHideAttachmentOptionsWithBots() && attachmentIconLayout != null) {
+        if (alCustomizationSettings.isHideAttachmentOptionsWithBots() && attachmentIconLayout != null) {
             attachmentIconLayout.setVisibility(
                     getCurrentConversationAssignee() == User.RoleType.BOT
                             ? GONE : VISIBLE
@@ -4575,7 +4575,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void toggleHideChatBarWithBots() {
-        if (!alCustomizationSettings.getHideChatBarWithBots() || kmMessageLinearLayout == null) {
+        if (!alCustomizationSettings.isHideChatBarWithBots() || kmMessageLinearLayout == null) {
             return;
         }
         kmMessageLinearLayout.setVisibility(
@@ -4585,16 +4585,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     private User.RoleType getCurrentConversationAssignee() {
         Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
-        switch (assigneeContact.getRoleType()) {
-            case 1 : return User.RoleType.BOT;
-            case 2 : return User.RoleType.APPLICATION_ADMIN;
-            case 3 : return User.RoleType.USER_ROLE;
-            case 4 : return User.RoleType.ADMIN_ROLE;
-            case 5 : return User.RoleType.BUSINESS;
-            case 6 : return User.RoleType.APPLICATION_BROADCASTER;
-            case 7 : return User.RoleType.SUPPORT;
-            default : return User.RoleType.AGENT;
-        }
+        return User.RoleType.fromValue(assigneeContact.getRoleType());
     }
 
     private void updateUserFromCustomInput(String message) {

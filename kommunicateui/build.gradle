@@ -19,6 +19,7 @@ android {
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        buildConfigField "String", "KOMMUNICATE_UI_VERSION", "\"" + versionName + "\""
     }
 
     buildTypes {

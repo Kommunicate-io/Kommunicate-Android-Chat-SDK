@@ -1,5 +1,8 @@
 package io.kommunicate;
 
+import static io.kommunicate.utils.SentryUtils.configureSentryWithKommunicate;
+import static io.kommunicate.utils.SentryUtils.configureSentrySessionWithUser;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,7 +24,6 @@ import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
-import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.ApplozicService;
@@ -124,6 +126,7 @@ public class Kommunicate {
             Applozic.init(context, applicationKey);
         }
         KmAppSettingPreferences.getInstance().setRootDetection(enableDeviceRootDetection);
+        configureSentryWithKommunicate(context);
     }
 
     public static void init(Context context, String applicationKey) {
@@ -131,6 +134,7 @@ public class Kommunicate {
     }
 
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {
+        configureSentrySessionWithUser(kmUser);
         if(KmUtils.isDeviceRooted() && handler != null) {
             handler.onFailure(null, new IllegalStateException(Utils.getString(context, R.string.km_device_rooted)));
             return;
@@ -277,6 +281,7 @@ public class Kommunicate {
         }
 
         final KMUser kmUser = getVisitor();
+        configureSentrySessionWithUser(kmUser);
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
             if (loggedInUserId.equals(kmUser.getUserId())) {
@@ -502,6 +507,7 @@ public class Kommunicate {
             protected void onReceiveResult(int resultCode, Bundle resultData) {
                 if (KmConstants.PRECHAT_RESULT_CODE == resultCode) {
                     KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(KmConstants.KM_USER_DATA), KMUser.class);
+                    configureSentrySessionWithUser(user);
                     if (callback != null) {
                         callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
                     }

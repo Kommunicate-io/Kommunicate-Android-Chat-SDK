@@ -100,5 +100,9 @@
             android:value="eventually" /> <!-- Replace this with a valid resource name for Notification Tone -->
 
 
+        <meta-data android:name="io.sentry.dsn" android:value="https://61237dad0fb514f97b7fca3a3cfc0764@o4508040675983360.ingest.us.sentry.io/4508040676835328" />
+        <meta-data android:name="io.sentry.traces.user-interaction.enable" android:value="true" />
+        <meta-data android:name="io.sentry.attach-screenshot" android:value="true" />
+        <meta-data android:name="io.sentry.attach-view-hierarchy" android:value="true" />
     </application>
 </manifest>

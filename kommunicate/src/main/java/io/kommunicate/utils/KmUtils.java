@@ -33,7 +33,6 @@ import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +52,11 @@ public class KmUtils {
     public static final String NAME = "name";
     public static final String ID = "id";
     private static final String NO_CLASS_FOUND = "No class found for name : ";
-
+    public static final String SENTRY_KOMMUNICATE_VERSION = "KOMMUNICATE_VERSION";
+    public static final String SENTRY_KOMMUNICATE_UI_VERSION = "KOMMUNICATE_UI_VERSION";
+    public static final String SENTRY_SDK_ENVIRONMENT = "SDK_ENVIRONMENT";
+    public static final String SENTRY_KOMMUNICATE_APP_ID = "KOMMUNICATE_APP_ID";
+    public static final String SENTRY_KOMMUNICATE_APPLOGICS_JSON = "KOMMUNICATE_APPLOGICS_JSON";
 
     public static boolean isServiceDisconnected(Context context, boolean isAgentApp, RelativeLayout customToolbarLayout) {
         boolean isDebuggable = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));

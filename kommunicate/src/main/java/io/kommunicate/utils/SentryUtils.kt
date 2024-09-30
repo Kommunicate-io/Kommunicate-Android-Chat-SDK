@@ -12,6 +12,14 @@ object SentryUtils {
 
     @JvmStatic
     fun configureSentryWithKommunicate(context: Context) {
+        if(BuildConfig.DEBUG) {
+            Sentry.init { options ->
+                options.dsn = BuildConfig.SENTRY_DSN
+                options.isEnabled = false
+            }
+            return
+        }
+
         val appId = AlPrefSettings.getInstance(context).applicationKey
         Sentry.configureScope { scope: Scope ->
             // Setup Tags

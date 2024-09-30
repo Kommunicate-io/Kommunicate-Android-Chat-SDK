@@ -1,7 +1,6 @@
 package io.kommunicate;
 
 import static io.kommunicate.utils.SentryUtils.configureSentryWithKommunicate;
-import static io.kommunicate.utils.SentryUtils.configureSentrySessionWithUser;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -134,7 +133,7 @@ public class Kommunicate {
     }
 
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {
-        configureSentrySessionWithUser(kmUser);
+        configureSentryWithKommunicate(context);
         if(KmUtils.isDeviceRooted() && handler != null) {
             handler.onFailure(null, new IllegalStateException(Utils.getString(context, R.string.km_device_rooted)));
             return;
@@ -281,7 +280,7 @@ public class Kommunicate {
         }
 
         final KMUser kmUser = getVisitor();
-        configureSentrySessionWithUser(kmUser);
+        configureSentryWithKommunicate(context);
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
             if (loggedInUserId.equals(kmUser.getUserId())) {
@@ -507,7 +506,7 @@ public class Kommunicate {
             protected void onReceiveResult(int resultCode, Bundle resultData) {
                 if (KmConstants.PRECHAT_RESULT_CODE == resultCode) {
                     KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(KmConstants.KM_USER_DATA), KMUser.class);
-                    configureSentrySessionWithUser(user);
+                    configureSentryWithKommunicate(context);
                     if (callback != null) {
                         callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
                     }

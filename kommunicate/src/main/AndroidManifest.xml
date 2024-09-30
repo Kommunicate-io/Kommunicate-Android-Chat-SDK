@@ -100,7 +100,7 @@
             android:value="eventually" />
 
 
-        <meta-data android:name="io.sentry.dsn" android:value="SENTRY_DSN" />
+        <meta-data android:name="io.sentry.dsn" android:value="${SENTRY_DSN}" />
         <meta-data android:name="io.sentry.traces.user-interaction.enable" android:value="true" />
         <meta-data android:name="io.sentry.attach-screenshot" android:value="true" />
         <meta-data android:name="io.sentry.attach-view-hierarchy" android:value="true" />

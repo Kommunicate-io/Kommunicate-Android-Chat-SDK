@@ -1,12 +1,10 @@
 package com.applozic.mobicomkit.api.attachment;
 
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -43,25 +41,25 @@ import java.util.HashMap;
 public class FileClientService extends MobiComKitClientService {
 
     //Todo: Make the base folder configurable using either strings.xml or properties file
-    public static final String MOBI_COM_IMAGES_FOLDER = "/image";
-    public static final String MOBI_COM_VIDEOS_FOLDER = "/video";
-    public static final String MOBI_COM_CONTACT_FOLDER = "/contact";
-    public static final String MOBI_COM_OTHER_FILES_FOLDER = "/other";
-    public static final String MOBI_COM_THUMBNAIL_SUFIX = "/.Thumbnail";
+//    public static final String MOBI_COM_IMAGES_FOLDER = "/image";
+//    public static final String MOBI_COM_VIDEOS_FOLDER = "/video";
+//    public static final String MOBI_COM_CONTACT_FOLDER = "/contact";
+//    public static final String MOBI_COM_OTHER_FILES_FOLDER = "/other";
+//    public static final String MOBI_COM_THUMBNAIL_SUFIX = "/.Thumbnail";
     public static final String FILE_UPLOAD_URL = "/rest/ws/aws/file/url";
-    public static final String IMAGE_DIR = "image";
+//    public static final String IMAGE_DIR = "image";
     public static final String AL_UPLOAD_FILE_URL = "/rest/ws/upload/file";
     public static final String CUSTOM_STORAGE_SERVICE_END_POINT = "/rest/ws/upload/image";
     //    public static final String S3_SIGNED_URL_END_POINT = "/rest/ws/upload/file";
     public static final String S3_SIGNED_URL_END_POINT = "/rest/ws/upload/image";
     public static final String S3_SIGNED_URL_PARAM = "aclsPrivate";
-    public static final String THUMBNAIL_URL = "/files/";
+//    public static final String THUMBNAIL_URL = "/files/";
     private static final int MARK = 1024;
     private static final String TAG = "FileClientService";
-    private static final String MAIN_FOLDER_META_DATA = "main_folder_name";
+//    private static final String MAIN_FOLDER_META_DATA = "main_folder_name";
     private HttpRequestUtils httpRequestUtils;
     private MobiComKitClientService mobiComKitClientService;
-    private static final String text_card = "text/x-vCard";
+//    private static final String text_card = "text/x-vCard";
 
     public FileClientService(Context context) {
         super(context);
@@ -70,37 +68,37 @@ public class FileClientService extends MobiComKitClientService {
     }
 
     public static File getFilePath(String fileName, Context context, String contentType, boolean isThumbnail) {
-        File filePath;
-        File dir = null;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            String folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_OTHER_FILES_FOLDER;
-
-            if (contentType.startsWith("image")) {
-                folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_IMAGES_FOLDER;
-            } else if (contentType.startsWith("video")) {
-                folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_VIDEOS_FOLDER;
-            } else if (contentType.equalsIgnoreCase(text_card)) {
-                folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_CONTACT_FOLDER;
-            }
-            if (isThumbnail) {
-                folder = folder + MOBI_COM_THUMBNAIL_SUFIX;
-            }
-            File directory = context.getExternalFilesDir(null);
-            if (directory != null) {
-                dir = new File(directory.getAbsolutePath() + folder);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-            }
-        } else {
-            ContextWrapper cw = new ContextWrapper(context);
-            // path to /data/data/yourapp/app_data/imageDir
-            dir = cw.getDir(IMAGE_DIR, Context.MODE_PRIVATE);
-        }
-        // Create image name
-        //String extention = "." + contentType.substring(contentType.indexOf("/") + 1);
-        filePath = new File(dir, fileName);
-        return filePath;
+//        File filePath;
+//        File dir = null;
+//        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+//            String folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_OTHER_FILES_FOLDER;
+//
+//            if (contentType.startsWith("image")) {
+//                folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_IMAGES_FOLDER;
+//            } else if (contentType.startsWith("video")) {
+//                folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_VIDEOS_FOLDER;
+//            } else if (contentType.equalsIgnoreCase(text_card)) {
+//                folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_META_DATA) + MOBI_COM_CONTACT_FOLDER;
+//            }
+//            if (isThumbnail) {
+//                folder = folder + MOBI_COM_THUMBNAIL_SUFIX;
+//            }
+//            File directory = context.getExternalFilesDir(null);
+//            if (directory != null) {
+//                dir = new File(directory.getAbsolutePath() + folder);
+//                if (!dir.exists()) {
+//                    dir.mkdirs();
+//                }
+//            }
+//        } else {
+//            ContextWrapper cw = new ContextWrapper(context);
+//            // path to /data/data/yourapp/app_data/imageDir
+//            dir = cw.getDir(IMAGE_DIR, Context.MODE_PRIVATE);
+//        }
+//        // Create image name
+//        //String extention = "." + contentType.substring(contentType.indexOf("/") + 1);
+//        filePath = new File(dir, fileName);
+        return null;
     }
 
     public static File getFilePath(String fileName, Context context, String contentType) {

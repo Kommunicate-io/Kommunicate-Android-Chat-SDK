@@ -3,5 +3,7 @@
 *.idea
 /.gradle
 /.idea
-/gradle
-/local.properties
+/.kotlin
+*.hprof
+local.properties
+/release.secrets.properties

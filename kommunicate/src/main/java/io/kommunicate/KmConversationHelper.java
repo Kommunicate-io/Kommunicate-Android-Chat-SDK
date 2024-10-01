@@ -47,6 +47,7 @@ import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -159,6 +160,11 @@ public class KmConversationHelper {
             return;
         }
 
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(launchChat.getContext(), R.string.km_device_rooted)));
+            return;
+        }
+
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
             try {
                 Kommunicate.startConversation(launchChat,
@@ -170,7 +176,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
-                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId());
+                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
@@ -231,6 +237,11 @@ public class KmConversationHelper {
             return;
         }
 
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(launchChat.getContext(), R.string.km_device_rooted)));
+            return;
+        }
+
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
             try {
                 Kommunicate.startConversation(launchChat,
@@ -242,7 +253,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
-                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId());
+                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
@@ -426,6 +437,11 @@ public class KmConversationHelper {
             return;
         }
 
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(conversationBuilder.getContext(), R.string.km_device_rooted)));
+            return;
+        }
+
         if (Kommunicate.isLoggedIn(conversationBuilder.getContext())) {
             try {
                 startConversation(false, conversationBuilder,
@@ -437,7 +453,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(conversationBuilder.getAppId())) {
-                Kommunicate.init(conversationBuilder.getContext(), conversationBuilder.getAppId());
+                Kommunicate.init(conversationBuilder.getContext(), conversationBuilder.getAppId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey())) {
                     if (callback != null) {

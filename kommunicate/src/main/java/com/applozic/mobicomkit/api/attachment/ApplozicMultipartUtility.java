@@ -21,12 +21,16 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import io.kommunicate.network.SSLPinningConfig;
+
 public class ApplozicMultipartUtility {
     private static final String LINE_FEED = "\r\n";
     private static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     final String TAG = "AlMultipartUtility";
     private final String boundary;
-    private HttpURLConnection httpConn;
+    private HttpsURLConnection httpConn;
     private OutputStream outputStream;
     private PrintWriter writer;
     private boolean isUploadOveridden;
@@ -42,7 +46,8 @@ public class ApplozicMultipartUtility {
         boundary = "--" + System.currentTimeMillis() + "--";
 
         URL url = new URL(requestURL);
-        httpConn = (HttpURLConnection) url.openConnection();
+        httpConn = (HttpsURLConnection) url.openConnection();
+        httpConn.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
         httpConn.setUseCaches(false);
         httpConn.setDoOutput(true);
         httpConn.setDoInput(true);
@@ -57,7 +62,8 @@ public class ApplozicMultipartUtility {
         boundary = "--" + System.currentTimeMillis() + "--";
         isUploadOveridden = true;
         URL url = new URL(requestURL);
-        httpConn = (HttpURLConnection) url.openConnection();
+        httpConn = (HttpsURLConnection) url.openConnection();
+        httpConn.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
         httpConn.setUseCaches(false);
         httpConn.setDoOutput(true);
         httpConn.setDoInput(true);

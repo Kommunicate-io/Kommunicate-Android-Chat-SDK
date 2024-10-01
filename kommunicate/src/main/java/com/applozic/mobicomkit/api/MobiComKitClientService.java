@@ -17,7 +17,10 @@ import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import io.kommunicate.BuildConfig;
+import io.kommunicate.network.SSLPinningConfig;
 
 /**
  * Created by devashish on 27/12/14.
@@ -119,21 +122,21 @@ public class MobiComKitClientService {
         HttpURLConnection httpConn;
 
         URL url = new URL(urlString);
-        URLConnection conn = url.openConnection();
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
-        if (!(conn instanceof HttpURLConnection))
+        if (conn == null)
             throw new IOException(NOT_HTTP_CONN);
 
         try {
-            httpConn = (HttpURLConnection) conn;
-            httpConn.setAllowUserInteraction(false);
-            httpConn.setInstanceFollowRedirects(true);
-            httpConn.setRequestMethod("GET");
-            httpConn.connect();
+            conn.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
+            conn.setAllowUserInteraction(false);
+            conn.setInstanceFollowRedirects(true);
+            conn.setRequestMethod("GET");
+            conn.connect();
         } catch (Exception ex) {
             throw new IOException(conn_err);
         }
-        return httpConn;
+        return conn;
     }
 
     public String getFileUrl() {

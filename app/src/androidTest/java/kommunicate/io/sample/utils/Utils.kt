@@ -21,7 +21,7 @@ fun getAuthToken(dashboardAPI: KommunicateDashboardAPI): List<String> {
     runBlocking {
         val tokenData = RequestTokenData(
             true,
-            "JTdCJTIydXNlck5hbWUlMjIlM0ElMjJwcmF0ZWVrLnNpbmdoJTQwa29tbXVuaWNhdGUuaW8lMjIlMkMlMjJwYXNzd29yZCUyMiUzQSUyMnByYXRlZWslMjQlMjIlMkMlMjJhcHBsaWNhdGlvbk5hbWUlMjIlM0ElMjIlMjIlMkMlMjJhcHBsaWNhdGlvbklkJTIyJTNBJTIyZDZjYmMyMzIyYzYwODUxOWFkNjVhYjNiY2IwOWZlNzglMjIlMkMlMjJkZXZpY2VUeXBlJTIyJTNBMCU3RA=="
+            "JTdCJTIydXNlck5hbWUlMjIlM0ElMjJwcmF0ZWVrLnNpbmdoJTQwa29tbXVuaWNhdGUuaW8lMjIlMkMlMjJwYXNzd29yZCUyMiUzQSUyMkNvZGVtb25rMSUyNCUyMiUyQyUyMmFwcGxpY2F0aW9uTmFtZSUyMiUzQSUyMiUyMiUyQyUyMmFwcGxpY2F0aW9uSWQlMjIlM0ElMjJkNmNiYzIzMjJjNjA4NTE5YWQ2NWFiM2JjYjA5ZmU3OCUyMiUyQyUyMmRldmljZVR5cGUlMjIlM0EwJTdE"
         )
         val data = dashboardAPI.login(tokenData).data
         val decodedBytes: ByteArray = Base64.decode(data, Base64.URL_SAFE)

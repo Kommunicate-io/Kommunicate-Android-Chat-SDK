@@ -56,6 +56,7 @@ public class MessageDatabaseService {
     private static final String channelKey_AND= "channelKey = ? AND ";
     private static final String contactNumbers_AND = "contactNumbers = ? AND ";
     private static final String createdAt_AND = "createdAt >= ? AND ";
+    private static final String createdAt_AND_No_null = "createdAt < ? AND ";
     private static final String conversationID_AND = "conversationId = ? AND ";
     private static final String deleted_AND = "deleted = ? AND ";
     private static final String reply_AND = "replyMessage != ? AND ";
@@ -262,7 +263,7 @@ public class MessageDatabaseService {
             structuredNameParamsList.add(String.valueOf(startTime));
         }
         if (endTime != null) {
-            structuredNameWhere += createdAt_AND;
+            structuredNameWhere += createdAt_AND_No_null;
             structuredNameParamsList.add(String.valueOf(endTime));
         }
         if (BroadcastService.isContextBasedChatEnabled() && conversationId != null && conversationId != 0) {

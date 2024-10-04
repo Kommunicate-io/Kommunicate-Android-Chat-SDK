@@ -391,6 +391,15 @@ public class User extends JsonMarker {
         public Short getValue() {
             return value;
         }
+
+        public static RoleType fromValue(Short value) {
+            for (RoleType roleType : RoleType.values()) {
+                if (roleType.getValue().equals(value)) {
+                    return roleType;
+                }
+            }
+            return null;
+        }
     }
 
     public enum PushNotificationFormat {

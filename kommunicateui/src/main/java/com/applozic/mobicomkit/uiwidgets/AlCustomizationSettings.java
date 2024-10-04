@@ -158,13 +158,13 @@ public class AlCustomizationSettings extends JsonMarker {
     private int minimumCompressionThresholdForImagesInMB = 5;
     private boolean isVideoCompressionEnabled = false;
     private int minimumCompressionThresholdForVideosInMB = 5;
-
+    private boolean hideAttachmentOptionsWithBots = false;
+    private boolean hideChatBarWithBots = false;
 
     public boolean getUseDarkMode() {
         return useDarkMode;
     }
 
-    private boolean hideAttachmentOptionsWithBots = false;
 
     public String getStaticTopMessage() {
         return staticTopMessage;
@@ -832,8 +832,12 @@ public class AlCustomizationSettings extends JsonMarker {
         return minimumCompressionThresholdForVideosInMB;
     }
 
-    public boolean getHideAttachmentOptionsWithBots() {
+    public boolean isHideAttachmentOptionsWithBots() {
         return hideAttachmentOptionsWithBots;
+    }
+
+    public boolean isHideChatBarWithBots() {
+        return hideChatBarWithBots;
     }
 
     @Override
@@ -901,6 +905,7 @@ public class AlCustomizationSettings extends JsonMarker {
                 ", toolbarSubtitleColor=" + toolbarSubtitleColor +
                 ", useDeviceDefaultLanguage=" + useDeviceDefaultLanguage +
                 ", showTypingIndicatorWhileFetchingResponse=" + showTypingIndicatorWhileFetchingResponse +
+                ", hideChatBarWithBots=" + hideChatBarWithBots +
                 '}';
     }
 }

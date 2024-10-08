@@ -14,6 +14,7 @@ import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
 import kommunicate.io.sample.utils.getAuthToken
+import kommunicate.io.sample.utils.getRandomKmUser
 import kommunicate.io.sample.utils.getRandomString
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -41,24 +42,10 @@ class UserDashboardRegistrationTest {
         Kommunicate.init(context, "d6cbc2322c608519ad65ab3bcb09fe78", false)
     }
 
-    private fun getMockUserObject(): KMUser {
-        val tempUserId = UUID.randomUUID().toString()
-        val tempDisplayName = getRandomString()
-        val tempEmail = "${getRandomString()}@${getRandomString(4)}.${getRandomString(3)}"
-        val tempPhone = getRandomString(10, true)
-
-        return KMUser().apply {
-            userId = tempUserId
-            displayName = tempDisplayName
-            email = tempEmail
-            contactNumber = tempPhone
-        }
-    }
-
     @Test
     fun testDashboardDetailsVerification() {
         runBlocking {
-            val user = getMockUserObject()
+            val user = getRandomKmUser()
             loginWithKommunicate(user)
             verifyUserCreationOnDashboard(user)
         }
@@ -106,16 +93,17 @@ class UserDashboardRegistrationTest {
 
         dashboardUser!!.let {
             assert(it.userId == user.userId) {
-                "userId in dashboard is not same"
+                "userId in dashboard is not same expected: ${user.userId} actual: ${it.userId}"
             }
             assert(it.displayName == user.displayName) {
-                "displayName in dashboard is not same"
+                "displayName in dashboard is not same expected: ${user.displayName} actual: ${it.displayName}"
             }
             assert(it.email == user.email) {
-                "email in dashboard is not same"
+                "email in dashboard is not same expected: ${user.email} actual: ${it.email}"
             }
-            assert(it.phoneNumber == user.contactNumber) {
-                "phoneNumber in dashboard is not same"
+            // +91 because the temp user is of india.
+            assert(it.phoneNumber == "+91" + user.contactNumber) {
+                "phoneNumber in dashboard is not same expected: ${user.contactNumber} actual: ${it.phoneNumber}"
             }
         }
     }

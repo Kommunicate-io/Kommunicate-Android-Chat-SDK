@@ -19,8 +19,10 @@ import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
 import kommunicate.io.sample.utils.getAuthToken
+import kommunicate.io.sample.utils.getRandomKmUser
 import kommunicate.io.sample.utils.getRandomString
 import kommunicate.io.sample.utils.waitFor
+import kommunicate.io.sample.utils.waitForLatch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -30,6 +32,7 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -58,14 +61,18 @@ class KMUserDataValidationTest {
     @Test
     fun testKmUserAndValidateOnDashboard() {
         val kmTempUser = getTempKmUser(isWrongMetadata = false)
+        val latch = CountDownLatch(1)
+
         mActivityRule.onActivity {
             it.lifecycleScope.launch {
                 buildAndLaunchConversationWithUser(it, kmTempUser)
+            }.invokeOnCompletion {
+                latch.countDown()
             }
         }
 
         onView(isRoot())
-            .perform(waitFor(8000))
+            .perform(waitForLatch(latch, 100))
 
         sendMessageAsUser(getRandomString(10))
 
@@ -86,16 +93,19 @@ class KMUserDataValidationTest {
     @Test
     fun testKmUserWithIncorrectMetaDataAndValidateOnDashboard() {
         val kmTempUser = getTempKmUser(isWrongMetadata = true)
+        val latch = CountDownLatch(1)
 
         assertThrows("Expected Exception when keys with more that 30 char passed in metadata ${kmTempUser.metadata}", NullPointerException::class.java) {
             mActivityRule.onActivity {
                 it.lifecycleScope.launch {
                     buildAndLaunchConversationWithUser(it, kmTempUser)
+                }.invokeOnCompletion {
+                    latch.countDown()
                 }
             }
 
             onView(isRoot())
-                .perform(waitFor(8000))
+                .perform(waitForLatch(latch, 100))
         }
     }
 
@@ -161,13 +171,7 @@ class KMUserDataValidationTest {
             getRandomString(30) to getRandomString(60),
         )
 
-        return KMUser().apply {
-            userId = getRandomString(10)
-            userName = getRandomString(10)
-            email = "${getRandomString(10)}@${getRandomString(5, ignoreNums = true)}.${getRandomString(3, ignoreNums = true)}"
-            contactNumber = getRandomString(10, allNumbers = true)
-            password = getRandomString(10)
-            countryCode = "IN"
+        return getRandomKmUser().apply {
             metadata = randomStringsMap
         }
     }

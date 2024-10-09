@@ -1123,12 +1123,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 locationButton.setVisibility(attachmentOptions.get(":location") ? VISIBLE : View.GONE);
             }
 
-            if (attachmentOptions.containsKey(CAMERA)) {
-                cameraButton.setVisibility(attachmentOptions.get(CAMERA) ? VISIBLE : View.GONE);
+            if (attachmentOptions.containsKey(":camera")) {
+                cameraButton.setVisibility(attachmentOptions.get(":camera") ? VISIBLE : View.GONE);
             }
 
-            if (attachmentOptions.containsKey(VIDEO)) {
-                videoButton.setVisibility(attachmentOptions.get(VIDEO) ? VISIBLE : GONE);
+            if (attachmentOptions.containsKey(":video")) {
+                videoButton.setVisibility(attachmentOptions.get(":video") ? VISIBLE : GONE);
             }
 
             if (attachmentOptions.containsKey(":file")) {

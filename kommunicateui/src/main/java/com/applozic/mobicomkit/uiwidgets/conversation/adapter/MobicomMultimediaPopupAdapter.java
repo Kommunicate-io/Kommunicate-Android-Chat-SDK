@@ -18,12 +18,13 @@ import java.util.List;
 /**
  * Created by reytum on 18/3/16.
  */
+@Deprecated
 public class MobicomMultimediaPopupAdapter extends BaseAdapter {
     Context context;
     List<String> multimediaIcons;
     List<String> multimediaText;
     AlCustomizationSettings alCustomizationSettings;
-    private static final String FONTS = "fonts/fontawesome-webfont.ttf";
+    private static final String FONTS = "";
 
     public MobicomMultimediaPopupAdapter(Context context, List<String> multimediaIcons, List<String> multimediaText) {
         this.context = context;

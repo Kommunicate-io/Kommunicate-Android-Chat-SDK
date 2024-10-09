@@ -3,6 +3,7 @@ package io.kommunicate.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.AsyncTask
+import annotations.CleanUpRequired
 import com.applozic.mobicomkit.Applozic
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference
 import com.applozic.mobicommons.ApplozicService
@@ -31,6 +32,10 @@ object KmAppSettingPreferences {
     private const val RATING_BASE = "RATING_BASE"
 
     @JvmStatic
+    @CleanUpRequired(
+        reason = "Not required as this is Object class",
+        taskDependent = "Require all the subsequent class to be migrate or change usage."
+    )
     @Deprecated(
         message = "Use the function directly without calling the instance. Changed because this class is migrated to Kotlin Object class.",
         replaceWith = ReplaceWith("eg: KmAppSettingPreferences.isRootDetectionEnabled()")
@@ -131,7 +136,9 @@ object KmAppSettingPreferences {
         }
 
     @JvmStatic
-    @Deprecated("Not used anywhere will take in cleanup.")
+    @CleanUpRequired(
+        reason = "Not used anywhere"
+    )
     fun fetchAppSettingAsync(context: Context?) {
         KmAppSettingTask(
             context,
@@ -165,6 +172,9 @@ object KmAppSettingPreferences {
     }
 
     @JvmStatic
+    @CleanUpRequired(
+        reason = "Not used anywhere"
+    )
     @Deprecated("Not used anywhere will take in cleanup.")
     fun updateAppSetting(appSettingModel: KmAppSettingModel?) {
         if (appSettingModel != null && appSettingModel.isSuccess) {

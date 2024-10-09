@@ -1,236 +1,217 @@
-package io.kommunicate.utils;
+package io.kommunicate.utils
 
-import static io.kommunicate.KmConversationHelper.SINGLE_THREADED;
+import android.content.Context
+import android.content.SharedPreferences
+import android.os.AsyncTask
+import com.applozic.mobicomkit.Applozic
+import com.applozic.mobicomkit.api.account.user.MobiComUserPreference
+import com.applozic.mobicommons.ApplozicService
+import com.applozic.mobicommons.json.GsonUtils
+import io.kommunicate.async.KmAppSettingTask
+import io.kommunicate.callbacks.KmCallback
+import io.kommunicate.models.KmAppSettingModel
+import io.kommunicate.services.KmService
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
+object KmAppSettingPreferences {
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.json.GsonUtils;
+    private var callback: KmCallback? = null
+    const val CLEAR_THEME_INSTANCE: String = "CLEAR_THEME_INSTANCE"
+    private const val KM_THEME_PREFERENCES = "KM_THEME_PREFERENCES"
+    private const val KM_THEME_PRIMARY_COLOR = "KM_THEME_PRIMARY_COLOR"
+    private const val KM_THEME_SECONDARY_COLOR = "KM_THEME_SECONDARY_COLOR"
+    private const val KM_COLLECT_FEEDBACK = "KM_COLLECT_FEEDBACK"
+    private const val KM_BOT_MESSAGE_DELAY_INTERVAL = "KM_BOT_MESSAGE_DELAY_INTERVAL"
+    private const val LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME"
+    private const val CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME"
+    private const val HIDE_POST_CTA = "HIDE_POST_CTA"
+    private const val UPLOAD_OVERRIDE_URL = "UPLOAD_OVERRIDE_URL"
+    private const val UPLOAD_OVERRIDE_HEADER = "UPLOAD_OVERRIDE_HEADER"
+    private const val SINGLE_THREADED = "IS_SINGLE_THREADED"
+    private const val ROOT_DETECTION = "ROOT_DETECTION"
+    private const val RATING_BASE = "RATING_BASE"
 
-import java.util.HashMap;
+    @JvmStatic
+    @Deprecated(
+        message = "Use the function directly without calling the instance. Changed because this class is migrated to Kotlin Object class.",
+        replaceWith = ReplaceWith("eg: KmAppSettingPreferences.isRootDetectionEnabled()")
+    )
+    val instance = this
 
-import io.kommunicate.async.KmAppSettingTask;
-import io.kommunicate.callbacks.KmCallback;
-import io.kommunicate.models.KmAppSettingModel;
-import io.kommunicate.services.KmService;
-
-public class KmAppSettingPreferences {
-
-    public static final String CLEAR_THEME_INSTANCE = "CLEAR_THEME_INSTANCE";
-    private static KmAppSettingPreferences kmAppSettingPreferences;
-    private static SharedPreferences preferences;
-    private static SharedPreferences alpreferences;
-    private KmCallback callback;
-    private static final String KM_THEME_PREFERENCES = "KM_THEME_PREFERENCES";
-    private static final String KM_THEME_PRIMARY_COLOR = "KM_THEME_PRIMARY_COLOR";
-    private static final String KM_THEME_SECONDARY_COLOR = "KM_THEME_SECONDARY_COLOR";
-    private static final String KM_COLLECT_FEEDBACK = "KM_COLLECT_FEEDBACK";
-    private static final String KM_BOT_MESSAGE_DELAY_INTERVAL = "KM_BOT_MESSAGE_DELAY_INTERVAL";
-    private static final String LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME";
-    private static final String CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME";
-    private static final String HIDE_POST_CTA = "HIDE_POST_CTA";
-    private static final String UPLOAD_OVERRIDE_URL = "UPLOAD_OVERRIDE_URL";
-    private static final String UPLOAD_OVERRIDE_HEADER = "UPLOAD_OVERRIDE_HEADER";
-    public static final String SINGLE_THREADED = "IS_SINGLE_THREADED";
-    public static final String ROOT_DETECTION = "ROOT_DETECTION";
-
-    public static final String RATING_BASE = "RATING_BASE";
-
-    private KmAppSettingPreferences() {
-        preferences = ApplozicService.getAppContext().getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE);
+    private val preferences: SharedPreferences by lazy {
+        ApplozicService.getAppContext()
+            .getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE)
+    }
+    private val alpreferences: SharedPreferences by lazy {
+        ApplozicService.getAppContext()
+            .getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE)
     }
 
-    public static KmAppSettingPreferences getInstance() {
-        if (kmAppSettingPreferences == null) {
-            kmAppSettingPreferences = new KmAppSettingPreferences();
+    val isRootDetectionEnabled: Boolean
+        get() = preferences.getBoolean(ROOT_DETECTION, true)
+
+    var primaryColor: String?
+        get() = preferences.getString(KM_THEME_PRIMARY_COLOR, null)
+        private set(color) {
+            color?.let {
+                preferences.edit().putString(KM_THEME_PRIMARY_COLOR, color).apply()
+            }
         }
-        return kmAppSettingPreferences;
-    }
 
-    public void setCallback(KmCallback callback) {
-        this.callback = callback;
-    }
+    var secondaryColor: String?
+        get() = preferences.getString(KM_THEME_SECONDARY_COLOR, null)
+        private set(color) {
+            color?.let {
+                preferences.edit().putString(KM_THEME_SECONDARY_COLOR, color).apply()
+            }
+        }
 
-    public void setAppSetting(KmAppSettingModel appSetting) {
-        clearInstance();
-        if (appSetting != null) {
-            if (appSetting.getChatWidget() != null) {
-                setPrimaryColor(appSetting.getChatWidget().getPrimaryColor());
-                setSecondaryColor(appSetting.getChatWidget().getSecondaryColor());
-                setKmBotMessageDelayInterval(appSetting.getChatWidget().getBotMessageDelayInterval());
-                setChatSessionDeleteTime(appSetting.getChatWidget().getSessionTimeout());
-                if (appSetting.getChatWidget().getDefaultUploadOverride() != null) {
-                    setUploadOverrideUrl(appSetting.getChatWidget().getDefaultUploadOverride().getUrl());
-                    setUploadOverrideHeader(appSetting.getChatWidget().getDefaultUploadOverride().getHeaders());
+    var isCollectFeedback: Boolean
+        get() = preferences.getBoolean(KM_COLLECT_FEEDBACK, false)
+        private set(isEnable) {
+            preferences.edit().putBoolean(KM_COLLECT_FEEDBACK, isEnable).apply()
+        }
+
+    private var isHidePostCTA: Boolean
+        get() = preferences.getBoolean(HIDE_POST_CTA, false)
+        private set(isEnable) {
+            preferences.edit().putBoolean(HIDE_POST_CTA, isEnable).apply()
+        }
+
+    private var loggedInAtTime: Long
+        get() = preferences.getLong(LOGGED_IN_AT_TIME, 0)
+        private set(loginTime) {
+            preferences.edit().putLong(LOGGED_IN_AT_TIME, loginTime).apply()
+        }
+
+    private var chatSessionDeleteTime: Long
+        get() = preferences.getLong(CHAT_SESSION_DELETE_TIME, 0)
+        private set(deleteTime) {
+            preferences.edit().putLong(CHAT_SESSION_DELETE_TIME, deleteTime).apply()
+        }
+
+    var uploadOverrideUrl: String?
+        get() = preferences.getString(UPLOAD_OVERRIDE_URL, "")
+        private set(url) {
+            preferences.edit().putString(UPLOAD_OVERRIDE_URL, url).apply()
+        }
+
+    var ratingBase: Int
+        get() = preferences.getInt(RATING_BASE, 3)
+        private set(base) {
+            preferences.edit().putInt(RATING_BASE, base).apply()
+        }
+
+    @Suppress("UNCHECKED_CAST")
+    var uploadOverrideHeader: HashMap<String, String>
+        get() = GsonUtils.getObjectFromJson<Any>(
+            preferences.getString(
+                UPLOAD_OVERRIDE_HEADER,
+                null
+            ), HashMap::class.java
+        ) as HashMap<String, String>
+        private set(headers) {
+            preferences.edit().putString(
+                UPLOAD_OVERRIDE_HEADER,
+                GsonUtils.getJsonFromObject(headers, HashMap::class.java)
+            ).apply()
+        }
+
+    val isSessionExpired: Boolean
+        get() {
+            if (chatSessionDeleteTime > 0 && loggedInAtTime == 0L) {
+                loggedInAtTime = System.currentTimeMillis()
+            }
+            return loggedInAtTime > 0 && chatSessionDeleteTime > 0 && System.currentTimeMillis() - loggedInAtTime > chatSessionDeleteTime
+        }
+
+    var kmBotMessageDelayInterval: Int
+        get() = preferences.getInt(KM_BOT_MESSAGE_DELAY_INTERVAL, 0)
+        private set(delayInterval) {
+            preferences.edit().putInt(KM_BOT_MESSAGE_DELAY_INTERVAL, delayInterval).apply()
+        }
+
+    @JvmStatic
+    @Deprecated("Not used anywhere will take in cleanup.")
+    fun fetchAppSettingAsync(context: Context?) {
+        KmAppSettingTask(
+            context,
+            Applozic.getInstance(context).applicationKey,
+            object : KmCallback {
+                override fun onSuccess(message: Any) {
                 }
-                checkIsSingleThreaded(appSetting.getChatWidget().isSingleThreaded());
-                setRatingBase(appSetting.getChatWidget().getCsatRatingBase());
+
+                override fun onFailure(error: Any) {
+                }
+            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+    }
+
+    @JvmStatic
+    fun fetchAppSetting(context: Context, appId: String): KmAppSettingModel? {
+        val response: String? = KmService(context).getAppSetting(appId)
+        val appSettingModel = response?.let {
+            GsonUtils.getObjectFromJson<Any>(
+                it,
+                KmAppSettingModel::class.java
+            ) as KmAppSettingModel
+        }
+        appSettingModel?.let {
+            if (!it.isSuccess) {
+                return@let
             }
-            if (appSetting.getResponse() != null) {
-                setCollectFeedback(appSetting.getResponse().isCollectFeedback());
-                setHidePostCTA(appSetting.getResponse().isHidePostCTA());
-            }
+            clearInstance()
+            setAppSetting(appSettingModel)
+        }
+        return appSettingModel
+    }
+
+    @JvmStatic
+    @Deprecated("Not used anywhere will take in cleanup.")
+    fun updateAppSetting(appSettingModel: KmAppSettingModel?) {
+        if (appSettingModel != null && appSettingModel.isSuccess) {
+            clearInstance()
+            setAppSetting(appSettingModel)
         }
     }
 
-    public void setRootDetection(boolean isEnabled) {
-        preferences.edit().putBoolean(ROOT_DETECTION, isEnabled).apply();
+    @JvmStatic
+    fun setCallback(callback: KmCallback?) {
+        this.callback = callback
     }
 
-    public boolean isRootDetectionEnabled() {
-        return preferences.getBoolean(ROOT_DETECTION, true);
+
+    @JvmStatic
+    fun setRootDetection(isEnabled: Boolean) {
+        preferences.edit().putBoolean(ROOT_DETECTION, isEnabled).apply()
     }
 
-    public void checkIsSingleThreaded(boolean isSingleConversation) {
-        alpreferences = ApplozicService.getAppContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
-        if (alpreferences != null) {
-            boolean isSingleThreaded = alpreferences.getBoolean(SINGLE_THREADED, false);
-            if (isSingleConversation != isSingleThreaded) {
-                alpreferences.edit().putBoolean(SINGLE_THREADED, isSingleConversation).apply();
+    fun clearInstance() {
+        callback?.onSuccess(CLEAR_THEME_INSTANCE)
+    }
+
+    private fun setAppSetting(appSetting: KmAppSettingModel) {
+        clearInstance()
+        appSetting.chatWidget?.let {
+            primaryColor = it.primaryColor
+            secondaryColor = it.secondaryColor
+            kmBotMessageDelayInterval = it.botMessageDelayInterval
+            chatSessionDeleteTime = it.sessionTimeout
+            if (it.defaultUploadOverride != null) {
+                uploadOverrideUrl = it.defaultUploadOverride.url
+                uploadOverrideHeader = it.defaultUploadOverride.headers
             }
+            checkIsSingleThreaded(it.isSingleThreaded)
+            ratingBase = it.csatRatingBase
+        }
+        appSetting.response?.let {
+            isCollectFeedback = it.isCollectFeedback
+            isHidePostCTA = (it.isHidePostCTA)
         }
     }
 
-    public KmAppSettingPreferences setPrimaryColor(String primaryColor) {
-        preferences.edit().putString(KM_THEME_PRIMARY_COLOR, primaryColor).commit();
-        return this;
-    }
-
-    public KmAppSettingPreferences setSecondaryColor(String secondaryColor) {
-        preferences.edit().putString(KM_THEME_SECONDARY_COLOR, secondaryColor).commit();
-        return this;
-    }
-
-    public String getPrimaryColor() {
-        return preferences.getString(KM_THEME_PRIMARY_COLOR, null);
-    }
-
-    public String getSecondaryColor() {
-        return preferences.getString(KM_THEME_SECONDARY_COLOR, null);
-    }
-
-    public boolean isCollectFeedback() {
-        return preferences.getBoolean(KM_COLLECT_FEEDBACK, false);
-    }
-
-    public KmAppSettingPreferences setCollectFeedback(boolean collectFeedback) {
-        preferences.edit().putBoolean(KM_COLLECT_FEEDBACK, collectFeedback).commit();
-        return this;
-    }
-
-    public boolean isHidePostCTA() {
-        return preferences.getBoolean(HIDE_POST_CTA, false);
-    }
-
-    public KmAppSettingPreferences setHidePostCTA(boolean hidePostCTA) {
-        preferences.edit().putBoolean(HIDE_POST_CTA, hidePostCTA).commit();
-        return this;
-    }
-
-    public KmAppSettingPreferences setLoggedInAtTime(long loggedInAtTime) {
-        preferences.edit().putLong(LOGGED_IN_AT_TIME, loggedInAtTime).commit();
-        return this;
-    }
-
-    public long getLoggedInAtTime() {
-        return preferences.getLong(LOGGED_IN_AT_TIME, 0);
-    }
-
-    public KmAppSettingPreferences setChatSessionDeleteTime(long chatSessionDeleteTime) {
-        preferences.edit().putLong(CHAT_SESSION_DELETE_TIME, chatSessionDeleteTime).commit();
-        return this;
-    }
-
-    public long getChatSessionDeleteTime() {
-        return preferences.getLong(CHAT_SESSION_DELETE_TIME, 0);
-    }
-
-    public KmAppSettingPreferences setUploadOverrideUrl(String uploadOverrideUrl) {
-        preferences.edit().putString(UPLOAD_OVERRIDE_URL, uploadOverrideUrl).commit();
-        return this;
-    }
-
-    public String getUploadOverrideUrl() {
-        return preferences.getString(UPLOAD_OVERRIDE_URL, "");
-    }
-
-
-    public KmAppSettingPreferences setRatingBase(int ratingBase) {
-        preferences.edit().putInt(RATING_BASE, ratingBase).apply();
-        return this;
-    }
-
-    public int getRatingBase() {
-        return preferences.getInt(RATING_BASE, 3);
-    }
-
-    public KmAppSettingPreferences setUploadOverrideHeader(HashMap<String, String> headers) {
-        preferences.edit().putString(UPLOAD_OVERRIDE_HEADER, GsonUtils.getJsonFromObject(headers, HashMap.class)).commit();
-        return this;
-    }
-
-    public HashMap<String, String> getUploadOverrideHeader() {
-        return (HashMap<String, String>) GsonUtils.getObjectFromJson(preferences.getString(UPLOAD_OVERRIDE_HEADER, null), HashMap.class);
-    }
-
-    public boolean isSessionExpired() {
-        if (getChatSessionDeleteTime() > 0 && getLoggedInAtTime() == 0) {
-            setLoggedInAtTime(System.currentTimeMillis());
-        }
-        return getLoggedInAtTime() > 0 && getChatSessionDeleteTime() > 0 && System.currentTimeMillis() - getLoggedInAtTime() > getChatSessionDeleteTime();
-    }
-
-    public static void fetchAppSettingAsync(final Context context) {
-        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
-            @Override
-            public void onSuccess(Object message) {
-
-            }
-
-            @Override
-            public void onFailure(Object error) {
-
-            }
-        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    public static KmAppSettingModel fetchAppSetting(final Context context, String appId) {
-        String response = new KmService(context).getAppSetting(appId);
-
-        if (response != null) {
-            KmAppSettingModel appSettingModel = (KmAppSettingModel) GsonUtils.getObjectFromJson(response, KmAppSettingModel.class);
-
-            if (appSettingModel != null && appSettingModel.isSuccess()) {
-                getInstance().clearInstance();
-                KmAppSettingPreferences.getInstance().setAppSetting(appSettingModel);
-                return appSettingModel;
-            }
-        }
-        return null;
-    }
-
-    public static void updateAppSetting(KmAppSettingModel appSettingModel) {
-        if (appSettingModel != null && appSettingModel.isSuccess()) {
-            getInstance().clearInstance();
-            KmAppSettingPreferences.getInstance().setAppSetting(appSettingModel);
-        }
-    }
-
-    public void setKmBotMessageDelayInterval(int delayInterval) {
-        preferences.edit().putInt(KM_BOT_MESSAGE_DELAY_INTERVAL, delayInterval).commit();
-    }
-
-    public int getKmBotMessageDelayInterval() {
-        return preferences.getInt(KM_BOT_MESSAGE_DELAY_INTERVAL, 0);
-    }
-
-    public void clearInstance() {
-        if (callback != null) {
-            callback.onSuccess(CLEAR_THEME_INSTANCE);
+    private fun checkIsSingleThreaded(isSingleConversation: Boolean) {
+        val isSingleThreaded = alpreferences.getBoolean(SINGLE_THREADED, false)
+        if (isSingleConversation != isSingleThreaded) {
+            alpreferences.edit().putBoolean(SINGLE_THREADED, isSingleConversation).apply()
         }
     }
 }

@@ -1,41 +1,32 @@
-package io.kommunicate.utils;
+package io.kommunicate.utils
 
+object KMAgentStatusHelper {
+    @JvmField
+    var assigneeID: String = ""
+    @JvmField
+    var status: KMAgentStatus = KMAgentStatus.DefaultStatus
+    var listener: DynamicAgentStatusChangeListener? = null
 
+    @JvmStatic
+    fun updateAssigneeStatus(assigneeId: String, agentStatus: KMAgentStatus) {
+        assigneeID = assigneeId
+        status = agentStatus
+        listener?.onAgentStatusChange(assigneeId, status)
+    }
 
-public class KMAgentStatusHelper {
+    @JvmStatic
+    fun setAgentStatusLister(dynamicAgentStatusChangeListener: DynamicAgentStatusChangeListener?) {
+        listener = dynamicAgentStatusChangeListener
+    }
 
-    public static enum KMAgentStatus {
+    enum class KMAgentStatus(val status: String) {
         ONLINE("Online"),
         OFFLINE("Offline"),
         AWAY("Away"),
-        DefaultStatus("Default");
-
-        private final String status;
-
-        private KMAgentStatus(String c) {
-            status = c;
-        }
-
-        public String getStatus() {
-            return status;
-        }
+        DefaultStatus("Default")
     }
 
-    public interface DynamicAgentStatusChangeListener {
-        void onAgentStatusChange(String assigneeId, KMAgentStatus status);
-    }
-
-    public static String assigneeID = "" ;
-    public static  KMAgentStatus status = KMAgentStatus.DefaultStatus;
-    public static DynamicAgentStatusChangeListener listener;
-
-    public static void updateAssigneeStatus(String assigneeId, KMAgentStatus agentStatus) {
-        assigneeID = assigneeId;
-        status = agentStatus;
-        if (listener != null) listener.onAgentStatusChange(assigneeId,status);
-    }
-
-    public static void setAgentStatusLister(DynamicAgentStatusChangeListener dynamicAgentStatusChangeListener) {
-        listener = dynamicAgentStatusChangeListener;
+    interface DynamicAgentStatusChangeListener {
+        fun onAgentStatusChange(assigneeId: String?, status: KMAgentStatus?)
     }
 }

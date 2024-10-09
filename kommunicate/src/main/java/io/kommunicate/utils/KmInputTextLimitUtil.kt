@@ -1,24 +1,23 @@
-package io.kommunicate.utils;
+package io.kommunicate.utils
 
-import io.kommunicate.callbacks.KmCharLimitCallback;
+import io.kommunicate.callbacks.KmCharLimitCallback
 
-public class KmInputTextLimitUtil {
-    private int characterLimit;
-    private int notifyAtCharacterCount;
+class KmInputTextLimitUtil(private val characterLimit: Int, charactersRemainingTillLimit: Int) {
 
-    public KmInputTextLimitUtil(int characterLimit, int charactersRemainingTillLimit) {
-        this.characterLimit = characterLimit;
-        this.notifyAtCharacterCount = characterLimit - charactersRemainingTillLimit;
-    }
+    private val notifyAtCharacterCount = characterLimit - charactersRemainingTillLimit
 
-    public void checkCharacterLimit(int characterCount, KmCharLimitCallback kmCharLimitCallback) {
-        int deltaCharacterCount = characterCount - characterLimit;
-        boolean exceeded = characterCount > characterLimit;
-        boolean warning = characterCount >= notifyAtCharacterCount;
+    fun checkCharacterLimit(characterCount: Int, kmCharLimitCallback: KmCharLimitCallback) {
+        val deltaCharacterCount = characterCount - characterLimit
+        val exceeded = characterCount > characterLimit
+        val warning = characterCount >= notifyAtCharacterCount
         if (warning || exceeded) {
-            kmCharLimitCallback.onCrossed(exceeded, warning, exceeded ? deltaCharacterCount : -deltaCharacterCount);
+            kmCharLimitCallback.onCrossed(
+                exceeded,
+                warning,
+                if (exceeded) deltaCharacterCount else -deltaCharacterCount
+            )
         } else {
-            kmCharLimitCallback.onNormal();
+            kmCharLimitCallback.onNormal()
         }
     }
 }

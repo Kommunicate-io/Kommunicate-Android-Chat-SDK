@@ -1,53 +1,69 @@
-package io.kommunicate.utils;
+package io.kommunicate.utils
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-public class KmDateUtils {
+object KmDateUtils {
+    private const val DEFAULT_DATE_FORMAT: String = "dd/MM/yyyy"
+    private const val DEFAULT_TIME_FORMAT_24: String = "HH:mm"
+    private const val DEFAULT_TIME_FORMAT_12: String = "hh:mm aa"
+    private const val FORM_SERIALISED_DATE_FORMAT = "yyyy-MM-dd"
+    private const val FORM_SERIALISED_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm"
 
-    public static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy";
-    public static final String DEFAULT_TIME_FORMAT_24 = "HH:mm";
-    public static final String DEFAULT_TIME_FORMAT_12 = "hh:mm aa";
-
-    private static final String FORM_SERIALISED_DATE_FORMAT = "yyyy-MM-dd";
-    private static final String FORM_SERIALISED_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
-
-
-    public static String getLocalisedDateFormat() {
-        return DEFAULT_DATE_FORMAT;
+    @JvmStatic
+    fun getLocalisedDateFormat(): String {
+        return DEFAULT_DATE_FORMAT
     }
 
-    public static String getLocalisedDateTimeFormat(boolean isAmPm) {
-        return getLocalisedDateFormat() + " " + getTimeFormat(isAmPm);
+    @JvmStatic
+    fun getLocalisedDateTimeFormat(isAmPm: Boolean): String {
+        return "$DEFAULT_DATE_FORMAT ${getTimeFormat(isAmPm)}"
     }
 
-    public static String getFormattedDate(Long timeInMillis) {
-        return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(new Date(timeInMillis));
+    @JvmStatic
+    fun getFormattedDate(timeInMillis: Long = 0L): String {
+        return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+            .format(Date(timeInMillis))
     }
 
-    public static String getFormattedTime(Long timeInMillis, boolean isAmPm) {
-        return new SimpleDateFormat(isAmPm ? DEFAULT_TIME_FORMAT_12 : DEFAULT_TIME_FORMAT_24, Locale.getDefault()).format(new Date(timeInMillis));
+    @JvmStatic
+    fun getFormattedTime(timeInMillis: Long = 0L, isAmPm: Boolean): String {
+        return SimpleDateFormat(
+            if (isAmPm) DEFAULT_TIME_FORMAT_12 else DEFAULT_TIME_FORMAT_24,
+            Locale.getDefault()
+        ).format(Date(timeInMillis))
     }
 
-    public static String getFormattedDateTime(Long timeInMillis, boolean isAmPm) {
-        return DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(new Date(timeInMillis)) + " " + getFormattedTime(timeInMillis, isAmPm);
+    @JvmStatic
+    fun getFormattedDateTime(timeInMillis: Long = 0L, isAmPm: Boolean): String {
+        val date = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault())
+            .format(Date(timeInMillis))
+        return "$date ${getFormattedTime(timeInMillis, isAmPm)}"
     }
 
-    public static String getTimeFormat(boolean isAmPm) {
-        return isAmPm ? DEFAULT_TIME_FORMAT_12 : DEFAULT_TIME_FORMAT_24;
+    @JvmStatic
+    fun getTimeFormat(isAmPm: Boolean): String {
+        return if (isAmPm) DEFAULT_TIME_FORMAT_12 else DEFAULT_TIME_FORMAT_24
     }
 
-    public static String getFormSerialisedDateFormat(Long timeStamp) {
-        return new SimpleDateFormat(FORM_SERIALISED_DATE_FORMAT, Locale.getDefault()).format(new Date(timeStamp));
+    @JvmStatic
+    fun getFormSerialisedDateFormat(timeStamp: Long = 0L): String {
+        return SimpleDateFormat(FORM_SERIALISED_DATE_FORMAT, Locale.getDefault())
+            .format(Date(timeStamp)
+        )
     }
 
-    public static String getFormSerialisedTimeFormat(Long timeStamp) {
-        return new SimpleDateFormat(DEFAULT_TIME_FORMAT_24, Locale.getDefault()).format(new Date(timeStamp));
+    @JvmStatic
+    fun getFormSerialisedTimeFormat(timeStamp: Long = 0L): String {
+        return SimpleDateFormat(DEFAULT_TIME_FORMAT_24, Locale.getDefault())
+            .format(Date(timeStamp))
     }
 
-    public static String getFormSerialisedDateTimeFormat(Long timeStamp) {
-        return new SimpleDateFormat(FORM_SERIALISED_DATE_TIME_FORMAT, Locale.getDefault()).format(new Date(timeStamp));
+    @JvmStatic
+    fun getFormSerialisedDateTimeFormat(timeStamp: Long = 0L): String {
+        return SimpleDateFormat(FORM_SERIALISED_DATE_TIME_FORMAT, Locale.getDefault())
+            .format(Date(timeStamp))
     }
 }

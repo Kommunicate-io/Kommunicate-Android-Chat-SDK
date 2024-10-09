@@ -1,107 +1,134 @@
-package com.applozic.mobicomkit.uiwidgets.utils;
+package com.applozic.mobicomkit.uiwidgets.utils
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.text.TextUtils
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import com.applozic.mobicomkit.uiwidgets.R
+import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil
+import com.applozic.mobicommons.people.contact.Contact
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
+import de.hdodenhof.circleimageview.CircleImageView
+import java.util.Locale
 
-import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
-import com.applozic.mobicommons.people.contact.Contact;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
+object KmViewHelper {
+    private const val PDF = "pdf"
+    private const val TXT = "txt"
+    private const val DOC = "doc"
+    private const val TXT_PLAIN = "text/plain"
 
-import androidx.annotation.Nullable;
-import de.hdodenhof.circleimageview.CircleImageView;
-
-public class KmViewHelper {
-
-    private static final String PDF = "pdf";
-    private static final String TXT = "txt";
-    private static final String DOC = "doc";
-    private static final String TXT_PLAIN = "text/plain";
-    public static void loadContactImage(Context context, CircleImageView imageView, TextView textView, Contact contact, int placeholderImage) {
+    @JvmStatic
+    fun loadContactImage(
+        context: Context,
+        imageView: CircleImageView,
+        textView: TextView,
+        contact: Contact,
+        placeholderImage: Int
+    ) {
         try {
-            textView.setVisibility(View.VISIBLE);
-            imageView.setVisibility(View.GONE);
-            String contactNumber = "";
-            char firstLetter = 0;
-            contactNumber = contact.getDisplayName().toUpperCase();
-            firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
+            textView.visibility = View.VISIBLE
+            imageView.visibility = View.GONE
+            var contactNumber = ""
+            var firstLetter = 0.toChar()
+            contactNumber = contact.displayName.uppercase(Locale.getDefault())
+            firstLetter = contact.displayName.uppercase(Locale.getDefault())[0]
 
             if (firstLetter != '+') {
-                textView.setText(String.valueOf(firstLetter));
-            } else if (contactNumber.length() >= 2) {
-                textView.setText(String.valueOf(contactNumber.charAt(1)));
+                textView.text = firstLetter.toString()
+            } else if (contactNumber.length >= 2) {
+                textView.text = contactNumber[1].toString()
             }
 
-            Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-            GradientDrawable bgShape = (GradientDrawable) textView.getBackground();
-            bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+            val colorKey =
+                if (AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter)) firstLetter else null
+            val bgShape = textView.background as GradientDrawable
+            bgShape.setColor(context.resources.getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap[colorKey]!!))
 
-            if (contact.isDrawableResources()) {
-                textView.setVisibility(View.GONE);
-                imageView.setVisibility(View.VISIBLE);
-                int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
-                imageView.setImageResource(drawableResourceId);
-            } else if (contact.getImageURL() != null) {
-                loadImage(context, imageView, textView, contact.getImageURL(), placeholderImage);
+            if (contact.isDrawableResources) {
+                textView.visibility = View.GONE
+                imageView.visibility = View.VISIBLE
+                val drawableResourceId = context.resources.getIdentifier(
+                    contact.getrDrawableName(),
+                    "drawable",
+                    context.packageName
+                )
+                imageView.setImageResource(drawableResourceId)
+            } else if (contact.imageURL != null) {
+                loadImage(context, imageView, textView, contact.imageURL, placeholderImage)
             } else {
-                textView.setVisibility(View.VISIBLE);
-                imageView.setVisibility(View.GONE);
+                textView.visibility = View.VISIBLE
+                imageView.visibility = View.GONE
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    public static void loadImage(Context context, final CircleImageView imageView, final TextView textImage, String imageUrl, int placeholderImage) {
-        RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(placeholderImage)
-                .error(placeholderImage);
+    @JvmStatic
+    fun loadImage(
+        context: Context?,
+        imageView: CircleImageView,
+        textImage: TextView?,
+        imageUrl: String?,
+        placeholderImage: Int
+    ) {
+        if (context == null || textImage == null || imageUrl == null) {
+            return
+        }
+
+        val options = RequestOptions()
+            .centerCrop()
+            .placeholder(placeholderImage)
+            .error(placeholderImage)
 
 
-        Glide.with(context).load(imageUrl).apply(options).listener(new RequestListener<Drawable>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                if (textImage != null) {
-                    textImage.setVisibility(View.VISIBLE);
+        Glide.with(context).load(imageUrl).apply(options)
+            .listener(object : RequestListener<Drawable?> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any,
+                    target: Target<Drawable?>,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    textImage.visibility = View.VISIBLE
+                    imageView.visibility = View.GONE
+                    return false
                 }
-                imageView.setVisibility(View.GONE);
-                return false;
-            }
 
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                if (textImage != null) {
-                    textImage.setVisibility(View.GONE);
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any,
+                    target: Target<Drawable?>,
+                    dataSource: DataSource,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    textImage.visibility = View.GONE
+                    imageView.visibility = View.VISIBLE
+                    return false
                 }
-                imageView.setVisibility(View.VISIBLE);
-                return false;
-            }
-        }).into(imageView);
+            }).into(imageView)
     }
 
-    public static void setDocumentIcon(String mimeType, ImageView documentIcon) {
+    @JvmStatic
+    fun setDocumentIcon(mimeType: String, documentIcon: ImageView) {
         if (TextUtils.isEmpty(mimeType)) {
-            documentIcon.setImageResource(R.drawable.ic_documentreceive);
-            return;
+            documentIcon.setImageResource(R.drawable.ic_documentreceive)
+            return
         }
         if (mimeType.contains(PDF)) {
-            documentIcon.setImageResource(R.drawable.km_pdf_icon);
-        }
-        else if(mimeType.contains(TXT) || mimeType.contains(DOC) || mimeType.contains(TXT_PLAIN)) {
-            documentIcon.setImageResource(R.drawable.km_doc_icon);
+            documentIcon.setImageResource(R.drawable.km_pdf_icon)
+        } else if (mimeType.contains(TXT) || mimeType.contains(DOC) || mimeType.contains(TXT_PLAIN)) {
+            documentIcon.setImageResource(R.drawable.km_doc_icon)
         } else {
-            documentIcon.setImageResource(R.drawable.ic_documentreceive);
+            documentIcon.setImageResource(R.drawable.ic_documentreceive)
         }
     }
 }

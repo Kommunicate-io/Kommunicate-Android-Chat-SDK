@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview;
 
+import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
+
 import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
@@ -68,6 +70,7 @@ public class KmWebViewActivity extends AppCompatActivity {
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
 
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);

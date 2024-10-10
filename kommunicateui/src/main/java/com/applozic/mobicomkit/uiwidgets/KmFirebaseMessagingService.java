@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets;
 
+import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
+
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -9,6 +11,12 @@ import io.kommunicate.Kommunicate;
 public class KmFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "KmFCMService";
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        configureSentryWithKommunicateUI(this, "");
+    }
 
     @Override
     public void onNewToken(String s) {

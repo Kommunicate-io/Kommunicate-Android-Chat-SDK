@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
+import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
+
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.Intent;
@@ -67,6 +69,7 @@ public class FullScreenImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.mobicom_image_full_screen);
+        configureSentryWithKommunicateUI(this, "");
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

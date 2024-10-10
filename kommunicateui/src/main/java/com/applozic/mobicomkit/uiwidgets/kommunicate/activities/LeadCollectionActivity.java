@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.activities;
 
+import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
+
 import android.app.ProgressDialog;
 import android.os.ResultReceiver;
 
@@ -59,7 +61,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
-
+        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
         KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);

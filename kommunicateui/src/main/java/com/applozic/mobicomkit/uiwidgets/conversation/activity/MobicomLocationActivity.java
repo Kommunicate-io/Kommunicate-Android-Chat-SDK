@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
+import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -99,6 +101,8 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+
+        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
         themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
 
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());

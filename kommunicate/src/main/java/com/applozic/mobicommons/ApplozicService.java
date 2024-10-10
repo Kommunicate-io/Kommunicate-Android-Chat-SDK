@@ -1,5 +1,7 @@
 package com.applozic.mobicommons;
 
+import static io.kommunicate.utils.SentryUtils.configureSentryWithKommunicate;
+
 import android.app.Application;
 import android.content.Context;
 
@@ -32,6 +34,7 @@ public class ApplozicService {
 
     public static void initWithContext(Context context) {
         if (context != null && application == null) {
+            configureSentryWithKommunicate(context);
             if (context instanceof Application) {
                 ApplozicService.application = context;
             } else {

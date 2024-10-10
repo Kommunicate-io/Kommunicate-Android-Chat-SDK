@@ -23,7 +23,9 @@ interface KommunicateChatAPI {
     suspend fun getMessageList(
         @Header("X-Authorization") token: String,
         @Query("startIndex") startIndex: Int,
-        @Query("groupId") groupId: String,
-        @Query("pageSize") pageSize: Int
+        @Query("pageSize") pageSize: Int? = null,
+        @Query("mainPageSize") mainPageSize: Int? = null,
+        @Query("groupId") groupId: String? = null,
+        @Query("deletedGroupIncluded") deletedGroupIncluded: Boolean? = null
     ): JsonObject
 }

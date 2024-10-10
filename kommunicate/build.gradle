@@ -19,7 +19,7 @@ android {
         versionName "2.10.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
-        buildConfigField "String", "API_SERVER_URL", '"https://api-test.kommunicate.io"'
+        buildConfigField "String", "API_SERVER_URL", '"https://api.kommunicate.io"'
         buildConfigField "String", "GOOGLE_API_SERVER_URL", '"https://maps.googleapis.com/maps/api/staticmap?"'
         buildConfigField "String", "MQTT_URL", '"tcp://socket.kommunicate.io:1883"'
         buildConfigField "String", "HELPCENTER_URL", '"https://helpcenter.kommunicate.io"'

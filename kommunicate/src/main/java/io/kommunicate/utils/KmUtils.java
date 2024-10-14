@@ -7,6 +7,8 @@ import android.content.pm.ApplicationInfo;
 import androidx.core.content.ContextCompat;
 
 import io.kommunicate.KmSettings;
+import io.kommunicate.nativeLibs.FridaDetection;
+import io.kommunicate.nativeLibs.RootDetection;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -37,7 +39,10 @@ import com.applozic.mobicommons.json.GsonUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,25 +89,22 @@ public class KmUtils {
             return false;
         }
 
-        boolean isRooted = false;
-        Process process = null;
-
-        try {
-            process = Runtime.getRuntime().exec("su");
-            isRooted = true;
-        } catch (Exception ex) {
-            Log.d("RootDetection", "Process creation/execution failed " + ex.getMessage());
-        } finally {
-            if (process != null) {
-                try {
-                    process.destroy();
-                } catch (Exception e) {
-                    Log.d("RootDetection", "Process termination failed " + e.getMessage());
-                }
-            }
+        // Native Frida process detection
+        if (FridaDetection.isFridaDetectedNative()) {
+            return true;
         }
 
-        return isRooted;
+        // Native Frida memory library detection
+        if (FridaDetection.detectFridaByLibrary()) {
+            return true;
+        }
+
+        // Detect hooking of key functions
+        if (FridaDetection.checkForHooking()) {
+            return true;
+        }
+
+        return RootDetection.isDeviceRooted();
     }
 
     public static void setDrawableTint(TextView textView, int colorId, int index) {

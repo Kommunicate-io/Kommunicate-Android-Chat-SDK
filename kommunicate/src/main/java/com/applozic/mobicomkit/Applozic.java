@@ -1,6 +1,6 @@
 package com.applozic.mobicomkit;
 
-import static io.kommunicate.utils.KmConstants.KM_USER_LANGUAGE_CODE;
+import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -74,7 +74,7 @@ public class Applozic {
         }
         AlPrefSettings.getInstance(context).setDeviceDefaultLanguageToBot(deviceLanguage);
         Map<String, String> localeMetadata = new HashMap<>();
-        localeMetadata.put(KM_USER_LANGUAGE_CODE,deviceLanguage);
+        localeMetadata.put(KM_USER_LOCALE,deviceLanguage);
         KmSettings.updateChatContext(context,localeMetadata);
     }
 

@@ -272,6 +272,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected Spinner sendType;
     protected LinearLayout individualMessageSendLayout, mainEditTextLinearLayout;
     protected LinearLayout extendedSendingOptionLayout, attachmentIconLayout;
+    protected LinearLayout kmMessageLinearLayout;
     protected RelativeLayout attachmentLayout;
     protected ProgressBar mediaUploadProgressBar;
     protected View spinnerLayout;
@@ -600,6 +601,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         messageList = new ArrayList<Message>();
         multimediaPopupGrid = (GridView) list.findViewById(R.id.mobicom_multimedia_options1);
         textViewCharLimitMessage = list.findViewById(R.id.botCharLimitTextView);
+        kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
         loggedInUserRole = MobiComUserPreference.getInstance(ApplozicService.getContext(getContext())).getUserRoleType();
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -1108,10 +1110,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         emoticonsBtn.setVisibility(View.GONE);
 
-        boolean hideAttachmentOptionsWithBots = alCustomizationSettings.getHideAttachmentOptionsWithBots();
+        boolean hideAttachmentOptionsWithBots = alCustomizationSettings.isHideAttachmentOptionsWithBots();
         if (hideAttachmentOptionsWithBots) {
             attachmentIconLayout.setVisibility(GONE);
         }
+        toggleHideChatBarWithBots();
 
         if (alCustomizationSettings.getAttachmentOptions() != null && !alCustomizationSettings.getAttachmentOptions().isEmpty()) {
             Map<String, Boolean> attachmentOptions = alCustomizationSettings.getAttachmentOptions();
@@ -1120,12 +1123,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 locationButton.setVisibility(attachmentOptions.get(":location") ? VISIBLE : View.GONE);
             }
 
-            if (attachmentOptions.containsKey(CAMERA)) {
-                cameraButton.setVisibility(attachmentOptions.get(CAMERA) ? VISIBLE : View.GONE);
+            if (attachmentOptions.containsKey(":camera")) {
+                cameraButton.setVisibility(attachmentOptions.get(":camera") ? VISIBLE : View.GONE);
             }
 
-            if (attachmentOptions.containsKey(VIDEO)) {
-                videoButton.setVisibility(attachmentOptions.get(VIDEO) ? VISIBLE : GONE);
+            if (attachmentOptions.containsKey(":video")) {
+                videoButton.setVisibility(attachmentOptions.get(":video") ? VISIBLE : GONE);
             }
 
             if (attachmentOptions.containsKey(":file")) {
@@ -2140,6 +2143,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 userNotAbleToChatLayout.setVisibility(View.GONE);
                 toggleMessageSendLayoutVisibility();
+                toggleHideChatBarWithBots();
                 toggleAttachmentLayoutVisibility();
             }
         }
@@ -4562,12 +4566,26 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void toggleAttachmentLayoutVisibility() {
-        if (alCustomizationSettings.getHideAttachmentOptionsWithBots() && attachmentIconLayout != null) {
-            Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
-            boolean isBotAssignee = User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType());
-
-            attachmentIconLayout.setVisibility(isBotAssignee ? GONE : VISIBLE);
+        if (alCustomizationSettings.isHideAttachmentOptionsWithBots() && attachmentIconLayout != null) {
+            attachmentIconLayout.setVisibility(
+                    getCurrentConversationAssignee() == User.RoleType.BOT
+                            ? GONE : VISIBLE
+            );
         }
+    }
+
+    private void toggleHideChatBarWithBots() {
+        if (!alCustomizationSettings.isHideChatBarWithBots() || kmMessageLinearLayout == null) {
+            return;
+        }
+        kmMessageLinearLayout.setVisibility(
+                getCurrentConversationAssignee() == User.RoleType.BOT ? GONE : VISIBLE
+        );
+    }
+
+    private User.RoleType getCurrentConversationAssignee() {
+        Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
+        return User.RoleType.fromValue(assigneeContact.getRoleType());
     }
 
     private void updateUserFromCustomInput(String message) {
@@ -5070,6 +5088,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 kmFeedbackView.setVisibility(View.GONE);
                 toggleMessageSendLayoutVisibility();
+                toggleHideChatBarWithBots();
                 toggleAttachmentLayoutVisibility();
                 mainDivider.setVisibility(VISIBLE);
             }
@@ -5547,6 +5566,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         toggleMessageSendLayoutVisibility();
+        toggleHideChatBarWithBots();
         toggleAttachmentLayoutVisibility();
     }
 

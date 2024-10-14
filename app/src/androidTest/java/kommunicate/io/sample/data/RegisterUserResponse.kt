@@ -27,7 +27,7 @@ data class RegisterUserResponse(
             val lastLoggedInAtTime: Long,
             val lastSeenAtTime: Long,
             val messagePxy: MessagePxy,
-            val metadata: Metadata,
+            val metadata: Map<String, String>,
             val phoneNumber: String,
             val roleKey: String,
             val roleType: Int,
@@ -79,11 +79,6 @@ data class RegisterUserResponse(
                     val templateId: String
                 )
             }
-
-            data class Metadata(
-                val KM_PSEUDO_USER: String,
-                val KM_SOURCE: String
-            )
         }
     }
 }

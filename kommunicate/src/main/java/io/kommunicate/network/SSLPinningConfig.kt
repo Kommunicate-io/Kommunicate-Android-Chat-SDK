@@ -3,6 +3,7 @@ package io.kommunicate.network
 import android.annotation.SuppressLint
 import android.util.Base64
 import io.kommunicate.BuildConfig
+import io.kommunicate.utils.KmUtils
 import java.security.KeyManagementException
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -18,6 +19,10 @@ object SSLPinningConfig {
     @JvmStatic
     @Synchronized
     fun createPinnedSSLSocketFactory(): SSLSocketFactory {
+        if(KmUtils.isDeviceRooted()) {
+            throw CertificateException("Unable to Establish Connection, Device is rooted.")
+        }
+
         val expectedPublicKeyHash = arrayOf(
             BuildConfig.apiKommunicateIo,
             BuildConfig.apiEuKommunicateIo,

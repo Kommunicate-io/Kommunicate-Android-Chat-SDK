@@ -9,6 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface KommunicateDashboardAPI {
 
@@ -26,5 +27,11 @@ interface KommunicateDashboardAPI {
     suspend fun updateUserSettings(
         @Header("Authorization") token: String,
         @Body jsonProperties: RequestBody
+    ): JsonObject
+
+    @GET("rest/ws/users")
+    suspend fun getBotDetails(
+        @Header("Authorization") token: String,
+        @Query("type") type: Int = 2,
     ): JsonObject
 }

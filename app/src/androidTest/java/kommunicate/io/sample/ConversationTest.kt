@@ -13,6 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse
 import com.applozic.mobicomkit.uiwidgets.R
 import io.kommunicate.KmConversationBuilder
+import io.kommunicate.KmSettings
 import io.kommunicate.Kommunicate
 import io.kommunicate.callbacks.KMLoginHandler
 import io.kommunicate.callbacks.KmCallback
@@ -20,10 +21,13 @@ import io.kommunicate.users.KMUser
 import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
+import kommunicate.io.sample.utils.KmTestHelper
+import kommunicate.io.sample.utils.KmTestHelper.getBotIdsFromDashboard
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.getRandomKmUser
 import kommunicate.io.sample.utils.getRandomString
 import kommunicate.io.sample.utils.sendMessageAsUser
+import kommunicate.io.sample.utils.waitFor
 import kommunicate.io.sample.utils.waitForLatch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -260,6 +264,223 @@ class ConversationTest {
         }
     }
 
+    @Test
+    fun testUpdateConversationAssigneeAndVerifyFromDashboard() {
+        val tempUser = getRandomKmUser()
+        val latch = CountDownLatch(1)
+        var groupId = 0
+        val botIds = listOf("inline-code-34rpc")
+        val updateBotAssigneeId = "kk-3s8r3"
+        val agentIds = listOf("prateek.singh@kommunicate.io")
+
+        mActivityRule.onActivity {
+            it.lifecycleScope.launch {
+                loginUser(it, tempUser)
+                groupId = launchConversation(it, botIds = botIds) as Int
+                updateConversationAssignee(it, groupId, updateBotAssigneeId)
+            }.invokeOnCompletion {
+                latch.countDown()
+            }
+        }
+
+        onView(isRoot())
+            .perform(waitForLatch(latch))
+
+        sendMessageAsUser(getRandomString())
+
+        // validate data on dashboard
+        runBlocking {
+            val dashboardGroupFeeds = chatAPI.getMessageList(
+                token = chatAuthToken,
+                startIndex = 0,
+                groupId = groupId.toString(),
+                pageSize = 20
+            ).get("groupFeeds").asJsonArray.firstOrNull()?.asJsonObject
+
+            if (dashboardGroupFeeds == null) {
+                fail("unable to find group feeds on server. conversation id: $groupId")
+                return@runBlocking
+            }
+
+            val conversationAssigneeIds = dashboardGroupFeeds.get("membersId").asJsonArray
+            val tempList = mutableListOf<String>()
+            tempList.add(updateBotAssigneeId)
+            tempList.add(tempUser.userId)
+            tempList.addAll(agentIds)
+            tempList.add("bot")
+            val isAllUsersPresentInConversation = conversationAssigneeIds.all {
+                tempList.contains(it.asString)
+            }
+
+            val isPastConversationAssigneePresent = conversationAssigneeIds.all {
+                botIds.contains(it.asString)
+            }
+
+            assertTrue("unable to find all the assignees of conversation on server. assignees: $tempList, server assignees $conversationAssigneeIds", isAllUsersPresentInConversation && !isPastConversationAssigneePresent)
+        }
+
+        // Validate View for transferred conversation.
+        onView(withId(R.id.km_transferred_text))
+            .check(matches(withText(R.string.km_transferred_to_message)))
+
+        onView(withId(R.id.km_transferred_to))
+            .check(matches(withText("kk"))) // bot name
+    }
+
+    @Test
+    fun testUpdateConversationTeamIdAndVerifyFromDashboard() {
+        val tempUser = getRandomKmUser()
+        val latch = CountDownLatch(1)
+        var groupId = 0
+        val botIds = listOf("inline-code-34rpc")
+        val initialTeamId = "103785933"
+        val updateTeamId= "106336264"
+        val agentIds = listOf("prateek.singh@kommunicate.io")
+
+        mActivityRule.onActivity {
+            it.lifecycleScope.launch {
+                loginUser(it, tempUser)
+                groupId = launchConversation(it, botIds = botIds, teamId = initialTeamId) as Int
+                updateConversationTeamId(it, groupId, updateTeamId)
+            }.invokeOnCompletion {
+                latch.countDown()
+            }
+        }
+
+        onView(isRoot())
+            .perform(waitForLatch(latch))
+
+        sendMessageAsUser(getRandomString())
+
+        // validate data on dashboard
+        runBlocking {
+            val dashboardGroupFeeds = chatAPI.getMessageList(
+                token = chatAuthToken,
+                startIndex = 0,
+                groupId = groupId.toString(),
+                pageSize = 20
+            ).get("groupFeeds").asJsonArray.firstOrNull()?.asJsonObject
+
+            if (dashboardGroupFeeds == null) {
+                fail("unable to find group feeds on server. conversation id: $groupId")
+                return@runBlocking
+            }
+
+            val conversationAssigneeIds = dashboardGroupFeeds.get("membersId").asJsonArray.map {
+                    it.asString
+                }.toMutableList()
+            conversationAssigneeIds.add(dashboardGroupFeeds.get("metadata").asJsonObject.get("KM_TEAM_ID").asString)
+
+            val tempList = mutableListOf<String>()
+            tempList.add(updateTeamId)
+            tempList.add(tempUser.userId)
+            tempList.addAll(agentIds)
+            tempList.addAll(botIds)
+            tempList.add("bot")
+            val isAllUsersPresentInConversation = conversationAssigneeIds.all {
+                tempList.contains(it)
+            }
+
+            val isPastConversationAssigneePresent = conversationAssigneeIds.contains(initialTeamId)
+
+            assertTrue("unable to find all the assignees of conversation on server. assignees: $tempList, server assignees $conversationAssigneeIds", isAllUsersPresentInConversation && !isPastConversationAssigneePresent)
+        }
+    }
+
+    @Test
+    fun testConversationWithLanguageChange() {
+        val tempUser = getRandomKmUser()
+        val latch = CountDownLatch(1)
+        val englishMessage = "hello"
+        val spanishMessage = "hola"
+        val newLanguageCode = "es"
+        var groupId = 0
+
+        mActivityRule.onActivity {
+            it.lifecycleScope.launch {
+                loginUser(it, tempUser)
+                groupId = launchConversation(it) as Int
+            }.invokeOnCompletion {
+                latch.countDown()
+            }
+        }
+
+        onView(isRoot())
+            .perform(waitForLatch(latch))
+
+        val botIds = getBotIdsFromDashboard(authToken, dashboardAPI)
+
+        sendMessageAsUser(englishMessage)
+        onView(isRoot()).perform(waitFor(5000))
+
+        // validate bot reply for english message
+        validateBotMessageReply(groupId, botIds)
+
+        // change bot language.
+        mActivityRule.onActivity {
+            KmSettings.updateUserLanguage(it, newLanguageCode)
+        }
+
+        sendMessageAsUser(spanishMessage)
+        onView(isRoot()).perform(waitFor(5000))
+
+        // validate bot reply for spanish message
+        validateBotMessageReply(groupId, botIds)
+    }
+
+    @Test
+    fun testChangeAssigneeFromDashboardAndVerifyStatusOnSDK() {
+        val tempUser = getRandomKmUser()
+        val latch = CountDownLatch(1)
+        var groupId = 0
+
+        mActivityRule.onActivity {
+            it.lifecycleScope.launch {
+                loginUser(it, tempUser)
+                groupId = launchConversation(it) as Int
+            }.invokeOnCompletion {
+                latch.countDown()
+            }
+        }
+
+        onView(isRoot())
+            .perform(waitForLatch(latch))
+
+        sendMessageAsUser(getRandomString())
+
+        runBlocking {
+            val response = chatAPI.transferChatToBotUser(
+                token = chatAuthToken,
+                groupId = groupId.toString(),
+                assigneeId = "prateek.singh@kommunicate.io"
+            )
+            if (!response.get("response").asString.equals("updated")) {
+                fail("unable to transfer the chat to human")
+                return@runBlocking
+            }
+        }
+
+        onView(withId(R.id.toolbar_title))
+            .check(matches(withText("Prateek Singh")))
+    }
+
+    private fun validateBotMessageReply(groupId: Int, bots: List<String>) = runBlocking {
+        val dashboardMessages = chatAPI.getMessageList(
+            token = chatAuthToken,
+            startIndex = 0,
+            groupId = groupId.toString(),
+            pageSize = 20
+        ).get("message").asJsonArray
+
+        val lastMessage = dashboardMessages.firstOrNull()?.asJsonObject
+
+        lastMessage?.let {
+            // check message is from bot
+            val to = it.get("to").asString
+            assertTrue("Last message is from user only, message: ${it.get("message").asString}, botIds: $bots, Failed to receive message from bot.", bots.contains(to))
+        } ?: fail("unable to find any message on dashboard of conversation id: $groupId")
+    }
+
     private fun verifyMessagesOnTheDashboard(groupId: String, messages: List<String>, email: String) = runBlocking {
         val messagesListObject = chatAPI.getMessageList(
             token = chatAuthToken,
@@ -285,6 +506,38 @@ class ConversationTest {
         if (tempMessageList.isNotEmpty()) {
             fail("unable to see the sent messages from SDK on dashboard $tempMessageList")
         }
+    }
+
+    private suspend fun updateConversationTeamId(
+        context: Context,
+        conversationId: Int,
+        newTeamId: String
+    ) = suspendCancellableCoroutine { continuation ->
+        KmSettings.updateTeamId(context, conversationId, "", newTeamId, object : KmCallback {
+            override fun onSuccess(message: Any?) {
+                continuation.resume("")
+            }
+
+            override fun onFailure(error: Any?) {
+                continuation.resumeWithException(IllegalStateException("unable to update conversation team id throw error: $error"))
+            }
+        })
+    }
+
+    private suspend fun updateConversationAssignee(
+        context: Context,
+        conversationId: Int,
+        newAssigneeId: String
+    ) = suspendCancellableCoroutine { continuation ->
+        KmSettings.updateConversationAssignee(context, conversationId, "", newAssigneeId, object : KmCallback {
+            override fun onSuccess(message: Any?) {
+                continuation.resume("")
+            }
+
+            override fun onFailure(error: Any?) {
+                continuation.resumeWithException(IllegalStateException("unable to update conversation assignee throw error: $error"))
+            }
+        })
     }
 
     private suspend fun launchConversation(

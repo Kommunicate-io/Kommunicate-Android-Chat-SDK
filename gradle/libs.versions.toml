@@ -49,6 +49,7 @@ core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoCore" }
 espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
 espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoCore" }
+espresso-web = { module = "androidx.test.espresso:espresso-web", version.ref = "espressoCore" }
 ext-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 fake-keystore = { module = "io.matthewnelson.encrypted-storage:fake-keystore", version.ref = "fakeKeystore" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }

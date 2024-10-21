@@ -5,3 +5,4 @@
 /.idea
 /gradle
 /src/main/resources/META-INF/io/kommunicate/sdk/kommunicate/verification.properties
+/.cxx/

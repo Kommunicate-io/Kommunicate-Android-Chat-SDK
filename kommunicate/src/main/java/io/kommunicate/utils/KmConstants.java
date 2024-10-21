@@ -33,4 +33,5 @@ public class KmConstants {
     public static final String HIDDEN = "hidden";
     public static final String PSEUDONAME = "pseudoName";
     public static final String KM_PSEUDO_USER = "KM_PSEUDO_USER";
+    public static final String KM_SUMMARY = "KM_SUMMARY";
 }

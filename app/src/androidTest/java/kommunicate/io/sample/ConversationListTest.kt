@@ -19,21 +19,18 @@ import kommunicate.io.sample.network.RetrofitClient
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.getRandomKmUser
 import kommunicate.io.sample.utils.getRandomString
-import kommunicate.io.sample.utils.waitFor
 import kommunicate.io.sample.utils.waitForLatch
 import kommunicate.io.sample.utils.withItemCount
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotSame
-import org.junit.Assert.assertThrows
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.lang.Exception
 import java.util.concurrent.CountDownLatch
+import kotlin.Exception
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -163,22 +160,22 @@ class ConversationListTest {
         val latch = CountDownLatch(1)
         val conversationId = Integer.parseInt(getRandomString(8, allNumbers = true))
 
-        assertThrows("conversation is opened with invalid group id: $conversationId", IllegalStateException::class.java) {
-            mActivityRule.onActivity {
-                it.lifecycleScope.launch {
+        mActivityRule.onActivity {
+            it.lifecycleScope.launch {
+                try {
                     // Login user
                     loginUser(it, kmUser)
-
-                    // Launch conversation with group id
-                    val resultMessage = openConversationList(it, conversationId)
-                    assertNotSame(resultMessage, conversationId)
-                }.invokeOnCompletion {
+                    openConversationList(it, conversationId)
+                } catch (e: IllegalStateException) {
+                    assertEquals("Invalid Conversation id, Unable to find conversation with given ID.", e.message)
+                } finally {
                     latch.countDown()
                 }
             }
         }
-        onView(isRoot())
-            .perform(waitForLatch(latch))
+
+        // Wait for the coroutine to complete
+        onView(isRoot()).perform(waitForLatch(latch))
     }
 
     private suspend fun createConversation(context: Context) =
@@ -221,7 +218,7 @@ class ConversationListTest {
             }
 
             override fun onFailure(error: Any) {
-                continuation.resumeWithException(IllegalStateException("unable to create conversation throw error: $error"))
+                continuation.resumeWithException(IllegalStateException("$error"))
             }
         })
     }

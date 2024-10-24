@@ -118,12 +118,12 @@ object KmViewHelper {
     }
 
     @JvmStatic
-    fun setDocumentIcon(mimeType: String, documentIcon: ImageView) {
-        if (TextUtils.isEmpty(mimeType)) {
+    fun setDocumentIcon(mimeType: String?, documentIcon: ImageView) {
+        if (mimeType == null && TextUtils.isEmpty(mimeType)) {
             documentIcon.setImageResource(R.drawable.ic_documentreceive)
             return
         }
-        if (mimeType.contains(PDF)) {
+        if (mimeType!!.contains(PDF)) {
             documentIcon.setImageResource(R.drawable.km_pdf_icon)
         } else if (mimeType.contains(TXT) || mimeType.contains(DOC) || mimeType.contains(TXT_PLAIN)) {
             documentIcon.setImageResource(R.drawable.km_doc_icon)

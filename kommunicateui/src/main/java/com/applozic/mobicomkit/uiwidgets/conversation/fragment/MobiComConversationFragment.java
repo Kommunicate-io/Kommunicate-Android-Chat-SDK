@@ -4217,7 +4217,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
 
 
-                    nextMessageList = conversationService.getMessages(lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
+                    nextMessageList = conversationService.getMessages(alCustomizationSettings.isAgentApp(), lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                     isNewConversation = isNewConversation(nextMessageList);
                 } else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
                     loadMore = false;
@@ -4229,7 +4229,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         endTime = messageList.get(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
                         break;
                     }
-                    nextMessageList = conversationService.getMessages(null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
+                    nextMessageList = conversationService.getMessages(alCustomizationSettings.isAgentApp(), null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                     isNewConversation = isNewConversation(nextMessageList);
                 }
                 if (BroadcastService.isContextBasedChatEnabled()) {

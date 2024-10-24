@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.api.conversation;
 
+import static io.kommunicate.utils.KmConstants.KM_SUMMARY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -345,7 +347,7 @@ public class MobiComConversationService {
     }
 
 
-    public synchronized List<Message> getMessages(Long startTime, Long endTime, Contact contact, Channel channel, Integer conversationId, boolean isSkipRead, boolean isForSearch) {
+    public synchronized List<Message> getMessages(Boolean isAgentApp, Long startTime, Long endTime, Contact contact, Channel channel, Integer conversationId, boolean isSkipRead, boolean isForSearch) {
         if (isForSearch) {
             return getMessagesForParticularThread(startTime, endTime, contact, channel, conversationId, isSkipRead);
         }
@@ -442,8 +444,23 @@ public class MobiComConversationService {
                         FileClientService fileClientService = new FileClientService(context);
                         fileClientService.loadContactsvCard(message);
                     }
-                    if (Message.MetaDataType.HIDDEN.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue())) || Message.MetaDataType.PUSHNOTIFICATION.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))) {
-                        continue;
+
+
+                    if (Message.MetaDataType.HIDDEN.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))
+                            || Message.MetaDataType.PUSHNOTIFICATION.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))
+                    ) {
+                        // Check if message is conversation summary.
+                        boolean isKmSummary;
+                        if (message.getMetadata().containsKey(KM_SUMMARY)) {
+                             isKmSummary = Boolean.parseBoolean(message.getMetaDataValueForKey(KM_SUMMARY));
+                        }else {
+                            isKmSummary = false;
+                        }
+
+                        // Avoid storing message if it is not summary message.
+                        if (!(isAgentApp && isKmSummary)) {
+                            continue;
+                        }
                     }
 
                     message.setHidden((isHideActionMessage && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage())));
@@ -460,10 +477,10 @@ public class MobiComConversationService {
                             if (message.getGroupId() != null) {
                                 Channel newChannel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
                                 if (newChannel != null) {
-                                    getMessages(null, null, null, newChannel, null, true, isForSearch);
+                                    getMessages(isAgentApp, null, null, null, newChannel, null, true, isForSearch);
                                 }
                             } else {
-                                getMessages(null, null, new Contact(message.getContactIds()), null, null, true, isForSearch);
+                                getMessages(isAgentApp, null, null, new Contact(message.getContactIds()), null, null, true, isForSearch);
                             }
                         }
                     }

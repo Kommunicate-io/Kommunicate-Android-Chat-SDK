@@ -39,6 +39,11 @@ object KmUtils {
     const val NAME: String = "name"
     const val ID: String = "id"
     private const val NO_CLASS_FOUND = "No class found for name : "
+    const val SENTRY_KOMMUNICATE_VERSION: String = "KOMMUNICATE_VERSION"
+    const val SENTRY_KOMMUNICATE_UI_VERSION: String = "KOMMUNICATE_UI_VERSION"
+    const val SENTRY_SDK_ENVIRONMENT: String = "SDK_ENVIRONMENT"
+    const val SENTRY_KOMMUNICATE_APP_ID: String = "KOMMUNICATE_APP_ID"
+    const val SENTRY_KOMMUNICATE_APPLOGICS_JSON: String = "KOMMUNICATE_APPLOGICS_JSON"
 
     @JvmStatic
     fun isServiceDisconnected(

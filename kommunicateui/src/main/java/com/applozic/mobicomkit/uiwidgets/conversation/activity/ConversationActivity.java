@@ -123,6 +123,7 @@ import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
 import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.REQUEST_CODE_MULTI_SELECT_GALLERY;
+import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
 
 
 /**
@@ -370,6 +371,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
         themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
         if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundImageName())) {
             resourceId = getResources().getIdentifier(alCustomizationSettings.getChatBackgroundImageName(), "drawable", getPackageName());

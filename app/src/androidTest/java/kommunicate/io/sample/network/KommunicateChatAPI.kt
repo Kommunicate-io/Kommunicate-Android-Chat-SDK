@@ -5,6 +5,7 @@ import kommunicate.io.sample.data.RegisterUserResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.Query
 
 interface KommunicateChatAPI {
@@ -23,7 +24,18 @@ interface KommunicateChatAPI {
     suspend fun getMessageList(
         @Header("X-Authorization") token: String,
         @Query("startIndex") startIndex: Int,
+        @Query("pageSize") pageSize: Int? = null,
+        @Query("mainPageSize") mainPageSize: Int? = null,
+        @Query("groupId") groupId: String? = null,
+        @Query("deletedGroupIncluded") deletedGroupIncluded: Boolean? = null
+    ): JsonObject
+
+    @PATCH("rest/ws/group/v2/assignee/change")
+    suspend fun transferChatToBotUser(
+        @Header("X-Authorization") token: String,
         @Query("groupId") groupId: String,
-        @Query("pageSize") pageSize: Int
+        @Query("assignee") assigneeId: String,
+        @Query("takeOverFromBot") takeOverFromBot: Boolean = true,
+        @Query("switchAssignee") switchAssignee: Boolean = true,
     ): JsonObject
 }

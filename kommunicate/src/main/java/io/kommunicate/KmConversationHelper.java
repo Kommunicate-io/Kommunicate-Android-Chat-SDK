@@ -126,22 +126,34 @@ public class KmConversationHelper {
     }
 
     private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, String preFilledMessage, KmCallback callback) {
-        try {
-            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
-            intent.putExtra(KmConstants.GROUP_ID, conversationId);
-            intent.putExtra(KmConstants.TAKE_ORDER, skipConversationList);
-            if (!TextUtils.isEmpty(preFilledMessage)) {
-                intent.putExtra(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
+        KmGetConversationInfoCallback callbackListener = new KmGetConversationInfoCallback() {
+            @Override
+            public void onSuccess(Channel channel, Context context) {
+                try {
+                    Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
+                    intent.putExtra(KmConstants.GROUP_ID, conversationId);
+                    intent.putExtra(KmConstants.TAKE_ORDER, skipConversationList);
+                    if (!TextUtils.isEmpty(preFilledMessage)) {
+                        intent.putExtra(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
+                    }
+                    context.startActivity(intent);
+                    if (callback != null) {
+                        callback.onSuccess(conversationId);
+                    }
+                } catch (ClassNotFoundException e) {
+                    if (callback != null) {
+                        callback.onFailure(e.getMessage());
+                    }
+                }
             }
-            context.startActivity(intent);
-            if (callback != null) {
-                callback.onSuccess(conversationId);
+
+            @Override
+            public void onFailure(Exception e, Context context) {
+                 callback.onFailure("Invalid Conversation id, Unable to find conversation with given ID.");
             }
-        } catch (ClassNotFoundException e) {
-            if (callback != null) {
-                callback.onFailure(e.getMessage());
-            }
-        }
+        };
+
+        new KmConversationInfoTask(context, conversationId, callbackListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Deprecated

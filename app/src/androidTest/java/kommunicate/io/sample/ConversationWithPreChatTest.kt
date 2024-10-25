@@ -36,7 +36,9 @@ import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.getRandomString
+import kommunicate.io.sample.utils.sendMessageAsUser
 import kommunicate.io.sample.utils.waitFor
+import kommunicate.io.sample.utils.waitForLatch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.joinAll
@@ -327,6 +329,7 @@ class ConversationWithPreChatTest {
         val tempName = getRandomString(10)
         val tempUserPhone = getRandomString(10, true)
         val tempGender = "Female"
+        val latch = CountDownLatch(1)
 
         assertThrows(NullPointerException::class.java) {
             mActivityRule.onActivity {
@@ -339,21 +342,23 @@ class ConversationWithPreChatTest {
                 it.lifecycleScope.launch {
                     buildAndLaunchConversationWithUser(it, user)
                     fail("the user object is created even when the userid is not passed")
+                }.invokeOnCompletion {
+                    latch.countDown()
                 }
             }
 
             onView(isRoot())
-                .perform(waitFor(10000))
+                .perform(waitForLatch(latch,100))
         }
     }
 
     @Test
-    @FlakyTest
     fun testLaunchConversationWithCustomUser() {
         val tempUserMail = "${getRandomString(12)}@${getRandomString(5, ignoreNums = true)}.${getRandomString(3, ignoreNums = true)}"
         val tempName = getRandomString(10)
         val tempUserPhone = getRandomString(10, true)
         val tempGender = "Female"
+        val latch = CountDownLatch(1)
 
         mActivityRule.onActivity {
             val user = KMUser().apply {
@@ -365,11 +370,13 @@ class ConversationWithPreChatTest {
             }
             it.lifecycleScope.launch {
                 buildAndLaunchConversationWithUser(it, user)
+            }.invokeOnCompletion {
+                latch.countDown()
             }
         }
 
         onView(isRoot())
-            .perform(waitFor(10000))
+            .perform(waitForLatch(latch,100))
 
         val user = getUserFromDashboardWithEmail(tempUserMail)
         assertNotNull("user not found on dashboard", user)
@@ -441,15 +448,6 @@ class ConversationWithPreChatTest {
         if (tempMessageList.isNotEmpty()) {
             fail("unable to see the send messages from SDK on dashboard $tempMessageList")
         }
-    }
-
-    private fun sendMessageAsUser(message: String) {
-        onView(withId(Rui.id.conversation_message))
-            .perform(ViewActions.typeText(message))
-        closeSoftKeyboard()
-
-        onView(withId(Rui.id.conversation_send))
-            .perform(click())
     }
 
     private fun getConversationGroupIdFromUserEmail(email: String) = runBlocking {

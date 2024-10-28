@@ -19,7 +19,7 @@ object SSLPinningConfig {
     @JvmStatic
     @Synchronized
     fun createPinnedSSLSocketFactory(): SSLSocketFactory {
-        if(KmUtils.isDeviceRooted()) {
+        if(KmUtils.isDeviceRooted) {
             throw CertificateException("Unable to Establish Connection, Device is rooted.")
         }
 

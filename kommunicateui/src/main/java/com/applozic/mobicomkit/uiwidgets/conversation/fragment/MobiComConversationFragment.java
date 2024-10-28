@@ -6,6 +6,8 @@ import static com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.model
 import static com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper.setDocumentIcon;
 import static java.util.Collections.disjoint;
 
+import static io.kommunicate.utils.KmConstants.KM_SUMMARY;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -4217,7 +4219,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
 
 
-                    nextMessageList = conversationService.getMessages(alCustomizationSettings.isAgentApp(), lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
+                    nextMessageList = conversationService.getMessages(this::ignoreSummaryMessageForUser, lastConversationloadTime + 1L, null, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                     isNewConversation = isNewConversation(nextMessageList);
                 } else if (firstVisibleItem == 1 && loadMore && !messageList.isEmpty()) {
                     loadMore = false;
@@ -4229,7 +4231,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         endTime = messageList.get(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
                         break;
                     }
-                    nextMessageList = conversationService.getMessages(alCustomizationSettings.isAgentApp(), null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
+                    nextMessageList = conversationService.getMessages(this::ignoreSummaryMessageForUser, null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
                     isNewConversation = isNewConversation(nextMessageList);
                 }
                 if (BroadcastService.isContextBasedChatEnabled()) {
@@ -4285,6 +4287,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             return 0L;
+        }
+
+        private Boolean ignoreSummaryMessageForUser(Message message) {
+            // Check if message is conversation summary.
+            boolean isKmSummary = Boolean.parseBoolean(message.getMetaDataValueForKey(KM_SUMMARY));
+
+            // Ignore message if app is not agent and message type is not summary message.
+            return !(alCustomizationSettings.isAgentApp() && isKmSummary);
         }
 
         private boolean isNewConversation(List<Message> nextMessageList) {

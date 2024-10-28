@@ -57,6 +57,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import io.kommunicate.KmConversationResponse;
+import kotlin.jvm.functions.Function1;
 
 public class MobiComConversationService {
 
@@ -347,7 +348,7 @@ public class MobiComConversationService {
     }
 
 
-    public synchronized List<Message> getMessages(Boolean isAgentApp, Long startTime, Long endTime, Contact contact, Channel channel, Integer conversationId, boolean isSkipRead, boolean isForSearch) {
+    public synchronized List<Message> getMessages(Function1<Message, Boolean> ignoreMessageWhen, Long startTime, Long endTime, Contact contact, Channel channel, Integer conversationId, boolean isSkipRead, boolean isForSearch) {
         if (isForSearch) {
             return getMessagesForParticularThread(startTime, endTime, contact, channel, conversationId, isSkipRead);
         }
@@ -449,16 +450,9 @@ public class MobiComConversationService {
                     if (Message.MetaDataType.HIDDEN.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))
                             || Message.MetaDataType.PUSHNOTIFICATION.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))
                     ) {
-                        // Check if message is conversation summary.
-                        boolean isKmSummary;
-                        if (message.getMetadata().containsKey(KM_SUMMARY)) {
-                             isKmSummary = Boolean.parseBoolean(message.getMetaDataValueForKey(KM_SUMMARY));
-                        }else {
-                            isKmSummary = false;
-                        }
 
-                        // Avoid storing message if it is not summary message.
-                        if (!(isAgentApp && isKmSummary)) {
+                        // Avoid storing message if ignoreMessageWhen is true.
+                        if (ignoreMessageWhen.invoke(message)) {
                             continue;
                         }
                     }
@@ -477,10 +471,10 @@ public class MobiComConversationService {
                             if (message.getGroupId() != null) {
                                 Channel newChannel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
                                 if (newChannel != null) {
-                                    getMessages(isAgentApp, null, null, null, newChannel, null, true, isForSearch);
+                                    getMessages(ignoreMessageWhen, null, null, null, newChannel, null, true, isForSearch);
                                 }
                             } else {
-                                getMessages(isAgentApp, null, null, new Contact(message.getContactIds()), null, null, true, isForSearch);
+                                getMessages(ignoreMessageWhen, null, null, new Contact(message.getContactIds()), null, null, true, isForSearch);
                             }
                         }
                     }

@@ -4291,7 +4291,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         private Boolean ignoreSummaryMessageForUser(Message message) {
             // Check if message is conversation summary.
-            boolean isKmSummary = Boolean.parseBoolean(message.getMetaDataValueForKey(KM_SUMMARY));
+            boolean isKmSummary = message.getMetadata().containsKey(KM_SUMMARY)
+                    && Boolean.parseBoolean(message.getMetaDataValueForKey(KM_SUMMARY));
 
             // Ignore message if app is not agent and message type is not summary message.
             return !(alCustomizationSettings.isAgentApp() && isKmSummary);

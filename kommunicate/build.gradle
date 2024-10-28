@@ -27,6 +27,20 @@ android {
         buildConfigField "String","EU_CHAT_SERVER_URL",'"https://chat-eu.kommunicate.io"'
         buildConfigField "String", "EU_API_SERVER_URL", '"https://api-eu.kommunicate.io"'
         buildConfigField "String", "MQTT_URL_EU", '"tcp://socket-eu.kommunicate.io:1883"'
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11"
+            }
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/c/CMakeLists.txt"
+        }
     }
 
     buildTypes {

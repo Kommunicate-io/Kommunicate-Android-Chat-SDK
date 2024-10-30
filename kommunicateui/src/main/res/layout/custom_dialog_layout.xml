@@ -20,7 +20,7 @@
                 android:id="@+id/dialogTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/summary"
+                android:text="@string/summary_title"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:gravity="center" />

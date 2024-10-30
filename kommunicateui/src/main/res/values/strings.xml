@@ -306,4 +306,5 @@
     <string name="summary">Conversation Summary</string>
     <string name="summary_sample_text">Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text </string>
     <string name="read_more">Read more</string>
+    <string name="summary_title">Summary</string>
 </resources>

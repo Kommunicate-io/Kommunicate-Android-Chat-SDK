@@ -303,4 +303,8 @@
     <string name="agent_rating">4.5</string>
     <string name="create_conv_msg">Creating conversation, please wait...</string>
     <string name="please_wait">Please wait...</string>
+    <string name="summary">Conversation Summary</string>
+    <string name="summary_sample_text">Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text </string>
+    <string name="read_more">Read more</string>
+    <string name="summary_title">Summary</string>
 </resources>

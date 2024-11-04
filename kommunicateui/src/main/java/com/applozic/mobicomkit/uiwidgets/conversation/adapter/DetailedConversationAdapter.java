@@ -422,11 +422,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             createCustomDialog(message.getMessage());
                         });
                     }
+                } else if (alCustomizationSettings.isAgentApp()) {
+                    myViewHolder4.summaryCardView.setVisibility(GONE);
+                    myViewHolder4.normalTextLayout.setVisibility(VISIBLE);
 
-                    return;
-                }
-
-                if (alCustomizationSettings.isAgentApp()) {
                     GradientDrawable bgGradientDrawable = (GradientDrawable) myViewHolder4.channelMessageTextView.getBackground();
                     bgGradientDrawable.setColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) :
                             alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));

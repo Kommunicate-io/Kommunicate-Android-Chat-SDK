@@ -71,6 +71,7 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.runner
     androidTestImplementation libs.espresso.core
+    androidTestImplementation libs.espresso.web
 }
 
 secrets {

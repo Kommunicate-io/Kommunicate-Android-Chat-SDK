@@ -43,4 +43,5 @@ object KmConstants {
     const val HIDDEN: String = "hidden"
     const val PSEUDONAME: String = "pseudoName"
     const val KM_PSEUDO_USER: String = "KM_PSEUDO_USER"
+    const val KM_SUMMARY: String = "KM_SUMMARY"
 }

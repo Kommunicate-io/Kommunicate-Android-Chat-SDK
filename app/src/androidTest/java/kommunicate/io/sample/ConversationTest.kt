@@ -460,6 +460,9 @@ class ConversationTest {
             }
         }
 
+        onView(isRoot())
+            .perform(waitFor(2500))
+
         onView(withId(R.id.toolbar_title))
             .check(matches(withText("Prateek Singh")))
     }

@@ -1,25 +1,25 @@
-apply plugin: 'com.android.library'
-
-rootProject.allprojects {
-    repositories {
-        maven {
-            url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk'
-        }
-    }
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.google.secrets
+    id "maven-publish"
 }
+
 android {
-    compileSdkVersion 34
+    namespace = "io.kommunicate"
 
     lintOptions {
         abortOnError false
     }
 
     defaultConfig {
-        minSdkVersion 17
+        minSdkVersion 21
+        compileSdk 34
         targetSdkVersion 34
         versionCode 1
-        versionName "2.10.4"
+        versionName "2.11.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "KOMMUNICATE_VERSION", "\"" + versionName + "\""
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
         buildConfigField "String", "API_SERVER_URL", '"https://api.kommunicate.io"'
         buildConfigField "String", "GOOGLE_API_SERVER_URL", '"https://maps.googleapis.com/maps/api/staticmap?"'
@@ -36,17 +36,29 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
-    api 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
-    api 'androidx.appcompat:appcompat:1.2.0'
-    api 'com.google.code.gson:gson:2.8.6'
-    api 'com.iceteck.silicompressorr:silicompressor:2.2.4'
-    api('com.googlecode.mp4parser:isoparser:1.0.6') {
+    implementation libs.core.ktx
+    implementation libs.android.database.sqlcipher
+    api libs.org.eclipse.paho.client.mqttv3
+    api libs.localbroadcastmanager
+    api libs.appcompat
+    api libs.gson
+    api libs.silicompressor
+    api libs.sentry.android
+    api(libs.isoparser) {
         exclude(
                 group : "org.aspectj",
                 module: "aspectjrt"
@@ -54,7 +66,11 @@ dependencies {
     }
 }
 
-/*task sourcesJar(type: Jar) {
+secrets {
+    defaultPropertiesFileName = "release.secrets.properties"
+}
+
+task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     archiveClassifier = 'sources'
 }
@@ -75,7 +91,7 @@ publishing {
             artifactId = project.getName()
             version = android.defaultConfig.versionName
             artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
-            artifact(javadocJar)
+//            artifact(javadocJar)
             artifact(sourcesJar)
             //generate POM
             pom.withXml {
@@ -124,7 +140,7 @@ publishing {
         }
     }
 }
-artifactoryPublish {
-    publications(publishing.publications.aar)
-}*/
-
+/*artifactoryPublish {
+   publications(publishing.publications.aar)
+}
+*/

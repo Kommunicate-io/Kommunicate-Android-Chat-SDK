@@ -23,7 +23,10 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import javax.crypto.IllegalBlockSizeException;
+import javax.net.ssl.HttpsURLConnection;
+
 import io.kommunicate.R;
+import io.kommunicate.network.SSLPinningConfig;
 
 
 /**
@@ -100,7 +103,7 @@ public class HttpRequestUtils {
 
     public String postData(String urlString, String data, String userId, boolean isPatchRequest, boolean isForAuth, String accept, String contentType) throws Exception {
         Utils.printLog(context, TAG, (isPatchRequest ? "\n\n** Patching data ** : " : "\n\n** Posting data **: ") + data + "\nTo URL: " + urlString + "\n\n");
-        HttpURLConnection connection;
+        HttpsURLConnection connection;
         MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
         URL url;
         try {
@@ -108,7 +111,8 @@ public class HttpRequestUtils {
                 data = EncryptionUtils.encrypt(userPreference.getEncryptionKey(), data, userPreference.getEncryptionIV());
             }
             url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
             connection.setRequestMethod(isPatchRequest ? PATCH : POST);
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -175,13 +179,14 @@ public class HttpRequestUtils {
     public String getResponseWithException(String urlString, String contentType, String accept, boolean isFileUpload, String userId) throws Exception {
         Utils.printLog(context, TAG, "Calling url **[GET]** : " + urlString);
 
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
         URL url;
 
         try {
             url = new URL(urlString);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
             connection.setInstanceFollowRedirects(true);
             connection.setRequestMethod("GET");
             connection.setUseCaches(false);

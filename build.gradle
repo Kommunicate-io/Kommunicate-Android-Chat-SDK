@@ -1,29 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-buildscript {
-
-    ext {
-        agp_version = '7.4.0'
-    }
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:$agp_version"
-        classpath 'com.google.gms:google-services:4.3.8'
-        //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.24.4"
-    }
-}
-
-allprojects {
-    /*apply plugin: 'com.jfrog.artifactory'
-    apply plugin: 'maven-publish'*/
-
-    repositories {
-        google()
-        mavenCentral()
-    }
+plugins {
+    alias libs.plugins.android.application apply false
+    alias libs.plugins.google.services apply false
+    alias libs.plugins.kotlin.android  apply false
+    alias libs.plugins.jfrog  apply false
+    alias libs.plugins.android.library apply false
+    alias libs.plugins.google.secrets apply false
+    alias libs.plugins.sentry apply false
 }
 
 /*artifactoryPublish.skip = true

@@ -1,5 +1,7 @@
 package io.kommunicate;
 
+import static io.kommunicate.utils.SentryUtils.configureSentryWithKommunicate;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -65,6 +67,7 @@ import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.preference.KmPreference;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KMAgentStatusHelper;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -115,15 +118,27 @@ public class Kommunicate {
         return faqPageName;
     }
 
-    public static void init(Context context, String applicationKey) {
+    public static void init(Context context, String applicationKey, Boolean enableDeviceRootDetection) {
         if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
             KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
         } else {
             Applozic.init(context, applicationKey);
         }
+        KmAppSettingPreferences.getInstance().setRootDetection(enableDeviceRootDetection);
+        configureSentryWithKommunicate(context);
+    }
+
+    public static void init(Context context, String applicationKey) {
+        init(context, applicationKey, true);
     }
 
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {
+        configureSentryWithKommunicate(context);
+        if(KmUtils.isDeviceRooted() && handler != null) {
+            handler.onFailure(null, new IllegalStateException(Utils.getString(context, R.string.km_device_rooted)));
+            return;
+        }
+
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
             if (loggedInUserId.equals(kmUser.getUserId())) {
@@ -259,7 +274,13 @@ public class Kommunicate {
             throw new KmException("This method needs Activity context");
         }
 
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(context, R.string.km_device_rooted)));
+            return;
+        }
+
         final KMUser kmUser = getVisitor();
+        configureSentryWithKommunicate(context);
         if (isLoggedIn(context)) {
             String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
             if (loggedInUserId.equals(kmUser.getUserId())) {
@@ -485,6 +506,7 @@ public class Kommunicate {
             protected void onReceiveResult(int resultCode, Bundle resultData) {
                 if (KmConstants.PRECHAT_RESULT_CODE == resultCode) {
                     KMUser user = (KMUser) GsonUtils.getObjectFromJson(resultData.getString(KmConstants.KM_USER_DATA), KMUser.class);
+                    configureSentryWithKommunicate(context);
                     if (callback != null) {
                         callback.onReceive(user, context, (ResultReceiver) resultData.getParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER));
                     }

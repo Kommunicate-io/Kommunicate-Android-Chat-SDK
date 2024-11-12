@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.text.style.UnderlineSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
@@ -29,6 +31,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -36,6 +39,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -46,6 +50,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
@@ -61,6 +66,7 @@ import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.api.conversation.stat.SourceUrl;
 import com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
@@ -99,16 +105,22 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import androidx.vectordrawable.graphics.drawable.AnimatorInflaterCompat;
 
@@ -118,6 +130,10 @@ import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static androidx.core.content.ContextCompat.startActivity;
+import static com.applozic.mobicomkit.api.conversation.stat.SourceUrl.SOURCE_URL;
+import static io.kommunicate.utils.KmConstants.KM_SUMMARY;
 
 /**
  * Created by adarsh on 4/7/15.
@@ -387,11 +403,29 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             } else if (type == 3) {
                 MyViewHolder3 myViewHolder3 = (MyViewHolder3) holder;
                 myViewHolder3.customContentTextView.setText(message.getMessage());
-                myViewHolder3.customContentTextView.setVisibility(View.VISIBLE);
+                myViewHolder3.customContentTextView.setVisibility(VISIBLE);
                 return;
             } else if (type == 4) {
                 MyViewHolder4 myViewHolder4 = (MyViewHolder4) holder;
-                if (alCustomizationSettings.isAgentApp()) {
+
+                if (message.getMetadata().containsKey(KM_SUMMARY)
+                        && Objects.equals(message.getMetadata().get(KM_SUMMARY), "true")
+                ) {
+                    myViewHolder4.normalTextLayout.setVisibility(GONE);
+
+                    if (alCustomizationSettings.isAgentApp()) {
+                        // Show summary UI
+                        myViewHolder4.summaryCardView.setVisibility(VISIBLE);
+                        myViewHolder4.summaryMessage.setText(message.getMessage());
+                        myViewHolder4.summaryReadMore.setOnClickListener(view -> {
+                            // Open Dialog...
+                            createCustomDialog(message.getMessage());
+                        });
+                    }
+                } else if (alCustomizationSettings.isAgentApp()) {
+                    myViewHolder4.summaryCardView.setVisibility(GONE);
+                    myViewHolder4.normalTextLayout.setVisibility(VISIBLE);
+
                     GradientDrawable bgGradientDrawable = (GradientDrawable) myViewHolder4.channelMessageTextView.getBackground();
                     bgGradientDrawable.setColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) :
                             alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
@@ -404,7 +438,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     myViewHolder4.channelMessageStaticText.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageTextColor().get(1) : alCustomizationSettings.getChannelCustomMessageTextColor().get(0)));
                     myViewHolder4.channelMessageLeftBg.setBackgroundColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) : alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
                     myViewHolder4.channelMessageRightBg.setBackgroundColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) : alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
-
                 }
                 return;
             } else if (type == 5) {
@@ -512,6 +545,26 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createCustomDialog(String message) {
+        Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_layout);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        TextView dialogMessage = dialog.findViewById(R.id.dialog_message);
+        dialogMessage.setText(message);
+
+        ImageButton btnClose = dialog.findViewById(R.id.dialog_close);
+        btnClose.setOnClickListener( view -> {
+                dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     protected void bindMessageView(RecyclerView.ViewHolder holder, final Message message, final int position) {
@@ -1333,7 +1386,53 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     view.dispatchTouchEvent(MotionEvent.obtain(0, 0, MotionEvent.ACTION_CANCEL, 0f, 0f, 0));
                 }
             });
+
+            if (showSourceURls(message, position)) {
+                String json = message.getMetadata().get(SOURCE_URL);
+                if(json == null) {
+                    return;
+                }
+                myHolder.sourceText.setVisibility(View.VISIBLE);
+                myHolder.urlsLayout.setVisibility(View.VISIBLE);
+                myHolder.sourceUrlDivider.setVisibility(View.VISIBLE);
+
+                Type listType = new TypeToken<List<SourceUrl>>() {}.getType();
+                List<SourceUrl> links = GsonUtils.getObjectFromJson(json, listType);
+
+                myHolder.urlsLayout.removeAllViews();
+                for(SourceUrl url : links) {
+                    SpannableString content = new SpannableString(url.getTitle());
+                    content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+
+                    View view = LayoutInflater
+                            .from(myHolder.urlsLayout.getContext())
+                            .inflate(R.layout.km_link_view, null, false);
+
+                    TextView tv =  view.findViewById(R.id.src_urls_textview);
+                    tv.setText(content);
+
+                    view.setOnClickListener((data) -> {
+                        openURL(view.getContext(), url.getUrl());
+                    });
+                    myHolder.urlsLayout.addView(view);
+                }
+            }
         }
+    }
+
+    private void openURL(Context context, String url) {
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        context.startActivity(intent);
+    }
+
+    private boolean showSourceURls(Message message, int position) {
+        return message.getMetadata() != null
+                && message.getContentType() == 0
+                && getItemViewType(position) == 0
+                && !message.getMessage().isEmpty()
+                && message.getType() == 4
+                && message.getMetadata().containsKey(SOURCE_URL);
     }
 
     //insert new item and only update item which requires updated and not the whole layout
@@ -1760,6 +1859,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         View statusIconBackground;
         LinearLayout timestampLayout;
         ImageView statusImageView;
+        View sourceUrlDivider;
+        TextView sourceText;
+        LinearLayout urlsLayout;
 
         public MyViewHolder(final View customView) {
             super(customView);
@@ -1804,6 +1906,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             emailLayout = customView.findViewById(R.id.emailLayout);
             viaEmailView = customView.findViewById(R.id.via_email_text_view);
             statusIconBackground = customView.findViewById(R.id.statusIconBackground);
+            sourceUrlDivider = customView.findViewById(R.id.src_divider);
+            sourceText = customView.findViewById(R.id.sources);
+            urlsLayout = customView.findViewById(R.id.linksView);
 
             if (useInnerTimeStampDesign) {
                 if (statusIconBackground != null) {
@@ -1896,17 +2001,25 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         TextView channelMessageStaticText;
         View channelMessageLeftBg;
         View channelMessageRightBg;
+        CardView summaryCardView;
+        TextView summaryMessage;
+        Button summaryReadMore;
+        LinearLayout normalTextLayout;
 
         public MyViewHolder4(View itemView, boolean isAgentApp) {
             super(itemView);
             if (isAgentApp) {
                 channelMessageTextView = (TextView) itemView.findViewById(R.id.channel_message);
+                summaryCardView = (CardView) itemView.findViewById(R.id.conversation_summary);
+                summaryMessage = (TextView) itemView.findViewById(R.id.summary_message);
+                summaryReadMore = (Button) itemView.findViewById(R.id.summary_read_more);
             } else {
                 channelMessageTextView = (TextView) itemView.findViewById(R.id.km_transferred_to);
                 channelMessageStaticText = (TextView) itemView.findViewById(R.id.km_transferred_text);
                 channelMessageLeftBg = (View) itemView.findViewById(R.id.km_transferred_to_left_bg);
                 channelMessageRightBg = (View) itemView.findViewById(R.id.km_transferred_to_right_bg);
             }
+            normalTextLayout = (LinearLayout) itemView.findViewById(R.id.normal_text);
         }
     }
 

@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
+import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -108,6 +110,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             alCustomizationSettings = new AlCustomizationSettings();
         }
 
+        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
         kmAttachmentsController = new KmAttachmentsController(this);
 
         KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());

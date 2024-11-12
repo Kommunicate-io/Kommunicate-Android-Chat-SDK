@@ -47,6 +47,7 @@ import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -125,22 +126,34 @@ public class KmConversationHelper {
     }
 
     private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, String preFilledMessage, KmCallback callback) {
-        try {
-            Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
-            intent.putExtra(KmConstants.GROUP_ID, conversationId);
-            intent.putExtra(KmConstants.TAKE_ORDER, skipConversationList);
-            if (!TextUtils.isEmpty(preFilledMessage)) {
-                intent.putExtra(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
+        KmGetConversationInfoCallback callbackListener = new KmGetConversationInfoCallback() {
+            @Override
+            public void onSuccess(Channel channel, Context context) {
+                try {
+                    Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
+                    intent.putExtra(KmConstants.GROUP_ID, conversationId);
+                    intent.putExtra(KmConstants.TAKE_ORDER, skipConversationList);
+                    if (!TextUtils.isEmpty(preFilledMessage)) {
+                        intent.putExtra(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
+                    }
+                    context.startActivity(intent);
+                    if (callback != null) {
+                        callback.onSuccess(conversationId);
+                    }
+                } catch (ClassNotFoundException e) {
+                    if (callback != null) {
+                        callback.onFailure(e.getMessage());
+                    }
+                }
             }
-            context.startActivity(intent);
-            if (callback != null) {
-                callback.onSuccess(conversationId);
+
+            @Override
+            public void onFailure(Exception e, Context context) {
+                 callback.onFailure("Invalid Conversation id, Unable to find conversation with given ID.");
             }
-        } catch (ClassNotFoundException e) {
-            if (callback != null) {
-                callback.onFailure(e.getMessage());
-            }
-        }
+        };
+
+        new KmConversationInfoTask(context, conversationId, callbackListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Deprecated
@@ -159,6 +172,11 @@ public class KmConversationHelper {
             return;
         }
 
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(launchChat.getContext(), R.string.km_device_rooted)));
+            return;
+        }
+
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
             try {
                 Kommunicate.startConversation(launchChat,
@@ -170,7 +188,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
-                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId());
+                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
@@ -231,6 +249,11 @@ public class KmConversationHelper {
             return;
         }
 
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(launchChat.getContext(), R.string.km_device_rooted)));
+            return;
+        }
+
         if (Kommunicate.isLoggedIn(launchChat.getContext())) {
             try {
                 Kommunicate.startConversation(launchChat,
@@ -242,7 +265,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
-                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId());
+                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
@@ -426,6 +449,11 @@ public class KmConversationHelper {
             return;
         }
 
+        if(KmUtils.isDeviceRooted() && callback != null) {
+            callback.onFailure(new IllegalStateException(Utils.getString(conversationBuilder.getContext(), R.string.km_device_rooted)));
+            return;
+        }
+
         if (Kommunicate.isLoggedIn(conversationBuilder.getContext())) {
             try {
                 startConversation(false, conversationBuilder,
@@ -437,7 +465,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(conversationBuilder.getAppId())) {
-                Kommunicate.init(conversationBuilder.getContext(), conversationBuilder.getAppId());
+                Kommunicate.init(conversationBuilder.getContext(), conversationBuilder.getAppId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey())) {
                     if (callback != null) {
@@ -789,8 +817,9 @@ public class KmConversationHelper {
         refreshAppSettings(conversationBuilder.getContext());
         sharedPreferences = conversationBuilder.getContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         if (sharedPreferences != null) {
-            boolean isSingleThreaded = sharedPreferences.getBoolean(SINGLE_THREADED,false);
-            conversationBuilder.setSingleConversation(isSingleThreaded);
+            boolean isSingleThreadedFromServer = sharedPreferences.getBoolean(SINGLE_THREADED,false);
+            boolean isShowSingleThreaded = isSingleThreadedFromServer || conversationBuilder.isSingleConversation();
+            conversationBuilder.setSingleConversation(isShowSingleThreaded);
             final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), null, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
             if (!TextUtils.isEmpty(clientChannelKey) && clientChannelKey != null) {
                 conversationBuilder.setClientConversationId(clientChannelKey);

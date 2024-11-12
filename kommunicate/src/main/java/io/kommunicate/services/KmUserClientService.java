@@ -41,9 +41,12 @@ import io.kommunicate.BuildConfig;
 import io.kommunicate.KMGroupInfo;
 import io.kommunicate.KmException;
 import io.kommunicate.feeds.KmRegistrationResponse;
+import io.kommunicate.network.SSLPinningConfig;
 import io.kommunicate.users.KMUser;
 
 import static com.applozic.mobicomkit.api.HttpRequestUtils.DEVICE_KEY_HEADER;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by ashish on 30/01/18.
@@ -509,7 +512,8 @@ public class KmUserClientService extends UserClientService {
 
     private HttpURLConnection createAndGetConnectionObjectForMethodGet(String urlString, String contentType, String accept) throws Exception {
         URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
         connection.setInstanceFollowRedirects(true);
         connection.setRequestMethod(GET);
         connection.setUseCaches(false);

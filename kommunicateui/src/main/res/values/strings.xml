@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
+    <string name="km_prechat_processing_wait_info">Please wait, launching conversation..</string>
+    <string name="km_whatsapp_restriction">The last message received from this contact was over 24 hours ago. To send Template message, go to the dashboard.</string>
+    <string name="km_teammode_restriction">You can no longer send messages to this conversation as it has been assigned to a different team.</string>
     <string name="internet_connection_not_available">No internet connection.</string>
     <string name="you_need_network_access_for_delete">You need to have network access for deleting conversation.</string>
     <string name="km_server_error">Oops! You caught an error, try again later.</string>
@@ -38,6 +41,8 @@
     <string name="km_contacts_loading_error">You need to have network access for loading contacts.</string>
     <string name="km_enter_group_name">Please enter a group name to proceed..</string>
     <string name="snap_text">Oh Snap!</string>
+    <string name="root_text">Your device is rooted!</string>
+    <string name="root_device_message">You can\'t use the Kommunicate SDK in this device as it\'s rooted.</string>
     <string name="account_disconnection_message">We’re sorry but messaging is not \navailable at the moment,\nPlease contact support for more details.</string>
     <string name="powered_by_kommunicate_message">We are powered by Kommunicate.</string>
     <string name="share_using">Share using</string>
@@ -298,4 +303,8 @@
     <string name="agent_rating">4.5</string>
     <string name="create_conv_msg">Creating conversation, please wait...</string>
     <string name="please_wait">Please wait...</string>
+    <string name="summary">Conversation Summary</string>
+    <string name="summary_sample_text">Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text </string>
+    <string name="read_more">Read more</string>
+    <string name="summary_title">Summary</string>
 </resources>

@@ -123,6 +123,7 @@ import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
 import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.REQUEST_CODE_MULTI_SELECT_GALLERY;
+import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
 
 
 /**
@@ -188,6 +189,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private String searchTerm;
     private SearchListFragment searchListFragment;
     private LinearLayout serviceDisconnectionLayout;
+    private LinearLayout deviceRootedLayout;
     private KmStoragePermission alStoragePermission;
     private RelativeLayout customToolbarLayout;
     private KmThemeHelper themeHelper;
@@ -242,10 +244,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             });
             snackbar.setDuration(Snackbar.LENGTH_LONG);
             ViewGroup group = (ViewGroup) snackbar.getView();
-            TextView textView = (TextView) group.findViewById(R.id.snackbar_action);
+            TextView textView = (TextView) group.findViewById(com.google.android.material.R.id.snackbar_action);
             textView.setTextColor(Color.YELLOW);
             group.setBackgroundColor(getResources().getColor(R.color.error_background_color));
-            TextView txtView = (TextView) group.findViewById(R.id.snackbar_text);
+            TextView txtView = (TextView) group.findViewById(com.google.android.material.R.id.snackbar_text);
             txtView.setMaxLines(5);
             snackbar.show();
         } catch (Exception e) {
@@ -347,7 +349,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
             Utils.toggleSoftKeyBoard(this, true);
             return true;
-        } else if (serviceDisconnectionLayout != null && serviceDisconnectionLayout.getVisibility() == View.VISIBLE) {
+        } else if (
+                (serviceDisconnectionLayout != null
+                        && serviceDisconnectionLayout.getVisibility() == View.VISIBLE)
+                        || (deviceRootedLayout != null
+                        && deviceRootedLayout.getVisibility() == View.VISIBLE)) {
             ConversationActivity.this.finish();
         } else {
             super.onSupportNavigateUp();
@@ -365,6 +371,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
         themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
         if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundImageName())) {
             resourceId = getResources().getIdentifier(alCustomizationSettings.getChatBackgroundImageName(), "drawable", getPackageName());
@@ -394,6 +401,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         childFragmentLayout = (RelativeLayout) findViewById(R.id.layout_child_activity);
         contactsGroupId = MobiComUserPreference.getInstance(this).getContactsGroupId();
         serviceDisconnectionLayout = findViewById(R.id.serviceDisconnectionLayout);
+        deviceRootedLayout = findViewById(R.id.deviceRootedLayout);
         if (Utils.hasMarshmallow() && !alCustomizationSettings.isGlobalStoragePermissionDisabled()) {
             applozicPermission.checkRuntimePermissionForStorage();
         }
@@ -405,8 +413,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         if (KmUtils.isServiceDisconnected(this, alCustomizationSettings != null && alCustomizationSettings.isAgentApp(), customToolbarLayout)) {
             serviceDisconnectionLayout.setVisibility(View.VISIBLE);
+        } else if(KmUtils.isDeviceRooted()) {
+            deviceRootedLayout.setVisibility(View.VISIBLE);
         } else {
-            if (savedInstanceState != null) {
+             if (savedInstanceState != null) {
                 capturedImageUri = savedInstanceState.getString(CAPTURED_IMAGE_URI) != null ?
                         Uri.parse(savedInstanceState.getString(CAPTURED_IMAGE_URI)) : null;
                 videoFileUri = savedInstanceState.getString(CAPTURED_VIDEO_URI) != null ?

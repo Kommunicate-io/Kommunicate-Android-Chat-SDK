@@ -1,9 +1,18 @@
 package com.applozic.mobicommons.commons.core.utils;
 
+import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteStatement;
+
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.applozic.mobicomkit.api.MobiComKitClientService;
+import com.applozic.mobicommons.ALSpecificSettings;
+import com.applozic.mobicommons.ApplozicService;
+
+import java.io.File;
 
 /**
  * Created by devashish on 25/1/15.
@@ -42,6 +51,25 @@ public class DBUtils {
         } finally {
             if (mCursor != null) {
                 mCursor.close();
+            }
+        }
+    }
+
+    public static boolean isDatabaseEncrypted(Context context, String dbName) {
+        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
+        File dbFile = context.getDatabasePath(dbName);
+
+        // Attempt to open the database with the given password
+        SQLiteDatabase db = null;
+        try {
+            db = SQLiteDatabase.openDatabase(dbFile.getPath(), appId, null, SQLiteDatabase.OPEN_READONLY);
+            db.close();
+            return true;
+        } catch (net.sqlcipher.database.SQLiteException e) {
+            return false;
+        } finally {
+            if (db != null && db.isOpen()) {
+                db.close();
             }
         }
     }

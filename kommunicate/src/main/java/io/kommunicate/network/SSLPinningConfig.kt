@@ -29,7 +29,8 @@ object SSLPinningConfig {
             BuildConfig.apiCaKommunicateIo,
             BuildConfig.apiTestKommuncateIo,
             BuildConfig.kommunicateIo,
-            BuildConfig.apiInKommunicateIo
+            BuildConfig.apiInKommunicateIo,
+            BuildConfig.kommunicateAWS
         )
 
         val trustManager: TrustManager = @SuppressLint("CustomX509TrustManager")

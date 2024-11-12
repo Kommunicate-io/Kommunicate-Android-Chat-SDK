@@ -98,11 +98,13 @@ object KmUtils {
             return isRooted
         }
 
+    @JvmStatic
     fun setDrawableTint(textView: TextView, colorId: Int, index: Int) {
         textView.compoundDrawables[index].colorFilter =
             PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN)
     }
 
+    @JvmStatic
     fun setDrawableTint(imageView: ImageView, colorId: Int) {
         imageView.drawable.colorFilter = PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN)
     }

@@ -53,6 +53,7 @@ import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.fail
@@ -340,7 +341,8 @@ class ConversationWithPreChatTest {
                     metadata = mapOf("gender" to tempGender)
                 }
                 it.lifecycleScope.launch {
-                    buildAndLaunchConversationWithUser(it, user)
+                    val isSuccess = buildAndLaunchConversationWithUser(it, user)
+                    assertFalse("Conversation built with no group id:", isSuccess)
                     fail("the user object is created even when the userid is not passed")
                 }.invokeOnCompletion {
                     latch.countDown()

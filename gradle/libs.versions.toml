@@ -87,3 +87,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVer
 jfrog = { id = "com.jfrog.artifactory", version.ref = "jfrogVersion" }
 google-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleSecret"}
 sentry = { id = "io.sentry.android.gradle", version.ref = "sentryPluginVersion"}
+meaven-local = { id = "maven-publish" }

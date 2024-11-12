@@ -15,7 +15,7 @@ import io.kommunicate.users.KMUser;
 public class KmConversationBuilder extends JsonMarker {
     @Exclude
     private transient Context context;
-    private boolean isSingleConversation = true;
+    private boolean isSingleConversation = false;
     private boolean withPreChat = false;
     private String preFilledMessage;
     private KMUser kmUser;

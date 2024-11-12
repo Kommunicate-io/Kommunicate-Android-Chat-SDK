@@ -25,6 +25,7 @@ import com.applozic.mobicommons.ApplozicService
 import com.applozic.mobicommons.commons.core.utils.Utils
 import com.applozic.mobicommons.file.FileUtils
 import com.applozic.mobicommons.json.GsonUtils
+import io.kommunicate.BuildConfig
 import io.kommunicate.KmSettings
 import io.kommunicate.Kommunicate
 import org.json.JSONException
@@ -72,7 +73,7 @@ object KmUtils {
     @JvmStatic
     val isDeviceRooted: Boolean
         get() {
-            if (!KmAppSettingPreferences.isRootDetectionEnabled) {
+            if (!KmAppSettingPreferences.isRootDetectionEnabled || BuildConfig.DEBUG) {
                 return false
             }
 
@@ -97,11 +98,13 @@ object KmUtils {
             return isRooted
         }
 
+    @JvmStatic
     fun setDrawableTint(textView: TextView, colorId: Int, index: Int) {
         textView.compoundDrawables[index].colorFilter =
             PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN)
     }
 
+    @JvmStatic
     fun setDrawableTint(imageView: ImageView, colorId: Int) {
         imageView.drawable.colorFilter = PorterDuffColorFilter(colorId, PorterDuff.Mode.SRC_IN)
     }

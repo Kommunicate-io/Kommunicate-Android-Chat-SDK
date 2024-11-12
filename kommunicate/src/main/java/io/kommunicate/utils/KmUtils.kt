@@ -25,6 +25,7 @@ import com.applozic.mobicommons.ApplozicService
 import com.applozic.mobicommons.commons.core.utils.Utils
 import com.applozic.mobicommons.file.FileUtils
 import com.applozic.mobicommons.json.GsonUtils
+import io.kommunicate.BuildConfig
 import io.kommunicate.KmSettings
 import io.kommunicate.Kommunicate
 import org.json.JSONException
@@ -72,7 +73,7 @@ object KmUtils {
     @JvmStatic
     val isDeviceRooted: Boolean
         get() {
-            if (!KmAppSettingPreferences.isRootDetectionEnabled) {
+            if (!KmAppSettingPreferences.isRootDetectionEnabled || BuildConfig.DEBUG) {
                 return false
             }
 

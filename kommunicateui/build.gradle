@@ -1,6 +1,7 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
+    alias libs.plugins.meaven.local
 }
 
 android {
@@ -43,7 +44,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicate')
-//    api 'io.kommunicate.sdk:kommunicate:2.9.11'
+//    api 'io.kommunicate.sdk:kommunicate:2.10.4-temp'
     api libs.firebase.messaging
     api libs.play.services.maps
     api libs.gms.play.services.location
@@ -58,7 +59,7 @@ dependencies {
     implementation libs.multidex
 }
 
-/*task sourcesJar(type: Jar) {
+task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     archiveClassifier = 'sources'
 }
@@ -79,7 +80,7 @@ publishing {
             artifactId = project.getName()
             version = android.defaultConfig.versionName
             artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
-            artifact(javadocJar)
+//            artifact(javadocJar)
             artifact(sourcesJar)
             //generate POM
             pom.withXml {
@@ -128,8 +129,8 @@ publishing {
         }
     }
 }
-artifactoryPublish {
-    publications(publishing.publications.aar)
-}*/
-
+//artifactoryPublish {
+//    publications(publishing.publications.aar)
+//}
+//
 

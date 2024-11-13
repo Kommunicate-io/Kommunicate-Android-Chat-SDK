@@ -66,6 +66,7 @@ public class FileTaskAsync extends AsyncTask<Void, Integer, Boolean> {
         }
         if (fileClientService != null) {
             fileClientService.writeFile(uri, file);
+            FileUtils.deleteFile(uri);
         }
         return true;
     }

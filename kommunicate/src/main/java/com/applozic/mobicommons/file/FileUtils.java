@@ -133,6 +133,13 @@ public class FileUtils {
         }
     };
 
+    public static boolean deleteFile(Uri uri) {
+        if (uri.getPath() == null) {
+            return false;
+        }
+        return new File(uri.getPath()).delete();
+    }
+
     private FileUtils() {
     } //private constructor to enforce Singleton pattern
 
@@ -1022,22 +1029,24 @@ public class FileUtils {
 
     public static Uri compressImage(Uri uri, Context context, String fileName) {
         try {
+            // Load and compress the bitmap
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
-            Bitmap originalBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri), null, options);
+            Bitmap originalBitmap = BitmapFactory.decodeStream(
+                    context.getContentResolver().openInputStream(uri), null, options);
 
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             originalBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
 
-            File tempFile = File.createTempFile(fileName, null, context.getCacheDir());
-            tempFile.deleteOnExit();
-
-            FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+            // Write the compressed bitmap to a cache file
+            File cacheFile = new File(context.getCacheDir(), fileName);
+            FileOutputStream fileOutputStream = new FileOutputStream(cacheFile);
             fileOutputStream.write(outputStream.toByteArray());
             fileOutputStream.flush();
             fileOutputStream.close();
 
-            return Uri.fromFile(tempFile);
+            // Return the URI
+            return Uri.fromFile(cacheFile);
         } catch (Exception e) {
             e.printStackTrace();
         }

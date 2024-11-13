@@ -11,6 +11,7 @@ pluginManagement {
             url "https://plugins.gradle.org/m2/"
         }
         mavenCentral()
+        mavenLocal()
         gradlePluginPortal()
     }
 }
@@ -20,6 +21,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
         maven {
             url = uri('https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk')
         }

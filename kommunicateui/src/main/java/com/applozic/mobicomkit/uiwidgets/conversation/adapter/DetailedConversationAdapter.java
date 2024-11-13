@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -37,6 +39,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -47,6 +50,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
@@ -116,6 +120,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import androidx.vectordrawable.graphics.drawable.AnimatorInflaterCompat;
 
@@ -125,8 +130,10 @@ import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static androidx.core.content.ContextCompat.startActivity;
 import static com.applozic.mobicomkit.api.conversation.stat.SourceUrl.SOURCE_URL;
+import static io.kommunicate.utils.KmConstants.KM_SUMMARY;
 
 /**
  * Created by adarsh on 4/7/15.
@@ -396,11 +403,29 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             } else if (type == 3) {
                 MyViewHolder3 myViewHolder3 = (MyViewHolder3) holder;
                 myViewHolder3.customContentTextView.setText(message.getMessage());
-                myViewHolder3.customContentTextView.setVisibility(View.VISIBLE);
+                myViewHolder3.customContentTextView.setVisibility(VISIBLE);
                 return;
             } else if (type == 4) {
                 MyViewHolder4 myViewHolder4 = (MyViewHolder4) holder;
-                if (alCustomizationSettings.isAgentApp()) {
+
+                if (message.getMetadata().containsKey(KM_SUMMARY)
+                        && Objects.equals(message.getMetadata().get(KM_SUMMARY), "true")
+                ) {
+                    myViewHolder4.normalTextLayout.setVisibility(GONE);
+
+                    if (alCustomizationSettings.isAgentApp()) {
+                        // Show summary UI
+                        myViewHolder4.summaryCardView.setVisibility(VISIBLE);
+                        myViewHolder4.summaryMessage.setText(message.getMessage());
+                        myViewHolder4.summaryReadMore.setOnClickListener(view -> {
+                            // Open Dialog...
+                            createCustomDialog(message.getMessage());
+                        });
+                    }
+                } else if (alCustomizationSettings.isAgentApp()) {
+                    myViewHolder4.summaryCardView.setVisibility(GONE);
+                    myViewHolder4.normalTextLayout.setVisibility(VISIBLE);
+
                     GradientDrawable bgGradientDrawable = (GradientDrawable) myViewHolder4.channelMessageTextView.getBackground();
                     bgGradientDrawable.setColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) :
                             alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
@@ -413,7 +438,6 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     myViewHolder4.channelMessageStaticText.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageTextColor().get(1) : alCustomizationSettings.getChannelCustomMessageTextColor().get(0)));
                     myViewHolder4.channelMessageLeftBg.setBackgroundColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) : alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
                     myViewHolder4.channelMessageRightBg.setBackgroundColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getChannelCustomMessageBgColor().get(1) : alCustomizationSettings.getChannelCustomMessageBgColor().get(0)));
-
                 }
                 return;
             } else if (type == 5) {
@@ -521,6 +545,26 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void createCustomDialog(String message) {
+        Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_layout);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        TextView dialogMessage = dialog.findViewById(R.id.dialog_message);
+        dialogMessage.setText(message);
+
+        ImageButton btnClose = dialog.findViewById(R.id.dialog_close);
+        btnClose.setOnClickListener( view -> {
+                dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     protected void bindMessageView(RecyclerView.ViewHolder holder, final Message message, final int position) {
@@ -1957,17 +2001,25 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         TextView channelMessageStaticText;
         View channelMessageLeftBg;
         View channelMessageRightBg;
+        CardView summaryCardView;
+        TextView summaryMessage;
+        Button summaryReadMore;
+        LinearLayout normalTextLayout;
 
         public MyViewHolder4(View itemView, boolean isAgentApp) {
             super(itemView);
             if (isAgentApp) {
                 channelMessageTextView = (TextView) itemView.findViewById(R.id.channel_message);
+                summaryCardView = (CardView) itemView.findViewById(R.id.conversation_summary);
+                summaryMessage = (TextView) itemView.findViewById(R.id.summary_message);
+                summaryReadMore = (Button) itemView.findViewById(R.id.summary_read_more);
             } else {
                 channelMessageTextView = (TextView) itemView.findViewById(R.id.km_transferred_to);
                 channelMessageStaticText = (TextView) itemView.findViewById(R.id.km_transferred_text);
                 channelMessageLeftBg = (View) itemView.findViewById(R.id.km_transferred_to_left_bg);
                 channelMessageRightBg = (View) itemView.findViewById(R.id.km_transferred_to_right_bg);
             }
+            normalTextLayout = (LinearLayout) itemView.findViewById(R.id.normal_text);
         }
     }
 

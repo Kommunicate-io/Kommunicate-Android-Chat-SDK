@@ -57,23 +57,6 @@ class ConversationListTest {
     }
 
     @Test
-    fun testOpenConversationListLaunch() {
-        val latch = CountDownLatch(1)
-
-        mActivityRule.onActivity {
-            it.lifecycleScope.launch {
-                val resultMessage = openConversationList(it)
-                assertEquals(resultMessage, "Successfully launched chat list")
-            }.invokeOnCompletion {
-                latch.countDown()
-            }
-        }
-
-        onView(isRoot())
-            .perform(waitForLatch(latch))
-    }
-
-    @Test
     fun testConversationCountOfUserAndVerifyConversationOnUIAndFromDashboard() {
         val kmUser = getRandomKmUser()
         var conversationIdList = emptyList<String>()

@@ -26,8 +26,10 @@ import kommunicate.io.sample.utils.waitForLatch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -98,7 +100,8 @@ class KMUserDataValidationTest {
         assertThrows("Expected Exception when keys with more that 30 char passed in metadata ${kmTempUser.metadata}", NullPointerException::class.java) {
             mActivityRule.onActivity {
                 it.lifecycleScope.launch {
-                    buildAndLaunchConversationWithUser(it, kmTempUser)
+                    val isSuccess = buildAndLaunchConversationWithUser(it, kmTempUser)
+                    assertFalse("conversation created with invalid metadata", isSuccess)
                 }.invokeOnCompletion {
                     latch.countDown()
                 }

@@ -817,8 +817,9 @@ public class KmConversationHelper {
         refreshAppSettings(conversationBuilder.getContext());
         sharedPreferences = conversationBuilder.getContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         if (sharedPreferences != null) {
-            boolean isSingleThreaded = sharedPreferences.getBoolean(SINGLE_THREADED,false);
-            conversationBuilder.setSingleConversation(isSingleThreaded);
+            boolean isSingleThreadedFromServer = sharedPreferences.getBoolean(SINGLE_THREADED,false);
+            boolean isShowSingleThreaded = isSingleThreadedFromServer || conversationBuilder.isSingleConversation();
+            conversationBuilder.setSingleConversation(isShowSingleThreaded);
             final String clientChannelKey = !TextUtils.isEmpty(conversationBuilder.getClientConversationId()) ? conversationBuilder.getClientConversationId() : (conversationBuilder.isSingleConversation() ? getClientGroupId(conversationBuilder.getUserIds(), null, conversationBuilder.getBotIds(), conversationBuilder.getContext()) : null);
             if (!TextUtils.isEmpty(clientChannelKey) && clientChannelKey != null) {
                 conversationBuilder.setClientConversationId(clientChannelKey);

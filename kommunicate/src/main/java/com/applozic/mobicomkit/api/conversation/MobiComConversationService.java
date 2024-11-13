@@ -1,5 +1,7 @@
 package com.applozic.mobicomkit.api.conversation;
 
+import static io.kommunicate.utils.KmConstants.KM_SUMMARY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,6 +57,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import io.kommunicate.KmConversationResponse;
+import kotlin.jvm.functions.Function1;
 
 public class MobiComConversationService {
 
@@ -345,7 +348,7 @@ public class MobiComConversationService {
     }
 
 
-    public synchronized List<Message> getMessages(Long startTime, Long endTime, Contact contact, Channel channel, Integer conversationId, boolean isSkipRead, boolean isForSearch) {
+    public synchronized List<Message> getMessages(Function1<Message, Boolean> ignoreMessageWhen, Long startTime, Long endTime, Contact contact, Channel channel, Integer conversationId, boolean isSkipRead, boolean isForSearch) {
         if (isForSearch) {
             return getMessagesForParticularThread(startTime, endTime, contact, channel, conversationId, isSkipRead);
         }
@@ -442,8 +445,16 @@ public class MobiComConversationService {
                         FileClientService fileClientService = new FileClientService(context);
                         fileClientService.loadContactsvCard(message);
                     }
-                    if (Message.MetaDataType.HIDDEN.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue())) || Message.MetaDataType.PUSHNOTIFICATION.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))) {
-                        continue;
+
+
+                    if (Message.MetaDataType.HIDDEN.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))
+                            || Message.MetaDataType.PUSHNOTIFICATION.getValue().equals(message.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))
+                    ) {
+
+                        // Avoid storing message if ignoreMessageWhen is true.
+                        if (ignoreMessageWhen.invoke(message)) {
+                            continue;
+                        }
                     }
 
                     message.setHidden((isHideActionMessage && message.isActionMessage()) || (message.isActionMessage() && TextUtils.isEmpty(message.getMessage())));
@@ -460,10 +471,10 @@ public class MobiComConversationService {
                             if (message.getGroupId() != null) {
                                 Channel newChannel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
                                 if (newChannel != null) {
-                                    getMessages(null, null, null, newChannel, null, true, isForSearch);
+                                    getMessages(ignoreMessageWhen, null, null, null, newChannel, null, true, isForSearch);
                                 }
                             } else {
-                                getMessages(null, null, new Contact(message.getContactIds()), null, null, true, isForSearch);
+                                getMessages(ignoreMessageWhen, null, null, new Contact(message.getContactIds()), null, null, true, isForSearch);
                             }
                         }
                     }

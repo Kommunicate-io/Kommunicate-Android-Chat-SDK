@@ -1,6 +1,7 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
+    alias libs.plugins.jfrog
     alias libs.plugins.meaven.local
 }
 
@@ -129,8 +130,9 @@ publishing {
         }
     }
 }
-//artifactoryPublish {
-//    publications(publishing.publications.aar)
-//}
-//
 
+/*
+artifactoryPublish {
+   publications(publishing.publications.aar)
+}
+*/

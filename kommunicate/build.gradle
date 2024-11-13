@@ -2,7 +2,8 @@ plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
     alias libs.plugins.google.secrets
-    id "maven-publish"
+    alias libs.plugins.jfrog
+    alias libs.plugins.meaven.local
 }
 
 android {
@@ -140,7 +141,8 @@ publishing {
         }
     }
 }
-/*artifactoryPublish {
+/*
+artifactoryPublish {
    publications(publishing.publications.aar)
 }
 */

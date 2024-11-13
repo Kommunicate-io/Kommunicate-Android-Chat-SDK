@@ -133,13 +133,6 @@ public class FileUtils {
         }
     };
 
-    public static boolean deleteFile(Uri uri) {
-        if (uri.getPath() == null) {
-            return false;
-        }
-        return new File(uri.getPath()).delete();
-    }
-
     private FileUtils() {
     } //private constructor to enforce Singleton pattern
 
@@ -161,6 +154,28 @@ public class FileUtils {
         } else {
             // No extension.
             return "";
+        }
+    }
+
+    public static boolean deleteFile(Uri uri) {
+        if (uri == null) {
+            Log.w(TAG, "Cannot delete file: Uri is null");
+            return false;
+        }
+        if (uri.getPath() == null) {
+            Log.w(TAG, "Cannot delete file: Uri path is null");
+            return false;
+        }
+        File file = new File(uri.getPath());
+        try {
+            boolean deleted = file.delete();
+            if (!deleted) {
+                Log.w(TAG, "Failed to delete file: " + uri.getPath());
+            }
+            return deleted;
+        } catch (SecurityException e) {
+            Log.e(TAG, "Security exception while deleting file: " + uri.getPath(), e);
+            return false;
         }
     }
 
@@ -1028,29 +1043,44 @@ public class FileUtils {
     }
 
     public static Uri compressImage(Uri uri, Context context, String fileName) {
+        Bitmap originalBitmap = null;
+        ByteArrayOutputStream outputStream = null;
+        FileOutputStream fileOutputStream = null;
         try {
             // Load and compress the bitmap
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
-            Bitmap originalBitmap = BitmapFactory.decodeStream(
+            originalBitmap = BitmapFactory.decodeStream(
                     context.getContentResolver().openInputStream(uri), null, options);
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             originalBitmap.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
 
             // Write the compressed bitmap to a cache file
             File cacheFile = new File(context.getCacheDir(), fileName);
-            FileOutputStream fileOutputStream = new FileOutputStream(cacheFile);
+            fileOutputStream = new FileOutputStream(cacheFile);
             fileOutputStream.write(outputStream.toByteArray());
             fileOutputStream.flush();
-            fileOutputStream.close();
 
             // Return the URI
             return Uri.fromFile(cacheFile);
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
+        } finally {
+           if (originalBitmap != null && !originalBitmap.isRecycled()) {
+              originalBitmap.recycle();
+           }
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+                if (fileOutputStream != null) {
+                    fileOutputStream.close();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error closing output stream", e);
+            }
         }
-        return null;
     }
 
     public static Uri compressVideo(Context context, Uri uri, File file) {

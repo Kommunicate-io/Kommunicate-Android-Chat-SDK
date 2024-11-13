@@ -175,7 +175,11 @@ public class ImageUtils {
 //                }
 //            }
 //        }
-        return "";
+        Log.w(TAG, "Image storage operation skipped - functionality deprecated");
+        throw new UnsupportedOperationException(
+                "Image storage to external directory is no longer supported. " +
+                        "Please use MediaStore API for Android 10+ or context.getFilesDir() for internal storage."
+        );
     }
 
 

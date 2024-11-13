@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.api.HttpRequestUtils;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
@@ -98,7 +99,7 @@ public class FileClientService extends MobiComKitClientService {
 //        // Create image name
 //        //String extention = "." + contentType.substring(contentType.indexOf("/") + 1);
 //        filePath = new File(dir, fileName);
-        return null;
+        throw new UnsupportedOperationException("External storage access has been deprecated");
     }
 
     public static File getFilePath(String fileName, Context context, String contentType) {

@@ -27,6 +27,8 @@ import com.applozic.mobicommons.file.FileUtils
 import com.applozic.mobicommons.json.GsonUtils
 import io.kommunicate.KmSettings
 import io.kommunicate.Kommunicate
+import io.kommunicate.nativeLibs.FridaDetection
+import io.kommunicate.nativeLibs.RootDetection
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
@@ -76,25 +78,22 @@ object KmUtils {
                 return false
             }
 
-            var isRooted = false
-            var process: Process? = null
-
-            try {
-                process = Runtime.getRuntime().exec("su")
-                isRooted = true
-            } catch (ex: Exception) {
-                Log.d("RootDetection", "Process creation/execution failed " + ex.message)
-            } finally {
-                if (process != null) {
-                    try {
-                        process.destroy()
-                    } catch (e: Exception) {
-                        Log.d("RootDetection", "Process termination failed " + e.message)
-                    }
-                }
+            // Native Frida process detection
+            if (FridaDetection.isFridaDetectedNative()) {
+                return true;
             }
 
-            return isRooted
+            // Native Frida memory library detection
+            if (FridaDetection.detectFridaByLibrary()) {
+                return true;
+            }
+
+            // Detect hooking of key functions
+            if (FridaDetection.checkForHooking()) {
+                return true;
+            }
+
+            return RootDetection.isDeviceRooted();
         }
 
     fun setDrawableTint(textView: TextView, colorId: Int, index: Int) {

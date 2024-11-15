@@ -1,6 +1,7 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
+    alias libs.plugins.jfrog
     alias libs.plugins.meaven.local
 }
 
@@ -15,7 +16,7 @@ android {
         targetSdkVersion 34
         minSdkVersion 21
         versionCode 1
-        versionName "2.11.0"
+        versionName "2.11.1"
         buildToolsVersion = '34.0.0'
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
@@ -129,8 +130,9 @@ publishing {
         }
     }
 }
-//artifactoryPublish {
-//    publications(publishing.publications.aar)
-//}
-//
 
+/*
+artifactoryPublish {
+   publications(publishing.publications.aar)
+}
+*/

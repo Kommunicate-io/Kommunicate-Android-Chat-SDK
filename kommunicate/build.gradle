@@ -2,7 +2,8 @@ plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
     alias libs.plugins.google.secrets
-    id "maven-publish"
+    alias libs.plugins.jfrog
+    alias libs.plugins.meaven.local
 }
 
 android {
@@ -17,7 +18,7 @@ android {
         compileSdk 34
         targetSdkVersion 34
         versionCode 1
-        versionName "2.11.0"
+        versionName "2.11.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "KOMMUNICATE_VERSION", "\"" + versionName + "\""
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
@@ -140,7 +141,8 @@ publishing {
         }
     }
 }
-/*artifactoryPublish {
+/*
+artifactoryPublish {
    publications(publishing.publications.aar)
 }
 */

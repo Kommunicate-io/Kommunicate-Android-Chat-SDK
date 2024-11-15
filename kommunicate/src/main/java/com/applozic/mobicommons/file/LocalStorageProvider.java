@@ -110,30 +110,30 @@ public class LocalStorageProvider extends DocumentsProvider {
         }
         options.inJustDecodeBounds = false;
         Bitmap bitmap = BitmapFactory.decodeFile(documentId, options);
-        // Write out the thumbnail to a temporary file
-        File tempFile = null;
-        FileOutputStream out = null;
+
+        ParcelFileDescriptor[] pipe;
         try {
-            tempFile = File.createTempFile("thumbnail", null, getContext().getCacheDir());
-            out = new FileOutputStream(tempFile);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            pipe = ParcelFileDescriptor.createPipe();
         } catch (IOException e) {
-            Log.e(LocalStorageProvider.class.getSimpleName(), "Error writing thumbnail", e);
+            Log.e(LocalStorageProvider.class.getSimpleName(), "Error creating pipe", e);
             return null;
-        } finally {
-            if (out != null)
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    Log.e(LocalStorageProvider.class.getSimpleName(), "Error closing thumbnail", e);
-                }
         }
+
+        // Write the bitmap data to the output stream in a separate thread
+        new Thread(() -> {
+            try (ParcelFileDescriptor.AutoCloseOutputStream out =
+                         new ParcelFileDescriptor.AutoCloseOutputStream(pipe[1])) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            } catch (IOException e) {
+                Log.e(LocalStorageProvider.class.getSimpleName(), "Error writing thumbnail to pipe", e);
+            }
+        }).start();
+
         // It appears the Storage Framework UI caches these results quite
         // aggressively so there is little reason to
         // write your own caching layer beyond what you need to return a single
         // AssetFileDescriptor
-        return new AssetFileDescriptor(ParcelFileDescriptor.open(tempFile,
-                ParcelFileDescriptor.MODE_READ_ONLY), 0,
+        return new AssetFileDescriptor(pipe[0], 0,
                 AssetFileDescriptor.UNKNOWN_LENGTH);
     }
 

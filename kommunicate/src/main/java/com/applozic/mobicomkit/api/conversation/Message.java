@@ -23,6 +23,7 @@ import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelMetadata;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -155,34 +156,42 @@ public class Message extends JsonMarker implements Parcelable {
 
     //copy constructor
     public Message(Message message) {
-        //this.setKeyString(message.getKeyString());
-        this.setMessage(message.getMessage());
-        this.setContactIds(message.getContactIds());
-        this.setCreatedAtTime(message.getCreatedAtTime());
-        this.setDeviceKeyString(message.getDeviceKeyString());
-        this.setSendToDevice(message.isSendToDevice());
-        this.setTo(message.getTo());
-        this.setType(message.getType());
-        this.setSent(message.isSent());
-        this.setDelivered(message.getDelivered());
-        this.setStoreOnDevice(message.isStoreOnDevice());
-        this.setScheduledAt(message.getScheduledAt());
-        this.setSentToServer(message.isSentToServer());
-        this.setSource(message.getSource());
-        this.setTimeToLive(message.getTimeToLive());
-        this.setFileMetas(message.getFileMetas());
-        this.setFileMetaKeyStrings(message.getFileMetaKeyStrings());
-        this.setFilePaths(message.getFilePaths());
-        this.setGroupId(message.getGroupId());
-        this.setRead(message.isRead());
-        this.setApplicationId(message.getApplicationId());
-        this.setContentType(message.getContentType());
-        this.setStatus(message.getStatus());
-        this.setConversationId(message.getConversationId());
-        this.setTopicId(message.getTopicId());
-        this.setMetadata(message.getMetadata());
-        this.setHidden(message.hasHideKey());
+        this.message = message.message;
+        this.contactIds = message.contactIds;
+        this.createdAtTime = message.createdAtTime;
+        this.deviceKey = message.deviceKey;
+        this.to = message.to;
+        this.type = message.type;
+        this.sent = message.sent;
+        this.delivered = message.delivered;
+        this.storeOnDevice = message.storeOnDevice;
+        this.scheduledAt = message.scheduledAt;
+        this.sentToServer = message.sentToServer;
+        this.source = message.source;
+        this.timeToLive = message.timeToLive;
+        this.fileMetaKey = message.fileMetaKey;
+        this.filePaths = new ArrayList<>(message.filePaths);
+        this.pairedMessageKey = message.pairedMessageKey;
+        this.sentMessageTimeAtServer = message.sentMessageTimeAtServer;
+        this.canceled = message.canceled;
+        this.clientGroupId = message.clientGroupId;
+        this.fileMeta = message.fileMeta != null ? new FileMeta(message.fileMeta) : null;  // Copy nested object if necessary
+        this.messageId = message.messageId;
+        this.read = message.read;
+        this.attDownloadInProgress = message.attDownloadInProgress;
+        this.applicationId = message.applicationId;
+        this.conversationId = message.conversationId;
+        this.topicId = message.topicId;
+        this.connected = message.connected;
+        this.contentType = message.contentType;
+        this.metadata = new HashMap<>(message.metadata);
+        this.status = message.status;
+        this.hidden = message.hidden;
+        this.replyMessage = message.replyMessage;
+        this.supportCustomerName = message.supportCustomerName;
+        this.groupAssignee = message.groupAssignee;
     }
+
 
     public long getSentMessageTimeAtServer() {
         return sentMessageTimeAtServer;

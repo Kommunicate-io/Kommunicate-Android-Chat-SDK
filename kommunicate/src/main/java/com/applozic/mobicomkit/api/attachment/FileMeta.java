@@ -1,11 +1,14 @@
 package com.applozic.mobicomkit.api.attachment;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.applozic.mobicommons.json.JsonMarker;
 
 /**
  * Created by adarsh on 4/10/14.
  */
-public class FileMeta extends JsonMarker {
+public class FileMeta extends JsonMarker implements Parcelable {
 
     private String key;
     private String userKey;
@@ -17,6 +20,22 @@ public class FileMeta extends JsonMarker {
     private String contentType;
     private String thumbnailUrl;
     private Long createdAtTime;
+
+    public FileMeta(Parcel in) {
+        key = in.readString();
+        userKey = in.readString();
+        blobKey = in.readString();
+        thumbnailBlobKey = in.readString();
+        name = in.readString();
+        url = in.readString();
+        size = in.readInt();
+        contentType = in.readString();
+        thumbnailUrl = in.readString();
+        createdAtTime = in.readLong() != -1 ? in.readLong() : null;
+    }
+
+    public FileMeta() {
+    }
 
     public String getKeyString() {
         return key;
@@ -125,4 +144,34 @@ public class FileMeta extends JsonMarker {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        dest.writeString(userKey);
+        dest.writeString(blobKey);
+        dest.writeString(thumbnailBlobKey);
+        dest.writeString(name);
+        dest.writeString(url);
+        dest.writeInt(size);
+        dest.writeString(contentType);
+        dest.writeString(thumbnailUrl);
+        dest.writeLong(createdAtTime != null ? createdAtTime : -1);
+    }
+
+    public static final Creator<FileMeta> CREATOR = new Creator<FileMeta>() {
+        @Override
+        public FileMeta createFromParcel(Parcel in) {
+            return new FileMeta(in);
+        }
+
+        @Override
+        public FileMeta[] newArray(int size) {
+            return new FileMeta[size];
+        }
+    };
 }

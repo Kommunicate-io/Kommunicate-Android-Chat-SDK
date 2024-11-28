@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.ApplozicClient;
@@ -82,13 +83,13 @@ public class MobiComMessageService {
                 Class serviceName = Class.forName(ApplozicClient.getInstance(context).getMessageMetaDataServiceName());
                 Intent intentService = new Intent(context, serviceName);
                 if (Message.MetaDataType.HIDDEN.getValue().equals(messageToProcess.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))) {
-                    intentService.putExtra(MobiComKitConstants.MESSAGE, messageToProcess);
+                    intentService.putExtra(MobiComKitConstants.MESSAGE, (Parcelable) messageToProcess);
                     intentService.putExtra(MobiComKitConstants.HIDDEN, true);
                     MessageIntentService.enqueueWork(context, intentService, null);
                     return null;
                 } else if (Message.MetaDataType.PUSHNOTIFICATION.getValue().equals(messageToProcess.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))) {
                     BroadcastService.sendNotificationBroadcast(context, messageToProcess, index);
-                    intentService.putExtra(MobiComKitConstants.MESSAGE, messageToProcess);
+                    intentService.putExtra(MobiComKitConstants.MESSAGE, (Parcelable) messageToProcess);
                     intentService.putExtra(MobiComKitConstants.PUSH_NOTIFICATION, true);
                     MessageIntentService.enqueueWork(context, intentService, null);
                     return null;

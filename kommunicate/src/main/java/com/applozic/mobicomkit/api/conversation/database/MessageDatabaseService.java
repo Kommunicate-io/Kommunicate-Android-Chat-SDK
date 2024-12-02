@@ -995,10 +995,9 @@ public class MessageDatabaseService {
     }
 
     private List<Message> getLatestGroupMessages(Long createdAt, String searchText, Integer parentGroupKey) {
-
         if (parentGroupKey != null && parentGroupKey != 0) {
             List<String> channelKeysArray = ChannelService.getInstance(context).getChildGroupKeys(parentGroupKey);
-            if (channelKeysArray == null || channelKeysArray.size() < 1) {
+            if (channelKeysArray == null || channelKeysArray.isEmpty()) {
                 return new ArrayList<>();
             }
             channelKeysArray.add(String.valueOf(parentGroupKey));
@@ -1043,7 +1042,7 @@ public class MessageDatabaseService {
                     + " order by m1.createdAt desc";
 
 
-            final Cursor cursor = db.rawQuery(str, channelKeysArray.toArray(new String[0]));
+            final Cursor cursor = db.query(str, channelKeysArray.toArray(new String[0]));
             try {
                 return getMessageList(cursor);
             } finally {
@@ -1125,7 +1124,7 @@ public class MessageDatabaseService {
                 }
 
                 rowQuery = rowQuery + createdAtClause + searchCaluse + hiddenType + messageTypeClause + " order by m1.createdAt desc";
-                cursor = db.rawQuery(rowQuery, selectionArgs.toArray(new String[0]));
+                cursor = db.query(rowQuery, selectionArgs.toArray(new String[0]));
             }
 
             List<Message> messageList = getLatestMessageList(cursor);
@@ -1164,7 +1163,7 @@ public class MessageDatabaseService {
                 if (lastFetchTime != null && lastFetchTime > 0) {
                     selectionArgs.add(String.valueOf(lastFetchTime));
                 }
-                cursor = db.rawQuery(rowQuery, selectionArgs.toArray(new String[0]));
+                cursor = db.query(rowQuery, selectionArgs.toArray(new String[0]));
             } else {
 
                 List<String> selectionArgs = new ArrayList<>();

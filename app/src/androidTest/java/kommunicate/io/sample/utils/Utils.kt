@@ -2,6 +2,7 @@ package kommunicate.io.sample.utils
 
 import android.util.Base64
 import android.view.View
+import android.view.ViewGroup
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -24,7 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.applozic.mobicomkit.uiwidgets.R
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
-import java.util.UUID
+import org.hamcrest.TypeSafeMatcher
 
 /**
  * chatAuth = 0
@@ -110,4 +111,29 @@ fun sendMessageAsUser(message: String) {
 
     onView(withId(R.id.conversation_send))
         .perform(click())
+}
+
+fun hasChildren(greaterThan: Int = 0, lessThan: Int = Int.MAX_VALUE): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+        override fun matchesSafely(view: View): Boolean {
+            val viewGrp = view as? ViewGroup ?: return false
+            return viewGrp.childCount in greaterThan+1 until  lessThan
+        }
+
+        override fun describeTo(description: org.hamcrest.Description?) {
+            description?.appendText("child count should be in range ${greaterThan+1} and ${lessThan-1}")
+        }
+    }
+}
+
+fun hasWidthGreaterThan(minWidth: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: org.hamcrest.Description?) {
+            description?.appendText("Finding the view with width greater than $minWidth")
+        }
+
+        override fun matchesSafely(item: View?): Boolean {
+            return (item?.width ?: 0) > 0
+        }
+    }
 }

@@ -170,12 +170,12 @@ public class Message extends JsonMarker implements Parcelable {
         this.source = message.source;
         this.timeToLive = message.timeToLive;
         this.fileMetaKey = message.fileMetaKey;
-        this.filePaths = new ArrayList<>(message.filePaths);
+        this.filePaths = message.filePaths != null ? new ArrayList<>(message.filePaths) : new ArrayList<>();
         this.pairedMessageKey = message.pairedMessageKey;
         this.sentMessageTimeAtServer = message.sentMessageTimeAtServer;
         this.canceled = message.canceled;
         this.clientGroupId = message.clientGroupId;
-        this.fileMeta = message.fileMeta != null ? new FileMeta(message.fileMeta) : null;  // Copy nested object if necessary
+        this.fileMeta = message.fileMeta != null ? new FileMeta(message.fileMeta) : null;
         this.messageId = message.messageId;
         this.read = message.read;
         this.attDownloadInProgress = message.attDownloadInProgress;

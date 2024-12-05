@@ -4,14 +4,16 @@ import static com.applozic.mobicommons.ApplozicService.getAppContext;
 import static com.applozic.mobicommons.ApplozicService.getContext;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Patterns;
+
 
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper;
 import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.JsonMarker;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
@@ -29,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-public class Message extends JsonMarker {
+public class Message extends JsonMarker implements Parcelable {
 
     private static final long serialVersionUID = 1990184800447349902L;
     private Long createdAtTime = new Date().getTime();
@@ -105,6 +107,50 @@ public class Message extends JsonMarker {
     public Message(String to, String body) {
         this.to = to;
         this.message = body;
+    }
+
+    public Message(Parcel in) {
+        createdAtTime = in.readLong();
+        to = in.readString();
+        message = in.readString();
+        key = in.readString();
+        deviceKey = in.readString();
+        userKey = in.readString();
+        emailIds = in.readString();
+        shared = in.readByte() != 0;
+        sent = in.readByte() != 0;
+        delivered = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        type = (short) in.readInt();
+        storeOnDevice = in.readByte() != 0;
+        contactIds = in.readString();
+        groupId = (Integer) in.readValue(Integer.class.getClassLoader());
+        groupStatus = (Short) in.readValue(Short.class.getClassLoader());
+        sendToDevice = in.readByte() != 0;
+        scheduledAt = (Long) in.readValue(Long.class.getClassLoader());
+        source = (short) in.readInt();
+        timeToLive = (Integer) in.readValue(Integer.class.getClassLoader());
+        sentToServer = in.readByte() != 0;
+        fileMetaKey = in.readString();
+        filePaths = in.createStringArrayList();
+        pairedMessageKey = in.readString();
+        sentMessageTimeAtServer = in.readLong();
+        canceled = in.readByte() != 0;
+        clientGroupId = in.readString();
+        fileMeta = in.readParcelable(FileMeta.class.getClassLoader());
+        messageId = (Long) in.readValue(Long.class.getClassLoader());
+        read = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        attDownloadInProgress = in.readByte() != 0;
+        applicationId = in.readString();
+        conversationId = (Integer) in.readValue(Integer.class.getClassLoader());
+        topicId = in.readString();
+        connected = in.readByte() != 0;
+        contentType = (short) in.readInt();
+        metadata = in.readHashMap(String.class.getClassLoader());
+        status = (short) in.readInt();
+        hidden = in.readByte() != 0;
+        replyMessage = in.readInt();
+        supportCustomerName = in.readString();
+        groupAssignee = in.readString();
     }
 
     //copy constructor
@@ -813,6 +859,71 @@ public class Message extends JsonMarker {
     public boolean isAttachmentEncrypted() {
         return fileMeta != null && !TextUtils.isEmpty(fileMeta.getName()) && fileMeta.getName().startsWith(AWS_ENCRYPTED);
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(createdAtTime);
+        dest.writeString(to);
+        dest.writeString(message);
+        dest.writeString(key);
+        dest.writeString(deviceKey);
+        dest.writeString(userKey);
+        dest.writeString(emailIds);
+        dest.writeByte((byte) (shared ? 1 : 0));
+        dest.writeByte((byte) (sent ? 1 : 0));
+        dest.writeValue(delivered);
+        dest.writeInt(type);
+        dest.writeByte((byte) (storeOnDevice ? 1 : 0));
+        dest.writeString(contactIds);
+        dest.writeValue(groupId);
+        dest.writeValue(groupStatus);
+        dest.writeByte((byte) (sendToDevice ? 1 : 0));
+        dest.writeValue(scheduledAt);
+        dest.writeInt(source);
+        dest.writeValue(timeToLive);
+        dest.writeByte((byte) (sentToServer ? 1 : 0));
+        dest.writeString(fileMetaKey);
+        dest.writeStringList(filePaths);
+        dest.writeString(pairedMessageKey);
+        dest.writeLong(sentMessageTimeAtServer);
+        dest.writeByte((byte) (canceled ? 1 : 0));
+        dest.writeString(clientGroupId);
+        dest.writeParcelable(fileMeta, flags);
+        dest.writeValue(messageId);
+        dest.writeValue(read);
+        dest.writeByte((byte) (attDownloadInProgress ? 1 : 0));
+        dest.writeString(applicationId);
+        dest.writeValue(conversationId);
+        dest.writeString(topicId);
+        dest.writeByte((byte) (connected ? 1 : 0));
+        dest.writeInt(contentType);
+        dest.writeMap(metadata);
+        dest.writeInt(status);
+        dest.writeByte((byte) (hidden ? 1 : 0));
+        dest.writeInt(replyMessage);
+        dest.writeString(supportCustomerName);
+        dest.writeString(groupAssignee);
+    }
+
+    @Override
+    public int describeContents() {
+        if (fileMeta != null) {
+            return fileMeta.describeContents(); // Will return the value defined in the FileMeta class
+        }
+        return 0;
+    }
+
+    public static final Creator<Message> CREATOR = new Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
 
     public enum GroupStatus {
         INITIAL(Short.valueOf("-1")), OPEN(Short.valueOf("0")), PROGRESS(Short.valueOf("1")),

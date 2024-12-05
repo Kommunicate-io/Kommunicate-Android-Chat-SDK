@@ -21,9 +21,6 @@ public class FileMeta extends JsonMarker implements Parcelable {
     private String thumbnailUrl;
     private Long createdAtTime;
 
-    public FileMeta() {
-    }
-
     public FileMeta(Parcel in) {
         key = in.readString();
         userKey = in.readString();
@@ -34,22 +31,10 @@ public class FileMeta extends JsonMarker implements Parcelable {
         size = in.readInt();
         contentType = in.readString();
         thumbnailUrl = in.readString();
-        long timestamp = in.readLong();
-        createdAtTime = timestamp != -1 ? timestamp : null;
+        createdAtTime = in.readLong() != -1 ? in.readLong() : null;
     }
 
-    // Copy constructor for FileMeta
-    public FileMeta(FileMeta other) {
-        this.key = other.key;
-        this.userKey = other.userKey;
-        this.blobKey = other.blobKey;
-        this.thumbnailBlobKey = other.thumbnailBlobKey;
-        this.name = other.name;
-        this.url = other.url;
-        this.size = other.size;
-        this.contentType = other.contentType;
-        this.thumbnailUrl = other.thumbnailUrl;
-        this.createdAtTime = other.createdAtTime;
+    public FileMeta() {
     }
 
     public String getKeyString() {

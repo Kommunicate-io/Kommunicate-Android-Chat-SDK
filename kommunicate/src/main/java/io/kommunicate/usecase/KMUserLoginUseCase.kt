@@ -17,6 +17,14 @@ import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * Use case for handling the login or registration of a KMUser in the Kommunicate SDK.
+ *
+ * @property context The Android context for accessing resources and services.
+ * @property user The [KMUser] object containing user details for login or registration.
+ * @property isAgent Boolean flag indicating if the user is an agent or a regular user.
+ * @property preChatReceiver Optional [ResultReceiver] to handle pre-chat events.
+ */
 class KMUserLoginUseCase(
     private val context: Context,
     private val user: KMUser,
@@ -51,6 +59,21 @@ class KMUserLoginUseCase(
     }
 
     companion object {
+
+        /**
+         * Executes the use case with the given [UseCaseExecutor]. This helper function invokes the
+         * coroutine internally don't invoke explicitly.
+         *
+         * This method provides a simpler way to execute the use case and handle success or failure
+         * using a provided [AlLoginHandler].
+         *
+         * @param context The Android context for accessing resources and services.
+         * @param user The [KMUser] object containing user details for login or registration.
+         * @param isAgent Boolean flag indicating if the user is an agent or a regular user.
+         * @param preChatReceiver Optional [ResultReceiver] to handle pre-chat events.
+         * @param loginHandler Optional [AlLoginHandler] for handling login success or failure callbacks.
+         * @return [UseCaseExecutor] for cancelling the coroutine.
+         */
         fun executeWithExecutor(
             context: Context,
             user: KMUser,

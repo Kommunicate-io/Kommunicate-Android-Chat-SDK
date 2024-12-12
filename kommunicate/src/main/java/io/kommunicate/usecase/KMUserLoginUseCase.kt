@@ -59,10 +59,6 @@ class KMUserLoginUseCase(
             loginHandler: AlLoginHandler? = null,
         ): UseCaseExecutor<KMUserLoginUseCase, APIResult<RegistrationResponse>> {
 
-            // Login user.
-            UserLoginUseCase.executeWithExecutor(context, user, loginHandler)
-
-           // KMUserLoginUseCase Execution
             val kmUserLoginUseCase = KMUserLoginUseCase(context, user, isAgent, preChatReceiver)
             val executor = UseCaseExecutor(
                 kmUserLoginUseCase,

@@ -24,6 +24,7 @@ import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
+import com.applozic.mobicomkit.usecase.KMUserLoginUseCase;
 import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -49,7 +50,6 @@ import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.async.KmAwayMessageTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
-import io.kommunicate.async.KmUserLoginTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
@@ -209,7 +209,7 @@ public class Kommunicate {
             kmUser.setSkipDeletedGroups(true);
         }
 
-        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
+        KMUserLoginUseCase.Companion.executeWithExecutor(context, kmUser, false, prechatReceiver, handler);
     }
 
     /**
@@ -378,8 +378,7 @@ public class Kommunicate {
      * @param callback to update the status
      */
     public static void loginUserWithKmCallBack(final Context context, KMUser kmUser, final KmCallback callback) {
-
-        new KmUserLoginTask(kmUser, false, new KMLoginHandler() {
+        KMLoginHandler handler = new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, final Context context) {
                 launchChatDirectly(context, callback);
@@ -390,7 +389,9 @@ public class Kommunicate {
                 Utils.printLog(context, TAG, "Registration Failure" + exception.getMessage());
                 callback.onFailure(exception);
             }
-        }, context, null).execute();
+        };
+
+        KMUserLoginUseCase.Companion.executeWithExecutor(context, kmUser, false, null, handler);
     }
 
     /**

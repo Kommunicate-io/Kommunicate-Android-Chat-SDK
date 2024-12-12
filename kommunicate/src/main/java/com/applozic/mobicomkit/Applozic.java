@@ -27,7 +27,7 @@ import com.applozic.mobicomkit.listners.AlLoginHandler;
 import com.applozic.mobicomkit.listners.AlLogoutHandler;
 import com.applozic.mobicomkit.listners.AlPushNotificationHandler;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
-import com.applozic.mobicomkit.usecase.UserLoginUseCase;
+import io.kommunicate.usecase.UserLoginUseCase;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;

@@ -1,5 +1,6 @@
-package com.applozic.mobicomkit.usecase
+package io.kommunicate.utils
 
+import io.kommunicate.usecase.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

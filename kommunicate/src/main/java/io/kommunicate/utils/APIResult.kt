@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.usecase
+package io.kommunicate.utils
 
 sealed class APIResult<T> {
     data class Success<T>(val data: T): APIResult<T>()

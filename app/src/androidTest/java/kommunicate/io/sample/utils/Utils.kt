@@ -1,8 +1,14 @@
 package kommunicate.io.sample.utils
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.util.Base64
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.core.view.size
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -21,11 +27,19 @@ import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.applozic.mobicomkit.uiwidgets.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.hamcrest.Description
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  * chatAuth = 0
@@ -134,6 +148,50 @@ fun hasWidthGreaterThan(minWidth: Int): Matcher<View> {
 
         override fun matchesSafely(item: View?): Boolean {
             return (item?.width ?: 0) > 0
+        }
+    }
+}
+
+fun drawableToBitmap(drawable: Drawable): Bitmap {
+    return if (drawable is BitmapDrawable) {
+        drawable.bitmap
+    } else {
+        throw IllegalArgumentException("Drawable is not a BitmapDrawable")
+    }
+}
+
+fun compareBitmaps(bitmap1: Bitmap, bitmap2: Bitmap): Boolean {
+    return bitmap1.sameAs(bitmap2)
+}
+
+
+fun withRecyclerViewItem(viewMatcher: Matcher<View>, position: Int): Matcher<View> {
+    return allOf(
+        viewMatcher,
+        atPosition(position)
+    )
+}
+
+fun getRecyclerViewItemCount(viewMatcher: Matcher<View>): Int {
+    var size = 0
+    onView(viewMatcher)
+        .check { view, _ ->
+            size = (view as RecyclerView).size
+        }
+    return size
+}
+
+private fun atPosition(position: Int): Matcher<View> {
+    return object : TypeSafeMatcher<View>() {
+        override fun matchesSafely(view: View): Boolean {
+            val recyclerView = view as RecyclerView
+            val layoutManager = recyclerView.layoutManager
+            val viewAtPosition = layoutManager?.findViewByPosition(position)
+            return viewAtPosition is ViewGroup
+        }
+
+        override fun describeTo(description: Description?) {
+            description?.appendText("at position $position")
         }
     }
 }

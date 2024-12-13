@@ -1,12 +1,16 @@
 package kommunicate.io.sample.utils
 
 import android.content.Context
+import android.widget.ImageView
+import androidx.test.core.app.ActivityScenario
 import com.applozic.mobicomkit.api.conversation.Message
+import com.bumptech.glide.Glide
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.kommunicate.KmConversationBuilder
 import io.kommunicate.callbacks.KmCallback
+import kommunicate.io.sample.MainActivity
 import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kotlinx.coroutines.runBlocking
@@ -78,6 +82,16 @@ object KmTestHelper {
         return richMessagePayload?.let { JsonParser.parseString(it).asJsonArray }
     }
 
+    fun getRichMessagePayloadAsObject(
+        groupId: String,
+        chatAPI: KommunicateChatAPI,
+        chatAuthToken: String
+    ): JsonObject? {
+        val messageFromServer = getRichMessageFromServer(groupId, chatAPI, chatAuthToken)
+        val richMessagePayload = messageFromServer?.asJsonObject?.get("metadata")?.asJsonObject?.get("payload")?.asString
+        return richMessagePayload?.let { JsonParser.parseString(it).asJsonObject }
+    }
+
     fun getLastMessageFromServer(
         chatAPI: KommunicateChatAPI,
         chatAuthToken: String,
@@ -112,4 +126,23 @@ object KmTestHelper {
 
         return lastMessage
     }
+}
+
+fun validateImage(mActivityRule: ActivityScenario<MainActivity>, imageURL: String, imageView: ImageView) {
+    val imageViewBitmap = drawableToBitmap(imageView.drawable)
+
+    mActivityRule.onActivity {
+        Glide.with(it)
+            .load(imageURL)
+            .into(imageView)
+    }
+
+    Thread.sleep(5000)
+
+    val loadedBitmap = drawableToBitmap(imageView.drawable)
+
+    assertTrue(
+        "The images do not match",
+        compareBitmaps(imageViewBitmap, loadedBitmap)
+    )
 }

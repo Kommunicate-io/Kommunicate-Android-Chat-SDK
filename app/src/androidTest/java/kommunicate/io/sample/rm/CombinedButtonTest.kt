@@ -11,8 +11,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.applozic.mobicomkit.api.conversation.Message
-import com.google.gson.JsonParser
 import io.kommunicate.Kommunicate
 import kommunicate.io.sample.MainActivity
 import kommunicate.io.sample.network.KommunicateChatAPI
@@ -22,12 +20,10 @@ import kommunicate.io.sample.utils.KmTestHelper.getRichMessagePayload
 import kommunicate.io.sample.utils.KmTestHelper.launchConversation
 import kommunicate.io.sample.utils.hasChildren
 import kommunicate.io.sample.utils.getAuthToken
-import kommunicate.io.sample.utils.hasWidthGreaterThan
 import kommunicate.io.sample.utils.sendMessageAsUser
 import kommunicate.io.sample.utils.waitFor
 import kommunicate.io.sample.utils.waitForLatch
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull

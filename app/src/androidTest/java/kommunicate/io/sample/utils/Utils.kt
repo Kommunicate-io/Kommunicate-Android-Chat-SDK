@@ -2,6 +2,7 @@ package kommunicate.io.sample.utils
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Base64
@@ -153,11 +154,19 @@ fun hasWidthGreaterThan(minWidth: Int): Matcher<View> {
 }
 
 fun drawableToBitmap(drawable: Drawable): Bitmap {
-    return if (drawable is BitmapDrawable) {
+    if (drawable is BitmapDrawable) {
         drawable.bitmap
-    } else {
-        throw IllegalArgumentException("Drawable is not a BitmapDrawable")
     }
+
+    val bitmap = Bitmap.createBitmap(
+        drawable.intrinsicWidth,
+        drawable.intrinsicHeight,
+        Bitmap.Config.ARGB_8888
+    )
+    val canvas = Canvas(bitmap)
+    drawable.setBounds(0, 0, canvas.width, canvas.height)
+    drawable.draw(canvas)
+    return bitmap
 }
 
 fun compareBitmaps(bitmap1: Bitmap, bitmap2: Bitmap): Boolean {
@@ -184,10 +193,9 @@ fun getRecyclerViewItemCount(viewMatcher: Matcher<View>): Int {
 private fun atPosition(position: Int): Matcher<View> {
     return object : TypeSafeMatcher<View>() {
         override fun matchesSafely(view: View): Boolean {
-            val recyclerView = view as RecyclerView
-            val layoutManager = recyclerView.layoutManager
-            val viewAtPosition = layoutManager?.findViewByPosition(position)
-            return viewAtPosition is ViewGroup
+            if (view !is RecyclerView) return false
+            val layoutManager = view.layoutManager ?: return false
+            return layoutManager.findViewByPosition(position) != null
         }
 
         override fun describeTo(description: Description?) {

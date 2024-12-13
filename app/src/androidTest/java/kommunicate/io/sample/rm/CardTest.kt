@@ -155,7 +155,7 @@ class CardTest {
 
         assertTrue("Unable to start the conversation.", groupId != null)
 
-        sendMessageAsUser("card_crousal")
+        sendMessageAsUser("card_carousel")
         onView(isRoot())
             .perform(waitFor(3000))
 

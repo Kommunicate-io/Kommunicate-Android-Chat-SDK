@@ -1,10 +1,15 @@
 package kommunicate.io.sample.utils
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.core.app.ActivityScenario
 import com.applozic.mobicomkit.api.conversation.Message
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -17,6 +22,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -130,14 +137,40 @@ object KmTestHelper {
 
 fun validateImage(mActivityRule: ActivityScenario<MainActivity>, imageURL: String, imageView: ImageView) {
     val imageViewBitmap = drawableToBitmap(imageView.drawable)
+    val latch = CountDownLatch(1)
 
     mActivityRule.onActivity {
         Glide.with(it)
             .load(imageURL)
-            .into(imageView)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    latch.countDown()
+                    fail("Failed to load image: ${e?.message}")
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    latch.countDown()
+                    return false
+                }
+
+            }).into(imageView)
     }
 
-    Thread.sleep(5000)
+    if (!latch.await(10, TimeUnit.SECONDS)) {
+        fail("Image loading timed out after 10 seconds")
+    }
 
     val loadedBitmap = drawableToBitmap(imageView.drawable)
 

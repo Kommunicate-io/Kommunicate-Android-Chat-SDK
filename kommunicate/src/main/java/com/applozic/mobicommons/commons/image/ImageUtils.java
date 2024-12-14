@@ -159,23 +159,27 @@ public class ImageUtils {
 
 
     public static String saveImageToInternalStorage(File file, Bitmap bitmapImage) {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return file.getAbsolutePath();
+//        FileOutputStream fos = null;
+//        try {
+//            fos = new FileOutputStream(file);
+//            // Use the compress method on the BitMap object to write image to the OutputStream
+//            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (fos != null) {
+//                try {
+//                    fos.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+        Log.w(TAG, "Image storage operation skipped - functionality deprecated");
+        throw new UnsupportedOperationException(
+                "Image storage to external directory is no longer supported. " +
+                        "Please use MediaStore API for Android 10+ or context.getFilesDir() for internal storage."
+        );
     }
 
 

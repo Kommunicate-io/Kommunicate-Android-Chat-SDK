@@ -54,6 +54,8 @@ dependencies {
     api libs.cardview
     api libs.material
     api libs.swiperefreshlayout
+    implementation libs.media3.exoplayer
+    implementation libs.media3.ui
     implementation libs.flexbox
     implementation libs.constraintlayout
     implementation libs.core.ktx

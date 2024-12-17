@@ -258,7 +258,13 @@ public class Kommunicate {
     }
 
     public static void loginAsVisitor(Context context, KMLoginHandler handler) {
-        login(context, getVisitor(), handler);
+        loginAsVisitor(context, User.Platform.ANDROID, handler);
+    }
+
+    public static void loginAsVisitor(Context context, User.Platform platform, KMLoginHandler handler) {
+        KMUser user = getVisitor();
+        user.setPlatform(platform.getValue());
+        login(context, user, handler);
     }
 
     /**

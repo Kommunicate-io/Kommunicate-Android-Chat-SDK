@@ -188,7 +188,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
-                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
+                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.isRootDetectionEnabled(), KmAppSettingPreferences.isSSLPinningEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
@@ -265,7 +265,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
-                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
+                Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.isRootDetectionEnabled(), KmAppSettingPreferences.isSSLPinningEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
@@ -465,7 +465,7 @@ public class KmConversationHelper {
             }
         } else {
             if (!TextUtils.isEmpty(conversationBuilder.getAppId())) {
-                Kommunicate.init(conversationBuilder.getContext(), conversationBuilder.getAppId(), KmAppSettingPreferences.getInstance().isRootDetectionEnabled());
+                Kommunicate.init(conversationBuilder.getContext(), conversationBuilder.getAppId(), KmAppSettingPreferences.isRootDetectionEnabled(), KmAppSettingPreferences.isSSLPinningEnabled());
             } else {
                 if (TextUtils.isEmpty(Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey())) {
                     if (callback != null) {

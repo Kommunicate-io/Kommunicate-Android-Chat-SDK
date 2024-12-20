@@ -3,6 +3,7 @@ package io.kommunicate.network
 import android.annotation.SuppressLint
 import android.util.Base64
 import io.kommunicate.BuildConfig
+import io.kommunicate.utils.KmAppSettingPreferences
 import io.kommunicate.utils.KmUtils
 import java.security.KeyManagementException
 import java.security.MessageDigest
@@ -59,7 +60,8 @@ object SSLPinningConfig {
                 val publicKeyHash = md.digest(publicKeyBytes)
                 val publicKeyHashBase64 = Base64.encodeToString(publicKeyHash, Base64.NO_WRAP)
 
-                if (!expectedPublicKeyHash.contains(publicKeyHashBase64)) {
+                val isSSLPinningEnabled = KmAppSettingPreferences.isSSLPinningEnabled
+                if (isSSLPinningEnabled && !expectedPublicKeyHash.contains(publicKeyHashBase64)) {
                     throw CertificateException("Public key pinning failure")
                 }
             }

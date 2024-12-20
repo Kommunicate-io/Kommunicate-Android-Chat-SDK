@@ -118,19 +118,22 @@ public class Kommunicate {
         return faqPageName;
     }
 
-    public static void init(Context context, String applicationKey, Boolean enableDeviceRootDetection, Boolean enableSSLPinning) {
+    public static void init(Context context, String applicationKey, Boolean enableDeviceRootDetection) {
         if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
             KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
         } else {
             Applozic.init(context, applicationKey);
         }
         KmAppSettingPreferences.setRootDetection(enableDeviceRootDetection);
-        KmAppSettingPreferences.setSSLPinning(enableSSLPinning);
         configureSentryWithKommunicate(context);
     }
 
     public static void init(Context context, String applicationKey) {
-        init(context, applicationKey, true, false);
+        init(context, applicationKey, true);
+    }
+
+    public static void enableSSLPinning(boolean isEnable) {
+        KmAppSettingPreferences.setSSLPinningEnabled(isEnable);
     }
 
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {

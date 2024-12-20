@@ -57,8 +57,11 @@ object KmAppSettingPreferences {
         get() = preferences.getBoolean(ROOT_DETECTION, true)
 
     @JvmStatic
-    val isSSLPinningEnabled: Boolean
+    var isSSLPinningEnabled: Boolean
         get() = preferences.getBoolean(SSL_PINNING, false)
+        set(isEnabled) {
+            preferences.edit().putBoolean(SSL_PINNING, isEnabled).apply()
+        }
 
     var primaryColor: String?
         get() = preferences.getString(KM_THEME_PRIMARY_COLOR, null)
@@ -198,11 +201,6 @@ object KmAppSettingPreferences {
     @JvmStatic
     fun setRootDetection(isEnabled: Boolean) {
         preferences.edit().putBoolean(ROOT_DETECTION, isEnabled).apply()
-    }
-
-    @JvmStatic
-    fun setSSLPinning(isEnabled: Boolean) {
-        preferences.edit().putBoolean(SSL_PINNING, isEnabled).apply()
     }
 
     fun clearInstance() {

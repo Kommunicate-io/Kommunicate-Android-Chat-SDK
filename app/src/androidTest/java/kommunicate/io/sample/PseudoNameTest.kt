@@ -34,7 +34,7 @@ class PseudoNameTest {
         context = ApplicationProvider.getApplicationContext()
         dashboardAPI = RetrofitClient.apiClient.create(KommunicateDashboardAPI::class.java)
         authToken = getAuthToken(dashboardAPI)[1]
-        Kommunicate.init(context, "d6cbc2322c608519ad65ab3bcb09fe78", false, false)
+        Kommunicate.init(context, "d6cbc2322c608519ad65ab3bcb09fe78", false)
     }
 
     @Test

@@ -56,7 +56,7 @@ class KMUserDataValidationTest {
             authToken = it[1]
         }
         mActivityRule.onActivity {
-            Kommunicate.init(it, "d6cbc2322c608519ad65ab3bcb09fe78", false, false)
+            Kommunicate.init(it, "d6cbc2322c608519ad65ab3bcb09fe78", false)
         }
     }
 

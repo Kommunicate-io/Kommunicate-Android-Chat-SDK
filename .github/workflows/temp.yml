@@ -22,7 +22,7 @@ jobs:
         with:
           script: |
             const downloadUrl = "https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843"
-            var token = ${{ secrets.GITHUB_TOKEN }}
+            var token = ${{ secrets.DOWNLOAD_TOKEN }}
             console.log(token);
             const authenticatedUrl = `${downloadUrl}?access_token=${token}`;
             core.setOutput('artifact_url', authenticatedUrl);

@@ -1,0 +1,31 @@
+name: Code Lint, Build Checks and UI Tests
+run-name: Code Lint, Build Checks and UI Tests PR - ${{ github.event.pull_request.number }}
+
+on: 
+  pull_request:
+    branches:
+      - development
+      - master  # Run only for pull requests targeting the develop and master branch
+    types:
+      - synchronize # Trigger when commits are added to the pull request
+      - opened # Trigger when a pull request is first opened
+      - reopened # Trigger when a previously closed pull request is reopened
+
+jobs:
+  build:
+    name: "Build Project"
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Get Artifact URL
+        id: get-artifact-url
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const downloadUrl = "https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843"
+            console.log(${process.env.GITHUB_TOKEN});
+            const authenticatedUrl = `${downloadUrl}?access_token=${process.env.GITHUB_TOKEN}`;
+            core.setOutput('artifact_url', authenticatedUrl);
+            console.log(`Authenticated Artifact URL: ${authenticatedUrl}`);
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

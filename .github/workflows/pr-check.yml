@@ -1,5 +1,5 @@
 name: Code Lint, Build Checks and UI Tests
-run-name: Code Lint and Build Checks PR - ${{ github.event.pull_request.number }}
+run-name: Code Lint, Build Checks and UI Tests PR - ${{ github.event.pull_request.number }}
 
 on: 
   pull_request:
@@ -179,12 +179,12 @@ jobs:
           chmod +x ./gradlew
 
       # Run lint checks in kommunicate module
-      - name: Lint Kommunicate module
+      - name: Lint checks for Kommunicate module
         run: |
           ./gradlew kommunicate:lint
 
       # Run lint checks in kommunicate ui module
-      - name: Lint Kommunicate UI module
+      - name: Lint checks for Kommunicate UI module
         run: |
           ./gradlew kommunicateui:lint
 
@@ -295,15 +295,17 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
             });
-            console.log(`Artifacts: $artifacts`);
             const artifact = artifacts.data.artifacts.find(a => a.name === artifactName);
-
             if (artifact) {
-              core.setOutput('artifact_url', artifact.archive_download_url);
-              console.log(`Artifact URL: ${artifact.archive_download_url}`);
+              const downloadUrl = artifact.archive_download_url;
+              const authenticatedUrl = `${downloadUrl}?access_token=${process.env.GITHUB_TOKEN}`;
+              core.setOutput('artifact_url', authenticatedUrl);
+              console.log(`Authenticated Artifact URL: ${authenticatedUrl}`);
             } else {
               core.setFailed(`Artifact ${artifactName} not found.`);
             }
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Post a comment on the PR with the artifact URL
       - name: Post APK URL

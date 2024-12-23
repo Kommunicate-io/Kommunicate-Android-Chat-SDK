@@ -90,8 +90,23 @@ jobs:
         run: |
           ./gradlew clean
 
-      # Build the project
-      - name: Build Project
+      # Build the kommunicate module
+      - name: Build Kommunicate module
+        run: |
+          ./gradlew kommunicate:build
+
+      # Build the kommunicate ui module
+      - name: Build Kommunicate UI module
+        run: |
+          ./gradlew kommunicateui:build
+
+      # Clean the project
+      - name: Clean the project before app build
+        run: |
+          ./gradlew clean
+      
+      # Build the kommunicate module
+      - name: Build App
         run: |
           ./gradlew build
 
@@ -163,8 +178,23 @@ jobs:
         run: |
           chmod +x ./gradlew
 
-      # Run lint checks
-      - name: Run Lint
+      # Run lint checks in kommunicate module
+      - name: Lint Kommunicate module
+        run: |
+          ./gradlew kommunicate:lint
+
+      # Run lint checks in kommunicate ui module
+      - name: Lint Kommunicate UI module
+        run: |
+          ./gradlew kommunicateui:lint
+
+      # Clean the project
+      - name: Clean the project before app lint checks
+        run: |
+          ./gradlew clean
+      
+      # Run lint checks in app module
+      - name: Run Lint for App
         run: |
           ./gradlew lint
 

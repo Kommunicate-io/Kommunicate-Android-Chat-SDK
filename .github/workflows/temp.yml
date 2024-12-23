@@ -24,6 +24,7 @@ jobs:
           method: GET
           headers: |
             Authorization: token ${{ secrets.DOWNLOAD_TOKEN }}
+            User-Agent: github-actions
           retry-count: 3
           retry-delay: 500
 

@@ -22,10 +22,18 @@ jobs:
         with:
           script: |
             const downloadUrl = "https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843";
-            console.log(`GitHub Token: ${process.env.GITHUB_TOKEN}`);
-            console.log(`curl -H "Authorization: token ${process.env.GITHUB_TOKEN}" -L "${downloadUrl}" -o artifact.zip`);
-            const authenticatedUrl = `${downloadUrl}?access_token=${process.env.GITHUB_TOKEN}`;
-            core.setOutput('artifact_url', authenticatedUrl);
-            console.log(`Authenticated Artifact URL: ${authenticatedUrl}`);
+            const fetch = require('node-fetch'); // Available in github-script
+            const response = await fetch(downloadUrl, {
+              headers: {
+                Authorization: `token ${process.env.GITHUB_TOKEN}`,
+              },
+            });
+            if (response.ok) {
+              const buffer = await response.buffer();
+              require('fs').writeFileSync('artifact.zip', buffer);
+              console.log('Artifact downloaded successfully as artifact.zip');
+            } else {
+              console.error(`Failed to download artifact: ${response.statusText}`);
+            }
         env:
           GITHUB_TOKEN: ${{ secrets.DOWNLOAD_TOKEN }}

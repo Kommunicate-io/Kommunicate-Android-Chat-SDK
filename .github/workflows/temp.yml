@@ -22,8 +22,8 @@ jobs:
         with:
           script: |
             const downloadUrl = "https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843";
-            const fetch = require('node-fetch'); // Available in github-script
-            const response = await fetch(downloadUrl, {
+            const fetcha = require('node-fetch'); // Available in github-script
+            const response = await fetcha(downloadUrl, {
               headers: {
                 Authorization: `token ${process.env.GITHUB_TOKEN}`,
               },

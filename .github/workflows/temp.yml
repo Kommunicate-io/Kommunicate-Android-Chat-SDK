@@ -17,23 +17,6 @@ jobs:
 
     steps: 
       - name: Get Artifact URL
-        id: get-artifact-url
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const downloadUrl = "https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843";
-            const fetcha = require('node-fetch'); // Available in github-script
-            const response = await fetcha(downloadUrl, {
-              headers: {
-                Authorization: `token ${process.env.GITHUB_TOKEN}`,
-              },
-            });
-            if (response.ok) {
-              const buffer = await response.buffer();
-              require('fs').writeFileSync('artifact.zip', buffer);
-              console.log('Artifact downloaded successfully as artifact.zip');
-            } else {
-              console.error(`Failed to download artifact: ${response.statusText}`);
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.DOWNLOAD_TOKEN }}
+        run:|
+            response = $(curl -H "Authorization: token ${{ secrets.DOWNLOAD_TOKEN }}" -L "https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843" -o artifact.zip)
+            echo "response from curl= $response"

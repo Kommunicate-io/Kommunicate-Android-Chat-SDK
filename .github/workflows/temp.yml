@@ -20,7 +20,7 @@ jobs:
         id: request
         uses: tyrrrz/action-http-request@master
         with:
-          url: ${{ steps.get-artifact-url.outputs.artifact_url }}
+          url: https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843
           method: GET
           headers: |
             Authorization: token ${{ secrets.DOWNLOAD_TOKEN }}

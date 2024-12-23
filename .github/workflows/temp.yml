@@ -16,7 +16,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps: 
-    - name: Get Token    
-      run: |
-        response = $(curl -H "Authorization: token ${{ secrets.DOWNLOAD_TOKEN }}" -L "https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843" -o artifact.zip)
-        echo "response from curl= $response"
+      - name: Send HTTP request to download artifact
+        id: request
+        uses: tyrrrz/action-http-request@master
+        with:
+          url: ${{ steps.get-artifact-url.outputs.artifact_url }}
+          method: GET
+          headers: |
+            Authorization: token ${{ secrets.DOWNLOAD_TOKEN }}
+          retry-count: 3
+          retry-delay: 500
+
+      - name: Print outputs
+        run: |
+          echo "Status: ${{ steps.request.outputs.status }}"
+          echo "Success: ${{ steps.request.outputs.success }}"
+          echo "Headers: ${{ steps.request.outputs.headers }}"
+          echo "Body: ${{ steps.request.outputs.body }}"
+          echo "Artifact downloaded successfully as artifact.zip"
+          # Optional: Save the body (artifact) to a file if it is binary content
+          echo "${{ steps.request.outputs.body }}" > artifact.zip

@@ -1,5 +1,4 @@
-name: Code Lint, Build Checks and UI Tests
-run-name: Code Lint, Build Checks and UI Tests PR - ${{ github.event.pull_request.number }}
+name: dasd
 
 on: 
   pull_request:

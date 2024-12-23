@@ -27,5 +27,3 @@ jobs:
             const authenticatedUrl = `${downloadUrl}?access_token=${token}`;
             core.setOutput('artifact_url', authenticatedUrl);
             console.log(`Authenticated Artifact URL: ${authenticatedUrl}`);
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

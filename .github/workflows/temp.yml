@@ -57,6 +57,24 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: echo "Generated AVD snapshot for caching."
+
+      # Create local.properties
+      - name: Create local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          echo "GOOGLE_KEY=${{ secrets.GOOGLE_MAPS_API }}" >> local.properties
+
+      # Create release.secrets.properties
+      - name: Create release.secrets.properties
+        run: |
+          echo "apiKommunicateIo=${{ secrets.APIKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiEuKommunicateIo=${{ secrets.APIEUKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiCaKommunicateIo=${{ secrets.APICAKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiTestKommuncateIo=${{ secrets.APITESTKOMMUNCATEIO }}" >> release.secrets.properties
+          echo "kommunicateIo=${{ secrets.KOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiInKommunicateIo=${{ secrets.APIINKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "kommunicateAWS=${{ secrets.KOMMUNICATEAWS }}" >> release.secrets.properties
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> release.secrets.properties
           
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2

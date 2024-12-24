@@ -29,6 +29,7 @@ object KmAppSettingPreferences {
     private const val UPLOAD_OVERRIDE_HEADER = "UPLOAD_OVERRIDE_HEADER"
     private const val SINGLE_THREADED = "IS_SINGLE_THREADED"
     private const val ROOT_DETECTION = "ROOT_DETECTION"
+    private const val SSL_PINNING = "SSL_PINNING"
     private const val RATING_BASE = "RATING_BASE"
 
     @JvmStatic
@@ -51,8 +52,16 @@ object KmAppSettingPreferences {
             .getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE)
     }
 
+    @JvmStatic
     val isRootDetectionEnabled: Boolean
         get() = preferences.getBoolean(ROOT_DETECTION, true)
+
+    @JvmStatic
+    var isSSLPinningEnabled: Boolean
+        get() = preferences.getBoolean(SSL_PINNING, false)
+        set(isEnabled) {
+            preferences.edit().putBoolean(SSL_PINNING, isEnabled).apply()
+        }
 
     var primaryColor: String?
         get() = preferences.getString(KM_THEME_PRIMARY_COLOR, null)

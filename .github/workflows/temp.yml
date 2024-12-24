@@ -11,29 +11,51 @@ on:
       - reopened # Trigger when a previously closed pull request is reopened
 
 jobs:
-  build:
-    name: "Build Project"
+  instrumentation-tests:
+    name: Run Instrumentation Tests
     runs-on: ubuntu-latest
+    steps:
+      # Checkout the code
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    steps: 
-      - name: Send HTTP request to download artifact
-        id: request
-        uses: tyrrrz/action-http-request@master
+      # Set up JDK (required for Android Gradle Plugin)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          url: https://api.github.com/repos/Kommunicate-io/Kommunicate-Android-Chat-SDK/actions/artifacts/2355441843
-          method: GET
-          headers: |
-            Authorization: token ${{ secrets.DOWNLOAD_TOKEN }}
-            User-Agent: github-actions
-          retry-count: 3
-          retry-delay: 500
+          distribution: 'zulu'
+          java-version: '17'
 
-      - name: Print outputs
+      # Set up Android SDK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          api-level: 30 # API level for the emulator
+          target: 'android-30'
+          arch: 'x86_64'
+          profile: 'default'
+          ndk: false
+
+      # Start an Android emulator
+      - name: Start Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: 'google_apis'
+          arch: 'x86_64'
+          profile: 'default'
+          emulator-options: '-no-window -no-boot-anim'
+          script: adb shell input keyevent 82 # Unlock the emulator screen
+
+      # Build the app and run tests
+      - name: Build and Run Tests
         run: |
-          echo "Status: ${{ steps.request.outputs.status }}"
-          echo "Success: ${{ steps.request.outputs.success }}"
-          echo "Headers: ${{ steps.request.outputs.headers }}"
-          echo "Body: ${{ steps.request.outputs.body }}"
-          echo "Artifact downloaded successfully as artifact.zip"
-          # Optional: Save the body (artifact) to a file if it is binary content
-          echo "${{ steps.request.outputs.body }}" > artifact.zip
+          ./gradlew assembleDebug assembleAndroidTest
+          ./gradlew connectedAndroidTest
+          
+      # Upload Test Results
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: app/build/reports/androidTests/

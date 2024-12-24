@@ -1358,7 +1358,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void openFeedbackFragment() {
-        if (KmAppSettingPreferences.getInstance().getRatingBase() != 3) {
+        if (KmAppSettingPreferences.getRatingBase() == 5) {
              openFiveStarRatingFragment();
         } else {
             openEmojiFeedbackFragment();

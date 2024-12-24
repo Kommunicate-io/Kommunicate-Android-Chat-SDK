@@ -109,6 +109,7 @@ object KmAppSettingPreferences {
             preferences.edit().putString(UPLOAD_OVERRIDE_URL, url).apply()
         }
 
+    @JvmStatic
     var ratingBase: Int
         get() = preferences.getInt(RATING_BASE, 3)
         private set(base) {

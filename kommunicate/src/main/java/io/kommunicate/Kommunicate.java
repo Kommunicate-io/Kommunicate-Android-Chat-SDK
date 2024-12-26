@@ -124,12 +124,16 @@ public class Kommunicate {
         } else {
             Applozic.init(context, applicationKey);
         }
-        KmAppSettingPreferences.getInstance().setRootDetection(enableDeviceRootDetection);
+        KmAppSettingPreferences.setRootDetection(enableDeviceRootDetection);
         configureSentryWithKommunicate(context);
     }
 
     public static void init(Context context, String applicationKey) {
         init(context, applicationKey, true);
+    }
+
+    public static void enableSSLPinning(boolean isEnable) {
+        KmAppSettingPreferences.setSSLPinningEnabled(isEnable);
     }
 
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {

@@ -128,6 +128,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
+import io.sentry.Hint;
+import io.sentry.Sentry;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -475,38 +477,51 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             } else if (type == 6)  {
                 MyViewHolder6 myViewholder6 = (MyViewHolder6) holder;
                 if (message.getMetadata() != null) {
-                    JSONObject jsonObject = new JSONObject(message.getMetadata().get(FEEDBACK));
-                    int ratingValue = (int) jsonObject.get(RATING);
-                    switch (ratingValue) {
-                        case FeedbackInputFragment.RATING_POOR:
-                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_sad_1));
-                            break;
-                        case FeedbackInputFragment.RATING_AVERAGE:
-                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
-                            break;
-                        case FeedbackInputFragment.RATING_GOOD:
-                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_happy));
-                            break;
-                        default:
-                            myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
-
-                    }
-                    if (!jsonObject.has(COMMENTS)) {
-                        myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
+                    String json = message.getMetadata().get(FEEDBACK);
+                    if (json == null) {
+                        Sentry.captureException(new RuntimeException("Unable to find feedback in message of type feedback message " + message));
                         return;
                     }
-                    String comment = String.valueOf(jsonObject.get(COMMENTS));
-                    myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
-                    myViewholder6.textViewFeedbackComment.setText(comment);
-                    if (alCustomizationSettings.isAgentApp()) {
-                        myViewholder6.textViewFeedbackText.setText(context.getString(R.string.user_rating_text));
+
+                    JSONObject jsonObject = new JSONObject(json);
+                    int ratingValue = (int) jsonObject.get(RATING);
+
+                    if (KmAppSettingPreferences.getRatingBase() != 3) {
+                        switch (ratingValue) {
+                            case 1:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context,  R.drawable.star));
+                                break;
+                            case 2:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context,  R.drawable.ic_two_star_filled));
+                                break;
+                            case 4:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_four_star_filled));
+                                break;
+                            case 5:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_five_star_filled));
+                                break;
+                            default:
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_three_star_filled));
+                        }
+                        if (alCustomizationSettings.isAgentApp()) {
+                            myViewholder6.textViewFeedbackText.setText(context.getString(R.string.user_rating_text));
+                            myViewholder6.textViewFeedbackText.setVisibility(View.VISIBLE);
+
+                        } else {
+                            myViewholder6.textViewFeedbackText.setText("");
+                            myViewholder6.textViewFeedbackText.setVisibility(GONE);
+                        }
+                        if (!jsonObject.has(COMMENTS)) {
+                            myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
+                            return;
+                        }
+                        String comment = String.valueOf(jsonObject.get(COMMENTS));
+                        myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
+                        myViewholder6.textViewFeedbackComment.setText(comment);
                     } else {
                         switch (ratingValue) {
                             case FeedbackInputFragment.RATING_POOR:
                                 myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_sad_1));
-                                break;
-                            case FeedbackInputFragment.RATING_AVERAGE:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_confused));
                                 break;
                             case FeedbackInputFragment.RATING_GOOD:
                                 myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, com.applozic.mobicomkit.uiwidgets.R.drawable.ic_happy));
@@ -517,10 +532,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                         myViewholder6.textViewFeedbackText.setVisibility(View.VISIBLE);
 
-                        if (!jsonObject.has("comments")) {
+                        if (!jsonObject.has(COMMENTS)) {
                             myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(GONE);
                             return;
                         }
+                        String comment = String.valueOf(jsonObject.get(COMMENTS));
                         myViewholder6.scrollViewFeedbackCommentWrap.setVisibility(View.VISIBLE);
                         myViewholder6.textViewFeedbackComment.setText(comment);
 
@@ -543,7 +559,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 bindMessageView(holder, message, position);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Hint hint = new Hint();
+            hint.set("MESSAGE", message);
+            Sentry.captureException(e, hint);
         }
     }
 

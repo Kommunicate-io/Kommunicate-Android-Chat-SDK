@@ -419,10 +419,7 @@ jobs:
           script: |
             set -e
             ./gradlew assembleDebug assembleAndroidTest
-            ./gradlew connectedAndroidTest || {
-              echo "Tests failed. Uploading results before exit."
-              exit 1
-            }
+            ./gradlew connectedAndroidTest
           
       # Upload Test Results
       - name: Upload Test Results

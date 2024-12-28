@@ -619,7 +619,7 @@ public class KmConversationHelper {
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                callback.onFailure(registrationResponse);
+                callback.onFailure(exception);
                 Utils.printLog(null, TAG, "Error while logging in user : " + (registrationResponse != null ? registrationResponse : exception));
             }
         };

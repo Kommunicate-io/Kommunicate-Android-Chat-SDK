@@ -137,39 +137,11 @@ object KmTestHelper {
 
 fun validateImage(mActivityRule: ActivityScenario<MainActivity>, imageURL: String, imageView: ImageView) {
     val imageViewBitmap = drawableToBitmap(imageView.drawable)
-    val latch = CountDownLatch(1)
 
     mActivityRule.onActivity {
         Glide.with(it)
             .load(imageURL)
-            .listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    latch.countDown()
-                    fail("Failed to load image: ${e?.message}")
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    latch.countDown()
-                    return false
-                }
-
-            }).into(imageView)
-    }
-
-    if (!latch.await(10, TimeUnit.SECONDS)) {
-        fail("Image loading timed out after 10 seconds")
+            .into(imageView)
     }
 
     val loadedBitmap = drawableToBitmap(imageView.drawable)

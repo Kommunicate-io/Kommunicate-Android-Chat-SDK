@@ -7,9 +7,12 @@ import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.task.AlAsyncTask;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmClientService;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmAssigneeUpdateTask to AssigneeUpdateUseCase")
 public class KmAssigneeUpdateTask extends AlAsyncTask<Void, String> {
     private Integer groupId;
     private String assigneeId;

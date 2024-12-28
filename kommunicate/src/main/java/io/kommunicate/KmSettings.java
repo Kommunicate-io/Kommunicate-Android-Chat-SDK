@@ -23,6 +23,7 @@ import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.preference.KmDefaultSettingPreference;
+import io.kommunicate.usecase.AssigneeUpdateUseCase;
 import io.kommunicate.utils.KmAppSettingPreferences;
 
 public class KmSettings {
@@ -99,7 +100,7 @@ public class KmSettings {
             @Override
             public void onSuccess(final Channel channel, Context context) {
                 Utils.printLog(context, TAG, "Updating conversation assignee for : " + channel.getKey() + "\nAssignee : " + assigneeId);
-                new KmAssigneeUpdateTask(channel.getKey(), assigneeId, new KmCallback() {
+                KmCallback kmCallback = new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
                         Utils.printLog(null, TAG, "Successfully updated conversation assignee for : " + channel.getKey());
@@ -112,10 +113,12 @@ public class KmSettings {
                     public void onFailure(Object error) {
                         Utils.printLog(null, TAG, "Failed to update conversation assignee for : " + channel.getKey());
                         if (callback != null) {
-                            callback.onFailure(new KmException(UNABLE_TO_UPDATE));
+                            callback.onFailure(error);
                         }
                     }
-                }).execute();
+                };
+
+                AssigneeUpdateUseCase.executeWithExecutor(channel.getKey(), assigneeId, kmCallback);
             }
 
             @Override

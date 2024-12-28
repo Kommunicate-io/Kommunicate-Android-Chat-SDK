@@ -321,8 +321,8 @@ jobs:
     
   comment-on-pr:
     name: "Post CodeRabbit Review Request"
-    needs: build
-    runs-on: instrumentation-tests
+    needs: instrumentation-tests
+    runs-on: ubuntu-latest
 
     steps:
       # Checkout the repository (optional, if code is needed)

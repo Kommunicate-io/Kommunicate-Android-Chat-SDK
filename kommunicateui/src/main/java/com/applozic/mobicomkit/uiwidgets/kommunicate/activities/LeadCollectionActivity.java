@@ -20,6 +20,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter;
 
 import io.kommunicate.Kommunicate;
+import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 
@@ -182,11 +183,10 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             String NAME_FIELD = getString(R.string.nameEt);
 
             KMUser user = new KMUser();
+            String userName = !TextUtils.isEmpty(dataMap.get(EMAIL_FIELD)) ? dataMap.get(EMAIL_FIELD) : dataMap.get(CONTACT_NUMBER_FILED);
 
-            user.setUserName(!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD)) ? dataMap.get(EMAIL_FIELD) : dataMap.get(CONTACT_NUMBER_FILED));
-
-            if (TextUtils.isEmpty(user.getUserId())) {
-                user = Kommunicate.getVisitor();
+            if (!TextUtils.isEmpty(userName)) {
+                user.setUserName(userName);
             }
 
             if (!TextUtils.isEmpty(dataMap.get(EMAIL_FIELD))) {
@@ -201,27 +201,47 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
                 user.setContactNumber(dataMap.get(CONTACT_NUMBER_FILED));
             }
 
-            final ProgressDialog dialog = new ProgressDialog(this);
-            dialog.setCancelable(false);
-            dialog.setMessage(getString(R.string.km_prechat_processing_wait_info));
-            dialog.show();
-
-            ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
-                @Override
-                protected void onReceiveResult(int resultCode, Bundle resultData) {
-                    dialog.dismiss();
-                    if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
-                        finish();
+            if (TextUtils.isEmpty(user.getUserId())) {
+                Kommunicate.getVisitor(new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        KMUser visitorUser = (KMUser) message;
+                        handleUserProcessing(visitorUser);
                     }
-                }
-            };
 
-            Bundle bundle = new Bundle();
-            bundle.putString(KmConstants.KM_USER_DATA, GsonUtils.getJsonFromObject(user, KMUser.class));
-            bundle.putParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER, finishActivityReceiver);
-            if (prechatReceiver != null) {
-                prechatReceiver.send(KmConstants.PRECHAT_RESULT_CODE, bundle);
+                    @Override
+                    public void onFailure(Object error) {
+                        handleUserProcessing(new KMUser());
+                    }
+                });
+            } else {
+                handleUserProcessing(user);
             }
+        }
+    }
+
+    private void handleUserProcessing(KMUser user) {
+        final ProgressDialog dialog = new ProgressDialog(this);
+        dialog.setCancelable(false);
+        dialog.setMessage(getString(R.string.km_prechat_processing_wait_info));
+        dialog.show();
+
+        ResultReceiver finishActivityReceiver = new ResultReceiver(null) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                dialog.dismiss();
+                if (resultCode == KmConstants.PRECHAT_RESULT_CODE) {
+                    finish();
+                }
+            }
+        };
+
+        Bundle bundle = new Bundle();
+        bundle.putString(KmConstants.KM_USER_DATA, GsonUtils.getJsonFromObject(user, KMUser.class));
+        bundle.putParcelable(KmConstants.FINISH_ACTIVITY_RECEIVER, finishActivityReceiver);
+
+        if (prechatReceiver != null) {
+            prechatReceiver.send(KmConstants.PRECHAT_RESULT_CODE, bundle);
         }
     }
 }

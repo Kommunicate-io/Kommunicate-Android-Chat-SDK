@@ -274,7 +274,7 @@ public class Kommunicate {
         getVisitor(new KmCallback() {
             @Override
             public void onSuccess(Object message) {
-                KMUser user = new KMUser();
+                KMUser user = (KMUser) message;
                 user.setPlatform(platform.getValue());
                 login(context, user, handler);
             }

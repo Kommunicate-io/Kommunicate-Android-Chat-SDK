@@ -42,6 +42,7 @@ import java.util.Map;
 import annotations.CleanUpRequired;
 import io.kommunicate.KmSettings;
 import io.kommunicate.R;
+import io.kommunicate.usecase.UserLogoutUseCase;
 
 /**
  * Created by sunil on 29/8/16.
@@ -317,7 +318,7 @@ public class Applozic {
     }
 
     public static void logoutUser(final Context context, AlLogoutHandler logoutHandler) {
-        AlTask.execute(new UserLogoutTask(logoutHandler, context));
+        UserLogoutUseCase.executeWithExecutor(context, logoutHandler);
     }
 
     public static void registerForPushNotification(Context context, String pushToken, AlPushNotificationHandler handler) {

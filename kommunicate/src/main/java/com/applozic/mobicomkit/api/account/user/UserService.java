@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.kommunicate.usecase.UserUpdateUseCase;
+
 /**
  * Created by sunil on 17/3/16.
  */
@@ -435,7 +437,7 @@ public class UserService {
     }
 
     public void updateUser(User user, boolean isForEmail,  AlCallback callback) {
-        AlTask.execute(new AlUserUpdateTask(context, user, isForEmail, callback));
+        UserUpdateUseCase.executeWithExecutor(context, user, isForEmail, callback);
     }
 
     public ApiResponse updateUserDisplayName(String userId, String userDisplayName) {

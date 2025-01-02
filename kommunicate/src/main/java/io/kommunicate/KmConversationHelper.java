@@ -216,17 +216,37 @@ public class KmConversationHelper {
                     }
                 }
             } else {
-                KMUser kmUser;
-
-                if (launchChat.getKmUser() != null) {
-                    kmUser = launchChat.getKmUser();
-                } else if (!TextUtils.isEmpty(launchChat.getUserId())) {
+                KMUser kmUser = launchChat.getKmUser();
+                if (kmUser == null && !TextUtils.isEmpty(launchChat.getUserId())) {
                     kmUser = getKmUser(launchChat);
-                } else {
-                    kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, null, callback), callback));
+                if (kmUser != null) {
+                    Kommunicate.login(
+                            launchChat.getContext(),
+                            kmUser,
+                            getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, null, callback), callback)
+                    );
+                } else {
+                    Kommunicate.getVisitor(new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            KMUser user = (KMUser) message;
+                            Kommunicate.login(
+                                    launchChat.getContext(),
+                                    user,
+                                    getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, null, callback), callback)
+                            );
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -293,17 +313,46 @@ public class KmConversationHelper {
                     }
                 }
             } else {
-                KMUser kmUser;
+                KMUser kmUser = launchChat.getKmUser();
 
-                if (launchChat.getKmUser() != null) {
-                    kmUser = launchChat.getKmUser();
-                } else if (!TextUtils.isEmpty(launchChat.getUserId())) {
+                if (kmUser == null && !TextUtils.isEmpty(launchChat.getUserId())) {
                     kmUser = getKmUser(launchChat);
-                } else {
-                    kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, null, callback), callback));
+                if (kmUser != null) {
+                    Kommunicate.login(
+                            launchChat.getContext(),
+                            kmUser,
+                            getLoginHandler(
+                                    launchChat,
+                                    getStartChatHandler(launchChat.isSkipChatList(), false, null, callback),
+                                    callback
+                            )
+                    );
+                } else {
+                    Kommunicate.getVisitor(new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            KMUser visitorUser = (KMUser) message;
+                            Kommunicate.login(
+                                    launchChat.getContext(),
+                                    visitorUser,
+                                    getLoginHandler(
+                                            launchChat,
+                                            getStartChatHandler(launchChat.isSkipChatList(), false, null, callback),
+                                            callback
+                                    )
+                            );
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -498,15 +547,25 @@ public class KmConversationHelper {
                     }
                 }
             } else {
-                KMUser kmUser;
-
                 if (conversationBuilder.getKmUser() != null) {
-                    kmUser = conversationBuilder.getKmUser();
+                    KMUser kmUser = conversationBuilder.getKmUser();
+                    Kommunicate.login(conversationBuilder.getContext(), kmUser, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), null, callback), callback));
                 } else {
-                    kmUser = Kommunicate.getVisitor();
-                }
+                    Kommunicate.getVisitor(new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            KMUser user = (KMUser) message;
+                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), null, callback), callback));
+                        }
 
-                Kommunicate.login(conversationBuilder.getContext(), kmUser, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), null, callback), callback));
+                        @Override
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                        }
+                    });
+                }
             }
         }
     }

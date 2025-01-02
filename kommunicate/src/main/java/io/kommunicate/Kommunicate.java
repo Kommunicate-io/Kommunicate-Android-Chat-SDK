@@ -25,6 +25,7 @@ import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
+import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import io.kommunicate.usecase.KMUserLoginUseCase;
 import com.applozic.mobicommons.ALSpecificSettings;
@@ -270,9 +271,19 @@ public class Kommunicate {
     }
 
     public static void loginAsVisitor(@NotNull Context context, @NotNull User.Platform platform, KMLoginHandler handler) {
-        KMUser user = getVisitor();
-        user.setPlatform(platform.getValue());
-        login(context, user, handler);
+        getVisitor(new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                KMUser user = (KMUser) message;
+                user.setPlatform(platform.getValue());
+                login(context, user, handler);
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                handler.onFailure(null, new ApplozicException("unable to create user."));
+            }
+        });
     }
 
     /**
@@ -293,29 +304,42 @@ public class Kommunicate {
             return;
         }
 
-        final KMUser kmUser = getVisitor();
         configureSentryWithKommunicate(context);
-        if (isLoggedIn(context)) {
-            String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
-            if (loggedInUserId.equals(kmUser.getUserId())) {
-                launchChatDirectly(context, callback);
-            } else {
-                logout(context, new KMLogoutHandler() {
-                    @Override
-                    public void onSuccess(Context context) {
-                        loginUserWithKmCallBack(context, kmUser, callback);
-                    }
+        Kommunicate.getVisitor(new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                final KMUser kmUser = (KMUser) message;
 
-                    @Override
-                    public void onFailure(Exception exception) {
-                        callback.onFailure(exception);
+                if (isLoggedIn(context)) {
+                    String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
+
+                    if (loggedInUserId.equals(kmUser.getUserId())) {
+                        launchChatDirectly(context, callback);
+                    } else {
+                        logout(context, new KMLogoutHandler() {
+                            @Override
+                            public void onSuccess(Context context) {
+                                loginUserWithKmCallBack(context, kmUser, callback);
+                            }
+
+                            @Override
+                            public void onFailure(Exception exception) {
+                                callback.onFailure(exception);
+                            }
+                        });
                     }
-                });
+                } else {
+                    checkForLeadCollection(context, progressDialog, kmUser, callback);
+                }
             }
-        } else {
-            checkForLeadCollection(context, progressDialog, kmUser, callback);
-        }
 
+            @Override
+            public void onFailure(Object error) {
+                if (callback != null) {
+                    callback.onFailure(new Exception("Failed to create user as visitor", (Throwable) error));
+                }
+            }
+        });
     }
 
     /**
@@ -904,29 +928,34 @@ public class Kommunicate {
         return sb.toString();
     }
 
-    public static KMUser getVisitor() {
+    public static void getVisitor(KmCallback callback) {
         final KMUser user = new KMUser();
         user.setUserId(generateUserId());
-        new KmAppSettingTask(ApplozicService.getAppContext(),
+        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
+
+        new KmAppSettingTask(
+                ApplozicService.getAppContext(),
                 MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
-                        final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
+                        KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
                         if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
-                            if (appSettingModel.getChatWidget().isPseudonymsEnabled() && !TextUtils.isEmpty(appSettingModel.getResponse().getUserName())) {
+                            if (appSettingModel.getChatWidget().isPseudonymsEnabled() &&
+                                    !TextUtils.isEmpty(appSettingModel.getResponse().getUserName())) {
                                 user.setDisplayName(appSettingModel.getResponse().getUserName());
                                 updateMetadataForAnonymousUser(user);
                             }
                         }
+                        callback.onSuccess(user);
                     }
+
                     @Override
                     public void onFailure(Object error) {
-
+                        callback.onFailure(error);
                     }
-                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
-        return user;
+                }
+        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private static void updateMetadataForAnonymousUser(KMUser user){

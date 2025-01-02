@@ -83,7 +83,7 @@ fun waitFor(delay: Long): ViewAction {
     }
 }
 
-fun waitForLatch(latch: CountDownLatch, interval: Long = 100): ViewAction {
+fun waitForLatch(latch: CountDownLatch, interval: Long = 100, waitAfterLatch: Long = 1000): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> = isRoot()
         override fun getDescription(): String = "Wait for CountDownLatch to reach zero"
@@ -91,6 +91,7 @@ fun waitForLatch(latch: CountDownLatch, interval: Long = 100): ViewAction {
             while (latch.count > 0) {
                 uiController.loopMainThreadForAtLeast(interval)
             }
+            uiController.loopMainThreadForAtLeast(waitAfterLatch)
         }
     }
 }

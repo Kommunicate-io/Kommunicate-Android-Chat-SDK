@@ -1,0 +1,434 @@
+name: Code Lint, Build Checks and UI Tests
+run-name: Code Lint, Build Checks and UI Tests PR - ${{ github.event.pull_request.number }}
+
+on: 
+  pull_request:
+    branches:
+      - development
+      - master  # Run only for pull requests targeting the develop and master branch
+    types:
+      - synchronize # Trigger when commits are added to the pull request
+      - opened # Trigger when a pull request is first opened
+      - reopened # Trigger when a previously closed pull request is reopened
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: "Build Project"
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the latest commit of the branch
+      - name: Checkout Code to Latest Commit of Branch ${{ github.event.inputs.branch }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      # Cache Gradle dependencies
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}
+
+      # Cache Android SDK
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: ~/.android
+          key: android-sdk-${{ runner.os }}-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            android-sdk-${{ runner.os }}
+
+      # Set up JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Set up Android SDK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 33
+          build-tools: '33.0.2'
+
+      # Create local.properties
+      - name: Create local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          echo "GOOGLE_KEY=${{ secrets.GOOGLE_MAPS_API }}" >> local.properties
+
+      # Create release.secrets.properties
+      - name: Create release.secrets.properties
+        run: |
+          echo "apiKommunicateIo=${{ secrets.APIKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiEuKommunicateIo=${{ secrets.APIEUKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiCaKommunicateIo=${{ secrets.APICAKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiTestKommuncateIo=${{ secrets.APITESTKOMMUNCATEIO }}" >> release.secrets.properties
+          echo "kommunicateIo=${{ secrets.KOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiInKommunicateIo=${{ secrets.APIINKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "kommunicateAWS=${{ secrets.KOMMUNICATEAWS }}" >> release.secrets.properties
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> release.secrets.properties
+
+      # Make gradlew executable
+      - name: Make gradlew Executable
+        run: |
+          chmod +x ./gradlew
+
+      # Clean the project
+      - name: Clean Project
+        run: |
+          ./gradlew clean
+
+      # Build the kommunicate module
+      - name: Build Kommunicate module
+        run: |
+          ./gradlew kommunicate:build
+
+      # Build the kommunicate ui module
+      - name: Build Kommunicate UI module
+        run: |
+          ./gradlew kommunicateui:build
+
+      # Clean the project
+      - name: Clean the project before app build
+        run: |
+          ./gradlew clean
+      
+      # Build the kommunicate module
+      - name: Build App
+        run: |
+          ./gradlew build
+
+  lint:
+    name: "Run Lint Checks"
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      # Checkout the latest commit of the branch
+      - name: Checkout Code to Latest Commit of Branch ${{ github.event.inputs.branch }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      # Cache Gradle dependencies
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}
+
+      # Cache Android SDK
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: ~/.android
+          key: android-sdk-${{ runner.os }}-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            android-sdk-${{ runner.os }}
+
+      # Set up JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Set up Android SDK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 33
+          build-tools: '33.0.2'
+
+      # Create local.properties
+      - name: Create local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          echo "GOOGLE_KEY=${{ secrets.GOOGLE_MAPS_API }}" >> local.properties
+
+      # Create release.secrets.properties
+      - name: Create release.secrets.properties
+        run: |
+          echo "apiKommunicateIo=${{ secrets.APIKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiEuKommunicateIo=${{ secrets.APIEUKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiCaKommunicateIo=${{ secrets.APICAKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiTestKommuncateIo=${{ secrets.APITESTKOMMUNCATEIO }}" >> release.secrets.properties
+          echo "kommunicateIo=${{ secrets.KOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiInKommunicateIo=${{ secrets.APIINKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "kommunicateAWS=${{ secrets.KOMMUNICATEAWS }}" >> release.secrets.properties
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> release.secrets.properties
+
+      # Make gradlew executable
+      - name: Make gradlew Executable
+        run: |
+          chmod +x ./gradlew
+
+      # Run lint checks in kommunicate module
+      - name: Lint checks for Kommunicate module
+        run: |
+          ./gradlew kommunicate:lint
+
+      # Run lint checks in kommunicate ui module
+      - name: Lint checks for Kommunicate UI module
+        run: |
+          ./gradlew kommunicateui:lint
+
+      # Clean the project
+      - name: Clean the project before app lint checks
+        run: |
+          ./gradlew clean
+      
+      # Run lint checks in app module
+      - name: Run Lint for App
+        run: |
+          ./gradlew lint
+
+  debug-apk:
+    name: Generate and Upload Debug APK
+    runs-on: ubuntu-latest
+    needs: instrumentation-tests
+
+    steps:
+      # Checkout the latest commit of the branch
+      - name: Checkout Code to Latest Commit of Branch ${{ github.event.inputs.branch }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+
+      # Cache Gradle dependencies
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}
+
+      # Cache Android SDK
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: ~/.android
+          key: android-sdk-${{ runner.os }}-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            android-sdk-${{ runner.os }}
+
+      # Set up JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Set up Android SDK
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 33
+          build-tools: '33.0.2'
+
+      # Create local.properties
+      - name: Create local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          echo "GOOGLE_KEY=${{ secrets.GOOGLE_MAPS_API }}" >> local.properties
+
+      # Create release.secrets.properties
+      - name: Create release.secrets.properties
+        run: |
+          echo "apiKommunicateIo=${{ secrets.APIKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiEuKommunicateIo=${{ secrets.APIEUKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiCaKommunicateIo=${{ secrets.APICAKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiTestKommuncateIo=${{ secrets.APITESTKOMMUNCATEIO }}" >> release.secrets.properties
+          echo "kommunicateIo=${{ secrets.KOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiInKommunicateIo=${{ secrets.APIINKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "kommunicateAWS=${{ secrets.KOMMUNICATEAWS }}" >> release.secrets.properties
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> release.secrets.properties
+
+      # Make gradlew executable
+      - name: Make gradlew Executable
+        run: |
+          chmod +x ./gradlew
+
+      # Build Debug APK
+      - name: Build Debug APK
+        run: |
+          ./gradlew assembleDebug
+
+      # Get the latest commmit hash
+      - name: Set Output
+        id: vars
+        run: echo "commit_hash=${GITHUB_SHA::8}" >> $GITHUB_ENV
+
+      # Upload APK for testing
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with: 
+          name: "Kommunicate-SDK-${{ env.commit_hash }}"
+          path: app/build/outputs/apk/debug/app-debug.apk
+ 
+      # Retrieve Artifact URL
+      - name: Get Artifact URL
+        id: get-artifact-url
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const artifactName = `Agent-App-${process.env.commit_hash}`;
+            const artifacts = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            console.log(`Artifacts: $artifacts`);
+            const artifact = artifacts.data.artifacts.find(a => a.name === artifactName);
+            if (artifact) {
+              core.setOutput('artifact_url', artifact.archive_download_url);
+              console.log(`Artifact URL: ${artifact.archive_download_url}`);
+            } else {
+              core.setFailed(`Artifact ${artifactName} not found.`);
+            }
+
+      # Post a comment on the PR with the artifact URL
+      - name: Post APK URL
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const artifactUrl = process.env.ARTIFACT_URL;
+            const modifiedUrl = artifactUrl.replace(/\/zip$/, "");
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `🚀 The APK is ready for download (As per the last commit of this PR): [Download APK](${modifiedUrl})`
+            });
+        env:
+          ARTIFACT_URL: ${{ steps.get-artifact-url.outputs.artifact_url }}
+    
+  comment-on-pr:
+    name: "Post CodeRabbit Review Request"
+    needs: instrumentation-tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository (optional, if code is needed)
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Post a comment on the PR
+      - name: Post PR comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: "@coderabbit review"
+            });
+  
+  instrumentation-tests:
+    name: Run Instrumentation Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      matrix:
+        api-level: [ 30 ]
+        target: [ google_apis ]
+
+    steps:
+      # Checkout the code
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Enable KVM for faster test execution
+      - name: Enable KVM group perms
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # Setup or Load the cached gradle
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      # Load the AVD Cache. For android emulator
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-${{ matrix.api-level }}
+
+      # Setup the AVD if not cached
+      - name: create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          emulator-port: 5582
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: echo "Generated AVD snapshot for caching."
+
+      # Create local.properties
+      - name: Create local.properties
+        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          echo "GOOGLE_KEY=${{ secrets.GOOGLE_MAPS_API }}" >> local.properties
+
+      # Create release.secrets.properties
+      - name: Create release.secrets.properties
+        run: |
+          echo "apiKommunicateIo=${{ secrets.APIKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiEuKommunicateIo=${{ secrets.APIEUKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiCaKommunicateIo=${{ secrets.APICAKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiTestKommuncateIo=${{ secrets.APITESTKOMMUNCATEIO }}" >> release.secrets.properties
+          echo "kommunicateIo=${{ secrets.KOMMUNICATEIO }}" >> release.secrets.properties
+          echo "apiInKommunicateIo=${{ secrets.APIINKOMMUNICATEIO }}" >> release.secrets.properties
+          echo "kommunicateAWS=${{ secrets.KOMMUNICATEAWS }}" >> release.secrets.properties
+          echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> release.secrets.properties
+          
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          emulator-port: 5582
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            set -e
+            ./gradlew assembleDebug assembleAndroidTest
+            ./gradlew connectedAndroidTest
+          
+      # Upload Test Results
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            app/build/reports/androidTests/
+            app/build/reports/androidTests/connected/
+            app/build/outputs/androidTest-results/
+          retention-days: 14

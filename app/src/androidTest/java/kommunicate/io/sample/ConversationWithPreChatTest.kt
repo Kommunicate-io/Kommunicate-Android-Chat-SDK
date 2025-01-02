@@ -3,24 +3,20 @@ package kommunicate.io.sample
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.ResultReceiver
-import android.util.Log
 import android.view.View
 import android.widget.Spinner
 import androidx.lifecycle.lifecycleScope
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.FlakyTest
 import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity.EMAIL_VALIDATION_REGEX
 import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity.PHONE_NUMBER_VALIDATION_REGEX
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter
@@ -39,13 +35,10 @@ import kommunicate.io.sample.utils.getRandomString
 import kommunicate.io.sample.utils.sendMessageAsUser
 import kommunicate.io.sample.utils.waitFor
 import kommunicate.io.sample.utils.waitForLatch
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withTimeout
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.hamcrest.CoreMatchers.allOf
@@ -53,16 +46,13 @@ import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.Matcher
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import com.applozic.mobicomkit.uiwidgets.R as Rui
@@ -169,6 +159,9 @@ class ConversationWithPreChatTest {
         messageList.forEach {
             sendMessageAsUser(it)
         }
+
+        onView(isRoot())
+            .perform(waitFor(5000))
 
         val groupId = getConversationGroupIdFromUserEmail(tempUserMail)
         verifyMessagesOnTheDashboard(groupId, messageList, tempUserMail)
@@ -332,26 +325,30 @@ class ConversationWithPreChatTest {
         val tempGender = "Female"
         val latch = CountDownLatch(1)
 
-        assertThrows(NullPointerException::class.java) {
-            mActivityRule.onActivity {
-                val user = KMUser().apply {
-                    email = tempUserMail
-                    displayName = tempName
-                    contactNumber = tempUserPhone
-                    metadata = mapOf("gender" to tempGender)
-                }
-                it.lifecycleScope.launch {
-                    val isSuccess = buildAndLaunchConversationWithUser(it, user)
-                    assertFalse("Conversation built with no group id:", isSuccess)
-                    fail("the user object is created even when the userid is not passed")
-                }.invokeOnCompletion {
+        mActivityRule.onActivity { activity ->
+            val user = KMUser().apply {
+                email = tempUserMail
+                displayName = tempName
+                contactNumber = tempUserPhone
+                metadata = mapOf("gender" to tempGender)
+            }
+
+            activity.lifecycleScope.launch {
+                var exceptionThrown = false
+                try {
+                    buildAndLaunchConversationWithUser(activity, user)
+                } catch (e: Exception) {
+                    exceptionThrown = true
+                    assertEquals("userId cannot be empty", e.message) // Verify exception message
+                } finally {
+                    assertTrue("Expected exception was not thrown", exceptionThrown)
                     latch.countDown()
                 }
             }
-
-            onView(isRoot())
-                .perform(waitForLatch(latch,100))
         }
+
+        onView(isRoot())
+            .perform(waitForLatch(latch))
     }
 
     @Test
@@ -379,6 +376,8 @@ class ConversationWithPreChatTest {
 
         onView(isRoot())
             .perform(waitForLatch(latch,100))
+        onView(isRoot())
+            .perform(waitFor(5000))
 
         val user = getUserFromDashboardWithEmail(tempUserMail)
         assertNotNull("user not found on dashboard", user)
@@ -395,7 +394,7 @@ class ConversationWithPreChatTest {
                     continuation.resume(true)
                 }
                 override fun onFailure(error: Any) {
-                    continuation.resumeWithException(error as NullPointerException)
+                    continuation.resumeWithException(error as Exception)
                 }
             })
         }

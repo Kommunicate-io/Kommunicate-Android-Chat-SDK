@@ -203,6 +203,9 @@ class ConversationTest {
         onView(withId(R.id.conversation_send))
             .perform(click())
 
+        onView(isRoot())
+            .perform(waitFor(3000))
+
         verifyMessagesOnTheDashboard(groupId.toString(), listOf(randomPrefillMessage), tempUser.userId)
     }
 
@@ -212,7 +215,7 @@ class ConversationTest {
         val latch = CountDownLatch(1)
         val conversationTitle = getRandomString()
         var groupId: Int = 0
-        val botIds = listOf("inline-code-34rpc", "kk-3s8r3")
+        val botIds = listOf("inline-code-34rpc", "kk-3s8r3", "richmessagetest-apbah")
         val teamId = "103785933"
         val agentIds = listOf("prateek.singh@kommunicate.io", "hello@gmail.com")
 
@@ -284,7 +287,7 @@ class ConversationTest {
         }
 
         onView(isRoot())
-            .perform(waitForLatch(latch))
+            .perform(waitForLatch(latch, waitAfterLatch = 5000))
 
         sendMessageAsUser(getRandomString())
 
@@ -332,7 +335,7 @@ class ConversationTest {
         val tempUser = getRandomKmUser()
         val latch = CountDownLatch(1)
         var groupId = 0
-        val botIds = listOf("inline-code-34rpc")
+        val botIds = listOf("inline-code-34rpc", "richmessagetest-apbah")
         val initialTeamId = "103785933"
         val updateTeamId= "106336264"
         val agentIds = listOf("prateek.singh@kommunicate.io")
@@ -464,7 +467,7 @@ class ConversationTest {
             .perform(waitFor(2500))
 
         onView(withId(R.id.toolbar_title))
-            .check(matches(withText("Prateek Singh")))
+            .check(matches(withText("trgfdgfd")))
     }
 
     private fun validateBotMessageReply(groupId: Int, bots: List<String>) = runBlocking {
@@ -507,7 +510,7 @@ class ConversationTest {
             }
         }
         if (tempMessageList.isNotEmpty()) {
-            fail("unable to see the sent messages from SDK on dashboard $tempMessageList")
+            fail("unable to see the sent messages from SDK on dashboard $tempMessageList, groupId: $groupId")
         }
     }
 

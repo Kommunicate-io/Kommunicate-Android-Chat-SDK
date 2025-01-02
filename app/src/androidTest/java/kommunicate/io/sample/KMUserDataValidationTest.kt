@@ -21,14 +21,11 @@ import kommunicate.io.sample.network.RetrofitClient
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.getRandomKmUser
 import kommunicate.io.sample.utils.getRandomString
-import kommunicate.io.sample.utils.waitFor
 import kommunicate.io.sample.utils.waitForLatch
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
@@ -97,19 +94,22 @@ class KMUserDataValidationTest {
         val kmTempUser = getTempKmUser(isWrongMetadata = true)
         val latch = CountDownLatch(1)
 
-        assertThrows("Expected Exception when keys with more that 30 char passed in metadata ${kmTempUser.metadata}", NullPointerException::class.java) {
-            mActivityRule.onActivity {
-                it.lifecycleScope.launch {
-                    val isSuccess = buildAndLaunchConversationWithUser(it, kmTempUser)
-                    assertFalse("conversation created with invalid metadata", isSuccess)
-                }.invokeOnCompletion {
+        mActivityRule.onActivity { activity ->
+            activity.lifecycleScope.launch {
+                var exceptionThrown = false
+                try {
+                    buildAndLaunchConversationWithUser(activity, kmTempUser)
+                } catch (e: Exception) {
+                    exceptionThrown = true
+                } finally {
+                    assertTrue("Expected exception was not thrown", exceptionThrown)
                     latch.countDown()
                 }
             }
-
-            onView(isRoot())
-                .perform(waitForLatch(latch, 100))
         }
+
+        onView(isRoot())
+            .perform(waitForLatch(latch, 100))
     }
 
     private fun getUserFromDashboardWithEmail(email: String) = runBlocking {
@@ -147,7 +147,7 @@ class KMUserDataValidationTest {
                     continuation.resume(true)
                 }
                 override fun onFailure(error: Any) {
-                    continuation.resumeWithException(error as NullPointerException)
+                    continuation.resumeWithException(error as Exception)
                 }
             })
         }

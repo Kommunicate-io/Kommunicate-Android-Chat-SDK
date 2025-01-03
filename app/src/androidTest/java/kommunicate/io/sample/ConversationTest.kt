@@ -71,7 +71,7 @@ class ConversationTest {
     fun testCreateSingleThreadConversation() {
         val tempUser = getRandomKmUser()
         val latch = CountDownLatch(1)
-        var groupId = 0
+        var groupId = 1
 
         mActivityRule.onActivity {
             it.lifecycleScope.launch {

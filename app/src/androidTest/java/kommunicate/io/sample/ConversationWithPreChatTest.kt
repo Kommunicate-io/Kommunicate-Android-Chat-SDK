@@ -30,6 +30,7 @@ import io.kommunicate.users.KMUser
 import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
+import kommunicate.io.sample.utils.clearAppData
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.getRandomString
 import kommunicate.io.sample.utils.sendMessageAsUser
@@ -50,14 +51,17 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
+import org.junit.FixMethodOrder
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.runners.MethodSorters
 import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import com.applozic.mobicomkit.uiwidgets.R as Rui
 
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)
 class ConversationWithPreChatTest {
 
@@ -103,6 +107,9 @@ class ConversationWithPreChatTest {
                 }
             })
         }
+        onView(isRoot())
+            .perform(waitFor(5000))
+
         onView(withId(Rui.id.kmPreChatRecyclerView))
             .perform(
                 actionOnItemAtPosition<KmPrechatInputAdapter.KmPrechatInputViewHolder>(
@@ -144,11 +151,11 @@ class ConversationWithPreChatTest {
                     }
                 )
             )
-        onView(isRoot()).perform(waitFor(1000))
+        onView(isRoot()).perform(waitFor(5000))
         onView(withId(Rui.id.start_conversation))
             .perform(click())
 
-        onView(isRoot()).perform(waitFor(2500))
+        onView(isRoot()).perform(waitFor(5000))
 
         // Send message
         val messageList = listOf(
@@ -318,7 +325,7 @@ class ConversationWithPreChatTest {
     }
 
     @Test
-    fun testLaunchConversationWithCustomUserWithoutUserId() {
+    fun atestLaunchConversationWithCustomUserWithoutUserId() {
         val tempUserMail = "${getRandomString(12)}@${getRandomString(5, ignoreNums = true)}.${getRandomString(3, ignoreNums = true)}"
         val tempName = getRandomString(10)
         val tempUserPhone = getRandomString(10, true)

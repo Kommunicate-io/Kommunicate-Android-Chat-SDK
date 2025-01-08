@@ -9,10 +9,13 @@ import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.feed.ChannelFeed;
 import com.applozic.mobicomkit.uiwidgets.R;
 
+import annotations.CleanUpRequired;
+
 /**
  * Created by Rahul-PC on 07-06-2017.
  */
-
+@Deprecated
+@CleanUpRequired(reason = "Not used anywhere")
 public class KmGetMemberFromContactGroupTask extends AsyncTask<Void, Void, String[]> {
     private final String contactGroupId;
     Context context;

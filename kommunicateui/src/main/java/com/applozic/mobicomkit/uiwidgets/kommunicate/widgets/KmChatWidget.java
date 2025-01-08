@@ -32,10 +32,10 @@ import com.applozic.mobicommons.commons.image.ImageUtils;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
 import io.kommunicate.Kommunicate;
-import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAppSettingModel;
+import io.kommunicate.usecase.AppSettingUseCase;
 import io.kommunicate.users.KMUser;
 
 /**
@@ -166,7 +166,7 @@ public class KmChatWidget {
 
     private void configureWidgetFromDashboard() {
         fetchingSettings = true;
-        new KmAppSettingTask(mContext, Applozic.getInstance(mContext).getApplicationKey(), new KmCallback() {
+        AppSettingUseCase.executeWithExecutor(mContext, Applozic.getInstance(mContext).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 fetchingSettings = false;
@@ -210,7 +210,7 @@ public class KmChatWidget {
                 fetchingSettings = false;
                 Utils.printLog(mContext, TAG, "Failed to fetch AppSetting");
             }
-        }).execute();
+        });
     }
 
     /**

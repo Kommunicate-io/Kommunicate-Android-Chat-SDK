@@ -35,7 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.callbacks.KMLoginHandler;
@@ -46,6 +45,7 @@ import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.preference.KmDefaultSettingPreference;
+import io.kommunicate.usecase.AppSettingUseCase;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
@@ -890,7 +890,7 @@ public class KmConversationHelper {
         }
     }
     public static void refreshAppSettings(Context context) {
-        new KmAppSettingTask(context,MobiComKitClientService.getApplicationKey(context), new KmCallback() {
+        AppSettingUseCase.executeWithExecutor(context, MobiComKitClientService.getApplicationKey(context), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 KmAppSettingModel kmAppSettings = (KmAppSettingModel) message;
@@ -902,7 +902,7 @@ public class KmConversationHelper {
             public void onFailure(Object error) {
                 Utils.printLog(context, TAG, "Failed to fetch AppSettings" + error);
             }
-        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        });
     }
 
     public static void getConversationById(Context context, String conversationId, final KmCallback callback) {

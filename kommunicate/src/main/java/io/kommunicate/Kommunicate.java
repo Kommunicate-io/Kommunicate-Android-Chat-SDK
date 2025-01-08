@@ -27,6 +27,8 @@ import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
+
+import io.kommunicate.usecase.AppSettingUseCase;
 import io.kommunicate.usecase.KMUserLoginUseCase;
 import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.ApplozicService;
@@ -51,7 +53,6 @@ import java.util.Map;
 import io.kommunicate.async.GetUserListAsyncTask;
 import io.kommunicate.async.KMFaqTask;
 import io.kommunicate.async.KMHelpDocsKeyTask;
-import io.kommunicate.async.KmAppSettingTask;
 import io.kommunicate.async.KmAwayMessageTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
@@ -336,7 +337,7 @@ public class Kommunicate {
             @Override
             public void onFailure(Object error) {
                 if (callback != null) {
-                    callback.onFailure(new Exception("Failed to create user as visitor", (Throwable) error));
+                    callback.onFailure(error);
                 }
             }
         });
@@ -351,7 +352,7 @@ public class Kommunicate {
      * @param callback       callback to update the status
      */
     public static void checkForLeadCollection(final Context context, final ProgressDialog progressDialog, final KMUser kmUser, final KmCallback callback) {
-        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
+        AppSettingUseCase.executeWithExecutor(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
@@ -375,7 +376,7 @@ public class Kommunicate {
                 loginUserWithKmCallBack(context, kmUser, callback);
 
             }
-        }).execute();
+        });
     }
 
     /**
@@ -667,7 +668,7 @@ public class Kommunicate {
                 }
             };
 
-            new KmAppSettingTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            AppSettingUseCase.executeWithExecutor(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback);
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(chatBuilder.getClientConversationId()) ? chatBuilder.getClientConversationId() : (chatBuilder.isSingleChat() ? getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), chatBuilder.getAgentIds(), chatBuilder.getBotIds()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
@@ -933,7 +934,7 @@ public class Kommunicate {
         user.setUserId(generateUserId());
         user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
 
-        new KmAppSettingTask(
+        AppSettingUseCase.executeWithExecutor(
                 ApplozicService.getAppContext(),
                 MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
                 new KmCallback() {
@@ -955,7 +956,7 @@ public class Kommunicate {
                         callback.onFailure(error);
                     }
                 }
-        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        );
     }
 
     private static void updateMetadataForAnonymousUser(KMUser user){
@@ -1035,9 +1036,7 @@ public class Kommunicate {
     }
 
     public static void isChatWidgetDisabled(final KmChatWidgetCallback callback) {
-        final KmAppSettingModel appSettingModel = new KmAppSettingModel();
-
-        new KmAppSettingTask(ApplozicService.getAppContext(),
+        AppSettingUseCase.executeWithExecutor(ApplozicService.getAppContext(),
                 MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
                 new KmCallback() {
                     @Override
@@ -1058,7 +1057,6 @@ public class Kommunicate {
                             callback.onResult(false);
                         }
                     }
-                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+                });
     }
 }

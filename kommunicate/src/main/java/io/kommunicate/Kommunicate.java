@@ -1036,8 +1036,10 @@ public class Kommunicate {
     }
 
     public static void isChatWidgetDisabled(final KmChatWidgetCallback callback) {
-        AppSettingUseCase.executeWithExecutor(ApplozicService.getAppContext(),
+        AppSettingUseCase.executeWithExecutor(
+                ApplozicService.getAppContext(),
                 MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
+                true,
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {

@@ -70,7 +70,7 @@ class AppSettingUseCase(
             appId: String,
             callback: KmCallback? = null
         ): UseCaseExecutor<AppSettingUseCase, APIResult<KmAppSettingModel>> {
-            return executeWithExecutor(context, appId, callback, false)
+            return executeWithExecutor(context, appId, false, callback)
         }
 
         /**
@@ -90,8 +90,8 @@ class AppSettingUseCase(
         fun executeWithExecutor(
             context: Context,
             appId: String,
+            updateCache: Boolean = false,
             callback: KmCallback? = null,
-            updateCache: Boolean = false
         ): UseCaseExecutor<AppSettingUseCase, APIResult<KmAppSettingModel>> {
 
             val kmAppSettingUseCase = AppSettingUseCase(context, appId, updateCache)

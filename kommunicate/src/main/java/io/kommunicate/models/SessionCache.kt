@@ -1,10 +1,11 @@
 package io.kommunicate.models
 
 import java.util.Calendar
+import java.util.concurrent.ConcurrentHashMap
 
 object SessionCache {
-    private val sessionData: MutableMap<String, Any> = mutableMapOf()
-    private val expireTimeData: MutableMap<String, Long> = mutableMapOf()
+    private val sessionData: MutableMap<String, Any> = ConcurrentHashMap()
+    private val expireTimeData: MutableMap<String, Long> = ConcurrentHashMap()
 
     /**
      * Add or update a value in the session cache.

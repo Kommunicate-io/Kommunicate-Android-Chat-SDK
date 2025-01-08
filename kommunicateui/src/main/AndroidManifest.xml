@@ -53,7 +53,7 @@
 
         <activity
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity"
-            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:configChanges="keyboardHidden|screenSize|locale|smallestScreenSize|screenLayout|orientation"
             android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
             android:exported="false"
             android:theme="@style/ApplozicTheme"
@@ -61,7 +61,7 @@
 
         <activity
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|locale|orientation|screenSize"
             android:label="Image"
             android:exported="false"
             android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
@@ -76,7 +76,7 @@
 
         <activity
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|locale|orientation|screenSize"
             android:label="Image"
             android:launchMode="singleTop"
             android:exported="false"
@@ -86,13 +86,13 @@
 
         <activity
             android:name=".kommunicate.activities.LeadCollectionActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|locale|orientation|screenSize"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />
 
         <activity
             android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity"
-            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:configChanges="keyboardHidden|locale|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"
             android:exported="false"
             android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"

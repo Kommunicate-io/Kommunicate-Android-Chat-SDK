@@ -2,6 +2,8 @@ package kommunicate.io.sample;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Handler;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
@@ -17,6 +19,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -27,6 +30,7 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import io.kommunicate.KmConversationHelper;
@@ -63,31 +67,38 @@ public class MainActivity extends AppCompatActivity {
         visitorButton = findViewById(R.id.btn_login_as_visitor);
 
         TextView txtViewPrivacyPolicy = (TextView) findViewById(R.id.txtPrivacyPolicy);
-        txtViewPrivacyPolicy.setMovementMethod(LinkMovementMethod.getInstance());
+        txtViewPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Kommunicate.setAppLocale(getApplicationContext(), "en", new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        Log.d("ass", message.toString());
+                    }
+
+                    @Override
+                    public void onFailure(Object error) {
+                        Log.d("ass", error.toString());
+                    }
+                });
+            }
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    if (isPlaceHolderAppId()) {
-                        return;
-                    }
-                    final String mUserIdText = mUserId.getText().toString().trim();
-                    String mPasswordText = mPassword.getText().toString().trim();
-                    if (TextUtils.isEmpty(mUserIdText) || mUserId.getText().toString().trim().length() == 0) {
-                        KmToast.error(getBaseContext(), com.applozic.mobicomkit.uiwidgets.R.string.enter_user_id, Toast.LENGTH_SHORT).show();
-                        return;
+                Kommunicate.setAppLocale(MainActivity.this, "hi", new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        recreate();
+                        Log.d("ass", message.toString());
                     }
 
-                    final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setTitle(getString(R.string.login));
-                    progressDialog.setMessage(getString(com.applozic.mobicomkit.uiwidgets.R.string.please_wait));
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-                    initLoginData(mUserId.getText().toString().trim(), mPassword.getText().toString().trim(), progressDialog);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                    @Override
+                    public void onFailure(Object error) {
+                        Log.d("ass", error.toString());
+                    }
+                });
             }
         });
 

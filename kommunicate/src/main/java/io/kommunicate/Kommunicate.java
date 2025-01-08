@@ -6,8 +6,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.LocaleList;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 
@@ -46,6 +50,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.kommunicate.async.GetUserListAsyncTask;
@@ -133,12 +138,32 @@ public class Kommunicate {
         configureSentryWithKommunicate(context);
     }
 
+    public static void changeAppLanguage(Context context, String languageCode) {
+        Locale locale = new Locale(languageCode);  // e.g., "hi" for Hindi
+        Locale.setDefault(locale);
+
+        Configuration config = new Configuration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            config.setLocale(locale);
+            config.setLocales(new LocaleList(locale));
+            context.createConfigurationContext(config);
+        } else {
+            config.locale = locale;
+        }
+
+        context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
+    }
+
     public static void init(Context context, String applicationKey) {
         init(context, applicationKey, true);
     }
 
     public static void enableSSLPinning(boolean isEnable) {
         KmAppSettingPreferences.setSSLPinningEnabled(isEnable);
+    }
+
+    public static void setAppLocale(Context context, String languageCode, KmCallback callback) {
+        KmAppSettingPreferences.setAppLocale(languageCode);
     }
 
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {

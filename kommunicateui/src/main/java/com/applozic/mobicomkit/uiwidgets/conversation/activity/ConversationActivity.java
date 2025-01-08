@@ -90,6 +90,7 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -119,6 +120,7 @@ import java.util.Set;
 
 import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
 import io.kommunicate.async.KmSyncMessageTask;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 

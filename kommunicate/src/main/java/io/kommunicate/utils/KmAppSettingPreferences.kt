@@ -30,6 +30,7 @@ object KmAppSettingPreferences {
     private const val SINGLE_THREADED = "IS_SINGLE_THREADED"
     private const val ROOT_DETECTION = "ROOT_DETECTION"
     private const val SSL_PINNING = "SSL_PINNING"
+    private const val APP_LOCALE = "APP_LOCALE"
     private const val RATING_BASE = "RATING_BASE"
 
     @JvmStatic
@@ -61,6 +62,13 @@ object KmAppSettingPreferences {
         get() = preferences.getBoolean(SSL_PINNING, false)
         set(isEnabled) {
             preferences.edit().putBoolean(SSL_PINNING, isEnabled).apply()
+        }
+
+    @JvmStatic
+    var appLocale: String
+        get() = preferences.getString(APP_LOCALE, "en") ?: "en"
+        set(locale) {
+            preferences.edit().putString(APP_LOCALE, locale).apply()
         }
 
     var primaryColor: String?

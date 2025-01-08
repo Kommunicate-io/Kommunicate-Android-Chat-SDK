@@ -174,6 +174,7 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
@@ -3373,6 +3374,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onResume() {
         super.onResume();
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        LocaleHelper.setLocale(requireContext(), languageCode);
         AlEventManager.getInstance().registerUIListener(TAG, this);
 
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
@@ -5104,6 +5107,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 mainDivider.setVisibility(VISIBLE);
             }
         }
+    }
+
+    @Override
+    public void onAttach(@NonNull Context ctx) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(ctx, languageCode);
+        super.onAttach(context);
     }
 
     public void hideAwayMessage(Message message) {

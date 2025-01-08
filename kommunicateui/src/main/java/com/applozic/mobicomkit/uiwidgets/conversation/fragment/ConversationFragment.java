@@ -2,9 +2,11 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -24,6 +26,7 @@ import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.SearchListFragment;
@@ -33,6 +36,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 import java.util.Objects;
 
 import io.kommunicate.utils.KMAgentStatusHelper;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 
 public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment {
@@ -191,6 +195,13 @@ public class ConversationFragment extends MobiComConversationFragment implements
     }
 
     @Override
+    public void onAttach(@NonNull Context ctx) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(ctx, languageCode);
+        super.onAttach(context);
+    }
+
+    @Override
     public boolean onQueryTextChange(String newText) {
         if (TextUtils.isEmpty(newText)) {
             conversationAdapter.getFilter().filter(null);
@@ -203,7 +214,8 @@ public class ConversationFragment extends MobiComConversationFragment implements
     @Override
     public void onResume() {
         super.onResume();
-
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        LocaleHelper.setLocale(requireContext(), languageCode);
     }
 
     @Override

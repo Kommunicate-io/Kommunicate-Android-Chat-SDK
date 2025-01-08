@@ -21,6 +21,7 @@ import android.provider.Settings;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmUtils;
 
 
@@ -132,6 +134,13 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         onNewIntent(getIntent());
         connectivityReceiver = new ConnectivityReceiver();
         registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(newBase, languageCode);
+        super.attachBaseContext(context);
     }
 
 

@@ -56,6 +56,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -73,6 +74,7 @@ import java.util.Objects;
 
 import io.kommunicate.Kommunicate;
 import io.kommunicate.services.KmClientService;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmUtils;
 
 /**
@@ -250,6 +252,13 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 }
             }
         };
+    }
+
+    @Override
+    public void onAttach(@NonNull Context ctx) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(ctx, languageCode);
+        super.onAttach(context);
     }
 
     @Override

@@ -10,7 +10,12 @@ object LocaleHelper {
 
     @JvmStatic
     fun setLocale(context: Context, language: String): Context {
-        return  context
+        // updating the language for devices above android nougat
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return updateResources(context, language)
+        }
+        // for devices having lower version of android os
+        return updateResourcesLegacy(context, language)
     }
 
     @TargetApi(Build.VERSION_CODES.N)

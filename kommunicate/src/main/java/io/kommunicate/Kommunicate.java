@@ -11,7 +11,6 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.LocaleList;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 
@@ -136,22 +135,6 @@ public class Kommunicate {
         }
         KmAppSettingPreferences.setRootDetection(enableDeviceRootDetection);
         configureSentryWithKommunicate(context);
-    }
-
-    public static void changeAppLanguage(Context context, String languageCode) {
-        Locale locale = new Locale(languageCode);  // e.g., "hi" for Hindi
-        Locale.setDefault(locale);
-
-        Configuration config = new Configuration();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            config.setLocale(locale);
-            config.setLocales(new LocaleList(locale));
-            context.createConfigurationContext(config);
-        } else {
-            config.locale = locale;
-        }
-
-        context.getResources().updateConfiguration(config, context.getResources().getDisplayMetrics());
     }
 
     public static void init(Context context, String applicationKey) {

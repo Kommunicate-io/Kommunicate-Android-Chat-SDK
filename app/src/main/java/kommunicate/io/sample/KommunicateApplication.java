@@ -16,7 +16,6 @@ public class KommunicateApplication extends MultiDexApplication {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        Kommunicate.changeAppLanguage(this, "hi");
         MultiDex.install(this);
     }
 

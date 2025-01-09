@@ -38,9 +38,9 @@ class UserDetailUseCase(
 
             userService.processUserDetailsByUserIds(userIdSet)
             val contact = appContactService.getContactById(userId)
-            SessionCache.put(userId, contact, CACHE_REFRESH_TIME)
 
             if (contact != null) {
+                SessionCache.put(userId, contact, CACHE_REFRESH_TIME)
                 APIResult.success(contact)
             } else {
                 APIResult.failed("User details not found.")

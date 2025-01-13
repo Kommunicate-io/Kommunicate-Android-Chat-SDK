@@ -236,6 +236,7 @@ import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.usecase.UserBlockUseCase;
 import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
@@ -3841,7 +3842,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "",
                 ApplozicService.getContext(getContext()).getString(R.string.please_wait_info), true);
 
-        UserBlockTask.TaskListener listener = new UserBlockTask.TaskListener() {
+        UserBlockUseCase.TaskListener listener = new UserBlockUseCase.TaskListener() {
 
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -3878,7 +3879,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         };
 
-        new UserBlockTask(getActivity(), listener, userId, block).execute();
+        UserBlockUseCase.executeWithExecutor(getActivity(), userId, block, listener);
     }
 
     public void userBlockDialog(final boolean block, final Contact withUserContact, final boolean isFromChannel) {

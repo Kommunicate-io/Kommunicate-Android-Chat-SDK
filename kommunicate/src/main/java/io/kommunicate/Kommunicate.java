@@ -70,6 +70,7 @@ import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.preference.KmPreference;
+import io.kommunicate.usecase.PushNotificationUseCase;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
@@ -814,7 +815,7 @@ public class Kommunicate {
 
         if (!token.equals(getDeviceToken(context)) || !KmPreference.getInstance(context).isFcmRegistrationCallDone()) {
             setDeviceToken(context, token);
-            new PushNotificationTask(context, token, new KmPushNotificationHandler() {
+            PushNotificationUseCase.executeWithExecutor(context, token, new KmPushNotificationHandler() {
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse) {
                     KmPreference.getInstance(context).setFcmRegistrationCallDone(true);
@@ -829,7 +830,7 @@ public class Kommunicate {
                         listener.onFailure(registrationResponse, exception);
                     }
                 }
-            }).execute();
+            });
         }
     }
 

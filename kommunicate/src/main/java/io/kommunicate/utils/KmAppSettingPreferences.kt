@@ -2,16 +2,15 @@ package io.kommunicate.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.AsyncTask
 import annotations.CleanUpRequired
 import com.applozic.mobicomkit.Applozic
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference
 import com.applozic.mobicommons.ApplozicService
 import com.applozic.mobicommons.json.GsonUtils
-import io.kommunicate.async.KmAppSettingTask
 import io.kommunicate.callbacks.KmCallback
 import io.kommunicate.models.KmAppSettingModel
 import io.kommunicate.services.KmService
+import io.kommunicate.usecase.AppSettingUseCase
 
 object KmAppSettingPreferences {
 
@@ -31,6 +30,7 @@ object KmAppSettingPreferences {
     private const val ROOT_DETECTION = "ROOT_DETECTION"
     private const val SSL_PINNING = "SSL_PINNING"
     private const val RATING_BASE = "RATING_BASE"
+    private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
 
     @JvmStatic
     @CleanUpRequired(
@@ -116,6 +116,13 @@ object KmAppSettingPreferences {
             preferences.edit().putInt(RATING_BASE, base).apply()
         }
 
+    @JvmStatic
+    var lastFetchTime: Long
+        get() = preferences.getLong(LAST_FETCH_TIME, 0L)
+        set(base) {
+            preferences.edit().putLong(LAST_FETCH_TIME, base).apply()
+        }
+
     @Suppress("UNCHECKED_CAST")
     var uploadOverrideHeader: HashMap<String, String>
         get() = GsonUtils.getObjectFromJson<Any>(
@@ -149,8 +156,8 @@ object KmAppSettingPreferences {
     @CleanUpRequired(
         reason = "Not used anywhere"
     )
-    fun fetchAppSettingAsync(context: Context?) {
-        KmAppSettingTask(
+    fun fetchAppSettingAsync(context: Context) {
+        AppSettingUseCase.executeWithExecutor(
             context,
             Applozic.getInstance(context).applicationKey,
             object : KmCallback {
@@ -159,7 +166,7 @@ object KmAppSettingPreferences {
 
                 override fun onFailure(error: Any) {
                 }
-            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            })
     }
 
     @JvmStatic

@@ -42,7 +42,11 @@ class KMUserLoginUseCase(
                 userClientService.loginKmUser(user)
             } else {
                 userClientService.clearDataAndPreference()
-                KmAppSettingPreferences.fetchAppSetting(context, Applozic.getInstance(context).applicationKey)
+                AppSettingUseCase(
+                    context = context,
+                    appId = Applozic.getInstance(context).applicationKey,
+                    updateCache = true // Forces to update the cache
+                ).execute()
                 registerUserClientService.createAccount(user)
             }
 

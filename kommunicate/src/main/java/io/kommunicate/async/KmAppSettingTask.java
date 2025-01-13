@@ -5,10 +5,13 @@ import android.os.AsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.utils.KmAppSettingPreferences;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmAppSettingTask to AppSettingUseCase")
 public class KmAppSettingTask extends AsyncTask<Void, Void, KmAppSettingModel> {
 
     private WeakReference<Context> context;

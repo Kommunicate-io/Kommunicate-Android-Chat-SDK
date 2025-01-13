@@ -62,7 +62,8 @@ public class KmUserLoginTask extends UserLoginTask {
                 response = userClientService.loginKmUser(user);
             } else {
                 new UserClientService(context.get()).clearDataAndPreference();
-                KmAppSettingPreferences.fetchAppSetting(context.get(), Applozic.getInstance(context.get()).getApplicationKey());
+                // TODO: CLEANUP, App settings are now handled by AppSettingUseCase
+//                KmAppSettingPreferences.fetchAppSetting(context.get(), Applozic.getInstance(context.get()).getApplicationKey());
                 response = new RegisterUserClientService(context.get()).createAccount(user);
             }
         } catch (Exception e) {

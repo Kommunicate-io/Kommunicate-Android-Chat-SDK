@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Use case for updating the push notification ID in the Applozic SDK.
+ * Use case for updating the push notification ID in the Kommunicate SDK.
  *
  * @property context The Android context for accessing resources and services.
  * @property pushNotificationId The new push notification ID to be updated.

@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Use case for refreshing the authentication token in the Applozic SDK.
+ * Use case for refreshing the authentication token in the Kommunicate SDK.
  *
  * @property context The Android context for accessing resources and services.
  */

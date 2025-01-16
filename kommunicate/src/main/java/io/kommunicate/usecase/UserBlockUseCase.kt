@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Use case for blocking or unblocking a user in the Applozic SDK.
+ * Use case for blocking or unblocking a user in the Kommunicate SDK.
  *
  * @property context The Android context for accessing resources and services.
  */

@@ -93,11 +93,11 @@ class AutoSuggestionsTest {
             .perform(click())
 
         clickSend()
+        waitFor(5000)
 
         val message = getLastMessageFromServer(chatAPI, chatAuthToken, groupId.toString())
             ?: return fail("Unable to fetch last message from the server.")
 
-        waitFor(5000)
         assertEquals("Message doesn't match", message.get("message"), "London")
     }
 }

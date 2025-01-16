@@ -21,7 +21,6 @@ import io.kommunicate.users.KMUser
 import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
-import kommunicate.io.sample.utils.KmTestHelper
 import kommunicate.io.sample.utils.KmTestHelper.getBotIdsFromDashboard
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.getRandomKmUser
@@ -45,7 +44,6 @@ import java.lang.Exception
 import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.math.log
 
 @RunWith(AndroidJUnit4::class)
 class ConversationTest {
@@ -173,6 +171,10 @@ class ConversationTest {
         assertEquals("Conversation Group ID miss-match. Single threaded conversation should have same group id irrespective of number of time launchConversation called.", groupIdFirst, groupIdSecond)
         sendMessageAsUser(secondMessage)
 
+        // wait for message to appear on dashboard.
+        onView(isRoot())
+            .perform(waitFor(3000))
+
         // verify message on dashboard.
         verifyMessagesOnTheDashboard(groupIdFirst.toString(), listOf(firstMessage, secondMessage), tempUser.userId)
     }
@@ -270,16 +272,29 @@ class ConversationTest {
     @Test
     fun testUpdateConversationAssigneeAndVerifyFromDashboard() {
         val tempUser = getRandomKmUser()
-        val latch = CountDownLatch(1)
+        var latch = CountDownLatch(1)
         var groupId = 0
         val botIds = listOf("inline-code-34rpc")
         val updateBotAssigneeId = "kk-3s8r3"
-        val agentIds = listOf("prateek.singh@kommunicate.io")
+        val agentIds = listOf("prateek.singh@kommunicate.io", "prateek.singh+fhg@kommunicate.io")
 
         mActivityRule.onActivity {
             it.lifecycleScope.launch {
                 loginUser(it, tempUser)
                 groupId = launchConversation(it, botIds = botIds) as Int
+            }.invokeOnCompletion {
+                latch.countDown()
+            }
+        }
+
+        onView(isRoot())
+            .perform(waitForLatch(latch))
+
+        sendMessageAsUser(getRandomString())
+
+        latch = CountDownLatch(1)
+        mActivityRule.onActivity {
+            it.lifecycleScope.launch {
                 updateConversationAssignee(it, groupId, updateBotAssigneeId)
             }.invokeOnCompletion {
                 latch.countDown()
@@ -287,9 +302,7 @@ class ConversationTest {
         }
 
         onView(isRoot())
-            .perform(waitForLatch(latch, waitAfterLatch = 5000))
-
-        sendMessageAsUser(getRandomString())
+            .perform(waitForLatch(latch))
 
         // validate data on dashboard
         runBlocking {

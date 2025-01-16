@@ -9,9 +9,13 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
+
 /**
  * Created by devashish on 7/22/2015.
  */
+@Deprecated
+@CleanUpRequired(reason = "Migrated PushNotificationTask to PushNotificationUseCase")
 public class PushNotificationTask extends AlAsyncTask<Void, Boolean> {
 
     private String pushNotificationId;

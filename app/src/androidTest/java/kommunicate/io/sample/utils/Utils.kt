@@ -124,12 +124,19 @@ fun getRandomKmUser(): KMUser {
 }
 
 fun sendMessageAsUser(message: String) {
+    typeMessageAsUser(message)
+    clickSend()
+}
+
+fun clickSend() {
+    onView(withId(R.id.conversation_send))
+        .perform(click())
+}
+
+fun typeMessageAsUser(message: String) {
     onView(withId(R.id.conversation_message))
         .perform(click(), typeText(message))
     closeSoftKeyboard()
-
-    onView(withId(R.id.conversation_send))
-        .perform(click())
 }
 
 fun hasChildren(greaterThan: Int = 0, lessThan: Int = Int.MAX_VALUE): Matcher<View> {

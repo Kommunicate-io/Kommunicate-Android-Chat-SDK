@@ -51,7 +51,7 @@ class UserDetailUseCase(
     }
 
     companion object {
-        private const val CACHE_REFRESH_TIME: Long = 30 * 1000 // 30 sec
+        private const val CACHE_REFRESH_TIME: Long = 5 * 1000 // 5 sec
 
         /**
          * Executes the use case with the given [UseCaseExecutor]. This helper function invokes the

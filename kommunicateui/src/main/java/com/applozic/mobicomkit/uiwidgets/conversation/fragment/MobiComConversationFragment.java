@@ -3338,7 +3338,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     titleBuilder.append(withUserContact.getDisplayName());
                 }
             } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                processSupportGroupDetails(channel);
                 if (customToolbarLayout != null) {
                     customToolbarLayout.setVisibility(VISIBLE);
                 }
@@ -3598,7 +3597,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void processSupportGroupDetails(final Channel channel) {
-        Contact contact = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
+        KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
 
         if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);

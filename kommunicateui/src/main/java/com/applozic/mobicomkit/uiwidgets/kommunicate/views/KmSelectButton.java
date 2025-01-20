@@ -57,6 +57,11 @@ public class KmSelectButton extends LinearLayout {
     public void setText(String text) {
         buttonTextView.setText(text);
     }
+
+    public String getText() {
+        return buttonTextView.getText().toString();
+    }
+
     public void setChecked(boolean isChecked) {
         checked = isChecked;
         buttonTextView.setTypeface(null, isChecked? Typeface.BOLD : Typeface.NORMAL);

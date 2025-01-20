@@ -27,6 +27,8 @@ import com.applozic.mobicomkit.listners.AlLoginHandler;
 import com.applozic.mobicomkit.listners.AlLogoutHandler;
 import com.applozic.mobicomkit.listners.AlPushNotificationHandler;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
+
+import io.kommunicate.usecase.PushNotificationUseCase;
 import io.kommunicate.usecase.UserLoginUseCase;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -322,7 +324,7 @@ public class Applozic {
     }
 
     public static void registerForPushNotification(Context context, String pushToken, AlPushNotificationHandler handler) {
-        AlTask.execute(new PushNotificationTask(context, pushToken, handler));
+        PushNotificationUseCase.executeWithExecutor(context, pushToken, handler);
     }
 
     public static void registerForPushNotification(Context context, AlPushNotificationHandler handler) {

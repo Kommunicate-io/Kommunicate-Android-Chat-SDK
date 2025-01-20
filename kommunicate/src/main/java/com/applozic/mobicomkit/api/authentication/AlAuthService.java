@@ -11,6 +11,8 @@ import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.listners.AlCallback;
 import com.applozic.mobicommons.task.AlTask;
 
+import io.kommunicate.usecase.RefreshAuthTokenUseCase;
+
 public class AlAuthService {
 
     public static boolean isTokenValid(long createdAtTime, int validUptoMins) {
@@ -18,7 +20,7 @@ public class AlAuthService {
     }
 
     public static void refreshToken(Context context, AlCallback callback) {
-        AlTask.execute(new RefreshAuthTokenTask(context, callback));
+        RefreshAuthTokenUseCase.executeWithExecutor(context, callback);
     }
 
     public static boolean isTokenValid(Context context) {

@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -28,8 +29,10 @@ import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.platform.app.InstrumentationRegistry
 import com.applozic.mobicomkit.uiwidgets.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -121,12 +124,19 @@ fun getRandomKmUser(): KMUser {
 }
 
 fun sendMessageAsUser(message: String) {
-    onView(withId(R.id.conversation_message))
-        .perform(ViewActions.typeText(message))
-    closeSoftKeyboard()
+    typeMessageAsUser(message)
+    clickSend()
+}
 
+fun clickSend() {
     onView(withId(R.id.conversation_send))
         .perform(click())
+}
+
+fun typeMessageAsUser(message: String) {
+    onView(withId(R.id.conversation_message))
+        .perform(click(), typeText(message))
+    closeSoftKeyboard()
 }
 
 fun hasChildren(greaterThan: Int = 0, lessThan: Int = Int.MAX_VALUE): Matcher<View> {
@@ -203,4 +213,23 @@ private fun atPosition(position: Int): Matcher<View> {
             description?.appendText("at position $position")
         }
     }
+}
+
+fun disableAnimations() {
+    val disableAnimationsCommand = listOf(
+        "settings put global window_animation_scale 0",
+        "settings put global transition_animation_scale 0",
+        "settings put global animator_duration_scale 0"
+    )
+
+    disableAnimationsCommand.forEach { command ->
+        InstrumentationRegistry.getInstrumentation().uiAutomation.executeShellCommand(command)
+    }
+}
+
+fun clearAppData() {
+    val packageName = InstrumentationRegistry.getInstrumentation().targetContext.packageName
+    val uiAutomation = InstrumentationRegistry.getInstrumentation().uiAutomation
+    uiAutomation.executeShellCommand("pm clear $packageName").close()
+    Log.d("as", packageName)
 }

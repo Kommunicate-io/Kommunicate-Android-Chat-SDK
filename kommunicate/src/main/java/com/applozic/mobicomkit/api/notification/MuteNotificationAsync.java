@@ -6,10 +6,13 @@ import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicommons.task.AlAsyncTask;
 
+import annotations.CleanUpRequired;
+
 /**
  * Created by Adarsh on 12/30/16.
  */
-
+@Deprecated
+@CleanUpRequired(reason = "Migrated MuteNotificationAsync to MuteNotificationUseCase")
 public class MuteNotificationAsync extends AlAsyncTask<Void, Boolean> {
 
     private final MuteNotificationAsync.TaskListener taskListener;

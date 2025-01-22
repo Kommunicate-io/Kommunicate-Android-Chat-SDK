@@ -86,7 +86,6 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserBlockTask;
 import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.api.attachment.AttachmentView;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
@@ -101,7 +100,6 @@ import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.api.conversation.selfdestruct.DisappearingMessageTask;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
-import com.applozic.mobicomkit.api.notification.MuteNotificationAsync;
 import com.applozic.mobicomkit.api.notification.MuteNotificationRequest;
 import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
@@ -236,6 +234,7 @@ import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
 import io.kommunicate.usecase.MuteNotificationTaskListener;
+import io.kommunicate.usecase.MuteGroupNotificationUseCase;
 import io.kommunicate.usecase.MuteUserNotificationUseCase;
 import io.kommunicate.usecase.UserBlockUseCase;
 import io.kommunicate.utils.KMAgentStatusHelper;
@@ -3906,28 +3905,22 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void muteGroupChat() {
-
         final CharSequence[] items = {ApplozicService.getContext(getContext()).getString(R.string.eight_Hours), ApplozicService.getContext(getContext()).getString(R.string.one_week), ApplozicService.getContext(getContext()).getString(R.string.one_year)};
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationAsync.TaskListener taskListener = new MuteNotificationAsync.TaskListener() {
+        final MuteNotificationTaskListener taskListener = new MuteNotificationTaskListener() {
             @Override
-            public void onSuccess(ApiResponse apiResponse) {
+            public void onFailure(@NonNull String error, @NonNull Context context) {
+                // Not Handled.
+            }
+
+            @Override
+            public void onSuccess(@NonNull String status, @NonNull Context context) {
                 if (menu != null) {
                     menu.findItem(R.id.muteGroup).setVisible(false);
                     menu.findItem(R.id.unmuteGroup).setVisible(true);
                 }
-            }
-
-            @Override
-            public void onFailure(ApiResponse apiResponse, Exception exception) {
-
-            }
-
-            @Override
-            public void onCompletion() {
-
             }
         };
 
@@ -3947,8 +3940,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
 
                         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
-                        MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-                        muteNotificationAsync.execute();
+                        MuteGroupNotificationUseCase.executeWithExecutor(
+                                getContext(),
+                                muteNotificationRequest,
+                                taskListener
+                        );
                         dialog.dismiss();
 
                     }
@@ -3961,28 +3957,27 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationAsync.TaskListener taskListener = new MuteNotificationAsync.TaskListener() {
+        final MuteNotificationTaskListener taskListener = new MuteNotificationTaskListener() {
             @Override
-            public void onSuccess(ApiResponse apiResponse) {
+            public void onFailure(@NonNull String error, @NonNull Context context) {
+                // Not Handled.
+            }
+
+            @Override
+            public void onSuccess(@NonNull String status, @NonNull Context context) {
                 if (menu != null) {
                     menu.findItem(R.id.unmuteGroup).setVisible(false);
                     menu.findItem(R.id.muteGroup).setVisible(true);
                 }
             }
-
-            @Override
-            public void onFailure(ApiResponse apiResponse, Exception exception) {
-
-            }
-
-            @Override
-            public void onCompletion() {
-
-            }
         };
+
         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
-        MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-        muteNotificationAsync.execute();
+        MuteGroupNotificationUseCase.executeWithExecutor(
+                getContext(),
+                muteNotificationRequest,
+                taskListener
+        );
     }
 
     public void muteUserChat() {
@@ -4045,7 +4040,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             public void onFailure(String error, Context context) {
             }
         };
-        MuteUserNotificationUseCase.executeWithExecutor(getContext(), contact.getUserId(), millisecond, taskListener);
+        MuteUserNotificationUseCase.executeWithExecutor(
+                getContext(),
+                contact.getUserId(),
+                millisecond,
+                taskListener
+        );
     }
 
     public void muteUser(boolean mute) {

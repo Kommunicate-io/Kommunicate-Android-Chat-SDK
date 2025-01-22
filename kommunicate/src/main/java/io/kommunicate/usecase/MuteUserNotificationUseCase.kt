@@ -86,18 +86,21 @@ class MuteUserNotificationUseCase(
                 { result: APIResult<ApiResponse<Any>> ->
                     result.onSuccess {
                         taskListener?.onSuccess(
-                            context.getString(R.string.mute_notification),
-                            context
+                            status = context.getString(R.string.mute_notification),
+                            context = context
                         )
                     }
                     result.onFailure { error ->
-                        taskListener?.onFailure(error.message.toString(), context)
+                        taskListener?.onFailure(
+                            error = error.message.toString(),
+                            context = context
+                        )
                     }
                 },
-                { exception: Exception? ->
+                { exception: Exception ->
                     taskListener?.onFailure(
-                        context.getString(R.string.mute_err),
-                        context
+                        error = exception.message.toString(),
+                        context = context
                     )
                 },
                 Dispatchers.IO

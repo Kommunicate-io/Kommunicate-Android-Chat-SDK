@@ -6,6 +6,7 @@ import com.applozic.mobicomkit.feed.ApiResponse
 import com.applozic.mobicomkit.feed.ErrorResponseFeed
 import com.applozic.mobicommons.json.GsonUtils
 import io.kommunicate.R
+import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure
@@ -78,7 +79,7 @@ class MuteUserNotificationUseCase(
             context: Context,
             userId: String,
             notificationAfterTime: Long,
-            taskListener: MuteNotificationTaskListener?
+            taskListener: TaskListener<String>?
         ): UseCaseExecutor<MuteUserNotificationUseCase, APIResult<ApiResponse<Any>>> {
             val useCase = MuteUserNotificationUseCase(context, userId, notificationAfterTime)
             val executor = UseCaseExecutor(
@@ -86,21 +87,18 @@ class MuteUserNotificationUseCase(
                 { result: APIResult<ApiResponse<Any>> ->
                     result.onSuccess {
                         taskListener?.onSuccess(
-                            status = context.getString(R.string.mute_notification),
-                            context = context
+                            status = context.getString(R.string.mute_notification)
                         )
                     }
                     result.onFailure { error ->
                         taskListener?.onFailure(
-                            error = error.message.toString(),
-                            context = context
+                            error = error
                         )
                     }
                 },
                 { exception: Exception ->
                     taskListener?.onFailure(
-                        error = exception.message.toString(),
-                        context = context
+                        error = exception
                     )
                 },
                 Dispatchers.IO
@@ -109,12 +107,4 @@ class MuteUserNotificationUseCase(
             return executor
         }
     }
-}
-
-/**
- * Interface definition for callbacks to be invoked when mute operation completes
- */
-interface MuteNotificationTaskListener {
-    fun onSuccess(status: String, context: Context)
-    fun onFailure(error: String, context: Context)
 }

@@ -225,6 +225,7 @@ import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmCharLimitCallback;
 import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
+import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
@@ -233,7 +234,6 @@ import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
-import io.kommunicate.usecase.MuteNotificationTaskListener;
 import io.kommunicate.usecase.MuteGroupNotificationUseCase;
 import io.kommunicate.usecase.MuteUserNotificationUseCase;
 import io.kommunicate.usecase.UserBlockUseCase;
@@ -3909,14 +3909,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationTaskListener taskListener = new MuteNotificationTaskListener() {
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onFailure(@NonNull String error, @NonNull Context context) {
+            public void onFailure(@NonNull Exception error) {
                 // Not Handled.
             }
 
             @Override
-            public void onSuccess(@NonNull String status, @NonNull Context context) {
+            public void onSuccess(@NonNull String status) {
                 if (menu != null) {
                     menu.findItem(R.id.muteGroup).setVisible(false);
                     menu.findItem(R.id.unmuteGroup).setVisible(true);
@@ -3957,14 +3957,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationTaskListener taskListener = new MuteNotificationTaskListener() {
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onFailure(@NonNull String error, @NonNull Context context) {
+            public void onFailure(@NonNull Exception error) {
                 // Not Handled.
             }
 
             @Override
-            public void onSuccess(@NonNull String status, @NonNull Context context) {
+            public void onSuccess(@NonNull String status) {
                 if (menu != null) {
                     menu.findItem(R.id.unmuteGroup).setVisible(false);
                     menu.findItem(R.id.muteGroup).setVisible(true);
@@ -3985,9 +3985,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationTaskListener listener = new MuteNotificationTaskListener() {
+        final TaskListener listener = new TaskListener<String>() {
             @Override
-            public void onSuccess(String status, Context context) {
+            public void onSuccess(String status) {
                 if (menu != null) {
                     menu.findItem(R.id.muteGroup).setVisible(false);
                     menu.findItem(R.id.unmuteGroup).setVisible(true);
@@ -3995,8 +3995,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void onFailure(String error, Context context) {
-
+            public void onFailure(Exception error) {
+                // Not Handled.
             }
         };
 
@@ -4027,9 +4027,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationTaskListener taskListener = new MuteNotificationTaskListener() {
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onSuccess(String status, Context context) {
+            public void onSuccess(String status) {
                 if (menu != null) {
                     menu.findItem(R.id.unmuteGroup).setVisible(false);
                     menu.findItem(R.id.muteGroup).setVisible(true);
@@ -4037,7 +4037,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void onFailure(String error, Context context) {
+            public void onFailure(Exception error) {
+                // Not Handled.
             }
         };
         MuteUserNotificationUseCase.executeWithExecutor(

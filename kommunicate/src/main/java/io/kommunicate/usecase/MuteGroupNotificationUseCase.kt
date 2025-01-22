@@ -5,6 +5,7 @@ import com.applozic.mobicomkit.api.notification.MuteNotificationRequest
 import com.applozic.mobicomkit.channel.service.ChannelService
 import com.applozic.mobicomkit.feed.ApiResponse
 import io.kommunicate.R
+import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure
@@ -55,7 +56,7 @@ class MuteGroupNotificationUseCase(
         fun executeWithExecutor(
             context: Context,
             request: MuteNotificationRequest,
-            taskListener: MuteNotificationTaskListener?
+            taskListener: TaskListener<String>?
         ): UseCaseExecutor<MuteGroupNotificationUseCase, APIResult<ApiResponse<Any>>> {
             val useCase = MuteGroupNotificationUseCase(context, request)
             val executor = UseCaseExecutor(
@@ -63,21 +64,18 @@ class MuteGroupNotificationUseCase(
                 { result: APIResult<ApiResponse<Any>> ->
                     result.onSuccess { response ->
                         taskListener?.onSuccess(
-                            status = context.getString(R.string.mute_notification),
-                            context = context
+                            status = context.getString(R.string.mute_notification)
                         )
                     }
                     result.onFailure { error ->
                         taskListener?.onFailure(
-                            error = error.message.toString(),
-                            context = context
+                            error = error
                         )
                     }
                 },
                 { exception: Exception ->
                     taskListener?.onFailure(
-                        error = exception.message.toString(),
-                        context = context
+                        error = exception
                     )
                 },
                 Dispatchers.IO

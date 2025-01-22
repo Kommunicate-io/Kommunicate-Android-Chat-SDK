@@ -103,7 +103,6 @@ import com.applozic.mobicomkit.api.conversation.selfdestruct.DisappearingMessage
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
 import com.applozic.mobicomkit.api.notification.MuteNotificationAsync;
 import com.applozic.mobicomkit.api.notification.MuteNotificationRequest;
-import com.applozic.mobicomkit.api.notification.MuteUserNotificationAsync;
 import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
@@ -236,6 +235,8 @@ import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.usecase.MuteNotificationTaskListener;
+import io.kommunicate.usecase.MuteUserNotificationUseCase;
 import io.kommunicate.usecase.UserBlockUseCase;
 import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
@@ -3989,8 +3990,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteUserNotificationAsync.TaskListener listener = new MuteUserNotificationAsync.TaskListener() {
-
+        final MuteNotificationTaskListener listener = new MuteNotificationTaskListener() {
             @Override
             public void onSuccess(String status, Context context) {
                 if (menu != null) {
@@ -4019,7 +4019,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             millisecond = millisecond + 31558000000L;
                         }
 
-                        new MuteUserNotificationAsync(listener, millisecond, contact.getUserId(), getContext()).execute();
+                        MuteUserNotificationUseCase.executeWithExecutor(getContext(), contact.getUserId(), millisecond, listener);
                         dialog.dismiss();
 
                     }
@@ -4032,8 +4032,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteUserNotificationAsync.TaskListener taskListener = new MuteUserNotificationAsync.TaskListener() {
-
+        final MuteNotificationTaskListener taskListener = new MuteNotificationTaskListener() {
             @Override
             public void onSuccess(String status, Context context) {
                 if (menu != null) {
@@ -4044,10 +4043,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             @Override
             public void onFailure(String error, Context context) {
-
             }
         };
-        new MuteUserNotificationAsync(taskListener, millisecond, contact.getUserId(), getContext()).execute();
+        MuteUserNotificationUseCase.executeWithExecutor(getContext(), contact.getUserId(), millisecond, taskListener);
     }
 
     public void muteUser(boolean mute) {

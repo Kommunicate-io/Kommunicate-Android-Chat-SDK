@@ -8,6 +8,10 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
+
+@Deprecated
+@CleanUpRequired(reason = "Migrated MessageDeleteTask to MessageDeleteUseCase")
 public class MessageDeleteTask extends AlAsyncTask<Void, String> {
 
     private WeakReference<Context> context;

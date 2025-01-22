@@ -93,7 +93,6 @@ import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageClientService;
-import com.applozic.mobicomkit.api.conversation.MessageDeleteTask;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
@@ -234,6 +233,7 @@ import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.usecase.MessageDeleteUseCase;
 import io.kommunicate.usecase.MuteGroupNotificationUseCase;
 import io.kommunicate.usecase.MuteUserNotificationUseCase;
 import io.kommunicate.usecase.UserBlockUseCase;
@@ -4884,21 +4884,25 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void deleteForAll(Message message, int position) {
-        new MessageDeleteTask(getContext(), message.getKeyString(), true, new AlCallback() {
-            @Override
-            public void onSuccess(Object response) {
-                if (getContext() != null) {
-                    deleteMessageFromDeviceList(message.getKeyString());
-                    recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
-                    KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
-                }
-            }
+        MessageDeleteUseCase.executeWithExecutor(
+                getContext(),
+                message.getKeyString(),
+                true,
+                new TaskListener<String>() {
+                    @Override
+                    public void onSuccess(String response) {
+                        if (getContext() != null) {
+                            deleteMessageFromDeviceList(message.getKeyString());
+                            recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
+                            KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-            @Override
-            public void onError(Object error) {
-                KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
-            }
-        }).execute();
+                    @Override
+                    public void onFailure(Exception error) {
+                        KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public void processAttachmentIconsClick() {

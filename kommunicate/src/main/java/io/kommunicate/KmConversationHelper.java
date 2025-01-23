@@ -12,6 +12,8 @@ import android.os.ResultReceiver;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
@@ -22,7 +24,6 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-import com.applozic.mobicomkit.listners.MessageListHandler;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -43,6 +44,7 @@ import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
+import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.usecase.AppSettingUseCase;
@@ -86,40 +88,49 @@ public class KmConversationHelper {
         }
 
         if (conversationId == null) {
-            ApplozicConversation.getLatestMessageList(context, false, new MessageListHandler() {
-                @Override
-                public void onResult(List<Message> messageList, ApplozicException e) {
-                    if (messageList != null) {
-                        if (messageList.size() == 1) {
-                            Message message = messageList.get(0);
-                            if (message.getGroupId() != null && message.getGroupId() != 0) {
-                                KmGetConversationInfoCallback memberListener = new KmGetConversationInfoCallback() {
-                                    @Override
-                                    public void onSuccess(Channel channel, Context context) {
-                                        if (channel != null) {
-                                            openParticularConversation(context, skipConversationList, channel.getKey(), null, callback);
-                                        } else {
-                                            Kommunicate.openConversation(context, callback);
-                                        }
-                                    }
+            ApplozicConversation.getLatestMessageList(
+                    context,
+                    false,
+                    new TaskListener<List<Message>>() {
+                        @Override
+                        public void onSuccess(List<Message> messageList) {
+                            if (messageList != null) {
+                                if (messageList.size() == 1) {
+                                    Message message = messageList.get(0);
+                                    if (message.getGroupId() != null && message.getGroupId() != 0) {
+                                        KmGetConversationInfoCallback memberListener = new KmGetConversationInfoCallback() {
+                                            @Override
+                                            public void onSuccess(Channel channel, Context context) {
+                                                if (channel != null) {
+                                                    openParticularConversation(context, skipConversationList, channel.getKey(), null, callback);
+                                                } else {
+                                                    Kommunicate.openConversation(context, callback);
+                                                }
+                                            }
 
-                                    @Override
-                                    public void onFailure(Exception e, Context context) {
+                                            @Override
+                                            public void onFailure(Exception e, Context context) {
+                                                Kommunicate.openConversation(context, callback);
+                                            }
+                                        };
+                                        new KmConversationInfoTask(context, message.getGroupId(), memberListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                    } else {
                                         Kommunicate.openConversation(context, callback);
                                     }
-                                };
-                                new KmConversationInfoTask(context, message.getGroupId(), memberListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                } else {
+                                    Kommunicate.openConversation(context, callback);
+                                }
                             } else {
                                 Kommunicate.openConversation(context, callback);
                             }
-                        } else {
-                            Kommunicate.openConversation(context, callback);
                         }
-                    } else {
-                        Kommunicate.openConversation(context, callback);
+
+                        @Override
+                        public void onFailure(@NonNull Exception error) {
+                            callback.onFailure(error.getLocalizedMessage());
+                        }
                     }
-                }
-            });
+            );
         } else {
             openParticularConversation(context, skipConversationList, conversationId, null, callback);
         }
@@ -595,21 +606,27 @@ public class KmConversationHelper {
             return;
         }
 
-        ApplozicConversation.getLatestMessageList(conversationBuilder.getContext(), false, new MessageListHandler() {
-            @Override
-            public void onResult(List<Message> messageList, ApplozicException e) {
-                if (e == null) {
-                    if (messageList.isEmpty()) {
-                        conversationBuilder.setSkipConversationList(false);
-                        conversationBuilder.launchConversation(callback);
-                    } else if (messageList.size() == 1) {
-                        openParticularConversation(conversationBuilder.getContext(), false, messageList.get(0).getGroupId(), conversationBuilder.getPreFilledMessage(), callback);
-                    } else {
-                        Kommunicate.openConversation(conversationBuilder.getContext(), callback);
+        ApplozicConversation.getLatestMessageList(
+                conversationBuilder.getContext(),
+                false,
+                new TaskListener<List<Message>>() {
+                    @Override
+                    public void onSuccess(List<Message> messageList) {
+                        if (messageList.isEmpty()) {
+                            conversationBuilder.setSkipConversationList(false);
+                            conversationBuilder.launchConversation(callback);
+                        } else if (messageList.size() == 1) {
+                            openParticularConversation(conversationBuilder.getContext(), false, messageList.get(0).getGroupId(), conversationBuilder.getPreFilledMessage(), callback);
+                        } else {
+                            Kommunicate.openConversation(conversationBuilder.getContext(), callback);
+                        }
                     }
-                }
-            }
-        });
+
+                    @Override
+                    public void onFailure(@NonNull Exception error) {
+                        callback.onFailure(error.getLocalizedMessage());
+                    }
+                });
     }
 
     private static KmStartConversationHandler getStartConversationHandler(final boolean isSkipConversationList, final boolean launchConversation, final String preFilledMessage, final ResultReceiver resultReceiver, final KmCallback callback) {

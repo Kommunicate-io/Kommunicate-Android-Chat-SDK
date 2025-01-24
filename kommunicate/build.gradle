@@ -17,8 +17,6 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 34
-        versionCode 1
-        versionName "2.10.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
         buildConfigField "String", "API_SERVER_URL", '"https://api.kommunicate.io"'
@@ -36,6 +34,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'io.kommunicate'
 
 }
 

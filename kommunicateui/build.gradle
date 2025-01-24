@@ -9,7 +9,6 @@ rootProject.allprojects {
 
 android {
     compileSdkVersion 34
-    buildToolsVersion '28.0.3'
 
     lintOptions {
         abortOnError false
@@ -17,8 +16,6 @@ android {
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 34
-        versionCode 1
-        versionName "2.10.5"
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
     }
@@ -29,6 +26,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'com.applozic.mobicomkit.uiwidgets'
 
 }
 

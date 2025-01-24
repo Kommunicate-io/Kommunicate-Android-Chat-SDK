@@ -13,8 +13,6 @@ import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DBUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 
-import java.io.File;
-
 import io.kommunicate.database.DatabaseMigrationHelper;
 
 public class MobiComDatabaseHelper extends SQLiteOpenHelper {

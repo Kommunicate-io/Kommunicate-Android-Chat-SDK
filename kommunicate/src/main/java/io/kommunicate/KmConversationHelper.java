@@ -612,6 +612,12 @@ public class KmConversationHelper {
                 new TaskListener<List<Message>>() {
                     @Override
                     public void onSuccess(List<Message> messageList) {
+                        if (messageList == null) {
+                            if (callback != null) {
+                                callback.onFailure("Message list is null");
+                            }
+                            return;
+                        }
                         if (messageList.isEmpty()) {
                             conversationBuilder.setSkipConversationList(false);
                             conversationBuilder.launchConversation(callback);
@@ -624,7 +630,9 @@ public class KmConversationHelper {
 
                     @Override
                     public void onFailure(@NonNull Exception error) {
-                        callback.onFailure(error.getLocalizedMessage());
+                        if (callback != null) {
+                            callback.onFailure(error.getLocalizedMessage());
+                        }
                     }
                 });
     }

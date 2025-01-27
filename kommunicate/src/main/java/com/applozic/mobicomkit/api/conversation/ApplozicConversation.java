@@ -104,6 +104,10 @@ public class ApplozicConversation {
     }
 
     public static void getMessageListForChannel(Context context, Channel channel, Long endTime, TaskListener<List<Message>> handler) {
+        if (channel == null) {
+           handler.onFailure(new ApplozicException("Channel key cannot be null"));
+           return;
+        }
         MessageListUseCase.executeWithCallback(
                 context,
                 null,
@@ -117,6 +121,10 @@ public class ApplozicConversation {
     }
 
     public static void getMessageListForContact(Context context, String userId, Long endTime, TaskListener<List<Message>> handler) {
+        if (userId == null) {
+            handler.onFailure(new ApplozicException("userId cannot be null"));
+            return;
+        }
         MessageListUseCase.executeWithCallback(
                 context,
                 null,
@@ -130,6 +138,10 @@ public class ApplozicConversation {
     }
 
     public static void getMessageListForChannel(Context context, Integer channelKey, Long endTime, TaskListener<List<Message>> handler) {
+        if (channelKey == null) {
+            handler.onFailure(new ApplozicException("Channel key cannot be null"));
+            return;
+        }
         MessageListUseCase.executeWithCallback(
                 context,
                 null,

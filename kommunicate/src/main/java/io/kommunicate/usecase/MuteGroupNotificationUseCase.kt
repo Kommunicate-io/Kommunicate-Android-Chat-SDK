@@ -56,25 +56,25 @@ class MuteGroupNotificationUseCase(
         fun executeWithExecutor(
             context: Context,
             request: MuteNotificationRequest,
-            taskListener: TaskListener<String>?
+            taskListener: TaskListener<String>
         ): UseCaseExecutor<MuteGroupNotificationUseCase, APIResult<ApiResponse<Any>>> {
             val useCase = MuteGroupNotificationUseCase(context, request)
             val executor = UseCaseExecutor(
                 useCase,
                 { result: APIResult<ApiResponse<Any>> ->
                     result.onSuccess { response ->
-                        taskListener?.onSuccess(
+                        taskListener.onSuccess(
                             status = context.getString(R.string.mute_notification)
                         )
                     }
                     result.onFailure { error ->
-                        taskListener?.onFailure(
+                        taskListener.onFailure(
                             error = error
                         )
                     }
                 },
                 { exception: Exception ->
-                    taskListener?.onFailure(
+                    taskListener.onFailure(
                         error = exception
                     )
                 },

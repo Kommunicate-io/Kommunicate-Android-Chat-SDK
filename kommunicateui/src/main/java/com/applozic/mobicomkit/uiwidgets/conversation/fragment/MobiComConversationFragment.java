@@ -38,6 +38,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -3912,7 +3913,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         final TaskListener taskListener = new TaskListener<String>() {
             @Override
             public void onFailure(@NonNull Exception error) {
-                // Not Handled.
+                Log.e(TAG, "Failed to mute group notifications", error);
+                Toast.makeText(getContext(), "Failed to mute group notifications", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -3960,7 +3962,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         final TaskListener taskListener = new TaskListener<String>() {
             @Override
             public void onFailure(@NonNull Exception error) {
-                // Not Handled.
+                Log.e(TAG, "Failed to unmute group notifications", error);
+                Toast.makeText(getContext(), "Failed to group user notifications", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -3996,7 +3999,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             @Override
             public void onFailure(Exception error) {
-                // Not Handled.
+                Log.e(TAG, "Failed to mute user notifications", error);
+                Toast.makeText(getContext(), "Failed to mute user notifications", Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -4038,7 +4042,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             @Override
             public void onFailure(Exception error) {
-                // Not Handled.
+                Log.e(TAG, "Failed to unmute user notifications", error);
+                Toast.makeText(getContext(), "Failed to unmute user notifications", Toast.LENGTH_SHORT).show();
             }
         };
         MuteUserNotificationUseCase.executeWithExecutor(

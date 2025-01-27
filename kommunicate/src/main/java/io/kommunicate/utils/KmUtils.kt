@@ -183,10 +183,13 @@ object KmUtils {
     @JvmStatic
     fun getCustomBotName(message: Message?, context: Context): String? {
         if (message != null) {
-            val metadata: Map<String, String> = GsonUtils.getObjectFromJson<Any>(
-                ApplozicClient.getInstance(context).messageMetaData,
-                MutableMap::class.java
-            ) as Map<String, String>
+            val metadata: Map<String, String> = ApplozicClient.getInstance(context).messageMetaData?.let {
+                GsonUtils.getObjectFromJson<Any>(
+                    it,
+                    MutableMap::class.java
+                ) as Map<String, String>
+            } ?: return null
+
             if (
                 metadata.containsKey(KmSettings.KM_CHAT_CONTEXT)
                 && metadata[Kommunicate.KM_CHAT_CONTEXT]!!.contains(BOT_CUSTOMIZATION)

@@ -12,13 +12,13 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$agp_version"
         classpath 'com.google.gms:google-services:4.3.8'
-        //classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.24.4"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.24.4"
     }
 }
 
 allprojects {
-    /*apply plugin: 'com.jfrog.artifactory'
-    apply plugin: 'maven-publish'*/
+    apply plugin: 'com.jfrog.artifactory'
+    apply plugin: 'maven-publish'
 
     repositories {
         google()
@@ -26,7 +26,7 @@ allprojects {
     }
 }
 
-/*artifactoryPublish.skip = true
+artifactoryPublish.skip = true
 artifactory {
     contextUrl = 'https://kommunicate.jfrog.io/artifactory'
     Properties localProperties = new Properties()
@@ -56,4 +56,4 @@ task clean(type: Delete) {
 
 subprojects {
     tasks.withType(Javadoc).all { enabled = false }
-}*/
+}

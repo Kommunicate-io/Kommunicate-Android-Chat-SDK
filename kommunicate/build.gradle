@@ -12,13 +12,14 @@ android {
 
     lintOptions {
         abortOnError false
+        checkReleaseBuilds false
     }
 
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 34
         versionCode 1
-        versionName "2.10.4"
+        versionName "2.10.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
         buildConfigField "String", "API_SERVER_URL", '"https://api.kommunicate.io"'
@@ -55,7 +56,7 @@ dependencies {
     }
 }
 
-/*task sourcesJar(type: Jar) {
+task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     archiveClassifier = 'sources'
 }
@@ -127,5 +128,5 @@ publishing {
 }
 artifactoryPublish {
     publications(publishing.publications.aar)
-}*/
+}
 

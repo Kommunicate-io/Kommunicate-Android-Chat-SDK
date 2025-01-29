@@ -870,6 +870,7 @@ public class MessageClientService extends MobiComKitClientService {
         BroadcastService.sendLoggedUserDeletedBroadcast(context);
     }
 
+    // Required
     public void processUserStatus(String userId, boolean isProfileImageUpdated) {
         try {
             UserDetail[] userDetails = getUserDetails(userId);

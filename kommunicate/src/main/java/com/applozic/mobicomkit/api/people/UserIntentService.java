@@ -20,6 +20,8 @@ import com.applozic.mobicommons.people.contact.Contact;
 
 import static com.applozic.mobicomkit.api.conversation.ApplozicConversation.isMessageStatusPublished;
 
+import annotations.CleanUpRequired;
+
 /**
  * Created by devashish on 15/12/13.
  */
@@ -56,6 +58,7 @@ public class UserIntentService extends AlJobIntentService {
         mobiComConversationService = new MobiComConversationService(getApplicationContext());
     }
 
+    @CleanUpRequired(reason = "Not used anywhere")
     public void checkAndSaveLoggedUserDeletedDataToSharedPref() {
         String userId = MobiComUserPreference.getInstance(UserIntentService.this).getUserId();
         if(TextUtils.isEmpty(userId)) {

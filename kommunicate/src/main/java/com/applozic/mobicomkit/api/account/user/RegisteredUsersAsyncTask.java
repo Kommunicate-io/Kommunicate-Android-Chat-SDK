@@ -6,9 +6,13 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
 import com.applozic.mobicommons.task.AlAsyncTask;
 
+import annotations.CleanUpRequired;
+
 /**
  * Created by sunil on 3/10/16.
  */
+@Deprecated
+@CleanUpRequired(reason = "Not used anywhere")
 public class RegisteredUsersAsyncTask extends AlAsyncTask<Void, Boolean> {
 
     private final TaskListener taskListener;

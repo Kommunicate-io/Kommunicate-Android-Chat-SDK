@@ -173,6 +173,7 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
+import com.applozic.mobicomkit.uiwidgets.usecase.UserDetailUseCase;
 import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
@@ -215,6 +216,7 @@ import java.util.Timer;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import annotations.CleanUpRequired;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
@@ -3337,7 +3339,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     titleBuilder.append(withUserContact.getDisplayName());
                 }
             } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                processSupportGroupDetails(channel);
                 if (customToolbarLayout != null) {
                     customToolbarLayout.setVisibility(VISIBLE);
                 }
@@ -3596,26 +3597,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void getUserDetail(Context context, String userId, KmUserDetailsCallback callback) {
-        new KMUserDetailTask(context, userId, callback).execute();
-    }
-
     public void processSupportGroupDetails(final Channel channel) {
-        Contact contact = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
+        KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
 
         if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
             showTakeOverFromBotLayout(assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !BOT.equals(assigneeContact.getUserId()), assigneeContact);
         }
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-        getUserDetail(getContext(), channel.getConversationAssignee(), new KmUserDetailsCallback() {
-            @Override
-            public void hasFinished(final Contact contact) {
-                conversationAssignee = contact;
-                updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-                switchContactStatus(contact, contact.isUserOnline());
-            }
-        });
+
+        UserDetailUseCase.executeWithExecutor(
+                requireContext(),
+                channel.getConversationAssignee(),
+                contactCallback -> {
+                    conversationAssignee = contactCallback;
+                    updateSupportGroupTitleAndImageAndHideSubtitle(channel);
+                    switchContactStatus(contactCallback, contactCallback.isUserOnline());
+                });
     }
 
     //connected is for online/offline, agentStatus is online/away
@@ -5204,6 +5202,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
+    @Deprecated
+    @CleanUpRequired(reason = "Migrated from KMUserDetailTask to UserDetailUseCase ")
     public static class KMUserDetailTask extends AsyncTask<Void, Void, Boolean> {
 
         WeakReference<Context> context;
@@ -5240,8 +5240,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public interface KmUserDetailsCallback {
-        void hasFinished(Contact contact);
 
+        void hasFinished(Contact contact);
     }
 
     public static boolean isEmailConversation(Channel channel) {

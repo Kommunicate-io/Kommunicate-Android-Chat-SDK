@@ -10,13 +10,15 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.R;
 
 
 /**
  * Created by reytum on 20/11/17.
  */
-
+@Deprecated
+@CleanUpRequired(reason = "Migrated MuteUserNotificationAsync to MuteUserNotificationUseCase")
 public class MuteUserNotificationAsync extends AlAsyncTask<Void, ApiResponse> {
     private static final String SUCCESS = "success";
     TaskListener listener;

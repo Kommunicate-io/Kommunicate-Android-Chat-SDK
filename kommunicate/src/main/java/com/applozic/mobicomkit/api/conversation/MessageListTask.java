@@ -16,10 +16,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import annotations.CleanUpRequired;
+
 /**
  * Created by reytum on 27/11/17.
  */
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated MessageListTask to MessageListUseCase")
 public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
 
     private WeakReference<Context> context;

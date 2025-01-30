@@ -38,6 +38,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -86,7 +87,6 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserBlockTask;
 import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.api.attachment.AttachmentView;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
@@ -94,16 +94,13 @@ import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageClientService;
-import com.applozic.mobicomkit.api.conversation.MessageDeleteTask;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.api.conversation.selfdestruct.DisappearingMessageTask;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
-import com.applozic.mobicomkit.api.notification.MuteNotificationAsync;
 import com.applozic.mobicomkit.api.notification.MuteNotificationRequest;
-import com.applozic.mobicomkit.api.notification.MuteUserNotificationAsync;
 import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
@@ -230,6 +227,7 @@ import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmCharLimitCallback;
 import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
+import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
@@ -238,6 +236,9 @@ import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.usecase.MessageDeleteUseCase;
+import io.kommunicate.usecase.MuteGroupNotificationUseCase;
+import io.kommunicate.usecase.MuteUserNotificationUseCase;
 import io.kommunicate.usecase.UserBlockUseCase;
 import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
@@ -3903,28 +3904,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void muteGroupChat() {
-
         final CharSequence[] items = {ApplozicService.getContext(getContext()).getString(R.string.eight_Hours), ApplozicService.getContext(getContext()).getString(R.string.one_week), ApplozicService.getContext(getContext()).getString(R.string.one_year)};
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationAsync.TaskListener taskListener = new MuteNotificationAsync.TaskListener() {
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onSuccess(ApiResponse apiResponse) {
+            public void onFailure(@NonNull Exception error) {
+                Log.e(TAG, "Failed to mute group notifications", error);
+                Toast.makeText(getContext(), "Failed to mute group notifications", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(@NonNull String status) {
                 if (menu != null) {
                     menu.findItem(R.id.muteGroup).setVisible(false);
                     menu.findItem(R.id.unmuteGroup).setVisible(true);
                 }
-            }
-
-            @Override
-            public void onFailure(ApiResponse apiResponse, Exception exception) {
-
-            }
-
-            @Override
-            public void onCompletion() {
-
             }
         };
 
@@ -3944,8 +3940,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
 
                         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
-                        MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-                        muteNotificationAsync.execute();
+                        MuteGroupNotificationUseCase.executeWithExecutor(
+                                getContext(),
+                                muteNotificationRequest,
+                                taskListener
+                        );
                         dialog.dismiss();
 
                     }
@@ -3958,28 +3957,28 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationAsync.TaskListener taskListener = new MuteNotificationAsync.TaskListener() {
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onSuccess(ApiResponse apiResponse) {
+            public void onFailure(@NonNull Exception error) {
+                Log.e(TAG, "Failed to unmute group notifications", error);
+                Toast.makeText(getContext(), "Failed to group user notifications", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(@NonNull String status) {
                 if (menu != null) {
                     menu.findItem(R.id.unmuteGroup).setVisible(false);
                     menu.findItem(R.id.muteGroup).setVisible(true);
                 }
             }
-
-            @Override
-            public void onFailure(ApiResponse apiResponse, Exception exception) {
-
-            }
-
-            @Override
-            public void onCompletion() {
-
-            }
         };
+
         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
-        MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-        muteNotificationAsync.execute();
+        MuteGroupNotificationUseCase.executeWithExecutor(
+                getContext(),
+                muteNotificationRequest,
+                taskListener
+        );
     }
 
     public void muteUserChat() {
@@ -3987,10 +3986,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteUserNotificationAsync.TaskListener listener = new MuteUserNotificationAsync.TaskListener() {
-
+        final TaskListener listener = new TaskListener<String>() {
             @Override
-            public void onSuccess(String status, Context context) {
+            public void onSuccess(String status) {
                 if (menu != null) {
                     menu.findItem(R.id.muteGroup).setVisible(false);
                     menu.findItem(R.id.unmuteGroup).setVisible(true);
@@ -3998,8 +3996,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void onFailure(String error, Context context) {
-
+            public void onFailure(Exception error) {
+                Log.e(TAG, "Failed to mute user notifications", error);
+                Toast.makeText(getContext(), "Failed to mute user notifications", Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -4017,7 +4016,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             millisecond = millisecond + 31558000000L;
                         }
 
-                        new MuteUserNotificationAsync(listener, millisecond, contact.getUserId(), getContext()).execute();
+                        MuteUserNotificationUseCase.executeWithExecutor(getContext(), contact.getUserId(), millisecond, listener);
                         dialog.dismiss();
 
                     }
@@ -4030,10 +4029,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteUserNotificationAsync.TaskListener taskListener = new MuteUserNotificationAsync.TaskListener() {
-
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onSuccess(String status, Context context) {
+            public void onSuccess(String status) {
                 if (menu != null) {
                     menu.findItem(R.id.unmuteGroup).setVisible(false);
                     menu.findItem(R.id.muteGroup).setVisible(true);
@@ -4041,11 +4039,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void onFailure(String error, Context context) {
-
+            public void onFailure(Exception error) {
+                Log.e(TAG, "Failed to unmute user notifications", error);
+                Toast.makeText(getContext(), "Failed to unmute user notifications", Toast.LENGTH_SHORT).show();
             }
         };
-        new MuteUserNotificationAsync(taskListener, millisecond, contact.getUserId(), getContext()).execute();
+        MuteUserNotificationUseCase.executeWithExecutor(
+                getContext(),
+                contact.getUserId(),
+                millisecond,
+                taskListener
+        );
     }
 
     public void muteUser(boolean mute) {
@@ -4883,21 +4887,25 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void deleteForAll(Message message, int position) {
-        new MessageDeleteTask(getContext(), message.getKeyString(), true, new AlCallback() {
-            @Override
-            public void onSuccess(Object response) {
-                if (getContext() != null) {
-                    deleteMessageFromDeviceList(message.getKeyString());
-                    recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
-                    KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
-                }
-            }
+        MessageDeleteUseCase.executeWithExecutor(
+                getContext(),
+                message.getKeyString(),
+                true,
+                new TaskListener<String>() {
+                    @Override
+                    public void onSuccess(String response) {
+                        if (getContext() != null) {
+                            deleteMessageFromDeviceList(message.getKeyString());
+                            recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
+                            KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-            @Override
-            public void onError(Object error) {
-                KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
-            }
-        }).execute();
+                    @Override
+                    public void onFailure(Exception error) {
+                        KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public void processAttachmentIconsClick() {

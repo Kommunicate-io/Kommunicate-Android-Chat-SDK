@@ -631,7 +631,7 @@ public class KmConversationHelper {
                     @Override
                     public void onFailure(@NonNull Exception error) {
                         if (callback != null) {
-                            callback.onFailure(error.getLocalizedMessage());
+                            callback.onFailure(error);
                         }
                     }
                 });

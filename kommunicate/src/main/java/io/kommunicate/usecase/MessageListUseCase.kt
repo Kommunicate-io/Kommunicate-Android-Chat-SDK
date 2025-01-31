@@ -60,13 +60,7 @@ class MessageListUseCase(
                 conversationService.getMessages(startTime, endTime, contact, channel, null)
             }
 
-            val processedList = processMessageList(messageList)
-
-            if (processedList.isNullOrEmpty()) {
-                APIResult.failed(INTERNAL_ERR)
-            } else {
-                APIResult.success(processedList)
-            }
+            APIResult.success(processMessageList(messageList))
         } catch (e: Exception) {
             APIResult.failedWithException(e)
         }
@@ -78,9 +72,9 @@ class MessageListUseCase(
      * @param messageList Raw list of messages to process
      * @return Processed list of messages
      */
-    private fun processMessageList(messageList: List<Message>?): List<Message>? {
+    private fun processMessageList(messageList: List<Message>?): List<Message> {
         return when {
-            messageList.isNullOrEmpty() -> null
+            messageList.isNullOrEmpty() -> emptyList()
             isForMessageList -> processLatestMessages(messageList)
             else -> processChatMessages(messageList)
         }
@@ -119,10 +113,10 @@ class MessageListUseCase(
     /**
      * Processes messages for chat message list strategy.
      */
-    private fun processChatMessages(messageList: List<Message>): List<Message>? {
+    private fun processChatMessages(messageList: List<Message>): List<Message> {
         val mergedList = mutableListOf<Message>()
 
-        if (messageList.isEmpty()) return null
+        if (messageList.isEmpty()) return emptyList()
 
         mergedList.apply {
             add(Message().apply { setInitialFirstMessage() })
@@ -168,7 +162,6 @@ class MessageListUseCase(
 
 
     companion object {
-        private const val INTERNAL_ERR = "Some internal error occurred"
 
         /**
          * @param context Android context

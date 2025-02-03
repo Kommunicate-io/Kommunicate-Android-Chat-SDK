@@ -313,9 +313,8 @@ public class MobiComMessageService {
                     UserService.getInstance(context).processSyncUserBlock();
                 }
                 userpref.setLastSyncTime(String.valueOf(syncMessageFeed.getLastSyncTime()));
-            } else {
-                userpref.setLastSyncTime(String.valueOf(System.currentTimeMillis()));
             }
+            updateDeliveredStatus(syncMessageFeed.getDeliveredMessageKeys());
             updateDeliveredStatus(syncMessageFeed.getDeliveredMessageKeys());
         }
     }

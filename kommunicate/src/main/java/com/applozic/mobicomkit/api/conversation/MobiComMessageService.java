@@ -315,7 +315,6 @@ public class MobiComMessageService {
                 userpref.setLastSyncTime(String.valueOf(syncMessageFeed.getLastSyncTime()));
             }
             updateDeliveredStatus(syncMessageFeed.getDeliveredMessageKeys());
-            updateDeliveredStatus(syncMessageFeed.getDeliveredMessageKeys());
         }
     }
 

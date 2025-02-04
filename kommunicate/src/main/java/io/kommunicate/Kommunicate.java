@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
@@ -33,6 +35,8 @@ import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.reflect.TypeToken;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -261,8 +265,14 @@ public class Kommunicate {
         }
     }
 
-    public static void loginAsVisitor(Context context, KMLoginHandler handler) {
-        login(context, getVisitor(), handler);
+    public static void loginAsVisitor(@NotNull Context context, @NotNull KMLoginHandler handler) {
+        loginAsVisitor(context, User.Platform.ANDROID, handler);
+    }
+
+    public static void loginAsVisitor(@NotNull Context context, @NotNull User.Platform platform, KMLoginHandler handler) {
+        KMUser user = getVisitor();
+        user.setPlatform(platform.getValue());
+        login(context, user, handler);
     }
 
     /**

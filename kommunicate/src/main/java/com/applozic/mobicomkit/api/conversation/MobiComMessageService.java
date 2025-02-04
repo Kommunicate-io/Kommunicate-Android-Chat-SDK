@@ -312,10 +312,8 @@ public class MobiComMessageService {
                 if (syncGroupOfTwoForBlockList) {
                     UserService.getInstance(context).processSyncUserBlock();
                 }
-                userpref.setLastSyncTime(String.valueOf(syncMessageFeed.getLastSyncTime()));
-            } else {
-                userpref.setLastSyncTime(String.valueOf(System.currentTimeMillis()));
             }
+            userpref.setLastSyncTime(String.valueOf(syncMessageFeed.getLastSyncTime()));
             updateDeliveredStatus(syncMessageFeed.getDeliveredMessageKeys());
         }
     }

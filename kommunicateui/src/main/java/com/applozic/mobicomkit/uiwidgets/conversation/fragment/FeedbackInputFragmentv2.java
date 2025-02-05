@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -34,6 +35,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.List;
+
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,7 +105,9 @@ public class FeedbackInputFragmentv2 extends BottomSheetDialogFragment implement
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach(@NonNull Context ctx) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(ctx, languageCode);
         super.onAttach(context);
         if (!FeedbackSubmissionListener.class.isAssignableFrom(MobiComConversationFragment.class)) {
             Utils.printLog(context, TAG, "Implement FeedbackSubmissionListener in your parent fragment.");

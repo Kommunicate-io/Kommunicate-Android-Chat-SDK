@@ -1,8 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -22,6 +20,9 @@ import com.applozic.mobicommons.file.FileUtils;
 
 import java.util.ArrayList;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 
 public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
 
@@ -36,14 +37,22 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Uri> uris;
     private FileUtils.GalleryFilterOptions filterOptions;
+    private Function0<Unit> openAttachmentPickerCallback;
 
-
-    public MobiComAttachmentGridViewAdapter(Context context, ArrayList<Uri> uris, AlCustomizationSettings alCustomizationSettings, boolean disableNewAttachment, FileUtils.GalleryFilterOptions filterOptions) {
+    public MobiComAttachmentGridViewAdapter(
+            Context context,
+            ArrayList<Uri> uris,
+            AlCustomizationSettings alCustomizationSettings,
+            boolean disableNewAttachment,
+            FileUtils.GalleryFilterOptions filterOptions,
+            Function0<Unit> openAttachmentPickerCallback
+    ) {
         this.context = context;
         this.alCustomizationSettings = alCustomizationSettings;
         this.uris = uris;
         this.disableNewAttachment = disableNewAttachment;
         this.filterOptions = filterOptions;
+        this.openAttachmentPickerCallback = openAttachmentPickerCallback;
     }
 
     @Override
@@ -94,14 +103,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                Intent contentChooserIntent = FileUtils.createGetContentIntent(filterOptions, context.getPackageManager(), alCustomizationSettings.isMultipleAttachmentSelectionEnabled());
-                contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                if (alCustomizationSettings.isMultipleAttachmentSelectionEnabled()){
-                    contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                }
-                Intent intentPick = Intent.createChooser(contentChooserIntent, context.getString(R.string.select_file));
-                ((Activity) context).startActivityForResult(intentPick, REQUEST_CODE);
+                openAttachmentPickerCallback.invoke();
             }
         });
 

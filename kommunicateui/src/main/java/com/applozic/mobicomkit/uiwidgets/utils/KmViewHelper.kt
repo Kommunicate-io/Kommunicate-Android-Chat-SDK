@@ -118,6 +118,15 @@ object KmViewHelper {
     }
 
     @JvmStatic
+    fun loadImage(
+        context: Context,
+        imageView: CircleImageView,
+        placeholderImage: Int
+    ) {
+        Glide.with(context).load(placeholderImage).into(imageView)
+    }
+
+    @JvmStatic
     fun setDocumentIcon(mimeType: String?, documentIcon: ImageView) {
         if (mimeType == null && TextUtils.isEmpty(mimeType)) {
             documentIcon.setImageResource(R.drawable.ic_documentreceive)

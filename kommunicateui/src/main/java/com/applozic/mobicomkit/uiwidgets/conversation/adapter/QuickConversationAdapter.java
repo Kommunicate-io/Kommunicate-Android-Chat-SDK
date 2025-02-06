@@ -199,7 +199,12 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             myholder.smReceivers.setText(withUserContact.getDisplayName());
                             processContactImage(withUserContact, myholder.onlineTextView, myholder.offlineTextView, myholder.alphabeticTextView, myholder.contactImage);
                         }
-                    } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+                    } if (channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+                        myholder.smReceivers.setText(R.string.in_queue);
+                        channelImageLoader.setLoadingImage(R.drawable.km_message_in_queue);
+                        myholder.contactImage.setImageResource(R.drawable.km_message_in_queue);
+                        myholder.contactImage.setVisibility(View.VISIBLE);
+                    }else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
                         Contact withUserContact = contactService.getContactById(channel.getConversationAssignee());
                         myholder.smReceivers.setText(channel.getName() != null ? channel.getName() : "");
                         channelImageLoader.setLoadingImage(R.drawable.km_ic_contact_picture_holo_light);
@@ -241,7 +246,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.attachmentIcon.clearColorFilter();
                 }
 
-                if (message.isVideoCallMessage()) {
+                if (channel != null && channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+                    myholder.messageTextView.setVisibility(View.GONE);
+                } else if (message.isVideoCallMessage()) {
                     createVideoCallView(message, myholder.attachmentIcon, myholder.messageTextView);
                 } else if (message.hasAttachment() && myholder.attachmentIcon != null && !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
                     //Todo: handle it for fileKeyStrings when filePaths is empty
@@ -294,7 +301,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 } else if (channel != null && channel.getKey() != null && channel.getKey() != 0) {
                     messageUnReadCount = messageDatabaseService.getUnreadMessageCountForChannel(channel.getKey());
                 }
-                if (messageUnReadCount > 0) {
+                if (channel != null && channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+                    myholder.unReadCountTextView.setVisibility(View.GONE);
+                } else if (messageUnReadCount > 0) {
                     myholder.unReadCountTextView.setVisibility(View.VISIBLE);
                     myholder.unReadCountTextView.setText(String.valueOf(messageUnReadCount));
                 } else {

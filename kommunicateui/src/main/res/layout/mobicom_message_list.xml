@@ -275,6 +275,15 @@
                 android:orientation="vertical"
                 android:visibility="gone" />
 
+            <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmInQueueView
+                android:id="@+id/km_in_queue_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/botCharLimitTextView"
                 android:layout_width="match_parent"

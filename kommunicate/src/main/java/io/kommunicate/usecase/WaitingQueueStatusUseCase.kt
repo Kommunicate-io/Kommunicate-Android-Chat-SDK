@@ -11,7 +11,7 @@ import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 
 /**
- * A use case for deleting messages in the Chat.
+* A use case for fetching queue status in the Chat.
  *
  * This class fetches the data for message that is in queue for the given team.
  * @param context The Android [Context] for accessing resources and services

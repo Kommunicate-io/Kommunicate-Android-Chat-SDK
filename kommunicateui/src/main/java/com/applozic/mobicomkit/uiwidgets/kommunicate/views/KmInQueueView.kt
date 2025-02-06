@@ -64,6 +64,6 @@ class KmInQueueView : LinearLayout {
 
     fun setupTheme(isDarkModeEnabled: Boolean, alCustomizationSettings: AlCustomizationSettings) {
         setBackgroundColor(if (isDarkModeEnabled) resources.getColor(R.color.dark_mode_default) else Color.WHITE)
-        awayMessageTv!!.setTextColor(Color.parseColor(if (isDarkModeEnabled) alCustomizationSettings.awayMessageTextColor[1] else alCustomizationSettings.awayMessageTextColor[0]))
+        awayMessageTv.setTextColor(Color.parseColor(if (isDarkModeEnabled) alCustomizationSettings.awayMessageTextColor[1] else alCustomizationSettings.awayMessageTextColor[0]))
     }
 }

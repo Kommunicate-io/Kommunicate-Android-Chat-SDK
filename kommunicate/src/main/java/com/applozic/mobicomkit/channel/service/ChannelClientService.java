@@ -26,6 +26,8 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Set;
 
+import io.kommunicate.models.InQueueData;
+
 /**
  * Created by sunil on 29/12/15.
  */
@@ -34,6 +36,7 @@ public class ChannelClientService extends MobiComKitClientService {
     // private static final String CHANNEL_SYNC_URL = "/rest/ws/group/list";
     private static final String CHANNEL_SYNC_URL = "/rest/ws/group/v5/list";
     private static final String CREATE_CHANNEL_URL = "/rest/ws/group/v2.1/create";
+    private static final String IN_QUEUE_MESSAGE_URL = "/rest/ws/group/waiting/list?teamId=";
     private static final String CREATE_MULTIPLE_CHANNEL_URL = "/rest/ws/group/create/multiple";
     private static final String ADD_MEMBER_TO_CHANNEL_URL = "/rest/ws/group/add/member";
     private static final String REMOVE_MEMBER_FROM_CHANNEL_URL = "/rest/ws/group/remove/member";
@@ -253,6 +256,11 @@ public class ChannelClientService extends MobiComKitClientService {
             return null;
         }
         return channelFeed;
+    }
+
+    public InQueueData getChannelInQueueStatus(Long teamId) throws Exception {
+        String response = httpRequestUtils.getResponse(getBaseUrl() + IN_QUEUE_MESSAGE_URL + teamId);
+        return GsonUtils.getObjectFromJson(response, InQueueData.class);
     }
 
     public ChannelFeedApiResponse createChannelWithReponse(ChannelInfo channelInfo) throws Exception {

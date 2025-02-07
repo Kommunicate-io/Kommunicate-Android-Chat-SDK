@@ -4910,9 +4910,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void processAttachmentIconsClick() {
 
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (cameraButton != null) {
+            cameraButton.setOnClickListener(v -> {
                 AlEventManager.getInstance().sendOnAttachmentClick(CAMERA);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
@@ -4929,12 +4928,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         });
                     }
                 }
-            }
-        });
+            });
+        }
 
-        videoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (videoButton != null) {
+            videoButton.setOnClickListener(v -> {
                 AlEventManager.getInstance().sendOnAttachmentClick(VIDEO);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
@@ -4951,12 +4949,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         });
                     }
                 }
-            }
-        });
+            });
+        }
 
-        multiSelectGalleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (multiSelectGalleryButton != null) {
+            multiSelectGalleryButton.setOnClickListener(view -> {
                 AlEventManager.getInstance().sendOnAttachmentClick(GALLERY);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
@@ -4977,12 +4974,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         ((ConversationActivity) getActivity()).processMultiSelectGallery();
                     }
                 }
-            }
-        });
+            });
+        }
 
-        fileAttachmentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (fileAttachmentButton != null) {
+            fileAttachmentButton.setOnClickListener(v -> {
                 AlEventManager.getInstance().sendOnAttachmentClick("file");
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
@@ -4999,19 +4995,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         });
                     }
                 }
-            }
-        });
+            });
+        }
 
-        locationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        if (locationButton != null) {
+            locationButton.setOnClickListener(v -> {
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 AlEventManager.getInstance().sendOnLocationClick();
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).processLocation();
                 }
-            }
-        });
+            });
+        }
     }
 
     /**

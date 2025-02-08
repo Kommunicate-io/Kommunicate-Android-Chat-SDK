@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview;
 
 import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
 
+import android.content.Context;
 import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
@@ -24,6 +25,7 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -35,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -147,6 +150,13 @@ public class KmWebViewActivity extends AppCompatActivity {
         sb.append(FORM_BODY_HTML);
 
         webView.loadData(sb.toString(), text_html, "utf-8");
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(newBase, languageCode);
+        super.attachBaseContext(context);
     }
 
     @Override

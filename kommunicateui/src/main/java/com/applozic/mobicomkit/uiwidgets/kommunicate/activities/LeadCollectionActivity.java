@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.activities;
 import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.ResultReceiver;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -35,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.users.KMUser;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -106,6 +109,13 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             prechatReceiver.send(KmConstants.PRECHAT_RESULT_FAILURE, null);
         }
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(newBase, languageCode);
+        super.attachBaseContext(context);
     }
 
     private void setGreetingsText() {

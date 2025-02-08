@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -44,6 +45,7 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
@@ -54,6 +56,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 
 public class MessageInfoFragment extends Fragment {
@@ -78,6 +81,13 @@ public class MessageInfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         geoApiKey = Applozic.getInstance(getContext()).getGeoApiKey();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context ctx) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(ctx, languageCode);
+        super.onAttach(context);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

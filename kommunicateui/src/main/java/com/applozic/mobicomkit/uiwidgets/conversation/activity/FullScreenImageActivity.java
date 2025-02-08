@@ -4,6 +4,7 @@ import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentr
 
 import android.annotation.TargetApi;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -39,6 +40,7 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.TouchImageView;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
+import com.applozic.mobicomkit.uiwidgets.utils.LocaleHelper;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.file.FileUtils;
@@ -52,6 +54,8 @@ import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
 import java.util.List;
+
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 /**
  * Created by devashish on 22/9/14.
@@ -158,6 +162,13 @@ public class FullScreenImageActivity extends AppCompatActivity {
             connectivityReceiver = new ConnectivityReceiver();
             registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String languageCode = KmAppSettingPreferences.getAppLocale();
+        Context context = LocaleHelper.setLocale(newBase, languageCode);
+        super.attachBaseContext(context);
     }
 
 

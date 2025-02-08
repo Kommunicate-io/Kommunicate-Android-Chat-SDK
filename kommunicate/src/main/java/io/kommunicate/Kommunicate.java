@@ -6,7 +6,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
@@ -48,6 +51,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.kommunicate.async.GetUserListAsyncTask;
@@ -141,6 +145,10 @@ public class Kommunicate {
 
     public static void enableSSLPinning(boolean isEnable) {
         KmAppSettingPreferences.setSSLPinningEnabled(isEnable);
+    }
+
+    public static void setAppLocale(Context context, String languageCode, KmCallback callback) {
+        KmAppSettingPreferences.setAppLocale(languageCode);
     }
 
     public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler) {

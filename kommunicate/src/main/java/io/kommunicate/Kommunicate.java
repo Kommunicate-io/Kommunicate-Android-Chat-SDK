@@ -28,7 +28,12 @@ import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
+import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.usecase.AppSettingUseCase;
+import io.kommunicate.usecase.AwayMessageUseCase;
+import io.kommunicate.usecase.FAQType;
+import io.kommunicate.usecase.FaqUseCase;
+import io.kommunicate.usecase.HelpDocsKeyUseCase;
 import io.kommunicate.usecase.KMUserLoginUseCase;
 import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.ApplozicService;
@@ -51,9 +56,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.async.GetUserListAsyncTask;
-import io.kommunicate.async.KMFaqTask;
 import io.kommunicate.async.KMHelpDocsKeyTask;
-import io.kommunicate.async.KmAwayMessageTask;
 import io.kommunicate.async.KmConversationCreateTask;
 import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
@@ -63,7 +66,6 @@ import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmChatWidgetCallback;
-import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
@@ -784,22 +786,22 @@ public class Kommunicate {
         new GetUserListAsyncTask(context, roleNameList, startIndex, pageSize, orderBy, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static void getFaqs(Context context, String type, String helpDocsKey, String data, KmFaqTaskListener listener) {
-        KMFaqTask task = new KMFaqTask(context, helpDocsKey, data, listener);
-        if (GET_ARTICLES.equals(type)) {
-            task.forArticleRequest();
-        } else if (GET_SELECTED_ARTICLES.equals(type)) {
-            task.forSelectedArticles();
-        } else if (GET_ANSWERS.equals(type)) {
-            task.forAnswerRequest();
-        } else if (GET_DASHBOARD_FAQ.equals(type)) {
-            task.forDashboardFaq();
-        }
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public static void getFaqs(Context context, FAQType type, String helpDocsKey, String data, TaskListener<String> listener) {
+        FaqUseCase.executeWithExecutor(
+                context,
+                helpDocsKey,
+                data,
+                type,
+                listener
+        );
     }
 
-    public static void getHelpDocsKey(Context context, String type, KmFaqTaskListener listener) {
-        new KMHelpDocsKeyTask(context, type, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public static void getHelpDocsKey(Context context, String type, TaskListener<String> listener) {
+        HelpDocsKeyUseCase.executeWithExecutor(
+                context,
+                type,
+                listener
+        );
     }
 
     public static boolean isLoggedIn(Context context) {
@@ -1021,7 +1023,7 @@ public class Kommunicate {
     }
 
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
-        new KmAwayMessageTask(context, groupId, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        AwayMessageUseCase.executeWithExecutor(context, groupId, handler);
     }
 
     public static void removeApplicationKey(Context context) {

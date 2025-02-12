@@ -3,6 +3,7 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.services.KmService;
@@ -17,7 +18,8 @@ import java.lang.reflect.Type;
 /**
  * Created by ashish on 03/04/18.
  */
-
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmAwayMessageTask to AwayMessageUseCase")
 public class KmAwayMessageTask extends AsyncTask<Void, Void, String> {
 
     private WeakReference<Context> context;

@@ -221,7 +221,6 @@ import io.kommunicate.async.AgentGetStatusTask;
 import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmGetBotTypeTask;
 import io.kommunicate.async.KmGetDataAsyncTask;
-import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmCharLimitCallback;
@@ -5413,9 +5412,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
                 metadata.put(Channel.CONVERSATION_ASSIGNEE, loggedInUserId);
                 groupInfoUpdate.setMetadata(metadata);
-                KmSettings.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
+                KmSettings.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new TaskListener<Context>() {
                     @Override
-                    public void onSuccess(Context context) {
+                    public void onSuccess(Context status) {
                         Message message = new Message();
 
                         message.setMessage(Utils.getString(context, R.string.km_assign_to_message) + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
@@ -5438,7 +5437,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
 
                     @Override
-                    public void onFailure(Context context) {
+                    public void onFailure(Exception error) {
                         if (progressDialog != null) {
                             progressDialog.dismiss();
                         }

@@ -57,6 +57,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import annotations.CleanUpRequired;
+
 
 /**
  * @author Peli
@@ -685,6 +687,8 @@ public class FileUtils {
      * @return The intent for opening a file with Intent.createChooser()
      * @author paulburke
      */
+    @Deprecated
+    @CleanUpRequired(reason = "Migrated the this use case to MediaPicker.kt")
     public static Intent createGetContentIntent(GalleryFilterOptions choosenOption, PackageManager packageManager, boolean isMultipleSectionEnabled) {
         Intent intent = new Intent();
         ArrayList<String> mimeType = new ArrayList<>();

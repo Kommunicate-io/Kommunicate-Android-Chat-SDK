@@ -9,14 +9,14 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.TextUtils;
@@ -43,6 +43,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicommons.file.MediaPicker;
 import com.applozic.mobicommons.json.GsonUtils;
 
 import java.io.File;
@@ -53,6 +54,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import io.kommunicate.utils.KmUtils;
+import io.sentry.Sentry;
 
 import static java.util.Collections.disjoint;
 
@@ -66,37 +68,58 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     public static String GROUP_ID = "GROUP_ID";
     public static String GROUP_NAME = "GROUP_NAME";
     private static int REQUEST_CODE_ATTACH_PHOTO = 10;
-    AlCustomizationSettings alCustomizationSettings;
-    FileClientService fileClientService;
-    Uri imageUri;
-    String userId, displayName, groupName;
-    Integer groupId;
-    MobiComUserPreference userPreferences;
+    private AlCustomizationSettings alCustomizationSettings;
+    private FileClientService fileClientService;
+    private Uri imageUri;
+    private String userId, displayName, groupName;
+    private Integer groupId;
+    private MobiComUserPreference userPreferences;
     private String TAG = "MultiAttActivity";
     private Button sendAttachment;
     private Button cancelAttachment;
     private EditText messageEditText;
     private ConnectivityReceiver connectivityReceiver;
     private GridView galleryImagesGridView;
-    List<String> restrictedWords;
+    private List<String> restrictedWords;
     private ArrayList<Uri> attachmentFileList = new ArrayList<>();
     private MobiComAttachmentGridViewAdapter imagesAdapter;
     private LinearLayout idRootLinearLayout;
+    private KmAttachmentsController kmAttachmentsController;
+    private PrePostUIMethods prePostUIMethodsFileAsyncTask;
+    private ActivityResultLauncher<PickVisualMediaRequest> mediaPickerResult;
+    private ActivityResultLauncher<Intent> attachmentAudioResult;
 
-    KmAttachmentsController kmAttachmentsController;
-    PrePostUIMethods prePostUIMethodsFileAsyncTask;
 
     /**
      * will open either the general file attachment chooser
      */
     void openFileChooser() {
-        Intent contentChooserIntent = FileUtils.createGetContentIntent(kmAttachmentsController.getFilterOptions(alCustomizationSettings), getPackageManager(), alCustomizationSettings.isMultipleAttachmentSelectionEnabled());
-        contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        if (alCustomizationSettings.isMultipleAttachmentSelectionEnabled()) {
-            contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        FileUtils.GalleryFilterOptions filterOptions = kmAttachmentsController.getFilterOptions(alCustomizationSettings);
+        switch (filterOptions) {
+            case ALL_FILES: {
+                Intent contentChooserIntent = MediaPicker.INSTANCE.createAllFilesPickerIntent(
+                        alCustomizationSettings.isMultipleAttachmentSelectionEnabled(),
+                        getString(R.string.select_file)
+                );
+                attachmentAudioResult.launch(contentChooserIntent);
+            }
+            break;
+            case AUDIO_ONLY: {
+                Intent audioPickerIntent = MediaPicker.INSTANCE.createAudioFilesPickerIntent(
+                        alCustomizationSettings.isMultipleAttachmentSelectionEnabled(),
+                        getString(R.string.select_file)
+                );
+                attachmentAudioResult.launch(audioPickerIntent);
+            }
+            break;
+            case IMAGE_VIDEO: case IMAGE_ONLY: case VIDEO_ONLY: {
+                MediaPicker.INSTANCE.createMediaPickerIntent(
+                        mediaPickerResult,
+                        filterOptions
+                );
+            }
+            break;
         }
-        Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
-        startActivityForResult(intentPick, REQUEST_CODE_ATTACH_PHOTO);
     }
 
     @Override
@@ -111,6 +134,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         }
 
         configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
+        setupActivityResultCallback();
         kmAttachmentsController = new KmAttachmentsController(this);
 
         KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
@@ -140,6 +164,86 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         }
         connectivityReceiver = new ConnectivityReceiver();
         registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    private void setupActivityResultCallback() {
+        attachmentAudioResult = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    configureAddAttachmentButton();
+
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        Intent resultData = result.getData();
+
+                        if (resultData.getClipData() != null) {
+                            ClipData clipData = resultData.getClipData();
+
+                            for (int index = 0; index < clipData.getItemCount(); index++) {
+                                if (index == alCustomizationSettings.getMaxAttachmentAllowed()) {
+                                    KmToast.error(this, R.string.mobicom_max_attachment_warning, Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                ClipData.Item item = clipData.getItemAt(index);
+                                Uri selectedFileUri = item.getUri();
+                                processFile(selectedFileUri);
+                            }
+
+                        } else if (resultData.getData() != null) {
+                            Uri selectedFileUri = result.getData().getData();
+                            processFile(selectedFileUri);
+                        }
+                    } else {
+                        KmToast.error(
+                                MobiComAttachmentSelectorActivity.this,
+                                "Unable to select the file",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
+
+        mediaPickerResult = MediaPicker.INSTANCE.registerImageVideoPicker(
+                MobiComAttachmentSelectorActivity.this,
+                uris -> {
+                    try {
+                        configureAddAttachmentButton();
+                        if (uris.isEmpty()) {
+                            KmToast.error(this, R.string.mobicom_no_attachment_warning, Toast.LENGTH_SHORT).show();
+                            return null;
+                        }
+                        if (uris.size() > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
+                            KmToast.error(this, R.string.mobicom_max_attachment_warning, Toast.LENGTH_SHORT).show();
+                            return null;
+                        }
+
+                        // Process URIs
+                        for (Uri uri: uris) {
+                            processFile(uri);
+                        }
+                    } catch (Exception exception) {
+                        Sentry.captureException(exception);
+                    }
+                    return null;
+                },
+                alCustomizationSettings.isMultipleAttachmentSelectionEnabled()
+        );
+    }
+
+    private void configureAddAttachmentButton() {
+        try {
+            if (imagesAdapter != null) {
+                View view = galleryImagesGridView.getChildAt(imagesAdapter.getCount() - 1);
+                if (view != null) {
+                    ImageView imageView = view.findViewById(R.id.galleryImageView);
+                    if (imageView != null) {
+                        imageView.setEnabled(true);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Sentry.captureException(e);
+        }
     }
 
     /**
@@ -287,46 +391,18 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     }
 
     private void setUpGridView() {
-        imagesAdapter = new MobiComAttachmentGridViewAdapter(MobiComAttachmentSelectorActivity.this, attachmentFileList, alCustomizationSettings, imageUri != null, kmAttachmentsController.getFilterOptions(alCustomizationSettings));
+        imagesAdapter = new MobiComAttachmentGridViewAdapter(
+                MobiComAttachmentSelectorActivity.this,
+                attachmentFileList,
+                alCustomizationSettings,
+                imageUri != null,
+                kmAttachmentsController.getFilterOptions(alCustomizationSettings),
+                () -> {
+                    openFileChooser();
+                    return null;
+                }
+        );
         galleryImagesGridView.setAdapter(imagesAdapter);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        try {
-            if (imagesAdapter != null) {
-                View view = galleryImagesGridView.getChildAt(imagesAdapter.getCount() - 1);
-                if (view != null) {
-                    ImageView imageView = view.findViewById(R.id.galleryImageView);
-                    if (imageView != null) {
-                        imageView.setEnabled(true);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (resultCode == Activity.RESULT_OK) {
-            if (intent.getClipData() != null) {
-                ClipData clipData = intent.getClipData();
-                for (int index = 0; index < clipData.getItemCount(); index++) {
-
-                    if (index == alCustomizationSettings.getMaxAttachmentAllowed()) {
-                        KmToast.makeText(this, "Maximum attachments allowed are " + alCustomizationSettings.getMaxAttachmentAllowed(), Toast.LENGTH_SHORT).show();
-                        break;
-                    }
-
-                    ClipData.Item item = clipData.getItemAt(index);
-                    Uri selectedFileUri = item.getUri();
-                    processFile(selectedFileUri);
-                }
-            } else if (intent.getData() != null) {
-                Uri selectedFileUri = intent.getData();
-                processFile(selectedFileUri);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, intent);
     }
 
     protected void processFile(Uri uri) {

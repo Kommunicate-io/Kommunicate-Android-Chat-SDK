@@ -10,6 +10,7 @@ import com.applozic.mobicommons.json.GsonUtils;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.models.KmArticleModel;
 import io.kommunicate.services.KmUserService;
@@ -19,7 +20,8 @@ import io.kommunicate.services.KmUserService;
  * <p>
  * This is a combined Task for getting FAQ related data
  */
-
+@Deprecated
+@CleanUpRequired(reason = "Migrated KMFaqTask to FaqTaskUseCase")
 public class KMFaqTask extends AsyncTask<Void, Void, String> {
 
     private WeakReference<Context> context;

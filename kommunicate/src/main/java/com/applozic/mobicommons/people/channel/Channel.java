@@ -48,6 +48,7 @@ public class Channel extends JsonMarker {
     public static final int CLOSED_CONVERSATIONS = 3;
     public static final int ASSIGNED_CONVERSATIONS = 1;
     public static final int ALL_CONVERSATIONS = 2;
+    public static final int IN_QUEUE_CONVERSATION = 4;
     public static final int NOTSTARTED_CONVERSATIONS = -1;
     public static final String AL_BLOCK = "AL_BLOCK";
 
@@ -287,6 +288,10 @@ public class Channel extends JsonMarker {
     public int generateKmStatus(String loggedInUserId) {
         if (getMetadata() == null) {
             return ASSIGNED_CONVERSATIONS;
+        }
+
+        if (getMetadata().containsKey(CONVERSATION_STATUS) && ("7".equals(getMetadata().get(CONVERSATION_STATUS)))) {
+            return IN_QUEUE_CONVERSATION;
         }
 
         if (getMetadata().containsKey(CONVERSATION_STATUS) && ("2".equals(getMetadata().get(CONVERSATION_STATUS)) || "3".equals(getMetadata().get(CONVERSATION_STATUS)))) {

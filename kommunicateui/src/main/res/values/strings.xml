@@ -308,4 +308,6 @@
     <string name="summary_sample_text">Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text Summary Sample text </string>
     <string name="read_more">Read more</string>
     <string name="summary_title">Summary</string>
+    <string name="in_queue_position">You are currently #%1$s in the waiting queue, our agents will get back to you shortly</string>
+    <string name="in_queue">In Queue...</string>
 </resources>

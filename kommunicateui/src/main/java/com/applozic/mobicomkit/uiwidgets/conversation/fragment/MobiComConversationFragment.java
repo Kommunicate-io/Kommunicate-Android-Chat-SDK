@@ -158,6 +158,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAwayView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmConversationInfoView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmInQueueView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmLanguageSlideView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
@@ -239,10 +240,12 @@ import io.kommunicate.usecase.MessageDeleteUseCase;
 import io.kommunicate.usecase.MuteGroupNotificationUseCase;
 import io.kommunicate.usecase.MuteUserNotificationUseCase;
 import io.kommunicate.usecase.UserBlockUseCase;
+import io.kommunicate.usecase.WaitingQueueStatusUseCase;
 import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
+import io.sentry.Sentry;
 
 /**
  * reg
@@ -345,6 +348,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected MobicomMessageTemplate messageTemplate;
     protected MobicomMessageTemplateAdapter templateAdapter;
     protected KmAwayView kmAwayView;
+    protected KmInQueueView kmInQueueView;
     protected KmTypingView kmTypingView;
     protected TextView applozicLabel;
     protected RelativeLayout customToolbarLayout;
@@ -556,8 +560,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 getResources().getColor(R.color.chatbar_text_color)));
 
         kmAwayView.setupTheme(isDarkModeEnabled, alCustomizationSettings);
+        kmInQueueView.setupTheme(isDarkModeEnabled, alCustomizationSettings);
         kmAwayView.setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
+        kmInQueueView.setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
         kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
+        kmInQueueView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
+
         individualMessageSendLayout.setBackgroundColor(themeHelper.parseColorWithDefault(
                 alCustomizationSettings.getMessageEditTextBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModeColor
         ));
@@ -817,6 +825,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         kmAwayView = list.findViewById(R.id.idKmAwayView);
+        kmInQueueView = list.findViewById(R.id.km_in_queue_view);
         kmTypingView = list.findViewById(R.id.idKmTypingView);
 
         isRecordOptionEnabled = (alCustomizationSettings != null
@@ -1109,7 +1118,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             messageTemplateView.setAdapter(templateAdapter);
         }
 
-        if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+        if (channel != null
+                && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())
+                && channel.getKmStatus() != Channel.IN_QUEUE_CONVERSATION
+        ) {
             showAwayMessage(true, null);
         }
 
@@ -1310,12 +1322,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void run() {
                 setFeedbackDisplay(channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext()));
-                if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
+                if (existingAssignee != null
+                        && (!existingAssignee.equals(channel.getConversationAssignee()) ||  kmInQueueView.getVisibility() == VISIBLE)
+                        && channel.getKmStatus() != Channel.IN_QUEUE_CONVERSATION
+                ) {
                     showAwayMessage(true, null);
                 }
             }
         });
-
     }
 
     @Override
@@ -3427,7 +3441,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     ChannelService.isUpdateTitle = false;
                 }
 
-                loadAwayMessage();
+                if (channel != null && channel.getKmStatus() != Channel.IN_QUEUE_CONVERSATION) {
+                    loadAwayMessage();
+                }
                 processSupportGroupDetails(channel);
                 Applozic.subscribeToTyping(getContext(), channel, contact);
             }
@@ -3570,8 +3586,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
-        if (!TextUtils.isEmpty(channel.getName())) {
+        if (channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+            toolbarTitleText.setText(R.string.in_queue);
+            toolbarAwayColorDot.setVisibility(GONE);
+            toolbarSubtitleText.setVisibility(GONE);
+            updateWaitingStatus();
+        } else if (!TextUtils.isEmpty(channel.getName())) {
             toolbarTitleText.setText(channel.getName());
+            toolbarAwayColorDot.setVisibility(VISIBLE);
+            toolbarSubtitleText.setVisibility(VISIBLE);
+            kmInQueueView.setVisibility(GONE);
         }
 
         if (alCustomizationSettings.isAgentApp()) {
@@ -3579,6 +3603,29 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (toolbarSubtitleText != null) {
                 toolbarSubtitleText.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void updateWaitingStatus() {
+        if (channel != null && channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+            WaitingQueueStatusUseCase.executeWithExecutor(
+                    requireContext(),
+                    Long.parseLong(channel.getTeamId()),
+                    new TaskListener<List<Long>>() {
+                        @Override
+                        public void onSuccess(List<Long> status) {
+                            kmInQueueView.setVisibility(VISIBLE);
+                            int position = status.indexOf(Long.parseLong(channel.getClientGroupId())) + 1;
+                            kmInQueueView.setupInQueueMessage(position);
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Exception error) {
+                            Toast.makeText(requireContext(), "Unable to fetch waiting status", Toast.LENGTH_SHORT).show();
+                            Sentry.captureException(error);
+                            kmInQueueView.setVisibility(GONE);
+                        }
+                    });
         }
     }
 
@@ -3668,6 +3715,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
+        if (channel != null && channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+            toolbarAwayColorDot.setVisibility(GONE);
+            toolbarOfflineColorDot.setVisibility(GONE);
+            toolbarOnlineColorDot.setVisibility(GONE);
+            toolbarSubtitleText.setVisibility(GONE);
+            return;
+        }
 
         if (KMAgentStatusHelper.status != KMAgentStatusHelper.KMAgentStatus.DefaultStatus && (TextUtils.isEmpty(KMAgentStatusHelper.assigneeID) || Objects.equals(contact.getUserId(), KMAgentStatusHelper.assigneeID))) {
             updateAssigneeStatus(KMAgentStatusHelper.assigneeID, KMAgentStatusHelper.status);

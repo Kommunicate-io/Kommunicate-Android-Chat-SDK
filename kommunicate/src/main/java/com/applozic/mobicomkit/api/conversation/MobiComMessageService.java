@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Timer;
 
+import io.kommunicate.utils.KmAppSettingPreferences;
+
 /**
  * Created by devashish on 24/3/15.
  */
@@ -135,7 +137,7 @@ public class MobiComMessageService {
         }
 
         if (message.getType().equals(Message.MessageType.MT_INBOX.getValue())) {
-            addMTMessage(message, index);
+            addMTMessage(message, index, KmAppSettingPreferences.isInAppNotificationEnable());
         } else if (message.getType().equals(Message.MessageType.MT_OUTBOX.getValue())) {
             BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
             messageDatabaseService.createMessage(message);
@@ -171,7 +173,7 @@ public class MobiComMessageService {
         return message;
     }
 
-    public Contact addMTMessage(Message message, int index) {
+    public Contact addMTMessage(Message message, int index, boolean showNotification) {
         MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(context);
         Contact receiverContact = null;
         message.processContactIds(context);
@@ -229,7 +231,7 @@ public class MobiComMessageService {
                     }
                     BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
                     Channel currentChannel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());
-                    if (currentChannel != null && !currentChannel.isNotificationMuted()) {
+                    if (showNotification && currentChannel != null && !currentChannel.isNotificationMuted()) {
                         sendNotification(message, index);
                     }
                 }
@@ -504,7 +506,7 @@ public class MobiComMessageService {
             e.printStackTrace();
         }
         if (message.getType().equals(Message.MessageType.MT_INBOX.getValue())) {
-            addMTMessage(message, 0);
+            addMTMessage(message, 0, true);
             MobiComUserPreference.getInstance(context).setLastSyncTime(String.valueOf(message.getCreatedAtTime()));
         }
         if (baseContactService.isContactPresent(message.getContactIds())) {

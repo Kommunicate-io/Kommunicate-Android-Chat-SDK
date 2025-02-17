@@ -29,6 +29,7 @@ object KmAppSettingPreferences {
     private const val SINGLE_THREADED = "IS_SINGLE_THREADED"
     private const val ROOT_DETECTION = "ROOT_DETECTION"
     private const val SSL_PINNING = "SSL_PINNING"
+    private const val IN_APP_NOTIFICATION = "IN_APP_NOTIFICATION"
     private const val RATING_BASE = "RATING_BASE"
     private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
 
@@ -61,6 +62,13 @@ object KmAppSettingPreferences {
         get() = preferences.getBoolean(SSL_PINNING, false)
         set(isEnabled) {
             preferences.edit().putBoolean(SSL_PINNING, isEnabled).apply()
+        }
+
+    @JvmStatic
+    var isInAppNotificationEnable: Boolean
+        get() = preferences.getBoolean(IN_APP_NOTIFICATION, true)
+        set(isEnabled) {
+            preferences.edit().putBoolean(IN_APP_NOTIFICATION, isEnabled).apply()
         }
 
     var primaryColor: String?

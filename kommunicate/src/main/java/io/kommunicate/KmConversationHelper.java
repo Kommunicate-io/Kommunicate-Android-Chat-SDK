@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -22,7 +21,6 @@ import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.conversation.ApplozicConversation;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
-import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
@@ -481,6 +479,8 @@ public class KmConversationHelper {
             if (defaultSettingPreference.isSkipRouting()) {
                 conversationBuilder.skipConversationRoutingRules(true);
             }
+            // We'll override the existing value while creating the conversation. As, It is internal function which is not executed by SDK user.
+            conversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
             try {
                 startConversation(true, conversationBuilder,
                         getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null, callback));
@@ -514,6 +514,7 @@ public class KmConversationHelper {
             return;
         }
 
+        KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
         if (Kommunicate.isLoggedIn(conversationBuilder.getContext())) {
             try {
                 startConversation(false, conversationBuilder,
@@ -551,7 +552,7 @@ public class KmConversationHelper {
                             }
                             Utils.printLog(conversationBuilder.getContext(), TAG, "Failed to launch conversation with pre-chat: " + error);
                         }
-                    });
+                    }, conversationBuilder);
                 } catch (KmException e) {
                     if (callback != null) {
                         callback.onFailure(e);
@@ -606,6 +607,7 @@ public class KmConversationHelper {
             return;
         }
 
+        KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
         ApplozicConversation.getLatestMessageList(
                 conversationBuilder.getContext(),
                 false,
@@ -728,6 +730,7 @@ public class KmConversationHelper {
             }
         };
 
+        KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
         new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -901,6 +904,7 @@ public class KmConversationHelper {
         refreshAppSettings(conversationBuilder.getContext());
         sharedPreferences = conversationBuilder.getContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         if (sharedPreferences != null) {
+            KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
             boolean isSingleThreadedFromServer = sharedPreferences.getBoolean(SINGLE_THREADED,false);
             boolean isShowSingleThreaded = isSingleThreadedFromServer || conversationBuilder.isSingleConversation();
             conversationBuilder.setSingleConversation(isShowSingleThreaded);

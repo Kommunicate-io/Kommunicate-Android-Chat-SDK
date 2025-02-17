@@ -33,7 +33,6 @@ import io.kommunicate.KmConversationHelper;
 import io.kommunicate.KmException;
 import io.kommunicate.app.BuildConfig;
 import io.kommunicate.callbacks.KmCallback;
-import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.app.R;

@@ -35,6 +35,7 @@ public class KmConversationBuilder extends JsonMarker {
     private String teamId;
     private Map<String, String> messageMetadata;
     private Map<String, String> conversationInfo;
+    private Boolean isInAppNotificationEnable = true;
 
     public KmConversationBuilder(Context context) {
         this.context = context;
@@ -249,5 +250,13 @@ public class KmConversationBuilder extends JsonMarker {
     public KmConversationBuilder setTeamId(String teamId) {
         this.teamId = teamId;
         return this;
+    }
+
+    public Boolean getInAppNotificationEnable() {
+        return isInAppNotificationEnable;
+    }
+
+    public void setInAppNotificationEnable(Boolean inAppNotificationEnable) {
+        isInAppNotificationEnable = inAppNotificationEnable;
     }
 }

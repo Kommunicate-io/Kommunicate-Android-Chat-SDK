@@ -1,49 +1,44 @@
 package kommunicate.io.sample.utils
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.SystemClock
 import android.util.Base64
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.view.size
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.closeSoftKeyboard
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.platform.app.InstrumentationRegistry
+import com.applozic.mobicomkit.uiwidgets.R
 import com.google.gson.JsonParser
 import io.kommunicate.users.KMUser
 import kommunicate.io.sample.data.RequestTokenData
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.Matcher
-import org.junit.Assert.fail
-import java.util.concurrent.CountDownLatch
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.closeSoftKeyboard
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAssertion
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
-import com.applozic.mobicomkit.uiwidgets.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import org.junit.Assert.fail
+import java.util.concurrent.CountDownLatch
+
 
 /**
  * chatAuth = 0
@@ -232,4 +227,55 @@ fun clearAppData() {
     val uiAutomation = InstrumentationRegistry.getInstrumentation().uiAutomation
     uiAutomation.executeShellCommand("pm clear $packageName").close()
     Log.d("as", packageName)
+}
+
+fun clickDownButton(): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View> {
+            return isAssignableFrom(View::class.java)
+        }
+
+        override fun getDescription(): String {
+            return "Press down the button."
+        }
+
+        override fun perform(uiController: UiController, view: View) {
+            val downTime = SystemClock.uptimeMillis()
+            view.dispatchTouchEvent(
+                MotionEvent.obtain(
+                    downTime,
+                    downTime,
+                    MotionEvent.ACTION_DOWN,
+                    0f,
+                    0f,
+                    0
+                )
+            )
+        }
+    }
+}
+
+fun clickUpButton(): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View> {
+            return isAssignableFrom(View::class.java)
+        }
+
+        override fun getDescription(): String {
+            return "Press up the button."
+        }
+
+        override fun perform(uiController: UiController, view: View) {
+            view.dispatchTouchEvent(
+                MotionEvent.obtain(
+                    SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    MotionEvent.ACTION_UP,
+                    0f,
+                    0f,
+                    0
+                )
+            )
+        }
+    }
 }

@@ -286,6 +286,10 @@ public class Kommunicate {
         });
     }
 
+    public static void setInAppNotification(boolean isEnable) {
+        KmAppSettingPreferences.setInAppNotificationEnable(isEnable);
+    }
+
     /**
      * To Check the Login status & launch the Pre Chat Lead Collection Screen
      *
@@ -298,7 +302,9 @@ public class Kommunicate {
             final ProgressDialog progressDialog,
             final KmCallback callback
     ) throws KmException  {
-        launchConversationWithPreChat(context, progressDialog, callback, new KmConversationBuilder(context));
+        KmConversationBuilder kmConversationBuilder = new KmConversationBuilder(context);
+        kmConversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
+        launchConversationWithPreChat(context, progressDialog, callback, kmConversationBuilder);
     }
 
     /**
@@ -407,7 +413,9 @@ public class Kommunicate {
      * @param callback              To update the status.
      **/
     public static void loginLeadUserAndOpenChat(final Context context, KmAppSettingModel appSettingModel, ProgressDialog progressDialog, final KmCallback callback) {
-        loginLeadUserAndOpenChat(context, appSettingModel, progressDialog, callback, new KmConversationBuilder(context));
+        KmConversationBuilder kmConversationBuilder = new KmConversationBuilder(context);
+        kmConversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
+        loginLeadUserAndOpenChat(context, appSettingModel, progressDialog, callback, kmConversationBuilder);
     }
 
     /**
@@ -474,7 +482,9 @@ public class Kommunicate {
      * @param callback to update the status
      */
     public static void loginUserWithKmCallBack(final Context context, KMUser kmUser, final KmCallback callback) {
-        loginUserWithKmCallBack(context, kmUser, callback, new KmConversationBuilder(context));
+        KmConversationBuilder kmConversationBuilder = new KmConversationBuilder(context);
+        kmConversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
+        loginUserWithKmCallBack(context, kmUser, callback, kmConversationBuilder);
     }
 
     /**
@@ -508,7 +518,9 @@ public class Kommunicate {
      * @param callback callback to update status
      */
     public static void launchChatDirectly(final Context context, final KmCallback callback) {
-        launchChatDirectly(context, callback, new KmConversationBuilder(context));
+        KmConversationBuilder kmConversationBuilder = new KmConversationBuilder(context);
+        kmConversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
+        launchChatDirectly(context, callback, kmConversationBuilder);
     }
 
 

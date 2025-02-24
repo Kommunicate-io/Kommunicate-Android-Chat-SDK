@@ -66,7 +66,9 @@ object KmAppSettingPreferences {
 
     @JvmStatic
     var isInAppNotificationEnable: Boolean
-        get() = preferences.getBoolean(IN_APP_NOTIFICATION, true)
+        get() {
+            return preferences.getBoolean(IN_APP_NOTIFICATION, true)
+        }
         set(isEnabled) {
             preferences.edit().putBoolean(IN_APP_NOTIFICATION, isEnabled).apply()
         }

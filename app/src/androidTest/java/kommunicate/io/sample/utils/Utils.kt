@@ -20,7 +20,7 @@ import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
@@ -229,53 +229,62 @@ fun clearAppData() {
     Log.d("as", packageName)
 }
 
-fun clickDownButton(): ViewAction {
+fun performTapOnRecord(duration: Long): ViewAction {
     return object : ViewAction {
         override fun getConstraints(): Matcher<View> {
-            return isAssignableFrom(View::class.java)
+            return isDisplayed()
         }
 
         override fun getDescription(): String {
-            return "Press down the button."
+            return "Continuous press for $duration milliseconds"
         }
 
         override fun perform(uiController: UiController, view: View) {
-            val downTime = SystemClock.uptimeMillis()
-            view.dispatchTouchEvent(
-                MotionEvent.obtain(
-                    downTime,
-                    downTime,
-                    MotionEvent.ACTION_DOWN,
-                    0f,
-                    0f,
-                    0
-                )
+            val coordinates = floatArrayOf(view.width / 2f, view.height / 2f)
+            val startTime = SystemClock.uptimeMillis()
+
+            // Initial DOWN event
+            val downEvent = MotionEvent.obtain(
+                startTime,
+                startTime,
+                MotionEvent.ACTION_DOWN,
+                coordinates[0],
+                coordinates[1],
+                1.0f,
+                1.0f,
+                0,
+                1.0f,
+                1.0f,
+                0,
+                0
             )
-        }
-    }
-}
+            view.dispatchTouchEvent(downEvent)
 
-fun clickUpButton(): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints(): Matcher<View> {
-            return isAssignableFrom(View::class.java)
-        }
+            Thread.sleep(duration)
 
-        override fun getDescription(): String {
-            return "Press up the button."
-        }
-
-        override fun perform(uiController: UiController, view: View) {
-            view.dispatchTouchEvent(
-                MotionEvent.obtain(
-                    SystemClock.uptimeMillis(),
-                    SystemClock.uptimeMillis(),
-                    MotionEvent.ACTION_UP,
-                    0f,
-                    0f,
-                    0
-                )
+            // Final UP event
+            val upEvent = MotionEvent.obtain(
+                startTime,
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_UP,
+                coordinates[0],
+                coordinates[1],
+                1.0f,
+                1.0f,
+                0,
+                1.0f,
+                1.0f,
+                0,
+                0
             )
+            view.dispatchTouchEvent(upEvent)
+
+            // Cleanup
+            downEvent.recycle()
+            upEvent.recycle()
+
+            // Ensure all events are processed
+            uiController.loopMainThreadUntilIdle()
         }
     }
 }

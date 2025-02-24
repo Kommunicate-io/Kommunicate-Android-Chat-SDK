@@ -12,7 +12,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
@@ -34,11 +33,12 @@ import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
 import kommunicate.io.sample.utils.KmTestHelper.getMessageAtPositionFromServer
 import kommunicate.io.sample.utils.KmTestHelper.launchConversation
-import kommunicate.io.sample.utils.clickUpButton
+import kommunicate.io.sample.utils.performTapOnRecord
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.waitFor
 import kommunicate.io.sample.utils.waitForLatch
 import kotlinx.coroutines.launch
+import org.junit.After
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -51,22 +51,15 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.concurrent.CountDownLatch
-import java.util.concurrent.atomic.AtomicReference
 
 @RunWith(AndroidJUnit4::class)
 class AttachmentMessageTest {
 
-    private val mActivityRule = ActivityScenario.launch(MainActivity::class.java)
+    private lateinit var mActivityRule: ActivityScenario<MainActivity>
     private lateinit var dashboardAPI: KommunicateDashboardAPI
     private lateinit var chatAPI: KommunicateChatAPI
     private lateinit var authToken: String
     private lateinit var chatAuthToken: String
-
-    private val externalStoragePermissions: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        Manifest.permission.READ_MEDIA_IMAGES
-    } else {
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    }
 
     @get:Rule
     val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
@@ -81,6 +74,7 @@ class AttachmentMessageTest {
     fun setUp() {
         dashboardAPI = RetrofitClient.apiClient.create(KommunicateDashboardAPI::class.java)
         chatAPI = RetrofitClient.chatClient.create(KommunicateChatAPI::class.java)
+        mActivityRule = ActivityScenario.launch(MainActivity::class.java)
         getAuthToken(dashboardAPI).let {
             chatAuthToken = it[0]
             authToken = it[1]
@@ -90,11 +84,9 @@ class AttachmentMessageTest {
         }
     }
 
-
-    private fun getActivity(activityScenarioRule: ActivityScenario<MainActivity>): MainActivity {
-        val activityRef = AtomicReference<MainActivity>()
-        activityScenarioRule.onActivity { newValue: MainActivity -> activityRef.set(newValue) }
-        return activityRef.get()
+    @After
+    fun tearDown() {
+        mActivityRule.close()
     }
 
     @Test
@@ -148,18 +140,14 @@ class AttachmentMessageTest {
         assertTrue("Unable to start the conversation.", groupId != null)
 
         onView(withId(R.id.audio_record_button))
-            .perform(clickUpButton())
-//        onView(isRoot())
-//            .perform(waitFor(5000))
-//        onView(withId(R.id.audio_record_button))
-//            .perform(clickDownButton(), clickUpButton())
+            .perform(performTapOnRecord(5000))
 
         onView(isRoot())
-            .perform(waitFor(15000))
+            .perform(waitFor(10000))
 
         val messageFromServer =  getMessageAtPositionFromServer(chatAPI, chatAuthToken, groupId.toString(), 2)
         val fileMetadata = messageFromServer?.get("fileMeta")?.asJsonObject
-        assertNotNull(fileMetadata)
+        assertNotNull("Unable to find audio metadata on the server.", fileMetadata)
         assertTrue(fileMetadata?.has("url") ?: false)
         assertTrue(
             fileMetadata?.has("contentType") ?: false
@@ -198,7 +186,7 @@ class AttachmentMessageTest {
 
         val messageFromServer =  getMessageAtPositionFromServer(chatAPI, chatAuthToken, groupId.toString(), 2)
         val fileMetadata = messageFromServer?.get("fileMeta")?.asJsonObject
-        assertNotNull(fileMetadata)
+        assertNotNull("Unable to find image metadata on the server.", fileMetadata)
         assertTrue(fileMetadata?.has("url") ?: false)
         assertTrue(
             fileMetadata?.has("contentType") ?: false

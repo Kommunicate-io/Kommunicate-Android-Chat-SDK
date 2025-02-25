@@ -188,7 +188,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerView.setAdapter(recyclerAdapter);
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(false);
-        ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(themeHelper.getToolbarTitleColor());
+        TextView conversationTextView = toolbar.findViewById(R.id.km_conversation_text_view);
+        if (conversationTextView != null) {
+            conversationTextView.setTextColor(themeHelper.getToolbarTitleColor());
+        }
         if (!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
             Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.km_baseline_more_vert);
             toolbar.setOverflowIcon(overflowIcon);

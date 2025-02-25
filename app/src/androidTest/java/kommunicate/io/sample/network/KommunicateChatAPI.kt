@@ -38,4 +38,11 @@ interface KommunicateChatAPI {
         @Query("takeOverFromBot") takeOverFromBot: Boolean = true,
         @Query("switchAssignee") switchAssignee: Boolean = true,
     ): JsonObject
+
+    @PATCH("rest/ws/group/status/change")
+    suspend fun resolveConversation(
+        @Header("X-Authorization") token: String,
+        @Query("groupId") groupId: String,
+        @Query("status") status: Int = 2
+    ): JsonObject
 }

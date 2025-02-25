@@ -99,6 +99,22 @@ object KmTestHelper {
         return richMessagePayload?.let { JsonParser.parseString(it).asJsonObject }
     }
 
+    fun getMessageAtPositionFromServer(
+        chatAPI: KommunicateChatAPI,
+        chatAuthToken: String,
+        groupId: String,
+        position: Int
+    ): JsonObject? = runBlocking {
+        val dashboardMessages = chatAPI.getMessageList(
+            token = chatAuthToken,
+            startIndex = 0,
+            groupId = groupId,
+            pageSize = 20
+        ).get("message")?.asJsonArray
+
+        dashboardMessages?.get(position-1)?.asJsonObject
+    }
+
     fun getLastMessageFromServer(
         chatAPI: KommunicateChatAPI,
         chatAuthToken: String,

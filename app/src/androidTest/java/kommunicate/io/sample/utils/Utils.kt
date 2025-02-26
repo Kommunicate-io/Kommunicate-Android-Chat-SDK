@@ -1,49 +1,44 @@
 package kommunicate.io.sample.utils
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.SystemClock
 import android.util.Base64
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.core.view.size
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso.closeSoftKeyboard
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.platform.app.InstrumentationRegistry
+import com.applozic.mobicomkit.uiwidgets.R
 import com.google.gson.JsonParser
 import io.kommunicate.users.KMUser
 import kommunicate.io.sample.data.RequestTokenData
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.Matcher
-import org.junit.Assert.fail
-import java.util.concurrent.CountDownLatch
-import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.Espresso.closeSoftKeyboard
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.ViewAssertion
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry
-import com.applozic.mobicomkit.uiwidgets.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import org.junit.Assert.fail
+import java.util.concurrent.CountDownLatch
+
 
 /**
  * chatAuth = 0
@@ -232,4 +227,64 @@ fun clearAppData() {
     val uiAutomation = InstrumentationRegistry.getInstrumentation().uiAutomation
     uiAutomation.executeShellCommand("pm clear $packageName").close()
     Log.d("as", packageName)
+}
+
+fun performTapOnRecord(duration: Long): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View> {
+            return isDisplayed()
+        }
+
+        override fun getDescription(): String {
+            return "Continuous press for $duration milliseconds"
+        }
+
+        override fun perform(uiController: UiController, view: View) {
+            val coordinates = floatArrayOf(view.width / 2f, view.height / 2f)
+            val startTime = SystemClock.uptimeMillis()
+
+            // Initial DOWN event
+            val downEvent = MotionEvent.obtain(
+                startTime,
+                startTime,
+                MotionEvent.ACTION_DOWN,
+                coordinates[0],
+                coordinates[1],
+                1.0f,
+                1.0f,
+                0,
+                1.0f,
+                1.0f,
+                0,
+                0
+            )
+            view.dispatchTouchEvent(downEvent)
+
+            Thread.sleep(duration)
+
+            // Final UP event
+            val upEvent = MotionEvent.obtain(
+                startTime,
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_UP,
+                coordinates[0],
+                coordinates[1],
+                1.0f,
+                1.0f,
+                0,
+                1.0f,
+                1.0f,
+                0,
+                0
+            )
+            view.dispatchTouchEvent(upEvent)
+
+            // Cleanup
+            downEvent.recycle()
+            upEvent.recycle()
+
+            // Ensure all events are processed
+            uiController.loopMainThreadUntilIdle()
+        }
+    }
 }

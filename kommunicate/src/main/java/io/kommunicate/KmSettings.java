@@ -19,12 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.usecase.AssigneeUpdateUseCase;
+import io.kommunicate.usecase.ConversationInfoUseCase;
 import io.kommunicate.usecase.UpdateConversationUseCase;
 
 public class KmSettings {
@@ -97,9 +97,9 @@ public class KmSettings {
     }
 
     public static void updateConversationAssignee(Context context, Integer conversationId, String clientConversationId, final String assigneeId, final KmCallback callback) {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(final Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 Utils.printLog(context, TAG, "Updating conversation assignee for : " + channel.getKey() + "\nAssignee : " + assigneeId);
                 KmCallback kmCallback = new KmCallback() {
                     @Override
@@ -123,12 +123,12 @@ public class KmSettings {
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
-                callback.onFailure(e);
+            public void onFailure(@NonNull Exception error) {
+                callback.onFailure(error);
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, clientConversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(context, conversationId, clientConversationId, conversationInfoCallback);
     }
 
     public static void updateTeamId(Context context, Integer conversationId, String clientConversationId, String teamId, KmCallback callback) {
@@ -140,9 +140,9 @@ public class KmSettings {
     }
 
     public static void updateConversationInfo(Context context, Integer conversationId, String clientConversationId, final String teamId, final Map<String, String> conversationMetadata, final KmCallback callback) {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(final Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (channel != null) {
                     Map<String, String> metadataForUpdate = channel.getMetadata();
 
@@ -177,12 +177,12 @@ public class KmSettings {
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
-                callback.onFailure(e);
+            public void onFailure(@NonNull Exception error) {
+                callback.onFailure(error);
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, clientConversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(context, conversationId, clientConversationId, conversationInfoCallback);
     }
 
     private static Map<String, String> getChannelMetadataWithConversationInfo(Map<String, String> channelMetadata, Map<String, String> conversationInfo) {

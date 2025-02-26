@@ -12,5 +12,5 @@ import com.applozic.mobicommons.people.channel.Channel;
 public interface KMStartChatHandler {
     void onSuccess(Channel channel, Context context);
 
-    void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context);
+    void onFailure(Exception exception, Context context);
 }

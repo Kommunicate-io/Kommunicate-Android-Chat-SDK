@@ -17,14 +17,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmConversationRemoveMemberTask;
 import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
+import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
+import io.kommunicate.models.FeedbackDetailsData;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
 import io.kommunicate.models.KmFeedback;
+import io.kommunicate.usecase.ConversationCreateUseCase;
+import io.kommunicate.usecase.ConversationFeedbackUseCase;
 import io.kommunicate.utils.KmConstants;
 
 /**
@@ -155,8 +158,8 @@ public class KmService {
      * @param kmFeedbackDetails  the feedback details
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
-    public static void getConversationFeedback(Context context, KmConversationFeedbackTask.KmFeedbackDetails kmFeedbackDetails, KmFeedbackCallback kmFeedbackCallback) {
-        new KmConversationFeedbackTask(context, null, kmFeedbackDetails, kmFeedbackCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public static void getConversationFeedback(Context context, FeedbackDetailsData kmFeedbackDetails, TaskListener<KmApiResponse<KmFeedback>> kmFeedbackCallback) {
+        ConversationFeedbackUseCase.executeWithExecutor(context, null, kmFeedbackDetails, kmFeedbackCallback);
     }
 
     /**
@@ -167,8 +170,8 @@ public class KmService {
      * @param kmFeedbackDetails  the feedback details
      * @param kmFeedbackCallback the callback with the onSuccess and onFailure
      */
-    public static void setConversationFeedback(Context context, KmFeedback kmFeedback, KmConversationFeedbackTask.KmFeedbackDetails kmFeedbackDetails, KmFeedbackCallback kmFeedbackCallback) {
-        new KmConversationFeedbackTask(context, kmFeedback, kmFeedbackDetails, kmFeedbackCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public static void setConversationFeedback(Context context, KmFeedback kmFeedback, FeedbackDetailsData kmFeedbackDetails, TaskListener<KmApiResponse<KmFeedback>> kmFeedbackCallback) {
+        ConversationFeedbackUseCase.executeWithExecutor(context, kmFeedback, kmFeedbackDetails, kmFeedbackCallback);
     }
 
     /**
@@ -187,7 +190,7 @@ public class KmService {
      * @param kmFeedback the feedback object (has groupId, rating and comments data members)
      * @return string response of the post request
      */
-    public synchronized String postConversationFeedback(KmFeedback kmFeedback, KmConversationFeedbackTask.KmFeedbackDetails kmFeedbackDetails) throws Exception {
+    public synchronized String postConversationFeedback(KmFeedback kmFeedback, FeedbackDetailsData kmFeedbackDetails) throws Exception {
         return clientService.postConversationFeedback(kmFeedback.getGroupId(), kmFeedback.getRating(), kmFeedback.getComments(), kmFeedbackDetails.getUserName(), kmFeedbackDetails.getUserId(), kmFeedbackDetails.getSupportAgentId());
     }
 }

@@ -7,10 +7,13 @@ import com.applozic.mobicommons.json.GsonUtils;
 
 import java.util.List;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
 import io.kommunicate.services.KmService;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmAutoSuggestionsAsyncTask to AutoSuggestionsUseCase")
 public class KmAutoSuggestionsAsyncTask extends AsyncTask<Void, Void, KmApiResponse<List<KmAutoSuggestionModel>>> {
 
     private KmService kmService;

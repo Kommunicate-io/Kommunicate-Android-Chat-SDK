@@ -10,6 +10,7 @@ import io.kommunicate.models.KmFeedback;
  * @author shubham
  * @date 25/July/2019
  */
+@Deprecated
 public interface KmFeedbackCallback {
     void onSuccess(Context context, KmApiResponse<KmFeedback> response);
     void onFailure(Context context, Exception e, String response);

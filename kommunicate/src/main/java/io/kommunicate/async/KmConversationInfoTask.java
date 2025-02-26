@@ -9,8 +9,11 @@ import com.applozic.mobicommons.people.channel.Channel;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmConversationInfoTask to ConversationInfoUseCase")
 public class KmConversationInfoTask extends AsyncTask<Object, Object, Channel> {
     private WeakReference<Context> context;
     private ChannelService channelService;

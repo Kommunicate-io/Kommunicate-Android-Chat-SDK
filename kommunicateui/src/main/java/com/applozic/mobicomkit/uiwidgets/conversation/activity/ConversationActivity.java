@@ -120,8 +120,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
 import io.kommunicate.async.KmSyncMessageTask;
+import io.kommunicate.usecase.AutoSuggestionsUseCase;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 import io.sentry.Hint;
@@ -490,7 +490,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         LocalBroadcastManager.getInstance(this).registerReceiver(mobiComKitBroadcastReceiver, BroadcastService.getIntentFilter());
 
         if (KmUtils.isAgent(this)) {
-            new KmAutoSuggestionsAsyncTask(this, null).execute();
+            AutoSuggestionsUseCase.executeWithExecutor(this, null);
         }
 
         //the pre and post attachment write async task callbacks

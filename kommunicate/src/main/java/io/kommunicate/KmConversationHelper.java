@@ -36,8 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.kommunicate.async.KmConversationCreateTask;
-import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmCallback;
@@ -48,6 +46,8 @@ import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.usecase.AppSettingUseCase;
+import io.kommunicate.usecase.ConversationCreateUseCase;
+import io.kommunicate.usecase.ConversationInfoUseCase;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
@@ -98,9 +98,9 @@ public class KmConversationHelper {
                                 if (messageList.size() == 1) {
                                     Message message = messageList.get(0);
                                     if (message.getGroupId() != null && message.getGroupId() != 0) {
-                                        KmGetConversationInfoCallback memberListener = new KmGetConversationInfoCallback() {
+                                        TaskListener<Channel> memberListener = new TaskListener<Channel>() {
                                             @Override
-                                            public void onSuccess(Channel channel, Context context) {
+                                            public void onSuccess(Channel channel) {
                                                 if (channel != null) {
                                                     openParticularConversation(context, skipConversationList, channel.getKey(), null, callback);
                                                 } else {
@@ -109,11 +109,11 @@ public class KmConversationHelper {
                                             }
 
                                             @Override
-                                            public void onFailure(Exception e, Context context) {
+                                            public void onFailure(@NonNull Exception error) {
                                                 Kommunicate.openConversation(context, callback);
                                             }
                                         };
-                                        new KmConversationInfoTask(context, message.getGroupId(), memberListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                        ConversationInfoUseCase.executeWithExecutor(context, message.getGroupId(), null, memberListener);
                                     } else {
                                         Kommunicate.openConversation(context, callback);
                                     }
@@ -137,9 +137,9 @@ public class KmConversationHelper {
     }
 
     private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, String preFilledMessage, KmCallback callback) {
-        KmGetConversationInfoCallback callbackListener = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> callbackListener = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 try {
                     Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
                     intent.putExtra(KmConstants.GROUP_ID, conversationId);
@@ -159,12 +159,12 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
-                 callback.onFailure("Invalid Conversation id, Unable to find conversation with given ID.");
+            public void onFailure(@NonNull Exception error) {
+                callback.onFailure("Invalid Conversation id, Unable to find conversation with given ID.");
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, callbackListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(context, conversationId, null, callbackListener);
     }
 
     @Deprecated
@@ -418,14 +418,14 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+            public void onFailure(Exception exception, Context context) {
                 if (resultReceiver != null) {
                     resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                 }
                 if (callback != null) {
-                    callback.onFailure(channelFeedApiResponse);
+                    callback.onFailure(exception);
                 }
-                Utils.printLog(context, TAG, "Failed to start chat : " + channelFeedApiResponse);
+                Utils.printLog(context, TAG, "Failed to start chat : " + exception);
             }
         };
     }
@@ -667,14 +667,14 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+            public void onFailure(Exception exception, Context context) {
                 if (resultReceiver != null) {
                     resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                 }
                 if (callback != null) {
-                    callback.onFailure(channelFeedApiResponse);
+                    callback.onFailure(exception);
                 }
-                Utils.printLog(null, TAG, "Error while creating conversation : " + channelFeedApiResponse);
+                Utils.printLog(null, TAG, "Error while creating conversation : " + exception);
             }
         };
     }
@@ -710,25 +710,25 @@ public class KmConversationHelper {
     }
 
     private static void startOrGetConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler callback) throws KmException {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(final Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (callback != null) {
-                    callback.onSuccess(channel, context);
+                    callback.onSuccess(channel, conversationBuilder.getContext());
                 }
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
+            public void onFailure(@NonNull Exception error) {
                 try {
                     createConversation(conversationBuilder, callback);
                 } catch (KmException e1) {
-                    callback.onFailure(null, context);
+                    callback.onFailure(e1, conversationBuilder.getContext());
                 }
             }
         };
 
-        new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(conversationBuilder.getContext(), null, conversationBuilder.getClientConversationId(), conversationInfoCallback);
     }
 
     private static void createConversation(KmConversationBuilder conversationBuilder, KmStartConversationHandler handler) throws KmException {
@@ -842,21 +842,7 @@ public class KmConversationHelper {
 
         Utils.printLog(conversationBuilder.getContext(), TAG, "ChannelInfo : " + GsonUtils.getJsonFromObject(channelInfo, ChannelInfo.class));
 
-        if (handler == null) {
-            handler = new KmStartConversationHandler() {
-                @Override
-                public void onSuccess(Channel channel, Context context) {
-
-                }
-
-                @Override
-                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-
-                }
-            };
-        }
-
-        new KmConversationCreateTask(conversationBuilder.getContext(), channelInfo, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationCreateUseCase.executeWithExecutor(conversationBuilder.getContext(), channelInfo, handler, null);
     }
 
     private static KmCallback getCallbackWithAppSettingsToCreateConversation(final boolean useSingleThreadedSettingFromServer, final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) {
@@ -931,30 +917,30 @@ public class KmConversationHelper {
     }
 
     public static void getConversationById(Context context, String conversationId, final KmCallback callback) {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (callback != null) {
                     callback.onSuccess(channel);
                 }
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
+            public void onFailure(@NonNull Exception error) {
                 if (callback != null) {
-                    callback.onFailure(e);
+                    callback.onFailure(error);
                 }
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(context, null, conversationId, conversationInfoCallback);
     }
 
 
     public static void getConversationMetadata(Context context, String conversationId, final KmCallback callback) {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (callback != null) {
                     if (channel != null && channel.getMetadata() != null) {
                         Map<String, String> channelMetadata = channel.getMetadata();
@@ -985,14 +971,14 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
+            public void onFailure(@NonNull Exception error) {
                 if (callback != null) {
-                    callback.onFailure(e);
+                    callback.onFailure(error);
                 }
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(context, null, conversationId, conversationInfoCallback);
     }
 
     private static String getClientGroupId(List<String> userIds, List<String> agentIds, List<String> botIds, Context context) throws KmException {

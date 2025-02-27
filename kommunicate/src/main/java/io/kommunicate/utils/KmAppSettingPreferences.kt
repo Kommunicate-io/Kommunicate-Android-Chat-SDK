@@ -21,6 +21,7 @@ object KmAppSettingPreferences {
     private const val KM_THEME_SECONDARY_COLOR = "KM_THEME_SECONDARY_COLOR"
     private const val KM_COLLECT_FEEDBACK = "KM_COLLECT_FEEDBACK"
     private const val KM_BOT_MESSAGE_DELAY_INTERVAL = "KM_BOT_MESSAGE_DELAY_INTERVAL"
+    private const val BOT_TYPING_INDICATOR_INTERVAL = "BOT_TYPING_INDICATOR_INTERVAL"
     private const val LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME"
     private const val CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME"
     private const val HIDE_POST_CTA = "HIDE_POST_CTA"
@@ -162,6 +163,12 @@ object KmAppSettingPreferences {
             preferences.edit().putInt(KM_BOT_MESSAGE_DELAY_INTERVAL, delayInterval).apply()
         }
 
+    var botTypingIndicatorInterval: Int
+        get() = preferences.getInt(BOT_TYPING_INDICATOR_INTERVAL, 0)
+        private set(delayInterval) {
+            preferences.edit().putInt(BOT_TYPING_INDICATOR_INTERVAL, delayInterval).apply()
+        }
+
     @JvmStatic
     @CleanUpRequired(
         reason = "Not used anywhere"
@@ -231,6 +238,7 @@ object KmAppSettingPreferences {
             primaryColor = it.primaryColor
             secondaryColor = it.secondaryColor
             kmBotMessageDelayInterval = it.botMessageDelayInterval
+            botTypingIndicatorInterval = it.botTypingIndicatorInterval
             chatSessionDeleteTime = it.sessionTimeout
             if (it.defaultUploadOverride != null) {
                 uploadOverrideUrl = it.defaultUploadOverride.url

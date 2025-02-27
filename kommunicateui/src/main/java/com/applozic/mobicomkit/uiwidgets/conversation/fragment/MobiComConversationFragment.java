@@ -32,6 +32,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
 import android.text.Editable;
@@ -2633,6 +2635,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             }
                             messageList.get(index).setDelivered(true);
                             messageList.get(index).setStatus(message.getStatus());
+                            showBotTypingIndicator();
                             View view = recyclerView.getChildAt(index -
                                     linearLayoutManager.findFirstVisibleItemPosition());
                             if (view != null && !messageList.get(index).isCustom()) {
@@ -2661,6 +2664,28 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             });
         }
+    }
+
+    private void showBotTypingIndicator() {
+        int botIntervalDelay = KmAppSettingPreferences.INSTANCE.getBotTypingIndicatorInterval();
+        if (botIntervalDelay == 0) {
+            return;
+        }
+
+        // check conversation is assigned to bot
+        String assigneeId = channel.getConversationAssignee();
+        if (assigneeId == null) {
+            return;
+        }
+        Contact assigneeInfo = new AppContactService(getContext()).getContactById(assigneeId);
+        if (assigneeInfo == null || !assigneeInfo.getRoleType().equals(User.RoleType.BOT.getValue())) {
+            return;
+        }
+
+        handleTypingMessage(true);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            handleTypingMessage(false);
+        }, botIntervalDelay);
     }
 
     public void loadFile(Uri uri, File file, String mimeType) {

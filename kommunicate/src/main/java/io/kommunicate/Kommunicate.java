@@ -28,6 +28,8 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.usecase.AppSettingUseCase;
 import io.kommunicate.usecase.AwayMessageUseCase;
+import io.kommunicate.usecase.ConversationCreateUseCase;
+import io.kommunicate.usecase.ConversationInfoUseCase;
 import io.kommunicate.usecase.FAQType;
 import io.kommunicate.usecase.FaqUseCase;
 import io.kommunicate.usecase.HelpDocsKeyUseCase;
@@ -53,8 +55,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.async.GetUserListAsyncTask;
-import io.kommunicate.async.KmConversationCreateTask;
-import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
@@ -815,21 +815,7 @@ public class Kommunicate {
 
         Utils.printLog(chatBuilder.getContext(), TAG, "ChannelInfo : " + GsonUtils.getJsonFromObject(channelInfo, ChannelInfo.class));
 
-        if (handler == null) {
-            handler = new KMStartChatHandler() {
-                @Override
-                public void onSuccess(Channel channel, Context context) {
-
-                }
-
-                @Override
-                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-
-                }
-            };
-        }
-
-        new KmConversationCreateTask(chatBuilder.getContext(), channelInfo, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationCreateUseCase.executeWithExecutor(chatBuilder.getContext(), channelInfo, null, handler);
     }
 
     public static void fetchAgentList(Context context, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
@@ -928,25 +914,25 @@ public class Kommunicate {
 
     @Deprecated
     private static void startOrGetConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (handler != null) {
-                    handler.onSuccess(channel, context);
+                    handler.onSuccess(channel, chatBuilder.getContext());
                 }
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
+            public void onFailure(@NonNull Exception error) {
                 try {
                     createConversation(chatBuilder, handler);
                 } catch (KmException e1) {
-                    handler.onFailure(null, context);
+                    handler.onFailure(error, chatBuilder.getContext());
                 }
             }
         };
 
-        new KmConversationInfoTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(chatBuilder.getContext(), null, chatBuilder.getClientConversationId(), conversationInfoCallback);
     }
 
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {

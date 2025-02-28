@@ -221,16 +221,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.async.AgentGetStatusTask;
-import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmGetBotTypeTask;
 import io.kommunicate.async.KmGetDataAsyncTask;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmCharLimitCallback;
-import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
+import io.kommunicate.models.FeedbackDetailsData;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
 import io.kommunicate.models.KmFeedback;
@@ -5143,10 +5142,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                 if (themeHelper.isCollectFeedback()) {
                     frameLayoutProgressbar.setVisibility(VISIBLE);
-                    KmService.getConversationFeedback(getActivity(), new KmConversationFeedbackTask.KmFeedbackDetails(String.valueOf(channel.getKey()), null, null, null), new KmFeedbackCallback() {
+                    KmService.getConversationFeedback(getActivity(), new FeedbackDetailsData(String.valueOf(channel.getKey()), null, null, null), new TaskListener<KmApiResponse<KmFeedback>>() {
                         @Override
-                        public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
-
+                        public void onSuccess(KmApiResponse<KmFeedback> response) {
                             frameLayoutProgressbar.setVisibility(View.GONE);
                             if (response.getData() != null) { //i.e if feedback found
                                 //show the feedback based on the data given
@@ -5171,9 +5169,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
 
                         @Override
-                        public void onFailure(Context context, Exception e, String response) {
+                        public void onFailure(@NonNull Exception error) {
                             frameLayoutProgressbar.setVisibility(View.GONE);
-                            Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
+                            Utils.printLog(getContext(), TAG, "Feedback get failed: " + error.toString());
                         }
                     });
                 }
@@ -5584,15 +5582,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmFeedback.setRating(ratingValue);
         AlEventManager.getInstance().sendOnSubmitRatingClicked(channel.getKey(), ratingValue, feedback);
         Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
-        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
+        KmService.setConversationFeedback(getActivity(), kmFeedback, new FeedbackDetailsData(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new TaskListener<KmApiResponse<KmFeedback>>() {
             @Override
-            public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+            public void onSuccess(KmApiResponse<KmFeedback> status) {
                 //kmFeedbackView.showFeedback(context, kmFeedback);
             }
 
             @Override
-            public void onFailure(Context context, Exception e, String response) {
-                Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
+            public void onFailure(@NonNull Exception error) {
                 KmToast.error(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
             }
         });
@@ -5611,15 +5608,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         kmFeedback.setRating(ratingValue);
         Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
-        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
+        KmService.setConversationFeedback(getActivity(), kmFeedback, new FeedbackDetailsData(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new TaskListener<KmApiResponse<KmFeedback>>() {
             @Override
-            public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+            public void onSuccess(KmApiResponse<KmFeedback> status) {
                 //kmFeedbackView.showFeedback(context, kmFeedback);
             }
 
             @Override
-            public void onFailure(Context context, Exception e, String response) {
-                Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
+            public void onFailure(@NonNull Exception error) {
                 KmToast.error(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
             }
         });

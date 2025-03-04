@@ -9,21 +9,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -132,6 +128,28 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         onNewIntent(getIntent());
         connectivityReceiver = new ConnectivityReceiver();
         registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        setupInsets();
+    }
+
+    private void setupInsets() {
+        InsetHelper.configureSystemInset(
+                toolbar,
+                InsetHelper.systemTypeMask,
+                0,
+                0,
+                -1,
+                0,
+                true
+        );
+        InsetHelper.configureSystemInset(
+                sendLocation,
+                InsetHelper.systemTypeMask,
+                0,
+                0,
+                0,
+                -1,
+                false
+        );
     }
 
 

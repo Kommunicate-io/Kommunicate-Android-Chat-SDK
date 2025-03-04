@@ -92,6 +92,7 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -382,7 +383,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         setContentView(R.layout.quickconversion_activity);
         toolbar = findViewById(R.id.my_toolbar);
-
+        setupWindowInsets();
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
@@ -512,6 +513,18 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (alCustomizationSettings.isUseDeviceDefaultLanguage()) {
             Applozic.setDefaultLanguage(this);
         }
+    }
+
+    private void setupWindowInsets() {
+        InsetHelper.configureSystemInset(
+                toolbar,
+                InsetHelper.systemTypeMask,
+                0,
+                0,
+                -1,
+                0,
+                true
+        );
     }
 
     private void setupActivityResultCallback() {

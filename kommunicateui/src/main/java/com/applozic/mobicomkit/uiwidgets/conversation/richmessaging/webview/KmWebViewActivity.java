@@ -24,6 +24,7 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -131,6 +132,19 @@ public class KmWebViewActivity extends AppCompatActivity {
                 }
             }
         }
+        setupInsets();
+    }
+
+    private void setupInsets() {
+        InsetHelper.configureSystemInset(
+                toolbar,
+                InsetHelper.systemTypeMask,
+                0,
+                0,
+                -1,
+                0,
+                true
+        );
     }
 
     public void webViewClientPost(WebView webView, String url,

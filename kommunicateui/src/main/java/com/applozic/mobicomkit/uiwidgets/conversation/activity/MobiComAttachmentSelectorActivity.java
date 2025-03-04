@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +42,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmAttachmentsController;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.file.MediaPicker;
@@ -77,6 +79,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     private String TAG = "MultiAttActivity";
     private Button sendAttachment;
     private Button cancelAttachment;
+    private FrameLayout attachmentAction;
     private EditText messageEditText;
     private ConnectivityReceiver connectivityReceiver;
     private GridView galleryImagesGridView;
@@ -164,7 +167,30 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         }
         connectivityReceiver = new ConnectivityReceiver();
         registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        setupInsets();
     }
+
+    private void setupInsets() {
+        InsetHelper.configureSystemInset(
+                galleryImagesGridView,
+                InsetHelper.systemTypeMask,
+                0,
+                0,
+                -1,
+                0,
+                true
+        );
+        InsetHelper.configureSystemInset(
+                attachmentAction,
+                InsetHelper.systemTypeMask,
+                0,
+                0,
+                0,
+                -1,
+                false
+        );
+    }
+
 
     private void setupActivityResultCallback() {
         attachmentAudioResult = registerForActivityResult(
@@ -252,6 +278,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     private void initViews() {
         sendAttachment = (Button) findViewById(R.id.mobicom_attachment_send_btn);
         cancelAttachment = (Button) findViewById(R.id.mobicom_attachment_cancel_btn);
+        attachmentAction = (FrameLayout) findViewById(R.id.attachment_action_button);
         galleryImagesGridView = (GridView) findViewById(R.id.mobicom_attachment_grid_View);
         messageEditText = (EditText) findViewById(R.id.mobicom_attachment_edit_text);
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);

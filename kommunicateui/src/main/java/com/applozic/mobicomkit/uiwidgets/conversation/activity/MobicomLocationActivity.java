@@ -132,20 +132,14 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     }
 
     private void setupInsets() {
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 toolbar,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 -1,
                 0,
                 true
         );
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 sendLocation,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 0,
                 -1,
                 false

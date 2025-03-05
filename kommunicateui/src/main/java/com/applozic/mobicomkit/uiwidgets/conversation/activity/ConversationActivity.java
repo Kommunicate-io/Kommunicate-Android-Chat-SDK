@@ -516,11 +516,8 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     private void setupWindowInsets() {
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 toolbar,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 -1,
                 0,
                 true

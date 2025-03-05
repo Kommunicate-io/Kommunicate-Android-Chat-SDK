@@ -171,20 +171,14 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     }
 
     private void setupInsets() {
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 galleryImagesGridView,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 -1,
                 0,
                 true
         );
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 attachmentAction,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 0,
                 -1,
                 false

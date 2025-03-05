@@ -1191,20 +1191,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void setupInsets() {
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 startNewConv,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 0,
                 -1,
                 false
         );
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 kmMessageLinearLayout,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 0,
                 -1,
                 true

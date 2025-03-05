@@ -32,6 +32,31 @@ object InsetHelper {
     val navigationTypeMask = WindowInsetsCompat.Type.navigationBars()
 
     /**
+     * Configures the system insets with status bar to update either
+     * padding or margin of the target view.
+     *
+     * This function listens for window insets and adjusts the target view's padding or margins
+     * accordingly. You can configure specific sides (top, bottom) with the given values.
+     *
+     * If the padding is being updated (`isPadding = true`), it modifies the padding of the view.
+     * If the margins are being updated (`isPadding = false`), it modifies the margins of the view.
+     *
+     * @param view The target [View] to which the insets will be applied.
+     * @param top The padding or margin to apply on the top side. Default is -1 (which means apply the inset value).
+     * @param bottom The padding or margin to apply on the bottom side. Default is -1 (which means apply the inset value).
+     * @param isPadding If true, the function adjusts the padding of the view. If false, it adjusts the margins of the view. Default is true.
+     */
+    @JvmStatic
+    fun configureSystemInsets(
+        view: View,
+        top: Int = -1,
+        bottom: Int = -1,
+        isPadding: Boolean = true
+    ) {
+        configureInset(view, systemTypeMask, 0 , 0, top, bottom, isPadding)
+    }
+
+    /**
      * Configures the system insets (e.g., status bar, navigation bar, etc.) to update either
      * padding or margin of the target view based on the provided `typeMask`.
      *
@@ -50,7 +75,7 @@ object InsetHelper {
      * @param isPadding If true, the function adjusts the padding of the view. If false, it adjusts the margins of the view. Default is true.
      */
     @JvmStatic
-    fun configureSystemInset(
+    fun configureInset(
         view: View,
         typeMask: Int,
         left: Int = -1,

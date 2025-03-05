@@ -247,20 +247,14 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     }
 
     private void setupInsets() {
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 startNewConv,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 0,
                 25,
                 false
         );
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 recyclerView,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 0,
                 200,
                 true

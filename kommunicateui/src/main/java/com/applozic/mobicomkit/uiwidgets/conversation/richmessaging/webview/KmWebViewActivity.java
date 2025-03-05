@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -136,11 +135,8 @@ public class KmWebViewActivity extends AppCompatActivity {
     }
 
     private void setupInsets() {
-        InsetHelper.configureSystemInset(
+        InsetHelper.configureSystemInsets(
                 toolbar,
-                InsetHelper.systemTypeMask,
-                0,
-                0,
                 -1,
                 0,
                 true

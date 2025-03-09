@@ -174,6 +174,7 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicomkit.uiwidgets.usecase.UserDetailUseCase;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
@@ -413,6 +414,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected String autoSuggestUrl;
     private Set<Message> botDelayMessageList;
     private List<String> localTeams;
+    private RelativeLayout faqButtonLayout;
+    private Button startNewConv;
     private static final String KMEVENT = "KM_EVENT";
     private static final String QUICK_REPLY_CLICK = "QUICKREPLY_CLICK";
     private static final String SKIP_BOT = "skipBot";
@@ -435,9 +438,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private static final String APPLOZIC_TEMPLATE_MSG = "com.applozic.mobicomkit.TemplateMessage";
     private static final String TEMPLATE_MSG = "templateMessage";
     private static final String APPLI_JSON = "application/json";
-
-
-
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -632,12 +632,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setupChatBackground();
 
         frameLayoutProgressbar = list.findViewById(R.id.idProgressBarLayout);
-        Button startNewConv = list.findViewById(R.id.start_new_conversation);
+        startNewConv = list.findViewById(R.id.start_new_conversation);
         startNewConv.setVisibility(GONE);
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();
 
-        RelativeLayout faqButtonLayout = toolbar.findViewById(R.id.faqButtonLayout);
+        faqButtonLayout = toolbar.findViewById(R.id.faqButtonLayout);
         if (faqButtonLayout != null) {
             faqButtonLayout.setVisibility(View.GONE);
         }
@@ -1185,8 +1185,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         };
 
         setupModes(isCurrentlyInDarkMode);
-
+        setupInsets();
         return list;
+    }
+
+    private void setupInsets() {
+        InsetHelper.configureSystemInsets(
+                startNewConv,
+                0,
+                -1,
+                false
+        );
+        InsetHelper.configureSystemInsets(
+                kmMessageLinearLayout,
+                0,
+                -1,
+                true
+        );
     }
 
     private void setupDotColorStatus() {

@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -24,6 +23,7 @@ import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 
@@ -131,6 +131,16 @@ public class KmWebViewActivity extends AppCompatActivity {
                 }
             }
         }
+        setupInsets();
+    }
+
+    private void setupInsets() {
+        InsetHelper.configureSystemInsets(
+                toolbar,
+                -1,
+                0,
+                true
+        );
     }
 
     public void webViewClientPost(WebView webView, String url,

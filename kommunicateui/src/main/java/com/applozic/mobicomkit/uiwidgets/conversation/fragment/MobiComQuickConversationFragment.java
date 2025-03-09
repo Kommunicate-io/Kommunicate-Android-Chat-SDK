@@ -56,6 +56,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -241,7 +242,23 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerView.setLongClickable(true);
         setupModes(isCurrentlyInDarkMode);
         registerForContextMenu(recyclerView);
+        setupInsets();
         return list;
+    }
+
+    private void setupInsets() {
+        InsetHelper.configureSystemInsets(
+                startNewConv,
+                0,
+                25,
+                false
+        );
+        InsetHelper.configureSystemInsets(
+                recyclerView,
+                0,
+                200,
+                true
+        );
     }
 
     protected View.OnClickListener startNewConversation() {

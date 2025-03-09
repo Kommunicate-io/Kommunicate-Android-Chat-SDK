@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicommons.ApplozicService;
@@ -17,17 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.kommunicate.async.KmConversationRemoveMemberTask;
-import io.kommunicate.callbacks.KmFeedbackCallback;
-import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.FeedbackDetailsData;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
 import io.kommunicate.models.KmFeedback;
-import io.kommunicate.usecase.ConversationCreateUseCase;
 import io.kommunicate.usecase.ConversationFeedbackUseCase;
+import io.kommunicate.usecase.RemoveMemberUseCase;
 import io.kommunicate.utils.KmConstants;
 
 /**
@@ -126,28 +125,24 @@ public class KmService {
         return null;
     }
 
-    public static void removeMembersFromConversation(final Context context, Integer channelKey, final Set<String> userIds, final KmRemoveMemberCallback listener) {
+    public static void removeMembersFromConversation(final Context context, Integer channelKey, final Set<String> userIds, final TaskListener<String> listener) {
         if (userIds == null || channelKey == null) {
             return;
         }
 
-        int i = 0;
         for (String userId : userIds) {
-            KmRemoveMemberCallback recListener = new KmRemoveMemberCallback() {
+            TaskListener<String> callback = new TaskListener<String>() {
                 @Override
-                public void onSuccess(String response, int i) {
-                    if (i == userIds.size() - 1) {
-                        listener.onSuccess(response, i);
-                    }
+                public void onSuccess(String response) {
+                    listener.onSuccess(response);
                 }
 
                 @Override
-                public void onFailure(String response, Exception e) {
-                    listener.onFailure(response, e);
+                public void onFailure(@NonNull Exception error) {
+                    listener.onFailure(error);
                 }
             };
-            new KmConversationRemoveMemberTask(context, channelKey, userId, i, recListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            i++;
+            RemoveMemberUseCase.executeWithExecutor(context, channelKey, userId, callback);
         }
     }
 

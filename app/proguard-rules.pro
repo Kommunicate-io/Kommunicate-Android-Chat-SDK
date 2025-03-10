@@ -21,3 +21,6 @@
 #-renamesourcefileattribute SourceFile
 #keep json classes
 -printconfiguration proguard-merged-config.txt
+-keep class net.sqlcipher.** { *; }
+-keep class javax.crypto.** { *; }
+-keepattributes *Annotation*

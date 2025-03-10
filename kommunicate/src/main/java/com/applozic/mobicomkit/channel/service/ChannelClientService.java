@@ -259,6 +259,10 @@ public class ChannelClientService extends MobiComKitClientService {
     }
 
     public InQueueData getChannelInQueueStatus(Long teamId) throws Exception {
+        if (teamId == null) {
+            throw new IllegalArgumentException("Team ID cannot be null");
+        }
+
         String response = httpRequestUtils.getResponse(getBaseUrl() + IN_QUEUE_MESSAGE_URL + teamId);
         return GsonUtils.getObjectFromJson(response, InQueueData.class);
     }

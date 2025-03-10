@@ -17,6 +17,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.FlakyTest
 import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity.EMAIL_VALIDATION_REGEX
 import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity.PHONE_NUMBER_VALIDATION_REGEX
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter
@@ -325,7 +326,8 @@ class ConversationWithPreChatTest {
     }
 
     @Test
-    fun atestLaunchConversationWithCustomUserWithoutUserId() {
+    @FlakyTest
+    fun testLaunchConversationWithCustomUserWithoutUserId() {
         val tempUserMail = "${getRandomString(12)}@${getRandomString(5, ignoreNums = true)}.${getRandomString(3, ignoreNums = true)}"
         val tempName = getRandomString(10)
         val tempUserPhone = getRandomString(10, true)

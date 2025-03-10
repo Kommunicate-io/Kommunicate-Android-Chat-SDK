@@ -3,7 +3,6 @@ package io.kommunicate.usecase
 import android.content.Context
 import com.applozic.mobicommons.json.GsonUtils
 import com.google.gson.reflect.TypeToken
-import io.kommunicate.callbacks.KmFeedbackCallback
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.models.FeedbackDetailsData
 import io.kommunicate.models.KmApiResponse
@@ -68,7 +67,7 @@ class ConversationFeedbackUseCase(
         private const val KM_FEEDBACK_ID_NULL = "KmFeedback and conversation ID parameters null."
 
         /**
-         * Executes the use case with the given [KmFeedbackCallback].
+         * Executes the use case with the given [TaskListener].
          * Provides an easy way to handle success or failure using a provided listener.
          *
          * @param context The Android context for accessing resources and services.

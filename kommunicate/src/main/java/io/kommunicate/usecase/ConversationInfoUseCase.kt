@@ -3,7 +3,6 @@ package io.kommunicate.usecase
 import android.content.Context
 import com.applozic.mobicomkit.channel.service.ChannelService
 import com.applozic.mobicommons.people.channel.Channel
-import io.kommunicate.callbacks.KmGetConversationInfoCallback
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
@@ -53,7 +52,7 @@ class ConversationInfoUseCase(
     companion object {
 
         /**
-         * Executes the use case with the given [KmGetConversationInfoCallback].
+         * Executes the use case with the given [TaskListener].
          * Provides an easy way to handle success or failure using a provided listener.
          *
          * @param context The Android context for accessing resources and services.

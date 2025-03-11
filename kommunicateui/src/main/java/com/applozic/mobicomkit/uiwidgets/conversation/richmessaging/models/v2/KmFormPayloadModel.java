@@ -1,7 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2;
 
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.json.JsonMarker;
+import dev.kommunicate.commons.json.GsonUtils;
+import dev.kommunicate.commons.json.JsonMarker;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

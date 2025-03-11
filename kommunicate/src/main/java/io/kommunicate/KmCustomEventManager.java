@@ -2,8 +2,8 @@ package io.kommunicate;
 
 import android.content.Context;
 
-import com.applozic.mobicomkit.api.ApplozicMqttService;
-import com.applozic.mobicomkit.api.MobiComKitClientService;
+import dev.kommunicate.devkit.api.ApplozicMqttService;
+import dev.kommunicate.devkit.api.MobiComKitClientService;
 
 public class KmCustomEventManager extends MobiComKitClientService {
     private static final String TAG = "KmEventManager";

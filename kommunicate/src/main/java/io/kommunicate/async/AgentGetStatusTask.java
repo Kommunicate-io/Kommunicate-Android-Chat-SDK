@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.MobiComKitClientService;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.json.JsonMarker;
+import dev.kommunicate.devkit.api.MobiComKitClientService;
+import dev.kommunicate.commons.json.GsonUtils;
+import dev.kommunicate.commons.json.JsonMarker;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;

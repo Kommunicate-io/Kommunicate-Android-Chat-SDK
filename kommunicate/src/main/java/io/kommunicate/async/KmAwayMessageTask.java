@@ -8,7 +8,7 @@ import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.services.KmService;
 
-import com.applozic.mobicomkit.api.MobiComKitClientService;
+import dev.kommunicate.devkit.api.MobiComKitClientService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

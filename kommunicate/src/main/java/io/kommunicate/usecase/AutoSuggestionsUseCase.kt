@@ -1,7 +1,7 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicommons.json.GsonUtils
+import dev.kommunicate.commons.json.GsonUtils
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.models.KmApiResponse
 import io.kommunicate.models.KmAutoSuggestionModel

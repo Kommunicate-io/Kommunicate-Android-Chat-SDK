@@ -22,20 +22,19 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserClientService;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.api.attachment.FileMeta;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
-import com.applozic.mobicomkit.broadcast.BroadcastService;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.contact.BaseContactService;
+import dev.kommunicate.devkit.Applozic;
+import dev.kommunicate.devkit.ApplozicClient;
+import dev.kommunicate.devkit.api.MobiComKitConstants;
+import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import dev.kommunicate.devkit.api.account.user.UserClientService;
+import dev.kommunicate.devkit.api.attachment.FileClientService;
+import dev.kommunicate.devkit.api.attachment.FileMeta;
+import dev.kommunicate.devkit.api.conversation.Message;
+import dev.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
+import dev.kommunicate.devkit.broadcast.BroadcastService;
+import dev.kommunicate.devkit.channel.service.ChannelService;
+import dev.kommunicate.devkit.contact.AppContactService;
+import dev.kommunicate.devkit.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.FileTaskAsync;
@@ -51,13 +50,13 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionF
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmFragmentGetter;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.LocationInfo;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
+
+import dev.kommunicate.commons.commons.core.utils.LocationInfo;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.file.FileUtils;
+import dev.kommunicate.commons.json.GsonUtils;
+import dev.kommunicate.commons.people.channel.Channel;
+import dev.kommunicate.commons.people.contact.Contact;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package io.kommunicate;
 
-import com.applozic.mobicomkit.api.people.ChannelInfo;
+import dev.kommunicate.devkit.api.people.ChannelInfo;
 
 import java.util.List;
 

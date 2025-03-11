@@ -6,7 +6,6 @@ import android.location.Location;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,21 +15,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.api.conversation.MessageIntentService;
-import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
-import com.applozic.mobicomkit.api.conversation.SyncCallService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
-import com.applozic.mobicomkit.channel.service.ChannelService;
+import dev.kommunicate.devkit.api.conversation.MessageIntentService;
+import dev.kommunicate.devkit.api.conversation.MobiComConversationService;
+import dev.kommunicate.devkit.api.conversation.SyncCallService;
+import dev.kommunicate.devkit.broadcast.AlEventManager;
+import dev.kommunicate.devkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.LocationUtils;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.people.SearchListFragment;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
-
-import java.util.Objects;
+import dev.kommunicate.commons.commons.core.utils.LocationUtils;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.people.SearchListFragment;
+import dev.kommunicate.commons.people.channel.Channel;
+import dev.kommunicate.commons.people.contact.Contact;
 
 import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmConstants;

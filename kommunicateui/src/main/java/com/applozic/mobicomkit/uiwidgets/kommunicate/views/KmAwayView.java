@@ -9,15 +9,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserService;
-import com.applozic.mobicomkit.listners.AlCallback;
+import dev.kommunicate.devkit.api.account.user.User;
+import dev.kommunicate.devkit.api.account.user.UserService;
+import dev.kommunicate.devkit.listners.AlCallback;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.DashedLineView;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.people.channel.Channel;
+
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.people.channel.Channel;
 
 import androidx.annotation.Nullable;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;

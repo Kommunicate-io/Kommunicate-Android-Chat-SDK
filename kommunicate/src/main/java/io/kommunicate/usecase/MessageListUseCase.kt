@@ -2,12 +2,12 @@ package io.kommunicate.usecase
 
 import android.content.Context
 import android.text.TextUtils
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference
-import com.applozic.mobicomkit.api.conversation.Message
-import com.applozic.mobicomkit.api.conversation.MobiComConversationService
-import com.applozic.mobicommons.commons.core.utils.DateUtils
-import com.applozic.mobicommons.people.channel.Channel
-import com.applozic.mobicommons.people.contact.Contact
+import dev.kommunicate.devkit.api.account.user.MobiComUserPreference
+import dev.kommunicate.devkit.api.conversation.Message
+import dev.kommunicate.devkit.api.conversation.MobiComConversationService
+import dev.kommunicate.commons.commons.core.utils.DateUtils
+import dev.kommunicate.commons.people.channel.Channel
+import dev.kommunicate.commons.people.contact.Contact
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor

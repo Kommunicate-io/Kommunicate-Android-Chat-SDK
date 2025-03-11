@@ -1,7 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.models;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
-import com.applozic.mobicommons.json.JsonMarker;
+import dev.kommunicate.commons.json.JsonMarker;
 
 public class KmSpeechToTextModel extends JsonMarker {
     private String code;

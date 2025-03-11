@@ -3,12 +3,11 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.ResultReceiver;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.account.user.UserClientService;
-import com.applozic.mobicomkit.api.account.user.UserLoginTask;
-import com.applozic.mobicomkit.listners.AlLoginHandler;
+import dev.kommunicate.devkit.api.account.register.RegisterUserClientService;
+import dev.kommunicate.devkit.api.account.register.RegistrationResponse;
+import dev.kommunicate.devkit.api.account.user.UserClientService;
+import dev.kommunicate.devkit.api.account.user.UserLoginTask;
+import dev.kommunicate.devkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -16,7 +15,6 @@ import annotations.CleanUpRequired;
 import io.kommunicate.services.KmUserClientService;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
-import io.kommunicate.utils.KmAppSettingPreferences;
 
 /**
  * Created by ashish on 10/02/18.

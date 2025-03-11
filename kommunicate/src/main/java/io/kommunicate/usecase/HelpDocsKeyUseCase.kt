@@ -10,8 +10,8 @@ import io.kommunicate.utils.onFailure
 import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.applozic.mobicomkit.api.MobiComKitClientService
-import com.applozic.mobicommons.json.GsonUtils
+import dev.kommunicate.devkit.api.MobiComKitClientService
+import dev.kommunicate.commons.json.GsonUtils
 import io.kommunicate.callbacks.TaskListener
 
 /**

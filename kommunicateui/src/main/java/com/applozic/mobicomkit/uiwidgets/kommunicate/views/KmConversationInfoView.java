@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.applozic.mobicomkit.broadcast.AlEventManager;
+import dev.kommunicate.devkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 
 import androidx.annotation.Nullable;

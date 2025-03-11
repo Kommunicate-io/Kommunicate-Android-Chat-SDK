@@ -1,8 +1,8 @@
 package com.applozic.mobicomkit.uiwidgets.uilistener;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
+import dev.kommunicate.commons.people.channel.Channel;
+import dev.kommunicate.commons.people.contact.Contact;
 
 public interface KmFragmentGetter {
 

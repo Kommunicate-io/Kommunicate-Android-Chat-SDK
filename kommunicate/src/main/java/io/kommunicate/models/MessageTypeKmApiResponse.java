@@ -1,6 +1,6 @@
 package io.kommunicate.models;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import dev.kommunicate.commons.json.JsonMarker;
 
 public class MessageTypeKmApiResponse<T> extends JsonMarker {
     private String message;

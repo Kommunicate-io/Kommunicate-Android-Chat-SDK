@@ -2,8 +2,8 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks;
 
 import android.app.Activity;
 
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
+import dev.kommunicate.commons.people.channel.Channel;
+import dev.kommunicate.commons.people.contact.Contact;
 
 
 public interface KmToolbarClickListener {

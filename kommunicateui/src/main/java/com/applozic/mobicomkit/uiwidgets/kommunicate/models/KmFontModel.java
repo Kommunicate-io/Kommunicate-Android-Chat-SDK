@@ -1,6 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.kommunicate.models;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import dev.kommunicate.commons.json.JsonMarker;
 
 public class KmFontModel extends JsonMarker {
     private String messageTextFont;

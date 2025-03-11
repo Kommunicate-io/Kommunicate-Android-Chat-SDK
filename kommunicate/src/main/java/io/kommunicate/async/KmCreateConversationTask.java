@@ -3,8 +3,8 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicommons.json.GsonUtils;
+import dev.kommunicate.devkit.channel.service.ChannelService;
+import dev.kommunicate.commons.json.GsonUtils;
 
 import java.lang.ref.WeakReference;
 

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.applozic.mobicommons.ApplozicService;
+import dev.kommunicate.commons.ApplozicService;
 
 public class KmBotPreference {
     private static final String KM_BOT_PREFERENCE = "km_bot_preference";

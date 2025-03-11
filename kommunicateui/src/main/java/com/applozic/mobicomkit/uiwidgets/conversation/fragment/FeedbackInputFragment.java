@@ -21,15 +21,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
+import dev.kommunicate.devkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
+import dev.kommunicate.commons.ApplozicService;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.file.FileUtils;
+import dev.kommunicate.commons.json.GsonUtils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.lang.annotation.Retention;

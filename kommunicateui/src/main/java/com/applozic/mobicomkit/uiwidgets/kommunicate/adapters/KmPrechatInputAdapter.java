@@ -21,8 +21,8 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import dev.kommunicate.commons.ApplozicService;
+import dev.kommunicate.commons.commons.core.utils.Utils;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 

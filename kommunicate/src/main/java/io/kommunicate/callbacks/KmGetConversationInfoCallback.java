@@ -2,7 +2,7 @@ package io.kommunicate.callbacks;
 
 import android.content.Context;
 
-import com.applozic.mobicommons.people.channel.Channel;
+import dev.kommunicate.commons.people.channel.Channel;
 
 import annotations.CleanUpRequired;
 

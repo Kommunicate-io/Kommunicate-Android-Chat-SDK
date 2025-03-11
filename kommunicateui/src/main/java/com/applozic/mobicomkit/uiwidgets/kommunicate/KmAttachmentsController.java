@@ -6,27 +6,23 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.api.conversation.Message;
+import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import dev.kommunicate.devkit.api.attachment.FileClientService;
+import dev.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.FileTaskAsync;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.iceteck.silicompressorr.SiliCompressor;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.file.FileUtils;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**

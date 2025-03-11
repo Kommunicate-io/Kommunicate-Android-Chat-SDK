@@ -3,7 +3,7 @@ package io.kommunicate.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.applozic.mobicommons.json.GsonUtils;
+import dev.kommunicate.commons.json.GsonUtils;
 
 import io.kommunicate.KmConversationBuilder;
 /**

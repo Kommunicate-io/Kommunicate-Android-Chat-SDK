@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicommons.people.channel.Channel;
+import dev.kommunicate.devkit.api.MobiComKitConstants;
+import dev.kommunicate.devkit.channel.service.ChannelService;
+import dev.kommunicate.commons.people.channel.Channel;
 
 /**
  * Created by sunil on 15/9/16.

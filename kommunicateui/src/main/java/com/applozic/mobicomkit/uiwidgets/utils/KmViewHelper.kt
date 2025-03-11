@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.applozic.mobicomkit.uiwidgets.R
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil
-import com.applozic.mobicommons.people.contact.Contact
+import dev.kommunicate.commons.people.contact.Contact
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException

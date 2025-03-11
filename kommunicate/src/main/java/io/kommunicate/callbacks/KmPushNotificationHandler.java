@@ -1,6 +1,6 @@
 package io.kommunicate.callbacks;
 
-import com.applozic.mobicomkit.listners.AlPushNotificationHandler;
+import dev.kommunicate.devkit.listners.AlPushNotificationHandler;
 
 /**
  * Created by ashish on 19/04/18.

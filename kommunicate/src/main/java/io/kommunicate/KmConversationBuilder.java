@@ -2,8 +2,8 @@ package io.kommunicate;
 
 import android.content.Context;
 
-import com.applozic.mobicommons.json.Exclude;
-import com.applozic.mobicommons.json.JsonMarker;
+import dev.kommunicate.commons.json.Exclude;
+import dev.kommunicate.commons.json.JsonMarker;
 
 import java.util.List;
 import java.util.Map;

@@ -2,10 +2,10 @@ package io.kommunicate.async;
 
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.feed.ApiResponse;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.task.AlAsyncTask;
+import dev.kommunicate.devkit.feed.ApiResponse;
+import dev.kommunicate.commons.ApplozicService;
+import dev.kommunicate.commons.json.GsonUtils;
+import dev.kommunicate.commons.task.AlAsyncTask;
 
 import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmCallback;

@@ -3,10 +3,10 @@ package io.kommunicate.utils
 import android.content.Context
 import android.content.SharedPreferences
 import annotations.CleanUpRequired
-import com.applozic.mobicomkit.Applozic
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference
-import com.applozic.mobicommons.ApplozicService
-import com.applozic.mobicommons.json.GsonUtils
+import dev.kommunicate.devkit.Applozic
+import dev.kommunicate.devkit.api.account.user.MobiComUserPreference
+import dev.kommunicate.commons.ApplozicService
+import dev.kommunicate.commons.json.GsonUtils
 import io.kommunicate.callbacks.KmCallback
 import io.kommunicate.models.KmAppSettingModel
 import io.kommunicate.services.KmService

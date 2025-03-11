@@ -1,22 +1,19 @@
 package com.applozic.mobicomkit.uiwidgets.attachmentview;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.api.attachment.FileClientService;
+import dev.kommunicate.devkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmAudioSampler;
-import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import dev.kommunicate.commons.commons.core.utils.PermissionsUtils;
+import dev.kommunicate.commons.commons.core.utils.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

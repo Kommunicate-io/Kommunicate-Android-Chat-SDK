@@ -1,8 +1,8 @@
 package io.kommunicate.utils
 
 import android.content.Context
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference
-import com.applozic.mobicommons.data.AlPrefSettings
+import dev.kommunicate.devkit.api.account.user.MobiComUserPreference
+import dev.kommunicate.commons.data.AlPrefSettings
 import io.kommunicate.BuildConfig
 import io.sentry.Scope
 import io.sentry.Sentry

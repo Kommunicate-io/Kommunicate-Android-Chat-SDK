@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 
 import androidx.fragment.app.DialogFragment;
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.core.content.ContextCompat;
@@ -15,9 +15,9 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.JsonMarker;
+import dev.kommunicate.commons.ApplozicService;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.json.JsonMarker;
 
 public class KmCustomDialog {
 

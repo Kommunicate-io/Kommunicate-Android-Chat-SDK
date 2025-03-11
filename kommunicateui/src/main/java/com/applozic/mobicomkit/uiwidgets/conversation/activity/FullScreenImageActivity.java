@@ -31,18 +31,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
+import dev.kommunicate.devkit.api.MobiComKitConstants;
+import dev.kommunicate.devkit.api.conversation.Message;
+import dev.kommunicate.devkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.uiwidgets.R;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.TouchImageView;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.commons.image.ImageUtils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.commons.image.ImageUtils;
+import dev.kommunicate.commons.file.FileUtils;
+import dev.kommunicate.commons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.RequestOptions;

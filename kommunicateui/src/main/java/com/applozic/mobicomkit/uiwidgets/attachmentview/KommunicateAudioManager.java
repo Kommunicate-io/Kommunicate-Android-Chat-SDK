@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.ApplozicService;
+import dev.kommunicate.commons.ApplozicService;
 
 import java.io.IOException;
 import java.util.HashMap;

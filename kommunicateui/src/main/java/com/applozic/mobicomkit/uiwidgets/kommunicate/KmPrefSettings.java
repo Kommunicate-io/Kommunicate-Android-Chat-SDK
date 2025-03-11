@@ -3,8 +3,8 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicommons.ApplozicService;
+import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import dev.kommunicate.commons.ApplozicService;
 
 public class KmPrefSettings {
 

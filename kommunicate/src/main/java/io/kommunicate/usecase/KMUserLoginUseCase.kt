@@ -2,14 +2,13 @@ package io.kommunicate.usecase
 
 import android.content.Context
 import android.os.ResultReceiver
-import com.applozic.mobicomkit.Applozic
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse
-import com.applozic.mobicomkit.listners.AlLoginHandler
+import dev.kommunicate.devkit.Applozic
+import dev.kommunicate.devkit.api.account.register.RegisterUserClientService
+import dev.kommunicate.devkit.api.account.register.RegistrationResponse
+import dev.kommunicate.devkit.listners.AlLoginHandler
 import io.kommunicate.services.KmUserClientService
 import io.kommunicate.users.KMUser
 import io.kommunicate.utils.APIResult
-import io.kommunicate.utils.KmAppSettingPreferences
 import io.kommunicate.utils.KmConstants
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure

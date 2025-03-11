@@ -15,7 +15,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.KmClickHandler;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmSpeechToTextModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.settings.KmSpeechToTextSetting;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import dev.kommunicate.commons.commons.core.utils.Utils;
 
 
 import java.util.List;

@@ -5,23 +5,23 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.HttpRequestUtils;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserClientService;
-import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
-import com.applozic.mobicomkit.api.conversation.ConversationIntentService;
-import com.applozic.mobicomkit.api.notification.NotificationChannels;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.exception.InvalidApplicationException;
-import com.applozic.mobicomkit.exception.UnAuthoriseException;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.encryption.EncryptionUtils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.contact.Contact;
+import dev.kommunicate.devkit.Applozic;
+import dev.kommunicate.devkit.ApplozicClient;
+import dev.kommunicate.devkit.api.HttpRequestUtils;
+import dev.kommunicate.devkit.api.account.register.RegistrationResponse;
+import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import dev.kommunicate.devkit.api.account.user.User;
+import dev.kommunicate.devkit.api.account.user.UserClientService;
+import dev.kommunicate.devkit.api.conversation.ApplozicMqttIntentService;
+import dev.kommunicate.devkit.api.conversation.ConversationIntentService;
+import dev.kommunicate.devkit.api.notification.NotificationChannels;
+import dev.kommunicate.devkit.contact.AppContactService;
+import dev.kommunicate.devkit.exception.InvalidApplicationException;
+import dev.kommunicate.devkit.exception.UnAuthoriseException;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.encryption.EncryptionUtils;
+import dev.kommunicate.commons.json.GsonUtils;
+import dev.kommunicate.commons.people.contact.Contact;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -44,7 +44,7 @@ import io.kommunicate.feeds.KmRegistrationResponse;
 import io.kommunicate.network.SSLPinningConfig;
 import io.kommunicate.users.KMUser;
 
-import static com.applozic.mobicomkit.api.HttpRequestUtils.DEVICE_KEY_HEADER;
+import static dev.kommunicate.devkit.api.HttpRequestUtils.DEVICE_KEY_HEADER;
 
 import javax.net.ssl.HttpsURLConnection;
 

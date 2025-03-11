@@ -3,10 +3,10 @@ package io.kommunicate.services;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.encryption.EncryptionUtils;
+import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import dev.kommunicate.commons.ApplozicService;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.encryption.EncryptionUtils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -16,10 +16,8 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.Map;
 
-import javax.crypto.IllegalBlockSizeException;
 import javax.net.ssl.HttpsURLConnection;
 
 import io.kommunicate.network.SSLPinningConfig;

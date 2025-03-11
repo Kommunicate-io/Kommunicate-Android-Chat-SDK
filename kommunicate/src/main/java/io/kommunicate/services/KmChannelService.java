@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
-import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.people.channel.ChannelUserMapper;
+import dev.kommunicate.devkit.database.MobiComDatabaseHelper;
+import dev.kommunicate.commons.ApplozicService;
+import dev.kommunicate.commons.people.channel.ChannelUserMapper;
 
 import java.util.ArrayList;
 import java.util.HashSet;

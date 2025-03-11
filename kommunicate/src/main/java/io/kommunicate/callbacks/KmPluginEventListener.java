@@ -1,6 +1,6 @@
 package io.kommunicate.callbacks;
 
-import com.applozic.mobicomkit.api.conversation.Message;
+import dev.kommunicate.devkit.api.conversation.Message;
 
 public interface KmPluginEventListener {
     void onPluginLaunch();

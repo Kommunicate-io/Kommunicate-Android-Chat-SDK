@@ -1,6 +1,6 @@
 package io.kommunicate;
 
-import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
+import dev.kommunicate.devkit.feed.ChannelFeedApiResponse;
 
 /**
  * Created by ashish on 08/03/18.

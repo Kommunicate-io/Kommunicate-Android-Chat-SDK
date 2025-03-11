@@ -3,12 +3,9 @@ package io.kommunicate.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.json.GsonUtils;
+import dev.kommunicate.commons.ApplozicService;
 
 import java.util.Set;
-
-import io.kommunicate.KmConversationBuilder;
 
 public class KmDefaultSettingPreference {
 

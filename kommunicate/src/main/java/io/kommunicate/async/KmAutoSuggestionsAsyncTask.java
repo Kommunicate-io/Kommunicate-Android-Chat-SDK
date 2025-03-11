@@ -3,7 +3,7 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicommons.json.GsonUtils;
+import dev.kommunicate.commons.json.GsonUtils;
 
 import java.util.List;
 

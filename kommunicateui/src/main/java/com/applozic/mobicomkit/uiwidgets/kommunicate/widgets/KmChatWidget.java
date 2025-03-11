@@ -20,14 +20,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.attachment.FileClientService;
-import com.applozic.mobicomkit.broadcast.AlEventManager;
+import dev.kommunicate.devkit.Applozic;
+import dev.kommunicate.devkit.api.account.register.RegistrationResponse;
+import dev.kommunicate.devkit.api.attachment.FileClientService;
+import dev.kommunicate.devkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.commons.image.ImageLoader;
-import com.applozic.mobicommons.commons.image.ImageUtils;
+import dev.kommunicate.commons.commons.core.utils.Utils;
+import dev.kommunicate.commons.commons.image.ImageLoader;
+import dev.kommunicate.commons.commons.image.ImageUtils;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;

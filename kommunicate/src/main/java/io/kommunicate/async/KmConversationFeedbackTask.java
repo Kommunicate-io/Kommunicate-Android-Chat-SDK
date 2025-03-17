@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;

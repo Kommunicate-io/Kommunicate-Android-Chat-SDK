@@ -1,10 +1,10 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import dev.kommunicate.devkit.api.MobiComKitClientService
-import dev.kommunicate.devkit.api.account.register.RegisterUserClientService
-import dev.kommunicate.devkit.api.account.user.MobiComUserPreference
-import dev.kommunicate.devkit.listners.AlCallback
+import io.kommunicate.devkit.api.MobiComKitClientService
+import io.kommunicate.devkit.api.account.register.RegisterUserClientService
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference
+import io.kommunicate.devkit.listners.AlCallback
 import io.kommunicate.callbacks.KmCallback
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor

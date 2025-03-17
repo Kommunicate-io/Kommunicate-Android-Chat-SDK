@@ -1,6 +1,6 @@
 package io.kommunicate;
 
-import dev.kommunicate.devkit.api.people.ChannelInfo;
+import io.kommunicate.devkit.api.people.ChannelInfo;
 
 import java.util.List;
 

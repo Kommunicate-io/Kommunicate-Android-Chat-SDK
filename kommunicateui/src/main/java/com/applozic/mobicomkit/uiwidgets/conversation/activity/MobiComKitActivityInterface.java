@@ -2,7 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
 import android.content.Intent;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
 
 /**

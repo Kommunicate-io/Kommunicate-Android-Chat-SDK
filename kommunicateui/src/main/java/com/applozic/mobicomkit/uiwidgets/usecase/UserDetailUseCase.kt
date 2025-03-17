@@ -7,10 +7,10 @@ import io.kommunicate.utils.onFailure
 import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import dev.kommunicate.devkit.api.account.user.UserService
-import dev.kommunicate.devkit.contact.AppContactService
+import io.kommunicate.devkit.api.account.user.UserService
+import io.kommunicate.devkit.contact.AppContactService
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment
-import dev.kommunicate.commons.people.contact.Contact
+import io.kommunicate.commons.people.contact.Contact
 import io.kommunicate.models.SessionCache
 import io.kommunicate.usecase.UseCase
 

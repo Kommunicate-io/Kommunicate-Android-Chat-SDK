@@ -1,6 +1,6 @@
 package io.kommunicate;
 
-import dev.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.ApplozicException;
 
 /**
  * Created by ashish on 07/05/18.

@@ -2,8 +2,8 @@ package io.kommunicate.database
 
 import android.content.Context
 import android.database.Cursor
-import dev.kommunicate.devkit.api.MobiComKitClientService
-import dev.kommunicate.commons.ApplozicService
+import io.kommunicate.devkit.api.MobiComKitClientService
+import io.kommunicate.commons.ApplozicService
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteException
 

@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
@@ -17,7 +17,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRic
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRMActionModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.DimensionsUtils;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.json.GsonUtils;
 
 import java.util.Arrays;
 import java.util.List;

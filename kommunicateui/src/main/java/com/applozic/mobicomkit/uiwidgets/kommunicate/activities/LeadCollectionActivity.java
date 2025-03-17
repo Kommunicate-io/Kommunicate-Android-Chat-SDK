@@ -25,9 +25,9 @@ import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import dev.kommunicate.commons.ApplozicService;
-import dev.kommunicate.commons.file.FileUtils;
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.json.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

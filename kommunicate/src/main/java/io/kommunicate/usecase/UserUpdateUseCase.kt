@@ -1,10 +1,10 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import dev.kommunicate.devkit.api.account.user.User
-import dev.kommunicate.devkit.api.account.user.UserService
-import dev.kommunicate.devkit.feed.ApiResponse
-import dev.kommunicate.devkit.listners.AlCallback
+import io.kommunicate.devkit.api.account.user.User
+import io.kommunicate.devkit.api.account.user.UserService
+import io.kommunicate.devkit.feed.ApiResponse
+import io.kommunicate.devkit.listners.AlCallback
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure

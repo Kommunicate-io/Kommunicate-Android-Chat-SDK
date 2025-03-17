@@ -1,6 +1,6 @@
 package io.kommunicate.callbacks;
 
-import dev.kommunicate.devkit.feed.ErrorResponseFeed;
+import io.kommunicate.devkit.feed.ErrorResponseFeed;
 
 import java.util.List;
 

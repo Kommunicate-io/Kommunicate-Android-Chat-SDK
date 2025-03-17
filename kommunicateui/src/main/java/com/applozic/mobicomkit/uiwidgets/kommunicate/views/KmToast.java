@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import dev.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.commons.core.utils.Utils;
 
 import io.kommunicate.utils.KmUtils;
 

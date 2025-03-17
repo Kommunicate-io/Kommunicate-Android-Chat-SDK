@@ -5,9 +5,9 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import dev.kommunicate.devkit.api.attachment.FileClientService;
+import io.kommunicate.devkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
-import dev.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.file.FileUtils;
 
 import java.io.File;
 

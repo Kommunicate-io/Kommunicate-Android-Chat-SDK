@@ -24,8 +24,8 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
-import dev.kommunicate.commons.file.FileUtils;
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.json.GsonUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

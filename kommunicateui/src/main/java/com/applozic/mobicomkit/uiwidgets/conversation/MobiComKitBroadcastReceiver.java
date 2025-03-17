@@ -7,18 +7,18 @@ import androidx.fragment.app.FragmentActivity;
 import io.kommunicate.utils.KmConstants;
 
 import android.text.TextUtils;
-import dev.kommunicate.devkit.ApplozicClient;
-import dev.kommunicate.devkit.api.MobiComKitConstants;
-import dev.kommunicate.devkit.api.conversation.Message;
-import dev.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
-import dev.kommunicate.devkit.broadcast.BroadcastService;
-import dev.kommunicate.devkit.contact.AppContactService;
-import dev.kommunicate.devkit.contact.BaseContactService;
+import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.api.MobiComKitConstants;
+import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
+import io.kommunicate.devkit.broadcast.BroadcastService;
+import io.kommunicate.devkit.contact.AppContactService;
+import io.kommunicate.devkit.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
-import dev.kommunicate.commons.commons.core.utils.Utils;
-import dev.kommunicate.commons.json.GsonUtils;
-import dev.kommunicate.commons.people.contact.Contact;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.contact.Contact;
 
 /**
  * Created by devashish on 4/2/15.

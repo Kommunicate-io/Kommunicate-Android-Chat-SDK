@@ -15,9 +15,9 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import dev.kommunicate.commons.ApplozicService;
-import dev.kommunicate.commons.commons.core.utils.Utils;
-import dev.kommunicate.commons.json.JsonMarker;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.json.JsonMarker;
 
 public class KmCustomDialog {
 

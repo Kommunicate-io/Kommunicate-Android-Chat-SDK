@@ -5,7 +5,7 @@ import android.widget.LinearLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmCardRMAdapter;

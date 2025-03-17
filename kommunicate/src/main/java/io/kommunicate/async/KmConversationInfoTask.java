@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import dev.kommunicate.devkit.channel.service.ChannelService;
-import dev.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.commons.people.channel.Channel;
 
 import java.lang.ref.WeakReference;
 

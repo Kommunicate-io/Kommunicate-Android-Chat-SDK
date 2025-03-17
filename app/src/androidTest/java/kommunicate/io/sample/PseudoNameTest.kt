@@ -7,7 +7,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import dev.kommunicate.devkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
 import io.kommunicate.Kommunicate
 import io.kommunicate.callbacks.KMLoginHandler
 import okhttp3.RequestBody.Companion.toRequestBody

@@ -15,14 +15,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmRichMessage;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
 import java.util.Arrays;

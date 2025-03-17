@@ -1,9 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.utils
 
 import android.content.Context
-import dev.kommunicate.devkit.api.account.user.MobiComUserPreference
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference
 import com.applozic.mobicomkit.uiwidgets.BuildConfig
-import dev.kommunicate.commons.data.AlPrefSettings
+import io.kommunicate.commons.data.AlPrefSettings
 import io.kommunicate.utils.KmUtils
 import io.sentry.Scope
 import io.sentry.Sentry

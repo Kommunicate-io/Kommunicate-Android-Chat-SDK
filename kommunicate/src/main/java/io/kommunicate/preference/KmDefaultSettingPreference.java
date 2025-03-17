@@ -3,7 +3,7 @@ package io.kommunicate.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import dev.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.ApplozicService;
 
 import java.util.Set;
 

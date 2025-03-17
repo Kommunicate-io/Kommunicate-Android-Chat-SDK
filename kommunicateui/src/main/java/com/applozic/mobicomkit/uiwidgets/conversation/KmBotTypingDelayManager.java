@@ -3,7 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 
 import io.kommunicate.utils.KmAppSettingPreferences;
 

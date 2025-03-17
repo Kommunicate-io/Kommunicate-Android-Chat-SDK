@@ -3,11 +3,11 @@ package com.applozic.mobicomkit.uiwidgets.kommunicate.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmSpeechToTextModel;
-import dev.kommunicate.commons.ApplozicService;
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;

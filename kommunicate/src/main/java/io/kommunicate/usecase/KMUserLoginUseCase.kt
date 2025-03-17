@@ -2,10 +2,10 @@ package io.kommunicate.usecase
 
 import android.content.Context
 import android.os.ResultReceiver
-import dev.kommunicate.devkit.Applozic
-import dev.kommunicate.devkit.api.account.register.RegisterUserClientService
-import dev.kommunicate.devkit.api.account.register.RegistrationResponse
-import dev.kommunicate.devkit.listners.AlLoginHandler
+import io.kommunicate.devkit.Applozic
+import io.kommunicate.devkit.api.account.register.RegisterUserClientService
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.listners.AlLoginHandler
 import io.kommunicate.services.KmUserClientService
 import io.kommunicate.users.KMUser
 import io.kommunicate.utils.APIResult

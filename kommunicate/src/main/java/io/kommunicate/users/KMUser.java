@@ -2,10 +2,10 @@ package io.kommunicate.users;
 
 import android.content.Context;
 
-import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import dev.kommunicate.devkit.api.account.user.User;
-import dev.kommunicate.devkit.contact.AppContactService;
-import dev.kommunicate.commons.people.contact.Contact;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.api.account.user.User;
+import io.kommunicate.devkit.contact.AppContactService;
+import io.kommunicate.commons.people.contact.Contact;
 
 /**
  * Created by ashish on 23/01/18.

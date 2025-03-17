@@ -2,7 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks;
 
 import android.content.Context;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 
 import java.util.Map;
 

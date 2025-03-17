@@ -20,13 +20,13 @@ import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.json.GsonUtils;
 
 
 import java.util.Arrays;

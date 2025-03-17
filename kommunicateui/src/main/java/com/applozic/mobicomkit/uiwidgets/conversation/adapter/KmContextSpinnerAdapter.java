@@ -13,12 +13,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.uiwidgets.R;
-import dev.kommunicate.devkit.api.attachment.FileClientService;
-import dev.kommunicate.devkit.feed.TopicDetail;
-import dev.kommunicate.commons.commons.image.ImageLoader;
-import dev.kommunicate.commons.commons.image.ImageUtils;
-import dev.kommunicate.commons.json.GsonUtils;
-import dev.kommunicate.commons.people.channel.Conversation;
+import io.kommunicate.devkit.api.attachment.FileClientService;
+import io.kommunicate.devkit.feed.TopicDetail;
+import io.kommunicate.commons.commons.image.ImageLoader;
+import io.kommunicate.commons.commons.image.ImageUtils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Conversation;
 
 import java.util.List;
 

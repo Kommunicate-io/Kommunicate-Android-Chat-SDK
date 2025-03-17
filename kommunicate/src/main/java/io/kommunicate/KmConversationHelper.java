@@ -12,18 +12,18 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import dev.kommunicate.devkit.Applozic;
-import dev.kommunicate.devkit.ApplozicClient;
-import dev.kommunicate.devkit.api.MobiComKitClientService;
-import dev.kommunicate.devkit.api.account.register.RegistrationResponse;
-import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import dev.kommunicate.devkit.api.conversation.ApplozicConversation;
-import dev.kommunicate.devkit.api.conversation.Message;
-import dev.kommunicate.devkit.api.people.ChannelInfo;
-import dev.kommunicate.commons.commons.core.utils.Utils;
-import dev.kommunicate.commons.data.AlPrefSettings;
-import dev.kommunicate.commons.json.GsonUtils;
-import dev.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.api.MobiComKitClientService;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.api.conversation.ApplozicConversation;
+import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.people.ChannelInfo;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.data.AlPrefSettings;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Channel;
 
 import java.util.ArrayList;
 import java.util.Collections;

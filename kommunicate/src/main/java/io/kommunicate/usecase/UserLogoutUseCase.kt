@@ -1,7 +1,7 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import dev.kommunicate.devkit.listners.AlLogoutHandler
+import io.kommunicate.devkit.listners.AlLogoutHandler
 import io.kommunicate.services.KmUserClientService
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor

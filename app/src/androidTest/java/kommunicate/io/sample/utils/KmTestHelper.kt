@@ -3,7 +3,7 @@ package kommunicate.io.sample.utils
 import android.content.Context
 import android.widget.ImageView
 import androidx.test.core.app.ActivityScenario
-import dev.kommunicate.devkit.api.conversation.Message
+import io.kommunicate.devkit.api.conversation.Message
 import com.bumptech.glide.Glide
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject

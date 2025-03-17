@@ -1,10 +1,10 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import dev.kommunicate.devkit.api.account.user.UserService
-import dev.kommunicate.devkit.feed.ApiResponse
-import dev.kommunicate.devkit.feed.ErrorResponseFeed
-import dev.kommunicate.commons.json.GsonUtils
+import io.kommunicate.devkit.api.account.user.UserService
+import io.kommunicate.devkit.feed.ApiResponse
+import io.kommunicate.devkit.feed.ErrorResponseFeed
+import io.kommunicate.commons.json.GsonUtils
 import io.kommunicate.R
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult

@@ -1,8 +1,8 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import dev.kommunicate.devkit.api.conversation.MessageIntentService
-import dev.kommunicate.devkit.api.conversation.MobiComMessageService
+import io.kommunicate.devkit.api.conversation.MessageIntentService
+import io.kommunicate.devkit.api.conversation.MobiComMessageService
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor

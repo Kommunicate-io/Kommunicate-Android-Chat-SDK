@@ -3,11 +3,11 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.ResultReceiver;
 
-import dev.kommunicate.devkit.api.account.register.RegisterUserClientService;
-import dev.kommunicate.devkit.api.account.register.RegistrationResponse;
-import dev.kommunicate.devkit.api.account.user.UserClientService;
-import dev.kommunicate.devkit.api.account.user.UserLoginTask;
-import dev.kommunicate.devkit.listners.AlLoginHandler;
+import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.api.account.user.UserClientService;
+import io.kommunicate.devkit.api.account.user.UserLoginTask;
+import io.kommunicate.devkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
 

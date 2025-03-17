@@ -2,9 +2,9 @@ package io.kommunicate.async;
 
 import android.content.Context;
 
-import dev.kommunicate.devkit.channel.service.ChannelService;
-import dev.kommunicate.devkit.feed.GroupInfoUpdate;
-import dev.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.feed.GroupInfoUpdate;
+import io.kommunicate.commons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 

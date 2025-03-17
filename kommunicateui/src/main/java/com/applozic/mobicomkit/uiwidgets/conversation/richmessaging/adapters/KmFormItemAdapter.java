@@ -47,7 +47,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmRadi
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmSelectButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import dev.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.commons.core.utils.Utils;
 
 import java.util.Calendar;
 import java.util.HashMap;

@@ -9,13 +9,13 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
 
-import dev.kommunicate.devkit.Applozic;
-import dev.kommunicate.devkit.api.account.register.RegistrationResponse;
-import dev.kommunicate.devkit.api.account.user.User;
-import dev.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.api.account.user.User;
+import io.kommunicate.devkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import dev.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.commons.core.utils.Utils;
 
 import java.util.List;
 

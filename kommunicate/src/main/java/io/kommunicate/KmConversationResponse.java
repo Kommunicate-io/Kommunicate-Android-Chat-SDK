@@ -1,6 +1,6 @@
 package io.kommunicate;
 
-import dev.kommunicate.devkit.feed.ChannelFeedApiResponse;
+import io.kommunicate.devkit.feed.ChannelFeedApiResponse;
 
 /**
  * Created by ashish on 08/03/18.

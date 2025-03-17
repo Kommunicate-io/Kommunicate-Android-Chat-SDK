@@ -1,6 +1,6 @@
 package io.kommunicate.callbacks;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 
 public interface KmPluginEventListener {
     void onPluginLaunch();

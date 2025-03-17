@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import dev.kommunicate.devkit.api.conversation.Message;
-import dev.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
@@ -24,9 +24,9 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmAutoSuggestionAdapter;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import dev.kommunicate.commons.ApplozicService;
-import dev.kommunicate.commons.commons.core.utils.Utils;
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

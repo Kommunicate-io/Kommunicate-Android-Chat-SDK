@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import dev.kommunicate.devkit.api.account.user.User;
-import dev.kommunicate.devkit.contact.BaseContactService;
-import dev.kommunicate.commons.ApplozicService;
-import dev.kommunicate.commons.people.channel.Channel;
-import dev.kommunicate.commons.people.contact.Contact;
+import io.kommunicate.devkit.api.account.user.User;
+import io.kommunicate.devkit.contact.BaseContactService;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.contact.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

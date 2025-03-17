@@ -3,10 +3,10 @@ package io.kommunicate.services;
 import android.content.Context;
 import android.text.TextUtils;
 
-import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import dev.kommunicate.commons.ApplozicService;
-import dev.kommunicate.commons.commons.core.utils.Utils;
-import dev.kommunicate.commons.encryption.EncryptionUtils;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.encryption.EncryptionUtils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

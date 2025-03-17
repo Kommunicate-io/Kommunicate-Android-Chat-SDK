@@ -6,11 +6,11 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import dev.kommunicate.devkit.ApplozicClient;
-import dev.kommunicate.devkit.feed.GroupInfoUpdate;
-import dev.kommunicate.commons.commons.core.utils.Utils;
-import dev.kommunicate.commons.json.GsonUtils;
-import dev.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.feed.GroupInfoUpdate;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Channel;
 
 import java.util.HashMap;
 import java.util.HashSet;

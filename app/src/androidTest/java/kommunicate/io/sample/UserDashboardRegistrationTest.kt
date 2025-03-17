@@ -3,7 +3,7 @@ package kommunicate.io.sample
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import dev.kommunicate.devkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
 import io.kommunicate.Kommunicate
 import io.kommunicate.callbacks.KMLoginHandler
 import io.kommunicate.users.KMUser

@@ -1,7 +1,7 @@
 
 package io.kommunicate.feeds;
 
-import dev.kommunicate.devkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

@@ -1,8 +1,8 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import dev.kommunicate.devkit.channel.service.ChannelService
-import dev.kommunicate.devkit.feed.GroupInfoUpdate
+import io.kommunicate.devkit.channel.service.ChannelService
+import io.kommunicate.devkit.feed.GroupInfoUpdate
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor

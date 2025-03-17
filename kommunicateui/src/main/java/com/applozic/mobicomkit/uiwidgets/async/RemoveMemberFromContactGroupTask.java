@@ -3,8 +3,8 @@ package com.applozic.mobicomkit.uiwidgets.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import dev.kommunicate.devkit.channel.service.ChannelService;
-import dev.kommunicate.devkit.feed.ApiResponse;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.feed.ApiResponse;
 
 import java.lang.ref.WeakReference;
 

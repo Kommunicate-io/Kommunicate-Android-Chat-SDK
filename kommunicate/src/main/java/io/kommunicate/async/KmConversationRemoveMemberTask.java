@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import dev.kommunicate.devkit.api.MobiComKitConstants;
-import dev.kommunicate.devkit.channel.service.ChannelService;
-import dev.kommunicate.commons.ApplozicService;
+import io.kommunicate.devkit.api.MobiComKitConstants;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.commons.ApplozicService;
 
 import java.lang.ref.WeakReference;
 

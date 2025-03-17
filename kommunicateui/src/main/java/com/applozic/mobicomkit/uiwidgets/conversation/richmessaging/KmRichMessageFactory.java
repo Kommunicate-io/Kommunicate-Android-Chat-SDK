@@ -3,7 +3,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 import android.content.Context;
 import android.widget.LinearLayout;
 
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;

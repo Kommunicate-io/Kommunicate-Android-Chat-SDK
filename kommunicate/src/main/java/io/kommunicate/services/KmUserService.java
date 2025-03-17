@@ -3,14 +3,14 @@ package io.kommunicate.services;
 import android.content.Context;
 import android.text.TextUtils;
 
-import dev.kommunicate.devkit.api.account.user.UserDetail;
-import dev.kommunicate.devkit.channel.service.ChannelService;
-import dev.kommunicate.devkit.contact.AppContactService;
-import dev.kommunicate.devkit.contact.BaseContactService;
-import dev.kommunicate.devkit.feed.ApiResponse;
-import dev.kommunicate.devkit.feed.ChannelFeed;
-import dev.kommunicate.devkit.feed.ChannelFeedApiResponse;
-import dev.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.devkit.api.account.user.UserDetail;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.contact.AppContactService;
+import io.kommunicate.devkit.contact.BaseContactService;
+import io.kommunicate.devkit.feed.ApiResponse;
+import io.kommunicate.devkit.feed.ChannelFeed;
+import io.kommunicate.devkit.feed.ChannelFeedApiResponse;
+import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;

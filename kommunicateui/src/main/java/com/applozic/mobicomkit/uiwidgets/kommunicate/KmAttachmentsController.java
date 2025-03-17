@@ -7,16 +7,16 @@ import android.os.AsyncTask;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
 
-import dev.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import dev.kommunicate.devkit.api.attachment.FileClientService;
-import dev.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.api.attachment.FileClientService;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KommunicateSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.async.FileTaskAsync;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.callbacks.PrePostUIMethods;
-import dev.kommunicate.commons.commons.core.utils.Utils;
-import dev.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.file.FileUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

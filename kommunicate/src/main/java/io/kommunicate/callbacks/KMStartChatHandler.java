@@ -2,7 +2,7 @@ package io.kommunicate.callbacks;
 
 import android.content.Context;
 
-import dev.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.channel.Channel;
 
 /**
  * Created by ashish on 23/01/18.

@@ -1,9 +1,9 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import dev.kommunicate.devkit.api.people.ChannelInfo
-import dev.kommunicate.devkit.channel.service.ChannelService
-import dev.kommunicate.devkit.feed.ChannelFeedApiResponse
+import io.kommunicate.devkit.api.people.ChannelInfo
+import io.kommunicate.devkit.channel.service.ChannelService
+import io.kommunicate.devkit.feed.ChannelFeedApiResponse
 import io.kommunicate.callbacks.KMStartChatHandler
 import io.kommunicate.callbacks.KmStartConversationHandler
 import io.kommunicate.utils.APIResult

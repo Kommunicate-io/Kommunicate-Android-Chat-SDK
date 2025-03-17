@@ -3,9 +3,9 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import dev.kommunicate.devkit.api.people.ChannelInfo;
-import dev.kommunicate.devkit.channel.service.ChannelService;
-import dev.kommunicate.devkit.feed.ChannelFeedApiResponse;
+import io.kommunicate.devkit.api.people.ChannelInfo;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.feed.ChannelFeedApiResponse;
 
 import java.lang.ref.WeakReference;
 

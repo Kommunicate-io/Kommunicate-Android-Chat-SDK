@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
-import dev.kommunicate.commons.commons.image.ImageUtils;
-import dev.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.commons.image.ImageUtils;
+import io.kommunicate.commons.file.FileUtils;
 
 import java.util.ArrayList;
 

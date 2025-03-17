@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
 
-import dev.kommunicate.devkit.api.attachment.FileClientService;
+import io.kommunicate.devkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.KmAudioSampler;
-import dev.kommunicate.commons.commons.core.utils.PermissionsUtils;
-import dev.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
+import io.kommunicate.commons.commons.core.utils.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

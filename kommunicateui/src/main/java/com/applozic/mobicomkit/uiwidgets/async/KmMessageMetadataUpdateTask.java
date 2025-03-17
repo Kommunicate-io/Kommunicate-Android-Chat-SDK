@@ -3,10 +3,10 @@ package com.applozic.mobicomkit.uiwidgets.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import dev.kommunicate.devkit.api.conversation.MessageIntentService;
-import dev.kommunicate.devkit.api.conversation.MobiComMessageService;
-import dev.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
-import dev.kommunicate.devkit.feed.ApiResponse;
+import io.kommunicate.devkit.api.conversation.MessageIntentService;
+import io.kommunicate.devkit.api.conversation.MobiComMessageService;
+import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
+import io.kommunicate.devkit.feed.ApiResponse;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;

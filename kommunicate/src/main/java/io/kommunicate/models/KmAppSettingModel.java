@@ -1,6 +1,6 @@
 package io.kommunicate.models;
 
-import dev.kommunicate.commons.json.JsonMarker;
+import io.kommunicate.commons.json.JsonMarker;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;

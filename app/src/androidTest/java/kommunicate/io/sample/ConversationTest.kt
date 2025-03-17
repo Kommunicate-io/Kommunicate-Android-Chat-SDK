@@ -274,7 +274,7 @@ class ConversationTest {
         val tempUser = getRandomKmUser()
         var latch = CountDownLatch(1)
         var groupId = 0
-        val botIds = listOf("inline-code-34rpc")
+        val botIds = emptyList<String>()
         val updateBotAssigneeId = "kk-3s8r3"
         val agentIds = listOf("prateek.singh@kommunicate.io", "prateek.singh+fhg@kommunicate.io")
 

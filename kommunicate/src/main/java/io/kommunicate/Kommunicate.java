@@ -19,13 +19,23 @@ import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.notification.MobiComPushReceiver;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
+import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
+
+import io.kommunicate.callbacks.TaskListener;
+import io.kommunicate.usecase.AppSettingUseCase;
+import io.kommunicate.usecase.AwayMessageUseCase;
+import io.kommunicate.usecase.ConversationCreateUseCase;
+import io.kommunicate.usecase.ConversationInfoUseCase;
+import io.kommunicate.usecase.FAQType;
+import io.kommunicate.usecase.FaqUseCase;
+import io.kommunicate.usecase.HelpDocsKeyUseCase;
+import io.kommunicate.usecase.KMUserLoginUseCase;
 import com.applozic.mobicommons.ALSpecificSettings;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -47,13 +57,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.kommunicate.async.GetUserListAsyncTask;
-import io.kommunicate.async.KMFaqTask;
-import io.kommunicate.async.KMHelpDocsKeyTask;
-import io.kommunicate.async.KmAppSettingTask;
-import io.kommunicate.async.KmAwayMessageTask;
-import io.kommunicate.async.KmConversationCreateTask;
-import io.kommunicate.async.KmConversationInfoTask;
-import io.kommunicate.async.KmUserLoginTask;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KMGetContactsHandler;
 import io.kommunicate.callbacks.KMLogoutHandler;
@@ -61,7 +64,6 @@ import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmChatWidgetCallback;
-import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmPushNotificationHandler;
@@ -69,6 +71,7 @@ import io.kommunicate.database.KmDatabaseHelper;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 import io.kommunicate.preference.KmPreference;
+import io.kommunicate.usecase.PushNotificationUseCase;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
@@ -217,7 +220,7 @@ public class Kommunicate {
             kmUser.setSkipDeletedGroups(true);
         }
 
-        new KmUserLoginTask(kmUser, false, handler, context, prechatReceiver).execute();
+        KMUserLoginUseCase.Companion.executeWithExecutor(context, kmUser, false, prechatReceiver, handler);
     }
 
     /**
@@ -270,9 +273,23 @@ public class Kommunicate {
     }
 
     public static void loginAsVisitor(@NotNull Context context, @NotNull User.Platform platform, KMLoginHandler handler) {
-        KMUser user = getVisitor();
-        user.setPlatform(platform.getValue());
-        login(context, user, handler);
+        getVisitor(new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                KMUser user = (KMUser) message;
+                user.setPlatform(platform.getValue());
+                login(context, user, handler);
+            }
+
+            @Override
+            public void onFailure(Object error) {
+                handler.onFailure(null, new ApplozicException("unable to create user."));
+            }
+        });
+    }
+
+    public static void setInAppNotification(boolean isEnable) {
+        KmAppSettingPreferences.setInAppNotificationEnable(isEnable);
     }
 
     /**
@@ -282,8 +299,30 @@ public class Kommunicate {
      * @param progressDialog progress dialog if needed otherwise can pass null
      * @param callback       the callback to update status
      */
+    public static void launchConversationWithPreChat(
+            final Context context,
+            final ProgressDialog progressDialog,
+            final KmCallback callback
+    ) throws KmException  {
+        KmConversationBuilder kmConversationBuilder = new KmConversationBuilder(context);
+        kmConversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
+        launchConversationWithPreChat(context, progressDialog, callback, kmConversationBuilder);
+    }
 
-    public static void launchConversationWithPreChat(final Context context, final ProgressDialog progressDialog, final KmCallback callback) throws KmException  {
+    /**
+     * To Check the Login status & launch the Pre Chat Lead Collection Screen
+     *
+     * @param context        the context
+     * @param progressDialog progress dialog if needed otherwise can pass null
+     * @param callback       the callback to update status
+     * @param kmConversationBuilder Sets the properties to conversation.
+     */
+    public static void launchConversationWithPreChat(
+            final Context context,
+            final ProgressDialog progressDialog,
+            final KmCallback callback,
+            final KmConversationBuilder kmConversationBuilder
+    ) throws KmException  {
         if (!(context instanceof Activity)) {
             throw new KmException("This method needs Activity context");
         }
@@ -293,81 +332,109 @@ public class Kommunicate {
             return;
         }
 
-        final KMUser kmUser = getVisitor();
         configureSentryWithKommunicate(context);
-        if (isLoggedIn(context)) {
-            String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
-            if (loggedInUserId.equals(kmUser.getUserId())) {
-                launchChatDirectly(context, callback);
-            } else {
-                logout(context, new KMLogoutHandler() {
-                    @Override
-                    public void onSuccess(Context context) {
-                        loginUserWithKmCallBack(context, kmUser, callback);
-                    }
+        Kommunicate.getVisitor(new KmCallback() {
+            @Override
+            public void onSuccess(Object message) {
+                final KMUser kmUser = (KMUser) message;
 
-                    @Override
-                    public void onFailure(Exception exception) {
-                        callback.onFailure(exception);
+                if (isLoggedIn(context)) {
+                    String loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
+
+                    if (loggedInUserId.equals(kmUser.getUserId())) {
+                        launchChatDirectly(context, callback, kmConversationBuilder);
+                    } else {
+                        logout(context, new KMLogoutHandler() {
+                            @Override
+                            public void onSuccess(Context context) {
+                                loginUserWithKmCallBack(context, kmUser, callback, kmConversationBuilder);
+                            }
+
+                            @Override
+                            public void onFailure(Exception exception) {
+                                callback.onFailure(exception);
+                            }
+                        });
                     }
-                });
+                } else {
+                    checkForLeadCollection(context, progressDialog, kmUser, callback, kmConversationBuilder);
+                }
             }
-        } else {
-            checkForLeadCollection(context, progressDialog, kmUser, callback);
-        }
 
+            @Override
+            public void onFailure(Object error) {
+                if (callback != null) {
+                    callback.onFailure(error);
+                }
+            }
+        });
     }
 
     /**
      * To Check Lead Collection enabled or not by fetching the appsetting.
      *
-     * @param context        the context
-     * @param progressDialog the progressDialog if needed otherwise can pass null
-     * @param kmUser         Randomly created KMUser Object for registration if lead collection is disabled
-     * @param callback       callback to update the status
+     * @param context               the context
+     * @param progressDialog        the progressDialog if needed otherwise can pass null
+     * @param kmUser                Randomly created KMUser Object for registration if lead collection is disabled
+     * @param callback              callback to update the status
+     * @param kmConversationBuilder Sets the properties to conversation.
      */
-    public static void checkForLeadCollection(final Context context, final ProgressDialog progressDialog, final KMUser kmUser, final KmCallback callback) {
-        new KmAppSettingTask(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
+    public static void checkForLeadCollection(final Context context, final ProgressDialog progressDialog, final KMUser kmUser, final KmCallback callback, KmConversationBuilder kmConversationBuilder) {
+        AppSettingUseCase.executeWithExecutor(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
                 if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
                     if (appSettingModel.getResponse().isCollectLead() && appSettingModel.getResponse().getLeadCollection() != null) {
                         Utils.printLog(context, TAG, "Lead Collection is enabled..Launching Lead Collection");
-                        loginLeadUserAndOpenChat(context, appSettingModel, progressDialog, callback);
+                        loginLeadUserAndOpenChat(context, appSettingModel, progressDialog, callback, kmConversationBuilder);
                     } else {
                         Utils.printLog(context, TAG, "Lead Collection is Disabled..Launching Random Login");
-                        loginUserWithKmCallBack(context, kmUser, callback);
+                        loginUserWithKmCallBack(context, kmUser, callback, kmConversationBuilder);
                     }
                 } else {
                     Utils.printLog(context, TAG, "Failed to fetch App setting..Launching Random Login");
-                    loginUserWithKmCallBack(context, kmUser, callback);
+                    loginUserWithKmCallBack(context, kmUser, callback, kmConversationBuilder);
                 }
             }
 
             @Override
             public void onFailure(Object error) {
                 Utils.printLog(context, TAG, "Failed to fetch AppSetting");
-                loginUserWithKmCallBack(context, kmUser, callback);
-
+                loginUserWithKmCallBack(context, kmUser, callback, kmConversationBuilder);
             }
-        }).execute();
+        });
     }
 
     /**
      * To Login the user from Lead Collection Details.
      *
-     * @param context         the context
-     * @param appSettingModel appsetting model to get lead collection screen's input field & Greeting Message
-     * @param progressDialog  progressbar used in previous activities to close the progressbar if coming back from lead collection screeen
-     * @param callback        To update the status.
+     * @param context               the context
+     * @param appSettingModel       appsetting model to get lead collection screen's input field & Greeting Message
+     * @param progressDialog        progressbar used in previous activities to close the progressbar if coming back from lead collection screeen
+     * @param callback              To update the status.
      **/
     public static void loginLeadUserAndOpenChat(final Context context, KmAppSettingModel appSettingModel, ProgressDialog progressDialog, final KmCallback callback) {
+        KmConversationBuilder kmConversationBuilder = new KmConversationBuilder(context);
+        kmConversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
+        loginLeadUserAndOpenChat(context, appSettingModel, progressDialog, callback, kmConversationBuilder);
+    }
+
+    /**
+     * To Login the user from Lead Collection Details.
+     *
+     * @param context               the context
+     * @param appSettingModel       appsetting model to get lead collection screen's input field & Greeting Message
+     * @param progressDialog        progressbar used in previous activities to close the progressbar if coming back from lead collection screeen
+     * @param callback              To update the status.
+     * @param kmConversationBuilder Sets the properties to conversation.
+     **/
+    public static void loginLeadUserAndOpenChat(final Context context, KmAppSettingModel appSettingModel, ProgressDialog progressDialog, final KmCallback callback, KmConversationBuilder kmConversationBuilder) {
         try {
             launchLeadCollection(context, progressDialog, appSettingModel.getResponse().getLeadCollection(), appSettingModel.getChatWidget().getPreChatGreetingMsg(), new KmPrechatCallback<KMUser>() {
                 @Override
                 public void onReceive(KMUser data, final Context context, ResultReceiver finishActivityReceiver) {
-                    loginUserWithKmCallBack(context, data, callback);
+                    loginUserWithKmCallBack(context, data, callback, kmConversationBuilder);
                     finishActivityReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                 }
 
@@ -390,13 +457,13 @@ public class Kommunicate {
      * @param context  the context
      * @param kmUser   kmUser to log in
      * @param callback to update the status
+     * @param kmConversationBuilder Sets the property to the conversation.
      */
-    public static void loginUserWithKmCallBack(final Context context, KMUser kmUser, final KmCallback callback) {
-
-        new KmUserLoginTask(kmUser, false, new KMLoginHandler() {
+    public static void loginUserWithKmCallBack(final Context context, KMUser kmUser, final KmCallback callback, KmConversationBuilder kmConversationBuilder) {
+        KMLoginHandler handler = new KMLoginHandler() {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, final Context context) {
-                launchChatDirectly(context, callback);
+                launchChatDirectly(context, callback, kmConversationBuilder);
             }
 
             @Override
@@ -404,7 +471,22 @@ public class Kommunicate {
                 Utils.printLog(context, TAG, "Registration Failure" + exception.getMessage());
                 callback.onFailure(exception);
             }
-        }, context, null).execute();
+        };
+
+        KMUserLoginUseCase.Companion.executeWithExecutor(context, kmUser, false, null, handler);
+    }
+
+    /**
+     * To Log in the user with given KmUser object
+     *
+     * @param context  the context
+     * @param kmUser   kmUser to log in
+     * @param callback to update the status
+     */
+    public static void loginUserWithKmCallBack(final Context context, KMUser kmUser, final KmCallback callback) {
+        KmConversationBuilder kmConversationBuilder = new KmConversationBuilder(context);
+        kmConversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
+        loginUserWithKmCallBack(context, kmUser, callback, kmConversationBuilder);
     }
 
     /**
@@ -412,9 +494,9 @@ public class Kommunicate {
      *
      * @param context  the context
      * @param callback callback to update status
+     * @param conversationBuilder Set's the properties to the conversation.
      */
-    public static void launchChatDirectly(final Context context, final KmCallback callback) {
-        KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
+    public static void launchChatDirectly(final Context context, final KmCallback callback, KmConversationBuilder conversationBuilder) {
         conversationBuilder.launchAndCreateIfEmpty(new KmCallback() {
             @Override
             public void onSuccess(Object message) {
@@ -429,6 +511,18 @@ public class Kommunicate {
 
             }
         });
+    }
+
+    /**
+     * To launch the chat screen directly if the user is new or user has only one previous conversation.Otherwise widget will open Conversation List Screen.
+     *
+     * @param context  the context
+     * @param callback callback to update status
+     */
+    public static void launchChatDirectly(final Context context, final KmCallback callback) {
+        KmConversationBuilder kmConversationBuilder = new KmConversationBuilder(context);
+        kmConversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
+        launchChatDirectly(context, callback, kmConversationBuilder);
     }
 
 
@@ -642,7 +736,7 @@ public class Kommunicate {
                 }
             };
 
-            new KmAppSettingTask(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            AppSettingUseCase.executeWithExecutor(chatBuilder.getContext(), MobiComKitClientService.getApplicationKey(chatBuilder.getContext()), callback);
         } else {
             final String clientChannelKey = !TextUtils.isEmpty(chatBuilder.getClientConversationId()) ? chatBuilder.getClientConversationId() : (chatBuilder.isSingleChat() ? getClientGroupId(MobiComUserPreference.getInstance(chatBuilder.getContext()).getUserId(), chatBuilder.getAgentIds(), chatBuilder.getBotIds()) : null);
             if (!TextUtils.isEmpty(clientChannelKey)) {
@@ -723,21 +817,7 @@ public class Kommunicate {
 
         Utils.printLog(chatBuilder.getContext(), TAG, "ChannelInfo : " + GsonUtils.getJsonFromObject(channelInfo, ChannelInfo.class));
 
-        if (handler == null) {
-            handler = new KMStartChatHandler() {
-                @Override
-                public void onSuccess(Channel channel, Context context) {
-
-                }
-
-                @Override
-                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-
-                }
-            };
-        }
-
-        new KmConversationCreateTask(chatBuilder.getContext(), channelInfo, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationCreateUseCase.executeWithExecutor(chatBuilder.getContext(), channelInfo, null, handler);
     }
 
     public static void fetchAgentList(Context context, int startIndex, int pageSize, int orderBy, KMGetContactsHandler handler) {
@@ -757,22 +837,22 @@ public class Kommunicate {
         new GetUserListAsyncTask(context, roleNameList, startIndex, pageSize, orderBy, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public static void getFaqs(Context context, String type, String helpDocsKey, String data, KmFaqTaskListener listener) {
-        KMFaqTask task = new KMFaqTask(context, helpDocsKey, data, listener);
-        if (GET_ARTICLES.equals(type)) {
-            task.forArticleRequest();
-        } else if (GET_SELECTED_ARTICLES.equals(type)) {
-            task.forSelectedArticles();
-        } else if (GET_ANSWERS.equals(type)) {
-            task.forAnswerRequest();
-        } else if (GET_DASHBOARD_FAQ.equals(type)) {
-            task.forDashboardFaq();
-        }
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public static void getFaqs(Context context, FAQType type, String helpDocsKey, String data, TaskListener<String> listener) {
+        FaqUseCase.executeWithExecutor(
+                context,
+                helpDocsKey,
+                data,
+                type,
+                listener
+        );
     }
 
-    public static void getHelpDocsKey(Context context, String type, KmFaqTaskListener listener) {
-        new KMHelpDocsKeyTask(context, type, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public static void getHelpDocsKey(Context context, String type, TaskListener<String> listener) {
+        HelpDocsKeyUseCase.executeWithExecutor(
+                context,
+                type,
+                listener
+        );
     }
 
     public static boolean isLoggedIn(Context context) {
@@ -789,7 +869,7 @@ public class Kommunicate {
 
         if (!token.equals(getDeviceToken(context)) || !KmPreference.getInstance(context).isFcmRegistrationCallDone()) {
             setDeviceToken(context, token);
-            new PushNotificationTask(context, token, new KmPushNotificationHandler() {
+            PushNotificationUseCase.executeWithExecutor(context, token, new KmPushNotificationHandler() {
                 @Override
                 public void onSuccess(RegistrationResponse registrationResponse) {
                     KmPreference.getInstance(context).setFcmRegistrationCallDone(true);
@@ -804,7 +884,7 @@ public class Kommunicate {
                         listener.onFailure(registrationResponse, exception);
                     }
                 }
-            }).execute();
+            });
         }
     }
 
@@ -836,25 +916,25 @@ public class Kommunicate {
 
     @Deprecated
     private static void startOrGetConversation(final KmChatBuilder chatBuilder, final KMStartChatHandler handler) throws KmException {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (handler != null) {
-                    handler.onSuccess(channel, context);
+                    handler.onSuccess(channel, chatBuilder.getContext());
                 }
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
+            public void onFailure(@NonNull Exception error) {
                 try {
                     createConversation(chatBuilder, handler);
                 } catch (KmException e1) {
-                    handler.onFailure(null, context);
+                    handler.onFailure(error, chatBuilder.getContext());
                 }
             }
         };
 
-        new KmConversationInfoTask(chatBuilder.getContext(), chatBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(chatBuilder.getContext(), null, chatBuilder.getClientConversationId(), conversationInfoCallback);
     }
 
     private static String getClientGroupId(String userId, List<String> agentIds, List<String> botIds) throws KmException {
@@ -903,29 +983,34 @@ public class Kommunicate {
         return sb.toString();
     }
 
-    public static KMUser getVisitor() {
+    public static void getVisitor(KmCallback callback) {
         final KMUser user = new KMUser();
         user.setUserId(generateUserId());
-        new KmAppSettingTask(ApplozicService.getAppContext(),
+        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
+
+        AppSettingUseCase.executeWithExecutor(
+                ApplozicService.getAppContext(),
                 MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
-                        final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
+                        KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
                         if (appSettingModel != null && appSettingModel.getResponse() != null && appSettingModel.getChatWidget() != null) {
-                            if (appSettingModel.getChatWidget().isPseudonymsEnabled() && !TextUtils.isEmpty(appSettingModel.getResponse().getUserName())) {
+                            if (appSettingModel.getChatWidget().isPseudonymsEnabled() &&
+                                    !TextUtils.isEmpty(appSettingModel.getResponse().getUserName())) {
                                 user.setDisplayName(appSettingModel.getResponse().getUserName());
                                 updateMetadataForAnonymousUser(user);
                             }
                         }
+                        callback.onSuccess(user);
                     }
+
                     @Override
                     public void onFailure(Object error) {
-
+                        callback.onFailure(error);
                     }
-                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
-        return user;
+                }
+        );
     }
 
     private static void updateMetadataForAnonymousUser(KMUser user){
@@ -989,7 +1074,7 @@ public class Kommunicate {
     }
 
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
-        new KmAwayMessageTask(context, groupId, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        AwayMessageUseCase.executeWithExecutor(context, groupId, handler);
     }
 
     public static void removeApplicationKey(Context context) {
@@ -1005,10 +1090,10 @@ public class Kommunicate {
     }
 
     public static void isChatWidgetDisabled(final KmChatWidgetCallback callback) {
-        final KmAppSettingModel appSettingModel = new KmAppSettingModel();
-
-        new KmAppSettingTask(ApplozicService.getAppContext(),
+        AppSettingUseCase.executeWithExecutor(
+                ApplozicService.getAppContext(),
                 MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
+                true,
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
@@ -1028,7 +1113,6 @@ public class Kommunicate {
                             callback.onResult(false);
                         }
                     }
-                }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+                });
     }
 }

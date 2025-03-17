@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmFeedback;
@@ -21,6 +22,8 @@ import io.kommunicate.services.KmService;
  * @author shubham
  * @date 25/July/2019
  */
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmConversationFeedbackTask to ConversationFeedbackUseCase")
 public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
 
     private WeakReference<Context> contextWeakReference;
@@ -49,7 +52,7 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
                 }
                 return new KmService(contextWeakReference.get()).getConversationFeedback(conversationId);
             } else {
-                return new KmService(contextWeakReference.get()).postConversationFeedback(kmFeedback, kmFeedbackDetails);
+                return new KmService(contextWeakReference.get()).postConversationFeedback(kmFeedback, null);
             }
         } catch (Exception i) {
             e = i;
@@ -85,6 +88,8 @@ public class KmConversationFeedbackTask extends AsyncTask<Void, Void, String> {
         kmFeedbackCallback.onFailure(contextWeakReference.get(), e, TASK_CANCELLED);
     }
 
+    @Deprecated
+    @CleanUpRequired(reason = "Migrated to FeedbackDetailsData")
     public static class KmFeedbackDetails {
         private String conversationId;
         private String userName;

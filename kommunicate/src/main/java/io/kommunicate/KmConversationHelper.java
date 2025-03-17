@@ -10,7 +10,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
@@ -20,9 +21,7 @@ import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.conversation.ApplozicConversation;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.people.ChannelInfo;
-import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-import com.applozic.mobicomkit.listners.MessageListHandler;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -35,17 +34,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.kommunicate.async.KmAppSettingTask;
-import io.kommunicate.async.KmConversationCreateTask;
-import io.kommunicate.async.KmConversationInfoTask;
 import io.kommunicate.callbacks.KMLoginHandler;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.KmPrechatCallback;
 import io.kommunicate.callbacks.KmStartConversationHandler;
+import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.preference.KmDefaultSettingPreference;
+import io.kommunicate.usecase.AppSettingUseCase;
+import io.kommunicate.usecase.ConversationCreateUseCase;
+import io.kommunicate.usecase.ConversationInfoUseCase;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
@@ -86,49 +86,58 @@ public class KmConversationHelper {
         }
 
         if (conversationId == null) {
-            ApplozicConversation.getLatestMessageList(context, false, new MessageListHandler() {
-                @Override
-                public void onResult(List<Message> messageList, ApplozicException e) {
-                    if (messageList != null) {
-                        if (messageList.size() == 1) {
-                            Message message = messageList.get(0);
-                            if (message.getGroupId() != null && message.getGroupId() != 0) {
-                                KmGetConversationInfoCallback memberListener = new KmGetConversationInfoCallback() {
-                                    @Override
-                                    public void onSuccess(Channel channel, Context context) {
-                                        if (channel != null) {
-                                            openParticularConversation(context, skipConversationList, channel.getKey(), null, callback);
-                                        } else {
-                                            Kommunicate.openConversation(context, callback);
-                                        }
-                                    }
+            ApplozicConversation.getLatestMessageList(
+                    context,
+                    false,
+                    new TaskListener<List<Message>>() {
+                        @Override
+                        public void onSuccess(List<Message> messageList) {
+                            if (messageList != null) {
+                                if (messageList.size() == 1) {
+                                    Message message = messageList.get(0);
+                                    if (message.getGroupId() != null && message.getGroupId() != 0) {
+                                        TaskListener<Channel> memberListener = new TaskListener<Channel>() {
+                                            @Override
+                                            public void onSuccess(Channel channel) {
+                                                if (channel != null) {
+                                                    openParticularConversation(context, skipConversationList, channel.getKey(), null, callback);
+                                                } else {
+                                                    Kommunicate.openConversation(context, callback);
+                                                }
+                                            }
 
-                                    @Override
-                                    public void onFailure(Exception e, Context context) {
+                                            @Override
+                                            public void onFailure(@NonNull Exception error) {
+                                                Kommunicate.openConversation(context, callback);
+                                            }
+                                        };
+                                        ConversationInfoUseCase.executeWithExecutor(context, message.getGroupId(), null, memberListener);
+                                    } else {
                                         Kommunicate.openConversation(context, callback);
                                     }
-                                };
-                                new KmConversationInfoTask(context, message.getGroupId(), memberListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                } else {
+                                    Kommunicate.openConversation(context, callback);
+                                }
                             } else {
                                 Kommunicate.openConversation(context, callback);
                             }
-                        } else {
-                            Kommunicate.openConversation(context, callback);
                         }
-                    } else {
-                        Kommunicate.openConversation(context, callback);
+
+                        @Override
+                        public void onFailure(@NonNull Exception error) {
+                            callback.onFailure(error.getLocalizedMessage());
+                        }
                     }
-                }
-            });
+            );
         } else {
             openParticularConversation(context, skipConversationList, conversationId, null, callback);
         }
     }
 
     private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, String preFilledMessage, KmCallback callback) {
-        KmGetConversationInfoCallback callbackListener = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> callbackListener = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 try {
                     Intent intent = new Intent(context, KmUtils.getClassFromName(KmConstants.CONVERSATION_ACTIVITY_NAME));
                     intent.putExtra(KmConstants.GROUP_ID, conversationId);
@@ -148,12 +157,12 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
-                 callback.onFailure("Invalid Conversation id, Unable to find conversation with given ID.");
+            public void onFailure(@NonNull Exception error) {
+                callback.onFailure("Invalid Conversation id, Unable to find conversation with given ID.");
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, callbackListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(context, conversationId, null, callbackListener);
     }
 
     @Deprecated
@@ -216,17 +225,37 @@ public class KmConversationHelper {
                     }
                 }
             } else {
-                KMUser kmUser;
-
-                if (launchChat.getKmUser() != null) {
-                    kmUser = launchChat.getKmUser();
-                } else if (!TextUtils.isEmpty(launchChat.getUserId())) {
+                KMUser kmUser = launchChat.getKmUser();
+                if (kmUser == null && !TextUtils.isEmpty(launchChat.getUserId())) {
                     kmUser = getKmUser(launchChat);
-                } else {
-                    kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, null, callback), callback));
+                if (kmUser != null) {
+                    Kommunicate.login(
+                            launchChat.getContext(),
+                            kmUser,
+                            getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, null, callback), callback)
+                    );
+                } else {
+                    Kommunicate.getVisitor(new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            KMUser user = (KMUser) message;
+                            Kommunicate.login(
+                                    launchChat.getContext(),
+                                    user,
+                                    getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), true, null, callback), callback)
+                            );
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -293,17 +322,46 @@ public class KmConversationHelper {
                     }
                 }
             } else {
-                KMUser kmUser;
+                KMUser kmUser = launchChat.getKmUser();
 
-                if (launchChat.getKmUser() != null) {
-                    kmUser = launchChat.getKmUser();
-                } else if (!TextUtils.isEmpty(launchChat.getUserId())) {
+                if (kmUser == null && !TextUtils.isEmpty(launchChat.getUserId())) {
                     kmUser = getKmUser(launchChat);
-                } else {
-                    kmUser = Kommunicate.getVisitor();
                 }
 
-                Kommunicate.login(launchChat.getContext(), kmUser, getLoginHandler(launchChat, getStartChatHandler(launchChat.isSkipChatList(), false, null, callback), callback));
+                if (kmUser != null) {
+                    Kommunicate.login(
+                            launchChat.getContext(),
+                            kmUser,
+                            getLoginHandler(
+                                    launchChat,
+                                    getStartChatHandler(launchChat.isSkipChatList(), false, null, callback),
+                                    callback
+                            )
+                    );
+                } else {
+                    Kommunicate.getVisitor(new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            KMUser visitorUser = (KMUser) message;
+                            Kommunicate.login(
+                                    launchChat.getContext(),
+                                    visitorUser,
+                                    getLoginHandler(
+                                            launchChat,
+                                            getStartChatHandler(launchChat.isSkipChatList(), false, null, callback),
+                                            callback
+                                    )
+                            );
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -358,14 +416,14 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+            public void onFailure(Exception exception, Context context) {
                 if (resultReceiver != null) {
                     resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                 }
                 if (callback != null) {
-                    callback.onFailure(channelFeedApiResponse);
+                    callback.onFailure(exception);
                 }
-                Utils.printLog(context, TAG, "Failed to start chat : " + channelFeedApiResponse);
+                Utils.printLog(context, TAG, "Failed to start chat : " + exception);
             }
         };
     }
@@ -421,6 +479,8 @@ public class KmConversationHelper {
             if (defaultSettingPreference.isSkipRouting()) {
                 conversationBuilder.skipConversationRoutingRules(true);
             }
+            // We'll override the existing value while creating the conversation. As, It is internal function which is not executed by SDK user.
+            conversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
             try {
                 startConversation(true, conversationBuilder,
                         getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null, callback));
@@ -454,6 +514,7 @@ public class KmConversationHelper {
             return;
         }
 
+        KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
         if (Kommunicate.isLoggedIn(conversationBuilder.getContext())) {
             try {
                 startConversation(false, conversationBuilder,
@@ -491,22 +552,32 @@ public class KmConversationHelper {
                             }
                             Utils.printLog(conversationBuilder.getContext(), TAG, "Failed to launch conversation with pre-chat: " + error);
                         }
-                    });
+                    }, conversationBuilder);
                 } catch (KmException e) {
                     if (callback != null) {
                         callback.onFailure(e);
                     }
                 }
             } else {
-                KMUser kmUser;
-
                 if (conversationBuilder.getKmUser() != null) {
-                    kmUser = conversationBuilder.getKmUser();
+                    KMUser kmUser = conversationBuilder.getKmUser();
+                    Kommunicate.login(conversationBuilder.getContext(), kmUser, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), null, callback), callback));
                 } else {
-                    kmUser = Kommunicate.getVisitor();
-                }
+                    Kommunicate.getVisitor(new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            KMUser user = (KMUser) message;
+                            Kommunicate.login(conversationBuilder.getContext(), user, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), null, callback), callback));
+                        }
 
-                Kommunicate.login(conversationBuilder.getContext(), kmUser, getLoginHandler(conversationBuilder, getStartConversationHandler(conversationBuilder.isSkipConversationList(), launchConversation, conversationBuilder.getPreFilledMessage(), null, callback), callback));
+                        @Override
+                        public void onFailure(Object error) {
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                        }
+                    });
+                }
             }
         }
     }
@@ -536,21 +607,36 @@ public class KmConversationHelper {
             return;
         }
 
-        ApplozicConversation.getLatestMessageList(conversationBuilder.getContext(), false, new MessageListHandler() {
-            @Override
-            public void onResult(List<Message> messageList, ApplozicException e) {
-                if (e == null) {
-                    if (messageList.isEmpty()) {
-                        conversationBuilder.setSkipConversationList(false);
-                        conversationBuilder.launchConversation(callback);
-                    } else if (messageList.size() == 1) {
-                        openParticularConversation(conversationBuilder.getContext(), false, messageList.get(0).getGroupId(), conversationBuilder.getPreFilledMessage(), callback);
-                    } else {
-                        Kommunicate.openConversation(conversationBuilder.getContext(), callback);
+        KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
+        ApplozicConversation.getLatestMessageList(
+                conversationBuilder.getContext(),
+                false,
+                new TaskListener<List<Message>>() {
+                    @Override
+                    public void onSuccess(List<Message> messageList) {
+                        if (messageList == null) {
+                            if (callback != null) {
+                                callback.onFailure("Message list is null");
+                            }
+                            return;
+                        }
+                        if (messageList.isEmpty()) {
+                            conversationBuilder.setSkipConversationList(false);
+                            conversationBuilder.launchConversation(callback);
+                        } else if (messageList.size() == 1) {
+                            openParticularConversation(conversationBuilder.getContext(), false, messageList.get(0).getGroupId(), conversationBuilder.getPreFilledMessage(), callback);
+                        } else {
+                            Kommunicate.openConversation(conversationBuilder.getContext(), callback);
+                        }
                     }
-                }
-            }
-        });
+
+                    @Override
+                    public void onFailure(@NonNull Exception error) {
+                        if (callback != null) {
+                            callback.onFailure(error);
+                        }
+                    }
+                });
     }
 
     private static KmStartConversationHandler getStartConversationHandler(final boolean isSkipConversationList, final boolean launchConversation, final String preFilledMessage, final ResultReceiver resultReceiver, final KmCallback callback) {
@@ -583,14 +669,14 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
+            public void onFailure(Exception exception, Context context) {
                 if (resultReceiver != null) {
                     resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                 }
                 if (callback != null) {
-                    callback.onFailure(channelFeedApiResponse);
+                    callback.onFailure(exception);
                 }
-                Utils.printLog(null, TAG, "Error while creating conversation : " + channelFeedApiResponse);
+                Utils.printLog(null, TAG, "Error while creating conversation : " + exception);
             }
         };
     }
@@ -619,32 +705,33 @@ public class KmConversationHelper {
 
             @Override
             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                callback.onFailure(registrationResponse);
+                callback.onFailure(exception);
                 Utils.printLog(null, TAG, "Error while logging in user : " + (registrationResponse != null ? registrationResponse : exception));
             }
         };
     }
 
     private static void startOrGetConversation(final KmConversationBuilder conversationBuilder, final KmStartConversationHandler callback) throws KmException {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(final Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (callback != null) {
-                    callback.onSuccess(channel, context);
+                    callback.onSuccess(channel, conversationBuilder.getContext());
                 }
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
+            public void onFailure(@NonNull Exception error) {
                 try {
                     createConversation(conversationBuilder, callback);
                 } catch (KmException e1) {
-                    callback.onFailure(null, context);
+                    callback.onFailure(e1, conversationBuilder.getContext());
                 }
             }
         };
 
-        new KmConversationInfoTask(conversationBuilder.getContext(), conversationBuilder.getClientConversationId(), conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
+        ConversationInfoUseCase.executeWithExecutor(conversationBuilder.getContext(), null, conversationBuilder.getClientConversationId(), conversationInfoCallback);
     }
 
     private static void createConversation(KmConversationBuilder conversationBuilder, KmStartConversationHandler handler) throws KmException {
@@ -758,21 +845,7 @@ public class KmConversationHelper {
 
         Utils.printLog(conversationBuilder.getContext(), TAG, "ChannelInfo : " + GsonUtils.getJsonFromObject(channelInfo, ChannelInfo.class));
 
-        if (handler == null) {
-            handler = new KmStartConversationHandler() {
-                @Override
-                public void onSuccess(Channel channel, Context context) {
-
-                }
-
-                @Override
-                public void onFailure(ChannelFeedApiResponse channelFeedApiResponse, Context context) {
-
-                }
-            };
-        }
-
-        new KmConversationCreateTask(conversationBuilder.getContext(), channelInfo, handler).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationCreateUseCase.executeWithExecutor(conversationBuilder.getContext(), channelInfo, handler, null);
     }
 
     private static KmCallback getCallbackWithAppSettingsToCreateConversation(final boolean useSingleThreadedSettingFromServer, final KmConversationBuilder conversationBuilder, final KmStartConversationHandler handler) {
@@ -817,6 +890,7 @@ public class KmConversationHelper {
         refreshAppSettings(conversationBuilder.getContext());
         sharedPreferences = conversationBuilder.getContext().getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         if (sharedPreferences != null) {
+            KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
             boolean isSingleThreadedFromServer = sharedPreferences.getBoolean(SINGLE_THREADED,false);
             boolean isShowSingleThreaded = isSingleThreadedFromServer || conversationBuilder.isSingleConversation();
             conversationBuilder.setSingleConversation(isShowSingleThreaded);
@@ -831,7 +905,7 @@ public class KmConversationHelper {
         }
     }
     public static void refreshAppSettings(Context context) {
-        new KmAppSettingTask(context,MobiComKitClientService.getApplicationKey(context), new KmCallback() {
+        AppSettingUseCase.executeWithExecutor(context, MobiComKitClientService.getApplicationKey(context), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 KmAppSettingModel kmAppSettings = (KmAppSettingModel) message;
@@ -843,34 +917,34 @@ public class KmConversationHelper {
             public void onFailure(Object error) {
                 Utils.printLog(context, TAG, "Failed to fetch AppSettings" + error);
             }
-        }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        });
     }
 
     public static void getConversationById(Context context, String conversationId, final KmCallback callback) {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (callback != null) {
                     callback.onSuccess(channel);
                 }
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
+            public void onFailure(@NonNull Exception error) {
                 if (callback != null) {
-                    callback.onFailure(e);
+                    callback.onFailure(error);
                 }
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(context, null, conversationId, conversationInfoCallback);
     }
 
 
     public static void getConversationMetadata(Context context, String conversationId, final KmCallback callback) {
-        KmGetConversationInfoCallback conversationInfoCallback = new KmGetConversationInfoCallback() {
+        TaskListener<Channel> conversationInfoCallback = new TaskListener<Channel>() {
             @Override
-            public void onSuccess(Channel channel, Context context) {
+            public void onSuccess(Channel channel) {
                 if (callback != null) {
                     if (channel != null && channel.getMetadata() != null) {
                         Map<String, String> channelMetadata = channel.getMetadata();
@@ -901,14 +975,14 @@ public class KmConversationHelper {
             }
 
             @Override
-            public void onFailure(Exception e, Context context) {
+            public void onFailure(@NonNull Exception error) {
                 if (callback != null) {
-                    callback.onFailure(e);
+                    callback.onFailure(error);
                 }
             }
         };
 
-        new KmConversationInfoTask(context, conversationId, conversationInfoCallback).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ConversationInfoUseCase.executeWithExecutor(context, null, conversationId, conversationInfoCallback);
     }
 
     private static String getClientGroupId(List<String> userIds, List<String> agentIds, List<String> botIds, Context context) throws KmException {

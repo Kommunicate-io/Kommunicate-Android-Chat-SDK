@@ -21,6 +21,11 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -73,6 +78,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         bindItems(viewHolder, i);
     }
 
+    @OptIn(markerClass = UnstableApi.class)
     @Override
     void bindItems(RecyclerView.ViewHolder viewHolder, int position) {
         super.bindItems(viewHolder, position);
@@ -107,91 +113,29 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
                     holder.captionText.setVisibility(View.GONE);
                 }
 
-                holder.videoView.setVisibility(View.VISIBLE);
-                Uri uri = Uri.parse(payloadModel.getUrl());
+                ExoPlayer player = new ExoPlayer.Builder(context).build();
+                holder.playerView.setPlayer(player);
 
-                holder.videoView.setVideoURI(uri);
+                holder.playerView.setVisibility(View.VISIBLE);
+                Uri videoUri = Uri.parse(payloadModel.getUrl());
+                MediaItem mediaItem = MediaItem.fromUri(videoUri);
 
-                holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                player.setMediaItem(mediaItem);
+                player.prepare();
+
+                player.play();
+
+                holder.playerView.setUseController(true);
+                holder.playerView.setControllerShowTimeoutMs(1000);
+                holder.playerView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
                     @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        // Play From here
-                        holder.videoProgress.setVisibility(View.GONE);
-                        holder.mediaController.setVisibility(View.VISIBLE);
-                        currentPos = holder.videoView.getCurrentPosition();
-                        totalDuration = holder.videoView.getDuration();
-                        holder.tvCurrentSeconds.setText((timeConversion((long) currentPos)));
-                        holder.tvTotalTime.setText((timeConversion((long) totalDuration)));
-                        holder.seekBar.setMax((int) totalDuration);
-                        final Handler handler = new Handler();
-
-                        // To Update Seek bar
-                        Runnable runnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    currentPos = holder.videoView.getCurrentPosition();
-                                    holder.tvCurrentSeconds.setText(timeConversion((long) currentPos));
-                                    holder.seekBar.setProgress((int) currentPos);
-                                    handler.postDelayed(this, 1000);
-                                } catch (IllegalStateException ed) {
-                                    ed.printStackTrace();
-                                }
-                            }
-                        };
-                        handler.postDelayed(runnable, 1000);
-                        holder.seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                            @Override
-                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                            }
-
-                            @Override
-                            public void onStartTrackingTouch(SeekBar seekBar) {
-
-                            }
-
-                            @Override
-                            public void onStopTrackingTouch(SeekBar seekBar) {
-                                currentPos = seekBar.getProgress();
-                                holder.videoView.seekTo((int) currentPos);
-                            }
-                        });
+                    public void onViewDetachedFromWindow(View v) {
+                        player.release();
                     }
-                });
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    holder.videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-                        @Override
-                        public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                            if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
-                                holder.videoProgress.setVisibility(View.GONE);
-                            }
-                            if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
-                                holder.videoProgress.setVisibility(View.VISIBLE);
-                            }
-                            if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
-                                holder.videoProgress.setVisibility(View.VISIBLE);
-                            }
-                            return false;
-                        }
-                    });
-                }
-                holder.ivPlay.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        if (holder.videoView.isPlaying()) {
-                            holder.videoView.pause();
-                            holder.ivPlay.setImageResource(R.drawable.ic_play_video);
-
-                        } else {
-                            holder.videoView.start();
-                            holder.ivPlay.setImageResource(R.drawable.ic_pause_video);
-                        }
-                    }
+                    public void onViewAttachedToWindow(View v) { }
                 });
-
-
             } else {
                 holder.videoViewRoot.setVisibility(View.GONE);
                 holder.captionText.setVisibility(View.GONE);
@@ -212,14 +156,8 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         TextView captionText;
         WebView webview;
         FrameLayout webViewRoot;
-        VideoView videoView;
         FrameLayout videoViewRoot;
-        ProgressBar videoProgress;
-        LinearLayout mediaController;
-        ImageView ivPlay;
-        TextView tvCurrentSeconds;
-        TextView tvTotalTime;
-        SeekBar seekBar;
+        PlayerView playerView;
 
 
         public RichMessageVideoHolder(View itemView) {
@@ -228,14 +166,8 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
             webview = itemView.findViewById(R.id.web_view);
             captionText = itemView.findViewById(R.id.tv_caption);
             webViewRoot = itemView.findViewById(R.id.web_frame_layout);
-            videoView = itemView.findViewById(R.id.video_view);
             videoViewRoot = itemView.findViewById(R.id.video_view_frame);
-            videoProgress = itemView.findViewById(R.id.video_progress);
-            mediaController = itemView.findViewById(R.id.ll_player);
-            ivPlay = itemView.findViewById(R.id.iv_play_pause);
-            tvCurrentSeconds = itemView.findViewById(R.id.current);
-            tvTotalTime = itemView.findViewById(R.id.total);
-            seekBar = itemView.findViewById(R.id.seekbar);
+            playerView = itemView.findViewById(R.id.playerView);
         }
     }
 

@@ -7,6 +7,10 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
+
+@Deprecated
+@CleanUpRequired(reason = "Migrated UserLogoutTask to UserLogoutUseCase")
 public class UserLogoutTask extends AlAsyncTask<Void, Boolean> {
 
     private TaskListener taskListener;

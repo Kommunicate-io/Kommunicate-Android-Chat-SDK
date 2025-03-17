@@ -36,7 +36,7 @@ public class PermissionsUtils {
 
     private static String[] getStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_AUDIO};
+            return new String[]{ Manifest.permission.READ_MEDIA_AUDIO };
         } else {
             return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         }
@@ -55,7 +55,7 @@ public class PermissionsUtils {
                 return permissions.toArray(new String[0]);
             } catch (Exception exception){
                 exception.printStackTrace();
-                return new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO, Manifest.permission.READ_MEDIA_AUDIO};
+                return new String[]{ Manifest.permission.READ_MEDIA_AUDIO };
             }
         } else {
             return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -91,10 +91,6 @@ public class PermissionsUtils {
     public static boolean shouldShowRequestForStoragePermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             return (ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.READ_MEDIA_IMAGES)
-                    || ActivityCompat.shouldShowRequestPermissionRationale(activity,
-                    Manifest.permission.READ_MEDIA_VIDEO)
-                     || ActivityCompat.shouldShowRequestPermissionRationale(activity,
                     Manifest.permission.READ_MEDIA_AUDIO));
         } else {
             return (ActivityCompat.shouldShowRequestPermissionRationale(activity,

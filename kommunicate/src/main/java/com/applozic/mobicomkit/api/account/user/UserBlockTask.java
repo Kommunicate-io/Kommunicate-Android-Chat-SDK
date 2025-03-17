@@ -5,7 +5,10 @@ import android.content.Context;
 import com.applozic.mobicomkit.feed.ApiResponse;
 import com.applozic.mobicommons.task.AlAsyncTask;
 
+import annotations.CleanUpRequired;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated UserBlockTask to UserBlockUseCase")
 public class UserBlockTask extends AlAsyncTask<Void, Boolean> {
 
     private final TaskListener taskListener;

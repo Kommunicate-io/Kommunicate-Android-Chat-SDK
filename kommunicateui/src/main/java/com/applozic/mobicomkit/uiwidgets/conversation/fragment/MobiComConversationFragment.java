@@ -32,12 +32,15 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -86,7 +89,6 @@ import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserBlockTask;
 import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.api.attachment.AttachmentView;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
@@ -94,16 +96,13 @@ import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageClientService;
-import com.applozic.mobicomkit.api.conversation.MessageDeleteTask;
 import com.applozic.mobicomkit.api.conversation.MessageIntentService;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.api.conversation.selfdestruct.DisappearingMessageTask;
 import com.applozic.mobicomkit.api.conversation.service.ConversationService;
-import com.applozic.mobicomkit.api.notification.MuteNotificationAsync;
 import com.applozic.mobicomkit.api.notification.MuteNotificationRequest;
-import com.applozic.mobicomkit.api.notification.MuteUserNotificationAsync;
 import com.applozic.mobicomkit.api.notification.NotificationService;
 import com.applozic.mobicomkit.api.people.UserIntentService;
 import com.applozic.mobicomkit.broadcast.AlEventManager;
@@ -161,6 +160,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmAwayView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmConversationInfoView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmFeedbackView;
+import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmInQueueView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmLanguageSlideView;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordView;
@@ -173,6 +173,8 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
+import com.applozic.mobicomkit.uiwidgets.usecase.UserDetailUseCase;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
@@ -215,20 +217,20 @@ import java.util.Timer;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import annotations.CleanUpRequired;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.async.AgentGetStatusTask;
-import io.kommunicate.async.KmConversationFeedbackTask;
 import io.kommunicate.async.KmGetBotTypeTask;
 import io.kommunicate.async.KmGetDataAsyncTask;
-import io.kommunicate.async.KmUpdateConversationTask;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmCharLimitCallback;
-import io.kommunicate.callbacks.KmFeedbackCallback;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
+import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
+import io.kommunicate.models.FeedbackDetailsData;
 import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
 import io.kommunicate.models.KmFeedback;
@@ -236,10 +238,16 @@ import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.usecase.MessageDeleteUseCase;
+import io.kommunicate.usecase.MuteGroupNotificationUseCase;
+import io.kommunicate.usecase.MuteUserNotificationUseCase;
+import io.kommunicate.usecase.UserBlockUseCase;
+import io.kommunicate.usecase.WaitingQueueStatusUseCase;
 import io.kommunicate.utils.KMAgentStatusHelper;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmInputTextLimitUtil;
 import io.kommunicate.utils.KmUtils;
+import io.sentry.Sentry;
 
 /**
  * reg
@@ -342,6 +350,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected MobicomMessageTemplate messageTemplate;
     protected MobicomMessageTemplateAdapter templateAdapter;
     protected KmAwayView kmAwayView;
+    protected KmInQueueView kmInQueueView;
     protected KmTypingView kmTypingView;
     protected TextView applozicLabel;
     protected RelativeLayout customToolbarLayout;
@@ -405,6 +414,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected String autoSuggestUrl;
     private Set<Message> botDelayMessageList;
     private List<String> localTeams;
+    private RelativeLayout faqButtonLayout;
+    private Button startNewConv;
     private static final String KMEVENT = "KM_EVENT";
     private static final String QUICK_REPLY_CLICK = "QUICKREPLY_CLICK";
     private static final String SKIP_BOT = "skipBot";
@@ -427,9 +438,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private static final String APPLOZIC_TEMPLATE_MSG = "com.applozic.mobicomkit.TemplateMessage";
     private static final String TEMPLATE_MSG = "templateMessage";
     private static final String APPLI_JSON = "application/json";
-
-
-
 
     public void setEmojiIconHandler(EmojiconHandler emojiIconHandler) {
         this.emojiIconHandler = emojiIconHandler;
@@ -553,8 +561,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 getResources().getColor(R.color.chatbar_text_color)));
 
         kmAwayView.setupTheme(isDarkModeEnabled, alCustomizationSettings);
+        kmInQueueView.setupTheme(isDarkModeEnabled, alCustomizationSettings);
         kmAwayView.setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
+        kmInQueueView.setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
         kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
+        kmInQueueView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
+
         individualMessageSendLayout.setBackgroundColor(themeHelper.parseColorWithDefault(
                 alCustomizationSettings.getMessageEditTextBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModeColor
         ));
@@ -620,12 +632,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setupChatBackground();
 
         frameLayoutProgressbar = list.findViewById(R.id.idProgressBarLayout);
-        Button startNewConv = list.findViewById(R.id.start_new_conversation);
+        startNewConv = list.findViewById(R.id.start_new_conversation);
         startNewConv.setVisibility(GONE);
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();
 
-        RelativeLayout faqButtonLayout = toolbar.findViewById(R.id.faqButtonLayout);
+        faqButtonLayout = toolbar.findViewById(R.id.faqButtonLayout);
         if (faqButtonLayout != null) {
             faqButtonLayout.setVisibility(View.GONE);
         }
@@ -814,6 +826,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         kmAwayView = list.findViewById(R.id.idKmAwayView);
+        kmInQueueView = list.findViewById(R.id.km_in_queue_view);
         kmTypingView = list.findViewById(R.id.idKmTypingView);
 
         isRecordOptionEnabled = (alCustomizationSettings != null
@@ -1106,7 +1119,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             messageTemplateView.setAdapter(templateAdapter);
         }
 
-        if (channel != null && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
+        if (channel != null
+                && Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())
+                && channel.getKmStatus() != Channel.IN_QUEUE_CONVERSATION
+        ) {
             showAwayMessage(true, null);
         }
 
@@ -1169,8 +1185,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         };
 
         setupModes(isCurrentlyInDarkMode);
-
+        setupInsets();
         return list;
+    }
+
+    private void setupInsets() {
+        InsetHelper.configureSystemInsets(
+                startNewConv,
+                0,
+                -1,
+                false
+        );
+        InsetHelper.configureSystemInsets(
+                kmMessageLinearLayout,
+                0,
+                -1,
+                true
+        );
     }
 
     private void setupDotColorStatus() {
@@ -1307,12 +1338,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void run() {
                 setFeedbackDisplay(channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS && !KmUtils.isAgent(getContext()));
-                if (existingAssignee != null && !existingAssignee.equals(channel.getConversationAssignee())) {
+                if (existingAssignee != null
+                        && (!existingAssignee.equals(channel.getConversationAssignee()) ||  kmInQueueView.getVisibility() == VISIBLE)
+                        && channel.getKmStatus() != Channel.IN_QUEUE_CONVERSATION
+                ) {
                     showAwayMessage(true, null);
                 }
             }
         });
-
     }
 
     @Override
@@ -2616,6 +2649,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             }
                             messageList.get(index).setDelivered(true);
                             messageList.get(index).setStatus(message.getStatus());
+                            showBotTypingIndicator();
                             View view = recyclerView.getChildAt(index -
                                     linearLayoutManager.findFirstVisibleItemPosition());
                             if (view != null && !messageList.get(index).isCustom()) {
@@ -2644,6 +2678,28 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
             });
         }
+    }
+
+    private void showBotTypingIndicator() {
+        int botIntervalDelay = KmAppSettingPreferences.INSTANCE.getBotTypingIndicatorInterval();
+        if (botIntervalDelay == 0) {
+            return;
+        }
+
+        // check conversation is assigned to bot
+        String assigneeId = channel.getConversationAssignee();
+        if (assigneeId == null) {
+            return;
+        }
+        Contact assigneeInfo = new AppContactService(getContext()).getContactById(assigneeId);
+        if (assigneeInfo == null || !assigneeInfo.getRoleType().equals(User.RoleType.BOT.getValue())) {
+            return;
+        }
+
+        handleTypingMessage(true);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            handleTypingMessage(false);
+        }, botIntervalDelay);
     }
 
     public void loadFile(Uri uri, File file, String mimeType) {
@@ -3336,7 +3392,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     titleBuilder.append(withUserContact.getDisplayName());
                 }
             } else if (Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) {
-                processSupportGroupDetails(channel);
                 if (customToolbarLayout != null) {
                     customToolbarLayout.setVisibility(VISIBLE);
                 }
@@ -3425,7 +3480,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     ChannelService.isUpdateTitle = false;
                 }
 
-                loadAwayMessage();
+                if (channel != null && channel.getKmStatus() != Channel.IN_QUEUE_CONVERSATION) {
+                    loadAwayMessage();
+                }
                 processSupportGroupDetails(channel);
                 Applozic.subscribeToTyping(getContext(), channel, contact);
             }
@@ -3568,8 +3625,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
-        if (!TextUtils.isEmpty(channel.getName())) {
+        if (channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+            toolbarTitleText.setText(R.string.in_queue);
+            toolbarAwayColorDot.setVisibility(GONE);
+            toolbarSubtitleText.setVisibility(GONE);
+            updateWaitingStatus();
+        } else if (!TextUtils.isEmpty(channel.getName())) {
             toolbarTitleText.setText(channel.getName());
+            toolbarAwayColorDot.setVisibility(VISIBLE);
+            toolbarSubtitleText.setVisibility(VISIBLE);
+            kmInQueueView.setVisibility(GONE);
         }
 
         if (alCustomizationSettings.isAgentApp()) {
@@ -3577,6 +3642,29 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (toolbarSubtitleText != null) {
                 toolbarSubtitleText.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void updateWaitingStatus() {
+        if (channel != null && channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+            WaitingQueueStatusUseCase.executeWithExecutor(
+                    requireContext(),
+                    Long.parseLong(channel.getTeamId()),
+                    new TaskListener<List<Long>>() {
+                        @Override
+                        public void onSuccess(List<Long> status) {
+                            kmInQueueView.setVisibility(VISIBLE);
+                            int position = status.indexOf(Long.parseLong(channel.getClientGroupId())) + 1;
+                            kmInQueueView.setupInQueueMessage(position);
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Exception error) {
+                            Toast.makeText(requireContext(), "Unable to fetch waiting status", Toast.LENGTH_SHORT).show();
+                            Sentry.captureException(error);
+                            kmInQueueView.setVisibility(GONE);
+                        }
+                    });
         }
     }
 
@@ -3595,26 +3683,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void getUserDetail(Context context, String userId, KmUserDetailsCallback callback) {
-        new KMUserDetailTask(context, userId, callback).execute();
-    }
-
     public void processSupportGroupDetails(final Channel channel) {
-        Contact contact = KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
+        KmService.getSupportGroupContact(getContext(), channel, appContactService, loggedInUserRole);
 
         if (loggedInUserRole == User.RoleType.AGENT.getValue()) {
             Contact assigneeContact = KmService.getAssigneeContact(channel, appContactService);
             showTakeOverFromBotLayout(assigneeContact != null && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType()) && !BOT.equals(assigneeContact.getUserId()), assigneeContact);
         }
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-        getUserDetail(getContext(), channel.getConversationAssignee(), new KmUserDetailsCallback() {
-            @Override
-            public void hasFinished(final Contact contact) {
-                conversationAssignee = contact;
-                updateSupportGroupTitleAndImageAndHideSubtitle(channel);
-                switchContactStatus(contact, contact.isUserOnline());
-            }
-        });
+
+        UserDetailUseCase.executeWithExecutor(
+                requireContext(),
+                channel.getConversationAssignee(),
+                contactCallback -> {
+                    conversationAssignee = contactCallback;
+                    updateSupportGroupTitleAndImageAndHideSubtitle(channel);
+                    switchContactStatus(contactCallback, contactCallback.isUserOnline());
+                });
     }
 
     //connected is for online/offline, agentStatus is online/away
@@ -3669,6 +3754,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
+        if (channel != null && channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+            toolbarAwayColorDot.setVisibility(GONE);
+            toolbarOfflineColorDot.setVisibility(GONE);
+            toolbarOnlineColorDot.setVisibility(GONE);
+            toolbarSubtitleText.setVisibility(GONE);
+            return;
+        }
 
         if (KMAgentStatusHelper.status != KMAgentStatusHelper.KMAgentStatus.DefaultStatus && (TextUtils.isEmpty(KMAgentStatusHelper.assigneeID) || Objects.equals(contact.getUserId(), KMAgentStatusHelper.assigneeID))) {
             updateAssigneeStatus(KMAgentStatusHelper.assigneeID, KMAgentStatusHelper.status);
@@ -3841,7 +3933,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "",
                 ApplozicService.getContext(getContext()).getString(R.string.please_wait_info), true);
 
-        UserBlockTask.TaskListener listener = new UserBlockTask.TaskListener() {
+        UserBlockUseCase.TaskListener listener = new UserBlockUseCase.TaskListener() {
 
             @Override
             public void onSuccess(ApiResponse apiResponse) {
@@ -3878,7 +3970,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         };
 
-        new UserBlockTask(getActivity(), listener, userId, block).execute();
+        UserBlockUseCase.executeWithExecutor(getActivity(), userId, block, listener);
     }
 
     public void userBlockDialog(final boolean block, final Contact withUserContact, final boolean isFromChannel) {
@@ -3904,28 +3996,23 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void muteGroupChat() {
-
         final CharSequence[] items = {ApplozicService.getContext(getContext()).getString(R.string.eight_Hours), ApplozicService.getContext(getContext()).getString(R.string.one_week), ApplozicService.getContext(getContext()).getString(R.string.one_year)};
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationAsync.TaskListener taskListener = new MuteNotificationAsync.TaskListener() {
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onSuccess(ApiResponse apiResponse) {
+            public void onFailure(@NonNull Exception error) {
+                Log.e(TAG, "Failed to mute group notifications", error);
+                Toast.makeText(getContext(), "Failed to mute group notifications", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(@NonNull String status) {
                 if (menu != null) {
                     menu.findItem(R.id.muteGroup).setVisible(false);
                     menu.findItem(R.id.unmuteGroup).setVisible(true);
                 }
-            }
-
-            @Override
-            public void onFailure(ApiResponse apiResponse, Exception exception) {
-
-            }
-
-            @Override
-            public void onCompletion() {
-
             }
         };
 
@@ -3945,8 +4032,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
 
                         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
-                        MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-                        muteNotificationAsync.execute();
+                        MuteGroupNotificationUseCase.executeWithExecutor(
+                                getContext(),
+                                muteNotificationRequest,
+                                taskListener
+                        );
                         dialog.dismiss();
 
                     }
@@ -3959,28 +4049,28 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteNotificationAsync.TaskListener taskListener = new MuteNotificationAsync.TaskListener() {
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onSuccess(ApiResponse apiResponse) {
+            public void onFailure(@NonNull Exception error) {
+                Log.e(TAG, "Failed to unmute group notifications", error);
+                Toast.makeText(getContext(), "Failed to group user notifications", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onSuccess(@NonNull String status) {
                 if (menu != null) {
                     menu.findItem(R.id.unmuteGroup).setVisible(false);
                     menu.findItem(R.id.muteGroup).setVisible(true);
                 }
             }
-
-            @Override
-            public void onFailure(ApiResponse apiResponse, Exception exception) {
-
-            }
-
-            @Override
-            public void onCompletion() {
-
-            }
         };
+
         muteNotificationRequest = new MuteNotificationRequest(channel.getKey(), millisecond);
-        MuteNotificationAsync muteNotificationAsync = new MuteNotificationAsync(getContext(), taskListener, muteNotificationRequest);
-        muteNotificationAsync.execute();
+        MuteGroupNotificationUseCase.executeWithExecutor(
+                getContext(),
+                muteNotificationRequest,
+                taskListener
+        );
     }
 
     public void muteUserChat() {
@@ -3988,10 +4078,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteUserNotificationAsync.TaskListener listener = new MuteUserNotificationAsync.TaskListener() {
-
+        final TaskListener listener = new TaskListener<String>() {
             @Override
-            public void onSuccess(String status, Context context) {
+            public void onSuccess(String status) {
                 if (menu != null) {
                     menu.findItem(R.id.muteGroup).setVisible(false);
                     menu.findItem(R.id.unmuteGroup).setVisible(true);
@@ -3999,8 +4088,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void onFailure(String error, Context context) {
-
+            public void onFailure(Exception error) {
+                Log.e(TAG, "Failed to mute user notifications", error);
+                Toast.makeText(getContext(), "Failed to mute user notifications", Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -4018,7 +4108,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             millisecond = millisecond + 31558000000L;
                         }
 
-                        new MuteUserNotificationAsync(listener, millisecond, contact.getUserId(), getContext()).execute();
+                        MuteUserNotificationUseCase.executeWithExecutor(getContext(), contact.getUserId(), millisecond, listener);
                         dialog.dismiss();
 
                     }
@@ -4031,10 +4121,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         millisecond = date.getTime();
 
-        final MuteUserNotificationAsync.TaskListener taskListener = new MuteUserNotificationAsync.TaskListener() {
-
+        final TaskListener taskListener = new TaskListener<String>() {
             @Override
-            public void onSuccess(String status, Context context) {
+            public void onSuccess(String status) {
                 if (menu != null) {
                     menu.findItem(R.id.unmuteGroup).setVisible(false);
                     menu.findItem(R.id.muteGroup).setVisible(true);
@@ -4042,11 +4131,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             @Override
-            public void onFailure(String error, Context context) {
-
+            public void onFailure(Exception error) {
+                Log.e(TAG, "Failed to unmute user notifications", error);
+                Toast.makeText(getContext(), "Failed to unmute user notifications", Toast.LENGTH_SHORT).show();
             }
         };
-        new MuteUserNotificationAsync(taskListener, millisecond, contact.getUserId(), getContext()).execute();
+        MuteUserNotificationUseCase.executeWithExecutor(
+                getContext(),
+                contact.getUserId(),
+                millisecond,
+                taskListener
+        );
     }
 
     public void muteUser(boolean mute) {
@@ -4884,28 +4979,31 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void deleteForAll(Message message, int position) {
-        new MessageDeleteTask(getContext(), message.getKeyString(), true, new AlCallback() {
-            @Override
-            public void onSuccess(Object response) {
-                if (getContext() != null) {
-                    deleteMessageFromDeviceList(message.getKeyString());
-                    recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
-                    KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
-                }
-            }
+        MessageDeleteUseCase.executeWithExecutor(
+                getContext(),
+                message.getKeyString(),
+                true,
+                new TaskListener<String>() {
+                    @Override
+                    public void onSuccess(String response) {
+                        if (getContext() != null) {
+                            deleteMessageFromDeviceList(message.getKeyString());
+                            recyclerDetailConversationAdapter.notifyItemRangeChanged(position - 1, messageList.size());
+                            KmToast.makeText(getContext(), "Message Deleted", Toast.LENGTH_SHORT).show();
+                        }
+                    }
 
-            @Override
-            public void onError(Object error) {
-                KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
-            }
-        }).execute();
+                    @Override
+                    public void onFailure(Exception error) {
+                        KmToast.error(ApplozicService.getContext(getContext()), "Error while deleting Message", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public void processAttachmentIconsClick() {
 
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (cameraButton != null) {
+            cameraButton.setOnClickListener(v -> {
                 AlEventManager.getInstance().sendOnAttachmentClick(CAMERA);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
@@ -4922,12 +5020,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         });
                     }
                 }
-            }
-        });
+            });
+        }
 
-        videoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (videoButton != null) {
+            videoButton.setOnClickListener(v -> {
                 AlEventManager.getInstance().sendOnAttachmentClick(VIDEO);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
@@ -4944,12 +5041,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         });
                     }
                 }
-            }
-        });
+            });
+        }
 
-        multiSelectGalleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        if (multiSelectGalleryButton != null) {
+            multiSelectGalleryButton.setOnClickListener(view -> {
                 AlEventManager.getInstance().sendOnAttachmentClick(GALLERY);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
@@ -4970,12 +5066,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         ((ConversationActivity) getActivity()).processMultiSelectGallery();
                     }
                 }
-            }
-        });
+            });
+        }
 
-        fileAttachmentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (fileAttachmentButton != null) {
+            fileAttachmentButton.setOnClickListener(v -> {
                 AlEventManager.getInstance().sendOnAttachmentClick("file");
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
@@ -4992,19 +5087,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         });
                     }
                 }
-            }
-        });
+            });
+        }
 
-        locationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+        if (locationButton != null) {
+            locationButton.setOnClickListener(v -> {
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 AlEventManager.getInstance().sendOnLocationClick();
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).processLocation();
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -5062,10 +5157,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                 if (themeHelper.isCollectFeedback()) {
                     frameLayoutProgressbar.setVisibility(VISIBLE);
-                    KmService.getConversationFeedback(getActivity(), new KmConversationFeedbackTask.KmFeedbackDetails(String.valueOf(channel.getKey()), null, null, null), new KmFeedbackCallback() {
+                    KmService.getConversationFeedback(getActivity(), new FeedbackDetailsData(String.valueOf(channel.getKey()), null, null, null), new TaskListener<KmApiResponse<KmFeedback>>() {
                         @Override
-                        public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
-
+                        public void onSuccess(KmApiResponse<KmFeedback> response) {
                             frameLayoutProgressbar.setVisibility(View.GONE);
                             if (response.getData() != null) { //i.e if feedback found
                                 //show the feedback based on the data given
@@ -5090,9 +5184,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
 
                         @Override
-                        public void onFailure(Context context, Exception e, String response) {
+                        public void onFailure(@NonNull Exception error) {
                             frameLayoutProgressbar.setVisibility(View.GONE);
-                            Utils.printLog(getContext(), TAG, "Feedback get failed: " + e.toString());
+                            Utils.printLog(getContext(), TAG, "Feedback get failed: " + error.toString());
                         }
                     });
                 }
@@ -5203,6 +5297,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
+    @Deprecated
+    @CleanUpRequired(reason = "Migrated from KMUserDetailTask to UserDetailUseCase ")
     public static class KMUserDetailTask extends AsyncTask<Void, Void, Boolean> {
 
         WeakReference<Context> context;
@@ -5239,8 +5335,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public interface KmUserDetailsCallback {
-        void hasFinished(Contact contact);
 
+        void hasFinished(Contact contact);
     }
 
     public static boolean isEmailConversation(Channel channel) {
@@ -5408,9 +5504,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
                 metadata.put(Channel.CONVERSATION_ASSIGNEE, loggedInUserId);
                 groupInfoUpdate.setMetadata(metadata);
-                KmSettings.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new KmUpdateConversationTask.KmConversationUpdateListener() {
+                KmSettings.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new TaskListener<Context>() {
                     @Override
-                    public void onSuccess(Context context) {
+                    public void onSuccess(Context status) {
                         Message message = new Message();
 
                         message.setMessage(Utils.getString(context, R.string.km_assign_to_message) + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
@@ -5433,7 +5529,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
 
                     @Override
-                    public void onFailure(Context context) {
+                    public void onFailure(Exception error) {
                         if (progressDialog != null) {
                             progressDialog.dismiss();
                         }
@@ -5501,15 +5597,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmFeedback.setRating(ratingValue);
         AlEventManager.getInstance().sendOnSubmitRatingClicked(channel.getKey(), ratingValue, feedback);
         Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
-        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
+        KmService.setConversationFeedback(getActivity(), kmFeedback, new FeedbackDetailsData(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new TaskListener<KmApiResponse<KmFeedback>>() {
             @Override
-            public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+            public void onSuccess(KmApiResponse<KmFeedback> status) {
                 //kmFeedbackView.showFeedback(context, kmFeedback);
             }
 
             @Override
-            public void onFailure(Context context, Exception e, String response) {
-                Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
+            public void onFailure(@NonNull Exception error) {
                 KmToast.error(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
             }
         });
@@ -5528,15 +5623,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         kmFeedback.setRating(ratingValue);
         Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
-        KmService.setConversationFeedback(getActivity(), kmFeedback, new KmConversationFeedbackTask.KmFeedbackDetails(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new KmFeedbackCallback() {
+        KmService.setConversationFeedback(getActivity(), kmFeedback, new FeedbackDetailsData(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new TaskListener<KmApiResponse<KmFeedback>>() {
             @Override
-            public void onSuccess(Context context, KmApiResponse<KmFeedback> response) {
+            public void onSuccess(KmApiResponse<KmFeedback> status) {
                 //kmFeedbackView.showFeedback(context, kmFeedback);
             }
 
             @Override
-            public void onFailure(Context context, Exception e, String response) {
-                Utils.printLog(context, TAG, "Feedback update failed: " + e.toString());
+            public void onFailure(@NonNull Exception error) {
                 KmToast.error(getActivity(), R.string.feedback_update_failed, Toast.LENGTH_SHORT).show();
             }
         });

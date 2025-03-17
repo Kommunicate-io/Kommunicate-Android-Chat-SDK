@@ -12,6 +12,7 @@ import com.applozic.mobicomkit.listners.AlLoginHandler;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.services.KmUserClientService;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
@@ -21,6 +22,8 @@ import io.kommunicate.utils.KmAppSettingPreferences;
  * Created by ashish on 10/02/18.
  */
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmUserLoginTask to KmUserLoginUseCase")
 public class KmUserLoginTask extends UserLoginTask {
     private Exception e;
     private KMUser user;
@@ -59,7 +62,8 @@ public class KmUserLoginTask extends UserLoginTask {
                 response = userClientService.loginKmUser(user);
             } else {
                 new UserClientService(context.get()).clearDataAndPreference();
-                KmAppSettingPreferences.fetchAppSetting(context.get(), Applozic.getInstance(context.get()).getApplicationKey());
+                // TODO: CLEANUP, App settings are now handled by AppSettingUseCase
+//                KmAppSettingPreferences.fetchAppSetting(context.get(), Applozic.getInstance(context.get()).getApplicationKey());
                 response = new RegisterUserClientService(context.get()).createAccount(user);
             }
         } catch (Exception e) {

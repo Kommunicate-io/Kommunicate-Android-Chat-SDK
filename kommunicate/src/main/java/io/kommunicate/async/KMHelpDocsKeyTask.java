@@ -8,6 +8,7 @@ import com.applozic.mobicommons.json.GsonUtils;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.preference.KmPreference;
 import io.kommunicate.callbacks.KmFaqTaskListener;
 import io.kommunicate.models.KmHelpDocKey;
@@ -16,7 +17,8 @@ import io.kommunicate.services.KmUserService;
 /**
  * Created by ashish on 23/04/18.
  */
-
+@Deprecated
+@CleanUpRequired(reason = "Migrated KMHelpDocsKeyTask to HelpDocsKeyUseCase")
 public class KMHelpDocsKeyTask extends AsyncTask<Void, Void, String> {
     private WeakReference<Context> context;
     private String type;

@@ -56,6 +56,7 @@ import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -188,7 +189,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerView.setAdapter(recyclerAdapter);
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(false);
-        ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(themeHelper.getToolbarTitleColor());
+        TextView conversationTextView = toolbar.findViewById(R.id.km_conversation_text_view);
+        if (conversationTextView != null) {
+            conversationTextView.setTextColor(themeHelper.getToolbarTitleColor());
+        }
         if (!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
             Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.km_baseline_more_vert);
             toolbar.setOverflowIcon(overflowIcon);
@@ -238,7 +242,23 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerView.setLongClickable(true);
         setupModes(isCurrentlyInDarkMode);
         registerForContextMenu(recyclerView);
+        setupInsets();
         return list;
+    }
+
+    private void setupInsets() {
+        InsetHelper.configureSystemInsets(
+                startNewConv,
+                0,
+                25,
+                false
+        );
+        InsetHelper.configureSystemInsets(
+                recyclerView,
+                0,
+                200,
+                true
+        );
     }
 
     protected View.OnClickListener startNewConversation() {

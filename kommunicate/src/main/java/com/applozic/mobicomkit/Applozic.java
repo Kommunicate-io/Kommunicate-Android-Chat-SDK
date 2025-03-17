@@ -14,7 +14,6 @@ import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserLoginTask;
 import com.applozic.mobicomkit.api.account.user.UserLogoutTask;
 import com.applozic.mobicomkit.api.authentication.AlAuthService;
 import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
@@ -28,6 +27,9 @@ import com.applozic.mobicomkit.listners.AlLoginHandler;
 import com.applozic.mobicomkit.listners.AlLogoutHandler;
 import com.applozic.mobicomkit.listners.AlPushNotificationHandler;
 import com.applozic.mobicomkit.listners.ApplozicUIListener;
+
+import io.kommunicate.usecase.PushNotificationUseCase;
+import io.kommunicate.usecase.UserLoginUseCase;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.data.AlPrefSettings;
@@ -37,10 +39,12 @@ import com.applozic.mobicommons.task.AlTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import annotations.CleanUpRequired;
 import io.kommunicate.KmSettings;
 import io.kommunicate.R;
+import io.kommunicate.usecase.UserLogoutUseCase;
 
 /**
  * Created by sunil on 29/8/16.
@@ -253,13 +257,14 @@ public class Applozic {
     }
 
     @Deprecated
+    @CleanUpRequired(reason = "Not used anywhere")
     public static void loginUser(Context context, User user, AlLoginHandler loginHandler) {
         if (MobiComUserPreference.getInstance(context).isLoggedIn()) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
             registrationResponse.setMessage(context.getString(R.string.user_logged_in));
             loginHandler.onSuccess(registrationResponse, context);
         } else {
-            AlTask.execute(new UserLoginTask(user, loginHandler, context));
+            UserLoginUseCase.Companion.executeWithExecutor(context, user, loginHandler);
         }
     }
 
@@ -278,12 +283,12 @@ public class Applozic {
             }
             loginHandler.onSuccess(registrationResponse, context);
         } else {
-            AlTask.execute(new UserLoginTask(user, loginHandler, context));
+            UserLoginUseCase.Companion.executeWithExecutor(context, user, loginHandler);
         }
     }
 
     public static void connectUserWithoutCheck(Context context, User user, AlLoginHandler loginHandler) {
-        AlTask.execute(new UserLoginTask(user, loginHandler, context));
+        UserLoginUseCase.Companion.executeWithExecutor(context, user, loginHandler);
     }
 
     public static boolean isConnected(Context context) {
@@ -303,22 +308,23 @@ public class Applozic {
     }
 
     @Deprecated
+    @CleanUpRequired(reason = "Not Used Anywhere")
     public static void loginUser(Context context, User user, boolean withLoggedInCheck, AlLoginHandler loginHandler) {
         if (withLoggedInCheck && MobiComUserPreference.getInstance(context).isLoggedIn()) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
             registrationResponse.setMessage(context.getString(R.string.user_logged_in));
             loginHandler.onSuccess(registrationResponse, context);
         } else {
-            AlTask.execute(new UserLoginTask(user, loginHandler, context));
+            UserLoginUseCase.Companion.executeWithExecutor(context, user, loginHandler);
         }
     }
 
     public static void logoutUser(final Context context, AlLogoutHandler logoutHandler) {
-        AlTask.execute(new UserLogoutTask(logoutHandler, context));
+        UserLogoutUseCase.executeWithExecutor(context, logoutHandler);
     }
 
     public static void registerForPushNotification(Context context, String pushToken, AlPushNotificationHandler handler) {
-        AlTask.execute(new PushNotificationTask(context, pushToken, handler));
+        PushNotificationUseCase.executeWithExecutor(context, pushToken, handler);
     }
 
     public static void registerForPushNotification(Context context, AlPushNotificationHandler handler) {

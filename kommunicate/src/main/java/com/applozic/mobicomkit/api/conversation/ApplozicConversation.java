@@ -16,13 +16,15 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.exception.ApplozicException;
 import com.applozic.mobicomkit.listners.ConversationListHandler;
 import com.applozic.mobicomkit.listners.MediaDownloadProgressHandler;
-import com.applozic.mobicomkit.listners.MessageListHandler;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.applozic.mobicommons.task.AlTask;
 
 import java.util.Iterator;
 import java.util.List;
+
+import io.kommunicate.callbacks.TaskListener;
+import io.kommunicate.usecase.MessageListUseCase;
 
 /**
  * Created by ashish on 05/01/18.
@@ -34,20 +36,47 @@ public class ApplozicConversation {
     private static final String not_message_attachement = "Message does not have Attachment";
     private static final String attachment_downloaded = "Attachment for the message already downloaded";
 
-    public static void getLatestMessageList(Context context, String searchString, boolean isScroll, MessageListHandler handler) {
+    public static void getLatestMessageList(Context context, String searchString, boolean isScroll, TaskListener<List<Message>> handler) {
         if (!isScroll) {
-            AlTask.execute(new MessageListTask(context, searchString, null, null, null, null, handler, true));
-        } else {
-            AlTask.execute(new MessageListTask(context, searchString, null, null, MobiComUserPreference.getInstance(context).getStartTimeForPagination(), null, handler, true));
+            MessageListUseCase.executeWithCallback(
+                    context,
+                    searchString,
+                    null,
+                    null,
+                    null,
+                    null,
+                    true,
+                    handler
+            );
+        }else {
+            MessageListUseCase.executeWithCallback(
+                    context,
+                    searchString,
+                    null,
+                    null,
+                    MobiComUserPreference.getInstance(context).getStartTimeForPagination(),
+                    null,
+                    true,
+                    handler
+            );
         }
     }
 
-    public static void getLatestMessageList(Context context, boolean isScroll, MessageListHandler handler) {
+    public static void getLatestMessageList(Context context, boolean isScroll, TaskListener<List<Message>> handler) {
         getLatestMessageList(context, null, isScroll, handler);
     }
 
-    public static void getLatestMessageList(Context context, String searchString, Long startTime, MessageListHandler handler) {
-        AlTask.execute(new MessageListTask(context, searchString, null, null, startTime, null, handler, true));
+    public static void getLatestMessageList(Context context, String searchString, Long startTime, TaskListener<List<Message>> handler) {
+        MessageListUseCase.executeWithCallback(
+                context,
+                searchString,
+                null,
+                null,
+                startTime,
+                null,
+                true,
+                handler
+        );
     }
 
     public static void getConversationList(Context context, String searchString, boolean isScroll, ConversationListHandler handler) {
@@ -61,20 +90,68 @@ public class ApplozicConversation {
                 true));
     }
 
-    public static void getMessageListForContact(Context context, Contact contact, Long endTime, MessageListHandler handler) {
-        AlTask.execute(new MessageListTask(context, null, contact, null, null, endTime, handler, false));
+    public static void getMessageListForContact(Context context, Contact contact, Long endTime, TaskListener<List<Message>> handler) {
+        MessageListUseCase.executeWithCallback(
+                context,
+                null,
+                contact,
+                null,
+                null,
+                endTime,
+                false,
+                handler
+        );
     }
 
-    public static void getMessageListForChannel(Context context, Channel channel, Long endTime, MessageListHandler handler) {
-        AlTask.execute(new MessageListTask(context, null, null, channel, null, endTime, handler, false));
+    public static void getMessageListForChannel(Context context, Channel channel, Long endTime, TaskListener<List<Message>> handler) {
+        if (channel == null) {
+           handler.onFailure(new ApplozicException("Channel key cannot be null"));
+           return;
+        }
+        MessageListUseCase.executeWithCallback(
+                context,
+                null,
+                null,
+                channel,
+                null,
+                endTime,
+                false,
+                handler
+        );
     }
 
-    public static void getMessageListForContact(Context context, String userId, Long endTime, MessageListHandler handler) {
-        AlTask.execute(new MessageListTask(context, null, new AppContactService(context).getContactById(userId), null, null, endTime, handler, false));
+    public static void getMessageListForContact(Context context, String userId, Long endTime, TaskListener<List<Message>> handler) {
+        if (userId == null) {
+            handler.onFailure(new ApplozicException("userId cannot be null"));
+            return;
+        }
+        MessageListUseCase.executeWithCallback(
+                context,
+                null,
+                new AppContactService(context).getContactById(userId),
+                null,
+                null,
+                endTime,
+                false,
+                handler
+        );
     }
 
-    public static void getMessageListForChannel(Context context, Integer channelKey, Long endTime, MessageListHandler handler) {
-        AlTask.execute(new MessageListTask(context, null, null, ChannelService.getInstance(context).getChannel(channelKey), null, endTime, handler, false));
+    public static void getMessageListForChannel(Context context, Integer channelKey, Long endTime, TaskListener<List<Message>> handler) {
+        if (channelKey == null) {
+            handler.onFailure(new ApplozicException("Channel key cannot be null"));
+            return;
+        }
+        MessageListUseCase.executeWithCallback(
+                context,
+                null,
+                null,
+                ChannelService.getInstance(context).getChannel(channelKey),
+                null,
+                endTime,
+                false,
+                handler
+        );
     }
 
     public static void downloadMessage(Context context, Message message, MediaDownloadProgressHandler handler) {

@@ -81,7 +81,7 @@ public class KmCreateConversationTask extends AsyncTask<Void, Void, KmConversati
                 if (SUCCESS.equalsIgnoreCase(response.getStatus())) {
                     startChatHandler.onSuccess(ChannelService.getInstance(context.get()).getChannel(response.getResponse()), context.get());
                 } else {
-                    startChatHandler.onFailure(response, context.get());
+                    startChatHandler.onFailure(null, context.get());
                 }
             } else {
                 startChatHandler.onFailure(null, context.get());

@@ -13,10 +13,14 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
+
 /**
  * Represents an asynchronous login/registration task used to authenticate
  * the user.
  */
+@Deprecated
+@CleanUpRequired(reason = "Migrated UserLoginTask to UserLoginUseCase")
 public class UserLoginTask extends AlAsyncTask<Void, Boolean> {
 
     private TaskListener taskListener;

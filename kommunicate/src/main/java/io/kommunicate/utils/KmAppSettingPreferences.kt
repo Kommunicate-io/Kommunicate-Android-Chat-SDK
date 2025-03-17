@@ -2,16 +2,15 @@ package io.kommunicate.utils
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.AsyncTask
 import annotations.CleanUpRequired
 import com.applozic.mobicomkit.Applozic
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference
 import com.applozic.mobicommons.ApplozicService
 import com.applozic.mobicommons.json.GsonUtils
-import io.kommunicate.async.KmAppSettingTask
 import io.kommunicate.callbacks.KmCallback
 import io.kommunicate.models.KmAppSettingModel
 import io.kommunicate.services.KmService
+import io.kommunicate.usecase.AppSettingUseCase
 
 object KmAppSettingPreferences {
 
@@ -22,6 +21,7 @@ object KmAppSettingPreferences {
     private const val KM_THEME_SECONDARY_COLOR = "KM_THEME_SECONDARY_COLOR"
     private const val KM_COLLECT_FEEDBACK = "KM_COLLECT_FEEDBACK"
     private const val KM_BOT_MESSAGE_DELAY_INTERVAL = "KM_BOT_MESSAGE_DELAY_INTERVAL"
+    private const val BOT_TYPING_INDICATOR_INTERVAL = "BOT_TYPING_INDICATOR_INTERVAL"
     private const val LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME"
     private const val CHAT_SESSION_DELETE_TIME = "CHAT_SESSION_DELETE_TIME"
     private const val HIDE_POST_CTA = "HIDE_POST_CTA"
@@ -30,7 +30,9 @@ object KmAppSettingPreferences {
     private const val SINGLE_THREADED = "IS_SINGLE_THREADED"
     private const val ROOT_DETECTION = "ROOT_DETECTION"
     private const val SSL_PINNING = "SSL_PINNING"
+    private const val IN_APP_NOTIFICATION = "IN_APP_NOTIFICATION"
     private const val RATING_BASE = "RATING_BASE"
+    private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
 
     @JvmStatic
     @CleanUpRequired(
@@ -61,6 +63,15 @@ object KmAppSettingPreferences {
         get() = preferences.getBoolean(SSL_PINNING, false)
         set(isEnabled) {
             preferences.edit().putBoolean(SSL_PINNING, isEnabled).apply()
+        }
+
+    @JvmStatic
+    var isInAppNotificationEnable: Boolean
+        get() {
+            return preferences.getBoolean(IN_APP_NOTIFICATION, true)
+        }
+        set(isEnabled) {
+            preferences.edit().putBoolean(IN_APP_NOTIFICATION, isEnabled).apply()
         }
 
     var primaryColor: String?
@@ -116,6 +127,13 @@ object KmAppSettingPreferences {
             preferences.edit().putInt(RATING_BASE, base).apply()
         }
 
+    @JvmStatic
+    var lastFetchTime: Long
+        get() = preferences.getLong(LAST_FETCH_TIME, 0L)
+        set(base) {
+            preferences.edit().putLong(LAST_FETCH_TIME, base).apply()
+        }
+
     @Suppress("UNCHECKED_CAST")
     var uploadOverrideHeader: HashMap<String, String>
         get() = GsonUtils.getObjectFromJson<Any>(
@@ -145,12 +163,18 @@ object KmAppSettingPreferences {
             preferences.edit().putInt(KM_BOT_MESSAGE_DELAY_INTERVAL, delayInterval).apply()
         }
 
+    var botTypingIndicatorInterval: Int
+        get() = preferences.getInt(BOT_TYPING_INDICATOR_INTERVAL, 0)
+        private set(delayInterval) {
+            preferences.edit().putInt(BOT_TYPING_INDICATOR_INTERVAL, delayInterval).apply()
+        }
+
     @JvmStatic
     @CleanUpRequired(
         reason = "Not used anywhere"
     )
-    fun fetchAppSettingAsync(context: Context?) {
-        KmAppSettingTask(
+    fun fetchAppSettingAsync(context: Context) {
+        AppSettingUseCase.executeWithExecutor(
             context,
             Applozic.getInstance(context).applicationKey,
             object : KmCallback {
@@ -159,7 +183,7 @@ object KmAppSettingPreferences {
 
                 override fun onFailure(error: Any) {
                 }
-            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+            })
     }
 
     @JvmStatic
@@ -214,6 +238,7 @@ object KmAppSettingPreferences {
             primaryColor = it.primaryColor
             secondaryColor = it.secondaryColor
             kmBotMessageDelayInterval = it.botMessageDelayInterval
+            botTypingIndicatorInterval = it.botTypingIndicatorInterval
             chatSessionDeleteTime = it.sessionTimeout
             if (it.defaultUploadOverride != null) {
                 uploadOverrideUrl = it.defaultUploadOverride.url

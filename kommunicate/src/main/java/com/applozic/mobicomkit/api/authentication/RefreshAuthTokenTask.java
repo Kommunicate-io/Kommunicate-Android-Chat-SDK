@@ -10,6 +10,10 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
+
+@Deprecated
+@CleanUpRequired(reason = "Migrated RefreshAuthTokenTask to RefreshAuthTokenUseCase")
 public class RefreshAuthTokenTask extends AlAsyncTask<Void, Boolean> {
 
     private final String applicationId;

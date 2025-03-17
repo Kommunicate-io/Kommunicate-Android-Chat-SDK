@@ -85,7 +85,7 @@ object DatabaseMigrationHelper {
                 destinationDb.execSQL(createTableSql)
 
                 // Copy data from the table
-                val tableCursor: Cursor = sourceDb.rawQuery("SELECT * FROM $tableName", null)
+                val tableCursor: Cursor = sourceDb.query(tableName, null, null, null, null, null, null)
                 while (tableCursor.moveToNext()) {
                     // Build INSERT statement
                     val insertSql = StringBuilder("INSERT INTO $tableName VALUES (")

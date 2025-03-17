@@ -8,6 +8,10 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
+
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmUpdateConversationTask to UpdateConversationUseCase")
 public class KmUpdateConversationTask extends AlAsyncTask<Void, String> {
 
     private WeakReference<Context> context;

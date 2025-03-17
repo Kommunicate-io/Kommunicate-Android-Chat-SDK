@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.api.conversation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.ConversationRunnables;
@@ -117,7 +118,7 @@ public class SyncCallService {
                 Intent intent = new Intent(context, ConversationIntentService.class);
                 intent.putExtra(ConversationIntentService.SYNC, true);
                 if (message != null) {
-                    intent.putExtra(ConversationIntentService.AL_MESSAGE, message);
+                    intent.putExtra(ConversationIntentService.AL_MESSAGE,(Parcelable) message);
                 }
                 ConversationIntentService.enqueueWork(context, intent);
             }

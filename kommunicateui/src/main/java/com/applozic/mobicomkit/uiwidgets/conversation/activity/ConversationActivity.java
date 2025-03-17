@@ -33,6 +33,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -90,10 +92,12 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmActionCallback;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.MobicomkitUriListener;
+import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicommons.ApplozicService;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicommons.file.MediaPicker;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
@@ -117,12 +121,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.kommunicate.async.KmAutoSuggestionsAsyncTask;
 import io.kommunicate.async.KmSyncMessageTask;
+import io.kommunicate.usecase.AutoSuggestionsUseCase;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
-
-import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.REQUEST_CODE_MULTI_SELECT_GALLERY;
+import io.sentry.Hint;
+import io.sentry.Sentry;
 import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
 
 
@@ -196,10 +200,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private Toolbar toolbar;
     KmAttachmentsController kmAttachmentsController;
     PrePostUIMethods prePostUIMethods;
-
-    public ConversationActivity() {
-
-    }
+    private ActivityResultLauncher<PickVisualMediaRequest> imageVideoSelector = null;
 
     public static void addFragment(FragmentActivity fragmentActivity, Fragment fragmentToAdd, String fragmentTag) {
         FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
@@ -371,6 +372,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else {
             alCustomizationSettings = new AlCustomizationSettings();
         }
+        setupActivityResultCallback();
         configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
         themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
         if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundImageName())) {
@@ -381,7 +383,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
         setContentView(R.layout.quickconversion_activity);
         toolbar = findViewById(R.id.my_toolbar);
-
+        setupWindowInsets();
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
@@ -489,7 +491,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         LocalBroadcastManager.getInstance(this).registerReceiver(mobiComKitBroadcastReceiver, BroadcastService.getIntentFilter());
 
         if (KmUtils.isAgent(this)) {
-            new KmAutoSuggestionsAsyncTask(this, null).execute();
+            AutoSuggestionsUseCase.executeWithExecutor(this, null);
         }
 
         //the pre and post attachment write async task callbacks
@@ -511,6 +513,46 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (alCustomizationSettings.isUseDeviceDefaultLanguage()) {
             Applozic.setDefaultLanguage(this);
         }
+    }
+
+    private void setupWindowInsets() {
+        InsetHelper.configureSystemInsets(
+                toolbar,
+                -1,
+                0,
+                true
+        );
+    }
+
+    private void setupActivityResultCallback() {
+        imageVideoSelector = MediaPicker.INSTANCE.registerImageVideoPicker(
+                ConversationActivity.this,
+                uris -> {
+                    try {
+                        if (uris.isEmpty()) {
+                            KmToast.error(this, R.string.mobicom_no_attachment_warning, Toast.LENGTH_SHORT).show();
+                            return null;
+                        }
+                        if (uris.size() > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
+                            KmToast.error(this, R.string.mobicom_max_attachment_warning, Toast.LENGTH_SHORT).show();
+                            return null;
+                        }
+
+                        // Process URIs
+                        for (Uri uri: uris) {
+                            int returnCode = kmAttachmentsController.processFile(uri, alCustomizationSettings, prePostUIMethods);
+                            doReturnCodeActions(returnCode);
+                        }
+                    } catch (Exception exception) {
+                        Hint hint = new Hint();
+                        hint.set("error", "Caught exception while processing the selected attachments by users.");
+                        hint.set("type", "IMAGE_VIDEO_SELECTOR");
+                        Sentry.captureException(exception, hint);
+                    }
+                    return null;
+                },
+                alCustomizationSettings.isMultipleAttachmentSelectionEnabled()
+        );
     }
 
     @Override
@@ -613,29 +655,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     KmToast.error(ConversationActivity.this, R.string.unable_to_fetch_location, Toast.LENGTH_LONG).show();
                 }
                 return;
-            }
-
-            if (requestCode == REQUEST_CODE_MULTI_SELECT_GALLERY) {
-                try {
-                    final ClipData clipData = data.getClipData();
-                    if (clipData == null) {
-                        final Uri singleFileUri = (data == null ? null : data.getData());
-                        int returnCode = kmAttachmentsController.processFile(singleFileUri, alCustomizationSettings, prePostUIMethods);
-                        doReturnCodeActions(returnCode);
-                    } else {
-                        int itemCount = clipData.getItemCount();
-                        if (itemCount > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
-                            KmToast.error(this, R.string.mobicom_max_attachment_warning, Toast.LENGTH_SHORT).show();
-                        } else {
-                            for (int i = 0; i < itemCount; i++) {
-                                int returnCode = kmAttachmentsController.processFile(clipData.getItemAt(i).getUri(), alCustomizationSettings, prePostUIMethods);
-                                doReturnCodeActions(returnCode);
-                            }
-                        }
-                    }
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1167,11 +1186,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         if (Utils.hasMarshmallow() && PermissionsUtils.checkSelfForStoragePermission(this)) {
             applozicPermission.requestStoragePermissions(KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
         } else {
-            Intent contentChooserIntent = FileUtils.createGetContentIntent(FileUtils.GalleryFilterOptions.IMAGE_VIDEO, getPackageManager(), true);
-            contentChooserIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            contentChooserIntent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-            Intent intentPick = Intent.createChooser(contentChooserIntent, getString(R.string.select_file));
-            startActivityForResult(intentPick, REQUEST_CODE_MULTI_SELECT_GALLERY);
+            if (imageVideoSelector != null) {
+                MediaPicker.INSTANCE.createMediaPickerIntent(imageVideoSelector, FileUtils.GalleryFilterOptions.IMAGE_VIDEO);
+            }else  {
+                KmToast.error(ConversationActivity.this, "Unable to process attachment", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

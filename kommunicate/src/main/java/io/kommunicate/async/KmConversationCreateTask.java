@@ -9,9 +9,12 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KMStartChatHandler;
 import io.kommunicate.callbacks.KmStartConversationHandler;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmConversationCreateTask to ConversationCreateTask")
 public class KmConversationCreateTask extends AsyncTask<Void, Void, ChannelFeedApiResponse> {
     private WeakReference<Context> context;
     private ChannelService channelService;
@@ -56,19 +59,19 @@ public class KmConversationCreateTask extends AsyncTask<Void, Void, ChannelFeedA
                     startChatHandler.onSuccess(channelService.getChannel(channelFeedApiResponse.getResponse()), context.get());
                 }
             } else {
-                sendFailureResult(channelFeedApiResponse);
+                sendFailureResult(null);
             }
         } else {
             sendFailureResult(null);
         }
     }
 
-    private void sendFailureResult(ChannelFeedApiResponse channelFeedApiResponse) {
+    private void sendFailureResult(Exception exception) {
         if (startConversationHandler != null) {
-            startConversationHandler.onFailure(channelFeedApiResponse, context.get());
+            startConversationHandler.onFailure(exception, context.get());
         }
         if (startChatHandler != null) {
-            startChatHandler.onFailure(channelFeedApiResponse, context.get());
+            startChatHandler.onFailure(exception, context.get());
         }
     }
 }

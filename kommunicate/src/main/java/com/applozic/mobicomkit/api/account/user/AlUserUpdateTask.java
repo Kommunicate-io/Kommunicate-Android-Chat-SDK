@@ -8,6 +8,10 @@ import com.applozic.mobicommons.task.AlAsyncTask;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
+
+@Deprecated
+@CleanUpRequired(reason = "Migrated AlUserUpdateTask to UserUpdateUseCase")
 public class AlUserUpdateTask extends AlAsyncTask<Void, ApiResponse> {
     private WeakReference<Context> context;
     private User user;

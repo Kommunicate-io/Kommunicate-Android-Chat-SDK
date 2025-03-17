@@ -137,6 +137,7 @@ public class KmAppSettingModel extends JsonMarker {
         private UploadOverride defaultUploadOverride;
         private boolean disableChatWidget;
         private int csatRatingBase = 3;
+        private int botTypingIndicatorInterval;
 
         public String getPosition() {
             return position;
@@ -225,6 +226,14 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setCsatRatingBase(int csatRatingBase) {
             this.csatRatingBase = csatRatingBase;
+        }
+
+        public int getBotTypingIndicatorInterval() {
+            return botTypingIndicatorInterval;
+        }
+
+        public void setBotTypingIndicatorInterval(int botTypingIndicatorInterval) {
+            this.botTypingIndicatorInterval = botTypingIndicatorInterval;
         }
     }
 

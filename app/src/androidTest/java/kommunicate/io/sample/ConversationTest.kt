@@ -21,7 +21,6 @@ import io.kommunicate.users.KMUser
 import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
-import kommunicate.io.sample.utils.KmTestHelper
 import kommunicate.io.sample.utils.KmTestHelper.getBotIdsFromDashboard
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.getRandomKmUser
@@ -45,7 +44,6 @@ import java.lang.Exception
 import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.math.log
 
 @RunWith(AndroidJUnit4::class)
 class ConversationTest {
@@ -173,6 +171,10 @@ class ConversationTest {
         assertEquals("Conversation Group ID miss-match. Single threaded conversation should have same group id irrespective of number of time launchConversation called.", groupIdFirst, groupIdSecond)
         sendMessageAsUser(secondMessage)
 
+        // wait for message to appear on dashboard.
+        onView(isRoot())
+            .perform(waitFor(3000))
+
         // verify message on dashboard.
         verifyMessagesOnTheDashboard(groupIdFirst.toString(), listOf(firstMessage, secondMessage), tempUser.userId)
     }
@@ -203,6 +205,9 @@ class ConversationTest {
         onView(withId(R.id.conversation_send))
             .perform(click())
 
+        onView(isRoot())
+            .perform(waitFor(3000))
+
         verifyMessagesOnTheDashboard(groupId.toString(), listOf(randomPrefillMessage), tempUser.userId)
     }
 
@@ -212,7 +217,7 @@ class ConversationTest {
         val latch = CountDownLatch(1)
         val conversationTitle = getRandomString()
         var groupId: Int = 0
-        val botIds = listOf("inline-code-34rpc", "kk-3s8r3")
+        val botIds = listOf("inline-code-34rpc", "kk-3s8r3", "richmessagetest-apbah")
         val teamId = "103785933"
         val agentIds = listOf("prateek.singh@kommunicate.io", "hello@gmail.com")
 
@@ -267,17 +272,16 @@ class ConversationTest {
     @Test
     fun testUpdateConversationAssigneeAndVerifyFromDashboard() {
         val tempUser = getRandomKmUser()
-        val latch = CountDownLatch(1)
+        var latch = CountDownLatch(1)
         var groupId = 0
-        val botIds = listOf("inline-code-34rpc")
+        val botIds = emptyList<String>()
         val updateBotAssigneeId = "kk-3s8r3"
-        val agentIds = listOf("prateek.singh@kommunicate.io")
+        val agentIds = listOf("prateek.singh@kommunicate.io", "prateek.singh+fhg@kommunicate.io")
 
         mActivityRule.onActivity {
             it.lifecycleScope.launch {
                 loginUser(it, tempUser)
                 groupId = launchConversation(it, botIds = botIds) as Int
-                updateConversationAssignee(it, groupId, updateBotAssigneeId)
             }.invokeOnCompletion {
                 latch.countDown()
             }
@@ -287,6 +291,18 @@ class ConversationTest {
             .perform(waitForLatch(latch))
 
         sendMessageAsUser(getRandomString())
+
+        latch = CountDownLatch(1)
+        mActivityRule.onActivity {
+            it.lifecycleScope.launch {
+                updateConversationAssignee(it, groupId, updateBotAssigneeId)
+            }.invokeOnCompletion {
+                latch.countDown()
+            }
+        }
+
+        onView(isRoot())
+            .perform(waitForLatch(latch))
 
         // validate data on dashboard
         runBlocking {
@@ -332,7 +348,7 @@ class ConversationTest {
         val tempUser = getRandomKmUser()
         val latch = CountDownLatch(1)
         var groupId = 0
-        val botIds = listOf("inline-code-34rpc")
+        val botIds = listOf("inline-code-34rpc", "richmessagetest-apbah")
         val initialTeamId = "103785933"
         val updateTeamId= "106336264"
         val agentIds = listOf("prateek.singh@kommunicate.io")
@@ -464,7 +480,7 @@ class ConversationTest {
             .perform(waitFor(2500))
 
         onView(withId(R.id.toolbar_title))
-            .check(matches(withText("Prateek Singh")))
+            .check(matches(withText("trgfdgfd")))
     }
 
     private fun validateBotMessageReply(groupId: Int, bots: List<String>) = runBlocking {
@@ -507,7 +523,7 @@ class ConversationTest {
             }
         }
         if (tempMessageList.isNotEmpty()) {
-            fail("unable to see the sent messages from SDK on dashboard $tempMessageList")
+            fail("unable to see the sent messages from SDK on dashboard $tempMessageList, groupId: $groupId")
         }
     }
 

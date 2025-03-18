@@ -1,6 +1,6 @@
 package io.kommunicate.models;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.commons.json.JsonMarker;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;

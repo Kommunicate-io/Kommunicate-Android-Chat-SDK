@@ -33,34 +33,34 @@
             tools:node="merge" />
 
         <service
-            android:name="com.applozic.mobicomkit.api.conversation.MessageIntentService"
+            android:name=".devkit.api.conversation.MessageIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name="com.applozic.mobicomkit.api.conversation.ApplozicIntentService"
+            android:name=".devkit.api.conversation.ApplozicIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name="com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService"
+            android:name=".devkit.api.conversation.ApplozicMqttIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name="com.applozic.mobicomkit.api.people.UserIntentService"
+            android:name=".devkit.api.people.UserIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
 
         <service
-            android:name="com.applozic.mobicomkit.api.conversation.ConversationIntentService"
+            android:name=".devkit.api.conversation.ConversationIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
 
         <receiver
-            android:name="com.applozic.mobicomkit.broadcast.TimeChangeBroadcastReceiver"
+            android:name=".devkit.broadcast.TimeChangeBroadcastReceiver"
             android:exported="true"
             tools:node="merge">
             <intent-filter>
@@ -70,7 +70,7 @@
         </receiver>
 
         <receiver
-            android:name="com.applozic.mobicomkit.broadcast.ConnectivityReceiver"
+            android:name=".devkit.broadcast.ConnectivityReceiver"
             android:enabled="true"
             android:exported="true"
             tools:node="merge">

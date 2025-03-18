@@ -7,7 +7,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
 import io.kommunicate.KmConversationBuilder
 import io.kommunicate.Kommunicate
 import io.kommunicate.callbacks.KMLoginHandler

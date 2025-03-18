@@ -2,16 +2,15 @@ package io.kommunicate;
 
 import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.feed.GroupInfoUpdate;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
+import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.feed.GroupInfoUpdate;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Channel;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import io.kommunicate.callbacks.KmCallback;
-import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.usecase.AssigneeUpdateUseCase;

@@ -1,7 +1,7 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.MobiComKitClientService
+import io.kommunicate.devkit.api.MobiComKitClientService
 import io.kommunicate.callbacks.KmAwayMessageHandler
 import io.kommunicate.models.KmApiResponse
 import io.kommunicate.services.KmService

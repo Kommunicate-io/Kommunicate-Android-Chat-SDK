@@ -1,10 +1,8 @@
 package io.kommunicate.users;
 
-import com.applozic.mobicomkit.feed.ErrorResponseFeed;
+import io.kommunicate.devkit.feed.ErrorResponseFeed;
 
 import java.util.List;
-
-import io.kommunicate.users.KmContact;
 
 /**
  * Created by ashish on 30/01/18.

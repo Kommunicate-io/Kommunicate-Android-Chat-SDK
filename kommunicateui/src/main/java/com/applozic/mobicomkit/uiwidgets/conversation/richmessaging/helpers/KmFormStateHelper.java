@@ -1,10 +1,10 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.helpers;
 
-import com.applozic.mobicomkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmFormStateModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.KmRichMessageModel;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -1,6 +1,6 @@
 package io.kommunicate.callbacks;
 
-import com.applozic.mobicomkit.feed.ErrorResponseFeed;
+import io.kommunicate.devkit.feed.ErrorResponseFeed;
 
 import java.util.List;
 

@@ -1,15 +1,10 @@
 package kommunicate.io.sample.utils
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.test.core.app.ActivityScenario
-import com.applozic.mobicomkit.api.conversation.Message
+import io.kommunicate.devkit.api.conversation.Message
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -22,8 +17,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 

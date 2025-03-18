@@ -3,9 +3,9 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.api.conversation.SyncCallService;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.devkit.api.conversation.SyncCallService;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.commons.core.utils.Utils;
 
 import java.lang.ref.WeakReference;
 

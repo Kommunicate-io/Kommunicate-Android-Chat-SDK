@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity;
-import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
+import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
 
 /**
  * Created by sunil on 22/1/16.

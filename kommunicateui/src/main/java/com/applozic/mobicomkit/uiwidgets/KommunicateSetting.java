@@ -9,9 +9,9 @@ import android.text.TextUtils;
 
 import androidx.core.app.NavUtils;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.file.FileUtils;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.file.FileUtils;
 
 import java.util.HashMap;
 import java.util.Map;

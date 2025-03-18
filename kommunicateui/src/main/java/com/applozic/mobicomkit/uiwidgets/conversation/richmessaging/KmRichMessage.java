@@ -13,15 +13,15 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applozic.mobicomkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.callbacks.KmRichMessageListener;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.KmRichMessageModel;
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.utils.KmThemeHelper;
-import com.applozic.mobicommons.commons.core.utils.DateUtils;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.commons.commons.core.utils.DateUtils;
+import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -1,9 +1,9 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.notification.MuteNotificationRequest
-import com.applozic.mobicomkit.channel.service.ChannelService
-import com.applozic.mobicomkit.feed.ApiResponse
+import io.kommunicate.devkit.api.notification.MuteNotificationRequest
+import io.kommunicate.devkit.channel.service.ChannelService
+import io.kommunicate.devkit.feed.ApiResponse
 import io.kommunicate.R
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult

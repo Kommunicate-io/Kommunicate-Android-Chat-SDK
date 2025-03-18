@@ -1,6 +1,6 @@
 package io.kommunicate.callbacks;
 
-import com.applozic.mobicomkit.listners.AlLogoutHandler;
+import io.kommunicate.devkit.listners.AlLogoutHandler;
 
 /**
  * Created by ashish on 23/01/18.

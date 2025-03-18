@@ -1,7 +1,7 @@
 package io.kommunicate.usecase
 
-import com.applozic.mobicomkit.feed.ApiResponse
-import com.applozic.mobicommons.ApplozicService
+import io.kommunicate.devkit.feed.ApiResponse
+import io.kommunicate.commons.ApplozicService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.kommunicate.callbacks.KmCallback

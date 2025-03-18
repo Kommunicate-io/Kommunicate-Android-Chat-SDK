@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.ApplozicService;
+import io.kommunicate.commons.ApplozicService;
 
 import java.util.HashMap;
 import java.util.HashSet;

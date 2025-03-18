@@ -15,8 +15,8 @@ import androidx.core.app.ActivityCompat;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.KmSpeechSetting;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmRecordButton;
-import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
+import io.kommunicate.commons.commons.core.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Locale;

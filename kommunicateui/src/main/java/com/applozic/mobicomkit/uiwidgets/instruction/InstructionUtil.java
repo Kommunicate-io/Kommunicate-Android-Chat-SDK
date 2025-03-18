@@ -7,8 +7,8 @@ import android.os.Handler;
 import android.view.Gravity;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.broadcast.BroadcastService;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.broadcast.BroadcastService;
 
 import java.util.HashMap;
 import java.util.Map;

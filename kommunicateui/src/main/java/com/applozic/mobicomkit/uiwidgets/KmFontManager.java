@@ -5,8 +5,8 @@ import android.graphics.Typeface;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.models.KmFontModel;
-import com.applozic.mobicommons.json.Exclude;
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.commons.json.Exclude;
+import io.kommunicate.commons.json.JsonMarker;
 
 public class KmFontManager extends JsonMarker {
 

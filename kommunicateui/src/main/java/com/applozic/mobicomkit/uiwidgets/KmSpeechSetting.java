@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.commons.json.JsonMarker;
 
 public class KmSpeechSetting extends JsonMarker {
     private boolean enabled;

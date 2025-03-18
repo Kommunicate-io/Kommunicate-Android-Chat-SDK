@@ -4,9 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.feed.ChannelFeed;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.feed.ChannelFeed;
 import com.applozic.mobicomkit.uiwidgets.R;
 
 import annotations.CleanUpRequired;

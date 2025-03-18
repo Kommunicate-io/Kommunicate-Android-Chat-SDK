@@ -2,7 +2,7 @@ package io.kommunicate;
 
 import android.content.Context;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.commons.json.JsonMarker;
 
 import java.util.List;
 import java.util.Map;

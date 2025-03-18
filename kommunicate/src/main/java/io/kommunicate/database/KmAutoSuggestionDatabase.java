@@ -10,7 +10,7 @@ import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import android.text.TextUtils;
 
-import com.applozic.mobicommons.ApplozicService;
+import io.kommunicate.commons.ApplozicService;
 
 import java.util.ArrayList;
 import java.util.List;

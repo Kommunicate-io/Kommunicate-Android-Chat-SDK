@@ -1,9 +1,9 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse
-import com.applozic.mobicomkit.listners.AlPushNotificationHandler
+import io.kommunicate.devkit.api.account.register.RegisterUserClientService
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.listners.AlPushNotificationHandler
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure

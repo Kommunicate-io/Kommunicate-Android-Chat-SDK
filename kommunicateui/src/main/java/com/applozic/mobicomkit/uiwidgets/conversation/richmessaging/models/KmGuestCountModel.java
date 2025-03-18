@@ -1,6 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.commons.json.JsonMarker;
 
 import java.util.ArrayList;
 import java.util.List;

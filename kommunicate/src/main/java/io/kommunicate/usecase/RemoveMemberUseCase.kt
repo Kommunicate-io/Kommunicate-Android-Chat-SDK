@@ -1,8 +1,6 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.MobiComKitConstants
-import com.applozic.mobicomkit.channel.service.ChannelService
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure
@@ -11,6 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import io.kommunicate.R
 import io.kommunicate.callbacks.TaskListener
+import io.kommunicate.devkit.api.MobiComKitConstants
+import io.kommunicate.devkit.channel.service.ChannelService
 
 class RemoveMemberUseCase(
     private val context: Context,

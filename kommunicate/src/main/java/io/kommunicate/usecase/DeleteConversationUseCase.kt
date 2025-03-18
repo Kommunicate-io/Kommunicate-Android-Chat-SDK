@@ -8,8 +8,8 @@ import io.kommunicate.utils.onFailure
 import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.applozic.mobicomkit.channel.service.ChannelService
 import io.kommunicate.callbacks.TaskListener
+import io.kommunicate.devkit.channel.service.ChannelService
 
 class DeleteConversationUseCase(
     private val context: Context,

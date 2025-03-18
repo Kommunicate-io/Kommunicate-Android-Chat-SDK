@@ -10,9 +10,9 @@ import io.kommunicate.utils.onFailure
 import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.applozic.mobicommons.json.GsonUtils
 import com.google.gson.reflect.TypeToken
 import io.kommunicate.callbacks.TaskListener
+import io.kommunicate.commons.json.GsonUtils
 
 class GetBotTypeUseCase(
     private val context: Context,

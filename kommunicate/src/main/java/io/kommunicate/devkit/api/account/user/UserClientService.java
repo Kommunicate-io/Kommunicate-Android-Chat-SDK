@@ -52,6 +52,7 @@ public class UserClientService extends MobiComKitClientService {
     public static final String USER_DETAILS_URL = "/rest/ws/user/detail?";
     public static final String ONLINE_USER_LIST_URL = "/rest/ws/user/ol/list";
     public static final String REGISTERED_USER_LIST_URL = "/rest/ws/user/filter";
+    public static final String BUSINESS_SETTINGS_URL = "/rest/ws/team/business-settings";
     public static final String USER_PROFILE_UPDATE_URL = "/rest/ws/user/update";
     public static final String USER_READ_URL = "/rest/ws/user/read";
     public static final String USER_DETAILS_LIST_POST_URL = "/rest/ws/user/detail";
@@ -112,6 +113,10 @@ public class UserClientService extends MobiComKitClientService {
 
     public String getRegisteredUserListUrl() {
         return getBaseUrl() + REGISTERED_USER_LIST_URL;
+    }
+
+    public String getBusinessSettingsUrl() {
+        return getBaseUrl() + BUSINESS_SETTINGS_URL;
     }
 
     public String getUserDetailsListPostUrl() {
@@ -399,6 +404,16 @@ public class UserClientService extends MobiComKitClientService {
             response = httpRequestUtils.getResponse(getRegisteredUserListUrl() + url, APPLICATION_JSON, APPLICATION_JSON);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return response;
+    }
+
+    public String getBusinessHoursData() {
+        String response;
+        try {
+            response = httpRequestUtils.getResponse(getBusinessSettingsUrl(), APPLICATION_JSON, APPLICATION_JSON);
+        } catch (Exception e) {
+            return null;
         }
         return response;
     }

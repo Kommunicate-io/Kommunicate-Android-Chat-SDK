@@ -90,7 +90,7 @@
 
         <meta-data
             android:name="com.applozic.server.url"
-            android:value="https://chat.kommunicate.io" />
+            android:value="https://chat-test.kommunicate.io" />
 
         <meta-data
             android:name="com.applozic.mqtt.server.url"

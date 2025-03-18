@@ -148,6 +148,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmSpeechToText;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmTextToSpeech;
+import com.applozic.mobicomkit.uiwidgets.data.BusinessSettingsResponse;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity;
@@ -173,6 +174,7 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
+import com.applozic.mobicomkit.uiwidgets.usecase.BusinessHoursDetailUseCase;
 import com.applozic.mobicomkit.uiwidgets.usecase.UserDetailUseCase;
 import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
@@ -400,6 +402,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isRecordOptionEnabled;
     protected boolean isUserGivingEmail;
     protected RelativeLayout conversationRootLayout;
+    protected TextView businessSettingsTextView;
     protected KmConversationInfoView kmConversationInfoView;
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
@@ -602,6 +605,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         conversationRootLayout = (RelativeLayout) list.findViewById(R.id.rl_conversation_layout);
+        businessSettingsTextView = (TextView) list.findViewById(R.id.business_conversation);
         attachmentIconLayout = (LinearLayout) list.findViewById(R.id.attachment_icon_layout);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
         linearLayoutManager = new KmLinearLayoutManager(getActivity());
@@ -3488,6 +3492,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     loadAwayMessage();
                 }
                 processSupportGroupDetails(channel);
+                processBusinessHourDetails(channel);
                 Applozic.subscribeToTyping(getContext(), channel, contact);
             }
 
@@ -3534,6 +3539,25 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (kmTypingView != null) {
             kmTypingView.setVisibility(GONE);
         }
+    }
+
+    private void processBusinessHourDetails(Channel channel) {
+        BusinessHoursDetailUseCase.executeWithExecutor(
+                requireContext(),
+                channel.getTeamId(),
+                new TaskListener<BusinessSettingsResponse>() {
+                    @Override
+                    public void onSuccess(BusinessSettingsResponse status) {
+                        businessSettingsTextView.setVisibility(VISIBLE);
+                        businessSettingsTextView.setText(status.getMessage());
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Exception error) {
+                        businessSettingsTextView.setVisibility(GONE);
+                        businessSettingsTextView.setText(error.getMessage());
+                    }
+                });
     }
 
     public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {

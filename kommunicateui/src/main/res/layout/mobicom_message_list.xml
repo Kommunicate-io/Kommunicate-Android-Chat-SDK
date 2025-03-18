@@ -3,8 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rl_conversation_layout"
-    >
+    android:id="@+id/rl_conversation_layout">
 
     <FrameLayout
         android:id="@+id/idProgressBarLayout"
@@ -45,11 +44,17 @@
                 android:drawSelectorOnTop="true" />
         </FrameLayout>
 
-            <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmConversationInfoView
-                android:id="@+id/km_conversation_info_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
+        <com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmConversationInfoView
+            android:id="@+id/km_conversation_info_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/business_conversation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:layout_width="fill_parent"

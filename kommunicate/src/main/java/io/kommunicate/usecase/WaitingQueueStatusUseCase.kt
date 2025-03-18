@@ -1,7 +1,7 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.channel.service.ChannelClientService
+import io.kommunicate.devkit.channel.service.ChannelClientService
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.models.InQueueData
 import io.kommunicate.utils.APIResult

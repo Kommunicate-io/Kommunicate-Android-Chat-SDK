@@ -2,8 +2,8 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2;
 
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.commons.json.GsonUtils;
 
 import java.util.Map;
 

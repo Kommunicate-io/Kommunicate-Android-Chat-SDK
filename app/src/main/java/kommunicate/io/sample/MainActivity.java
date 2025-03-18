@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.commons.commons.core.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,8 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 
 import java.util.HashMap;
 import java.util.Map;

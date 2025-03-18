@@ -6,11 +6,11 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.devkit.api.account.user.User;
+import io.kommunicate.devkit.contact.BaseContactService;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.contact.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.kommunicate.async.KmConversationRemoveMemberTask;
+import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.FeedbackDetailsData;

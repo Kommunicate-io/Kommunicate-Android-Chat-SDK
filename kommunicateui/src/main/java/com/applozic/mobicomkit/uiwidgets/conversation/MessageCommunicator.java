@@ -1,6 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
 
-import com.applozic.mobicomkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.Message;
 
 /**
  * Created by devashish on 10/2/15.

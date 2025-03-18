@@ -154,14 +154,14 @@ fun hasWidthGreaterThan(minWidth: Int): Matcher<View> {
         }
 
         override fun matchesSafely(item: View?): Boolean {
-            return (item?.width ?: 0) > 0
+            return (item?.width ?: 0) > minWidth
         }
     }
 }
 
 fun drawableToBitmap(drawable: Drawable): Bitmap {
     if (drawable is BitmapDrawable) {
-        drawable.bitmap
+        return drawable.bitmap
     }
 
     val bitmap = Bitmap.createBitmap(

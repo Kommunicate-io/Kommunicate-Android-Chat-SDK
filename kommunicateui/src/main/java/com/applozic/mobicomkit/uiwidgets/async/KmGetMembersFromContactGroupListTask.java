@@ -3,13 +3,13 @@ package com.applozic.mobicomkit.uiwidgets.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.api.account.user.UserService;
-import com.applozic.mobicomkit.channel.service.ChannelClientService;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.feed.ChannelFeed;
-import com.applozic.mobicomkit.feed.ChannelFeedListResponse;
-import com.applozic.mobicomkit.feed.ErrorResponseFeed;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.devkit.api.account.user.UserService;
+import io.kommunicate.devkit.channel.service.ChannelClientService;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.feed.ChannelFeed;
+import io.kommunicate.devkit.feed.ChannelFeedListResponse;
+import io.kommunicate.devkit.feed.ErrorResponseFeed;
+import io.kommunicate.commons.json.GsonUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.HashSet;

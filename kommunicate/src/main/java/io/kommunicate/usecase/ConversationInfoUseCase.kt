@@ -1,9 +1,8 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.channel.service.ChannelService
-import com.applozic.mobicommons.people.channel.Channel
-import io.kommunicate.callbacks.KmGetConversationInfoCallback
+import io.kommunicate.devkit.channel.service.ChannelService
+import io.kommunicate.commons.people.channel.Channel
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor

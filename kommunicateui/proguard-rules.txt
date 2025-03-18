@@ -16,11 +16,11 @@
 #   public *;
 #}
 #keep JSON classes
--keep class * extends com.applozic.mobicommons.json.JsonMarker {
+-keep class * extends io.kommunicate.commons.json.JsonMarker {
     !static !transient <fields>;
 }
 
--keepclassmembernames class * extends com.applozic.mobicommons.json.JsonParcelableMarker {
+-keepclassmembernames class * extends io.kommunicate.commons.json.JsonParcelableMarker {
     !static !transient <fields>;
 }
 

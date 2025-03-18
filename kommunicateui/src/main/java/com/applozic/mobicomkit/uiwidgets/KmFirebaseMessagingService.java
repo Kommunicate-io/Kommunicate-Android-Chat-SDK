@@ -2,7 +2,7 @@ package com.applozic.mobicomkit.uiwidgets;
 
 import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
 
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.commons.commons.core.utils.Utils;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 

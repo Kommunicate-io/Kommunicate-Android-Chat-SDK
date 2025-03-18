@@ -25,21 +25,21 @@ import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.api.attachment.AttachmentManager;
-import com.applozic.mobicomkit.api.attachment.AttachmentTask;
-import com.applozic.mobicomkit.api.attachment.AttachmentViewProperties;
-import com.applozic.mobicomkit.api.conversation.Message;
-import com.applozic.mobicomkit.api.conversation.MessageIntentService;
-import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import io.kommunicate.devkit.api.MobiComKitConstants;
+import io.kommunicate.devkit.api.attachment.AttachmentManager;
+import io.kommunicate.devkit.api.attachment.AttachmentTask;
+import io.kommunicate.devkit.api.attachment.AttachmentViewProperties;
+import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.MessageIntentService;
+import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.file.FileUtils;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.json.GsonUtils;
 
 import java.io.File;
 

@@ -1,8 +1,8 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.account.user.UserService
-import com.applozic.mobicomkit.feed.ApiResponse
+import io.kommunicate.devkit.api.account.user.UserService
+import io.kommunicate.devkit.feed.ApiResponse
 import io.kommunicate.callbacks.KmCallback
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor

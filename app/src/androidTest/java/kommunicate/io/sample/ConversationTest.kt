@@ -10,7 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
 import com.applozic.mobicomkit.uiwidgets.R
 import io.kommunicate.KmConversationBuilder
 import io.kommunicate.KmSettings
@@ -274,7 +274,7 @@ class ConversationTest {
         val tempUser = getRandomKmUser()
         var latch = CountDownLatch(1)
         var groupId = 0
-        val botIds = listOf("inline-code-34rpc")
+        val botIds = emptyList<String>()
         val updateBotAssigneeId = "kk-3s8r3"
         val agentIds = listOf("prateek.singh@kommunicate.io", "prateek.singh+fhg@kommunicate.io")
 

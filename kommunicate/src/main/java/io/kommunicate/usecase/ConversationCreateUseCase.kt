@@ -1,13 +1,11 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.people.ChannelInfo
-import com.applozic.mobicomkit.channel.service.ChannelService
-import com.applozic.mobicomkit.feed.ChannelFeedApiResponse
-import com.applozic.mobicommons.people.channel.Channel
+import io.kommunicate.devkit.api.people.ChannelInfo
+import io.kommunicate.devkit.channel.service.ChannelService
+import io.kommunicate.devkit.feed.ChannelFeedApiResponse
 import io.kommunicate.callbacks.KMStartChatHandler
 import io.kommunicate.callbacks.KmStartConversationHandler
-import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure

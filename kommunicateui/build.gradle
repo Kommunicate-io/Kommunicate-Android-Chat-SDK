@@ -13,10 +13,10 @@ android {
     }
     defaultConfig {
         compileSdk 34
-        targetSdkVersion 34
+        targetSdkVersion 35
         minSdkVersion 21
         versionCode 1
-        versionName "2.11.1"
+        versionName "2.13.0"
         buildToolsVersion = '34.0.0'
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true

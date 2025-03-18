@@ -2,7 +2,7 @@ package io.kommunicate.models;
 
 import android.text.InputType;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.commons.json.JsonMarker;
 
 import java.util.List;
 

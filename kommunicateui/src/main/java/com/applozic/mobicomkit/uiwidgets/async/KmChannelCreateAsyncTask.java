@@ -3,10 +3,10 @@ package com.applozic.mobicomkit.uiwidgets.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.api.people.ChannelInfo;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
-import com.applozic.mobicommons.people.channel.Channel;
+import io.kommunicate.devkit.api.people.ChannelInfo;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.feed.ChannelFeedApiResponse;
+import io.kommunicate.commons.people.channel.Channel;
 
 /**
  * Created by Sunil on 12/26/2016.

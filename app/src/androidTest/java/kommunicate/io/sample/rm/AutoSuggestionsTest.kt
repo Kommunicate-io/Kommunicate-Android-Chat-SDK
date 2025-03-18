@@ -98,6 +98,6 @@ class AutoSuggestionsTest {
         val message = getLastMessageFromServer(chatAPI, chatAuthToken, groupId.toString())
             ?: return fail("Unable to fetch last message from the server.")
 
-        assertEquals("Message doesn't match", message.get("message"), "London")
+        assertEquals("Message doesn't match", message.get("message").asString, "London")
     }
 }

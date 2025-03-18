@@ -3,10 +3,10 @@ package io.kommunicate.services;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.HttpRequestUtils;
-import com.applozic.mobicomkit.api.MobiComKitClientService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.api.HttpRequestUtils;
+import io.kommunicate.devkit.api.MobiComKitClientService;
+import io.kommunicate.commons.commons.core.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;

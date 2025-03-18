@@ -5,8 +5,8 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 
-import com.applozic.mobicomkit.api.MobiComKitClientService;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.devkit.api.MobiComKitClientService;
+import io.kommunicate.commons.json.GsonUtils;
 
 import java.lang.ref.WeakReference;
 

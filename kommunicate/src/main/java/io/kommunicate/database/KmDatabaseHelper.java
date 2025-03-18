@@ -4,11 +4,11 @@ import android.content.Context;
 import net.sqlcipher.database.SQLiteDatabase;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.MobiComKitClientService;
-import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
-import com.applozic.mobicommons.ALSpecificSettings;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.DBUtils;
+import io.kommunicate.devkit.api.MobiComKitClientService;
+import io.kommunicate.devkit.database.MobiComDatabaseHelper;
+import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.commons.core.utils.DBUtils;
 
 public class KmDatabaseHelper extends MobiComDatabaseHelper {
     private static final int DB_VERSION = 1;

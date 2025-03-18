@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.contact.BaseContactService;
 import io.kommunicate.commons.ApplozicService;
@@ -26,6 +28,7 @@ import io.kommunicate.models.KmApiResponse;
 import io.kommunicate.models.KmAutoSuggestionModel;
 import io.kommunicate.models.KmFeedback;
 import io.kommunicate.usecase.ConversationFeedbackUseCase;
+import io.kommunicate.usecase.RemoveMemberUseCase;
 import io.kommunicate.utils.KmConstants;
 
 /**
@@ -124,28 +127,24 @@ public class KmService {
         return null;
     }
 
-    public static void removeMembersFromConversation(final Context context, Integer channelKey, final Set<String> userIds, final KmRemoveMemberCallback listener) {
+    public static void removeMembersFromConversation(final Context context, Integer channelKey, final Set<String> userIds, final TaskListener<String> listener) {
         if (userIds == null || channelKey == null) {
             return;
         }
 
-        int i = 0;
         for (String userId : userIds) {
-            KmRemoveMemberCallback recListener = new KmRemoveMemberCallback() {
+            TaskListener<String> callback = new TaskListener<String>() {
                 @Override
-                public void onSuccess(String response, int i) {
-                    if (i == userIds.size() - 1) {
-                        listener.onSuccess(response, i);
-                    }
+                public void onSuccess(String response) {
+                    listener.onSuccess(response);
                 }
 
                 @Override
-                public void onFailure(String response, Exception e) {
-                    listener.onFailure(response, e);
+                public void onFailure(@NonNull Exception error) {
+                    listener.onFailure(error);
                 }
             };
-            new KmConversationRemoveMemberTask(context, channelKey, userId, i, recListener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            i++;
+            RemoveMemberUseCase.executeWithExecutor(context, channelKey, userId, callback);
         }
     }
 

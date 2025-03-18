@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import io.kommunicate.devkit.Applozic;
@@ -62,9 +63,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.kommunicate.async.KmDeleteConversationTask;
-import io.kommunicate.callbacks.KmCallback;
+import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.services.KmChannelService;
+import io.kommunicate.usecase.DeleteConversationUseCase;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
@@ -349,17 +350,22 @@ public class ConversationUIService {
                 setPositiveButton(R.string.delete_conversation, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new KmDeleteConversationTask(context, channel.getKey(), false, new KmCallback() {
-                            @Override
-                            public void onSuccess(Object message) {
-                                KmToast.success(context, R.string.conversation_delete_successful, Toast.LENGTH_SHORT).show();
-                            }
+                        DeleteConversationUseCase.executeWithExecutor(
+                                context,
+                                channel.getKey(),
+                                false,
+                                new TaskListener<String>() {
+                                    @Override
+                                    public void onSuccess(String status) {
+                                        KmToast.success(context, R.string.conversation_delete_successful, Toast.LENGTH_SHORT).show();
+                                    }
 
-                            @Override
-                            public void onFailure(Object error) {
-                                KmToast.error(context, R.string.conversation_delete_failed, Toast.LENGTH_SHORT).show();
-                            }
-                        }).execute();
+                                    @Override
+                                    public void onFailure(@NonNull Exception error) {
+                                        KmToast.error(context, R.string.conversation_delete_failed, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                        );
                     }
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

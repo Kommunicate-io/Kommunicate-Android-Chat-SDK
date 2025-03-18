@@ -10,9 +10,12 @@ import io.kommunicate.commons.ApplozicService;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.R;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmConversationRemoveMemberTask to RemoveMemberUseCase")
 public class KmConversationRemoveMemberTask extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<Context> context;

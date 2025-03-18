@@ -11,11 +11,14 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.models.MessageTypeKmApiResponse;
 import io.kommunicate.services.KmUserService;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmGetBotTypeTask to GetBotTypeUseCase")
 public class KmGetBotTypeTask extends AsyncTask<Void, Void, String> {
 
     private static final String RESPONSE_STRING_NULL = "Response string for bot details null.";
@@ -58,6 +61,8 @@ public class KmGetBotTypeTask extends AsyncTask<Void, Void, String> {
         }
     }
 
+    @Deprecated
+    @CleanUpRequired(reason = "Migrated BotDetailsResponseData to GetBotTypeUseCase.BotDetailsResponseData")
     public static class BotDetailsResponseData {
         public static final String PLATFORM_DIALOG_FLOW = "dialogflow";
 

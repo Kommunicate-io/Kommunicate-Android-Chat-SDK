@@ -222,12 +222,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.KmSettings;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.async.AgentGetStatusTask;
-import io.kommunicate.async.KmGetBotTypeTask;
-import io.kommunicate.async.KmGetDataAsyncTask;
 import io.kommunicate.callbacks.KmAwayMessageHandler;
-import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.callbacks.KmCharLimitCallback;
-import io.kommunicate.callbacks.KmRemoveMemberCallback;
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.database.KmAutoSuggestionDatabase;
 import io.kommunicate.models.FeedbackDetailsData;
@@ -238,6 +234,8 @@ import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
+import io.kommunicate.usecase.GetBotTypeUseCase;
+import io.kommunicate.usecase.GetDataUseCase;
 import io.kommunicate.usecase.MessageDeleteUseCase;
 import io.kommunicate.usecase.MuteGroupNotificationUseCase;
 import io.kommunicate.usecase.MuteUserNotificationUseCase;
@@ -461,13 +459,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    public void fetchBotType(Contact contact, KmCallback kmCallback) {
+    public void fetchBotType(Contact contact, TaskListener<String> kmCallback) {
         if (contact != null) {
             String botTypeLocal = KmBotPreference.getInstance(getContext()).getBotType(contact.getUserId());
             if (!TextUtils.isEmpty(botTypeLocal)) {
                 kmCallback.onSuccess(botTypeLocal);
             } else {
-                new KmGetBotTypeTask(getContext(), contact.getUserId(), kmCallback).execute();
+                GetBotTypeUseCase.executeWithExecutor(getContext(), contact.getUserId(), kmCallback);
             }
         }
     }
@@ -928,24 +926,30 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         if (isApiAutoSuggest) {
                             final AutoCompleteTextView autoCompleteTextView = (AutoCompleteTextView) messageEditText;
                             autoCompleteTextView.setThreshold(2);
-                            new KmGetDataAsyncTask(getContext(), autoSuggestUrl, APPLI_JSON, APPLI_JSON, s.toString().trim(), autoSuggestHeaders, new KmCallback() {
-                                @Override
-                                public void onSuccess(Object message) {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject((String) message);
-                                        autoCompleteTextView.setAdapter(getAdapter((KmAutoSuggestion.Source[]) GsonUtils.getObjectFromJson((String) jsonObject.get("data").toString(), KmAutoSuggestion.Source[].class)));
-                                        Utils.printLog(getContext(), TAG, "Fetching Autosuggestion from API");
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                            GetDataUseCase.executeWithExecutor(
+                                    getContext(),
+                                    autoSuggestUrl,
+                                    APPLI_JSON,
+                                    APPLI_JSON,
+                                    s.toString().trim(),
+                                    autoSuggestHeaders,
+                                    new TaskListener<>() {
+                                        @Override
+                                        public void onSuccess(String message) {
+                                            try {
+                                                JSONObject jsonObject = new JSONObject((String) message);
+                                                autoCompleteTextView.setAdapter(getAdapter((KmAutoSuggestion.Source[]) GsonUtils.getObjectFromJson((String) jsonObject.get("data").toString(), KmAutoSuggestion.Source[].class)));
+                                                Utils.printLog(getContext(), TAG, "Fetching Autosuggestion from API");
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
 
-                                @Override
-                                public void onFailure(Object error) {
-                                    Utils.printLog(getContext(), TAG, "Failed to fetch Autosuggestion from API");
-
-                                }
-                            }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                        @Override
+                                        public void onFailure(@NonNull Exception error) {
+                                            Utils.printLog(getContext(), TAG, "Failed to fetch Autosuggestion from API");
+                                        }
+                                    });
                         }
                         populateAutoSuggestion(true, s.toString(), null);
                     } else if (s.toString().trim().length() == 0) {
@@ -2116,17 +2120,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 isAssigneeDialogFlowBot = false;
                 toggleCharLimitExceededMessage(false, messageEditText.getText().length());
             } else {
-                fetchBotType(assignee, new KmCallback() {
+                fetchBotType(assignee, new TaskListener<String>() {
                     @Override
-                    public void onSuccess(Object botTypeResponseString) {
+                    public void onSuccess(String botTypeResponseString) {
                         if (messageEditText != null) {
-                            isAssigneeDialogFlowBot = KmGetBotTypeTask.BotDetailsResponseData.PLATFORM_DIALOG_FLOW.equals(botTypeResponseString);
+                            isAssigneeDialogFlowBot = "dialogflow".equals(botTypeResponseString);
                             toggleCharLimitExceededMessage(isAssigneeDialogFlowBot, messageEditText.getText().length());
                         }
                     }
 
                     @Override
-                    public void onFailure(Object error) {
+                    public void onFailure(Exception error) {
                     }
                 });
             }
@@ -5494,56 +5498,60 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        KmService.removeMembersFromConversation(context, channel.getKey(), botIds, new KmRemoveMemberCallback() {
-            @Override
-            public void onSuccess(String response, int index) {
-                GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(channel);
-                Map<String, String> metadata = channel.getMetadata();
-                if (metadata == null) {
-                    metadata = new HashMap<>();
-                }
-                metadata.put(Channel.CONVERSATION_ASSIGNEE, loggedInUserId);
-                groupInfoUpdate.setMetadata(metadata);
-                KmSettings.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new TaskListener<Context>() {
+        KmService.removeMembersFromConversation(
+                context,
+                channel.getKey(),
+                botIds,
+                new TaskListener<String>() {
                     @Override
-                    public void onSuccess(Context status) {
-                        Message message = new Message();
-
-                        message.setMessage(Utils.getString(context, R.string.km_assign_to_message) + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
-
-                        Map<String, String> metadata = new HashMap<>();
-                        metadata.put(KmService.KM_SKIP_BOT, Message.GroupMessageMetaData.TRUE.getValue());
-                        metadata.put(Message.BOT_ASSIGN, MobiComUserPreference.getInstance(context).getUserId());
-                        metadata.put(KmService.KM_NO_ALERT, Message.GroupMessageMetaData.TRUE.getValue());
-                        metadata.put(KmService.KM_BADGE_COUNT, Message.GroupMessageMetaData.FALSE.getValue());
-                        metadata.put(Message.MetaDataType.KEY.getValue(), Message.MetaDataType.ARCHIVE.getValue());
-                        message.setMetadata(metadata);
-                        message.setContentType(Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue());
-                        message.setGroupId(channel.getKey());
-                        new MobiComConversationService(context).sendMessage(message);
-
-                        showTakeOverFromBotLayout(false, null);
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
+                    public void onSuccess(String response) {
+                        GroupInfoUpdate groupInfoUpdate = new GroupInfoUpdate(channel);
+                        Map<String, String> metadata = channel.getMetadata();
+                        if (metadata == null) {
+                            metadata = new HashMap<>();
                         }
+                        metadata.put(Channel.CONVERSATION_ASSIGNEE, loggedInUserId);
+                        groupInfoUpdate.setMetadata(metadata);
+                        KmSettings.updateConversation(ApplozicService.getContext(getContext()), groupInfoUpdate, new TaskListener<Context>() {
+                            @Override
+                            public void onSuccess(Context status) {
+                                Message message = new Message();
+
+                                message.setMessage(Utils.getString(context, R.string.km_assign_to_message) + new ContactDatabase(context).getContactById(loggedInUserId).getDisplayName());
+
+                                Map<String, String> metadata = new HashMap<>();
+                                metadata.put(KmService.KM_SKIP_BOT, Message.GroupMessageMetaData.TRUE.getValue());
+                                metadata.put(Message.BOT_ASSIGN, MobiComUserPreference.getInstance(context).getUserId());
+                                metadata.put(KmService.KM_NO_ALERT, Message.GroupMessageMetaData.TRUE.getValue());
+                                metadata.put(KmService.KM_BADGE_COUNT, Message.GroupMessageMetaData.FALSE.getValue());
+                                metadata.put(Message.MetaDataType.KEY.getValue(), Message.MetaDataType.ARCHIVE.getValue());
+                                message.setMetadata(metadata);
+                                message.setContentType(Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue());
+                                message.setGroupId(channel.getKey());
+                                new MobiComConversationService(context).sendMessage(message);
+
+                                showTakeOverFromBotLayout(false, null);
+                                if (progressDialog != null) {
+                                    progressDialog.dismiss();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Exception error) {
+                                if (progressDialog != null) {
+                                    progressDialog.dismiss();
+                                }
+                            }
+                        });
                     }
 
                     @Override
-                    public void onFailure(Exception error) {
+                    public void onFailure(Exception e) {
                         if (progressDialog != null) {
                             progressDialog.dismiss();
                         }
                     }
                 });
-            }
-
-            @Override
-            public void onFailure(String response, Exception e) {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
-                }
-            }
-        });
     }
 
     @Override

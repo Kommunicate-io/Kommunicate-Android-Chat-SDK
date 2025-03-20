@@ -3546,6 +3546,25 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void processBusinessHourDetails(Channel channel) {
+        String subscription = KmAppSettingPreferences.getCurrentSubscriptionDetails();
+        Set<String> avlblPlans = new HashSet<>(Arrays.asList(
+                "trial",
+                "business_monthly_v7",
+                "business_yearly_v7",
+                "business_monthly_v7_inr",
+                "business_yearly_v7_inr",
+                "business_monthly_v8",
+                "business_yearly_v8",
+                "business_monthly_v8_inr",
+                "business_yearly_v8_inr"
+        ));
+        if (subscription == null
+                || (!avlblPlans.contains(subscription)
+                || !subscription.contains("business_"))
+        ) {
+            return;
+        }
+
         BusinessHoursDetailUseCase.executeWithExecutor(
                 requireContext(),
                 channel.getTeamId(),

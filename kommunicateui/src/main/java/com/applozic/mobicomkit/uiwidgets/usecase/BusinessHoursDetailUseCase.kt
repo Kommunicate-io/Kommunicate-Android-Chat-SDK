@@ -1,7 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.account.user.UserClientService
+
 import com.applozic.mobicomkit.uiwidgets.data.BusinessSettingsData
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
@@ -13,6 +13,7 @@ import com.applozic.mobicomkit.uiwidgets.data.BusinessSettingsResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.kommunicate.callbacks.TaskListener
+import io.kommunicate.devkit.api.account.user.UserClientService
 import io.kommunicate.models.SessionCache
 import io.kommunicate.usecase.UseCase
 

@@ -2,7 +2,7 @@
 <resources>
    //Note: Adding any new url array , Follow the same order.
     <string-array name="km_base_url">
-        <item>https://api-test.kommunicate.io</item>
+        <item>https://api.kommunicate.io</item>
         <item>https://api-test.kommunicate.io</item>
         <item>https://api-ca.kommunicate.io</item>
     </string-array>

@@ -3559,8 +3559,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 "business_yearly_v8_inr"
         ));
         if (subscription == null
-                || (!avlblPlans.contains(subscription)
-                || !subscription.contains("business_"))
+                || !(subscription.contains("business_") || subscription.contains("trial"))
+                || !avlblPlans.contains(subscription)
         ) {
             return;
         }

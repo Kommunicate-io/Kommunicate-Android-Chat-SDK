@@ -50,11 +50,26 @@
             android:layout_height="wrap_content"
             android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/business_conversation"
+        <LinearLayout
+            android:id="@+id/business_conversation_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:id="@+id/business_conversation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:padding="10dp" />
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"

@@ -176,6 +176,7 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
 import com.applozic.mobicomkit.uiwidgets.usecase.BusinessHoursDetailUseCase;
 import com.applozic.mobicomkit.uiwidgets.usecase.UserDetailUseCase;
+import com.applozic.mobicomkit.uiwidgets.utils.BusinessHoursUtil;
 import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
 import io.kommunicate.commons.ApplozicService;
@@ -402,7 +403,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isRecordOptionEnabled;
     protected boolean isUserGivingEmail;
     protected RelativeLayout conversationRootLayout;
-    protected TextView businessSettingsTextView;
+    private TextView businessSettingsTextView;
+    private LinearLayout businessConversationLL;
     protected KmConversationInfoView kmConversationInfoView;
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
@@ -605,7 +607,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         conversationRootLayout = (RelativeLayout) list.findViewById(R.id.rl_conversation_layout);
+        businessConversationLL = (LinearLayout) list.findViewById(R.id.business_conversation_ll);
         businessSettingsTextView = (TextView) list.findViewById(R.id.business_conversation);
+        businessSettingsTextView.setBackgroundColor(themeHelper.getToolbarColor());
         attachmentIconLayout = (LinearLayout) list.findViewById(R.id.attachment_icon_layout);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
         linearLayoutManager = new KmLinearLayoutManager(getActivity());
@@ -3547,15 +3551,22 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 channel.getTeamId(),
                 new TaskListener<BusinessSettingsResponse>() {
                     @Override
-                    public void onSuccess(BusinessSettingsResponse status) {
-                        businessSettingsTextView.setVisibility(VISIBLE);
-                        businessSettingsTextView.setText(status.getMessage());
-                    }
+                    public void onSuccess(BusinessSettingsResponse businessSettingsResponse) {
+                        if (!BusinessHoursUtil.isWithinBusinessHours(
+                                businessSettingsResponse.getBusinessHourMap(),
+                                businessSettingsResponse.getTimezone()
+                        )) {
+                            businessConversationLL.setVisibility(VISIBLE);
+                            businessSettingsTextView.setText(businessSettingsResponse.getMessage());
+                        } else  {
+                            businessConversationLL.setVisibility(GONE);
+                        }
+                   }
 
                     @Override
                     public void onFailure(@NonNull Exception error) {
-                        businessSettingsTextView.setVisibility(GONE);
-                        businessSettingsTextView.setText(error.getMessage());
+                        businessConversationLL.setVisibility(GONE);
+                        Toast.makeText(requireContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

@@ -9,7 +9,7 @@ data class BusinessSettingsData(
 data class BusinessSettingsResponse(
     val agentCount: Int,
     val botCount: Int,
-    val businessHourMap: Map<String, String>,
+    val businessHourMap: Map<Int, String>,
     val message: String,
     val teamId: Int,
     val teamMembers: List<Any>,

@@ -1196,11 +1196,21 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 -1,
                 false
         );
-        InsetHelper.configureSystemInsets(
+        InsetHelper.configureSystemInsetsWithKeyboard(
                 kmMessageLinearLayout,
                 0,
                 -1,
-                true
+                true,
+                (isVisible, keyboardHeight) -> {
+                    if(isVisible
+                            && recyclerView != null
+                            && recyclerView.getAdapter() != null
+                            && recyclerView.getAdapter().getItemCount() > 0
+                    ) {
+                        recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
+                    }
+                    return null;
+                }
         );
     }
 

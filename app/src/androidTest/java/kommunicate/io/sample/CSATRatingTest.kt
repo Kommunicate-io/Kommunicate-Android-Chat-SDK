@@ -9,7 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.kommunicate.Kommunicate
-import com.applozic.mobicomkit.uiwidgets.R
+import io.kommunicate.ui.R
 import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient

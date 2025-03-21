@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         tools:targetApi="n">
         <provider
-            android:name="com.applozic.mobicomkit.uiwidgets.KmFileProvider"
+            android:name="io.kommunicate.ui.KmFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true"
@@ -34,7 +34,7 @@
         </provider>
 
         <service
-            android:name="com.applozic.mobicomkit.uiwidgets.KmFirebaseMessagingService"
+            android:name="io.kommunicate.ui.KmFirebaseMessagingService"
             android:exported="true"
             android:stopWithTask="false">
             <intent-filter>
@@ -43,7 +43,7 @@
         </service>
 
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:name="io.kommunicate.ui.conversation.activity.ConversationActivity"
             android:configChanges="keyboardHidden|screenSize|locale|smallestScreenSize|screenLayout|orientation|uiMode"
             android:label="@string/app_name"
             android:exported="false"
@@ -52,55 +52,55 @@
             tools:node="merge" />
 
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity"
+            android:name="io.kommunicate.ui.conversation.activity.MobicomLocationActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName="io.kommunicate.ui.conversation.activity.ConversationActivity"
             android:exported="false"
             android:theme="@style/ApplozicTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity"
+            android:name="io.kommunicate.ui.conversation.activity.FullScreenImageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
             android:exported="false"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName="io.kommunicate.ui.conversation.activity.ConversationActivity"
             android:theme="@style/Applozic_FullScreen_Theme"
             tools:node="merge">
 
             <!-- Parent activity meta-data to support API level 7+ -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+                android:value="io.kommunicate.ui.conversation.activity.ConversationActivity" />
         </activity>
 
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity"
+            android:name="io.kommunicate.ui.conversation.richmessaging.webview.KmWebViewActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
             android:launchMode="singleTop"
             android:exported="false"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName="io.kommunicate.ui.conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />
 
         <activity
-            android:name=".kommunicate.activities.LeadCollectionActivity"
+            android:name="io.kommunicate.ui.kommunicate.activities.LeadCollectionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />
 
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity"
+            android:name="io.kommunicate.ui.conversation.activity.MobiComAttachmentSelectorActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"
             android:exported="false"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName="io.kommunicate.ui.conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+                android:value="io.kommunicate.ui.conversation.activity.ConversationActivity" />
         </activity>
     </application>
 </manifest>

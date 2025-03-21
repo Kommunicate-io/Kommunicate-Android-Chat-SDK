@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".conversation.fragment.FeedbackInputFragmentv2">
+    tools:context="io.kommunicate.ui.conversation.fragment.FeedbackInputFragmentv2">
 
     <LinearLayout
         android:id="@+id/feedback_container"

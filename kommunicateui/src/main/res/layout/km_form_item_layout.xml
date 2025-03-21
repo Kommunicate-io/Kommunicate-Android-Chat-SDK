@@ -25,7 +25,7 @@
         android:scrollbars="vertical"
         android:textSize="14sp" />
 
-    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout
+    <io.kommunicate.ui.conversation.richmessaging.views.KmFlowLayout
         android:id="@+id/km_form_selection_layout"
         android:layout_width="240dp"
         android:layout_height="wrap_content"

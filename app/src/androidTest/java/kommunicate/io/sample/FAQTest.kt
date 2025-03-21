@@ -77,7 +77,7 @@ class FAQTest {
             .perform(waitForLatch(latch))
 
         // Click on FAQ Button
-        onView(allOf(withId(com.applozic.mobicomkit.uiwidgets.R.id.kmFaqOption), isDisplayed()))
+        onView(allOf(withId(io.kommunicate.ui.R.id.kmFaqOption), isDisplayed()))
             .perform(click())
 
         // Check correct page is load in web view.

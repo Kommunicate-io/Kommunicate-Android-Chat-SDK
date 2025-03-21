@@ -103,7 +103,7 @@ class ConversationListTest {
             assertEquals(finalGroupConversations.size, conversationIdList.size)
         }
 
-        onView(withId(com.applozic.mobicomkit.uiwidgets.R.id.messageList))
+        onView(withId(io.kommunicate.ui.R.id.messageList))
             .check(withItemCount(conversationIdList.size))
     }
 

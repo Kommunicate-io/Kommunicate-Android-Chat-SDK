@@ -10,7 +10,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.google.gson.JsonArray
 import io.kommunicate.Kommunicate
 import kommunicate.io.sample.MainActivity
 import kommunicate.io.sample.network.KommunicateChatAPI
@@ -23,8 +22,8 @@ import kommunicate.io.sample.utils.getRecyclerViewItemCount
 import kommunicate.io.sample.utils.sendMessageAsUser
 import kommunicate.io.sample.utils.waitFor
 import kommunicate.io.sample.utils.waitForLatch
-import com.applozic.mobicomkit.uiwidgets.R
-import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.adapters.KmCardRMAdapter
+import io.kommunicate.ui.R
+import io.kommunicate.ui.conversation.richmessaging.adapters.KmCardRMAdapter
 import kommunicate.io.sample.utils.hasWidthGreaterThan
 import kommunicate.io.sample.utils.validateImage
 import kommunicate.io.sample.utils.withRecyclerViewItem

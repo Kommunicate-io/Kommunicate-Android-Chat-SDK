@@ -45,7 +45,11 @@ object BusinessHoursUtil {
 
         val currentTimeInMinutes = currentHour * 60 + currentMinute
 
-        val isWithinHours = currentTimeInMinutes in startTime..endTime
+        val isWithinHours = if (startTime <= endTime) {
+            currentTimeInMinutes in startTime..endTime
+        } else {
+            currentTimeInMinutes >= startTime || currentTimeInMinutes <= endTime
+        }
 
         return isWithinHours
     }
@@ -55,13 +59,18 @@ object BusinessHoursUtil {
      * @return Pair of start and end times in minutes since midnight
      */
     private fun parseBusinessHours(hoursString: String): Pair<Int, Int> {
-        val startHourStr = hoursString.substring(0, 2)
-        val startMinStr = hoursString.substring(2, 4)
-        val endHourStr = hoursString.substring(5, 7)
-        val endMinStr = hoursString.substring(7, 9)
+        // Validate format: should be "HHMM-HHMM"
+        if (!hoursString.matches(Regex("\\d{4}-\\d{4}"))) {
+            return Pair(0, 0)
+        }
 
-        val startTime = startHourStr.toInt() * 60 + startMinStr.toInt()
-        val endTime = endHourStr.toInt() * 60 + endMinStr.toInt()
+        val startHourStr = hoursString.substring(0, 2).toInt().coerceIn(0, 23)
+        val startMinStr = hoursString.substring(2, 4).toInt().coerceIn(0, 59)
+        val endHourStr = hoursString.substring(5, 7).toInt().coerceIn(0, 23)
+        val endMinStr = hoursString.substring(7, 9).toInt().coerceIn(0, 59)
+
+        val startTime = startHourStr * 60 + startMinStr
+        val endTime = endHourStr * 60 + endMinStr
 
         return Pair(startTime, endTime)
     }

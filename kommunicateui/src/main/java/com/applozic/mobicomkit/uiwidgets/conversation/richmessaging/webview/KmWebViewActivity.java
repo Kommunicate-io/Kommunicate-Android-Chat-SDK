@@ -2,22 +2,29 @@ package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview;
 
 import static com.applozic.mobicomkit.uiwidgets.utils.SentryUtils.configureSentryWithKommunicateUI;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.DownloadListener;
+import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -131,7 +138,38 @@ public class KmWebViewActivity extends AppCompatActivity {
                 }
             }
         }
+        setupDownloadListener(webView);
         setupInsets();
+    }
+
+    private void setupDownloadListener(WebView webView) {
+        webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            try {
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+
+                String filename = URLUtil.guessFileName(url, contentDisposition, mimetype);
+
+                request.setDescription("Downloading file...");
+                request.setTitle(filename);
+
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+
+                String cookies = CookieManager.getInstance().getCookie(url);
+                if (cookies != null) {
+                    request.addRequestHeader("cookie", cookies);
+                }
+                request.addRequestHeader("User-Agent", userAgent);
+
+                DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                downloadManager.enqueue(request);
+
+                Toast.makeText(getApplicationContext(), "Downloading file: " + filename, Toast.LENGTH_LONG).show();
+                finish();
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                finish();
+            }
+        });
     }
 
     private void setupInsets() {

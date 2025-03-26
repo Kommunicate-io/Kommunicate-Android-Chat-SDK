@@ -20,6 +20,7 @@ object KmAppSettingPreferences {
     private const val KM_THEME_PRIMARY_COLOR = "KM_THEME_PRIMARY_COLOR"
     private const val KM_THEME_SECONDARY_COLOR = "KM_THEME_SECONDARY_COLOR"
     private const val KM_COLLECT_FEEDBACK = "KM_COLLECT_FEEDBACK"
+    private const val CURRENT_SUBSCRIPTION_DETAILS = "CURRENT_SUBSCRIPTION_DETAILS"
     private const val KM_BOT_MESSAGE_DELAY_INTERVAL = "KM_BOT_MESSAGE_DELAY_INTERVAL"
     private const val BOT_TYPING_INDICATOR_INTERVAL = "BOT_TYPING_INDICATOR_INTERVAL"
     private const val LOGGED_IN_AT_TIME = "LOGGED_IN_AT_TIME"
@@ -95,6 +96,14 @@ object KmAppSettingPreferences {
         private set(isEnable) {
             preferences.edit().putBoolean(KM_COLLECT_FEEDBACK, isEnable).apply()
         }
+
+    @JvmStatic
+    var currentSubscriptionDetails: String?
+        get() = preferences.getString(CURRENT_SUBSCRIPTION_DETAILS, null)
+        private set(plan) {
+            preferences.edit().putString(CURRENT_SUBSCRIPTION_DETAILS, plan).apply()
+        }
+
 
     private var isHidePostCTA: Boolean
         get() = preferences.getBoolean(HIDE_POST_CTA, false)
@@ -250,6 +259,7 @@ object KmAppSettingPreferences {
         appSetting.response?.let {
             isCollectFeedback = it.isCollectFeedback
             isHidePostCTA = (it.isHidePostCTA)
+            currentSubscriptionDetails = it.currentActivatedPlan
         }
     }
 

@@ -10,7 +10,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.applozic.mobicomkit.uiwidgets.R
+import io.kommunicate.ui.R
 import io.kommunicate.KmConversationBuilder
 import io.kommunicate.Kommunicate
 import io.kommunicate.callbacks.KmCallback

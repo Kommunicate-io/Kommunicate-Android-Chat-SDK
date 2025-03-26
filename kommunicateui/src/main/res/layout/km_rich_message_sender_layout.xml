@@ -39,7 +39,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/km_rich_message_border" />
 
-    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.views.KmFlowLayout
+    <io.kommunicate.ui.conversation.richmessaging.views.KmFlowLayout
         android:id="@+id/kmFlowLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

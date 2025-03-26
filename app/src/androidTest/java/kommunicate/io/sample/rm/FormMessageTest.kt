@@ -31,7 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
-import com.applozic.mobicomkit.uiwidgets.R
+import io.kommunicate.ui.R
 import kommunicate.io.sample.utils.KmTestHelper.getRichMessagePayload
 import kommunicate.io.sample.utils.hasWidthGreaterThan
 import kommunicate.io.sample.utils.withRecyclerViewItem

@@ -77,7 +77,7 @@ class HTMLMessageTest {
         // check web view is displayed.
         onView(
             allOf(
-                withId(com.applozic.mobicomkit.uiwidgets.R.id.emailWebView),
+                withId(io.kommunicate.ui.R.id.emailWebView),
                 hasWidthGreaterThan(0)
             )
         ).check { view, noViewFoundException ->
@@ -88,7 +88,7 @@ class HTMLMessageTest {
         // Check webview content.
         onWebView(
             allOf(
-                withId(com.applozic.mobicomkit.uiwidgets.R.id.emailWebView),
+                withId(io.kommunicate.ui.R.id.emailWebView),
                 hasWidthGreaterThan(0)
             )
         ).check(webContent(containingTextInBody("This is a heading")))

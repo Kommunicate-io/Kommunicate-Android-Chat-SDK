@@ -95,8 +95,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         this.formStateModel = KmFormStateHelper.getFormState(messageKey);
         this.alCustomizationSettings = alCustomizationSettings;
 
-        KmFormStateHelper.initFormState();
-
         if (formStateModel == null) {
             formStateModel = new KmFormStateModel();
         }

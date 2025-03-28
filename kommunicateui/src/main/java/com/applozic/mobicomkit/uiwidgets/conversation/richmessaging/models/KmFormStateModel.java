@@ -15,6 +15,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
+
+import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.json.JsonMarker;
 
 import java.lang.reflect.Type;
@@ -32,7 +34,7 @@ public class KmFormStateModel extends JsonMarker {
     private Map<String, String> hiddenFields;
     private SparseIntArray validationArray;
     private SparseArray<Long> dateFieldArray;
-    private SparseArray<KmFormPayloadModel.Options> dropdownFieldArray;
+    private SparseArray<String> dropdownFieldArray;
 
     public SparseArray<String> getTextFields() {
         return textFields;
@@ -99,11 +101,22 @@ public class KmFormStateModel extends JsonMarker {
     }
 
     public SparseArray<KmFormPayloadModel.Options> getDropdownFieldArray() {
-        return dropdownFieldArray;
+        if (dropdownFieldArray == null) {
+            return null;
+        }
+        SparseArray<KmFormPayloadModel.Options> result = new SparseArray<>();
+        for (int i=0; i<dropdownFieldArray.size(); i++) {
+            result.put(dropdownFieldArray.keyAt(i), GsonUtils.getObjectFromJson(dropdownFieldArray.get(i), KmFormPayloadModel.Options.class));
+        }
+        return result;
     }
 
     public void setDropdownFieldArray(SparseArray<KmFormPayloadModel.Options> dropdownFieldArray) {
-        this.dropdownFieldArray = dropdownFieldArray;
+        SparseArray<String> result = new SparseArray<>();
+        for (int i=0; i<dropdownFieldArray.size(); i++) {
+            result.put(dropdownFieldArray.keyAt(i), GsonUtils.getJsonFromObject(dropdownFieldArray.get(i), KmFormPayloadModel.Options.class));
+        }
+        this.dropdownFieldArray = result;
     }
 
     public static class SparseArrayStringAdapter implements JsonSerializer<SparseArray<String>>, JsonDeserializer<SparseArray<String>> {

@@ -6,7 +6,7 @@ import io.kommunicate.ui.conversation.richmessaging.models.v2.KmFormPayloadModel
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmRichMessageModel;
 import io.kommunicate.commons.json.GsonUtils;
 
-import com.applozic.mobicomkit.uiwidgets.utils.RichMessageSharedPreference;
+import io.kommunicate.ui.utils.RichMessageSharedPreference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

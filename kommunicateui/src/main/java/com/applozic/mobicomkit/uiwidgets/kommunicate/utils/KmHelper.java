@@ -15,6 +15,8 @@ import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.broadcast.AlEventManager;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
+import com.applozic.mobicomkit.uiwidgets.utils.RichMessageSharedPreference;
+
 import io.kommunicate.commons.commons.core.utils.Utils;
 
 import java.util.List;
@@ -44,6 +46,7 @@ public class KmHelper {
             @Override
             public void onSuccess(Context context) {
                 dialog.dismiss();
+                RichMessageSharedPreference.clearPreference();
                 KmToast.success(context, Utils.getString(context, R.string.user_logout_info), Toast.LENGTH_SHORT).show();
                 Intent intent = null;
                 try {

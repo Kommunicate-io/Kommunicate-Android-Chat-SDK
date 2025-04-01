@@ -4228,7 +4228,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (KommunicateAudioManager.getInstance(getContext()) != null) {
             KommunicateAudioManager.getInstance(getContext()).audiostop();
         }
-        KmFormStateHelper.clearInstance();
     }
 
     public ViewGroup.LayoutParams getImageLayoutParam(boolean outBoxType) {

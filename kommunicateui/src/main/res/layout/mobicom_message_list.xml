@@ -3,8 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rl_conversation_layout"
-    >
+    android:id="@+id/rl_conversation_layout">
 
     <FrameLayout
         android:id="@+id/idProgressBarLayout"
@@ -50,6 +49,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/business_conversation_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:id="@+id/business_conversation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:padding="10dp" />
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"

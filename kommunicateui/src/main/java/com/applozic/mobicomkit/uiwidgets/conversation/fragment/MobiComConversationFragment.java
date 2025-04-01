@@ -148,6 +148,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmSpeechToText;
 import com.applozic.mobicomkit.uiwidgets.conversation.stt.KmTextToSpeech;
+import com.applozic.mobicomkit.uiwidgets.data.BusinessSettingsResponse;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.KmPrefSettings;
 import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity;
@@ -173,7 +174,9 @@ import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnMessageListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmOnRecordListener;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.KmStoragePermissionListener;
+import com.applozic.mobicomkit.uiwidgets.usecase.BusinessHoursDetailUseCase;
 import com.applozic.mobicomkit.uiwidgets.usecase.UserDetailUseCase;
+import com.applozic.mobicomkit.uiwidgets.utils.BusinessHoursUtil;
 import com.applozic.mobicomkit.uiwidgets.utils.InsetHelper;
 import com.applozic.mobicomkit.uiwidgets.utils.KmViewHelper;
 import io.kommunicate.commons.ApplozicService;
@@ -400,6 +403,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected boolean isRecordOptionEnabled;
     protected boolean isUserGivingEmail;
     protected RelativeLayout conversationRootLayout;
+    private TextView businessSettingsTextView;
+    private LinearLayout businessConversationLL;
     protected KmConversationInfoView kmConversationInfoView;
     public static final int STANDARD_HEX_COLOR_CODE_LENGTH = 7;
     public static final int STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH = 9;
@@ -602,6 +607,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         conversationRootLayout = (RelativeLayout) list.findViewById(R.id.rl_conversation_layout);
+        businessConversationLL = (LinearLayout) list.findViewById(R.id.business_conversation_ll);
+        businessSettingsTextView = (TextView) list.findViewById(R.id.business_conversation);
+        businessSettingsTextView.setBackgroundColor(themeHelper.getToolbarColor());
         attachmentIconLayout = (LinearLayout) list.findViewById(R.id.attachment_icon_layout);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
         linearLayoutManager = new KmLinearLayoutManager(getActivity());
@@ -3498,6 +3506,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     loadAwayMessage();
                 }
                 processSupportGroupDetails(channel);
+                processBusinessHourDetails(channel);
                 Applozic.subscribeToTyping(getContext(), channel, contact);
             }
 
@@ -3544,6 +3553,51 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (kmTypingView != null) {
             kmTypingView.setVisibility(GONE);
         }
+    }
+
+    private void processBusinessHourDetails(Channel channel) {
+        String subscription = KmAppSettingPreferences.getCurrentSubscriptionDetails();
+        Set<String> avlblPlans = new HashSet<>(Arrays.asList(
+                "trial",
+                "business_monthly_v7",
+                "business_yearly_v7",
+                "business_monthly_v7_inr",
+                "business_yearly_v7_inr",
+                "business_monthly_v8",
+                "business_yearly_v8",
+                "business_monthly_v8_inr",
+                "business_yearly_v8_inr"
+        ));
+        if (subscription == null
+                || !(subscription.contains("business_") || subscription.contains("trial"))
+                || !avlblPlans.contains(subscription)
+        ) {
+            return;
+        }
+
+        BusinessHoursDetailUseCase.executeWithExecutor(
+                requireContext(),
+                channel.getTeamId(),
+                new TaskListener<BusinessSettingsResponse>() {
+                    @Override
+                    public void onSuccess(BusinessSettingsResponse businessSettingsResponse) {
+                        if (!BusinessHoursUtil.isWithinBusinessHours(
+                                businessSettingsResponse.getBusinessHourMap(),
+                                businessSettingsResponse.getTimezone()
+                        )) {
+                            businessConversationLL.setVisibility(VISIBLE);
+                            businessSettingsTextView.setText(businessSettingsResponse.getMessage());
+                        } else  {
+                            businessConversationLL.setVisibility(GONE);
+                        }
+                   }
+
+                    @Override
+                    public void onFailure(@NonNull Exception error) {
+                        businessConversationLL.setVisibility(GONE);
+                        Toast.makeText(requireContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public void showTakeOverFromBotLayout(boolean show, final Contact assigneeBot) {

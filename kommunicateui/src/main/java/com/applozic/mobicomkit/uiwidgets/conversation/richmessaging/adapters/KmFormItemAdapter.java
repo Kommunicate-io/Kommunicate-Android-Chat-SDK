@@ -96,8 +96,6 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
         this.formStateModel = KmFormStateHelper.getFormState(messageKey);
         this.alCustomizationSettings = alCustomizationSettings;
 
-        KmFormStateHelper.initFormState();
-
         if (formStateModel == null) {
             formStateModel = new KmFormStateModel();
         }
@@ -404,11 +402,12 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
 
                                 formItemViewHolder.formDropdownList.setAdapter(dropdownItemAdapter);
                                 dropdownItemAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                formItemViewHolder.formDropdownList.setSelection(filterDropdownList(dropdownList.getOptions()));
                                 formItemViewHolder.formDropdownList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                     @Override
                                     public void onItemSelected(AdapterView<?> parent, View view, int dropdownItemPosition, long id) {
-                                        dropdownFieldArray.put(position, dropdownList.getOptions().get(dropdownItemPosition));
+                                        KmFormPayloadModel.Options options = dropdownList.getOptions().get(dropdownItemPosition);
+                                        options.setSelected(true);
+                                        dropdownFieldArray.put(position, options);
                                         formStateModel.setDropdownFieldArray(dropdownFieldArray);
                                         KmFormStateHelper.addFormState(messageKey, formStateModel);
                                     }
@@ -417,6 +416,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                     public void onNothingSelected(AdapterView<?> parent) {
                                     }
                                 });
+                                formItemViewHolder.formDropdownList.setSelection(filterDropdownList(dropdownList.getOptions(), dropdownFieldArray.valueAt(position)));
                             }
                         }
                     }
@@ -444,10 +444,10 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     }
 
     //Returns the position of the item to be selected by default
-    private int filterDropdownList(List<KmFormPayloadModel.Options> dropdownList) {
+    private int filterDropdownList(List<KmFormPayloadModel.Options> dropdownList, KmFormPayloadModel.Options dropdownFieldArray) {
         int selectedIndex = 0;
         for (int i = 0; i < dropdownList.size(); i++) {
-            if (dropdownList.get(i).isSelected()) {
+            if (dropdownList.get(i).isSelected() || dropdownList.get(i).getLabel().equals(dropdownFieldArray.getLabel())) {
                 selectedIndex = i;
                 break;
             }

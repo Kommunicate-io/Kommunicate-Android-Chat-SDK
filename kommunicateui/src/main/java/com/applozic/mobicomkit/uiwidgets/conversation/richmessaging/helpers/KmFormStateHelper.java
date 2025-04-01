@@ -7,6 +7,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.models.v2.Km
 import com.applozic.mobicommons.json.GsonUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.applozic.mobicomkit.uiwidgets.utils.RichMessageSharedPreference;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,35 +19,12 @@ import io.kommunicate.utils.KmDateUtils;
 
 public class KmFormStateHelper {
 
-    private static Map<String, KmFormStateModel> formStateModelMap;
-
-    public static void initFormState() {
-        if (formStateModelMap == null) {
-            formStateModelMap = new HashMap<>();
-        }
-    }
-
     public static void addFormState(String messageKey, KmFormStateModel formStateModel) {
-        initFormState();
-
-        formStateModelMap.put(messageKey, formStateModel);
+        RichMessageSharedPreference.setFormData(messageKey, formStateModel);
     }
 
     public static KmFormStateModel getFormState(String messageKey) {
-        if (formStateModelMap != null) {
-            return formStateModelMap.get(messageKey);
-        }
-        return null;
-    }
-
-    public static void removeFormState(String messageKey) {
-        if (formStateModelMap != null) {
-            formStateModelMap.remove(messageKey);
-        }
-    }
-
-    public static void clearInstance() {
-        formStateModelMap = null;
+        return RichMessageSharedPreference.getFormData(messageKey);
     }
 
     public static Map<String, Object> getKmFormMap(Message message, KmFormStateModel formStateModel) {

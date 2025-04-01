@@ -108,7 +108,7 @@ class SuggestedRepliesTest {
             ?: return fail("unable to fetch rich message from server.")
 
         onView(allOf(
-            withId(com.applozic.mobicomkit.uiwidgets.R.id.kmFlowLayout),
+            withId(io.kommunicate.ui.R.id.kmFlowLayout),
             hasChildren(greaterThan, lessThan)
         )).check { flexboxLayoutView, exception ->
             // Validate that there should be no error in finding the view

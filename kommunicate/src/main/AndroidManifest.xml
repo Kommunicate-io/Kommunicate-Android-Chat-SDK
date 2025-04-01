@@ -82,7 +82,7 @@
 
         <meta-data
             android:name="activity.open.on.notification"
-            android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
+            android:value="io.kommunicate.ui.R.conversation.activity.ConversationActivity" />
 
         <meta-data
             android:name="com.package.name"

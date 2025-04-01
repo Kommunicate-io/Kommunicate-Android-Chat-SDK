@@ -30,7 +30,7 @@ public final class MobiComKitConstants {
     public static final String PACKAGE_NAME = "com.package.name";
     public static final String AL_MESSAGE = "AL_MESSAGE";
     public static final String APPLICATION_KEY_META_DATA = "com.applozic.application.key";
-    public static final String APPLICATION_ACTIVITY_TO_OPEN_ON_CHAT_TOOLBAR_TAP = "com.applozic.mobicomkit.uiwidgets.toolbar.tap.activity";
+    public static final String APPLICATION_ACTIVITY_TO_OPEN_ON_CHAT_TOOLBAR_TAP = "io.kommunicate.ui.R.toolbar.tap.activity";
     public static final String APPLICATION_LOGIN_ACTIVITY = "com.applozic.loginActivity";
     public static final String GROUP_USER_LIMIT_EXCEED = "GROUP_USER_LIMIT_EXCEED";
     public static final String TEMPLATE_MESSAGE_LIST = "alMessageTemplates";

@@ -7,7 +7,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.applozic.mobicomkit.uiwidgets.R
+import io.kommunicate.ui.R
 import com.bumptech.glide.Glide
 import io.kommunicate.Kommunicate
 import kommunicate.io.sample.MainActivity

@@ -194,7 +194,7 @@ import io.kommunicate.commons.people.channel.ChannelUtils;
 import io.kommunicate.commons.people.channel.Conversation;
 import io.kommunicate.commons.people.contact.Contact;
 
-import com.applozic.mobicomkit.uiwidgets.data.BusinessSettingsResponse;
+import io.kommunicate.ui.data.BusinessSettingsResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -439,7 +439,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private static final String NAME = "[name]";
     private static final String IMPLEMENT_INTERFACE_COMMUNICATOR = " must implement interfaceDataCommunicator";
     private static final String IS_DONE_WITH_CLICKING = "isDoneWithClicking";
-    private static final String APPLOZIC_TEMPLATE_MSG = "com.applozic.mobicomkit.TemplateMessage";
+    private static final String APPLOZIC_TEMPLATE_MSG = "io.kommunicate.devkit.TemplateMessage";
     private static final String TEMPLATE_MSG = "templateMessage";
     private static final String APPLI_JSON = "application/json";
 

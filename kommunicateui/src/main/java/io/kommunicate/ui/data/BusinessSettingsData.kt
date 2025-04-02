@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.data
+package io.kommunicate.ui.data
 
 data class BusinessSettingsData(
     val generatedAt: Long,

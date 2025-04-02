@@ -54,8 +54,8 @@ public class NotificationService {
     public static final String NOTIFICATION_TEXT_NOT_AVAILABLE = "You received a message";
     public static final int NOTIFICATION_ID = 1000;
     private static final String TAG = "NotificationService";
-    private static final String NOTIFICATION_SMALL_ICON_METADATA = "com.applozic.mobicomkit.notification.smallIcon";
-    private static final String NOTIFICATION_SMALL_ICON_COLOR = "com.applozic.mobicomkit.notification.iconColor";
+    private static final String NOTIFICATION_SMALL_ICON_METADATA = "io.kommunicate.devkit.notification.smallIcon";
+    private static final String NOTIFICATION_SMALL_ICON_COLOR = "io.kommunicate.devkit.notification.iconColor";
     private static String GROUP_KEY = "applozic_key";
     MessageDatabaseService messageDatabaseService;
     List<Message> unReadMessageList = new ArrayList<>();

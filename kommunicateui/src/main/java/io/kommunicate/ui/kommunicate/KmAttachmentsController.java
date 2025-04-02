@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.attachment.FileClientService;
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KommunicateSetting;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.async.FileTaskAsync;
@@ -101,13 +101,13 @@ public class KmAttachmentsController {
     /**
      * get filter options from customization settings
      *
-     * @param alCustomizationSettings the settings
+     * @param customizationSettings the settings
      * @return the filter options
      */
-    public FileUtils.GalleryFilterOptions getFilterOptions(AlCustomizationSettings alCustomizationSettings) {
+    public FileUtils.GalleryFilterOptions getFilterOptions(CustomizationSettings customizationSettings) {
         Map<String, Boolean> filterOptions;
-        if (alCustomizationSettings.getFilterGallery() != null) {
-            filterOptions = alCustomizationSettings.getFilterGallery();
+        if (customizationSettings.getFilterGallery() != null) {
+            filterOptions = customizationSettings.getFilterGallery();
         } else {
             filterOptions = KommunicateSetting.getInstance(context.getApplicationContext()).getGalleryFilterOptions();
         }
@@ -128,11 +128,11 @@ public class KmAttachmentsController {
      * check if the mime type present is defined in filter options
      *
      * @param mimeType                the mime type to check
-     * @param alCustomizationSettings the settings to get filter options from
+     * @param customizationSettings the settings to get filter options from
      * @return true/false accordingly
      */
-    private boolean checkMimeType(String mimeType, AlCustomizationSettings alCustomizationSettings) {
-        FileUtils.GalleryFilterOptions option = getFilterOptions(alCustomizationSettings);
+    private boolean checkMimeType(String mimeType, CustomizationSettings customizationSettings) {
+        FileUtils.GalleryFilterOptions option = getFilterOptions(customizationSettings);
         switch (option) {
             case ALL_FILES:
                 return true;
@@ -152,17 +152,17 @@ public class KmAttachmentsController {
      * do a few checks and write the uri to a file(in the applozic folder)
      *
      * @param selectedFileUri         the uri to process
-     * @param alCustomizationSettings the customization settings
+     * @param customizationSettings the customization settings
      * @param prePostUIMethods        the interface for the pre and post async task methods
      * @return -1: attachment size exceeds max allowed size, -2: mimeType is empty, -3: mime type not supported
      * -4: format empty, -10: exception, 1: function end
      */
-    public int processFile(Uri selectedFileUri, AlCustomizationSettings alCustomizationSettings, PrePostUIMethods prePostUIMethods) {
+    public int processFile(Uri selectedFileUri, CustomizationSettings customizationSettings, PrePostUIMethods prePostUIMethods) {
         if (selectedFileUri != null) {
             String fileName;
             long fileSize = 0;
             try {
-                long maxFileSize = alCustomizationSettings.getMaxAttachmentSizeAllowed() * 1024 * 1024;
+                long maxFileSize = customizationSettings.getMaxAttachmentSizeAllowed() * 1024 * 1024;
                 Cursor returnCursor =
                         context.getContentResolver().query(selectedFileUri, null, null, null, null);
                 if (returnCursor != null) {
@@ -179,7 +179,7 @@ public class KmAttachmentsController {
                 if (TextUtils.isEmpty(mimeType)) {
                     return MIME_TYPE_EMPTY;
                 }
-                if (!checkMimeType(mimeType, alCustomizationSettings)) {
+                if (!checkMimeType(mimeType, customizationSettings)) {
                     //Toast.makeText(this, R.string.info_file_attachment_mime_type_not_supported, Toast.LENGTH_LONG).show();
                     return MIME_TYPE_NOT_SUPPORTED;
                 }
@@ -198,10 +198,10 @@ public class KmAttachmentsController {
                 File mediaFile = FileClientService.getFilePath(fileName, context.getApplicationContext(), mimeType);
                 new FileTaskAsync(mediaFile, selectedFileUri, context, prePostUIMethods,
                         FileUtils.isCompressionNeeded(
-                                context, selectedFileUri, fileSize, alCustomizationSettings.isImageCompressionEnabled(),
-                                alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB(),
-                                alCustomizationSettings.isVideoCompressionEnabled(),
-                                alCustomizationSettings.getMinimumCompressionThresholdForVideosInMB())
+                                context, selectedFileUri, fileSize, customizationSettings.isImageCompressionEnabled(),
+                                customizationSettings.getMinimumCompressionThresholdForImagesInMB(),
+                                customizationSettings.isVideoCompressionEnabled(),
+                                customizationSettings.getMinimumCompressionThresholdForVideosInMB())
                 ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } catch (Exception e) {
                 e.printStackTrace();

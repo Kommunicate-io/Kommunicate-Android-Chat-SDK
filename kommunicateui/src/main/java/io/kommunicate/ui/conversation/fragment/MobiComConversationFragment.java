@@ -105,7 +105,7 @@ import io.kommunicate.devkit.api.conversation.service.ConversationService;
 import io.kommunicate.devkit.api.notification.MuteNotificationRequest;
 import io.kommunicate.devkit.api.notification.NotificationService;
 import io.kommunicate.devkit.api.people.UserIntentService;
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
@@ -114,9 +114,9 @@ import io.kommunicate.devkit.contact.VCFContactData;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.feed.GroupInfoUpdate;
-import io.kommunicate.devkit.listners.AlCallback;
-import io.kommunicate.devkit.listners.ApplozicUIListener;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.devkit.listners.ResultCallback;
+import io.kommunicate.devkit.listners.UIEventListener;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KmFontManager;
 import io.kommunicate.ui.KmLinearLayoutManager;
 import io.kommunicate.ui.KmSpeechSetting;
@@ -142,7 +142,6 @@ import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
 import io.kommunicate.ui.conversation.richmessaging.RichMessageActionProcessor;
 import io.kommunicate.ui.conversation.richmessaging.adapters.KmAutoSuggestionArrayAdapter;
 import io.kommunicate.ui.conversation.richmessaging.callbacks.KmRichMessageListener;
-import io.kommunicate.ui.conversation.richmessaging.helpers.KmFormStateHelper;
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmAutoSuggestion;
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmCustomInputModel;
 import io.kommunicate.ui.conversation.richmessaging.webview.KmWebViewActivity;
@@ -255,7 +254,7 @@ import io.sentry.Sentry;
  * reg
  * Created by devashish on 10/2/15.
  */
-public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, KmRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, FeedbackInputFragmentv2.FeedbackSubmissionListener, ApplozicUIListener, KmSpeechToText.KmTextListener, KmBotTypingDelayManager.MessageDispatcher, KMAgentStatusHelper.DynamicAgentStatusChangeListener {
+public abstract class MobiComConversationFragment extends Fragment implements View.OnClickListener, ContextMenuClickListener, KmRichMessageListener, KmOnRecordListener, OnBasketAnimationEndListener, LoaderManager.LoaderCallbacks<Cursor>, FeedbackInputFragment.FeedbackFragmentListener, FeedbackInputFragmentv2.FeedbackSubmissionListener, UIEventListener, KmSpeechToText.KmTextListener, KmBotTypingDelayManager.MessageDispatcher, KMAgentStatusHelper.DynamicAgentStatusChangeListener {
 
     public FrameLayout emoticonsFrameLayout,
             contextFrameLayout;
@@ -309,7 +308,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected KmContextSpinnerAdapter kmContextSpinnerAdapter;
     protected Message messageToForward;
     protected String searchString;
-    protected AlCustomizationSettings alCustomizationSettings;
+    protected CustomizationSettings customizationSettings;
     protected String preFilledMessage;
     protected LinearLayout userNotAbleToChatLayout;
     protected List<ChannelUserMapper> channelUserMapperList;
@@ -477,8 +476,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected DetailedConversationAdapter getConversationAdapter(Activity activity,
-                                                                 int rowViewId, List<Message> messageList, Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiIconHandler, AlCustomizationSettings alCustomizationSettings) {
-        return new DetailedConversationAdapter(activity, rowViewId, messageList, contact, channel, messageIntentClass, emojiIconHandler, alCustomizationSettings);
+                                                                 int rowViewId, List<Message> messageList, Contact contact, Channel channel, Class messageIntentClass, EmojiconHandler emojiIconHandler, CustomizationSettings customizationSettings) {
+        return new DetailedConversationAdapter(activity, rowViewId, messageList, contact, channel, messageIntentClass, emojiIconHandler, customizationSettings);
     }
 
     @Override
@@ -487,25 +486,25 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         String jsonString = FileUtils.loadSettingsJsonFile(ApplozicService.getContext(getContext()));
         geoApiKey = Applozic.getInstance(getContext()).getGeoApiKey();
         if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
-            alCustomizationSettings = new AlCustomizationSettings();
+            customizationSettings = new CustomizationSettings();
         }
 
-        themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
-        isSpeechToTextEnabled = alCustomizationSettings.getSpeechToText().isEnabled() || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled() || KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled();
-        isTextToSpeechEnabled = alCustomizationSettings.getTextToSpeech().isEnabled() || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
-        isSendOnSpeechEnd = alCustomizationSettings.getSpeechToText().isSendMessageOnSpeechEnd() || KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
+        themeHelper = KmThemeHelper.getInstance(getContext(), customizationSettings);
+        isSpeechToTextEnabled = customizationSettings.getSpeechToText().isEnabled() || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled() || KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled();
+        isTextToSpeechEnabled = customizationSettings.getTextToSpeech().isEnabled() || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
+        isSendOnSpeechEnd = customizationSettings.getSpeechToText().isSendMessageOnSpeechEnd() || KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
         botMessageDelayInterval = KmAppSettingPreferences.getInstance().getKmBotMessageDelayInterval();
         botTypingDelayManager = new KmBotTypingDelayManager(getContext(), this);
 
         if (isTextToSpeechEnabled) {
-            textToSpeech = new KmTextToSpeech(getContext(), KmSpeechSetting.getTextToSpeechLanguageCode(getContext(), alCustomizationSettings));
+            textToSpeech = new KmTextToSpeech(getContext(), KmSpeechSetting.getTextToSpeechLanguageCode(getContext(), customizationSettings));
         }
 
         richMessageActionProcessor = new RichMessageActionProcessor(this);
 
-        fontManager = new KmFontManager(getContext(), alCustomizationSettings);
+        fontManager = new KmFontManager(getContext(), customizationSettings);
 
         restrictedWords = FileUtils.loadRestrictedWordsFile(ApplozicService.getContext(getContext()));
 
@@ -550,8 +549,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             kmTypingView = getView().findViewById(R.id.idKmTypingView);
         }
 
-        int iconColor = themeHelper.parseColorWithDefault(alCustomizationSettings.getAttachmentIconsBackgroundColor().get(isDarkModeEnabled ? 1 : 0),
-                themeHelper.parseColorWithDefault(alCustomizationSettings.getToolbarColor().get(isDarkModeEnabled ? 1 : 0), currentModePrimaryColor));
+        int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(isDarkModeEnabled ? 1 : 0),
+                themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(isDarkModeEnabled ? 1 : 0), currentModePrimaryColor));
         fileAttachmentButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         emoticonsBtn.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         cameraButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
@@ -559,20 +558,20 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         locationButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
         recordButton.getDrawable().setColorFilter(iconColor, PorterDuff.Mode.SRC_IN);
 
-        messageEditText.setTextColor(themeHelper.parseColorWithDefault(alCustomizationSettings.getMessageEditTextTextColor().get(isDarkModeEnabled ? 1 : 0),
+        messageEditText.setTextColor(themeHelper.parseColorWithDefault(customizationSettings.getMessageEditTextTextColor().get(isDarkModeEnabled ? 1 : 0),
                 getResources().getColor(R.color.chatbar_text_color)));
-        messageEditText.setHintTextColor(themeHelper.parseColorWithDefault(alCustomizationSettings.getMessageEditTextHintTextColor().get(isDarkModeEnabled ? 1 : 0),
+        messageEditText.setHintTextColor(themeHelper.parseColorWithDefault(customizationSettings.getMessageEditTextHintTextColor().get(isDarkModeEnabled ? 1 : 0),
                 getResources().getColor(R.color.chatbar_text_color)));
 
-        kmAwayView.setupTheme(isDarkModeEnabled, alCustomizationSettings);
-        kmInQueueView.setupTheme(isDarkModeEnabled, alCustomizationSettings);
+        kmAwayView.setupTheme(isDarkModeEnabled, customizationSettings);
+        kmInQueueView.setupTheme(isDarkModeEnabled, customizationSettings);
         kmAwayView.setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
         kmInQueueView.setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
-        kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
-        kmInQueueView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
+        kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? customizationSettings.getAwayMessageTextColor().get(1) : customizationSettings.getAwayMessageTextColor().get(0)));
+        kmInQueueView.getAwayMessageTv().setTextColor(Color.parseColor(isDarkModeEnabled ? customizationSettings.getAwayMessageTextColor().get(1) : customizationSettings.getAwayMessageTextColor().get(0)));
 
         individualMessageSendLayout.setBackgroundColor(themeHelper.parseColorWithDefault(
-                alCustomizationSettings.getMessageEditTextBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModeColor
+                customizationSettings.getMessageEditTextBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModeColor
         ));
         setupDotColorStatus();
         if (recyclerDetailConversationAdapter != null) {
@@ -584,11 +583,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     private void setupChatBackground() {
 
-        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBackgroundColorOrDrawable().get(1) : alCustomizationSettings.getChatBackgroundColorOrDrawable().get(0))) {
-            String customChatBackground = isCurrentlyInDarkMode ? alCustomizationSettings.getChatBackgroundColorOrDrawable().get(1) : alCustomizationSettings.getChatBackgroundColorOrDrawable().get(0);
+        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? customizationSettings.getChatBackgroundColorOrDrawable().get(1) : customizationSettings.getChatBackgroundColorOrDrawable().get(0))) {
+            String customChatBackground = isCurrentlyInDarkMode ? customizationSettings.getChatBackgroundColorOrDrawable().get(1) : customizationSettings.getChatBackgroundColorOrDrawable().get(0);
             if (customChatBackground.contains("#")) {
                 if (customChatBackground.length() == STANDARD_HEX_COLOR_CODE_LENGTH || customChatBackground.length() == STANDARD_HEX_COLOR_CODE_WITH_OPACITY_LENGTH) {
-                    conversationRootLayout.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBackgroundColorOrDrawable().get(1) : alCustomizationSettings.getChatBackgroundColorOrDrawable().get(0)));
+                    conversationRootLayout.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? customizationSettings.getChatBackgroundColorOrDrawable().get(1) : customizationSettings.getChatBackgroundColorOrDrawable().get(0)));
                 }
             } else {
                 Resources resources = getResources();
@@ -632,8 +631,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
         toolbar.setClickable(true);
         //customisation to change option menu icon on conversation screen
-        if (!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
-            Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), getResources().getIdentifier(alCustomizationSettings.getMenuIconOnConversationScreen(), "drawable", getContext().getPackageName()));
+        if (!TextUtils.isEmpty(customizationSettings.getMenuIconOnConversationScreen())) {
+            Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), getResources().getIdentifier(customizationSettings.getMenuIconOnConversationScreen(), "drawable", getContext().getPackageName()));
             toolbar.setOverflowIcon(overflowIcon);
         }
         setupChatBackground();
@@ -649,7 +648,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             faqButtonLayout.setVisibility(View.GONE);
         }
         //Conversation Info screen to show below Topbar
-        if (!alCustomizationSettings.isAgentApp()) {
+        if (!customizationSettings.isAgentApp()) {
             kmConversationInfoView = list.findViewById(R.id.km_conversation_info_view);
             KmConversationInfoSetting infoSetting = KmConversationInfoSetting.getInstance(getContext());
             if (infoSetting.isKmConversationInfoEnabled()) {
@@ -680,14 +679,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             TextView faqOption = customToolbarLayout.findViewById(R.id.kmFaqOption);
             TextView refreshOption = customToolbarLayout.findViewById(R.id.kmRefreshOption);
-            if (KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(2)) {
+            if (KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || customizationSettings.isFaqOptionEnabled(2)) {
                 faqOption.setVisibility(View.VISIBLE);
                 if (faqOption != null) {
                     faqOption.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl(alCustomizationSettings.isHideChatInHelpcenter());
-                            AlEventManager.getInstance().sendOnFaqClick(FaqUrl);
+                            String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl(customizationSettings.isHideChatInHelpcenter());
+                            EventManager.getInstance().sendOnFaqClick(FaqUrl);
                             ConversationActivity.openFaq(getActivity(), FaqUrl);
                         }
                     });
@@ -695,7 +694,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 faqOption.setVisibility(View.GONE);
             }
-            if (alCustomizationSettings.isRefreshOption()) {
+            if (customizationSettings.isRefreshOption()) {
                 refreshOption.setVisibility(VISIBLE);
                 refreshOption.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -712,11 +711,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         mainDivider = list.findViewById(R.id.idMainDividerLine);
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
-        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBarTopLineViewColor().get(1) : alCustomizationSettings.getChatBarTopLineViewColor().get(0))) {
-            mainDivider.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getChatBarTopLineViewColor().get(1) : alCustomizationSettings.getChatBarTopLineViewColor().get(0)));
+        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? customizationSettings.getChatBarTopLineViewColor().get(1) : customizationSettings.getChatBarTopLineViewColor().get(0))) {
+            mainDivider.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? customizationSettings.getChatBarTopLineViewColor().get(1) : customizationSettings.getChatBarTopLineViewColor().get(0)));
         }
-        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageEditTextBackgroundColor().get(1) : alCustomizationSettings.getMessageEditTextBackgroundColor().get(0))) {
-            individualMessageSendLayout.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageEditTextBackgroundColor().get(1) : alCustomizationSettings.getMessageEditTextBackgroundColor().get(0)));
+        if (!TextUtils.isEmpty(isCurrentlyInDarkMode ? customizationSettings.getMessageEditTextBackgroundColor().get(1) : customizationSettings.getMessageEditTextBackgroundColor().get(0))) {
+            individualMessageSendLayout.setBackgroundColor(Color.parseColor(isCurrentlyInDarkMode ? customizationSettings.getMessageEditTextBackgroundColor().get(1) : customizationSettings.getMessageEditTextBackgroundColor().get(0)));
         }
 
         kmFeedbackView = list.findViewById(R.id.idKmFeedbackView);
@@ -725,7 +724,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmFeedbackView.setInteractionListener(new KmFeedbackView.KmFeedbackViewCallbacks() {
             @Override
             public void onRestartConversationPressed() {
-                AlEventManager.getInstance().sendOnConversationRestartedEvent(channel != null ? channel.getKey() : 0);
+                EventManager.getInstance().sendOnConversationRestartedEvent(channel != null ? channel.getKey() : 0);
                 setFeedbackDisplay(false);
             }
         });
@@ -746,7 +745,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (isSpeechToTextEnabled) {
             recordView.enableSpeechToText(true);
             recordView.setLessThanSecondAllowed(true);
-            speechToText = new KmSpeechToText(getActivity(), recordButton, this, alCustomizationSettings);
+            speechToText = new KmSpeechToText(getActivity(), recordButton, this, customizationSettings);
         }
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
@@ -767,7 +766,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
-        boolean isAgentApp = alCustomizationSettings != null && alCustomizationSettings.isAgentApp();
+        boolean isAgentApp = customizationSettings != null && customizationSettings.isAgentApp();
 
         if (!isAgentApp && MobiComUserPreference.getInstance(getContext()).getPricingPackage() == 1) {
             applozicLabel.setVisibility(VISIBLE);
@@ -817,10 +816,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         infoBroadcast = (TextView) spinnerLayout.findViewById(R.id.info_broadcast);
         spinnerLayout.setVisibility(View.GONE);
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
-        emptyTextView.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getNoConversationLabelTextColor().get(1).trim() : alCustomizationSettings.getNoConversationLabelTextColor().get(0).trim()));
+        emptyTextView.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? customizationSettings.getNoConversationLabelTextColor().get(1).trim() : customizationSettings.getNoConversationLabelTextColor().get(0).trim()));
         emoticonsBtn.setOnClickListener(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        if (alCustomizationSettings.getInnerTimestampDesign() || !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0))) {
+        if (customizationSettings.getInnerTimestampDesign() || !TextUtils.isEmpty(isCurrentlyInDarkMode ? customizationSettings.getMessageStatusIconColor().get(1) : customizationSettings.getMessageStatusIconColor().get(0))) {
             sentIcon = getResources().getDrawable(R.drawable.km_sent_icon_c);
             deliveredIcon = getResources().getDrawable(R.drawable.km_delivered_icon_c);
             readIcon = getResources().getDrawable(R.drawable.km_read_icon_c);
@@ -836,10 +835,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         kmInQueueView = list.findViewById(R.id.km_in_queue_view);
         kmTypingView = list.findViewById(R.id.idKmTypingView);
 
-        isRecordOptionEnabled = (alCustomizationSettings != null
-                && alCustomizationSettings.getAttachmentOptions() != null
-                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
-                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) || isSpeechToTextEnabled;
+        isRecordOptionEnabled = (customizationSettings != null
+                && customizationSettings.getAttachmentOptions() != null
+                && customizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
+                && customizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) || isSpeechToTextEnabled;
 
         recordLayout.setVisibility(isRecordOptionEnabled ? View.VISIBLE : View.GONE);
         recordButton.setVisibility(isRecordOptionEnabled ? View.VISIBLE : View.GONE);
@@ -875,14 +874,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             messageEditText.setTypeface(fontManager.getMessageEditTextFont());
         }
 
-        messageEditText.setTextColor(themeHelper.parseColorWithDefault(alCustomizationSettings.getMessageEditTextTextColor().get(isCurrentlyInDarkMode ? 1 : 0),
+        messageEditText.setTextColor(themeHelper.parseColorWithDefault(customizationSettings.getMessageEditTextTextColor().get(isCurrentlyInDarkMode ? 1 : 0),
                 getResources().getColor(R.color.chatbar_text_color)));
-        messageEditText.setHintTextColor(themeHelper.parseColorWithDefault(alCustomizationSettings.getMessageEditTextHintTextColor().get(isCurrentlyInDarkMode ? 1 : 0),
+        messageEditText.setHintTextColor(themeHelper.parseColorWithDefault(customizationSettings.getMessageEditTextHintTextColor().get(isCurrentlyInDarkMode ? 1 : 0),
                 getResources().getColor(R.color.chatbar_text_color)));
 
         userNotAbleToChatLayout = (LinearLayout) list.findViewById(R.id.user_not_able_to_chat_layout);
         userNotAbleToChatTextView = (TextView) userNotAbleToChatLayout.findViewById(R.id.user_not_able_to_chat_textView);
-        userNotAbleToChatTextView.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getUserNotAbleToChatTextColor().get(1) : alCustomizationSettings.getUserNotAbleToChatTextColor().get(0)));
+        userNotAbleToChatTextView.setTextColor(Color.parseColor(isCurrentlyInDarkMode ? customizationSettings.getUserNotAbleToChatTextColor().get(1) : customizationSettings.getUserNotAbleToChatTextColor().get(0)));
         takeOverFromBotLayout = list.findViewById(R.id.kmTakeOverFromBotLayout);
 
         if (channel != null && channel.isDeleted()) {
@@ -1070,7 +1069,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         });
         recyclerView.setLongClickable(true);
-        messageTemplate = alCustomizationSettings.getMessageTemplate();
+        messageTemplate = customizationSettings.getMessageTemplate();
 
         if (messageTemplate != null && messageTemplate.isEnabled()) {
             messageTemplateView.setVisibility(View.VISIBLE);
@@ -1141,14 +1140,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         emoticonsBtn.setVisibility(View.GONE);
 
-        boolean hideAttachmentOptionsWithBots = alCustomizationSettings.isHideAttachmentOptionsWithBots();
+        boolean hideAttachmentOptionsWithBots = customizationSettings.isHideAttachmentOptionsWithBots();
         if (hideAttachmentOptionsWithBots) {
             attachmentIconLayout.setVisibility(GONE);
         }
         toggleHideChatBarWithBots();
 
-        if (alCustomizationSettings.getAttachmentOptions() != null && !alCustomizationSettings.getAttachmentOptions().isEmpty()) {
-            Map<String, Boolean> attachmentOptions = alCustomizationSettings.getAttachmentOptions();
+        if (customizationSettings.getAttachmentOptions() != null && !customizationSettings.getAttachmentOptions().isEmpty()) {
+            Map<String, Boolean> attachmentOptions = customizationSettings.getAttachmentOptions();
 
             if (attachmentOptions.containsKey(":location")) {
                 locationButton.setVisibility(attachmentOptions.get(":location") ? VISIBLE : View.GONE);
@@ -1258,10 +1257,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void handleSendAndRecordButtonView(boolean isSendButtonVisible) {
-        boolean showRecordButton = (alCustomizationSettings != null
-                && alCustomizationSettings.getAttachmentOptions() != null
-                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
-                && alCustomizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) || isSpeechToTextEnabled;
+        boolean showRecordButton = (customizationSettings != null
+                && customizationSettings.getAttachmentOptions() != null
+                && customizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
+                && customizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION)) || isSpeechToTextEnabled;
 
         sendButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.VISIBLE : View.GONE) : View.VISIBLE);
         recordButton.setVisibility(showRecordButton ? (isSendButtonVisible ? View.GONE : View.VISIBLE) : View.GONE);
@@ -1409,7 +1408,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (!feedBackFragment.isVisible() && !feedBackFragment.isAdded()) {
             feedBackFragment.show(getActivity().getSupportFragmentManager(), FeedbackInputFragment.getFragTag());
         }
-        AlEventManager.getInstance().sendOnRateConversationClick();
+        EventManager.getInstance().sendOnRateConversationClick();
 
     }
 
@@ -1480,7 +1479,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 processSendMessage();
             }
-            if (kmAwayView.isUserAnonymous() && kmAwayView.isCollectEmailOnAwayEnabled() && alCustomizationSettings.isEnableAwayMessage()) {
+            if (kmAwayView.isUserAnonymous() && kmAwayView.isCollectEmailOnAwayEnabled() && customizationSettings.isEnableAwayMessage()) {
                 kmAwayView.askForEmail();
                 isUserGivingEmail = true;
             }
@@ -1587,8 +1586,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             try {
                 String dynamicRegex = KommunicateSetting.getInstance(getContext()).getRestrictedWordsRegex();
-                String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (alCustomizationSettings != null
-                        && !TextUtils.isEmpty(alCustomizationSettings.getRestrictedWordRegex()) ? alCustomizationSettings.getRestrictedWordRegex() : "");
+                String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (customizationSettings != null
+                        && !TextUtils.isEmpty(customizationSettings.getRestrictedWordRegex()) ? customizationSettings.getRestrictedWordRegex() : "");
 
                 restrictedWordMatches = !TextUtils.isEmpty(pattern) && Pattern.compile(pattern).matcher(inputMessage.trim()).matches();
             } catch (PatternSyntaxException e) {
@@ -1612,7 +1611,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 handleSendAndRecordButtonView(true);
                             }
                         });
-                alertDialog.setTitle(alCustomizationSettings.getRestrictedWordMessage());
+                alertDialog.setTitle(customizationSettings.getRestrictedWordMessage());
                 alertDialog.setCancelable(true);
                 alertDialog.create().show();
             }
@@ -1950,11 +1949,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (channel != null) {
             menu.findItem(R.id.dial).setVisible(false);
             menu.findItem(R.id.video_call).setVisible(false);
-            menu.findItem(R.id.share_conversation).setVisible(Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && alCustomizationSettings.isEnableShareConversation() && !channel.isDeleted());
+            menu.findItem(R.id.share_conversation).setVisible(Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()) && customizationSettings.isEnableShareConversation() && !channel.isDeleted());
 
             if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
                 String userId = ChannelService.getInstance(getActivity()).getGroupOfTwoReceiverUserId(channel.getKey());
-                if (!TextUtils.isEmpty(userId) && alCustomizationSettings.isBlockOption()) {
+                if (!TextUtils.isEmpty(userId) && customizationSettings.isBlockOption()) {
                     Contact withUserContact = appContactService.getContactById(userId);
                     if (withUserContact.isBlocked()) {
                         menu.findItem(R.id.userUnBlock).setVisible(true);
@@ -1965,18 +1964,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             } else {
                 menu.findItem(R.id.userBlock).setVisible(false);
                 menu.findItem(R.id.userUnBlock).setVisible(false);
-                if (alCustomizationSettings.isMuteOption() && !Channel.GroupType.BROADCAST.getValue().equals(channel.getType())) {
+                if (customizationSettings.isMuteOption() && !Channel.GroupType.BROADCAST.getValue().equals(channel.getType())) {
                     menu.findItem(R.id.unmuteGroup).setVisible(!channel.isDeleted() && channel.isNotificationMuted());
                     menu.findItem(R.id.muteGroup).setVisible(!channel.isDeleted() && !channel.isNotificationMuted());
                 }
             }
-        } else if (alCustomizationSettings.isMuteUserChatOption() && contact != null) {
+        } else if (customizationSettings.isMuteUserChatOption() && contact != null) {
             menu.findItem(R.id.userBlock).setVisible(false);
             menu.findItem(R.id.userUnBlock).setVisible(false);
             menu.findItem(R.id.unmuteGroup).setVisible(!contact.isDeleted() && contact.isNotificationMuted());
             menu.findItem(R.id.muteGroup).setVisible(!contact.isDeleted() && !contact.isNotificationMuted());
 
-        } else if (contact != null && alCustomizationSettings.isBlockOption()) {
+        } else if (contact != null && customizationSettings.isBlockOption()) {
             if (contact.isBlocked()) {
                 menu.findItem(R.id.userUnBlock).setVisible(true);
             } else {
@@ -1990,8 +1989,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             menu.findItem(R.id.refresh).setVisible(false);
             menu.findItem(R.id.deleteConversation).setVisible(false);
         } else {
-            menu.findItem(R.id.refresh).setVisible(alCustomizationSettings.isRefreshOption());
-            menu.findItem(R.id.deleteConversation).setVisible(alCustomizationSettings.isDeleteOption());
+            menu.findItem(R.id.refresh).setVisible(customizationSettings.isRefreshOption());
+            menu.findItem(R.id.deleteConversation).setVisible(customizationSettings.isDeleteOption());
         }
 
         menu.findItem(R.id.dial).setVisible(false);
@@ -2002,8 +2001,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         menu.findItem(R.id.muteGroup).setVisible(false);
         menu.findItem(R.id.unmuteGroup).setVisible(false);
         menu.findItem(R.id.deleteConversation).setVisible(false);
-        menu.findItem(R.id.logout).setVisible(alCustomizationSettings.isLogoutOptionFromConversation());
-        menu.findItem(R.id.rate_conversation).setVisible(themeHelper.isCollectFeedback() && alCustomizationSettings.isRateConversationMenuOption());
+        menu.findItem(R.id.logout).setVisible(customizationSettings.isLogoutOptionFromConversation());
+        menu.findItem(R.id.rate_conversation).setVisible(themeHelper.isCollectFeedback() && customizationSettings.isRateConversationMenuOption());
     }
 
     @Override
@@ -2123,7 +2122,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
 
-        int settingsMessageCharacterLimit = alCustomizationSettings != null ? alCustomizationSettings.getMessageCharacterLimit() : AlCustomizationSettings.DEFAULT_MESSAGE_CHAR_LIMIT;
+        int settingsMessageCharacterLimit = customizationSettings != null ? customizationSettings.getMessageCharacterLimit() : CustomizationSettings.DEFAULT_MESSAGE_CHAR_LIMIT;
         int messageCharacterLimit = isDialogFlowBot ? Math.min(CHAR_LIMIT_FOR_DIALOG_FLOW_BOT, settingsMessageCharacterLimit) : settingsMessageCharacterLimit;
 
         setVisibilityOfCharLimitMessage(isDialogFlowBot, messageCharacterLimit, characterCount);
@@ -2262,8 +2261,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             selfDestructMessageSpinner.setSelection(0);
         }
         recyclerDetailConversationAdapter = getConversationAdapter(getActivity(),
-                R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler, alCustomizationSettings);
-        recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
+                R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler, customizationSettings);
+        recyclerDetailConversationAdapter.setAlCustomizationSettings(customizationSettings);
         recyclerDetailConversationAdapter.setupDarkMode(isCurrentlyInDarkMode);
         recyclerDetailConversationAdapter.setContextMenuClickListener(this);
         recyclerDetailConversationAdapter.setRichMessageCallbackListener(richMessageActionProcessor.getRichMessageListener());
@@ -2379,9 +2378,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 }
 
                 if (menu != null) {
-                    menu.findItem(R.id.userBlock).setVisible(alCustomizationSettings.isBlockOption() ? !withUserContact.isDeleted() && !withUserContact.isBlocked() : alCustomizationSettings.isBlockOption());
-                    menu.findItem(R.id.userUnBlock).setVisible(alCustomizationSettings.isBlockOption() ? !withUserContact.isDeleted() && withUserContact.isBlocked() : alCustomizationSettings.isBlockOption());
-                    menu.findItem(R.id.refresh).setVisible(alCustomizationSettings.isRefreshOption() ? !withUserContact.isDeleted() : alCustomizationSettings.isRefreshOption());
+                    menu.findItem(R.id.userBlock).setVisible(customizationSettings.isBlockOption() ? !withUserContact.isDeleted() && !withUserContact.isBlocked() : customizationSettings.isBlockOption());
+                    menu.findItem(R.id.userUnBlock).setVisible(customizationSettings.isBlockOption() ? !withUserContact.isDeleted() && withUserContact.isBlocked() : customizationSettings.isBlockOption());
+                    menu.findItem(R.id.refresh).setVisible(customizationSettings.isRefreshOption() ? !withUserContact.isDeleted() : customizationSettings.isRefreshOption());
                 }
 
                 if (withUserContact.isBlocked() || withUserContact.isBlockedBy() || withUserContact.isDeleted()) {
@@ -2514,7 +2513,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (getActivity() == null) {
             return;
         }
-        if ((alCustomizationSettings.isGroupSubtitleHidden() || KommunicateSetting.getInstance(getContext()).isGroupSubtitleHidden()) && channel != null && !subtitle.contains(ApplozicService.getContext(getContext()).getString(R.string.is_typing))) {
+        if ((customizationSettings.isGroupSubtitleHidden() || KommunicateSetting.getInstance(getContext()).isGroupSubtitleHidden()) && channel != null && !subtitle.contains(ApplozicService.getContext(getContext()).getString(R.string.is_typing))) {
             ((CustomToolbarListener) getActivity()).setToolbarSubtitle("");
             return;
         }
@@ -2642,7 +2641,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         if (view != null && !message.isCustom() && !message.isChannelCustomMessage()) {
                             TextView statusImage = view.findViewById(R.id.statusImage);
                             ImageView statusImageView = view.findViewById(R.id.statusImageView);
-                            if (alCustomizationSettings.getInnerTimestampDesign()) {
+                            if (customizationSettings.getInnerTimestampDesign()) {
                                 statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
                             } else {
                                 statusImageView.setImageDrawable(statusIcon);
@@ -2683,7 +2682,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 }
                                 TextView statusImage = view.findViewById(R.id.statusImage);
                                 ImageView statusImageView = view.findViewById(R.id.statusImageView);
-                                if (alCustomizationSettings.getInnerTimestampDesign()) {
+                                if (customizationSettings.getInnerTimestampDesign()) {
                                     statusImage.setCompoundDrawablesWithIntrinsicBounds(null, null, statusIcon, null);
                                 } else {
                                     statusImageView.setImageDrawable(statusIcon);
@@ -2747,7 +2746,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
             returnCursor.moveToFirst();
             long fileSize = returnCursor.getLong(sizeIndex);
-            long maxFileSize = alCustomizationSettings.getMaxAttachmentSizeAllowed() * 1024 * 1024;
+            long maxFileSize = customizationSettings.getMaxAttachmentSizeAllowed() * 1024 * 1024;
             if (fileSize > maxFileSize) {
                 KmToast.makeText(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.info_attachment_max_allowed_file_size), Toast.LENGTH_LONG).show();
                 return;
@@ -3071,7 +3070,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
         //Showing typing indicator when bot is fetching response from API
-        if (alCustomizationSettings.isShowTypingIndicatorWhileFetchingResponse()) {
+        if (customizationSettings.isShowTypingIndicatorWhileFetchingResponse()) {
             if (Objects.equals(conversationAssignee.getRoleType(), User.RoleType.BOT.getValue())) {
                 updateTypingStatus(message.getTo(), true);
             }
@@ -3132,7 +3131,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         ImageView statusImageView = view.findViewById(R.id.statusImageView);
 
                         if (statusTextView != null && messageListItem.getKeyString() != null && messageListItem.isTypeOutbox() && !messageListItem.isCall() && !messageListItem.getDelivered() && !messageListItem.isCustom() && !messageListItem.isChannelCustomMessage() && messageListItem.getScheduledAt() == null) {
-                            if (alCustomizationSettings.getInnerTimestampDesign()) {
+                            if (customizationSettings.getInnerTimestampDesign()) {
                                 statusTextView.setCompoundDrawablesWithIntrinsicBounds(null, null, sentIcon, null);
                             } else {
                                 statusImageView.setImageDrawable(sentIcon);
@@ -3370,7 +3369,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         super.onPause();
         populateAutoSuggestion(false, null, null);
 
-        AlEventManager.getInstance().unregisterUIListener(TAG);
+        EventManager.getInstance().unregisterUIListener(TAG);
 
         if (isRecording) {
             onLessThanSecond();
@@ -3451,7 +3450,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onResume() {
         super.onResume();
-        AlEventManager.getInstance().registerUIListener(TAG, this);
+        EventManager.getInstance().registerUIListener(TAG, this);
 
         if (MobiComUserPreference.getInstance(getActivity()).isChannelDeleted()) {
             MobiComUserPreference.getInstance(getActivity()).setDeleteChannel(false);
@@ -3662,9 +3661,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         toolbarAlphabeticImage.setVisibility(VISIBLE);
         toolbarImageView.setVisibility(GONE);
-        if (alCustomizationSettings.isAgentApp() && channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
+        if (customizationSettings.isAgentApp() && channel != null && !TextUtils.isEmpty(channel.getImageUrl())) {
             KmViewHelper.loadImage(getContext(), toolbarImageView, toolbarAlphabeticImage, channel.getImageUrl(), R.drawable.km_ic_contact_picture_holo_light);
-        } else if (!alCustomizationSettings.isAgentApp() && channel != null && channel.getConversationAssignee() != null) {
+        } else if (!customizationSettings.isAgentApp() && channel != null && channel.getConversationAssignee() != null) {
             Contact withUserContact = appContactService.getContactById(channel.getConversationAssignee());
 
             KmViewHelper.loadContactImage(getContext(), toolbarImageView, toolbarAlphabeticImage, withUserContact, R.drawable.km_ic_contact_picture_holo_light);
@@ -3706,7 +3705,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             kmInQueueView.setVisibility(GONE);
         }
 
-        if (alCustomizationSettings.isAgentApp()) {
+        if (customizationSettings.isAgentApp()) {
             setStatusDots(false, true); //setting the status dot as offline
             if (toolbarSubtitleText != null) {
                 toolbarSubtitleText.setVisibility(View.GONE);
@@ -4391,7 +4390,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         if (message.isTempDateType()) {
                             continue;
                         }
-                        endTime = messageList.get(!TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
+                        endTime = messageList.get(!TextUtils.isEmpty(customizationSettings.getStaticTopMessage()) ? 1 : 0).getCreatedAtTime();
                         break;
                     }
                     nextMessageList = conversationService.getMessages(this::ignoreSummaryMessageForUser, null, endTime, contact, channel, conversationId, false, !TextUtils.isEmpty(messageSearchString));
@@ -4409,9 +4408,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                     Message firstMessage = new Message();
                     firstMessage.setInitialFirstMessage();
-                    if (initial && !TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage()) && !messageList.contains(firstMessage)) {
+                    if (initial && !TextUtils.isEmpty(customizationSettings.getStaticTopMessage()) && !messageList.contains(firstMessage)) {
                         createAtMessage.add(firstMessage);
-                    } else if (!initial && !TextUtils.isEmpty(alCustomizationSettings.getStaticTopMessage())) {
+                    } else if (!initial && !TextUtils.isEmpty(customizationSettings.getStaticTopMessage())) {
                         createAtMessage.add(firstMessage);
                         messageList.remove(firstMessage);
                     }
@@ -4458,7 +4457,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     && Boolean.parseBoolean(message.getMetaDataValueForKey(KM_SUMMARY));
 
             // Ignore message if app is not agent and message type is not summary message.
-            return !(alCustomizationSettings.isAgentApp() && isKmSummary);
+            return !(customizationSettings.isAgentApp() && isKmSummary);
         }
 
         private boolean isNewConversation(List<Message> nextMessageList) {
@@ -4550,7 +4549,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             Message lastSentMessage = null;
 
             if (!messageList.isEmpty()) {
-                if (alCustomizationSettings.isAgentApp()) {
+                if (customizationSettings.isAgentApp()) {
                     for (int i = messageList.size() - 1; i >= 0; i--) {
                         Message userLastmessage = messageList.get(i);
                         if (userLastmessage.getType().equals(Message.MessageType.MT_INBOX.getValue()) && !Objects.equals(userLastmessage.getTo(), BOT)) {
@@ -4588,7 +4587,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             restrictWhatsappConversation(lastUserMessage);
-            if (alCustomizationSettings.isAgentApp()) {
+            if (customizationSettings.isAgentApp()) {
                 restrictNonTeamMemberConversation(null);
             }
             if (recyclerDetailConversationAdapter != null) {
@@ -4716,7 +4715,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 });
             } else {
                 autoCompleteTextView.setAdapter(null);
-                messageEditText.setHint(!TextUtils.isEmpty(alCustomizationSettings.getEditTextHintText()) ? alCustomizationSettings.getEditTextHintText() : ApplozicService.getContext(getContext()).getString(R.string.enter_message_hint));
+                messageEditText.setHint(!TextUtils.isEmpty(customizationSettings.getEditTextHintText()) ? customizationSettings.getEditTextHintText() : ApplozicService.getContext(getContext()).getString(R.string.enter_message_hint));
             }
         }
     }
@@ -4740,7 +4739,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void toggleAttachmentLayoutVisibility() {
-        if (alCustomizationSettings.isHideAttachmentOptionsWithBots() && attachmentIconLayout != null) {
+        if (customizationSettings.isHideAttachmentOptionsWithBots() && attachmentIconLayout != null) {
             attachmentIconLayout.setVisibility(
                     getCurrentConversationAssignee() == User.RoleType.BOT
                             ? GONE : VISIBLE
@@ -4749,7 +4748,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void toggleHideChatBarWithBots() {
-        if (!alCustomizationSettings.isHideChatBarWithBots() || kmMessageLinearLayout == null) {
+        if (!customizationSettings.isHideChatBarWithBots() || kmMessageLinearLayout == null) {
             return;
         }
         kmMessageLinearLayout.setVisibility(
@@ -4789,7 +4788,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
         }
 
-        UserService.getInstance(getContext()).updateUser(user, fieldType.equals(KmCustomInputModel.EMAIL), new AlCallback() {
+        UserService.getInstance(getContext()).updateUser(user, fieldType.equals(KmCustomInputModel.EMAIL), new ResultCallback() {
             @Override
             public void onSuccess(Object response) {
                 Utils.printLog(getContext(), TAG, "Updated User through Custom Input Field");
@@ -4853,7 +4852,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected <T> KmAutoSuggestionArrayAdapter<T> getAdapter(T[] data) {
-        return new KmAutoSuggestionArrayAdapter<>(getContext(), R.layout.km_auto_suggestion_row_layout, data, alCustomizationSettings);
+        return new KmAutoSuggestionArrayAdapter<>(getContext(), R.layout.km_auto_suggestion_row_layout, data, customizationSettings);
     }
 
     @Override
@@ -4886,7 +4885,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 conversationService.sendMessage(messageToResend, messageIntentClass);
                 break;
             case 3:
-                if (alCustomizationSettings.isAgentApp() && message.isTypeOutbox()) {
+                if (customizationSettings.isAgentApp() && message.isTypeOutbox()) {
                     deleteForAll(message, position);
                 } else {
                     String messageKeyString = message.getKeyString();
@@ -5072,7 +5071,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if (cameraButton != null) {
             cameraButton.setOnClickListener(v -> {
-                AlEventManager.getInstance().sendOnAttachmentClick(CAMERA);
+                EventManager.getInstance().sendOnAttachmentClick(CAMERA);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
@@ -5093,7 +5092,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if (videoButton != null) {
             videoButton.setOnClickListener(v -> {
-                AlEventManager.getInstance().sendOnAttachmentClick(VIDEO);
+                EventManager.getInstance().sendOnAttachmentClick(VIDEO);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
@@ -5114,7 +5113,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if (multiSelectGalleryButton != null) {
             multiSelectGalleryButton.setOnClickListener(view -> {
-                AlEventManager.getInstance().sendOnAttachmentClick(GALLERY);
+                EventManager.getInstance().sendOnAttachmentClick(GALLERY);
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (!((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
@@ -5139,7 +5138,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if (fileAttachmentButton != null) {
             fileAttachmentButton.setOnClickListener(v -> {
-                AlEventManager.getInstance().sendOnAttachmentClick("file");
+                EventManager.getInstance().sendOnAttachmentClick("file");
                 emoticonsFrameLayout.setVisibility(View.GONE);
                 if (getActivity() != null) {
                     if (((KmStoragePermissionListener) getActivity()).isPermissionGranted()) {
@@ -5162,7 +5161,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (locationButton != null) {
             locationButton.setOnClickListener(v -> {
                 emoticonsFrameLayout.setVisibility(View.GONE);
-                AlEventManager.getInstance().sendOnLocationClick();
+                EventManager.getInstance().sendOnLocationClick();
                 if (getActivity() != null) {
                     ((ConversationActivity) getActivity()).processLocation();
                 }
@@ -5183,16 +5182,16 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         } else if (show) {
             loadAwayMessage();
         }
-        if (alCustomizationSettings.getAwayMessageTextColor() != null) {
-            kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
+        if (customizationSettings.getAwayMessageTextColor() != null) {
+            kmAwayView.getAwayMessageTv().setTextColor(Color.parseColor(isCurrentlyInDarkMode ? customizationSettings.getAwayMessageTextColor().get(1) : customizationSettings.getAwayMessageTextColor().get(0)));
         }
         if (isHideAssigneeStatus) {
             kmAwayView.setVisibility(GONE);
         } else {
-            kmAwayView.setVisibility(show && alCustomizationSettings.isEnableAwayMessage() ? VISIBLE : GONE);
+            kmAwayView.setVisibility(show && customizationSettings.isEnableAwayMessage() ? VISIBLE : GONE);
         }
         //don't hide any message if away view is visible
-        if (show && alCustomizationSettings.isEnableAwayMessage()) {
+        if (show && customizationSettings.isEnableAwayMessage()) {
             linearLayoutManager.scrollToPosition(messageList.size() - 1);
         }
     }
@@ -5213,7 +5212,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 kmFeedbackView.setVisibility(VISIBLE);
                 TextView restartConversationTextQuestion = kmFeedbackView.findViewById(R.id.idTextQuestion);
                 TextView textViewRestartConversation = kmFeedbackView.findViewById(R.id.idFeedbackRestartConversation);
-                if (!alCustomizationSettings.isRestartConversationButtonVisibility()) {
+                if (!customizationSettings.isRestartConversationButtonVisibility()) {
                     textViewRestartConversation.setVisibility(View.INVISIBLE);
                     textViewRestartConversation.setPadding(0, 0, 0, 0);
                     restartConversationTextQuestion.setVisibility(View.INVISIBLE);
@@ -5241,7 +5240,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                     if (latestMessage.isFeedbackMessage()) {
                                         return;
                                     }
-                                    if (!alCustomizationSettings.isOneTimeRating())
+                                    if (!customizationSettings.isOneTimeRating())
                                         openFeedbackFragment();
                                 }
                             } else {
@@ -5667,7 +5666,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         kmFeedback.setRating(ratingValue);
-        AlEventManager.getInstance().sendOnSubmitRatingClicked(channel.getKey(), ratingValue, feedback);
+        EventManager.getInstance().sendOnSubmitRatingClicked(channel.getKey(), ratingValue, feedback);
         Contact user = new AppContactService(this.getActivity()).getContactById(MobiComUserPreference.getInstance(this.getContext()).getUserId());
         KmService.setConversationFeedback(getActivity(), kmFeedback, new FeedbackDetailsData(null, user.getDisplayName(), user.getUserId(), conversationAssignee.getUserId()), new TaskListener<KmApiResponse<KmFeedback>>() {
             @Override
@@ -5751,7 +5750,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()) {
             Contact assigneeContact = appContactService.getContactById(channel.getConversationAssignee());
 
-            boolean hideLayout = alCustomizationSettings.isRestrictMessageTypingWithBots()
+            boolean hideLayout = customizationSettings.isRestrictMessageTypingWithBots()
                     && assigneeContact != null
                     && User.RoleType.BOT.getValue().equals(assigneeContact.getRoleType());
 
@@ -5767,7 +5766,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public void hideMessageTemplate() {
         if (messageTemplate != null && messageTemplate.isEnabled()) {
-            if (!alCustomizationSettings.isRestartConversationButtonVisibility() && channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
+            if (!customizationSettings.isRestartConversationButtonVisibility() && channel != null && channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS) {
                 messageTemplateView.setVisibility(GONE);
             } else {
                 messageTemplateView.setVisibility(View.VISIBLE);
@@ -5782,7 +5781,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     protected void restrictWhatsappConversation(Message lastMessage) {
-        if (alCustomizationSettings.isAgentApp() && channel.getMetadata() != null) {
+        if (customizationSettings.isAgentApp() && channel.getMetadata() != null) {
             String conversationSource = channel.getMetadata().get(CONVERSATION_SOURCE);
             if (conversationSource != null) {
                 for (String source : WHATSAPP_SOURCE) {

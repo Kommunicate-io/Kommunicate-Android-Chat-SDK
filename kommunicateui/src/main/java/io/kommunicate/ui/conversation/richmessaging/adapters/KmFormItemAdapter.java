@@ -35,7 +35,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
 import io.kommunicate.ui.conversation.richmessaging.form.KmDropdownItemAdapter;
@@ -77,7 +77,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private String messageKey;
     private SparseIntArray validationArray;
     private SparseArray<KmFormPayloadModel.Options> dropdownFieldArray;
-    private AlCustomizationSettings alCustomizationSettings;
+    private CustomizationSettings customizationSettings;
     private static final int VALID_DATA = 2;
     private static final int INVALID_DATA = 1;
 
@@ -87,13 +87,13 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_DROPDOWN = 4;
 
     //TODO: Create Adaptor Factory Pattern for this Form rich message type
-    public KmFormItemAdapter(Context context, List<KmFormPayloadModel> payloadList, String messageKey, AlCustomizationSettings alCustomizationSettings) {
+    public KmFormItemAdapter(Context context, List<KmFormPayloadModel> payloadList, String messageKey, CustomizationSettings customizationSettings) {
         this.context = context;
         this.payloadList = payloadList;
         this.messageKey = messageKey;
 
         this.formStateModel = KmFormStateHelper.getFormState(messageKey);
-        this.alCustomizationSettings = alCustomizationSettings;
+        this.customizationSettings = customizationSettings;
 
         if (formStateModel == null) {
             formStateModel = new KmFormStateModel();
@@ -296,7 +296,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             formItemViewHolder.formFlowLayout.removeAllViews();
                             for (KmFormPayloadModel.Options option : options) {
                                 final int index = options.indexOf(option);
-                                if(alCustomizationSettings.isCheckboxAsMultipleButton()) {
+                                if(customizationSettings.isCheckboxAsMultipleButton()) {
                                     final KmSelectButton checkBox = new KmSelectButton(context);
                                     checkBox.setGravity(Gravity.FILL);
                                     if (checkedBoxes.contains(index)){
@@ -320,7 +320,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 } else {
                                     final CheckBox checkBox = new CheckBox(context);
                                     checkBox.setGravity(Gravity.FILL);
-                                    if (KmThemeHelper.getInstance(context,alCustomizationSettings).isDarkModeEnabledForSDK()){
+                                    if (KmThemeHelper.getInstance(context, customizationSettings).isDarkModeEnabledForSDK()){
                                         checkBox.setTextColor(Color.WHITE);
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                             checkBox.setButtonTintList(new ColorStateList(
@@ -651,7 +651,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             formLabel = itemView.findViewById(R.id.km_form_label_text);
-            KmThemeHelper themeHelper = KmThemeHelper.getInstance(context,alCustomizationSettings);
+            KmThemeHelper themeHelper = KmThemeHelper.getInstance(context, customizationSettings);
             if (formLabel != null && themeHelper.isDarkModeEnabledForSDK()){
                 formLabel.setTextColor(context.getResources().getColor(R.color.white));
             }

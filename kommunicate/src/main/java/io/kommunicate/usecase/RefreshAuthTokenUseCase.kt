@@ -4,7 +4,7 @@ import android.content.Context
 import io.kommunicate.devkit.api.MobiComKitClientService
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
-import io.kommunicate.devkit.listners.AlCallback
+import io.kommunicate.devkit.listners.ResultCallback
 import io.kommunicate.callbacks.KmCallback
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
@@ -57,7 +57,7 @@ class RefreshAuthTokenUseCase(
         @JvmStatic
         fun executeWithExecutor(
             context: Context,
-            callback: AlCallback? = null
+            callback: ResultCallback? = null
         ): UseCaseExecutor<RefreshAuthTokenUseCase, APIResult<Boolean>> {
             val useCase = RefreshAuthTokenUseCase(context)
             val executor = UseCaseExecutor(

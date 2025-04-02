@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.adapters.KmPrechatInputAdapter;
 
@@ -45,7 +45,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     private ResultReceiver prechatReceiver;
     private KmPrechatInputAdapter prechatInputAdapter;
     private List<KmPrechatInputModel> inputModelList;
-    private AlCustomizationSettings alCustomizationSettings;
+    private CustomizationSettings customizationSettings;
     private TextView greetingText;
     private String greetingMessage;
     private boolean returnDataMap;
@@ -58,12 +58,12 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
 
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
-            alCustomizationSettings = new AlCustomizationSettings();
+            customizationSettings = new CustomizationSettings();
         }
-        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
-        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
+        configureSentryWithKommunicateUI(this, customizationSettings.toString());
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, customizationSettings).getStatusBarColor());
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);
             returnDataMap = getIntent().getBooleanExtra(KmConstants.PRECHAT_RETURN_DATA_MAP, false);

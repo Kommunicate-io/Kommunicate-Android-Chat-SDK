@@ -5,22 +5,22 @@ import android.text.TextUtils;
 
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
-import io.kommunicate.devkit.listners.AlChannelListener;
-import io.kommunicate.devkit.listners.AlContactListener;
+import io.kommunicate.devkit.listners.ChannelListener;
+import io.kommunicate.devkit.listners.ContactListener;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
-public class AlGetPeopleTask extends AlAsyncTask<Object, Object> {
+public class GetPeopleTask extends CoreAsyncTask<Object, Object> {
     private String userId;
     private String clientChannelKey;
     private Integer groupId;
-    private AlChannelListener channelListener;
-    private AlContactListener contactListener;
+    private ChannelListener channelListener;
+    private ContactListener contactListener;
     private ChannelService channelService;
     private AppContactService appContactService;
 
-    public AlGetPeopleTask(Context context, String userId, String clientChannelKey, Integer channelKey, AlChannelListener channelListener, AlContactListener contactListener, AppContactService appContactService, ChannelService channelService) {
+    public GetPeopleTask(Context context, String userId, String clientChannelKey, Integer channelKey, ChannelListener channelListener, ContactListener contactListener, AppContactService appContactService, ChannelService channelService) {
         this.userId = userId;
         this.clientChannelKey = clientChannelKey;
         this.groupId = channelKey;

@@ -4,7 +4,7 @@ import io.kommunicate.commons.json.JsonMarker;
 
 import java.util.Map;
 
-public class AlUserUpdate extends JsonMarker {
+public class UserUpdateModel extends JsonMarker {
     private String displayName;
     private String imageLink;
     private String statusMessage;

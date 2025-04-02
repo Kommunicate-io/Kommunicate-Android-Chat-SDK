@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import io.kommunicate.commons.ApplozicService;
 
-public class AlPrefSettings {
+public class PrefSettings {
 
     public static final String AL_PREF_SETTING_KEY = "al_secret_key_pref";
     private static final String APPLICATION_KEY = "APPLICATION_KEY";
@@ -16,7 +16,7 @@ public class AlPrefSettings {
     private static String ENCRYPTION_KEY = "encryption_key";
     private static String PASSWORD = "password";
 
-    private static AlPrefSettings alPrefSettings;
+    private static PrefSettings prefSettings;
 
     //Keep these handy for performance as these are unlikely to be changed during application lifecycle.
     private static String decodedAppKey;
@@ -28,15 +28,15 @@ public class AlPrefSettings {
 
     private SecureSharedPreferences sharedPreferences;
 
-    private AlPrefSettings(Context context) {
+    private PrefSettings(Context context) {
         this.sharedPreferences = new SecureSharedPreferences(AL_PREF_SETTING_KEY, ApplozicService.getContext(context));
     }
 
-    public static AlPrefSettings getInstance(Context context) {
-        if (alPrefSettings == null) {
-            alPrefSettings = new AlPrefSettings(ApplozicService.getContext(context));
+    public static PrefSettings getInstance(Context context) {
+        if (prefSettings == null) {
+            prefSettings = new PrefSettings(ApplozicService.getContext(context));
         }
-        return alPrefSettings;
+        return prefSettings;
     }
 
     public String getApplicationKey() {
@@ -53,13 +53,13 @@ public class AlPrefSettings {
         return decodedGeoApiKey;
     }
 
-    public AlPrefSettings setApplicationKey(String applicationKey) {
+    public PrefSettings setApplicationKey(String applicationKey) {
         decodedAppKey = applicationKey;
         sharedPreferences.edit().putString(APPLICATION_KEY, applicationKey).commit();
         return this;
     }
 
-    public AlPrefSettings setGeoApiKey(String geoApiKey) {
+    public PrefSettings setGeoApiKey(String geoApiKey) {
         decodedGeoApiKey = geoApiKey;
         sharedPreferences.edit().putString(GOOGLE_API_KEY_META_DATA, geoApiKey).commit();
         return this;
@@ -72,7 +72,7 @@ public class AlPrefSettings {
         return decodedUserEncryptionKey;
     }
 
-    public AlPrefSettings setUserEncryptionKey(String userEncryptionKey) {
+    public PrefSettings setUserEncryptionKey(String userEncryptionKey) {
         decodedUserEncryptionKey = userEncryptionKey;
         sharedPreferences.edit().putString(USER_ENCRYPTION_KEY, userEncryptionKey).commit();
         return this;
@@ -85,7 +85,7 @@ public class AlPrefSettings {
         return decodedUserAuthToken;
     }
 
-    public AlPrefSettings setUserAuthToken(String userAuthToken) {
+    public PrefSettings setUserAuthToken(String userAuthToken) {
         decodedUserAuthToken = userAuthToken;
         sharedPreferences.edit().putString(USER_AUTH_TOKEN, userAuthToken).commit();
         return this;
@@ -98,7 +98,7 @@ public class AlPrefSettings {
         return decodedEncryptionKey;
     }
 
-    public AlPrefSettings setEncryptionKey(String encryptionKey) {
+    public PrefSettings setEncryptionKey(String encryptionKey) {
         decodedEncryptionKey = encryptionKey;
         sharedPreferences.edit().putString(ENCRYPTION_KEY, encryptionKey).commit();
         return this;
@@ -111,7 +111,7 @@ public class AlPrefSettings {
         return decodedPassword;
     }
 
-    public AlPrefSettings setPassword(String password) {
+    public PrefSettings setPassword(String password) {
         decodedPassword = password;
         sharedPreferences.edit().putString(PASSWORD, password).commit();
         return this;

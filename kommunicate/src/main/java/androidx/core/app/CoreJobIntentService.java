@@ -2,7 +2,7 @@ package androidx.core.app;
 
 import android.os.Build;
 
-public abstract class AlJobIntentService extends JobIntentService {
+public abstract class CoreJobIntentService extends JobIntentService {
 
     @Override
     GenericWorkItem dequeueWork() {
@@ -19,7 +19,7 @@ public abstract class AlJobIntentService extends JobIntentService {
         super.onCreate();
         // override mJobImpl with safe class to ignore SecurityException
         if (Build.VERSION.SDK_INT >= 26) {
-            mJobImpl = new androidx.core.app.AlJobServiceEngineImpl(this);
+            mJobImpl = new CoreJobServiceEngineImpl(this);
         } else {
             mJobImpl = null;
         }

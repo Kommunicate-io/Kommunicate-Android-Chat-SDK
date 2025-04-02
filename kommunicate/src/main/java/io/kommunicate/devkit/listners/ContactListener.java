@@ -2,6 +2,6 @@ package io.kommunicate.devkit.listners;
 
 import io.kommunicate.commons.people.contact.Contact;
 
-public interface AlContactListener {
+public interface ContactListener {
     void onGetContact(Contact contact);
 }

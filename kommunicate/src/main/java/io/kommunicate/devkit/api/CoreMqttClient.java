@@ -12,16 +12,16 @@ import org.eclipse.paho.client.mqttv3.MqttSecurityException;
 
 import java.util.concurrent.ScheduledExecutorService;
 
-public class AlMqttClient extends MqttClient {
-    public AlMqttClient(String serverURI, String clientId) throws MqttException {
+public class CoreMqttClient extends MqttClient {
+    public CoreMqttClient(String serverURI, String clientId) throws MqttException {
         super(serverURI, clientId);
     }
 
-    public AlMqttClient(String serverURI, String clientId, MqttClientPersistence persistence) throws MqttException {
+    public CoreMqttClient(String serverURI, String clientId, MqttClientPersistence persistence) throws MqttException {
         super(serverURI, clientId, persistence);
     }
 
-    public AlMqttClient(String serverURI, String clientId, MqttClientPersistence persistence, ScheduledExecutorService executorService) throws MqttException {
+    public CoreMqttClient(String serverURI, String clientId, MqttClientPersistence persistence, ScheduledExecutorService executorService) throws MqttException {
         super(serverURI, clientId, persistence, executorService);
     }
 

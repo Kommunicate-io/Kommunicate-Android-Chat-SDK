@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by sunil on 10/10/16.
  */
-public class AlCustomizationSettings extends JsonMarker {
+public class CustomizationSettings extends JsonMarker {
     public static final int DEFAULT_MESSAGE_CHAR_LIMIT = 2000;
 
     private Object customMessageBackgroundColor = "#e6e5ec";

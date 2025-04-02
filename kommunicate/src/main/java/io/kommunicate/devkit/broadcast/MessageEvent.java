@@ -3,7 +3,7 @@ package io.kommunicate.devkit.broadcast;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.commons.json.JsonMarker;
 
-public class AlMessageEvent extends JsonMarker {
+public class MessageEvent extends JsonMarker {
     private String action;
     private Message message;
     private String userId;
@@ -19,7 +19,7 @@ public class AlMessageEvent extends JsonMarker {
         return action;
     }
 
-    public AlMessageEvent setAction(String action) {
+    public MessageEvent setAction(String action) {
         this.action = action;
         return this;
     }
@@ -28,7 +28,7 @@ public class AlMessageEvent extends JsonMarker {
         return message;
     }
 
-    public AlMessageEvent setMessage(Message message) {
+    public MessageEvent setMessage(Message message) {
         this.message = message;
         return this;
     }
@@ -37,7 +37,7 @@ public class AlMessageEvent extends JsonMarker {
         return userId;
     }
 
-    public AlMessageEvent setUserId(String userId) {
+    public MessageEvent setUserId(String userId) {
         this.userId = userId;
         return this;
     }
@@ -46,7 +46,7 @@ public class AlMessageEvent extends JsonMarker {
         return groupId;
     }
 
-    public AlMessageEvent setGroupId(Integer groupId) {
+    public MessageEvent setGroupId(Integer groupId) {
         this.groupId = groupId;
         return this;
     }
@@ -55,7 +55,7 @@ public class AlMessageEvent extends JsonMarker {
         return status;
     }
 
-    public AlMessageEvent setStatus(Integer status) {
+    public MessageEvent setStatus(Integer status) {
         this.status = status;
         return this;
     }
@@ -64,7 +64,7 @@ public class AlMessageEvent extends JsonMarker {
         return loadMore;
     }
 
-    public AlMessageEvent setLoadMore(boolean loadMore) {
+    public MessageEvent setLoadMore(boolean loadMore) {
         this.loadMore = loadMore;
         return this;
     }
@@ -73,7 +73,7 @@ public class AlMessageEvent extends JsonMarker {
         return isGroup;
     }
 
-    public AlMessageEvent setGroup(boolean group) {
+    public MessageEvent setGroup(boolean group) {
         isGroup = group;
         return this;
     }
@@ -82,7 +82,7 @@ public class AlMessageEvent extends JsonMarker {
         return messageKey;
     }
 
-    public AlMessageEvent setMessageKey(String messageKey) {
+    public MessageEvent setMessageKey(String messageKey) {
         this.messageKey = messageKey;
         return this;
     }
@@ -91,7 +91,7 @@ public class AlMessageEvent extends JsonMarker {
         return isTyping;
     }
 
-    public AlMessageEvent setTyping(String typing) {
+    public MessageEvent setTyping(String typing) {
         isTyping = typing;
         return this;
     }
@@ -100,7 +100,7 @@ public class AlMessageEvent extends JsonMarker {
         return response;
     }
 
-    public AlMessageEvent setResponse(String response) {
+    public MessageEvent setResponse(String response) {
         this.response = response;
         return this;
     }

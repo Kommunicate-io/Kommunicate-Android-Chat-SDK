@@ -4,7 +4,7 @@ import io.kommunicate.devkit.api.account.user.UserDetail;
 import io.kommunicate.devkit.feed.ChannelFeed;
 import io.kommunicate.commons.json.JsonMarker;
 
-public class AlConversationResponse extends JsonMarker {
+public class ConversationResponse extends JsonMarker {
     private Message[] message;
     private ChannelFeed[] groupFeeds;
     private UserDetail[] userDetails;

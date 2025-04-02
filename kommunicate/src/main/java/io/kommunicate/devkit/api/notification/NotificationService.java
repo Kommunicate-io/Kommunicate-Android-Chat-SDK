@@ -27,7 +27,7 @@ import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
-import io.kommunicate.devkit.listners.AlConstantsHandler;
+import io.kommunicate.devkit.listners.ConstantsHandler;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
@@ -570,8 +570,8 @@ public class NotificationService {
     }
 
     public String getText(int index) {
-        if (context.getApplicationContext() instanceof AlConstantsHandler) {
-            return getTextFromIndex(((AlConstantsHandler) context.getApplicationContext()).getNotificationTexts(), index);
+        if (context.getApplicationContext() instanceof ConstantsHandler) {
+            return getTextFromIndex(((ConstantsHandler) context.getApplicationContext()).getNotificationTexts(), index);
         }
 
         return constArray[index];

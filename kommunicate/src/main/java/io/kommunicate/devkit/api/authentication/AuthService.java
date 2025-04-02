@@ -8,17 +8,17 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import io.kommunicate.devkit.listners.AlCallback;
+import io.kommunicate.devkit.listners.ResultCallback;
 
 import io.kommunicate.usecase.RefreshAuthTokenUseCase;
 
-public class AlAuthService {
+public class AuthService {
 
     public static boolean isTokenValid(long createdAtTime, int validUptoMins) {
         return (System.currentTimeMillis() - createdAtTime) / 60000 < validUptoMins;
     }
 
-    public static void refreshToken(Context context, AlCallback callback) {
+    public static void refreshToken(Context context, ResultCallback callback) {
         RefreshAuthTokenUseCase.executeWithExecutor(context, callback);
     }
 
@@ -46,7 +46,7 @@ public class AlAuthService {
         return true;
     }
 
-    public static void verifyToken(Context context, String loadingMessage, AlCallback callback) {
+    public static void verifyToken(Context context, String loadingMessage, ResultCallback callback) {
         if (context == null) {
             return;
         }
@@ -72,13 +72,13 @@ public class AlAuthService {
         }
     }
 
-    public static void refreshToken(final Context context, String loadingMessage, final AlCallback callback) {
+    public static void refreshToken(final Context context, String loadingMessage, final ResultCallback callback) {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity(context));
         progressDialog.setMessage(loadingMessage);
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        refreshToken(context, new AlCallback() {
+        refreshToken(context, new ResultCallback() {
             @Override
             public void onSuccess(Object response) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {

@@ -13,7 +13,7 @@ import io.kommunicate.devkit.exception.ApplozicException;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.feed.RegisteredUsersApiResponse;
 import io.kommunicate.devkit.feed.SyncBlockUserApiResponse;
-import io.kommunicate.devkit.listners.AlCallback;
+import io.kommunicate.devkit.listners.ResultCallback;
 import io.kommunicate.devkit.sync.SyncUserBlockFeed;
 import io.kommunicate.devkit.sync.SyncUserBlockListFeed;
 import io.kommunicate.commons.ApplozicService;
@@ -436,7 +436,7 @@ public class UserService {
         return null;
     }
 
-    public void updateUser(User user, boolean isForEmail,  AlCallback callback) {
+    public void updateUser(User user, boolean isForEmail,  ResultCallback callback) {
         UserUpdateUseCase.executeWithExecutor(context, user, isForEmail, callback);
     }
 

@@ -12,12 +12,12 @@ import java.util.TimeZone;
  * This may result in break down of an update to already existing application.
  */
 
-public class ALSpecificSettings {
+public class AppSpecificSettings {
     private static final String APPLOZIC_SUPPORT = "support@applozic.com";
     private static final String MY_PREFERENCE = "applozic_internal_preference_key";
     private SharedPreferences sharedPreferences;
     private static final String KOMMUNICATE_LOGS = "kommunicate_logs";
-    private static ALSpecificSettings applozicSettings;
+    private static AppSpecificSettings applozicSettings;
     private static final String DATABASE_NAME = "DATABASE_NAME";
     private static final String ENABLE_TEXT_LOGGING = "ENABLE_TEXT_LOGGING";
     private static final String TEXT_LOG_FILE_NAME = "TEXT_LOG_FILE_NAME";
@@ -27,18 +27,18 @@ public class ALSpecificSettings {
     private static final String ENABLE_LOGGING_IN_RELEASE_BUILD = "ENABLE_LOGGING_IN_RELEASE_BUILD";
     private static final String AL_NOTIFICATION_AFTER_TIME = "AL_NOTIFICATION_AFTER_TIME";
 
-    private ALSpecificSettings(Context context) {
+    private AppSpecificSettings(Context context) {
         this.sharedPreferences = ApplozicService.getContext(context).getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
     }
 
-    public static ALSpecificSettings getInstance(Context context) {
+    public static AppSpecificSettings getInstance(Context context) {
         if (applozicSettings == null) {
-            applozicSettings = new ALSpecificSettings(ApplozicService.getContext(context));
+            applozicSettings = new AppSpecificSettings(ApplozicService.getContext(context));
         }
         return applozicSettings;
     }
 
-    public ALSpecificSettings setDatabaseName(String dbName) {
+    public AppSpecificSettings setDatabaseName(String dbName) {
         sharedPreferences.edit().putString(DATABASE_NAME, dbName).apply();
         return this;
     }
@@ -47,7 +47,7 @@ public class ALSpecificSettings {
         return sharedPreferences.getString(DATABASE_NAME, null);
     }
 
-    public ALSpecificSettings enableTextLogging(boolean enable) {
+    public AppSpecificSettings enableTextLogging(boolean enable) {
         sharedPreferences.edit().putBoolean(ENABLE_TEXT_LOGGING, enable).apply();
         return this;
     }
@@ -56,7 +56,7 @@ public class ALSpecificSettings {
         return sharedPreferences.getBoolean(ENABLE_TEXT_LOGGING, false);
     }
 
-    public ALSpecificSettings setTextLogFileName(String textLogFileName) {
+    public AppSpecificSettings setTextLogFileName(String textLogFileName) {
         sharedPreferences.edit().putString(TEXT_LOG_FILE_NAME, textLogFileName).apply();
         return this;
     }
@@ -69,7 +69,7 @@ public class ALSpecificSettings {
         return sharedPreferences.getString(AL_BASE_URL, null);
     }
 
-    public ALSpecificSettings setAlBaseUrl(String url) {
+    public AppSpecificSettings setAlBaseUrl(String url) {
         sharedPreferences.edit().putString(AL_BASE_URL, url).commit();
         return this;
     }
@@ -78,7 +78,7 @@ public class ALSpecificSettings {
         return sharedPreferences.getString(KM_BASE_URL, null);
     }
 
-    public ALSpecificSettings setKmBaseUrl(String url) {
+    public AppSpecificSettings setKmBaseUrl(String url) {
         sharedPreferences.edit().putString(KM_BASE_URL, url).commit();
         return this;
     }
@@ -87,12 +87,12 @@ public class ALSpecificSettings {
         return sharedPreferences.getString(AL_SUPPORT_EMAIL_ID, APPLOZIC_SUPPORT);
     }
 
-    public ALSpecificSettings setSupportEmailId(String emailId) {
+    public AppSpecificSettings setSupportEmailId(String emailId) {
         sharedPreferences.edit().putString(AL_SUPPORT_EMAIL_ID, emailId).commit();
         return this;
     }
 
-    public ALSpecificSettings enableLoggingForReleaseBuild(boolean enable) {
+    public AppSpecificSettings enableLoggingForReleaseBuild(boolean enable) {
         sharedPreferences.edit().putBoolean(ENABLE_LOGGING_IN_RELEASE_BUILD, enable).commit();
         return this;
     }
@@ -101,7 +101,7 @@ public class ALSpecificSettings {
         return sharedPreferences.getBoolean(ENABLE_LOGGING_IN_RELEASE_BUILD, false);
     }
 
-    public ALSpecificSettings setNotificationAfterTime(long notificationAfterTime) {
+    public AppSpecificSettings setNotificationAfterTime(long notificationAfterTime) {
         sharedPreferences.edit().putLong(AL_NOTIFICATION_AFTER_TIME, notificationAfterTime).commit();
         return this;
     }

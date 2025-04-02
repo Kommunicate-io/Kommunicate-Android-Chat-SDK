@@ -1,6 +1,6 @@
 package io.kommunicate.devkit.feed;
 
-public class AlResponse {
+public class Response {
 
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";

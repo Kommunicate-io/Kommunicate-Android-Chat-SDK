@@ -2,23 +2,26 @@ package io.kommunicate.devkit.api.account.user;
 
 import android.content.Context;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.devkit.exception.ApplozicException;
 import io.kommunicate.commons.people.contact.Contact;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class AlUserSearchTask extends AlAsyncTask<Void, List<Contact>> {
+@Deprecated
+@CleanUpRequired(reason = "Not used anywhere")
+public class UserSearchTask extends CoreAsyncTask<Void, List<Contact>> {
 
     private WeakReference<Context> context;
     private String searchString;
     private Exception exception;
     private UserService userService;
-    private AlUserSearchHandler listener;
+    private UserSearchHandler listener;
     private static final String EMPTY_SEARCH = "Empty search string";
 
-    public AlUserSearchTask(Context context, String searchString, AlUserSearchHandler listener) {
+    public UserSearchTask(Context context, String searchString, UserSearchHandler listener) {
         this.context = new WeakReference<>(context);
         this.searchString = searchString;
         this.listener = listener;
@@ -53,7 +56,7 @@ public class AlUserSearchTask extends AlAsyncTask<Void, List<Contact>> {
         }
     }
 
-    public interface AlUserSearchHandler {
+    public interface UserSearchHandler {
         void onSuccess(List<Contact> contacts, Context context);
 
         void onFailure(Exception e, Context context);

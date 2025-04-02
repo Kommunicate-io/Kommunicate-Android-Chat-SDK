@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import io.kommunicate.devkit.Applozic;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.commons.ApplozicService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 
@@ -68,7 +68,7 @@ public class MobiComKitClientService {
         if (!TextUtils.isEmpty(SELECTED_BASE_URL)) {
             return SELECTED_BASE_URL;
         } else {
-            String alCustomUrl = ALSpecificSettings.getInstance(context).getAlBaseUrl();
+            String alCustomUrl = AppSpecificSettings.getInstance(context).getAlBaseUrl();
             if (!TextUtils.isEmpty(alCustomUrl)) {
                 return alCustomUrl;
             }
@@ -83,7 +83,7 @@ public class MobiComKitClientService {
     }
 
     public String getKmBaseUrl() {
-        String kmCustomUrl = ALSpecificSettings.getInstance(context).getKmBaseUrl();
+        String kmCustomUrl = AppSpecificSettings.getInstance(context).getKmBaseUrl();
 
         if (!TextUtils.isEmpty(kmCustomUrl)) {
             return kmCustomUrl;

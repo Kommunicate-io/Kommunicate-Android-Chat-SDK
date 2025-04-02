@@ -2,18 +2,21 @@ package io.kommunicate.devkit.api.conversation;
 
 import android.content.Context;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.feed.ChannelFeed;
 import io.kommunicate.commons.ApplozicService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.lang.ref.WeakReference;
 
-public class AlTotalUnreadCountTask extends AlAsyncTask<Void, Integer> {
+@Deprecated
+@CleanUpRequired(reason = "Not used anywhere")
+public class TotalUnreadCountTask extends CoreAsyncTask<Void, Integer> {
 
     private static final String TAG = "AlTotalUnreadCountTask";
     private TaskListener callback;
@@ -22,7 +25,7 @@ public class AlTotalUnreadCountTask extends AlAsyncTask<Void, Integer> {
     private static final String groupFeeds = "groupFeeds";
     private static final String err_msg = "Failed to fetch the unread count";
 
-    public AlTotalUnreadCountTask(Context context, TaskListener callback) {
+    public TotalUnreadCountTask(Context context, TaskListener callback) {
         this.callback = callback;
         this.weakReferenceContext = new WeakReference<Context>(context);
         this.messageDatabaseService = new MessageDatabaseService(context);

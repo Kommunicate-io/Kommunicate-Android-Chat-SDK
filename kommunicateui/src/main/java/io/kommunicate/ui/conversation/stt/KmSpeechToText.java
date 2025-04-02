@@ -12,7 +12,7 @@ import android.text.TextUtils;
 
 import androidx.core.app.ActivityCompat;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KmSpeechSetting;
 import io.kommunicate.ui.kommunicate.views.KmRecordButton;
 import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
@@ -29,18 +29,18 @@ public class KmSpeechToText implements RecognitionListener {
     private SpeechRecognizer speechRecognizer;
     private boolean isStopped;
     private String languageCode;
-    private AlCustomizationSettings alCustomizationSettings;
+    private CustomizationSettings customizationSettings;
     private static final String BEGINNING_OF_SPEECH = "Beginning of speech";
 
-    public KmSpeechToText(Activity context, KmRecordButton recordButton, KmTextListener listener, AlCustomizationSettings alCustomizationSettings) {
+    public KmSpeechToText(Activity context, KmRecordButton recordButton, KmTextListener listener, CustomizationSettings customizationSettings) {
         this.context = context;
         this.listener = listener;
         this.recordButton = recordButton;
-        this.alCustomizationSettings = alCustomizationSettings;
+        this.customizationSettings = customizationSettings;
     }
 
     public void startListening() {
-        languageCode =  KmSpeechSetting.getSpeechToTextLanguageCode(context, alCustomizationSettings);
+        languageCode =  KmSpeechSetting.getSpeechToTextLanguageCode(context, customizationSettings);
         if (PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             isStopped = false;
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);

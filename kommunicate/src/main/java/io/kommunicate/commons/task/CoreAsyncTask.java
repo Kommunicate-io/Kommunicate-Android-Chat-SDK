@@ -1,5 +1,6 @@
 package io.kommunicate.commons.task;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.commons.task.executor.ExecutorAsyncTask;
 
 /**
@@ -8,4 +9,6 @@ import io.kommunicate.commons.task.executor.ExecutorAsyncTask;
  *
  * @author shubham tewari
  */
-public class AlAsyncTask<Progress, Result> extends ExecutorAsyncTask<Progress, Result> { }
+@Deprecated
+@CleanUpRequired(reason = "Migrated to coroutines")
+public class CoreAsyncTask<Progress, Result> extends ExecutorAsyncTask<Progress, Result> { }

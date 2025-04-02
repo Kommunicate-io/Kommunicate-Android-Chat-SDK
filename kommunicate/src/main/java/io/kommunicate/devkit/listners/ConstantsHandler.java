@@ -1,5 +1,5 @@
 package io.kommunicate.devkit.listners;
 
-public interface AlConstantsHandler {
+public interface ConstantsHandler {
     String[] getNotificationTexts();
 }

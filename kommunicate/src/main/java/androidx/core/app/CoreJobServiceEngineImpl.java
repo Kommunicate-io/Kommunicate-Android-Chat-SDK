@@ -9,7 +9,7 @@ import androidx.annotation.RequiresApi;
 import android.util.Log;
 
 @RequiresApi(26)
-public class AlJobServiceEngineImpl extends JobServiceEngine
+public class CoreJobServiceEngineImpl extends JobServiceEngine
         implements JobIntentService.CompatJobEngine {
     static final String TAG = "JobServiceEngineImpl";
 
@@ -46,7 +46,7 @@ public class AlJobServiceEngineImpl extends JobServiceEngine
         }
     }
 
-    AlJobServiceEngineImpl(JobIntentService service) {
+    CoreJobServiceEngineImpl(JobIntentService service) {
         super(service);
         mService = service;
     }

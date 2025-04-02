@@ -5,9 +5,9 @@ import android.content.Context;
 
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
-import io.kommunicate.devkit.listners.ApplozicUIListener;
+import io.kommunicate.devkit.listners.UIEventListener;
 
-public class KmChatWidgetHelper implements ApplozicUIListener {
+public class KmChatWidgetHelper implements UIEventListener {
     private KmChatWidget kmChatWidget;
     private MessageDatabaseService messageDatabaseService;
 

@@ -3,7 +3,7 @@ package io.kommunicate.devkit.api.conversation;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
 
-public class AlConversation {
+public class ConversationDetails {
     private Channel channel;
     private Contact contact;
     private Message message;

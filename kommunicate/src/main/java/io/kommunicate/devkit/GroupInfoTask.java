@@ -7,6 +7,7 @@ package io.kommunicate.devkit;
 import android.content.Context;
 import android.text.TextUtils;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.devkit.api.HttpRequestUtils;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.channel.database.ChannelDatabaseService;
@@ -18,7 +19,7 @@ import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.channel.ChannelUserMapper;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -30,7 +31,9 @@ import io.kommunicate.BuildConfig;
  * Created by reytum on 20/10/17.
  */
 
-public class ALGroupInfoTask extends AlAsyncTask<Void, ALGroupInfoTask.ChannelModel> {
+@Deprecated
+@CleanUpRequired(reason = "Not used anywhere")
+public class GroupInfoTask extends CoreAsyncTask<Void, GroupInfoTask.ChannelModel> {
 
     private Context context;
     private Integer groupId;
@@ -48,7 +51,7 @@ public class ALGroupInfoTask extends AlAsyncTask<Void, ALGroupInfoTask.ChannelMo
 
 
 
-    public ALGroupInfoTask(Context context, Integer groupId, String clientGroupId, boolean isUserListRequest, ChannelInfoListener listener) {
+    public GroupInfoTask(Context context, Integer groupId, String clientGroupId, boolean isUserListRequest, ChannelInfoListener listener) {
         this.context = new WeakReference<Context>(context).get();
         this.groupId = groupId;
         this.clientGroupId = clientGroupId;

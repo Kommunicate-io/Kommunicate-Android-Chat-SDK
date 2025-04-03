@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Rahul-PC on 28-06-2017.
  */
 
-public class ApplozicAddMemberOfGroupType {
+public class AddMemberOfGroupTypeModel {
     List<String> groupMemberList = new ArrayList<>();
     String type;
 

@@ -6,7 +6,7 @@ import io.kommunicate.devkit.api.conversation.Message;
  * Created by reytum on 5/12/17.
  */
 
-public interface ApplozicUIListener {
+public interface UIEventListener {
     void onMessageSent(Message message);
 
     void onMessageReceived(Message message);

@@ -8,9 +8,9 @@ import androidx.core.app.AlJobIntentService;
 
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.api.ApplozicMqttService;
+import io.kommunicate.devkit.api.MqttService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
 
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by sunil on 30/12/15.
  */
-public class ApplozicMqttIntentService extends AlJobIntentService {
+public class MqttIntentService extends AlJobIntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
@@ -54,7 +54,7 @@ public class ApplozicMqttIntentService extends AlJobIntentService {
      * Convenience method for enqueuing work in to this service.
      */
     static public void enqueueWork(Context context, Intent work) {
-        enqueueWork(ApplozicService.getContext(context), ApplozicMqttIntentService.class, JOB_ID, work);
+        enqueueWork(AppContextService.getContext(context), MqttIntentService.class, JOB_ID, work);
     }
 
 
@@ -66,67 +66,67 @@ public class ApplozicMqttIntentService extends AlJobIntentService {
         boolean useEncryptedTopic = intent.getBooleanExtra(USE_ENCRYPTED_TOPIC, false);
         boolean subscribe = intent.getBooleanExtra(SUBSCRIBE, false);
         if (subscribe) {
-            ApplozicMqttService.getInstance(getApplicationContext()).subscribe(useEncryptedTopic);
+            MqttService.getInstance(getApplicationContext()).subscribe(useEncryptedTopic);
         }
         Contact contact = (Contact) intent.getSerializableExtra(CONTACT);
         Channel channel = (Channel) intent.getSerializableExtra(CHANNEL);
 
         boolean subscribeToTyping = intent.getBooleanExtra(SUBSCRIBE_TO_TYPING, false);
         if (subscribeToTyping) {
-            ApplozicMqttService.getInstance(getApplicationContext()).subscribeToTypingTopic(channel);
+            MqttService.getInstance(getApplicationContext()).subscribeToTypingTopic(channel);
             if (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) {
-                ApplozicMqttService.getInstance(getApplicationContext()).subscribeToOpenGroupTopic(channel);
+                MqttService.getInstance(getApplicationContext()).subscribeToOpenGroupTopic(channel);
             }
             return;
         }
         boolean unSubscribeToTyping = intent.getBooleanExtra(UN_SUBSCRIBE_TO_TYPING, false);
         if (unSubscribeToTyping) {
-            ApplozicMqttService.getInstance(getApplicationContext()).unSubscribeToTypingTopic(channel);
+            MqttService.getInstance(getApplicationContext()).unSubscribeToTypingTopic(channel);
             if (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) {
-                ApplozicMqttService.getInstance(getApplicationContext()).unSubscribeToOpenGroupTopic(channel);
+                MqttService.getInstance(getApplicationContext()).unSubscribeToOpenGroupTopic(channel);
             }
             return;
         }
 
         boolean subscribeToSupportGroupTopic = intent.getBooleanExtra(CONNECT_TO_SUPPORT_GROUP_TOPIC, false);
         if (subscribeToSupportGroupTopic) {
-            ApplozicMqttService.getInstance(getApplicationContext()).subscribeToSupportGroup(useEncryptedTopic);
+            MqttService.getInstance(getApplicationContext()).subscribeToSupportGroup(useEncryptedTopic);
             return;
         }
 
         boolean unSubscribeToSupportGroupTopic = intent.getBooleanExtra(DISCONNECT_FROM_SUPPORT_GROUP_TOPIC, false);
         if (unSubscribeToSupportGroupTopic) {
-            ApplozicMqttService.getInstance(getApplicationContext()).unSubscribeToSupportGroup(useEncryptedTopic);
+            MqttService.getInstance(getApplicationContext()).unSubscribeToSupportGroup(useEncryptedTopic);
             return;
         }
 
         boolean subscribeToTeamTopic = intent.getBooleanExtra(CONNECT_TO_TEAM_TOPIC, false);
         List<String> teamList = intent.getStringArrayListExtra(TEAM_TOPIC_LIST);
         if (subscribeToTeamTopic) {
-            ApplozicMqttService.getInstance(getApplicationContext()).subscribeToTeamTopic(useEncryptedTopic, teamList);
+            MqttService.getInstance(getApplicationContext()).subscribeToTeamTopic(useEncryptedTopic, teamList);
             return;
         }
         boolean unSubscribeToTeamTopic = intent.getBooleanExtra(DISCONNECT_FROM_TEAM_TOPIC, false);
         if (unSubscribeToTeamTopic) {
-            ApplozicMqttService.getInstance(getApplicationContext()).unSubscribeToSupportGroup(useEncryptedTopic);
+            MqttService.getInstance(getApplicationContext()).unSubscribeToSupportGroup(useEncryptedTopic);
             return;
         }
 
         String userKeyString = intent.getStringExtra(USER_KEY_STRING);
         String deviceKeyString = intent.getStringExtra(DEVICE_KEY_STRING);
         if (!TextUtils.isEmpty(userKeyString) && !TextUtils.isEmpty(deviceKeyString)) {
-            ApplozicMqttService.getInstance(getApplicationContext()).disconnectPublish(userKeyString, deviceKeyString, "0", useEncryptedTopic);
+            MqttService.getInstance(getApplicationContext()).disconnectPublish(userKeyString, deviceKeyString, "0", useEncryptedTopic);
         }
 
         boolean connectedStatus = intent.getBooleanExtra(CONNECTED_PUBLISH, false);
         if (connectedStatus) {
-            ApplozicMqttService.getInstance(getApplicationContext()).connectPublish(MobiComUserPreference.getInstance(getApplicationContext()).getSuUserKeyString(), MobiComUserPreference.getInstance(getApplicationContext()).getDeviceKeyString(), "1");
+            MqttService.getInstance(getApplicationContext()).connectPublish(MobiComUserPreference.getInstance(getApplicationContext()).getSuUserKeyString(), MobiComUserPreference.getInstance(getApplicationContext()).getDeviceKeyString(), "1");
         }
 
         if (contact != null) {
             boolean stop = intent.getBooleanExtra(STOP_TYPING, false);
             if (stop) {
-                ApplozicMqttService.getInstance(getApplicationContext()).typingStopped(contact, null);
+                MqttService.getInstance(getApplicationContext()).typingStopped(contact, null);
             }
         }
 
@@ -137,9 +137,9 @@ public class ApplozicMqttIntentService extends AlJobIntentService {
         if (contact != null || channel != null) {
             boolean typing = intent.getBooleanExtra(TYPING, false);
             if (typing) {
-                ApplozicMqttService.getInstance(getApplicationContext()).typingStarted(contact, channel);
+                MqttService.getInstance(getApplicationContext()).typingStarted(contact, channel);
             } else {
-                ApplozicMqttService.getInstance(getApplicationContext()).typingStopped(contact, channel);
+                MqttService.getInstance(getApplicationContext()).typingStopped(contact, channel);
             }
         }
 

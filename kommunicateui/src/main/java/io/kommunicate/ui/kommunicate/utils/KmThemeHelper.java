@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import io.kommunicate.ui.AlCustomizationSettings;
 import io.kommunicate.ui.R;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,7 +48,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     private KmThemeHelper(Context context, AlCustomizationSettings alCustomizationSettings) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.alCustomizationSettings = alCustomizationSettings;
         appSettingPreferences = KmAppSettingPreferences.getInstance();
         appSettingPreferences.setCallback(this);

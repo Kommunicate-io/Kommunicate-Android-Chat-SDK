@@ -14,7 +14,7 @@ import io.kommunicate.devkit.feed.ChannelFeedApiResponse;
 import io.kommunicate.devkit.feed.ChannelFeedListResponse;
 import io.kommunicate.devkit.feed.GroupInfoUpdate;
 import io.kommunicate.devkit.sync.SyncChannelFeed;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.reflect.TypeToken;
@@ -74,14 +74,14 @@ public class ChannelClientService extends MobiComKitClientService {
 
     private ChannelClientService(Context context) {
         super(context);
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.httpRequestUtils = new HttpRequestUtils(context);
     }
 
 
     public static ChannelClientService getInstance(Context context) {
         if (channelClientService == null) {
-            channelClientService = new ChannelClientService(ApplozicService.getContext(context));
+            channelClientService = new ChannelClientService(AppContextService.getContext(context));
         }
         return channelClientService;
     }
@@ -607,12 +607,12 @@ public class ChannelClientService extends MobiComKitClientService {
         if (!TextUtils.isEmpty(contactGroupId) && !TextUtils.isEmpty(groupType) &&
                 contactGroupMemberList != null) {
             String url = String.format(addMembersToContactGroupOfTypeUrl(), contactGroupId);
-            ApplozicAddMemberOfGroupType applozicAddMemberOfGroupType = new
-                    ApplozicAddMemberOfGroupType();
-            applozicAddMemberOfGroupType.setGroupMemberList(contactGroupMemberList);
-            applozicAddMemberOfGroupType.setType(groupType);
-            String jsonFromObject = GsonUtils.getJsonFromObject(applozicAddMemberOfGroupType,
-                    ApplozicAddMemberOfGroupType.class);
+            AddMemberOfGroupTypeModel addMemberOfGroupTypeModel = new
+                    AddMemberOfGroupTypeModel();
+            addMemberOfGroupTypeModel.setGroupMemberList(contactGroupMemberList);
+            addMemberOfGroupTypeModel.setType(groupType);
+            String jsonFromObject = GsonUtils.getJsonFromObject(addMemberOfGroupTypeModel,
+                    AddMemberOfGroupTypeModel.class);
             Utils.printLog(context, TAG, "Sending json:" + jsonFromObject);
             try {
                 response = httpRequestUtils.postData(url, appli_json, appli_json,

@@ -25,7 +25,7 @@ import io.kommunicate.devkit.broadcast.AlEventManager;
 import io.kommunicate.ui.AlCustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.GsonUtils;
@@ -116,7 +116,7 @@ public class FeedbackInputFragment extends BottomSheetDialogFragment implements 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
-        String jsonString = FileUtils.loadSettingsJsonFile(ApplozicService.getContext(getContext()));
+        String jsonString = FileUtils.loadSettingsJsonFile(AppContextService.getContext(getContext()));
         AlCustomizationSettings alCustomizationSettings;
         if (!TextUtils.isEmpty(jsonString)) {
             alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);

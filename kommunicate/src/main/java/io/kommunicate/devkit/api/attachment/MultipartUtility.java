@@ -25,7 +25,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 import io.kommunicate.network.SSLPinningConfig;
 
-public class ApplozicMultipartUtility {
+public class MultipartUtility {
     private static final String LINE_FEED = "\r\n";
     private static final String AWS_ENCRYPTED = "AWS-ENCRYPTED-";
     final String TAG = "AlMultipartUtility";
@@ -40,7 +40,7 @@ public class ApplozicMultipartUtility {
     private static final String content_disposition = "Content-Disposition: form-data; name=\"";
 
 
-    public ApplozicMultipartUtility(String requestURL, String charset, Context context)
+    public MultipartUtility(String requestURL, String charset, Context context)
             throws IOException {
 
         boundary = "--" + System.currentTimeMillis() + "--";
@@ -58,7 +58,7 @@ public class ApplozicMultipartUtility {
         writer = new PrintWriter(new OutputStreamWriter(outputStream, charset), true);
     }
 
-    public ApplozicMultipartUtility(String requestURL, HashMap<String, String> headers, Context context) throws IOException {
+    public MultipartUtility(String requestURL, HashMap<String, String> headers, Context context) throws IOException {
         boundary = "--" + System.currentTimeMillis() + "--";
         isUploadOveridden = true;
         URL url = new URL(requestURL);

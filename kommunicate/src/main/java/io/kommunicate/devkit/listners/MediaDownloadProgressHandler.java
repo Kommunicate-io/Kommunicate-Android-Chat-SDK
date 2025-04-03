@@ -1,7 +1,7 @@
 package io.kommunicate.devkit.listners;
 
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 
 /**
  * Created by reytum on 27/11/17.
@@ -10,7 +10,7 @@ import io.kommunicate.devkit.exception.ApplozicException;
 public interface MediaDownloadProgressHandler {
     void onDownloadStarted();
 
-    void onProgressUpdate(int percentage, ApplozicException e);
+    void onProgressUpdate(int percentage, KommunicateException e);
 
-    void onCompleted(Message message, ApplozicException e);
+    void onCompleted(Message message, KommunicateException e);
 }

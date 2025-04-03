@@ -15,7 +15,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import io.kommunicate.ui.R;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.JsonMarker;
 
@@ -35,10 +35,10 @@ public class KmCustomDialog {
 
         TextView dialogTitle = dialog.findViewById(R.id.kmDialogTitle);
         if (dialogTitle != null) {
-            dialogTitle.setText(ApplozicService.getContext(activity).getString(R.string.km_take_over_from_bot_dialog_title, assignedBot));
+            dialogTitle.setText(AppContextService.getContext(activity).getString(R.string.km_take_over_from_bot_dialog_title, assignedBot));
         }
         if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(ApplozicService.getContext(activity), R.drawable.km_take_over_from_bot_button_background));
+            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(AppContextService.getContext(activity), R.drawable.km_take_over_from_bot_button_background));
 
             TextView cancelButton = dialog.findViewById(R.id.kmDialogNegativeText);
             TextView takeOverFromBotButton = dialog.findViewById(R.id.kmDialogPositiveText);
@@ -192,7 +192,7 @@ public class KmCustomDialog {
                 }
 
                 if (titleTextColor > 0) {
-                    dialogTitle.setTextColor(ApplozicService.getContext(activity).getResources().getColor(titleTextColor));
+                    dialogTitle.setTextColor(AppContextService.getContext(activity).getResources().getColor(titleTextColor));
                 }
             }
             if (dialogMessage != null) {
@@ -202,12 +202,12 @@ public class KmCustomDialog {
                     dialogMessage.setText("");
                 }
                 if (messageTextColor > 0) {
-                    dialogMessage.setTextColor(ApplozicService.getContext(activity).getResources().getColor(messageTextColor));
+                    dialogMessage.setTextColor(AppContextService.getContext(activity).getResources().getColor(messageTextColor));
                 }
             }
 
             if (dialog.getWindow() != null) {
-                dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(ApplozicService.getContext(activity), R.drawable.km_take_over_from_bot_button_background));
+                dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(AppContextService.getContext(activity), R.drawable.km_take_over_from_bot_button_background));
 
                 TextView cancelButton = dialog.findViewById(R.id.kmDialogNegativeText);
                 TextView takeOverFromBotButton = dialog.findViewById(R.id.kmDialogPositiveText);
@@ -218,7 +218,7 @@ public class KmCustomDialog {
                         cancelButton.setText(negativeButtonLabel);
                     }
                     if (negativeButtonTextColor > 0) {
-                        cancelButton.setTextColor(ApplozicService.getContext(activity).getResources().getColor(negativeButtonTextColor));
+                        cancelButton.setTextColor(AppContextService.getContext(activity).getResources().getColor(negativeButtonTextColor));
                     }
                     cancelButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -237,7 +237,7 @@ public class KmCustomDialog {
                         takeOverFromBotButton.setText(positiveButtonLabel);
                     }
                     if (positiveButtonTextColor > 0) {
-                        takeOverFromBotButton.setTextColor(ApplozicService.getContext(activity).getResources().getColor(positiveButtonTextColor));
+                        takeOverFromBotButton.setTextColor(AppContextService.getContext(activity).getResources().getColor(positiveButtonTextColor));
                     }
                     takeOverFromBotButton.setOnClickListener(new View.OnClickListener() {
                         @Override

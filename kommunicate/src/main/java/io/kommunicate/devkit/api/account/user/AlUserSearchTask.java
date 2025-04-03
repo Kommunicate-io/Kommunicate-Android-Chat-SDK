@@ -2,7 +2,7 @@ package io.kommunicate.devkit.api.account.user;
 
 import android.content.Context;
 
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.commons.people.contact.Contact;
 import io.kommunicate.commons.task.AlAsyncTask;
 
@@ -28,7 +28,7 @@ public class AlUserSearchTask extends AlAsyncTask<Void, List<Contact>> {
     @Override
     protected List<Contact> doInBackground() {
         if (searchString == null) {
-            exception = new ApplozicException(EMPTY_SEARCH);
+            exception = new KommunicateException(EMPTY_SEARCH);
             return null;
         }
 

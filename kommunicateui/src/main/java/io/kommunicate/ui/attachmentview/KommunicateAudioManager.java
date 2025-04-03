@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.views.KmToast;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,12 +32,12 @@ public class KommunicateAudioManager implements AudioManager.OnAudioFocusChangeL
     private static final String TIME_FORMAT = "%02d:%02d";
 
     private KommunicateAudioManager(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
     }
 
     public static KommunicateAudioManager getInstance(Context context) {
         if (myObj == null) {
-            myObj = new KommunicateAudioManager(ApplozicService.getContext(context));
+            myObj = new KommunicateAudioManager(AppContextService.getContext(context));
         }
         return myObj;
     }

@@ -23,8 +23,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserClientService;
@@ -116,7 +116,7 @@ public class ConversationUIService {
         this.baseContactService = new AppContactService(fragmentActivity);
         this.notificationManager = (NotificationManager) fragmentActivity.getSystemService(Context.NOTIFICATION_SERVICE);
         this.fileClientService = new FileClientService(fragmentActivity);
-        isActionMessageHidden = ApplozicClient.getInstance(fragmentActivity).isActionMessagesHidden();
+        isActionMessageHidden = SettingsSharedPreference.getInstance(fragmentActivity).isActionMessagesHidden();
     }
 
     public MobiComQuickConversationFragment getQuickConversationFragment() {
@@ -916,7 +916,7 @@ public class ConversationUIService {
                 if (Utils.isInternetAvailable(fragmentActivity)) {
                     Utils.printLog(fragmentActivity, TAG, "Reconnecting to mqtt.");
                     ((MobiComKitActivityInterface) fragmentActivity).retry();
-                    Applozic.connectPublish(fragmentActivity);
+                    KommunicateSettings.connectPublish(fragmentActivity);
 
                 }
             }

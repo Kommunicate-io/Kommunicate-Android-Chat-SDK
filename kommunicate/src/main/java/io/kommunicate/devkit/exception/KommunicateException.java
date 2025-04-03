@@ -4,10 +4,10 @@ package io.kommunicate.devkit.exception;
  * Created by reytum on 27/11/17.
  */
 
-public class ApplozicException extends Exception {
+public class KommunicateException extends Exception {
     private String message;
 
-    public ApplozicException(String message) {
+    public KommunicateException(String message) {
         super(message);
         this.message = message;
     }

@@ -1,20 +1,20 @@
 package io.kommunicate.devkit.listners;
 
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 
 /**
  * Created by reytum on 27/11/17.
  */
 
 public interface MediaUploadProgressHandler {
-    void onUploadStarted(ApplozicException e, String oldMessageKey);
+    void onUploadStarted(KommunicateException e, String oldMessageKey);
 
-    void onProgressUpdate(int percentage, ApplozicException e, String oldMessageKey);
+    void onProgressUpdate(int percentage, KommunicateException e, String oldMessageKey);
 
-    void onCancelled(ApplozicException e, String oldMessageKey);
+    void onCancelled(KommunicateException e, String oldMessageKey);
 
-    void onCompleted(ApplozicException e, String oldMessageKey);
+    void onCompleted(KommunicateException e, String oldMessageKey);
 
     void onSent(Message message, String oldMessageKey);
 }

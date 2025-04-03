@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.feed.GroupInfoUpdate;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
@@ -47,7 +47,7 @@ public class KmSettings {
         }
 
         //getting the message metadata already in the applozic preferences
-        String existingMetaDataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        String existingMetaDataString = SettingsSharedPreference.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
 
         if (TextUtils.isEmpty(existingMetaDataString)) { //case 1: no existing metadata
@@ -68,7 +68,7 @@ public class KmSettings {
         }
 
         existingMetadata.put(KM_CHAT_CONTEXT, messageMetaDataString);
-        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+        SettingsSharedPreference.getInstance(context).setMessageMetaData(existingMetadata);
     }
 
     public static void updateUserLanguage(Context context, String languageCode) {
@@ -78,7 +78,7 @@ public class KmSettings {
     }
 
     public static void updateMessageMetadata(Context context, Map<String, String> metadata) {
-        String existingMetadataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        String existingMetadataString = SettingsSharedPreference.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
         if (TextUtils.isEmpty(existingMetadataString)) {
             existingMetadata = new HashMap<>();
@@ -87,7 +87,7 @@ public class KmSettings {
         }
 
         existingMetadata.putAll(metadata);
-        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+        SettingsSharedPreference.getInstance(context).setMessageMetaData(existingMetadata);
     }
 
     public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, TaskListener<Context> listener) {

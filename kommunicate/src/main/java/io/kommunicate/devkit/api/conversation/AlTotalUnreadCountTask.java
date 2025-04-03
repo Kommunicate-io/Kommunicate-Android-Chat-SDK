@@ -4,7 +4,7 @@ import android.content.Context;
 
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.feed.ChannelFeed;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.task.AlAsyncTask;
@@ -31,7 +31,7 @@ public class AlTotalUnreadCountTask extends AlAsyncTask<Void, Integer> {
     @Override
     protected Integer doInBackground() {
         try {
-            String message = new MessageClientService(ApplozicService.getContextFromWeak(weakReferenceContext)).getMessages(null,null,null,null,null,false);
+            String message = new MessageClientService(AppContextService.getContextFromWeak(weakReferenceContext)).getMessages(null,null,null,null,null,false);
             JsonObject messageObject = JsonParser.parseString(message).getAsJsonObject();
             if (messageObject.has(groupFeeds)) {
                 String channelFeedResponse = messageObject.get(groupFeeds).toString();
@@ -44,7 +44,7 @@ public class AlTotalUnreadCountTask extends AlAsyncTask<Void, Integer> {
             }
             return messageDatabaseService.getTotalUnreadCount();
         } catch (Exception e) {
-            Utils.printLog(ApplozicService.getContextFromWeak(weakReferenceContext), TAG, e.getMessage());
+            Utils.printLog(AppContextService.getContextFromWeak(weakReferenceContext), TAG, e.getMessage());
             return null;
         }
     }

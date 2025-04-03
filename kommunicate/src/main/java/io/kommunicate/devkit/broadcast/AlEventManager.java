@@ -7,7 +7,7 @@ import android.os.Message;
 
 import io.kommunicate.devkit.feed.MqttMessageResponse;
 import io.kommunicate.devkit.listners.AlMqttListener;
-import io.kommunicate.devkit.listners.ApplozicUIListener;
+import io.kommunicate.devkit.listners.UIEventListener;
 import io.kommunicate.devkit.listners.KmConversationInfoListener;
 import io.kommunicate.devkit.listners.KmStatusListener;
 import io.kommunicate.commons.json.GsonUtils;
@@ -25,7 +25,7 @@ import io.kommunicate.callbacks.KmPluginEventListener;
 public class AlEventManager {
     public static final String AL_EVENT = "AL_EVENT";
     private static AlEventManager eventManager;
-    private Map<String, ApplozicUIListener> listenerMap;
+    private Map<String, UIEventListener> listenerMap;
     private Map<String, AlMqttListener> mqttListenerMap;
     private Map<String, KmStatusListener> statusListenerMap;
     private KmPluginEventListener kmPluginEventListener;
@@ -39,7 +39,7 @@ public class AlEventManager {
         return eventManager;
     }
 
-    public void registerUIListener(String id, ApplozicUIListener listener) {
+    public void registerUIListener(String id, UIEventListener listener) {
         if (listenerMap == null) {
             listenerMap = new HashMap<>();
         }
@@ -263,7 +263,7 @@ public class AlEventManager {
             }
 
             if (listenerMap != null && !listenerMap.isEmpty()) {
-                for (ApplozicUIListener listener : listenerMap.values()) {
+                for (UIEventListener listener : listenerMap.values()) {
                     switch (messageEvent.getAction()) {
                         case AlMessageEvent.ActionType.MESSAGE_SENT:
                             listener.onMessageSent(messageEvent.getMessage());

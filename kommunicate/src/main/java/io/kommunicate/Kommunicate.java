@@ -13,8 +13,8 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
@@ -24,7 +24,7 @@ import io.kommunicate.devkit.api.notification.MobiComPushReceiver;
 import io.kommunicate.devkit.api.people.ChannelInfo;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.usecase.AppSettingUseCase;
@@ -36,7 +36,7 @@ import io.kommunicate.usecase.FaqUseCase;
 import io.kommunicate.usecase.HelpDocsKeyUseCase;
 import io.kommunicate.usecase.KMUserLoginUseCase;
 import io.kommunicate.commons.ALSpecificSettings;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.data.AlPrefSettings;
 import io.kommunicate.commons.data.SecureSharedPreferences;
@@ -124,10 +124,10 @@ public class Kommunicate {
     }
 
     public static void init(Context context, String applicationKey, Boolean enableDeviceRootDetection) {
-        if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(Applozic.getInstance(context).getApplicationKey())) {
+        if (TextUtils.isEmpty(applicationKey) || PLACEHOLDER_APP_ID.equals(KommunicateSettings.getInstance(context).getApplicationKey())) {
             KmUtils.showToastAndLog(context, R.string.km_app_id_cannot_be_null);
         } else {
-            Applozic.init(context, applicationKey);
+            KommunicateSettings.init(context, applicationKey);
         }
         KmAppSettingPreferences.setRootDetection(enableDeviceRootDetection);
         configureSentryWithKommunicate(context);
@@ -281,7 +281,7 @@ public class Kommunicate {
 
             @Override
             public void onFailure(Object error) {
-                handler.onFailure(null, new ApplozicException("unable to create user."));
+                handler.onFailure(null, new KommunicateException("unable to create user."));
             }
         });
     }
@@ -378,7 +378,7 @@ public class Kommunicate {
      * @param kmConversationBuilder Sets the properties to conversation.
      */
     public static void checkForLeadCollection(final Context context, final ProgressDialog progressDialog, final KMUser kmUser, final KmCallback callback, KmConversationBuilder kmConversationBuilder) {
-        AppSettingUseCase.executeWithExecutor(context, Applozic.getInstance(context).getApplicationKey(), new KmCallback() {
+        AppSettingUseCase.executeWithExecutor(context, KommunicateSettings.getInstance(context).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 final KmAppSettingModel appSettingModel = (KmAppSettingModel) message;
@@ -551,7 +551,7 @@ public class Kommunicate {
             }
         };
 
-        Applozic.logoutUser(context, handler);
+        KommunicateSettings.logoutUser(context, handler);
     }
 
     public static void closeConversationScreen(Context context) {
@@ -565,11 +565,11 @@ public class Kommunicate {
     }
 
     public static void setDeviceToken(Context context, String deviceToken) {
-        Applozic.getInstance(context).setDeviceRegistrationId(deviceToken);
+        KommunicateSettings.getInstance(context).setDeviceRegistrationId(deviceToken);
     }
 
     public static String getDeviceToken(Context context) {
-        return Applozic.getInstance(context).getDeviceRegistrationId();
+        return KommunicateSettings.getInstance(context).getDeviceRegistrationId();
     }
 
     public static void openConversation(Context context) {
@@ -669,7 +669,7 @@ public class Kommunicate {
     }
 
     public static void setNotificationSoundPath(Context context, String path) {
-        Applozic.getInstance(context).setCustomNotificationSound(path);
+        KommunicateSettings.getInstance(context).setCustomNotificationSound(path);
     }
 
     public  static  void setServerConfiguration(Context context,KMServerConfiguration configuration){
@@ -804,8 +804,8 @@ public class Kommunicate {
             metadata.put(SKIP_ROUTING, String.valueOf(chatBuilder.isSkipRouting()));
         }
 
-        if (!TextUtils.isEmpty(ApplozicClient.getInstance(chatBuilder.getContext()).getMessageMetaData())) {
-            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(chatBuilder.getContext()).getMessageMetaData(), Map.class);
+        if (!TextUtils.isEmpty(SettingsSharedPreference.getInstance(chatBuilder.getContext()).getMessageMetaData())) {
+            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(SettingsSharedPreference.getInstance(chatBuilder.getContext()).getMessageMetaData(), Map.class);
             if (defaultMetadata != null) {
                 metadata.putAll(defaultMetadata);
             }
@@ -987,8 +987,8 @@ public class Kommunicate {
         user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
 
         AppSettingUseCase.executeWithExecutor(
-                ApplozicService.getAppContext(),
-                MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
+                AppContextService.getAppContext(),
+                MobiComKitClientService.getApplicationKey(AppContextService.getAppContext()),
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {
@@ -1047,7 +1047,7 @@ public class Kommunicate {
         }
 
         //getting the message metadata already in the applozic preferences
-        String existingMetaDataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        String existingMetaDataString = SettingsSharedPreference.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
 
         if (TextUtils.isEmpty(existingMetaDataString)) { //case 1: no existing metadata
@@ -1068,7 +1068,7 @@ public class Kommunicate {
         }
 
         existingMetadata.put(KM_CHAT_CONTEXT, messageMetaDataString);
-        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+        SettingsSharedPreference.getInstance(context).setMessageMetaData(existingMetadata);
     }
 
     public static void loadAwayMessage(Context context, Integer groupId, KmAwayMessageHandler handler) {
@@ -1076,7 +1076,7 @@ public class Kommunicate {
     }
 
     public static void removeApplicationKey(Context context) {
-        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, ApplozicService.getContext(context)).edit().remove(APPLICATION_KEY).commit();
+        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, AppContextService.getContext(context)).edit().remove(APPLICATION_KEY).commit();
     }
 
     public static void setChatText(Context context, String PreFilledText) {
@@ -1089,8 +1089,8 @@ public class Kommunicate {
 
     public static void isChatWidgetDisabled(final KmChatWidgetCallback callback) {
         AppSettingUseCase.executeWithExecutor(
-                ApplozicService.getAppContext(),
-                MobiComKitClientService.getApplicationKey(ApplozicService.getAppContext()),
+                AppContextService.getAppContext(),
+                MobiComKitClientService.getApplicationKey(AppContextService.getAppContext()),
                 true,
                 new KmCallback() {
                     @Override

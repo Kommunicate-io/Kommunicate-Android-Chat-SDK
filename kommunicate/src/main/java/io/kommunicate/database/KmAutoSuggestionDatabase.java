@@ -10,7 +10,7 @@ import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import android.text.TextUtils;
 
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class KmAutoSuggestionDatabase {
     private static KmAutoSuggestionDatabase kmAutoSuggestionDatabase;
 
     private KmAutoSuggestionDatabase(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.dbHelper = KmDatabaseHelper.getInstance(context);
     }
 

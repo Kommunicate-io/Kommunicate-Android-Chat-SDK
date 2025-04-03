@@ -3,7 +3,7 @@ package io.kommunicate.async;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.feed.ApiResponse;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.task.AlAsyncTask;
 
@@ -34,7 +34,7 @@ public class KmAssigneeUpdateTask extends AlAsyncTask<Void, String> {
         this.sendNotifyMessage = sendNotifyMessage;
         this.takeOverFromBot = takeOverFromBot;
         this.callback = callback;
-        this.clientService = new KmClientService(ApplozicService.getAppContext());
+        this.clientService = new KmClientService(AppContextService.getAppContext());
     }
 
     @Override

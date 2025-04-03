@@ -11,7 +11,7 @@ import io.kommunicate.devkit.cache.MessageSearchCache;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
 import io.kommunicate.devkit.listners.AlContactListener;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.image.ImageUtils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
@@ -32,7 +32,7 @@ public class AppContactService implements BaseContactService {
     FileClientService fileClientService;
 
     public AppContactService(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.contactDatabase = new ContactDatabase(context);
         this.fileClientService = new FileClientService(context);
     }

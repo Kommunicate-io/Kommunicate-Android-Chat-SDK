@@ -984,7 +984,7 @@ public class Kommunicate {
     public static void getVisitor(KmCallback callback) {
         final KMUser user = new KMUser();
         user.setUserId(generateUserId());
-        user.setAuthenticationTypeId(User.AuthenticationType.APPLOZIC.getValue());
+        user.setAuthenticationTypeId(User.AuthenticationType.KOMMUNICATE.getValue());
 
         AppSettingUseCase.executeWithExecutor(
                 AppContextService.getAppContext(),
@@ -1046,7 +1046,7 @@ public class Kommunicate {
             return;
         }
 
-        //getting the message metadata already in the applozic preferences
+        //getting the message metadata already in the kommunicate preferences
         String existingMetaDataString = SettingsSharedPreference.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
 

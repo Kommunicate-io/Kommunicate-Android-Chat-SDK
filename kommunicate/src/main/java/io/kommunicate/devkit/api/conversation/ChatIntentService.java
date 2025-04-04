@@ -22,7 +22,6 @@ public class ChatIntentService extends AlJobIntentService {
      */
     public static final String CONTACT = "contact";
     public static final String CHANNEL = "channel";
-    private static final String TAG = "ApplozicIntentService";
     private MessageClientService messageClientService;
     public static final String AL_SYNC_ON_CONNECTIVITY = "AL_SYNC_ON_CONNECTIVITY";
     public static final String AL_TIME_CHANGE_RECEIVER = "AL_TIME_CHANGE_RECEIVER";

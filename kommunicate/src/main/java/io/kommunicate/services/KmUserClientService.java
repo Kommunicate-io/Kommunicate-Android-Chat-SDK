@@ -371,7 +371,7 @@ public class KmUserClientService extends UserClientService {
         final KmRegistrationResponse kmRegistrationResponse = gson.fromJson(response, KmRegistrationResponse.class);
         RegistrationResponse registrationResponse = null;
         if (kmRegistrationResponse != null && kmRegistrationResponse.getResult() != null) {
-            registrationResponse = kmRegistrationResponse.getResult().getApplozicUser();
+            registrationResponse = kmRegistrationResponse.getResult().getKommunicateUser();
         }
 
         if (registrationResponse == null) {

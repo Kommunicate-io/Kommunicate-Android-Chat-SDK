@@ -57,8 +57,8 @@ public class SettingsSharedPreference {
     private static final String MAX_CREATED_AT_KEY = "mck.sms.createdAt.max";
     private static final String AL_CONVERSATION_LIST_PAGE_SIZE_KEY = "AL_CONVERSATION_LIST_PAGE_SIZE_KEY";
     private static final int conversationListDefaultMainPageSize = 60;
-    private static final String APPLOZIC_CONTACT_PIC = "applozic_ic_contact_picture_holo_light";
-    private static final String APPLOZIC_GROUP_ICON = "applozic_group_icon";
+    private static final String DEFAULT_CONTACT_PIC = "applozic_ic_contact_picture_holo_light";
+    private static final String DEFAULT_GROUP_ICON = "applozic_group_icon";
     private static final String LIST_CALL = "LIST_CALL";
 
     public static SettingsSharedPreference settingsSharedPreference;
@@ -141,7 +141,7 @@ public class SettingsSharedPreference {
     }
 
     public String getAppName() {
-        return sharedPreferences.getString(APP_NAME, "Applozic");
+        return sharedPreferences.getString(APP_NAME, "Kommunicate");
     }
 
     public SettingsSharedPreference setAppName(String notficationAppName) {
@@ -164,7 +164,7 @@ public class SettingsSharedPreference {
     }
 
     public String getDefaultContactImage() {
-        return sharedPreferences.getString(CONTACT_DEFAULT_IMAGE, APPLOZIC_CONTACT_PIC);
+        return sharedPreferences.getString(CONTACT_DEFAULT_IMAGE, DEFAULT_CONTACT_PIC);
     }
 
     public SettingsSharedPreference setDefaultContactImage(String imageName) {
@@ -173,7 +173,7 @@ public class SettingsSharedPreference {
     }
 
     public String getDefaultChannelImage() {
-        return sharedPreferences.getString(GROUP_DEFAULT_IMAGE, APPLOZIC_GROUP_ICON);
+        return sharedPreferences.getString(GROUP_DEFAULT_IMAGE, DEFAULT_GROUP_ICON);
     }
 
     public SettingsSharedPreference setDefaultChannelImage(String groupImageName) {

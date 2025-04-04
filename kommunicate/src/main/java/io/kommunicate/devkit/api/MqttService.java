@@ -42,7 +42,7 @@ import java.util.List;
 public class MqttService extends MobiComKitClientService implements MqttCallback {
 
     private static final String STATUS = "status-v2";
-    private static final String TAG = "ApplozicMqttService";
+    private static final String TAG = "MqttService";
     private static final String TYPINGTOPIC = "typing-";
     private static final String OPEN_GROUP = "group-";
     private static final String MQTT_ENCRYPTION_TOPIC = "encr-";

@@ -25,7 +25,7 @@ public class MqttIntentService extends AlJobIntentService {
      *
      * @param name Used to name the worker thread, important only for debugging.
      */
-    public static final String TAG = "ApplozicMqttIntentService";
+    public static final String TAG = "MqttIntentService";
     public static final String SUBSCRIBE = "subscribe";
     public static final String SUBSCRIBE_TO_TYPING = "subscribeToTyping";
     public static final String UN_SUBSCRIBE_TO_TYPING = "unSubscribeToTyping";

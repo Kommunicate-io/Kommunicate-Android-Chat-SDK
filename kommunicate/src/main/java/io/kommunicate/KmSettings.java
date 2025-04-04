@@ -46,7 +46,6 @@ public class KmSettings {
             return;
         }
 
-        //getting the message metadata already in the applozic preferences
         String existingMetaDataString = SettingsSharedPreference.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
 

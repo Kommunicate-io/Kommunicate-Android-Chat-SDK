@@ -17,7 +17,7 @@ import io.kommunicate.commons.json.GsonUtils;
 
 public class ConversationBroadcastReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "ApplozicUIReceiver";
+    private static final String TAG = "ConversationBroadcastReceiver";
     private static final String LOAD_MORE = "loadMore";
     private static final String CONTACT_NUMBER = "contactNumber";
     private static final String contactId = "contactId";

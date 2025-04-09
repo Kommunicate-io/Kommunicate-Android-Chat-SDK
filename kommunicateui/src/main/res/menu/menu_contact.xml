@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mobicomkit="http://schemas.android.com/apk/res-auto"
+    xmlns:kommunicate="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="io.kommunicate.ui.R.people.activity.MobiComKitPeopleActivity">
+    tools:context="io.kommunicate.ui.people.activity.MobiComKitPeopleActivity">
 
     <item
         android:id="@+id/menu_search"
@@ -10,8 +10,8 @@
         android:iconifiedByDefault="true"
         android:showAsAction="always"
         android:title="@string/menu_search"
-        mobicomkit:actionViewClass="androidx.appcompat.widget.SearchView"
-        mobicomkit:iconifiedByDefault="true"
-        mobicomkit:showAsAction="always" />
+        kommunicate:actionViewClass="androidx.appcompat.widget.SearchView"
+        kommunicate:iconifiedByDefault="true"
+        kommunicate:showAsAction="always" />
 
 </menu>

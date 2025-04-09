@@ -12,11 +12,11 @@
     android:paddingTop="15dp">
 
     <TextView
-        android:id="@+id/applozic_custom_message_layout_content"
+        android:id="@+id/custom_message_layout_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:background="@color/applozic_theme_color_primary"
+        android:background="@color/core_theme_color_primary"
         android:gravity="center_horizontal"
         android:paddingBottom="10dp"
         android:paddingStart="20dp"

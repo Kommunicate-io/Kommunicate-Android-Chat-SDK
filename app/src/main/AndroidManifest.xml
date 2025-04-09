@@ -42,19 +42,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:theme="@style/ApplozicTheme"
+        android:theme="@style/KommunicateTheme"
         tools:replace="android:allowBackup,android:fullBackupContent"
         tools:targetApi="n">
         <activity
             android:name="kommunicate.io.sample.MainActivity"
             android:launchMode="singleTask"
-            android:theme="@style/ApplozicTheme" />
+            android:theme="@style/KommunicateTheme" />
 
         <activity
             android:name="kommunicate.io.sample.SplashScreenActivity"
             android:launchMode="singleTask"
             android:exported="true"
-            android:theme="@style/ApplozicTheme">
+            android:theme="@style/KommunicateTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -142,7 +142,6 @@ import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
 import io.kommunicate.ui.conversation.richmessaging.RichMessageActionProcessor;
 import io.kommunicate.ui.conversation.richmessaging.adapters.KmAutoSuggestionArrayAdapter;
 import io.kommunicate.ui.conversation.richmessaging.callbacks.KmRichMessageListener;
-import io.kommunicate.ui.conversation.richmessaging.helpers.KmFormStateHelper;
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmAutoSuggestion;
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmCustomInputModel;
 import io.kommunicate.ui.conversation.richmessaging.webview.KmWebViewActivity;
@@ -606,7 +605,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
+        final View list = inflater.inflate(R.layout.message_list, container, false);
         conversationRootLayout = (RelativeLayout) list.findViewById(R.id.rl_conversation_layout);
         businessConversationLL = (LinearLayout) list.findViewById(R.id.business_conversation_ll);
         businessSettingsTextView = (TextView) list.findViewById(R.id.business_conversation);
@@ -620,7 +619,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         recyclerViewPositionHelper = new RecyclerViewPositionHelper(recyclerView, linearLayoutManager);
         ((ConversationActivity) getActivity()).setChildFragmentLayoutBGToTransparent();
         messageList = new ArrayList<Message>();
-        multimediaPopupGrid = (GridView) list.findViewById(R.id.mobicom_multimedia_options1);
+        multimediaPopupGrid = (GridView) list.findViewById(R.id.multimedia_options1);
         textViewCharLimitMessage = list.findViewById(R.id.botCharLimitTextView);
         kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
         loggedInUserRole = MobiComUserPreference.getInstance(ApplozicService.getContext(getContext())).getUserRoleType();
@@ -750,8 +749,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
-        messageTemplateView = (RecyclerView) list.findViewById(R.id.mobicomMessageTemplateView);
-        applozicLabel = list.findViewById(R.id.applozicLabel);
+        messageTemplateView = (RecyclerView) list.findViewById(R.id.message_template_view);
+        applozicLabel = list.findViewById(R.id.app_label);
         cameraButton = list.findViewById(R.id.camera_btn);
         videoButton = list.findViewById(R.id.btn_video_capture);
         locationButton = list.findViewById(R.id.location_btn);
@@ -813,7 +812,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         attachReplyCancelLayout = (ImageButton) list.findViewById(R.id.imageCancel);
         imageViewRLayout = (RelativeLayout) list.findViewById(R.id.imageViewRLayout);
         imageViewForAttachmentType = (ImageView) list.findViewById(R.id.imageViewForAttachmentType);
-        spinnerLayout = inflater.inflate(R.layout.mobicom_message_list_header_footer, null);
+        spinnerLayout = inflater.inflate(R.layout.message_list_header_footer, null);
         infoBroadcast = (TextView) spinnerLayout.findViewById(R.id.info_broadcast);
         spinnerLayout.setVisibility(View.GONE);
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
@@ -906,9 +905,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 android.R.color.holo_red_light);
 
         ArrayAdapter<CharSequence> sendTypeAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.send_type_options, R.layout.mobiframework_custom_spinner);
+                R.array.send_type_options, R.layout.custom_spinner);
 
-        sendTypeAdapter.setDropDownViewResource(R.layout.mobiframework_custom_spinner);
+        sendTypeAdapter.setDropDownViewResource(R.layout.custom_spinner);
         sendType.setAdapter(sendTypeAdapter);
 
         messageEditText.addTextChangedListener(new TextWatcher() {
@@ -2262,7 +2261,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             selfDestructMessageSpinner.setSelection(0);
         }
         recyclerDetailConversationAdapter = getConversationAdapter(getActivity(),
-                R.layout.mobicom_message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler, alCustomizationSettings);
+                R.layout.message_row_view, messageList, contact, channel, messageIntentClass, emojiIconHandler, alCustomizationSettings);
         recyclerDetailConversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
         recyclerDetailConversationAdapter.setupDarkMode(isCurrentlyInDarkMode);
         recyclerDetailConversationAdapter.setContextMenuClickListener(this);
@@ -3098,7 +3097,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     View view = recyclerView.getChildAt(index - linearLayoutManager.findFirstVisibleItemPosition());
                     if (view != null) {
                         ProgressBar mediaUploadProgressBarIndividualMessage = (ProgressBar) view.findViewById(R.id.media_upload_progress_bar);
-                        RelativeLayout downloadInProgressLayout = (RelativeLayout) view.findViewById(R.id.applozic_doc_download_progress_rl);
+                        RelativeLayout downloadInProgressLayout = (RelativeLayout) view.findViewById(R.id.doc_download_progress_rl);
                         if (mediaUploadProgressBarIndividualMessage != null) {
                             mediaUploadProgressBarIndividualMessage.setVisibility(View.GONE);
                         }
@@ -3106,7 +3105,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             downloadInProgressLayout.setVisibility(View.GONE);
                         }
                         if (message.getFileMetas() != null && !IMAGE.contains(message.getFileMetas().getContentType()) && !VIDEO.contains(message.getFileMetas().getContentType())) {
-                            RelativeLayout applozicDocRelativeLayout = (RelativeLayout) view.findViewById(R.id.applozic_doc_downloaded);
+                            RelativeLayout applozicDocRelativeLayout = (RelativeLayout) view.findViewById(R.id.doc_downloaded);
                             ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.doc_icon);
                             if (message.getFileMetas() != null) {
                                 if (message.getFileMetas().getContentType().contains(AUDIO)) {
@@ -3183,7 +3182,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 preview.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(message.getFilePaths().get(0)));
                             } else if (message.getFileMetas() != null) {
                                 //Hide Attachment View...
-                                RelativeLayout applozicDocRelativeLayout = (RelativeLayout) view.findViewById(R.id.applozic_doc_downloaded);
+                                RelativeLayout applozicDocRelativeLayout = (RelativeLayout) view.findViewById(R.id.doc_downloaded);
                                 ImageView imageViewDoc = (ImageView) applozicDocRelativeLayout.findViewById(R.id.doc_icon);
                                 if (message.getFileMetas() != null && message.getFilePaths() == null) {
                                     String filePath = message.getFilePaths().get(0);
@@ -3212,7 +3211,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                     }
                                     applozicDocRelativeLayout.setVisibility(VISIBLE);
                                 }
-                                view.findViewById(R.id.applozic_doc_download_progress_rl).setVisibility(View.GONE);
+                                view.findViewById(R.id.doc_download_progress_rl).setVisibility(View.GONE);
                             }
                         }
 
@@ -5011,14 +5010,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             galleryImageView.setVisibility(View.GONE);
                             imageViewRLayout.setVisibility(View.GONE);
                         }
-                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(ApplozicService.getContext(getContext()), R.color.applozic_lite_gray_color));
+                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(ApplozicService.getContext(getContext()), R.color.core_lite_gray_color));
                     } else if (message.getContentType() == Message.ContentType.LOCATION.getValue()) {
                         imageViewForAttachmentType.setVisibility(VISIBLE);
                         galleryImageView.setVisibility(VISIBLE);
                         imageViewRLayout.setVisibility(VISIBLE);
                         messageTextView.setText(ApplozicService.getContext(getContext()).getString(R.string.al_location_string));
                         imageViewForAttachmentType.setImageResource(R.drawable.km_ic_location_on_white_24dp);
-                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(ApplozicService.getContext(getContext()), R.color.applozic_lite_gray_color));
+                        imageViewForAttachmentType.setColorFilter(ContextCompat.getColor(ApplozicService.getContext(getContext()), R.color.core_lite_gray_color));
                         messageImageLoader.setLoadingImage(R.drawable.km_map_offline_thumbnail);
                         messageImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage(), geoApiKey), galleryImageView);
                     } else {

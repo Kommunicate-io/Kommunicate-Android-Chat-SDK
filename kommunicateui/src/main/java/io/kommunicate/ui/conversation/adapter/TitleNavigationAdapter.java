@@ -54,7 +54,7 @@ public class TitleNavigationAdapter extends BaseAdapter {
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = mInflater.inflate(R.layout.mobicom_list_item_title_navigation, parent, false);
+            convertView = mInflater.inflate(R.layout.list_item_title_navigation, parent, false);
         }
 
         imgIcon = (ImageView) convertView.findViewById(R.id.imgIcon);
@@ -75,7 +75,7 @@ public class TitleNavigationAdapter extends BaseAdapter {
         if (convertView == null) {
             LayoutInflater mInflater = (LayoutInflater)
                     context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = mInflater.inflate(R.layout.mobicom_list_item_title_navigation, parent, false);
+            convertView = mInflater.inflate(R.layout.list_item_title_navigation, parent, false);
         }
 
         imgIcon = (ImageView) convertView.findViewById(R.id.imgIcon);

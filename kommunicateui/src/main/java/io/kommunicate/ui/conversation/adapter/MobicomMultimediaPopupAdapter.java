@@ -54,13 +54,13 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.mobicom_individual_multimedia_option_item, null);
+        convertView = inflater.inflate(R.layout.individual_multimedia_option_item, null);
 
-        TextView icon = (TextView) convertView.findViewById(R.id.mobicom_multimedia_icon);
+        TextView icon = (TextView) convertView.findViewById(R.id.multimedia_icon);
         Typeface iconTypeface = Typeface.createFromAsset(context.getAssets(), FONTS);
         icon.setTypeface(iconTypeface);
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(context,new AlCustomizationSettings());
-        TextView text = (TextView) convertView.findViewById(R.id.mobicom_multimedia_text);
+        TextView text = (TextView) convertView.findViewById(R.id.multimedia_text);
         icon.setTextColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAttachmentIconsBackgroundColor().get(1) : alCustomizationSettings.getAttachmentIconsBackgroundColor().get(0)));
         icon.setText(multimediaIcons.get(position));
         text.setText(multimediaText.get(position));

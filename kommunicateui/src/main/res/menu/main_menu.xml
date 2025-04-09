@@ -1,53 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mobitexter="http://schemas.android.com/apk/res-auto">
+    xmlns:kommunicate="http://schemas.android.com/apk/res-auto">
 
     <!-- <item
          android:id="@+id/conversations"
          android:orderInCategory="1"
-         android:icon="@drawable/applozic_ic_action_chat"
-         mobitexter:showAsAction="ifRoom"
+         kommunicate:showAsAction="ifRoom"
          android:showAsAction="ifRoom"
          android:title="Conversations" />
 
      <item
          android:id="@+id/start_new"
          android:orderInCategory="2"
-         android:icon="@drawable/applozic_ic_action_add"
-         mobitexter:showAsAction="ifRoom|collapseActionView"
+         kommunicate:showAsAction="ifRoom|collapseActionView"
          android:showAsAction="ifRoom|collapseActionView"
          android:title="Start New" />
 
      <item
          android:id="@+id/dial"
          android:orderInCategory="3"
-         android:icon="@drawable/applozic_ic_action_call"
-         mobitexter:showAsAction="ifRoom|collapseActionView"
+         kommunicate:showAsAction="ifRoom|collapseActionView"
          android:showAsAction="ifRoom|collapseActionView"
          android:title="Dial" />
 
      <item
          android:id="@+id/refresh"
          android:orderInCategory="4"
-         android:icon="@drawable/applozic_ic_action_time"
-         mobitexter:showAsAction="collapseActionView"
+         kommunicate:showAsAction="collapseActionView"
          android:showAsAction="collapseActionView"
          android:title="Refresh" />
 
      <item
          android:id="@+id/schedule"
          android:orderInCategory="4"
-         android:icon="@drawable/applozic_ic_action_time"
-         mobitexter:showAsAction="collapseActionView"
+         kommunicate:showAsAction="collapseActionView"
          android:showAsAction="collapseActionView"
          android:title="Scheduled" />
 
      <item
          android:id="@+id/deleteConversation"
          android:orderInCategory="5"
-         android:icon="@drawable/applozic_ic_action_edit"
-         mobitexter:showAsAction="collapseActionView"
+         kommunicate:showAsAction="collapseActionView"
          android:showAsAction="collapseActionView"
          android:title="@string/delete_conversation" />
 
@@ -55,8 +49,7 @@
      <item
          android:id="@+id/settings"
          android:orderInCategory="6"
-         android:icon="@drawable/applozic_ic_action_settings"
-         mobitexter:showAsAction="collapseActionView"
+         kommunicate:showAsAction="collapseActionView"
          android:showAsAction="collapseActionView"
          android:title="Settings" />
 
@@ -64,8 +57,7 @@
      <item
              android:id="@+id/verifyNumber"
              android:orderInCategory="6"
-             android:icon="@drawable/applozic_ic_action_about"
-             mobitexter:showAsAction="collapseActionView"
+             kommunicate:showAsAction="collapseActionView"
              android:showAsAction="collapseActionView"
              android:title="Verify Phone #"/>
              &ndash;&gt;
@@ -73,8 +65,7 @@
      <item
          android:id="@+id/help"
          android:orderInCategory="7"
-         android:icon="@drawable/applozic_ic_action_help"
-         mobitexter:showAsAction="collapseActionView"
+         kommunicate:showAsAction="collapseActionView"
          android:showAsAction="collapseActionView"
          android:title="FAQ" />
 
@@ -83,15 +74,14 @@
              android:id="@+id/start_tour"
              android:orderInCategory="101"
              android:icon="@drawable/abc_ic_go"
-             mobitexter:showAsAction="collapseActionView"
+             kommunicate:showAsAction="collapseActionView"
              android:showAsAction="collapseActionView"
-             android:title="Start Tour"/> &ndash;&gt;
+             android:title="Starbt Tour"/> &ndash;&gt;
 
      <item
          android:id="@+id/support"
          android:orderInCategory="8"
-         android:icon="@drawable/applozic_ic_action_help"
-         mobitexter:showAsAction="collapseActionView"
+         kommunicate:showAsAction="collapseActionView"
          android:showAsAction="collapseActionView"
          android:title="Support" />
 
@@ -99,8 +89,7 @@
      <item
          android:id="@+id/about"
          android:orderInCategory="9"
-         android:icon="@drawable/applozic_ic_action_about"
-         mobitexter:showAsAction="collapseActionView"
+         kommunicate:showAsAction="collapseActionView"
          android:showAsAction="collapseActionView"
          android:title="About" />
 
@@ -108,8 +97,8 @@
      <item
          android:id="@+id/shareOptions"
          android:orderInCategory="10"
-         android:icon="@drawable/mobicom_social_share"
-         mobitexter:showAsAction="collapseActionView"
+         android:icon="@drawable/social_share"
+         kommunicate:showAsAction="collapseActionView"
          android:showAsAction="collapseActionView"
          android:actionProviderClass="android.support.v7.widget.ShareActionProvider"
          android:title="@string/shareOptions" />

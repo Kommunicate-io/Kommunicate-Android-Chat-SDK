@@ -139,7 +139,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
+        View list = inflater.inflate(R.layout.message_list, container, false);
         isCurrentlyInDarkMode = themeHelper.isDarkModeEnabledForSDK();
         if (!alCustomizationSettings.isAgentApp()) {
             LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
@@ -301,7 +301,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 //            menu.findItem(R.id.refresh).setVisible(true);
 //        }
         if (alCustomizationSettings.isProfileOption()) {
-            menu.findItem(R.id.applozicUserProfile).setVisible(true);
+            menu.findItem(R.id.user_profile).setVisible(true);
         }
         if (alCustomizationSettings.isMessageSearchOption()) {
             menu.findItem(R.id.menu_search).setVisible(true);

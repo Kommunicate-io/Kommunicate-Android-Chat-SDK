@@ -24,7 +24,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:background="@drawable/mobiframework_circular_text_view"
+            android:background="@drawable/circular_text_view"
             android:gravity="center"
             android:text=""
             android:textColor="#ffffff"
@@ -47,7 +47,7 @@
          consistency. This is secondary text and not always visible so by default is has its
          visibility set to gone -->
     <TextView
-        android:id="@+id/applozic_group_members"
+        android:id="@+id/group_members"
         android:layout_width="match_parent"
         android:layout_height="26dp"
         android:layout_alignParentBottom="true"
@@ -69,10 +69,10 @@
          align with the parent view if the text2 view is not part of the view hierarchy (which is
          its initial state). -->
     <TextView
-        android:id="@+id/applozic_group_name"
+        android:id="@+id/group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/applozic_group_members"
+        android:layout_above="@id/group_members"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"

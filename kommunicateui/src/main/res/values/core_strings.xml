@@ -18,7 +18,7 @@
     <string name="info_broadcast_message">Messages will be broadcast to each recipient individually</string>
     <string name="shareOptions">Share</string>
 
-    <string name="mobitexter_contact_sync_key">KEYMOBITEXTER_CONTACT_SYNC_</string>
+    <string name="contact_sync_key">KEYMOBITEXTER_CONTACT_SYNC_</string>
     <string name="call_history_display_within_messages_pref_key">CALL_HISTORY_DISPLAY_WITHIN_MESSAGES</string>
     <string name="last_inbox_sync_time">LAST_INBOX_SYNC_TIME</string>
     <string name="last_outbox_sync_time">LAST_OUTBOX_SYNC_TIME</string>
@@ -44,12 +44,12 @@
     <string name="instruction_open_conversation_thread">Tap on any conversation to see full thread</string>
     <string name="instruction_go_back_to_recent_conversation_list">To go back to previous screen, slide from left to right</string>
     <string name="instruction_long_press_message">For delete and other options, long press the message</string>
-    <string name="title_activity_mobi_com">MobiComActivity</string>
+    <string name="title_activity_core">CoreActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="user_block">Block</string>
     <string name="user_un_block">Unblock</string>
-    <string name="applozic_my_profile_option_info">Profile</string>
+    <string name="my_profile_option_info">Profile</string>
 
     <string name="location_services_disabled_message">Sending location requires access to your location. Turn on location access.</string>
     <string name="location_services_disabled_title">Location services disabled</string>
@@ -60,12 +60,12 @@
 
     <string name="select_file">Select a file</string>
 
-    <string name="applozic_select_photo">Select a photo</string>
+    <string name="select_photo">Select a photo</string>
     <string name="attachment_retry">Retry</string>
 
 
     <string name="verification_success">Your phone number got verified successfully</string>
-    <string name="launch_mobitexter_app">LAUNCH_MOBITEXTER</string>
+    <string name="launch_app">LAUNCH_MOBITEXTER</string>
     <string name="delete_conversation">Delete</string>
     <string name="delete_conversation_context">Delete conversation</string>
     <string name="sync_messages_from_server">Syncing with the server…</string>
@@ -74,10 +74,10 @@
     <string name="outgoing_call">Dialed call</string>
 
     <string name="welcome_message">Welcome,
-        \nMobiTexter is a Messenger &amp; SMS Texting app
+        \nKommunicate is a Messenger &amp; SMS Texting app
         \nText from your laptop, mobile and any Android device using your own phone number.
-        \nSend and receive text on the laptop/pc/computer browser from http://www.mobitexter.net/
-        \nFor any queries, get in touch with us at support@mobitexter.net</string>
+        \nSend and receive text on the laptop/pc/computer browser from http://www.kommunicate.io/
+        \nFor any queries, get in touch with us at support@kommunicate.io</string>
 
     <string name="info_app_not_found_to_open_file">No application found to open this file</string>
     <string name="unable_to_play_requested_audio_file">No application found to open this file</string>
@@ -128,8 +128,8 @@
     <string name="view_option_string">View</string>
     <string name="message_option_string">Message</string>
 
-    <string name="applozic_account_closed">Please contact Applozic to activate chat in your app</string>
-    <string name="applozic_free_version_not_allowed_on_release_build">Please contact Applozic to activate chat in your app</string>
+    <string name="account_closed">Please contact Kommunicate to activate chat in your app</string>
+    <string name="free_version_not_allowed_on_release_build">Please contact Kommunicate to activate chat in your app</string>
     <string name="quick_conversation_loading">loading conversation…</string>
     <string name="alert_for_empty_message">Do you want to send a message without text?</string>
     <string name="yes_alert">Yes</string>
@@ -179,16 +179,16 @@
     <string name="user_block_info">Block [name]? A blocked user will no longer be able to send you messages</string>
     <string name="user_un_block_info">Unblock [name] to send a message</string>
     <string name="please_wait_info">Please wait a moment…</string>
-    <string name="applozic_userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
-    <string name="applozic_channel_error_info_in_logs">Please check group name is null or empty or it has at least one member to be added in group</string>
-    <string name="applozic_add_user_to_multiple_channel_error_info_in_logs">UserId can not be null or empty and channel key list should not be null</string>
+    <string name="userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
+    <string name="channel_error_info_in_logs">Please check group name is null or empty or it has at least one member to be added in group</string>
+    <string name="add_user_to_multiple_channel_error_info_in_logs">UserId can not be null or empty and channel key list should not be null</string>
     <string name="user_logout_info">Logout successful</string>
     <string name="unable_share_message">Unable to share you are not a participant of this group</string>
     <string name="user_is_blocked">Unable to send user is blocked</string>
     <string name="when_on_wifi">When on Wi-Fi</string>
     <string name="when_on_cellular_network">When on cellular network</string>
     <string name="media_auto_download">Media-auto download</string>
-    <string name="applozic_network_usage">Network usage</string>
+    <string name="network_usage">Network usage</string>
     <string name="enable_vibration_notification">Enable vibration on notification</string>
     <string name="user_has_been_deleted_text">User has been deleted</string>
     <string name="make_admin_text_info">Make group admin</string>

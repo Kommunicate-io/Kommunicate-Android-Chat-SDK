@@ -69,7 +69,7 @@ public class KmImageRMAdapter extends KmRichMessageAdapter {
                             .load(payloadModel.getUrl())
                             .into(imageViewHolder.imageView);
                 } else {
-                    Glide.with(context).load(R.drawable.mobicom_attachment_file).into(imageViewHolder.imageView);
+                    Glide.with(context).load(R.drawable.attachment_file).into(imageViewHolder.imageView);
                 }
 
                 if (payloadModel.getCaption() != null && !TextUtils.isEmpty(payloadModel.getCaption().trim())) {

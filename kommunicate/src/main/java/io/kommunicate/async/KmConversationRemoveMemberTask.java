@@ -45,7 +45,7 @@ public class KmConversationRemoveMemberTask extends AsyncTask<Void, Void, Boolea
                     return MobiComKitConstants.SUCCESS.equals(removeResponse);
                 }
             } else {
-                throw new Exception(ApplozicService.getContext(context.get()).getString(R.string.applozic_userId_error_info_in_logs));
+                throw new Exception(ApplozicService.getContext(context.get()).getString(R.string.userId_error_info_in_logs));
             }
         } catch (Exception e) {
             e.printStackTrace();

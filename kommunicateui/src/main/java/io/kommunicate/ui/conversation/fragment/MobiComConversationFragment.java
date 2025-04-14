@@ -1515,6 +1515,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(getActivity());
         Message messageToSend = new Message();
 
+        // check for conversation closed or not.
+        if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS
+                && !alCustomizationSettings.isRestartConversationButtonVisibility()
+        ) {
+            return;
+        }
+
         if (channel != null) {
             messageToSend.setGroupId(channel.getKey());
             if (!TextUtils.isEmpty(channel.getClientGroupId())) {

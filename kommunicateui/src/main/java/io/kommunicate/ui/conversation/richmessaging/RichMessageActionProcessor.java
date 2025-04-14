@@ -329,7 +329,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
 
         if (submitButtonModel.getPostBackToKommunicate() != null && submitButtonModel.getPostBackToKommunicate().equalsIgnoreCase("true")) {
-            sendFormDataAsMessage(message, metadata, dataMap, "", "");
+            sendFormDataAsMessage(message, metadata, dataMap, submitButtonModel.getMessage(), submitButtonModel.getAddFormLabelInMessage());
 
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());

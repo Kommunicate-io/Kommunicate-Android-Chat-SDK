@@ -16,7 +16,7 @@ android {
         targetSdkVersion 35
         minSdkVersion 21
         versionCode 1
-        versionName "2.13.2"
+        versionName "2.13.3"
         buildToolsVersion = '34.0.0'
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
@@ -53,6 +53,7 @@ dependencies {
     api libs.glide
     api libs.cardview
     api libs.material
+    implementation libs.browser
     api libs.swiperefreshlayout
     implementation libs.media3.exoplayer
     implementation libs.media3.ui

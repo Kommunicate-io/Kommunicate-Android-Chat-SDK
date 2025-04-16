@@ -17,7 +17,7 @@
             android:id="@+id/alImageView"
             android:layout_width="288dp"
             android:layout_height="200dp"
-            android:src="@drawable/mobicom_attachment_file"
+            android:src="@drawable/attachment_file"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop" />
     </androidx.cardview.widget.CardView>

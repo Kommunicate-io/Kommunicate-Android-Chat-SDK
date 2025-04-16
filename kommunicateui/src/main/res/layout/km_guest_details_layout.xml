@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            android:background="@color/applozic_theme_color_primary" />
+            android:background="@color/core_theme_color_primary" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -133,7 +133,7 @@
                 android:paddingStart="8dp"
                 android:paddingTop="5dp"
                 android:text="Add Room"
-                android:textColor="@color/applozic_theme_color_primary" />
+                android:textColor="@color/core_theme_color_primary" />
 
             <TextView
                 android:id="@+id/removeRoomTv"
@@ -152,7 +152,7 @@
                 android:paddingStart="8dp"
                 android:paddingTop="5dp"
                 android:text="Remove Room"
-                android:textColor="@color/applozic_theme_color_primary"
+                android:textColor="@color/core_theme_color_primary"
                 android:visibility="gone" />
 
             <TextView
@@ -172,7 +172,7 @@
                 android:paddingStart="8dp"
                 android:paddingTop="5dp"
                 android:text="Done"
-                android:textColor="@color/applozic_theme_color_primary" />
+                android:textColor="@color/core_theme_color_primary" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

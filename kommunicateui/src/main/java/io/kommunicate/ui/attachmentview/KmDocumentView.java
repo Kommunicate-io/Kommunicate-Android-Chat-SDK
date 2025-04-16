@@ -86,17 +86,17 @@ public class KmDocumentView {
     public void inflateViewWithMessage(View rootview, Message message) {
         this.message = message;
         mainLayout = (RelativeLayout) rootview.findViewById(R.id.attachment_doc_relative_layout);
-        downloadInProgressLayout = (RelativeLayout) rootview.findViewById(R.id.applozic_doc_download_progress_rl);
-        downloadedLayout = (RelativeLayout) rootview.findViewById(R.id.applozic_doc_downloaded);
+        downloadInProgressLayout = (RelativeLayout) rootview.findViewById(R.id.doc_download_progress_rl);
+        downloadedLayout = (RelativeLayout) rootview.findViewById(R.id.doc_downloaded);
         previewLayout = (RelativeLayout) rootview.findViewById(R.id.download_doc_relative_layout);
         retryLayout = (RelativeLayout) rootview.findViewById(R.id.retry_doc_relative_layout);
-        progressBar = (ProgressBar) rootview.findViewById(R.id.applozic_doc_download_progress);
-        sizeTextView = (TextView) rootview.findViewById(R.id.applozic_doc_file_size);
-        fileText = (TextView) rootview.findViewById(R.id.applozic_doc_file_name);
-        uploadDownloadImage = (ImageView) rootview.findViewById(R.id.applozic_download_image);
+        progressBar = (ProgressBar) rootview.findViewById(R.id.doc_download_progress);
+        sizeTextView = (TextView) rootview.findViewById(R.id.doc_file_size);
+        fileText = (TextView) rootview.findViewById(R.id.doc_file_name);
+        uploadDownloadImage = (ImageView) rootview.findViewById(R.id.core_download_image);
         docIcon = (ImageView) rootview.findViewById(R.id.doc_icon);
         ImageView cancelIcon = (ImageView) rootview.findViewById(R.id.download_calcle_icon);
-        audioseekbar = (SeekBar) rootview.findViewById(R.id.applozic_audio_seekbar);
+        audioseekbar = (SeekBar) rootview.findViewById(R.id.audio_seekbar);
         audio_duration_textView = (TextView) rootview.findViewById(R.id.audio_duration_textView);
 
         if (!message.hasAttachment()) {
@@ -110,7 +110,7 @@ public class KmDocumentView {
                 audio_duration_textView.setTextColor(context.getResources().getColor(message.isTypeOutbox() ? R.color.white : R.color.black));
             }
         }
-        progressBar.getIndeterminateDrawable().setColorFilter(message.isTypeOutbox() ? context.getResources().getColor(R.color.applozic_green_color) : context.getResources().getColor(R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY);
+        progressBar.getIndeterminateDrawable().setColorFilter(message.isTypeOutbox() ? context.getResources().getColor(R.color.core_green_color) : context.getResources().getColor(R.color.black), android.graphics.PorterDuff.Mode.MULTIPLY);
         cancelIcon.setColorFilter(message.isTypeOutbox() ? R.color.white : R.color.black, android.graphics.PorterDuff.Mode.MULTIPLY);
         if (message.getFileMetas() != null) {
             if (message.getFileMetas().getContentType().contains(AUDIO)) {

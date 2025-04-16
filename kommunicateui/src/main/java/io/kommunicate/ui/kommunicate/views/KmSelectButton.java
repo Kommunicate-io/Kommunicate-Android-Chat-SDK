@@ -71,7 +71,7 @@ public class KmSelectButton extends LinearLayout {
         DrawableContainer.DrawableContainerState dcs = (DrawableContainer.DrawableContainerState)drawable.getConstantState();
         Drawable[] drawableItems = dcs.getChildren();
         GradientDrawable gradientDrawableChecked = (GradientDrawable)drawableItems[0];
-        gradientDrawableChecked.setColor(getResources().getColor(isChecked ? R.color.km_multiple_select_selected_background_color : R.color.applozic_transparent_color));
+        gradientDrawableChecked.setColor(getResources().getColor(isChecked ? R.color.km_multiple_select_selected_background_color : R.color.core_transparent_color));
     }
     public void setOnCheckedChangeListener(final onMultipleSelectButtonClicked onCheckedChangeListener) {
         this.setOnClickListener(new OnClickListener() {

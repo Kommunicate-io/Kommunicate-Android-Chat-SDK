@@ -9,28 +9,28 @@
         android:id="@+id/galleryImageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:background="@color/applozic_transparent_color"
+        android:background="@color/core_transparent_color"
         android:scaleType="centerCrop" />
 
     <ImageView
-        android:id="@+id/mobicom_attachment_image"
+        android:id="@+id/attachment_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/applozic_transparent_color"
+        android:background="@color/core_transparent_color"
         android:drawablePadding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/km_ic_action_attachment"
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/mobicom_attachment_file_name"
+        android:id="@+id/attachment_file_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/mobicom_attachment_image"
+        android:layout_alignBottom="@+id/attachment_image"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
-        android:layout_toEndOf="@+id/mobicom_attachment_image"
-        android:layout_toRightOf="@+id/mobicom_attachment_image"
+        android:layout_toEndOf="@+id/attachment_image"
+        android:layout_toRightOf="@+id/attachment_image"
         android:ellipsize="end"
         android:textAlignment="viewStart"
         android:layout_gravity="start"
@@ -40,16 +40,16 @@
         android:visibility="gone" />
 
     <ImageButton
-        android:id="@+id/mobicom_attachment_delete_btn"
+        android:id="@+id/attachment_delete_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/mobicom_ic_delete_white_18dp" />
+        android:src="@drawable/ic_delete_white_18dp" />
 
     <TextView
-        android:id="@+id/mobicom_attachment_file_size"
+        android:id="@+id/attachment_file_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

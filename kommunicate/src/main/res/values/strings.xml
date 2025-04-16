@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Kommunicate</string>
     <string name="unable_to_create_conversation">Unable to create conversation</string>
-    <string name="applozic_userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
+    <string name="userId_error_info_in_logs">UserId can not be null or empty and channel key should not be null</string>
     <!--Kommunicate conversation errors-->
     <string name="km_method_needs_activity_context">This method needs Activity context</string>
     <string name="km_chat_builder_cannot_be_null">Chat Builder cannot be null</string>

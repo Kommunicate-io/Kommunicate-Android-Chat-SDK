@@ -90,16 +90,16 @@ public class MessageInfoFragment extends Fragment {
         String messageJson = bundle.getString(MESSAGE_ARGUMENT_KEY);
         message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
 
-        attachmentView = (AttachmentView) view.findViewById(R.id.applozic_message_info_attachmentview);
-        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.applozic_message_info_progress_bar);
+        attachmentView = (AttachmentView) view.findViewById(R.id.message_info_attachmentview);
+        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.message_info_progress_bar);
         attachmentView.setProressBar(progressBar);
         attachmentView.setVisibility(message.hasAttachment() ? View.VISIBLE : View.GONE);
 
 
-        RelativeLayout defaultRelativeLayout = (RelativeLayout) view.findViewById(R.id.applozic_message_info_default_layout);
-        TextView textView = (TextView) view.findViewById(R.id.applozic_message_info_message_text);
-        readListView = (RecyclerView) view.findViewById(R.id.applozic_message_info_read_list);
-        deliveredListView = (RecyclerView) view.findViewById(R.id.applozic_message_info_delivered_list_view);
+        RelativeLayout defaultRelativeLayout = (RelativeLayout) view.findViewById(R.id.message_info_default_layout);
+        TextView textView = (TextView) view.findViewById(R.id.message_info_message_text);
+        readListView = (RecyclerView) view.findViewById(R.id.message_info_read_list);
+        deliveredListView = (RecyclerView) view.findViewById(R.id.message_info_delivered_list_view);
         readListView.setHasFixedSize(true);
         deliveredListView.setHasFixedSize(true);
 
@@ -216,8 +216,8 @@ public class MessageInfoFragment extends Fragment {
     private void setupAttachmentView(Message message, RelativeLayout defaultRelativeLayout) {
 
         FileMeta fileMeta = message.getFileMetas();
-        ImageView attachmentInconView = (ImageView) defaultRelativeLayout.findViewById(R.id.applozic_message_info_attachment_icon);
-        TextView attachmentFilename = (TextView) defaultRelativeLayout.findViewById(R.id.applozic_message_info_attachment_filename);
+        ImageView attachmentInconView = (ImageView) defaultRelativeLayout.findViewById(R.id.message_info_attachment_icon);
+        TextView attachmentFilename = (TextView) defaultRelativeLayout.findViewById(R.id.message_info_attachment_filename);
         TextView messageText = (TextView) defaultRelativeLayout.findViewById(R.id.messageText);
 
         if (TextUtils.isEmpty(message.getMessage())) {

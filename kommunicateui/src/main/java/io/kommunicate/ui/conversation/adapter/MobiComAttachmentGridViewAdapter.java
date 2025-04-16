@@ -76,13 +76,13 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     public View getView(final int position, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (view == null) {
-            view = inflater.inflate(R.layout.mobicom_attachment_gridview_item, viewGroup, false);//Inflate layout
+            view = inflater.inflate(R.layout.attachment_gridview_item, viewGroup, false);//Inflate layout
         }
-        deleteButton = (ImageButton) view.findViewById(R.id.mobicom_attachment_delete_btn);
+        deleteButton = (ImageButton) view.findViewById(R.id.attachment_delete_btn);
         galleryImageView = (ImageView) view.findViewById(R.id.galleryImageView);
-        fileSize = (TextView) view.findViewById(R.id.mobicom_attachment_file_size);
-        attachmentImageView = (ImageView) view.findViewById(R.id.mobicom_attachment_image);
-        fileName = (TextView) view.findViewById(R.id.mobicom_attachment_file_name);
+        fileSize = (TextView) view.findViewById(R.id.attachment_file_size);
+        attachmentImageView = (ImageView) view.findViewById(R.id.attachment_image);
+        fileName = (TextView) view.findViewById(R.id.attachment_file_name);
 
         galleryImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +93,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
                 }
 
                 if (getCount() > alCustomizationSettings.getMaxAttachmentAllowed()) {
-                    Toast.makeText(context, R.string.mobicom_max_attachment_warning, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, R.string.max_attachment_warning, Toast.LENGTH_LONG).show();
                     return;
                 }
 

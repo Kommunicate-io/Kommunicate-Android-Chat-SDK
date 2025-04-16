@@ -16,11 +16,11 @@
     <RelativeLayout
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:background="@color/applozic_share_contact_divider"
+        android:background="@color/core_share_contact_divider"
         android:paddingTop="10dp">
 
         <ImageView
-            android:id="@+id/applozic_call_image_type"
+            android:id="@+id/call_image_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -34,15 +34,15 @@
 
 
         <TextView
-            android:id="@+id/applozic_call_status"
+            android:id="@+id/call_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:paddingEnd="10dp"
-            android:layout_toEndOf="@+id/applozic_call_image_type"
-            android:layout_toRightOf="@+id/applozic_call_image_type"
+            android:layout_toEndOf="@+id/call_image_type"
+            android:layout_toRightOf="@+id/call_image_type"
             android:fontFamily="sans-serif-condensed"
             android:paddingRight="10dp"
             android:text="@string/missed"
@@ -50,24 +50,24 @@
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/applozic_call_duration"
+            android:id="@+id/call_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/applozic_call_status"
+            android:layout_alignLeft="@+id/call_status"
             android:layout_alignParentBottom="true"
-            android:layout_below="@+id/applozic_call_status"
+            android:layout_below="@+id/call_status"
             android:fontFamily="sans-serif"
             android:paddingEnd="10dp"
             android:paddingBottom="10dp"
             android:paddingRight="10dp"
             android:paddingTop="15dp"
-            android:layout_alignStart="@+id/applozic_call_status"
+            android:layout_alignStart="@+id/call_status"
             android:text="1 min 5 sec"
             android:textColor="@color/white"
             android:textSize="10sp" />
 
         <TextView
-            android:id="@+id/applozic_call_timing"
+            android:id="@+id/call_timing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

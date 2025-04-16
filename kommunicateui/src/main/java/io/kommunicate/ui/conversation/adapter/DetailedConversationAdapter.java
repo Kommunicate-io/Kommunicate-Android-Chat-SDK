@@ -320,7 +320,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
 
         if (viewType == 2) {
-            View dateViewHolder = layoutInflater.inflate(R.layout.mobicom_date_layout, parent, false);
+            View dateViewHolder = layoutInflater.inflate(R.layout.date_layout, parent, false);
             return new MyViewHolder2(dateViewHolder);
         } else if (viewType == 3) {
             View customViewHolder = layoutInflater.inflate(R.layout.km_custom_message_layout, parent, false);
@@ -342,7 +342,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } else if (viewType == 0) {
             View mainThreadView;
             if (useInnerTimeStampDesign) {
-                mainThreadView = layoutInflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
+                mainThreadView = layoutInflater.inflate(R.layout.received_message_list_view, parent, false);
             } else {
                 mainThreadView = layoutInflater.inflate(R.layout.km_received_message_list_view, parent, false);
             }
@@ -355,7 +355,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             return new TypingMessageHolder(typingViewHolder, isDarkModeEnabled);
         }
         if (useInnerTimeStampDesign) {
-            view = layoutInflater.inflate(R.layout.mobicom_sent_message_list_view, parent, false);
+            view = layoutInflater.inflate(R.layout.sent_message_list_view, parent, false);
         } else {
             view = layoutInflater.inflate(R.layout.km_sent_message_list_view, parent, false);
         }
@@ -884,9 +884,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 } else if (message.isCall()) {
                     myHolder.sentOrReceived.setImageResource(R.drawable.km_ic_action_call_holo_light);
                 } else if (getItemViewType(position) == 0) {
-                    myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
+                    myHolder.sentOrReceived.setImageResource(R.drawable.social_forward);
                 } else {
-                    myHolder.sentOrReceived.setImageResource(R.drawable.mobicom_social_reply);
+                    myHolder.sentOrReceived.setImageResource(R.drawable.social_reply);
                 }
 
                 if (message.isCall()) {
@@ -2003,7 +2003,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
         public MyViewHolder3(View itemView) {
             super(itemView);
-            customContentTextView = (TextView) itemView.findViewById(R.id.applozic_custom_message_layout_content);
+            customContentTextView = (TextView) itemView.findViewById(R.id.custom_message_layout_content);
         }
     }
 
@@ -2042,10 +2042,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
         public MyViewHolder5(View itemView) {
             super(itemView);
-            statusTextView = (TextView) itemView.findViewById(R.id.applozic_call_status);
-            timeTextView = (TextView) itemView.findViewById(R.id.applozic_call_timing);
-            durationTextView = (TextView) itemView.findViewById(R.id.applozic_call_duration);
-            imageView = (ImageView) itemView.findViewById(R.id.applozic_call_image_type);
+            statusTextView = (TextView) itemView.findViewById(R.id.call_status);
+            timeTextView = (TextView) itemView.findViewById(R.id.call_timing);
+            durationTextView = (TextView) itemView.findViewById(R.id.call_duration);
+            imageView = (ImageView) itemView.findViewById(R.id.call_image_type);
         }
     }
 

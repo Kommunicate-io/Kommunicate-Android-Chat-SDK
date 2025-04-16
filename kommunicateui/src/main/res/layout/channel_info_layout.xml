@@ -150,7 +150,7 @@
                     android:id="@+id/exit_channel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/applozic_theme_color_primary"
+                    android:background="@color/core_theme_color_primary"
                     android:configChanges="orientation"
                     android:padding="5dp"
                     android:textColor="#ffffff"

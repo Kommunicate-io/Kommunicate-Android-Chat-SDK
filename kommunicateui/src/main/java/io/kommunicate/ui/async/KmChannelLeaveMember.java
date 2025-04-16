@@ -71,7 +71,7 @@ public class KmChannelLeaveMember extends AsyncTask<Void, Void, Boolean> {
                     return MobiComKitConstants.SUCCESS.equals(leaveResponse);
                 }
             } else {
-                throw new Exception(context.getString(R.string.applozic_userId_error_info_in_logs));
+                throw new Exception(context.getString(R.string.userId_error_info_in_logs));
             }
         } catch (Exception e) {
             e.printStackTrace();

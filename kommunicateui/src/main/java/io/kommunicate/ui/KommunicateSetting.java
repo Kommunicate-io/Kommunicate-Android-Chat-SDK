@@ -123,11 +123,11 @@ public class KommunicateSetting {
     }
 
     public int getColor(String key) {
-        return sharedPreferences.getInt(key, R.color.applozic_theme_color_primary);
+        return sharedPreferences.getInt(key, R.color.core_theme_color_primary);
     }
 
     public int getSentMessageBackgroundColor() {
-        return sharedPreferences.getInt(SENT_MESSAGE_BACKGROUND_COLOR, R.color.applozic_theme_color_primary);
+        return sharedPreferences.getInt(SENT_MESSAGE_BACKGROUND_COLOR, R.color.core_theme_color_primary);
     }
 
     public KommunicateSetting setSentMessageBackgroundColor(int color) {
@@ -145,7 +145,7 @@ public class KommunicateSetting {
     }
 
     public int getSentMessageBorderColor() {
-        return sharedPreferences.getInt(SENT_MESSAGE_BORDER_COLOR, R.color.applozic_theme_color_primary);
+        return sharedPreferences.getInt(SENT_MESSAGE_BORDER_COLOR, R.color.core_theme_color_primary);
     }
 
     public KommunicateSetting setSentMessageBorderColor(int color) {
@@ -163,7 +163,7 @@ public class KommunicateSetting {
     }
 
     public int getAttachmentIconsBackgroundColor() {
-        return sharedPreferences.getInt(ATTACHMENT_ICONS_BACKGROUND_COLOR, R.color.applozic_theme_color_primary);
+        return sharedPreferences.getInt(ATTACHMENT_ICONS_BACKGROUND_COLOR, R.color.core_theme_color_primary);
     }
 
     public KommunicateSetting setAttachmentIconsBackgroundColor(int color) {
@@ -262,7 +262,7 @@ public class KommunicateSetting {
     }
 
     public int getReceivedMessageLinkTextColor() {
-        return sharedPreferences.getInt(RECEIVED_MESSAGE_LINK_TEXT_COLOR, R.color.applozic_green_color);
+        return sharedPreferences.getInt(RECEIVED_MESSAGE_LINK_TEXT_COLOR, R.color.core_green_color);
     }
 
     public KommunicateSetting setReceivedMessageLinkTextColor(int color) {
@@ -350,7 +350,7 @@ public class KommunicateSetting {
     }
 
     public int getSendButtonBackgroundColor() {
-        return sharedPreferences.getInt(SEND_BUTTON_BACKGROUND_COLOR, R.color.applozic_theme_color_primary);
+        return sharedPreferences.getInt(SEND_BUTTON_BACKGROUND_COLOR, R.color.core_theme_color_primary);
     }
 
     public KommunicateSetting setSendButtonBackgroundColor(int color) {
@@ -568,7 +568,7 @@ public class KommunicateSetting {
     }
 
     public int getConversationDateTextColor() {
-        return sharedPreferences.getInt(CONVERSATION_DATE_TEXT_COLOR, R.color.applozic_gray_color);
+        return sharedPreferences.getInt(CONVERSATION_DATE_TEXT_COLOR, R.color.core_gray_color);
     }
 
     public KommunicateSetting setConversationDateTextColor(int color) {
@@ -577,7 +577,7 @@ public class KommunicateSetting {
     }
 
     public int getConversationDayTextColor() {
-        return sharedPreferences.getInt(CONVERSATION_DAY_TEXT_COLOR, R.color.applozic_gray_color);
+        return sharedPreferences.getInt(CONVERSATION_DAY_TEXT_COLOR, R.color.core_gray_color);
     }
 
     public KommunicateSetting setConversationDayTextColor(int color) {
@@ -595,7 +595,7 @@ public class KommunicateSetting {
     }
 
     public int getChannelCustomMesssageTextColor() {
-        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_TEXT_COLOR, R.color.applozic_lite_gray_color);
+        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_TEXT_COLOR, R.color.core_lite_gray_color);
     }
 
     public KommunicateSetting setChannelCustomMesssageTextColor(int color) {
@@ -604,7 +604,7 @@ public class KommunicateSetting {
     }
 
     public int getChannelCustomMesssageBgColor() {
-        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_BG_COLOR, R.color.applozic_custom_channel_message_text_color);
+        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_BG_COLOR, R.color.core_custom_channel_message_text_color);
     }
 
     public KommunicateSetting setChannelCustomMesssageBgColor(int color) {
@@ -613,7 +613,7 @@ public class KommunicateSetting {
     }
 
     public int getChannelCustomMesssageBorderColor() {
-        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_BORDER_COLOR, R.color.applozic_custom_channel_message_text_color);
+        return sharedPreferences.getInt(CHANNEL_CUSTOM_MESSAGE_BORDER_COLOR, R.color.core_custom_channel_message_text_color);
     }
 
     public KommunicateSetting setChannelCustomMesssageBorderColor(int color) {

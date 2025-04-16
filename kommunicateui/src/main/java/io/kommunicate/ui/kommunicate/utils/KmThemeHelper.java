@@ -63,7 +63,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getPrimaryColor() {
-        primaryColor = parseColorWithDefault(appSettingPreferences.getPrimaryColor(), context.getResources().getColor(R.color.applozic_theme_color_primary));
+        primaryColor = parseColorWithDefault(appSettingPreferences.getPrimaryColor(), context.getResources().getColor(R.color.core_theme_color_primary));
         return primaryColor;
     }
 
@@ -83,7 +83,7 @@ public class KmThemeHelper implements KmCallback {
         if (TextUtils.isEmpty(colorStr)) {
             colorStr = appSettingPreferences.getPrimaryColor();
         }
-        sentMessageBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
+        sentMessageBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.core_theme_color_primary));
         return sentMessageBackgroundColor;
     }
 
@@ -140,7 +140,7 @@ public class KmThemeHelper implements KmCallback {
         if (TextUtils.isEmpty(colorStr)) {
             colorStr = appSettingPreferences.getPrimaryColor();
         }
-        sentMessageBorderColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
+        sentMessageBorderColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.core_theme_color_primary));
         return sentMessageBorderColor;
     }
 
@@ -150,7 +150,7 @@ public class KmThemeHelper implements KmCallback {
         if (TextUtils.isEmpty(colorStr)) {
             colorStr = appSettingPreferences.getPrimaryColor();
         }
-        sendButtonBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.applozic_theme_color_primary));
+        sendButtonBackgroundColor = parseColorWithDefault(colorStr, context.getResources().getColor(R.color.core_theme_color_primary));
         return sendButtonBackgroundColor;
     }
 
@@ -166,7 +166,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getSecondaryColor() {
-        secondaryColor = parseColorWithDefault(appSettingPreferences.getSecondaryColor(), context.getResources().getColor(R.color.applozic_theme_color_primary_dark));
+        secondaryColor = parseColorWithDefault(appSettingPreferences.getSecondaryColor(), context.getResources().getColor(R.color.core_theme_color_primary_dark));
         return secondaryColor;
     }
 

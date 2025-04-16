@@ -196,7 +196,7 @@
                 android:layout_marginRight="4dp"
                 android:layout_marginBottom="0dp"
                 android:layout_weight="2"
-                android:background="@color/message_action_button">
+                android:background="@color/core_action_button">
 
                 <Spinner
                     android:id="@+id/sendTypeSpinner"
@@ -214,13 +214,13 @@
                 android:layout_marginRight="4dp"
                 android:layout_marginBottom="0dp"
                 android:layout_weight="3"
-                android:background="@color/message_action_button">
+                android:background="@color/core_action_button">
 
                 <Button
                     android:id="@+id/scheduleOption"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:background="@color/message_action_button"
+                    android:background="@color/core_action_button"
                     android:text="@string/schedule"
                     android:textColor="@color/black" />
 
@@ -234,7 +234,7 @@
                 android:layout_marginRight="2dp"
                 android:layout_marginBottom="0dp"
                 android:layout_weight="3"
-                android:background="@color/message_action_button">
+                android:background="@color/core_action_button">
 
                 <Spinner
                     android:id="@+id/secret_message_spinner"
@@ -310,7 +310,7 @@
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.05"
                 android:textColor="@color/white"
-                android:background="@color/applozic_theme_color_primary"
+                android:background="@color/core_theme_color_primary"
                 android:paddingStart="16dp"
                 android:paddingTop="11.5dp"
                 android:paddingEnd="16dp"
@@ -343,7 +343,7 @@
             </FrameLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/mobicomMessageTemplateView"
+                android:id="@+id/message_template_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -355,7 +355,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/applozicLabel"
+                android:id="@+id/app_label"
                 android:layout_width="match_parent"
                 android:layout_height="19dp"
                 android:background="#5B5959"
@@ -370,7 +370,7 @@
                 android:id="@+id/idMainDividerLine"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/applozic_theme_color_primary" />
+                android:background="@color/core_theme_color_primary" />
 
             <FrameLayout
                 android:layout_width="fill_parent"
@@ -407,7 +407,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -422,7 +422,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -437,7 +437,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom|start"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:gravity="center"
                                 android:minHeight="48dp"
                                 android:paddingStart="10dp"
@@ -480,7 +480,7 @@
                                 android:layout_toEndOf="@+id/language_change_button"
                                 android:layout_toStartOf="@+id/conversation_send"
                                 android:layout_toLeftOf="@+id/conversation_send"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:cursorVisible="true"
                                 android:ellipsize="start"
                                 android:fontFamily="sans-serif"
@@ -510,7 +510,7 @@
                                 android:layout_height="20dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:src="@drawable/smiley" />
 
                             <ImageButton
@@ -519,7 +519,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:src="@drawable/icon_camera" />
 
 
@@ -530,7 +530,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:src="@drawable/icon_location" />
 
                             <ImageButton
@@ -539,7 +539,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:src="@drawable/icon_video_camera" />
                             <ImageButton
                                 android:id="@+id/idMultiSelectGalleryButton"
@@ -547,7 +547,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:src="@drawable/icon_gallery"
                                 android:visibility="gone" />
 
@@ -557,7 +557,7 @@
                                 android:layout_height="24dp"
                                 android:layout_marginStart="16dp"
                                 android:layout_marginLeft="16dp"
-                                android:background="@color/applozic_transparent_color"
+                                android:background="@color/core_transparent_color"
                                 android:src="@drawable/icon_attchment_file" />
                         </LinearLayout>
                     </LinearLayout>
@@ -642,7 +642,7 @@
             android:visibility="gone">
 
             <GridView
-                android:id="@+id/mobicom_multimedia_options1"
+                android:id="@+id/multimedia_options1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:horizontalSpacing="1dp"

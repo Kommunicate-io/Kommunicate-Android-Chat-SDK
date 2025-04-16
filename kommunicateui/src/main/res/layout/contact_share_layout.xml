@@ -5,7 +5,7 @@
     android:id="@+id/contact_share_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/applozic_transparent_color"
+    android:background="@color/core_transparent_color"
     android:orientation="vertical"
     android:visibility="gone">
 
@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/applozic_transparent_color"
+        android:background="@color/core_transparent_color"
         android:orientation="vertical"
         android:padding="10dp"
         android:weightSum="3">
@@ -93,7 +93,7 @@
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="2dp"
-        android:background="@color/applozic_share_contact_divider" />
+        android:background="@color/core_share_contact_divider" />
 
     <Button
         android:id="@+id/contact_share_add_btn"
@@ -102,7 +102,7 @@
         android:layout_alignEnd="@+id/relativeLayout"
         android:layout_alignRight="@+id/relativeLayout"
         android:layout_marginTop="3dp"
-        android:background="@color/applozic_transparent_color"
+        android:background="@color/core_transparent_color"
         android:text="@string/Add_Contacts" />
 
 

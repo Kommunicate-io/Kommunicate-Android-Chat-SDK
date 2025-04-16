@@ -37,7 +37,7 @@ public class MobicomMessageTemplateAdapter extends RecyclerView.Adapter<MobicomM
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.mobicom_message_template_item, parent, false);
+                .inflate(R.layout.message_template_item, parent, false);
         return new ViewHolder(itemView);
     }
 

@@ -34,7 +34,7 @@ class RemoveMemberUseCase(
                     APIResult.failed("Empty response received")
                 }
             } else {
-                val errorMsg = context.getString(R.string.applozic_userId_error_info_in_logs)
+                val errorMsg = context.getString(R.string.userId_error_info_in_logs)
                 APIResult.failed(errorMsg)
             }
         } catch (e: Exception) {

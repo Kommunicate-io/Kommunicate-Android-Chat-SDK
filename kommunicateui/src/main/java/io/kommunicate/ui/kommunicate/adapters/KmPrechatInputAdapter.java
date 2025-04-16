@@ -88,7 +88,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
             ArrayAdapter<String> adapter = new KmPrechatDropdownAdapter(context,
                     android.R.layout.simple_spinner_item, inputModel, dropdownList);
             dropdownViewHolder.dropdownSpinner.setAdapter(adapter);
-            adapter.setDropDownViewResource(R.layout.mobiframework_custom_spinner);
+            adapter.setDropDownViewResource(R.layout.custom_spinner);
         }
         else {
             KmPrechatInputViewHolder inputViewHolder = (KmPrechatInputViewHolder) viewHolder;

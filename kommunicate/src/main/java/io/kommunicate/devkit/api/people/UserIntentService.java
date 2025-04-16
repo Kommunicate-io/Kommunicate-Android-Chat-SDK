@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.AlJobIntentService;
+import androidx.core.app.CoreJobIntentService;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserDetail;
@@ -25,7 +25,7 @@ import annotations.CleanUpRequired;
 /**
  * Created by devashish on 15/12/13.
  */
-public class UserIntentService extends AlJobIntentService {
+public class UserIntentService extends CoreJobIntentService {
 
     private static final String TAG = "UserIntentService";
     public static final String USER_ID = "userId";

@@ -2,7 +2,7 @@ package io.kommunicate.utils
 
 import android.content.Context
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
-import io.kommunicate.commons.data.AlPrefSettings
+import io.kommunicate.commons.data.PrefSettings
 import io.kommunicate.BuildConfig
 import io.sentry.Scope
 import io.sentry.Sentry
@@ -20,7 +20,7 @@ object SentryUtils {
             return
         }
 
-        val appId = AlPrefSettings.getInstance(context).applicationKey
+        val appId = PrefSettings.getInstance(context).applicationKey
         Sentry.configureScope { scope: Scope ->
             // Setup Tags
             scope.setTag(KmUtils.SENTRY_SDK_ENVIRONMENT, BuildConfig.DEBUG.toString())

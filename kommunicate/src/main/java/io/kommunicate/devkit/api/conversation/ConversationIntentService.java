@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Process;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.AlJobIntentService;
+import androidx.core.app.CoreJobIntentService;
 
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.commons.ApplozicService;
@@ -14,7 +14,7 @@ import io.kommunicate.commons.commons.core.utils.Utils;
 /**
  * Created by devashish on 15/12/13.
  */
-public class ConversationIntentService extends AlJobIntentService {
+public class ConversationIntentService extends CoreJobIntentService {
 
     public static final String SYNC = "AL_SYNC";
     public static final String AL_MESSAGE = "AL_MESSAGE";

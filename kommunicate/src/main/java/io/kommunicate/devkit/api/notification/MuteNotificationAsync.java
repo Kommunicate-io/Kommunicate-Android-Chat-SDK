@@ -4,7 +4,7 @@ import android.content.Context;
 
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.feed.ApiResponse;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import annotations.CleanUpRequired;
 
@@ -13,7 +13,7 @@ import annotations.CleanUpRequired;
  */
 @Deprecated
 @CleanUpRequired(reason = "Migrated MuteNotificationAsync to MuteNotificationUseCase")
-public class MuteNotificationAsync extends AlAsyncTask<Void, Boolean> {
+public class MuteNotificationAsync extends CoreAsyncTask<Void, Boolean> {
 
     private final MuteNotificationAsync.TaskListener taskListener;
     private final Context context;

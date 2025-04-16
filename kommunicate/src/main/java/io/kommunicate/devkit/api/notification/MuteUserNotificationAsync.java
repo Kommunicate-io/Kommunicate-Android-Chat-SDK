@@ -6,7 +6,7 @@ import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.feed.ErrorResponseFeed;
 import io.kommunicate.commons.json.GsonUtils;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 
@@ -19,7 +19,7 @@ import io.kommunicate.R;
  */
 @Deprecated
 @CleanUpRequired(reason = "Migrated MuteUserNotificationAsync to MuteUserNotificationUseCase")
-public class MuteUserNotificationAsync extends AlAsyncTask<Void, ApiResponse> {
+public class MuteUserNotificationAsync extends CoreAsyncTask<Void, ApiResponse> {
     private static final String SUCCESS = "success";
     TaskListener listener;
     Long notificationAfterTime;

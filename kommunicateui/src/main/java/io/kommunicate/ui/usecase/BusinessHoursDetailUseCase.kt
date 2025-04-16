@@ -2,14 +2,14 @@ package io.kommunicate.ui.usecase
 
 import android.content.Context
 
-import com.applozic.mobicomkit.uiwidgets.data.BusinessSettingsData
+import io.kommunicate.ui.data.BusinessSettingsData
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure
 import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import com.applozic.mobicomkit.uiwidgets.data.BusinessSettingsResponse
+import io.kommunicate.ui.data.BusinessSettingsResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.kommunicate.callbacks.TaskListener

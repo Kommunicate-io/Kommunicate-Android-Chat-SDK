@@ -33,7 +33,7 @@ import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.attachment.FileClientService;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KommunicateSetting;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.ConversationUIService;
@@ -70,7 +70,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     public static String GROUP_ID = "GROUP_ID";
     public static String GROUP_NAME = "GROUP_NAME";
     private static int REQUEST_CODE_ATTACH_PHOTO = 10;
-    private AlCustomizationSettings alCustomizationSettings;
+    private CustomizationSettings customizationSettings;
     private FileClientService fileClientService;
     private Uri imageUri;
     private String userId, displayName, groupName;
@@ -97,11 +97,11 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
      * will open either the general file attachment chooser
      */
     void openFileChooser() {
-        FileUtils.GalleryFilterOptions filterOptions = kmAttachmentsController.getFilterOptions(alCustomizationSettings);
+        FileUtils.GalleryFilterOptions filterOptions = kmAttachmentsController.getFilterOptions(customizationSettings);
         switch (filterOptions) {
             case ALL_FILES: {
                 Intent contentChooserIntent = MediaPicker.INSTANCE.createAllFilesPickerIntent(
-                        alCustomizationSettings.isMultipleAttachmentSelectionEnabled(),
+                        customizationSettings.isMultipleAttachmentSelectionEnabled(),
                         getString(R.string.select_file)
                 );
                 attachmentAudioResult.launch(contentChooserIntent);
@@ -109,7 +109,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             break;
             case AUDIO_ONLY: {
                 Intent audioPickerIntent = MediaPicker.INSTANCE.createAudioFilesPickerIntent(
-                        alCustomizationSettings.isMultipleAttachmentSelectionEnabled(),
+                        customizationSettings.isMultipleAttachmentSelectionEnabled(),
                         getString(R.string.select_file)
                 );
                 attachmentAudioResult.launch(audioPickerIntent);
@@ -131,16 +131,16 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         setContentView(R.layout.mobicom_multi_attachment_activity);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
-            alCustomizationSettings = new AlCustomizationSettings();
+            customizationSettings = new CustomizationSettings();
         }
 
-        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
+        configureSentryWithKommunicateUI(this, customizationSettings.toString());
         setupActivityResultCallback();
         kmAttachmentsController = new KmAttachmentsController(this);
 
-        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, alCustomizationSettings).getStatusBarColor());
+        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, customizationSettings).getStatusBarColor());
 
         restrictedWords = FileUtils.loadRestrictedWordsFile(this);
         fileClientService = new FileClientService(this);
@@ -199,7 +199,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                             ClipData clipData = resultData.getClipData();
 
                             for (int index = 0; index < clipData.getItemCount(); index++) {
-                                if (index == alCustomizationSettings.getMaxAttachmentAllowed()) {
+                                if (index == customizationSettings.getMaxAttachmentAllowed()) {
                                     KmToast.error(this, R.string.mobicom_max_attachment_warning, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -246,7 +246,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                     }
                     return null;
                 },
-                alCustomizationSettings.isMultipleAttachmentSelectionEnabled()
+                customizationSettings.isMultipleAttachmentSelectionEnabled()
         );
     }
 
@@ -275,7 +275,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         attachmentAction = (FrameLayout) findViewById(R.id.attachment_action_button);
         galleryImagesGridView = (GridView) findViewById(R.id.mobicom_attachment_grid_View);
         messageEditText = (EditText) findViewById(R.id.mobicom_attachment_edit_text);
-        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         if (themeHelper.isDarkModeEnabledForSDK()) {
             idRootLinearLayout = findViewById(R.id.idRootLinearLayout);
             idRootLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
@@ -375,8 +375,8 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
             try {
                 String dynamicRegex = KommunicateSetting.getInstance(this).getRestrictedWordsRegex();
-                String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (alCustomizationSettings != null
-                        && !TextUtils.isEmpty(alCustomizationSettings.getRestrictedWordRegex()) ? alCustomizationSettings.getRestrictedWordRegex() : "");
+                String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (customizationSettings != null
+                        && !TextUtils.isEmpty(customizationSettings.getRestrictedWordRegex()) ? customizationSettings.getRestrictedWordRegex() : "");
 
                 restrictedWordMatches = !TextUtils.isEmpty(pattern) && Pattern.compile(pattern).matcher(inputMessage.trim()).matches();
             } catch (PatternSyntaxException e) {
@@ -397,7 +397,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                             public void onCancel(DialogInterface dialog) {
                             }
                         });
-                alertDialog.setTitle(alCustomizationSettings.getRestrictedWordMessage());
+                alertDialog.setTitle(customizationSettings.getRestrictedWordMessage());
                 alertDialog.setCancelable(true);
                 alertDialog.create().show();
                 return false;
@@ -415,9 +415,9 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         imagesAdapter = new MobiComAttachmentGridViewAdapter(
                 MobiComAttachmentSelectorActivity.this,
                 attachmentFileList,
-                alCustomizationSettings,
+                customizationSettings,
                 imageUri != null,
-                kmAttachmentsController.getFilterOptions(alCustomizationSettings),
+                kmAttachmentsController.getFilterOptions(customizationSettings),
                 () -> {
                     openFileChooser();
                     return null;
@@ -428,7 +428,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
     protected void processFile(Uri uri) {
         Utils.printLog(MobiComAttachmentSelectorActivity.this, TAG, "selectedFileUri :: " + uri);
-        int returnCode = kmAttachmentsController.processFile(uri, alCustomizationSettings, prePostUIMethodsFileAsyncTask);
+        int returnCode = kmAttachmentsController.processFile(uri, customizationSettings, prePostUIMethodsFileAsyncTask);
 
         switch (returnCode) {
             case KmAttachmentsController.MAX_SIZE_EXCEEDED:

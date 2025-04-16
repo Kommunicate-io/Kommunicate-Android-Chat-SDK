@@ -33,7 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.ConversationUIService;
 import io.kommunicate.ui.instruction.KmPermissions;
@@ -71,7 +71,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     protected static final long UPDATE_INTERVAL = 5;
     protected static final long FASTEST_INTERVAL = 1;
     private ConnectivityReceiver connectivityReceiver;
-    AlCustomizationSettings alCustomizationSettings;
+    CustomizationSettings customizationSettings;
     Marker myLocationMarker;
     KmPermissions kmPermissions;
     static final String TAG = "MobicomLocationActivity";
@@ -93,20 +93,20 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         setSupportActionBar(toolbar);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
-            alCustomizationSettings = new AlCustomizationSettings();
+            customizationSettings = new CustomizationSettings();
         }
 
-        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
-        themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
+        configureSentryWithKommunicateUI(this, customizationSettings.toString());
+        themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
 
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        int iconColor = themeHelper.parseColorWithDefault(alCustomizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
-                themeHelper.parseColorWithDefault(alCustomizationSettings.getToolbarColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0), themeHelper.getPrimaryColor()));
+        int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
+                themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0), themeHelper.getPrimaryColor()));
         KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), iconColor);
         KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
 

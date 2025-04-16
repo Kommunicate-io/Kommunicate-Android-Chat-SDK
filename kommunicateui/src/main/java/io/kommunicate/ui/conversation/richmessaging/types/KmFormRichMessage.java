@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
 import io.kommunicate.ui.conversation.richmessaging.adapters.KmFormItemAdapter;
@@ -32,8 +32,8 @@ import io.kommunicate.utils.KmUtils;
 
 public class KmFormRichMessage extends KmRichMessage {
 
-    public KmFormRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
-        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+    public KmFormRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, CustomizationSettings customizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+        super(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class KmFormRichMessage extends KmRichMessage {
 
         LinearLayoutManager formLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         alFormLayoutRecycler.setLayoutManager(formLayoutManager);
-        final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString(), alCustomizationSettings);
+        final KmFormItemAdapter formItemAdapter = new KmFormItemAdapter(context, kmRichMessageModel.getFormModelList(), message.getKeyString(), customizationSettings);
         GradientDrawable drawable = (GradientDrawable) alFormLayoutRecycler.getBackground();
         if (themeHelper.isDarkModeEnabledForSDK()) {
             drawable.setColorFilter(context.getResources().getColor(R.color.received_message_bg_color_night), PorterDuff.Mode.MULTIPLY);

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
 import io.kommunicate.ui.conversation.richmessaging.adapters.KmActionButtonRMAdapter;
@@ -31,8 +31,8 @@ public class ListKmRichMessage extends KmRichMessage {
     public static final int MAX_ACTIONS_LIMIT = 3;
     public static final int QUICK_REPLY_TEMPLATE_ID = 6;
 
-    public ListKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
-        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+    public ListKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, CustomizationSettings customizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+        super(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class ListKmRichMessage extends KmRichMessage {
                     RecyclerView listRecycler = listItemLayout.findViewById(R.id.alListItemRecycler);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
                     listRecycler.setLayoutManager(layoutManager);
-                    KmListRMAdapter adapter = (KmListRMAdapter) KmRichMessageAdapterFactory.getInstance().getListRMAdapter(context, message, getFilteredList(isMessageProcessed, payload.getElements()), payload.getReplyMetadata(), listener, alCustomizationSettings, isMessageProcessed);
+                    KmListRMAdapter adapter = (KmListRMAdapter) KmRichMessageAdapterFactory.getInstance().getListRMAdapter(context, message, getFilteredList(isMessageProcessed, payload.getElements()), payload.getReplyMetadata(), listener, customizationSettings, isMessageProcessed);
                     listRecycler.setAdapter(adapter);
 
                     if (!TextUtils.isEmpty(payload.getHeaderText())) {

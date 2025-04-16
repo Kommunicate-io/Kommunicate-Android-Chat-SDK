@@ -4,8 +4,8 @@ import android.content.Context;
 
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
-import io.kommunicate.devkit.listners.AlPushNotificationHandler;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.devkit.listners.PushNotificationHandler;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 
@@ -16,14 +16,14 @@ import annotations.CleanUpRequired;
  */
 @Deprecated
 @CleanUpRequired(reason = "Migrated PushNotificationTask to PushNotificationUseCase")
-public class PushNotificationTask extends AlAsyncTask<Void, Boolean> {
+public class PushNotificationTask extends CoreAsyncTask<Void, Boolean> {
 
     private String pushNotificationId;
     private TaskListener taskListener;
     private WeakReference<Context> context;
     private Exception mException;
     private RegistrationResponse registrationResponse;
-    private AlPushNotificationHandler pushNotificationHandler;
+    private PushNotificationHandler pushNotificationHandler;
 
     public PushNotificationTask(String pushNotificationId, TaskListener listener, Context context) {
         this.pushNotificationId = pushNotificationId;
@@ -31,7 +31,7 @@ public class PushNotificationTask extends AlAsyncTask<Void, Boolean> {
         this.context = new WeakReference<Context>(context);
     }
 
-    public PushNotificationTask(Context context, String pushNotificationId, AlPushNotificationHandler listener) {
+    public PushNotificationTask(Context context, String pushNotificationId, PushNotificationHandler listener) {
         this.pushNotificationId = pushNotificationId;
         this.pushNotificationHandler = listener;
         this.context = new WeakReference<Context>(context);

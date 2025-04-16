@@ -33,7 +33,7 @@ public class KmActionButtonRMAdapter extends KmRichMessageAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context).inflate(R.layout.km_rich_list_button_item, parent, false);
-        return new AlActionButtonItemViewHolder(itemView);
+        return new ActionButtonItemViewHolder(itemView);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class KmActionButtonRMAdapter extends KmRichMessageAdapter {
     @Override
     public void bindItems(RecyclerView.ViewHolder viewHolder, int position) {
         KmRichMessageModel.KmButtonModel button = actionButtonList.get(position);
-        AlActionButtonItemViewHolder holder = (AlActionButtonItemViewHolder) viewHolder;
+        ActionButtonItemViewHolder holder = (ActionButtonItemViewHolder) viewHolder;
 
         if (!TextUtils.isEmpty(button.getName())) {
             holder.actionButtonNameTv.setVisibility(View.VISIBLE);
@@ -59,11 +59,11 @@ public class KmActionButtonRMAdapter extends KmRichMessageAdapter {
         return actionButtonList != null ? actionButtonList.size() : 0;
     }
 
-    private class AlActionButtonItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ActionButtonItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private final TextView actionButtonNameTv;
 
-        public AlActionButtonItemViewHolder(View itemView) {
+        public ActionButtonItemViewHolder(View itemView) {
             super(itemView);
 
             actionButtonNameTv = itemView.findViewById(R.id.tv_action_button_name);

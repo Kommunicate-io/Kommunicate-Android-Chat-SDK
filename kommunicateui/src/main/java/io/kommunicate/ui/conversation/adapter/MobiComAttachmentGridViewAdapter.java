@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.commons.commons.image.ImageUtils;
 import io.kommunicate.commons.file.FileUtils;
@@ -32,7 +32,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     private TextView fileSize;
     private ImageView attachmentImageView;
     private TextView fileName;
-    private AlCustomizationSettings alCustomizationSettings;
+    private CustomizationSettings customizationSettings;
     private boolean disableNewAttachment;
     private Context context;
     private ArrayList<Uri> uris;
@@ -42,13 +42,13 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     public MobiComAttachmentGridViewAdapter(
             Context context,
             ArrayList<Uri> uris,
-            AlCustomizationSettings alCustomizationSettings,
+            CustomizationSettings customizationSettings,
             boolean disableNewAttachment,
             FileUtils.GalleryFilterOptions filterOptions,
             Function0<Unit> openAttachmentPickerCallback
     ) {
         this.context = context;
-        this.alCustomizationSettings = alCustomizationSettings;
+        this.customizationSettings = customizationSettings;
         this.uris = uris;
         this.disableNewAttachment = disableNewAttachment;
         this.filterOptions = filterOptions;
@@ -92,7 +92,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
                     return;
                 }
 
-                if (getCount() > alCustomizationSettings.getMaxAttachmentAllowed()) {
+                if (getCount() > customizationSettings.getMaxAttachmentAllowed()) {
                     Toast.makeText(context, R.string.mobicom_max_attachment_warning, Toast.LENGTH_LONG).show();
                     return;
                 }

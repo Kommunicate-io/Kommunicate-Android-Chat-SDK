@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
 import io.kommunicate.ui.conversation.richmessaging.callbacks.KmRichMessageListener;
@@ -28,8 +28,8 @@ public class ButtonKmRichMessage extends KmRichMessage {
 
     public static final int QUICK_REPLY_TEMPLATE_ID = 6;
 
-    public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
-        super(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled );
+    public ButtonKmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, CustomizationSettings customizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+        super(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled );
     }
 
     @Override

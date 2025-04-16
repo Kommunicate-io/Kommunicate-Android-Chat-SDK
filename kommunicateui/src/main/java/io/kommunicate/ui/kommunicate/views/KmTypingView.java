@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
 
@@ -67,11 +67,11 @@ public class KmTypingView extends LinearLayout {
     private void setupBackground() {
         GradientDrawable bgShape;
         bgShape = (GradientDrawable) parentLayout.getBackground();
-        AlCustomizationSettings alCustomizationSettings = new AlCustomizationSettings();
+        CustomizationSettings customizationSettings = new CustomizationSettings();
 
         if (bgShape != null) {
-            KmThemeHelper themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
-            String bgColor = themeHelper.isDarkModeEnabledForSDK() ? new AlCustomizationSettings().getReceivedMessageBackgroundColor().get(1) : new AlCustomizationSettings().getReceivedMessageBackgroundColor().get(0);
+            KmThemeHelper themeHelper = KmThemeHelper.getInstance(getContext(), customizationSettings);
+            String bgColor = themeHelper.isDarkModeEnabledForSDK() ? new CustomizationSettings().getReceivedMessageBackgroundColor().get(1) : new CustomizationSettings().getReceivedMessageBackgroundColor().get(0);
             bgShape.setColor(Color.parseColor(bgColor));
             bgShape.setStroke(3, Color.parseColor(bgColor));
             if (themeHelper.isDarkModeEnabledForSDK() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

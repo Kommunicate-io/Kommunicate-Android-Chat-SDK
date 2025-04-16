@@ -14,13 +14,13 @@ import io.kommunicate.devkit.api.conversation.MessageIntentService;
 import io.kommunicate.devkit.api.conversation.MobiComConversationService;
 import io.kommunicate.devkit.api.conversation.MobiComMessageService;
 import io.kommunicate.devkit.api.conversation.SyncCallService;
-import io.kommunicate.devkit.broadcast.AlMessageEvent;
+import io.kommunicate.devkit.broadcast.MessageEvent;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.feed.InstantMessageResponse;
 import io.kommunicate.devkit.feed.GcmMessageResponse;
 import io.kommunicate.devkit.feed.MqttMessageResponse;
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 
@@ -473,7 +473,7 @@ MobiComPushReceiver {
 
                     if (messageResponse.getMessage() != null && messageResponse.getMessage().getMessage() != null) {
                         long notificationAfterTime = Long.parseLong(messageResponse.getMessage().getMessage());
-                        ALSpecificSettings.getInstance(context).setNotificationAfterTime(notificationAfterTime);
+                        AppSpecificSettings.getInstance(context).setNotificationAfterTime(notificationAfterTime);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -506,11 +506,11 @@ MobiComPushReceiver {
             }
 
             if (!TextUtils.isEmpty(userActivated)) {
-                BroadcastService.sendUserActivatedBroadcast(context, AlMessageEvent.ActionType.USER_ACTIVATED);
+                BroadcastService.sendUserActivatedBroadcast(context, MessageEvent.ActionType.USER_ACTIVATED);
             }
 
             if (!TextUtils.isEmpty(userDeactivated)) {
-                BroadcastService.sendUserActivatedBroadcast(context, AlMessageEvent.ActionType.USER_DEACTIVATED);
+                BroadcastService.sendUserActivatedBroadcast(context, MessageEvent.ActionType.USER_DEACTIVATED);
             }
             if(!TextUtils.isEmpty(notificationTest)) {
 

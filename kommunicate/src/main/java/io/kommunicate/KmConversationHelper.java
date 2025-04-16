@@ -21,7 +21,7 @@ import io.kommunicate.devkit.api.conversation.ApplozicConversation;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.people.ChannelInfo;
 import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.data.AlPrefSettings;
+import io.kommunicate.commons.data.PrefSettings;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
 
@@ -795,7 +795,7 @@ public class KmConversationHelper {
             String label = ANDROID + Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey();
             metadata.put(GROUP_CREATION_URL, label);
         }
-        String languageCode = AlPrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
+        String languageCode = PrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
         if (!TextUtils.isEmpty(languageCode)) {
             Map<String, String> localeMetadata = new HashMap<>();
             localeMetadata.put(KM_USER_LOCALE, languageCode);

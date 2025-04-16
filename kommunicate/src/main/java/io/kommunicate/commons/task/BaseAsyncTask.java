@@ -1,16 +1,20 @@
 package io.kommunicate.commons.task;
 
+import annotations.CleanUpRequired;
+
 /**
  * implement this interface to create a background thread running task
  * for proper working follow the comments written on each function
  * you can also refer to {@link android.os.AsyncTask}, the working(not implementation) is supposed to be similar to that
- * to create and use your own implementation, simply implement this interface and extend it in {@link AlAsyncTask}
+ * to create and use your own implementation, simply implement this interface and extend it in {@link CoreAsyncTask}
  *
  * @author shubham tewari
  *
  * @param <Progress> type of the progress parameter passed to {@link #publishProgress(Object)} and {@link #onProgress(Object)}
  * @param <Result> type of the result returned by {@link #doInBackground()} and passed to {@link #onPostExecute(Object)}
  */
+@Deprecated
+@CleanUpRequired(reason = "Migrated to coroutines")
 public abstract class BaseAsyncTask<Progress, Result> {
     public BaseAsyncTask() { }
 

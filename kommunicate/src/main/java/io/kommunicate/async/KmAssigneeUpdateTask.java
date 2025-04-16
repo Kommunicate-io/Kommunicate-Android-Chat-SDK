@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.commons.ApplozicService;
 import io.kommunicate.commons.json.GsonUtils;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmCallback;
@@ -13,7 +13,7 @@ import io.kommunicate.services.KmClientService;
 
 @Deprecated
 @CleanUpRequired(reason = "Migrated KmAssigneeUpdateTask to AssigneeUpdateUseCase")
-public class KmAssigneeUpdateTask extends AlAsyncTask<Void, String> {
+public class KmAssigneeUpdateTask extends CoreAsyncTask<Void, String> {
     private Integer groupId;
     private String assigneeId;
     private boolean switchAssignee;

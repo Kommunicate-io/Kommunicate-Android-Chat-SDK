@@ -8,8 +8,8 @@ import android.content.Context;
 
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
-import io.kommunicate.devkit.listners.AlLoginHandler;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.devkit.listners.LoginHandler;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 
@@ -21,7 +21,7 @@ import annotations.CleanUpRequired;
  */
 @Deprecated
 @CleanUpRequired(reason = "Migrated UserLoginTask to UserLoginUseCase")
-public class UserLoginTask extends AlAsyncTask<Void, Boolean> {
+public class UserLoginTask extends CoreAsyncTask<Void, Boolean> {
 
     private TaskListener taskListener;
     private final WeakReference<Context> context;
@@ -30,7 +30,7 @@ public class UserLoginTask extends AlAsyncTask<Void, Boolean> {
     private RegistrationResponse registrationResponse;
     private UserClientService userClientService;
     private RegisterUserClientService registerUserClientService;
-    private AlLoginHandler loginHandler;
+    private LoginHandler loginHandler;
 
     public UserLoginTask(User user, TaskListener listener, Context context) {
         this.taskListener = listener;
@@ -40,7 +40,7 @@ public class UserLoginTask extends AlAsyncTask<Void, Boolean> {
         this.registerUserClientService = new RegisterUserClientService(context);
     }
 
-    public UserLoginTask(User user, AlLoginHandler listener, Context context) {
+    public UserLoginTask(User user, LoginHandler listener, Context context) {
         this.loginHandler = listener;
         this.context = new WeakReference<Context>(context);
         this.user = user;

@@ -3,13 +3,13 @@ package io.kommunicate.devkit.api.account.user;
 import android.content.Context;
 
 import io.kommunicate.devkit.feed.ApiResponse;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import annotations.CleanUpRequired;
 
 @Deprecated
 @CleanUpRequired(reason = "Migrated UserBlockTask to UserBlockUseCase")
-public class UserBlockTask extends AlAsyncTask<Void, Boolean> {
+public class UserBlockTask extends CoreAsyncTask<Void, Boolean> {
 
     private final TaskListener taskListener;
     private final Context context;

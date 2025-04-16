@@ -30,7 +30,7 @@ public class KmHotelBookingModel extends JsonMarker {
     private String RoomTypeName;
     private String RatePlanCode;
     private String CancellationPolicy;
-    private AlHotelPriceModel Price;
+    private HotelPriceModel Price;
 
     public String getHotelName() {
         return HotelName;
@@ -200,15 +200,15 @@ public class KmHotelBookingModel extends JsonMarker {
         RoomIndex = roomIndex;
     }
 
-    public AlHotelPriceModel getPrice() {
+    public HotelPriceModel getPrice() {
         return Price;
     }
 
-    public void setPrice(AlHotelPriceModel price) {
+    public void setPrice(HotelPriceModel price) {
         Price = price;
     }
 
-    public class AlHotelPriceModel extends JsonMarker {
+    public class HotelPriceModel extends JsonMarker {
         private String CurrencyCode;
         private float RoomPrice;
         private float Tax;

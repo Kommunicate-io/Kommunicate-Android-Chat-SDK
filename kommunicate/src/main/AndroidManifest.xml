@@ -97,7 +97,7 @@
             android:value="tcp://socket.kommunicate.io:1883" />
 
         <meta-data
-            android:name="com.applozic.mobicomkit.notification.tone"
+            android:name="io.kommunicate.devkit.notification.tone"
             android:value="eventually" />
 
 

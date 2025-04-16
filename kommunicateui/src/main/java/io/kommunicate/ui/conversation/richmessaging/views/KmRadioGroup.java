@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
@@ -51,7 +51,7 @@ public class KmRadioGroup {
                     }
                 });
                 radioButton.setText(option.getLabel());
-                if (KmThemeHelper.getInstance(context,new AlCustomizationSettings()).isDarkModeEnabledForSDK()){
+                if (KmThemeHelper.getInstance(context,new CustomizationSettings()).isDarkModeEnabledForSDK()){
                     radioButton.setTextColor(context.getResources().getColor(R.color.white));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         radioButton.setButtonTintList(new ColorStateList(

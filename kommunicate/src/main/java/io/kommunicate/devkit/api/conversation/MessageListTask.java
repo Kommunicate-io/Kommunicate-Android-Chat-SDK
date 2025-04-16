@@ -9,7 +9,7 @@ import io.kommunicate.devkit.listners.MessageListHandler;
 import io.kommunicate.commons.commons.core.utils.DateUtils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import annotations.CleanUpRequired;
 
 @Deprecated
 @CleanUpRequired(reason = "Migrated MessageListTask to MessageListUseCase")
-public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
+public class MessageListTask extends CoreAsyncTask<Void, List<Message>> {
 
     private WeakReference<Context> context;
     private Contact contact;

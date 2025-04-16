@@ -3,7 +3,7 @@
 
     <issue
         id="NotificationPermission"
-        message="When targeting Android 13 or higher, posting a permission requires holding the `POST_NOTIFICATIONS` permission (usage from com.applozic.mobicomkit.api.notification.NotificationService)">
+        message="When targeting Android 13 or higher, posting a permission requires holding the `POST_NOTIFICATIONS` permission (usage from io.kommunicate.devkit.api.notification.NotificationService)">
         <location
             file="src/main/AndroidManifest.xml"/>
     </issue>

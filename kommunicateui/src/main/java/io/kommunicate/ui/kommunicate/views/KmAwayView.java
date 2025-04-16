@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.account.user.UserService;
-import io.kommunicate.devkit.listners.AlCallback;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.devkit.listners.ResultCallback;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.DashedLineView;
 import io.kommunicate.ui.R;
 
@@ -124,7 +124,7 @@ public class KmAwayView extends LinearLayout {
         user.setEmail(inputMessage);
         handleAwayMessage(false);
         isUserAnonymous = false;
-        UserService.getInstance(rootLinearLayout.getContext()).updateUser(user, true, new AlCallback() {
+        UserService.getInstance(rootLinearLayout.getContext()).updateUser(user, true, new ResultCallback() {
             @Override
             public void onSuccess(Object response) {
                 Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
@@ -154,9 +154,9 @@ public class KmAwayView extends LinearLayout {
         });
     }
 
-    public void setupTheme(boolean isDarkModeEnabled, AlCustomizationSettings alCustomizationSettings){
+    public void setupTheme(boolean isDarkModeEnabled, CustomizationSettings customizationSettings){
         setBackgroundColor(isDarkModeEnabled ? getResources().getColor(R.color.dark_mode_default) : Color.WHITE);
-        awayMessageTv.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getAwayMessageTextColor().get(1) : alCustomizationSettings.getAwayMessageTextColor().get(0)));
+        awayMessageTv.setTextColor(Color.parseColor(isDarkModeEnabled ? customizationSettings.getAwayMessageTextColor().get(1) : customizationSettings.getAwayMessageTextColor().get(0)));
         askEmailTextView.setTextColor(isDarkModeEnabled ? Color.WHITE : getContext().getResources().getColor(R.color.km_away_message_text_color));
     }
 }

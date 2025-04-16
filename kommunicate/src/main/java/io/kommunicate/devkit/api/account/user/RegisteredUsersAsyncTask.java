@@ -4,7 +4,7 @@ import android.content.Context;
 
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.feed.RegisteredUsersApiResponse;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import annotations.CleanUpRequired;
 
@@ -13,7 +13,7 @@ import annotations.CleanUpRequired;
  */
 @Deprecated
 @CleanUpRequired(reason = "Not used anywhere")
-public class RegisteredUsersAsyncTask extends AlAsyncTask<Void, Boolean> {
+public class RegisteredUsersAsyncTask extends CoreAsyncTask<Void, Boolean> {
 
     private final TaskListener taskListener;
     Context context;

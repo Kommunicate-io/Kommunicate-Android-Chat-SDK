@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.AlUserUpdate;
+import io.kommunicate.devkit.UserUpdateModel;
 import io.kommunicate.devkit.Applozic;
 import io.kommunicate.devkit.api.notification.NotificationChannels;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.exception.ApplozicException;
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.devkit.api.HttpRequestUtils;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.MobiComKitConstants;
@@ -183,7 +183,7 @@ public class UserClientService extends MobiComKitClientService {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancelAll();
         mobiComUserPreference.clearAll();
-        ALSpecificSettings.getInstance(context).clearAll();
+        AppSpecificSettings.getInstance(context).clearAll();
         MessageDatabaseService.recentlyAddedMessage.clear();
         MobiComDatabaseHelper.getInstance(context).delDatabase();
         mobiComUserPreference.setUrl(url);
@@ -419,7 +419,7 @@ public class UserClientService extends MobiComKitClientService {
     }
 
     public ApiResponse updateDisplayNameORImageLink(String displayName, String profileImageLink, String status, String contactNumber, String emailId, Map<String, String> metadata, String userId) {
-        AlUserUpdate userUpdate = new AlUserUpdate();
+        UserUpdateModel userUpdate = new UserUpdateModel();
         try {
             if (!TextUtils.isEmpty(displayName)) {
                 userUpdate.setDisplayName(displayName);
@@ -440,7 +440,7 @@ public class UserClientService extends MobiComKitClientService {
                 userUpdate.setMetadata(metadata);
             }
 
-            String response = httpRequestUtils.postData(getUserProfileUpdateUrl() + (!TextUtils.isEmpty(emailId) ? ELASTIC_UPDATE_TRUE : ""), GsonUtils.getJsonFromObject(userUpdate, AlUserUpdate.class), userId);
+            String response = httpRequestUtils.postData(getUserProfileUpdateUrl() + (!TextUtils.isEmpty(emailId) ? ELASTIC_UPDATE_TRUE : ""), GsonUtils.getJsonFromObject(userUpdate, UserUpdateModel.class), userId);
             Utils.printLog(context, TAG, response);
             return ((ApiResponse) GsonUtils.getObjectFromJson(response, ApiResponse.class));
         } catch (JSONException e) {
@@ -452,7 +452,7 @@ public class UserClientService extends MobiComKitClientService {
     }
 
     public ApiResponse updateEmail(String emailId, String userId) {
-        AlUserUpdate userUpdate = new AlUserUpdate();
+        UserUpdateModel userUpdate = new UserUpdateModel();
         try {
             if (!TextUtils.isEmpty(emailId)) {
                 userUpdate.setEmail(emailId);
@@ -460,7 +460,7 @@ public class UserClientService extends MobiComKitClientService {
 
             String url = getUserProfileUpdateUrl() + ELASTIC_UPDATE_TRUE;
 
-            String response = httpRequestUtils.postData(url, GsonUtils.getJsonFromObject(userUpdate, AlUserUpdate.class), userId);
+            String response = httpRequestUtils.postData(url, GsonUtils.getJsonFromObject(userUpdate, UserUpdateModel.class), userId);
             Utils.printLog(context, TAG, response);
             return ((ApiResponse) GsonUtils.getObjectFromJson(response, ApiResponse.class));
         } catch (JSONException e) {

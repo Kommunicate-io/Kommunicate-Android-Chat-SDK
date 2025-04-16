@@ -8,7 +8,7 @@ import io.kommunicate.commons.json.JsonMarker;
 
 public class KmBookingDetailsModel extends JsonMarker {
     private String sessionId;
-    private ALBookingDetails personInfo;
+    private BookingDetailsModel personInfo;
 
     public String getSessionId() {
         return sessionId;
@@ -18,18 +18,18 @@ public class KmBookingDetailsModel extends JsonMarker {
         this.sessionId = sessionId;
     }
 
-    public ALBookingDetails getPersonInfo() {
+    public BookingDetailsModel getPersonInfo() {
         if (personInfo == null) {
-            personInfo = new ALBookingDetails();
+            personInfo = new BookingDetailsModel();
         }
         return personInfo;
     }
 
-    public void setPersonInfo(ALBookingDetails personInfo) {
+    public void setPersonInfo(BookingDetailsModel personInfo) {
         this.personInfo = personInfo;
     }
 
-    public class ALBookingDetails extends JsonMarker {
+    public class BookingDetailsModel extends JsonMarker {
         private String Title;
         private String Age;
         private String FirstName;

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
 
@@ -23,7 +23,7 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
     Context context;
     List<String> multimediaIcons;
     List<String> multimediaText;
-    AlCustomizationSettings alCustomizationSettings;
+    CustomizationSettings customizationSettings;
     private static final String FONTS = "";
 
     public MobicomMultimediaPopupAdapter(Context context, List<String> multimediaIcons, List<String> multimediaText) {
@@ -32,8 +32,8 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
         this.multimediaText = multimediaText;
     }
 
-    public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
-        this.alCustomizationSettings = alCustomizationSettings;
+    public void setAlCustomizationSettings(CustomizationSettings customizationSettings) {
+        this.customizationSettings = customizationSettings;
     }
 
     @Override
@@ -59,9 +59,9 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
         TextView icon = (TextView) convertView.findViewById(R.id.mobicom_multimedia_icon);
         Typeface iconTypeface = Typeface.createFromAsset(context.getAssets(), FONTS);
         icon.setTypeface(iconTypeface);
-        KmThemeHelper themeHelper = KmThemeHelper.getInstance(context,new AlCustomizationSettings());
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(context,new CustomizationSettings());
         TextView text = (TextView) convertView.findViewById(R.id.mobicom_multimedia_text);
-        icon.setTextColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAttachmentIconsBackgroundColor().get(1) : alCustomizationSettings.getAttachmentIconsBackgroundColor().get(0)));
+        icon.setTextColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? customizationSettings.getAttachmentIconsBackgroundColor().get(1) : customizationSettings.getAttachmentIconsBackgroundColor().get(0)));
         icon.setText(multimediaIcons.get(position));
         text.setText(multimediaText.get(position));
         return convertView;

@@ -22,8 +22,8 @@ import io.kommunicate.BuildConfig;
 
 import io.kommunicate.devkit.api.attachment.urlservice.URLServiceProvider;
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.commons.task.AlAsyncTask;
-import io.kommunicate.commons.task.AlTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
+import io.kommunicate.commons.task.CoreTask;
 
 import java.io.FileDescriptor;
 import java.lang.ref.WeakReference;
@@ -186,7 +186,7 @@ public abstract class ImageLoader {
     /**
      * Load an image specified by the data parameter into an ImageView (override
      * {@link ImageLoader#processBitmap(Object)} to define the processing logic). If the image is
-     * found in the memory cache, it is set immediately, otherwise an {@link AlAsyncTask} will be
+     * found in the memory cache, it is set immediately, otherwise an {@link CoreAsyncTask} will be
      * created to asynchronously load the bitmap.
      *
      * @param data      The URL of the image to download.
@@ -232,7 +232,7 @@ public abstract class ImageLoader {
                     new AsyncDrawable(mResources, mLoadingBitmap, task);
             imageView.setImageDrawable(asyncDrawable);
             try {
-                AlTask.execute(task);
+                CoreTask.execute(task);
             } catch (Exception ex) {
                 Log.e(TAG, "Exception while processing images: " + ex.getMessage());
             }
@@ -343,7 +343,7 @@ public abstract class ImageLoader {
     /**
      * The actual ExecutorAsyncTask that will asynchronously process the image.
      */
-    private class BitmapWorkerTask extends AlAsyncTask<Void, Bitmap> {
+    private class BitmapWorkerTask extends CoreAsyncTask<Void, Bitmap> {
         private final WeakReference<ImageView> imageViewReference;
         private Context context;
         private Object data;

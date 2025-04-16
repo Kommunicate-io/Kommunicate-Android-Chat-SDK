@@ -10,7 +10,7 @@ import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.feed.ChannelFeed;
 import io.kommunicate.devkit.feed.ChannelFeedApiResponse;
 import io.kommunicate.devkit.feed.ConversationFeed;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Conversation;
@@ -37,14 +37,14 @@ public class ConversationClientService extends MobiComKitClientService {
 
     private ConversationClientService(Context context) {
         super(context);
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.httpRequestUtils = new HttpRequestUtils(context);
 
     }
 
     public synchronized static ConversationClientService getInstance(Context context) {
         if (conversationClientService == null) {
-            conversationClientService = new ConversationClientService(ApplozicService.getContext(context));
+            conversationClientService = new ConversationClientService(AppContextService.getContext(context));
         }
         return conversationClientService;
     }

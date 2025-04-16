@@ -50,8 +50,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
@@ -93,7 +93,7 @@ import io.kommunicate.ui.uilistener.KmStoragePermission;
 import io.kommunicate.ui.uilistener.KmStoragePermissionListener;
 import io.kommunicate.ui.uilistener.MobicomkitUriListener;
 import io.kommunicate.ui.utils.InsetHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.file.FileUtils;
@@ -277,14 +277,14 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onStop() {
         super.onStop();
         if (KmChatWidget.getInstance(this) == null) {
-            Applozic.disconnectPublish(this);
+            KommunicateSettings.disconnectPublish(this);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Applozic.connectPublishWithVerifyToken(this, getString(R.string.please_wait_info));
+        KommunicateSettings.connectPublishWithVerifyToken(this, getString(R.string.please_wait_info));
         syncMessages();
         if (!Utils.isInternetAvailable(getApplicationContext())) {
             String errorMessage = getResources().getString(R.string.internet_connection_not_available);
@@ -365,7 +365,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ApplozicService.initWithContext(this);
+        AppContextService.initWithContext(this);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
             alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
@@ -396,7 +396,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);
         quickConversationFragment = new MobiComQuickConversationFragment();
         connectivityReceiver = new ConnectivityReceiver();
-        geoApiKey = Applozic.getInstance(this).getGeoApiKey();
+        geoApiKey = KommunicateSettings.getInstance(this).getGeoApiKey();
         activityToOpenOnClickOfCallButton = Utils.getMetaDataValue(getApplicationContext(), ACTIVITY_TO_OPEN_ONCLICK_OF_CALL_BUTTON_META_DATA);
         layout = (LinearLayout) findViewById(R.id.footerAd);
         applozicPermission = new KmPermissions(this, layout);
@@ -468,7 +468,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             UserIntentService.enqueueWork(this, lastSeenStatusIntent);
         }
 
-        if (ApplozicClient.getInstance(this).isAccountClosed() || ApplozicClient.getInstance(this).isNotAllowed()) {
+        if (SettingsSharedPreference.getInstance(this).isAccountClosed() || SettingsSharedPreference.getInstance(this).isNotAllowed()) {
             accountStatusAsyncTask = new SyncAccountStatusAsyncTask(this, layout, snackbar);
             accountStatusAsyncTask.execute();
         }
@@ -511,7 +511,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         AlEventManager.getInstance().sendOnPluginLaunchEvent();
         if (alCustomizationSettings.isUseDeviceDefaultLanguage()) {
-            Applozic.setDefaultLanguage(this);
+            KommunicateSettings.setDefaultLanguage(this);
         }
     }
 
@@ -1040,7 +1040,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void processVideoCall(Contact contactObj, Integer conversationId) {
         this.contact = baseContactService.getContactById(contactObj.getContactIds());
-        if (ApplozicClient.getInstance(getApplicationContext()).isIPCallEnabled()) {
+        if (SettingsSharedPreference.getInstance(getApplicationContext()).isIPCallEnabled()) {
             try {
                 if (Utils.hasMarshmallow() && !PermissionsUtils.checkPermissionForCameraAndMicrophone(this)) {
                     applozicPermission.checkRuntimePermissionForCameraAndAudioRecording();
@@ -1063,7 +1063,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         this.currentConversationId = conversationId;
         try {
 
-            if (ApplozicClient.getInstance(getApplicationContext()).isIPCallEnabled()) {
+            if (SettingsSharedPreference.getInstance(getApplicationContext()).isIPCallEnabled()) {
                 if (Utils.hasMarshmallow() && !PermissionsUtils.checkPermissionForCameraAndMicrophone(this)) {
                     applozicPermission.checkRuntimePermissionForCameraAndAudioRecording();
                     return;
@@ -1346,7 +1346,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         Context context;
         RegisterUserClientService registerUserClientService;
         String loggedInUserId;
-        ApplozicClient applozicClient;
+        SettingsSharedPreference settingsSharedPreference;
         WeakReference<Snackbar> snackBarWeakReference;
         WeakReference<LinearLayout> linearLayoutWeakReference;
 
@@ -1355,7 +1355,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             this.registerUserClientService = new RegisterUserClientService(context);
             this.linearLayoutWeakReference = new WeakReference<LinearLayout>(linearLayout);
             this.snackBarWeakReference = new WeakReference<Snackbar>(snackbar);
-            this.applozicClient = ApplozicClient.getInstance(context);
+            this.settingsSharedPreference = SettingsSharedPreference.getInstance(context);
             this.loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
         }
 
@@ -1375,7 +1375,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-            if (applozicClient.isAccountClosed() || applozicClient.isNotAllowed()) {
+            if (settingsSharedPreference.isAccountClosed() || settingsSharedPreference.isNotAllowed()) {
                 LinearLayout linearLayout = null;
                 Snackbar snackbar = null;
                 if (snackBarWeakReference != null) {
@@ -1385,7 +1385,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     linearLayout = linearLayoutWeakReference.get();
                 }
                 if (snackbar != null && linearLayout != null) {
-                    snackbar = Snackbar.make(linearLayout, applozicClient.isAccountClosed() ?
+                    snackbar = Snackbar.make(linearLayout, settingsSharedPreference.isAccountClosed() ?
                                     R.string.applozic_account_closed : R.string.applozic_free_version_not_allowed_on_release_build,
                             Snackbar.LENGTH_INDEFINITE);
                     snackbar.show();

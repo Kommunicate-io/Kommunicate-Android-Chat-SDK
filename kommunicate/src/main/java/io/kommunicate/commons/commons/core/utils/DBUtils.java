@@ -8,7 +8,7 @@ import net.sqlcipher.database.SQLiteStatement;
 import android.util.Log;
 
 import io.kommunicate.devkit.api.MobiComKitClientService;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 import java.io.File;
 
@@ -54,7 +54,7 @@ public class DBUtils {
     }
 
     public static boolean isDatabaseEncrypted(Context context, String dbName) {
-        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
+        String appId = MobiComKitClientService.getApplicationKey(AppContextService.getContext(context));
         File dbFile = context.getDatabasePath(dbName);
 
         // Attempt to open the database with the given password

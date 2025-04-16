@@ -13,7 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.RemoteInput;
 import android.view.View;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 
 /**
  * @author adarsh
@@ -72,7 +72,7 @@ public class WearableNotificationWithVoice {
         //Action action = buildWearableAction(); removed remote input action for now
         Notification notification = notificationBuilder.extend(new WearableExtender()).build();
 
-        if (ApplozicClient.getInstance(mContext).isNotificationSmallIconHidden() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (SettingsSharedPreference.getInstance(mContext).isNotificationSmallIconHidden() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int smallIconViewId = mContext.getResources().getIdentifier("right_icon", "id", android.R.class.getPackage().getName());
             if (smallIconViewId != 0) {
 

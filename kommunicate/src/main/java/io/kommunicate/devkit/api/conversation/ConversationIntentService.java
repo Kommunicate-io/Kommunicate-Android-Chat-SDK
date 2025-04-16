@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.AlJobIntentService;
 
 import io.kommunicate.devkit.api.account.user.UserService;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 
 /**
@@ -34,7 +34,7 @@ public class ConversationIntentService extends AlJobIntentService {
      * Convenience method for enqueuing work in to this service.
      */
     static public void enqueueWork(Context context, Intent work) {
-        enqueueWork(ApplozicService.getContext(context), ConversationIntentService.class, JOB_ID, work);
+        enqueueWork(AppContextService.getContext(context), ConversationIntentService.class, JOB_ID, work);
     }
 
     @Override

@@ -20,7 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.attachment.FileClientService;
 import io.kommunicate.devkit.broadcast.AlEventManager;
@@ -166,7 +166,7 @@ public class KmChatWidget {
 
     private void configureWidgetFromDashboard() {
         fetchingSettings = true;
-        AppSettingUseCase.executeWithExecutor(mContext, Applozic.getInstance(mContext).getApplicationKey(), new KmCallback() {
+        AppSettingUseCase.executeWithExecutor(mContext, KommunicateSettings.getInstance(mContext).getApplicationKey(), new KmCallback() {
             @Override
             public void onSuccess(Object message) {
                 fetchingSettings = false;
@@ -245,7 +245,7 @@ public class KmChatWidget {
             return;
         }
         isShowing = false;
-        Applozic.disconnectPublish(mContext);
+        KommunicateSettings.disconnectPublish(mContext);
         mWindowManager.removeViewImmediate(rootView);
     }
 

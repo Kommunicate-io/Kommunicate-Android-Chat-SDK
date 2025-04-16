@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 
 import io.kommunicate.ui.kommunicate.models.KmSpeechToTextModel;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -29,7 +29,7 @@ public class KmSpeechToTextSetting {
 
     public static KmSpeechToTextSetting getInstance(Context context) {
         if (kmSpeechToTextSetting == null) {
-            kmSpeechToTextSetting = new KmSpeechToTextSetting(ApplozicService.getContext(context));
+            kmSpeechToTextSetting = new KmSpeechToTextSetting(AppContextService.getContext(context));
         } else {
             sharedPreferences = context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         }

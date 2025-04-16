@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import androidx.core.app.NavUtils;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.file.FileUtils;
 
 import java.util.HashMap;
@@ -93,14 +93,14 @@ public class KommunicateSetting {
     private static final String SHOW_IMAGE_ON_TOOLBAR = "SHOW_IMAGE_ON_TOOLBAR";
 
     private KommunicateSetting(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         MobiComUserPreference.renameSharedPrefFile(this.context);
         sharedPreferences = this.context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
     }
 
     public static KommunicateSetting getInstance(Context context) {
         if (kommunicateSetting == null) {
-            kommunicateSetting = new KommunicateSetting(ApplozicService.getContext(context));
+            kommunicateSetting = new KommunicateSetting(AppContextService.getContext(context));
         }
 
         return kommunicateSetting;

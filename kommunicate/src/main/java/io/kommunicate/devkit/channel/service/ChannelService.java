@@ -6,7 +6,7 @@ import androidx.annotation.VisibleForTesting;
 
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.devkit.api.conversation.MobiComConversationService;
@@ -28,7 +28,7 @@ import io.kommunicate.devkit.feed.ChannelUsersFeed;
 import io.kommunicate.devkit.feed.GroupInfoUpdate;
 import io.kommunicate.devkit.listners.AlChannelListener;
 import io.kommunicate.devkit.sync.SyncChannelFeed;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.channel.ChannelUserMapper;
 import io.kommunicate.commons.task.AlTask;
@@ -54,17 +54,17 @@ public class ChannelService {
     private static final String SUCCESS = "success";
 
     private ChannelService(Context context) {
-        this.context = ApplozicService.getContext(context);
-        channelClientService = ChannelClientService.getInstance(ApplozicService.getContext(context));
-        channelDatabaseService = ChannelDatabaseService.getInstance(ApplozicService.getContext(context));
-        userService = UserService.getInstance(ApplozicService.getContext(context));
-        baseContactService = new AppContactService(ApplozicService.getContext(context));
+        this.context = AppContextService.getContext(context);
+        channelClientService = ChannelClientService.getInstance(AppContextService.getContext(context));
+        channelDatabaseService = ChannelDatabaseService.getInstance(AppContextService.getContext(context));
+        userService = UserService.getInstance(AppContextService.getContext(context));
+        baseContactService = new AppContactService(AppContextService.getContext(context));
         loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
     }
 
     public synchronized static ChannelService getInstance(Context context) {
         if (channelService == null) {
-            channelService = new ChannelService(ApplozicService.getContext(context));
+            channelService = new ChannelService(AppContextService.getContext(context));
         }
         return channelService;
     }
@@ -821,7 +821,7 @@ public class ChannelService {
             if (channelFeed.getChildKeys() != null && channelFeed.getChildKeys().size() > 0) {
                 processChildGroupKeysForChannelSync(channelFeed.getChildKeys());
             }
-            if (channel.isDeleted() && ApplozicClient.getInstance(context).isSkipDeletedGroups()) {
+            if (channel.isDeleted() && SettingsSharedPreference.getInstance(context).isSkipDeletedGroups()) {
                 BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, channel.getKey(), SUCCESS);
             }
         }

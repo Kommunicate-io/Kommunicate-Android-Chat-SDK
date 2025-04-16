@@ -38,12 +38,12 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name=".devkit.api.conversation.ApplozicIntentService"
+            android:name=".devkit.api.conversation.ChatIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name=".devkit.api.conversation.ApplozicMqttIntentService"
+            android:name=".devkit.api.conversation.MqttIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />

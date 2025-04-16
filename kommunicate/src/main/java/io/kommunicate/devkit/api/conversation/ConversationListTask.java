@@ -7,7 +7,7 @@ import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.listners.ConversationListHandler;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
@@ -27,7 +27,7 @@ public class ConversationListTask extends AlAsyncTask<Void, List<AlConversation>
     private Long endTime;
     private boolean isForMessageList;
     private ConversationListHandler handler;
-    private ApplozicException exception;
+    private KommunicateException exception;
     private AppContactService appContactService;
     private ChannelService channelService;
     private MessageDatabaseService messageDatabaseService;
@@ -59,7 +59,7 @@ public class ConversationListTask extends AlAsyncTask<Void, List<AlConversation>
             }
 
             if (messageList == null && exception == null) {
-                exception = new ApplozicException(internal_error);
+                exception = new KommunicateException(internal_error);
             }
 
             List<String> recList = new ArrayList<String>();
@@ -95,7 +95,7 @@ public class ConversationListTask extends AlAsyncTask<Void, List<AlConversation>
                 }
             }
         } catch (Exception e) {
-            exception = new ApplozicException(e.getMessage());
+            exception = new KommunicateException(e.getMessage());
         }
         return null;
     }

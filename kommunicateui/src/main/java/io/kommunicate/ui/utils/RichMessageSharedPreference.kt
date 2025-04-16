@@ -3,14 +3,14 @@ package io.kommunicate.ui.utils
 import android.content.Context
 import android.content.SharedPreferences
 import io.kommunicate.ui.conversation.richmessaging.models.KmFormStateModel
-import io.kommunicate.commons.ApplozicService
+import io.kommunicate.commons.AppContextService
 
 object RichMessageSharedPreference {
 
     private val RICH_MESSAGE_PREFERENCE = "RICH_MESSAGE_PREFERENCE"
 
     private val preferences: SharedPreferences by lazy {
-        ApplozicService.getAppContext()
+        AppContextService.getAppContext()
             .getSharedPreferences(RICH_MESSAGE_PREFERENCE, Context.MODE_PRIVATE)
     }
 

@@ -2,13 +2,16 @@ package io.kommunicate.devkit.api.attachment.urlservice;
 
 import android.content.Context;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.conversation.Message;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class ApplozicMongoStorageService implements URLService {
+@Deprecated
+@CleanUpRequired(reason = "Not used anywhere")
+public class MongoStorageService implements URLService {
 
     private MobiComKitClientService mobiComKitClientService;
 
@@ -16,7 +19,7 @@ public class ApplozicMongoStorageService implements URLService {
     private static final String DOWNLOAD_URL ="/files/get/";
 
 
-    public ApplozicMongoStorageService(Context context) {
+    public MongoStorageService(Context context) {
         mobiComKitClientService = new MobiComKitClientService(context);
     }
 

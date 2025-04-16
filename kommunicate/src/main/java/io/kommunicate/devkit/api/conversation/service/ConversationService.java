@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import io.kommunicate.devkit.api.conversation.database.ConversationDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.feed.ChannelFeed;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.channel.Conversation;
 import io.kommunicate.commons.people.contact.Contact;
@@ -32,7 +32,7 @@ public class ConversationService {
 
     public synchronized static ConversationService getInstance(Context context) {
         if (conversationService == null) {
-            conversationService = new ConversationService(ApplozicService.getContext(context));
+            conversationService = new ConversationService(AppContextService.getContext(context));
         }
         return conversationService;
     }

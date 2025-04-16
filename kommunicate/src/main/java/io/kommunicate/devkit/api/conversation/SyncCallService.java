@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.ConversationRunnables;
-import io.kommunicate.devkit.api.ApplozicMqttService;
+import io.kommunicate.devkit.api.MqttService;
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
@@ -15,7 +15,7 @@ import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.devkit.api.notification.MobiComPushReceiver;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.people.channel.Channel;
@@ -28,7 +28,7 @@ import java.util.TimeZone;
 /**
  * Contains methods for real time updates/syncing of local data and UI with the remote server.
  *
- * <p>Methods of this class are usually called from either {@link ApplozicMqttService}
+ * <p>Methods of this class are usually called from either {@link MqttService}
  * or {@link MobiComPushReceiver}.
  * This happens when either a push notification or a MQTT message is received.</p>
  *
@@ -49,7 +49,7 @@ public class SyncCallService {
     private MessageDatabaseService messageDatabaseService;
 
     private SyncCallService(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.mobiComMessageService = new MobiComMessageService(context, MessageIntentService.class);
         this.mobiComConversationService = new MobiComConversationService(context);
         this.contactService = new AppContactService(context);

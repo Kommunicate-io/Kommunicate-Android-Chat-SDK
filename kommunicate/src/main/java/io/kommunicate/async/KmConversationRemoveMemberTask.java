@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.channel.service.ChannelService;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 import java.lang.ref.WeakReference;
 
@@ -45,7 +45,7 @@ public class KmConversationRemoveMemberTask extends AsyncTask<Void, Void, Boolea
                     return MobiComKitConstants.SUCCESS.equals(removeResponse);
                 }
             } else {
-                throw new Exception(ApplozicService.getContext(context.get()).getString(R.string.applozic_userId_error_info_in_logs));
+                throw new Exception(AppContextService.getContext(context.get()).getString(R.string.applozic_userId_error_info_in_logs));
             }
         } catch (Exception e) {
             e.printStackTrace();

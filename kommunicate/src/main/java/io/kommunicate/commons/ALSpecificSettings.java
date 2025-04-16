@@ -28,12 +28,12 @@ public class ALSpecificSettings {
     private static final String AL_NOTIFICATION_AFTER_TIME = "AL_NOTIFICATION_AFTER_TIME";
 
     private ALSpecificSettings(Context context) {
-        this.sharedPreferences = ApplozicService.getContext(context).getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
+        this.sharedPreferences = AppContextService.getContext(context).getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
     }
 
     public static ALSpecificSettings getInstance(Context context) {
         if (applozicSettings == null) {
-            applozicSettings = new ALSpecificSettings(ApplozicService.getContext(context));
+            applozicSettings = new ALSpecificSettings(AppContextService.getContext(context));
         }
         return applozicSettings;
     }

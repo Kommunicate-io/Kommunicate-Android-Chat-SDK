@@ -4,7 +4,7 @@ import android.content.Context;
 
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -18,7 +18,7 @@ public class URLServiceProvider {
     private static final String err_msg = "Error connecting";
 
     public URLServiceProvider(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         mobiComKitClientService = new MobiComKitClientService(context);
     }
 

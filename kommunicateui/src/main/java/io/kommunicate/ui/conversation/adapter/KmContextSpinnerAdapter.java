@@ -61,11 +61,11 @@ public class KmContextSpinnerAdapter extends BaseAdapter {
     public View getCustomView(int position, View convertView, ViewGroup parent) {
 
         Conversation conversation = (Conversation) getItem(position);
-        ApplozicProductViewHolder viewHolder;
+        ProductViewHolder viewHolder;
 
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.km_context_based_layout, parent, false);
-            viewHolder = new ApplozicProductViewHolder();
+            viewHolder = new ProductViewHolder();
             viewHolder.productImage = (ImageView) convertView.findViewById(R.id.productImage);
             viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.title);
             viewHolder.subTitleTextView = (TextView) convertView.findViewById(R.id.subTitle);
@@ -75,7 +75,7 @@ public class KmContextSpinnerAdapter extends BaseAdapter {
             viewHolder.value2TextView = (TextView) convertView.findViewById(R.id.priceValueTextview);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ApplozicProductViewHolder) convertView
+            viewHolder = (ProductViewHolder) convertView
                     .getTag();
         }
 
@@ -153,11 +153,11 @@ public class KmContextSpinnerAdapter extends BaseAdapter {
     }
 
 
-    private static class ApplozicProductViewHolder {
+    private static class ProductViewHolder {
         TextView titleTextView, subTitleTextView, key1TextView, value1TextView, key2TextView, value2TextView;
         ImageView productImage;
 
-        ApplozicProductViewHolder() {
+        ProductViewHolder() {
 
         }
 

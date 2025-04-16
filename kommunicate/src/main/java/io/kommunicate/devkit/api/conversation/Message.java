@@ -1,6 +1,6 @@
 package io.kommunicate.devkit.api.conversation;
 
-import static io.kommunicate.commons.ApplozicService.getAppContext;
+import static io.kommunicate.commons.AppContextService.getAppContext;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -9,7 +9,7 @@ import android.text.TextUtils;
 import android.util.Patterns;
 
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.notification.VideoCallNotificationHelper;
 import io.kommunicate.devkit.channel.service.ChannelService;
@@ -838,13 +838,13 @@ public class Message extends JsonMarker implements Parcelable {
     }
 
     public boolean isIgnoreMessageAdding(Context context) {
-        if (ApplozicClient.getInstance(context).isSubGroupEnabled() && MobiComUserPreference.getInstance(context).getParentGroupKey() != null || !TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getCategoryName())) {
+        if (SettingsSharedPreference.getInstance(context).isSubGroupEnabled() && MobiComUserPreference.getInstance(context).getParentGroupKey() != null || !TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getCategoryName())) {
             Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(getGroupId());
             boolean subGroupFlag = channel != null && channel.getParentKey() != null && MobiComUserPreference.getInstance(context).getParentGroupKey().equals(channel.getParentKey());
             boolean categoryFlag = channel != null && channel.isPartOfCategory(MobiComUserPreference.getInstance(context).getCategoryName());
-            return (subGroupFlag || categoryFlag || ApplozicClient.getInstance(context).isSubGroupEnabled() || !TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getCategoryName()));
+            return (subGroupFlag || categoryFlag || SettingsSharedPreference.getInstance(context).isSubGroupEnabled() || !TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getCategoryName()));
         }
-        return ((ApplozicClient.getInstance(context).isActionMessagesHidden() && isActionMessage()) || hasHideKey());
+        return ((SettingsSharedPreference.getInstance(context).isActionMessagesHidden() && isActionMessage()) || hasHideKey());
     }
 
     public boolean isRichMessage() {

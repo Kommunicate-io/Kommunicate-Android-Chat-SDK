@@ -4,7 +4,11 @@ package io.kommunicate.feeds;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ApplozicUser {
+import annotations.CleanUpRequired;
+
+@Deprecated
+@CleanUpRequired(reason = "Not used anywhere")
+public class CoreUser {
 
     @SerializedName("message")
     @Expose

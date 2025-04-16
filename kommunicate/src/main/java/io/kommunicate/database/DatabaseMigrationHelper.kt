@@ -3,7 +3,7 @@ package io.kommunicate.database
 import android.content.Context
 import android.database.Cursor
 import io.kommunicate.devkit.api.MobiComKitClientService
-import io.kommunicate.commons.ApplozicService
+import io.kommunicate.commons.AppContextService
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteException
 
@@ -21,7 +21,7 @@ object DatabaseMigrationHelper {
         }
 
         val password =
-            MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context))
+            MobiComKitClientService.getApplicationKey(AppContextService.getContext(context))
 
         // Load SQLCipher libraries
         SQLiteDatabase.loadLibs(context)

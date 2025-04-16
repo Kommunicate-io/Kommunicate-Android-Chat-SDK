@@ -253,7 +253,7 @@ public class FileClientService extends MobiComKitClientService {
     public String uploadBlobImage(String path, Handler handler, String oldMessageKey) throws Exception {
         String uploadResponse = null;
         try {
-            ApplozicMultipartUtility multipart = new ApplozicMultipartUtility(getUploadURL(), "UTF-8", context);
+            MultipartUtility multipart = new MultipartUtility(getUploadURL(), "UTF-8", context);
             multipart.addFilePart("file", new File(path), handler, oldMessageKey);
             uploadResponse = multipart.getResponse();
            // return multipart.getResponse();
@@ -267,7 +267,7 @@ public class FileClientService extends MobiComKitClientService {
     public String defaultUploadOverride(String path, Handler handler, String oldMessageKey, String uploadUrl, HashMap<String, String> headers, Integer groupId) throws Exception {
         String uploadResponse = null;
         try {
-            ApplozicMultipartUtility multipart = new ApplozicMultipartUtility(uploadUrl, headers, context);
+            MultipartUtility multipart = new MultipartUtility(uploadUrl, headers, context);
             if(groupId != null) {
                 multipart.addFormField("data", "application/json", "{\"groupId\": \"" + groupId + "\"}");
             }
@@ -375,7 +375,7 @@ public class FileClientService extends MobiComKitClientService {
 
     public String uploadProfileImage(String path) throws UnsupportedEncodingException {
         try {
-            ApplozicMultipartUtility multipart = new ApplozicMultipartUtility(profileImageUploadURL(), "UTF-8", context);
+            MultipartUtility multipart = new MultipartUtility(profileImageUploadURL(), "UTF-8", context);
             multipart.addFilePart("file", new File(path), null, null);
             return multipart.getResponse();
         } catch (Exception e) {

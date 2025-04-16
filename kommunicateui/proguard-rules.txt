@@ -36,9 +36,6 @@
 -dontwarn com.google.android.gms.**
 
 #noinspection ShrinkerUnresolvedReference
--keep class com.applozic.** {
-    !static !transient <fields>;
-}
 -keep class io.kommunicate.** {
     !static !transient <fields>;
 }

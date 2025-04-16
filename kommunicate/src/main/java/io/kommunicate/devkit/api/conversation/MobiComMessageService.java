@@ -9,7 +9,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
@@ -26,7 +26,7 @@ import io.kommunicate.devkit.contact.database.ContactDatabase;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.sync.SyncMessageFeed;
 
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
@@ -65,7 +65,7 @@ public class MobiComMessageService {
     private String loggedInUserId;
 
     public MobiComMessageService(Context context, Class messageIntentServiceClass) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.messageClientService = new MessageClientService(context);
         this.conversationService = new MobiComConversationService(context);
@@ -74,15 +74,15 @@ public class MobiComMessageService {
         this.baseContactService = new AppContactService(context);
         fileClientService = new FileClientService(context);
         this.userService = UserService.getInstance(context);
-        isHideActionMessage = ApplozicClient.getInstance(context).isActionMessagesHidden();
+        isHideActionMessage = SettingsSharedPreference.getInstance(context).isActionMessagesHidden();
         loggedInUserRole = MobiComUserPreference.getInstance(context).getUserRoleType();
         loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
     }
 
     public Message processMessage(final Message messageToProcess, String tofield, int index) {
         try {
-            if (!TextUtils.isEmpty(ApplozicClient.getInstance(context).getMessageMetaDataServiceName())) {
-                Class serviceName = Class.forName(ApplozicClient.getInstance(context).getMessageMetaDataServiceName());
+            if (!TextUtils.isEmpty(SettingsSharedPreference.getInstance(context).getMessageMetaDataServiceName())) {
+                Class serviceName = Class.forName(SettingsSharedPreference.getInstance(context).getMessageMetaDataServiceName());
                 Intent intentService = new Intent(context, serviceName);
                 if (Message.MetaDataType.HIDDEN.getValue().equals(messageToProcess.getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))) {
                     intentService.putExtra(MobiComKitConstants.MESSAGE, (Parcelable) messageToProcess);
@@ -370,7 +370,7 @@ public class MobiComMessageService {
 
     public void processUserDetailFromMessages(List<Message> messages) {
         try {
-            if (!ApplozicClient.getInstance(context).isHandleDisplayName()) {
+            if (!SettingsSharedPreference.getInstance(context).isHandleDisplayName()) {
                 return;
             }
             Set<String> userIds = new HashSet<String>();

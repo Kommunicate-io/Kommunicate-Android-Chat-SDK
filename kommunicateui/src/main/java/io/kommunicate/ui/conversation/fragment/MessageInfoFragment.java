@@ -28,7 +28,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.attachment.AttachmentView;
 import io.kommunicate.devkit.api.attachment.FileClientService;
 import io.kommunicate.devkit.api.attachment.FileMeta;
@@ -77,7 +77,7 @@ public class MessageInfoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        geoApiKey = Applozic.getInstance(getContext()).getGeoApiKey();
+        geoApiKey = KommunicateSettings.getInstance(getContext()).getGeoApiKey();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

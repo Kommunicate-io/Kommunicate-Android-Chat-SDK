@@ -3,7 +3,7 @@ package io.kommunicate.commons.commons.core.utils;
 import android.content.Context;
 import android.os.SystemClock;
 
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -71,11 +71,11 @@ public class DateUtils {
                     return Utils.getString(context, justNow);
                 }
                 if (diffMinutes <= 59 && diffHours == 0) {
-                    return ApplozicService.getContext(context).getResources().getQuantityString(min, (int) diffMinutes, diffMinutes);
+                    return AppContextService.getContext(context).getResources().getQuantityString(min, (int) diffMinutes, diffMinutes);
                 }
 
                 if (diffMinutes > 59 && diffHours <= 2) {
-                    return ApplozicService.getContext(context).getResources().getQuantityString(hr, (int) diffHours, diffHours);
+                    return AppContextService.getContext(context).getResources().getQuantityString(hr, (int) diffHours, diffHours);
                 }
                 return simpleDateFormat.format(date);
             }
@@ -99,17 +99,17 @@ public class DateUtils {
                 long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(currentTime);
                 long diffHours = TimeUnit.MILLISECONDS.toHours(currentTime);
                 if (diffMinutes <= 1 && diffHours == 0) {
-                    return ApplozicService.getContext(context).getString(justNow);
+                    return AppContextService.getContext(context).getString(justNow);
                 }
                 if (diffMinutes <= 59 && diffHours == 0) {
-                    return ApplozicService.getContext(context).getResources().getQuantityString(minAgo, (int) diffMinutes, diffMinutes);
+                    return AppContextService.getContext(context).getResources().getQuantityString(minAgo, (int) diffMinutes, diffMinutes);
                 }
                 if (diffMinutes > 59 && diffHours < 24) {
-                    return ApplozicService.getContext(context).getResources().getQuantityString(hrAgo, (int) diffHours, diffHours);
+                    return AppContextService.getContext(context).getResources().getQuantityString(hrAgo, (int) diffHours, diffHours);
                 }
             }
             if (isYesterday(timestamp)) {
-                return ApplozicService.getContext(context).getString(yesterday);
+                return AppContextService.getContext(context).getString(yesterday);
             }
             return simpleDateFormat.format(date);
         } catch (Exception e) {

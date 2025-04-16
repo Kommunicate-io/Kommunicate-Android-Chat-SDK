@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import io.kommunicate.devkit.api.conversation.ApplozicIntentService;
+import io.kommunicate.devkit.api.conversation.ChatIntentService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 
 /**
@@ -36,9 +36,9 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         }
 
         if (BOOT_COMPLETED.equalsIgnoreCase(action) || REBOOT_COMPLETED.equalsIgnoreCase(action)) {
-            Intent connectivityIntent = new Intent(context, ApplozicIntentService.class);
-            connectivityIntent.putExtra(ApplozicIntentService.AL_SYNC_ON_CONNECTIVITY, true);
-            ApplozicIntentService.enqueueWork(context, connectivityIntent);
+            Intent connectivityIntent = new Intent(context, ChatIntentService.class);
+            connectivityIntent.putExtra(ChatIntentService.AL_SYNC_ON_CONNECTIVITY, true);
+            ChatIntentService.enqueueWork(context, connectivityIntent);
         }
 
         if (CONNECTIVITY_CHANGE.equalsIgnoreCase(action)) {
@@ -52,9 +52,9 @@ public class ConnectivityReceiver extends BroadcastReceiver {
                 if (networkInfo != null && networkInfo.isConnected()) {
                     if (firstConnect) {
                         firstConnect = false;
-                        Intent connectivityIntent = new Intent(context, ApplozicIntentService.class);
-                        connectivityIntent.putExtra(ApplozicIntentService.AL_SYNC_ON_CONNECTIVITY, true);
-                        ApplozicIntentService.enqueueWork(context, connectivityIntent);
+                        Intent connectivityIntent = new Intent(context, ChatIntentService.class);
+                        connectivityIntent.putExtra(ChatIntentService.AL_SYNC_ON_CONNECTIVITY, true);
+                        ChatIntentService.enqueueWork(context, connectivityIntent);
                     }
                 }
             }

@@ -8,14 +8,14 @@ import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteStatement;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.attachment.FileMeta;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.database.MobiComDatabaseHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.DBUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
@@ -84,10 +84,10 @@ public class MessageDatabaseService {
     private static final String contactNo_And_channelKey = "contactNumbers=? AND channelKey = 0";
 
     public MessageDatabaseService(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.dbHelper = MobiComDatabaseHelper.getInstance(context);
-        hideActionMessages = ApplozicClient.getInstance(context).isActionMessagesHidden();
-        skipDeletedGroups = ApplozicClient.getInstance(context).isSkipDeletedGroups();
+        hideActionMessages = SettingsSharedPreference.getInstance(context).isActionMessagesHidden();
+        skipDeletedGroups = SettingsSharedPreference.getInstance(context).isSkipDeletedGroups();
     }
 
     @SuppressLint("Range")
@@ -565,19 +565,19 @@ public class MessageDatabaseService {
 
     public long createSingleMessage(final Message message) {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
-        ApplozicClient applozicClient = ApplozicClient.getInstance(context);
+        SettingsSharedPreference settingsSharedPreference = SettingsSharedPreference.getInstance(context);
         long id = -1;
         boolean duplicateCheck = true;
-        long minCreatedAt = applozicClient.getMinCreatedAtTime();
-        long maxCreatedAt = applozicClient.getMaxCreatedAtTime();
+        long minCreatedAt = settingsSharedPreference.getMinCreatedAtTime();
+        long maxCreatedAt = settingsSharedPreference.getMaxCreatedAtTime();
 
         if (message.getCreatedAtTime() < minCreatedAt) {
             duplicateCheck = false;
-            applozicClient.setMinCreatedAtTime(message.getCreatedAtTime());
+            settingsSharedPreference.setMinCreatedAtTime(message.getCreatedAtTime());
         }
         if (message.getCreatedAtTime() > maxCreatedAt) {
             duplicateCheck = false;
-            applozicClient.setMaxCreatedAtTime(message.getCreatedAtTime());
+            settingsSharedPreference.setMaxCreatedAtTime(message.getCreatedAtTime());
         }
 
         if (duplicateCheck) {

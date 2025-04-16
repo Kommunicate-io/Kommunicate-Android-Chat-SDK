@@ -29,7 +29,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import io.kommunicate.devkit.broadcast.BroadcastService;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.listners.MediaDownloadProgressHandler;
 
 import java.util.ArrayList;
@@ -239,7 +239,7 @@ public class AttachmentManager {
                         case DOWNLOAD_FAILED:
                             //localView.setStatusResource(R.drawable.imagedownloadfailed);
                             attachmentTask.getMessage().setAttDownloadInProgress(false);
-                            attachmentTask.getDownloadHandler().onCompleted(null, new ApplozicException(download_failed));
+                            attachmentTask.getDownloadHandler().onCompleted(null, new KommunicateException(download_failed));
                             // Attempts to re-use the Task object
                             recycleTask(attachmentTask);
                             break;

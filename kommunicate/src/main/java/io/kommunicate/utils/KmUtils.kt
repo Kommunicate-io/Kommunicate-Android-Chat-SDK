@@ -17,11 +17,11 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import io.kommunicate.devkit.ApplozicClient
+import io.kommunicate.devkit.SettingsSharedPreference
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
 import io.kommunicate.devkit.api.account.user.User
 import io.kommunicate.devkit.api.conversation.Message
-import io.kommunicate.commons.ApplozicService
+import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.commons.core.utils.Utils
 import io.kommunicate.commons.file.FileUtils
 import io.kommunicate.commons.json.GsonUtils
@@ -122,7 +122,7 @@ object KmUtils {
 
     @JvmStatic
     val isAgent: Boolean
-        get() = isAgent(ApplozicService.getAppContext())
+        get() = isAgent(AppContextService.getAppContext())
 
     @JvmStatic
     fun setGradientSolidColor(view: View, color: Int) {
@@ -183,7 +183,7 @@ object KmUtils {
     @JvmStatic
     fun getCustomBotName(message: Message?, context: Context): String? {
         if (message != null) {
-            val metadata: Map<String, String> = ApplozicClient.getInstance(context).messageMetaData?.let {
+            val metadata: Map<String, String> = SettingsSharedPreference.getInstance(context).messageMetaData?.let {
                 GsonUtils.getObjectFromJson<Any>(
                     it,
                     MutableMap::class.java

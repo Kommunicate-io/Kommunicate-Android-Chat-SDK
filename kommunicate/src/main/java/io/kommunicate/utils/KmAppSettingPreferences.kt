@@ -3,9 +3,9 @@ package io.kommunicate.utils
 import android.content.Context
 import android.content.SharedPreferences
 import annotations.CleanUpRequired
-import io.kommunicate.devkit.Applozic
+import io.kommunicate.devkit.KommunicateSettings
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
-import io.kommunicate.commons.ApplozicService
+import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.json.GsonUtils
 import io.kommunicate.callbacks.KmCallback
 import io.kommunicate.models.KmAppSettingModel
@@ -47,11 +47,11 @@ object KmAppSettingPreferences {
     val instance = this
 
     private val preferences: SharedPreferences by lazy {
-        ApplozicService.getAppContext()
+        AppContextService.getAppContext()
             .getSharedPreferences(KM_THEME_PREFERENCES, Context.MODE_PRIVATE)
     }
     private val alpreferences: SharedPreferences by lazy {
-        ApplozicService.getAppContext()
+        AppContextService.getAppContext()
             .getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE)
     }
 
@@ -185,7 +185,7 @@ object KmAppSettingPreferences {
     fun fetchAppSettingAsync(context: Context) {
         AppSettingUseCase.executeWithExecutor(
             context,
-            Applozic.getInstance(context).applicationKey,
+            KommunicateSettings.getInstance(context).applicationKey,
             object : KmCallback {
                 override fun onSuccess(message: Any) {
                 }

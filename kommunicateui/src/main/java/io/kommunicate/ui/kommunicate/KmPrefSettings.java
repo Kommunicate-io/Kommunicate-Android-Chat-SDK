@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 public class KmPrefSettings {
 
@@ -23,7 +23,7 @@ public class KmPrefSettings {
 
     public static KmPrefSettings getInstance(Context context) {
         if (kmPrefSettings == null) {
-            kmPrefSettings = new KmPrefSettings(ApplozicService.getContext(context));
+            kmPrefSettings = new KmPrefSettings(AppContextService.getContext(context));
         } else {
             sharedPreferences = context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         }

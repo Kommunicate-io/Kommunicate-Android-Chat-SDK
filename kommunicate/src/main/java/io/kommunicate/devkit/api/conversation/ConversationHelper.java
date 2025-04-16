@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.api.ApplozicMqttService;
+import io.kommunicate.devkit.api.MqttService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.attachment.AttachmentManager;
 import io.kommunicate.devkit.api.attachment.AttachmentTask;
@@ -13,7 +13,7 @@ import io.kommunicate.devkit.api.people.UserIntentService;
 import io.kommunicate.devkit.channel.database.ChannelDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.listners.ConversationListHandler;
 import io.kommunicate.devkit.listners.MediaDownloadProgressHandler;
 import io.kommunicate.commons.people.channel.Channel;
@@ -30,7 +30,7 @@ import io.kommunicate.usecase.MessageListUseCase;
  * Created by ashish on 05/01/18.
  */
 
-public class ApplozicConversation {
+public class ConversationHelper {
 
     private static final String MESSAGE_STATUS_TOPIC = "message-status";
     private static final String not_message_attachement = "Message does not have Attachment";
@@ -105,7 +105,7 @@ public class ApplozicConversation {
 
     public static void getMessageListForChannel(Context context, Channel channel, Long endTime, TaskListener<List<Message>> handler) {
         if (channel == null) {
-           handler.onFailure(new ApplozicException("Channel key cannot be null"));
+           handler.onFailure(new KommunicateException("Channel key cannot be null"));
            return;
         }
         MessageListUseCase.executeWithCallback(
@@ -122,7 +122,7 @@ public class ApplozicConversation {
 
     public static void getMessageListForContact(Context context, String userId, Long endTime, TaskListener<List<Message>> handler) {
         if (userId == null) {
-            handler.onFailure(new ApplozicException("userId cannot be null"));
+            handler.onFailure(new KommunicateException("userId cannot be null"));
             return;
         }
         MessageListUseCase.executeWithCallback(
@@ -139,7 +139,7 @@ public class ApplozicConversation {
 
     public static void getMessageListForChannel(Context context, Integer channelKey, Long endTime, TaskListener<List<Message>> handler) {
         if (channelKey == null) {
-            handler.onFailure(new ApplozicException("Channel key cannot be null"));
+            handler.onFailure(new KommunicateException("Channel key cannot be null"));
             return;
         }
         MessageListUseCase.executeWithCallback(
@@ -155,16 +155,16 @@ public class ApplozicConversation {
     }
 
     public static void downloadMessage(Context context, Message message, MediaDownloadProgressHandler handler) {
-        ApplozicException e;
+        KommunicateException e;
         if (message == null || handler == null) {
             return;
         }
         if (!message.hasAttachment()) {
-            e = new ApplozicException(not_message_attachement);
+            e = new KommunicateException(not_message_attachement);
             handler.onProgressUpdate(0, e);
             handler.onCompleted(null, e);
         } else if (message.isAttachmentDownloaded()) {
-            e = new ApplozicException(attachment_downloaded);
+            e = new KommunicateException(attachment_downloaded);
             handler.onProgressUpdate(0, e);
             handler.onCompleted(null, e);
         } else {
@@ -298,10 +298,10 @@ public class ApplozicConversation {
     }
 
     public static boolean isMessageStatusPublished(Context context, String pairedMessageKey, Short status) {
-        ApplozicMqttService applozicMqttService = ApplozicMqttService.getInstance(context);
+        MqttService mqttService = MqttService.getInstance(context);
 
-        if (!TextUtils.isEmpty(pairedMessageKey) && applozicMqttService.isConnected()) {
-            applozicMqttService.publishMessageStatus(MESSAGE_STATUS_TOPIC, MobiComUserPreference.getInstance(context).getUserId() + "," + pairedMessageKey + "," + status);
+        if (!TextUtils.isEmpty(pairedMessageKey) && mqttService.isConnected()) {
+            mqttService.publishMessageStatus(MESSAGE_STATUS_TOPIC, MobiComUserPreference.getInstance(context).getUserId() + "," + pairedMessageKey + "," + status);
             return true;
         }
         return false;

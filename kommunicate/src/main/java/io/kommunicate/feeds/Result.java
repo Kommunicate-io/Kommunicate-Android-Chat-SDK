@@ -278,7 +278,7 @@ public class Result {
         this.adminDisplayName = adminDisplayName;
     }
 
-    public RegistrationResponse getApplozicUser() {
+    public RegistrationResponse getKommunicateUser() {
         return applozicUser;
     }
 

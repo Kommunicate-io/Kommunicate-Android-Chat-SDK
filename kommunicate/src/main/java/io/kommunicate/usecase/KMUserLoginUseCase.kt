@@ -2,7 +2,7 @@ package io.kommunicate.usecase
 
 import android.content.Context
 import android.os.ResultReceiver
-import io.kommunicate.devkit.Applozic
+import io.kommunicate.devkit.KommunicateSettings
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService
 import io.kommunicate.devkit.api.account.register.RegistrationResponse
 import io.kommunicate.devkit.listners.AlLoginHandler
@@ -43,7 +43,7 @@ class KMUserLoginUseCase(
                 userClientService.clearDataAndPreference()
                 AppSettingUseCase(
                     context = context,
-                    appId = Applozic.getInstance(context).applicationKey,
+                    appId = KommunicateSettings.getInstance(context).applicationKey,
                     updateCache = true // Forces to update the cache
                 ).execute()
                 registerUserClientService.createAccount(user)

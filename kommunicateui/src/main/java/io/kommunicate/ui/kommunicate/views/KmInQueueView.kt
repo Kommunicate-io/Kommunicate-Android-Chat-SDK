@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import io.kommunicate.ui.AlCustomizationSettings
+import io.kommunicate.ui.CustomizationSettings
 import io.kommunicate.ui.DashedLineView
 import io.kommunicate.ui.R
 
@@ -62,8 +62,8 @@ class KmInQueueView : LinearLayout {
         }
     }
 
-    fun setupTheme(isDarkModeEnabled: Boolean, alCustomizationSettings: AlCustomizationSettings) {
+    fun setupTheme(isDarkModeEnabled: Boolean, customizationSettings: CustomizationSettings) {
         setBackgroundColor(if (isDarkModeEnabled) resources.getColor(R.color.dark_mode_default) else Color.WHITE)
-        awayMessageTv.setTextColor(Color.parseColor(if (isDarkModeEnabled) alCustomizationSettings.awayMessageTextColor[1] else alCustomizationSettings.awayMessageTextColor[0]))
+        awayMessageTv.setTextColor(Color.parseColor(if (isDarkModeEnabled) customizationSettings.awayMessageTextColor[1] else customizationSettings.awayMessageTextColor[0]))
     }
 }

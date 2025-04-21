@@ -8,7 +8,7 @@ import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.commons.ApplozicService;
 import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.data.AlPrefSettings;
+import io.kommunicate.commons.data.PrefSettings;
 
 import java.io.File;
 import java.util.Set;
@@ -572,7 +572,7 @@ public class MobiComUserPreference {
 
     public String getPassword() {
         if (sharedPreferences != null) {
-            String decryptedPassword = AlPrefSettings.getInstance(context).getPassword();
+            String decryptedPassword = PrefSettings.getInstance(context).getPassword();
             if (!TextUtils.isEmpty(decryptedPassword)) {
                 return decryptedPassword;
             }
@@ -587,7 +587,7 @@ public class MobiComUserPreference {
     }
 
     public void setPassword(String val) {
-        AlPrefSettings.getInstance(context).setPassword(val);
+        PrefSettings.getInstance(context).setPassword(val);
     }
 
     public String getAuthenticationType() {
@@ -617,12 +617,12 @@ public class MobiComUserPreference {
     }
 
     public MobiComUserPreference setUserAuthToken(String authToken) {
-        AlPrefSettings.getInstance(context).setUserAuthToken(authToken);
+        PrefSettings.getInstance(context).setUserAuthToken(authToken);
         return this;
     }
 
     public String getUserAuthToken() {
-        String decodedUserAuthToken = AlPrefSettings.getInstance(context).getUserAuthToken();
+        String decodedUserAuthToken = PrefSettings.getInstance(context).getUserAuthToken();
         if (!TextUtils.isEmpty(decodedUserAuthToken)) {
             return decodedUserAuthToken;
         }
@@ -687,7 +687,7 @@ public class MobiComUserPreference {
     }
 
     public String getEncryptionKey() {
-        String decodedEncryptionKey = AlPrefSettings.getInstance(context).getEncryptionKey();
+        String decodedEncryptionKey = PrefSettings.getInstance(context).getEncryptionKey();
         if (!TextUtils.isEmpty(decodedEncryptionKey)) {
             return decodedEncryptionKey;
         }
@@ -704,7 +704,7 @@ public class MobiComUserPreference {
     }
 
     public void setEncryptionKey(String encryptionKey) {
-        AlPrefSettings.getInstance(context).setEncryptionKey(encryptionKey);
+        PrefSettings.getInstance(context).setEncryptionKey(encryptionKey);
     }
 
     public Short getEncryptionType() {
@@ -902,7 +902,7 @@ public class MobiComUserPreference {
     }
 
     public String getUserEncryptionKey() {
-        String decodedUserEncryptionKey = AlPrefSettings.getInstance(context).getUserEncryptionKey();
+        String decodedUserEncryptionKey = PrefSettings.getInstance(context).getUserEncryptionKey();
         if (!TextUtils.isEmpty(decodedUserEncryptionKey)) {
             return decodedUserEncryptionKey;
         }
@@ -918,7 +918,7 @@ public class MobiComUserPreference {
     }
 
     public void setUserEncryptionKey(String userEncryptionKey) {
-        AlPrefSettings.getInstance(context).setUserEncryptionKey(userEncryptionKey);
+        PrefSettings.getInstance(context).setUserEncryptionKey(userEncryptionKey);
     }
 
     public String getCategoryName() {

@@ -21,7 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.ui.DimensionsUtils;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.animators.KmAnimationHelper;
@@ -188,7 +188,7 @@ public class KmRecordView extends FrameLayout {
     protected void onActionDown(KmRecordButton recordBtn) {
         if (recordListener != null) {
             recordListener.onRecordStart();
-            AlEventManager.getInstance().sendOnVoiceButtonClick(START);
+            EventManager.getInstance().sendOnVoiceButtonClick(START);
 
         }
         if(!PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
@@ -243,7 +243,7 @@ public class KmRecordView extends FrameLayout {
                     animationHelper.setStartRecorded(false);
                     if (recordListener != null)
                         recordListener.onRecordCancel();
-                    AlEventManager.getInstance().sendOnVoiceButtonClick(CANCEL);
+                    EventManager.getInstance().sendOnVoiceButtonClick(CANCEL);
 
                 } else {
                     if (motionEvent.getRawX() > initialX) {
@@ -323,7 +323,7 @@ public class KmRecordView extends FrameLayout {
         } else {
             if (recordListener != null && !isSwiped)
                 recordListener.onRecordFinish(elapsedTime);
-                AlEventManager.getInstance().sendOnVoiceButtonClick(STOP);
+                EventManager.getInstance().sendOnVoiceButtonClick(STOP);
 
 
             animationHelper.setStartRecorded(false);

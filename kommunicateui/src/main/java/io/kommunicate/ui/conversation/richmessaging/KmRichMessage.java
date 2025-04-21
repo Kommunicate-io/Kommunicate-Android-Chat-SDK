@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmRichMessageModel;
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.richmessaging.callbacks.KmRichMessageListener;
 import io.kommunicate.ui.conversation.richmessaging.views.KmFlowLayout;
@@ -66,7 +66,7 @@ public abstract class KmRichMessage {
     protected RecyclerView alFormLayoutRecycler;
     protected RecyclerView videoTemplateRecycler;
     protected KmFlowLayout flowLayout;
-    protected AlCustomizationSettings alCustomizationSettings;
+    protected CustomizationSettings customizationSettings;
     protected io.kommunicate.ui.conversation.richmessaging.models.KmRichMessageModel model;
     protected KmRichMessageModel kmRichMessageModel;
     protected KmThemeHelper themeHelper;
@@ -76,19 +76,19 @@ public abstract class KmRichMessage {
     protected boolean isDarkModeEnabled;
 
 
-    public KmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+    public KmRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, CustomizationSettings customizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
         this.context = context;
         this.message = message;
         this.listener = listener;
         this.containerView = containerView;
-        this.alCustomizationSettings = alCustomizationSettings;
+        this.customizationSettings = customizationSettings;
         this.gson = new Gson();
         this.showTimestamp = showTimestamp;
         this.model = (io.kommunicate.ui.conversation.richmessaging.models.KmRichMessageModel) GsonUtils.getObjectFromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), io.kommunicate.ui.conversation.richmessaging.models.KmRichMessageModel.class);
         this.kmRichMessageModel = gson.fromJson(GsonUtils.getJsonFromObject(message.getMetadata(), Map.class), new TypeToken<KmRichMessageModel>() {
         }.getType());
         this.isDarkModeEnabled = isDarkModeEnabled;
-        themeHelper = KmThemeHelper.getInstance(context, alCustomizationSettings);
+        themeHelper = KmThemeHelper.getInstance(context, customizationSettings);
     }
 
     //bind views and set the visibilities according to the type of message
@@ -110,7 +110,7 @@ public abstract class KmRichMessage {
         createdAtTime.setVisibility(showTimestamp ? View.VISIBLE : View.GONE);
         createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
         createdAtTime.setTextColor(
-                themeHelper.parseColorWithDefault(alCustomizationSettings.getReceivedMessageCreatedAtTimeColor().get(isDarkModeEnabled ? 1 : 0),
+                themeHelper.parseColorWithDefault(customizationSettings.getReceivedMessageCreatedAtTimeColor().get(isDarkModeEnabled ? 1 : 0),
                         Color.parseColor("#808080"))
         );
 

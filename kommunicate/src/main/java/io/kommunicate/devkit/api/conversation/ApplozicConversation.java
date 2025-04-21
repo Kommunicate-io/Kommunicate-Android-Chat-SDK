@@ -18,7 +18,7 @@ import io.kommunicate.devkit.listners.ConversationListHandler;
 import io.kommunicate.devkit.listners.MediaDownloadProgressHandler;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
-import io.kommunicate.commons.task.AlTask;
+import io.kommunicate.commons.task.CoreTask;
 
 import java.util.Iterator;
 import java.util.List;
@@ -80,7 +80,7 @@ public class ApplozicConversation {
     }
 
     public static void getConversationList(Context context, String searchString, boolean isScroll, ConversationListHandler handler) {
-        AlTask.execute(new ConversationListTask(context,
+        CoreTask.execute(new ConversationListTask(context,
                 searchString,
                 null,
                 null,
@@ -214,12 +214,12 @@ public class ApplozicConversation {
         }
     }
 
-    public static synchronized void addLatestConversation(Context context, Message message, List<AlConversation> conversationList) {
-        Iterator<AlConversation> iterator = conversationList.iterator();
+    public static synchronized void addLatestConversation(Context context, Message message, List<ConversationDetails> conversationList) {
+        Iterator<ConversationDetails> iterator = conversationList.iterator();
         boolean shouldAdd = false;
 
         while (iterator.hasNext()) {
-            AlConversation currentMessage = iterator.next();
+            ConversationDetails currentMessage = iterator.next();
 
             if ((message.getGroupId() != null && currentMessage.getMessage().getGroupId() != null && message.getGroupId().equals(currentMessage.getMessage().getGroupId())) ||
                     (message.getGroupId() == null && currentMessage.getMessage().getGroupId() == null && message.getContactIds() != null && currentMessage.getMessage().getContactIds() != null &&
@@ -245,10 +245,10 @@ public class ApplozicConversation {
         }
     }
 
-    public static synchronized void removeLatestConversation(String userId, Integer groupId, List<AlConversation> conversationList) {
+    public static synchronized void removeLatestConversation(String userId, Integer groupId, List<ConversationDetails> conversationList) {
         int index = -1;
 
-        for (AlConversation message : conversationList) {
+        for (ConversationDetails message : conversationList) {
             if (message.getMessage().getGroupId() != null) {
                 if (message.getMessage().getGroupId() != 0 && message.getMessage().getGroupId().equals(groupId)) {
                     index = conversationList.indexOf(message);
@@ -262,8 +262,8 @@ public class ApplozicConversation {
         }
     }
 
-    public static AlConversation getConversationFromMessage(Context context, Message message) {
-        AlConversation conversation = new AlConversation();
+    public static ConversationDetails getConversationFromMessage(Context context, Message message) {
+        ConversationDetails conversation = new ConversationDetails();
 
         conversation.setMessage(message);
 

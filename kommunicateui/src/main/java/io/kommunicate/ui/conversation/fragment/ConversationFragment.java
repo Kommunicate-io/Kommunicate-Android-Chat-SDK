@@ -18,7 +18,7 @@ import android.widget.Toast;
 import io.kommunicate.devkit.api.conversation.MessageIntentService;
 import io.kommunicate.devkit.api.conversation.MobiComConversationService;
 import io.kommunicate.devkit.api.conversation.SyncCallService;
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.ConversationUIService;
@@ -100,14 +100,14 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        if (alCustomizationSettings.isHideAttachmentButton()) {
+        if (customizationSettings.isHideAttachmentButton()) {
 
             attachButton.setVisibility(View.GONE);
             messageEditText.setPadding(20, 0, 0, 0);
         }
         sendType.setSelection(1);
         
-        messageEditText.setHint(!TextUtils.isEmpty(alCustomizationSettings.getEditTextHintText()) ? alCustomizationSettings.getEditTextHintText() : getString(R.string.enter_message_hint));
+        messageEditText.setHint(!TextUtils.isEmpty(customizationSettings.getEditTextHintText()) ? customizationSettings.getEditTextHintText() : getString(R.string.enter_message_hint));
 
         if (!TextUtils.isEmpty(preFilledMessage)) {
             messageEditText.setText(preFilledMessage);
@@ -133,7 +133,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
             @Override
             public void onClick(View view) {
                 emoticonsFrameLayout.setVisibility(View.GONE);
-                AlEventManager.getInstance().sendOnAttachmentClick("file");
+                EventManager.getInstance().sendOnAttachmentClick("file");
                 if (contact != null && !contact.isBlocked() || channel != null) {
                     if (attachmentLayout.getVisibility() == View.VISIBLE) {
                         KmToast.error(getActivity(), R.string.select_file_count_limit, Toast.LENGTH_LONG).show();

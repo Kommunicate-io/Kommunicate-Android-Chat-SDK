@@ -1,6 +1,8 @@
 package io.kommunicate.commons.people.channel;
 
 import android.text.TextUtils;
+
+import annotations.CleanUpRequired;
 import io.kommunicate.commons.json.JsonMarker;
 import io.kommunicate.commons.people.contact.Contact;
 import com.google.gson.annotations.Expose;
@@ -379,7 +381,8 @@ public class Channel extends JsonMarker {
         }
     }
 
-    public static class AlConversationStatus {
+    @CleanUpRequired(reason = "Not used anywhere")
+    public static class ConversationStatus {
         public static final String RESOLVED_STATUS = "Resolved";
         public static final String SPAM_STATUS = "Spam/Irrelevant";
         public static final String OPEN_STATUS = "Open";

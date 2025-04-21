@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.LinearLayout;
 
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.conversation.richmessaging.callbacks.KmRichMessageListener;
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmRichMessageModel;
 import io.kommunicate.ui.conversation.richmessaging.types.ButtonKmRichMessage;
@@ -49,26 +49,26 @@ public class KmRichMessageFactory {
         return RMFactoryHelper.INSTANCE;
     }
 
-    public KmRichMessage getRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, AlCustomizationSettings alCustomizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
+    public KmRichMessage getRichMessage(Context context, LinearLayout containerView, Message message, KmRichMessageListener listener, CustomizationSettings customizationSettings, boolean showTimestamp, boolean isDarkModeEnabled) {
         int type = -1;
         if (message.getMetadata().containsKey(TEMPLATE_ID)) {
             type = Integer.parseInt(message.getMetadata().get(TEMPLATE_ID));
         }
 
         if (type == KmRichMessageFactory.CARD_RICH_MESSAGE) {
-            return new CardTypeKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+            return new CardTypeKmRichMessage(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
         } else if (type == KmRichMessageFactory.IMAGE_RICH_MESSAGE) {
-            return new ImageKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+            return new ImageKmRichMessage(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
         } else if (type == KmRichMessageFactory.LIST_RICH_MESSAGE) {
-            return new ListKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+            return new ListKmRichMessage(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
         } else if (type == KmRichMessageFactory.FAQ_RICH_MESSAGE) {
-            return new FaqKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+            return new FaqKmRichMessage(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
         } else if (type == KmRichMessageModel.TemplateId.FORM.getValue()) {
-            return new KmFormRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+            return new KmFormRichMessage(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
         } else if (type == KmRichMessageFactory.BUTTON_RICH_MESSAGE || type == KmRichMessageFactory.REPLY_RICH_MESSAGE || type == KmRichMessageFactory.MIXED_BUTTON_RICH_MESSAGE) {
-            return new ButtonKmRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+            return new ButtonKmRichMessage(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
         } else if (type == KmRichMessageFactory.VIDEO_RICH_MESSAGE) {
-            return new VideoRichMessage(context, containerView, message, listener, alCustomizationSettings, showTimestamp, isDarkModeEnabled);
+            return new VideoRichMessage(context, containerView, message, listener, customizationSettings, showTimestamp, isDarkModeEnabled);
         } else {
             return null;
         }

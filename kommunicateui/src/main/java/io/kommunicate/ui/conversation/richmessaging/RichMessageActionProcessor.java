@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmRichMessageModel;
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.activity.FullScreenImageActivity;
 import io.kommunicate.ui.conversation.activity.MobiComKitActivityInterface;
@@ -83,7 +83,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
     @Override
     public void onAction(Context context, String action, Message message, Object object, Map<String, Object> replyMetadata) {
-        AlEventManager.getInstance().sendOnRichMessageButtonClickEvent(message.getGroupId(), action, object);
+        EventManager.getInstance().sendOnRichMessageButtonClickEvent(message.getGroupId(), action, object);
         switch (action) {
             case KmRichMessage.SEND_GUEST_LIST:
                 List<KmGuestCountModel> guestCountModels = (List<KmGuestCountModel>) object;
@@ -640,7 +640,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     public void sendBookingDetailsMessage(KmBookingDetailsModel model, Map<String, String> replyMetadata) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(GUEST_DETAIL, "true");
-        metadata.put(PERSON_INFO, GsonUtils.getJsonFromObject(model.getPersonInfo(), KmBookingDetailsModel.ALBookingDetails.class));
+        metadata.put(PERSON_INFO, GsonUtils.getJsonFromObject(model.getPersonInfo(), KmBookingDetailsModel.BookingDetailsModel.class));
         metadata.put(SESSION_ID, model.getSessionId());
         metadata.put(SKIPBOT, "true");
 

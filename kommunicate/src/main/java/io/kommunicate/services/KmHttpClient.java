@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.encryption.EncryptionUtils;
 
@@ -32,7 +32,7 @@ public class KmHttpClient {
     private static final String GET = "GET";
 
     public KmHttpClient(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
     }
 
     public String postData(String urlString, String contentType, String accept, String data) throws Exception {

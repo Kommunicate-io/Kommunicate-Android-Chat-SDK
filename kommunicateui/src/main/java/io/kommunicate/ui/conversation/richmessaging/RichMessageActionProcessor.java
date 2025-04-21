@@ -24,7 +24,7 @@ import io.kommunicate.ui.conversation.richmessaging.models.v2.KmRMActionModel;
 import io.kommunicate.ui.conversation.richmessaging.webview.KmWebViewActivity;
 import io.kommunicate.ui.kommunicate.adapters.KmAutoSuggestionAdapter;
 import io.kommunicate.ui.kommunicate.views.KmToast;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.Gson;
@@ -175,7 +175,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
     private void updateLanguage(String languageCode) {
         if (!TextUtils.isEmpty(languageCode)) {
-            KmSettings.updateUserLanguage(ApplozicService.getAppContext(), languageCode);
+            KmSettings.updateUserLanguage(AppContextService.getAppContext(), languageCode);
         }
     }
 

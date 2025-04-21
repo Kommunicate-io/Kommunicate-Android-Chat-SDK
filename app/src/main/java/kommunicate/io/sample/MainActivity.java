@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 
 import java.util.HashMap;
@@ -202,11 +202,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                 if (KMUser.RoleType.USER_ROLE.getValue().equals(registrationResponse.getRoleType())) {
-                    ApplozicClient.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
+                    SettingsSharedPreference.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
                 } else {
                     Map<String, String> metadata = new HashMap<>();
                     metadata.put(SKIPBOT, "true");
-                    ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
+                    SettingsSharedPreference.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
 
                 try {

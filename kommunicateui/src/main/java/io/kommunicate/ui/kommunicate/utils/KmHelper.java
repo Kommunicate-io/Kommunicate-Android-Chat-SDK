@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
 
-import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.broadcast.EventManager;
@@ -129,7 +129,7 @@ public class KmHelper {
         kmUser.setEmail(user.getEmail());
         kmUser.setContactNumber(user.getContactNumber());
         kmUser.setDisplayName(user.getDisplayName());
-        kmUser.setApplicationId(Applozic.getInstance(context).getApplicationKey());
+        kmUser.setApplicationId(KommunicateSettings.getInstance(context).getApplicationKey());
 
         try {
             Kommunicate.login(context, kmUser, new KMLoginHandler() {

@@ -14,10 +14,10 @@ import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.authentication.AuthService;
-import io.kommunicate.devkit.api.conversation.ApplozicMqttIntentService;
+import io.kommunicate.devkit.api.conversation.MqttIntentService;
 import io.kommunicate.devkit.api.notification.MobiComPushReceiver;
 import io.kommunicate.devkit.api.notification.NotificationChannels;
-import io.kommunicate.devkit.broadcast.ApplozicBroadcastReceiver;
+import io.kommunicate.devkit.broadcast.ConversationBroadcastReceiver;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
 import io.kommunicate.devkit.listners.ResultCallback;
@@ -28,7 +28,7 @@ import io.kommunicate.devkit.listners.UIEventListener;
 
 import io.kommunicate.usecase.PushNotificationUseCase;
 import io.kommunicate.usecase.UserLoginUseCase;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.data.PrefSettings;
 import io.kommunicate.commons.people.channel.Channel;
@@ -46,27 +46,27 @@ import io.kommunicate.usecase.UserLogoutUseCase;
 /**
  * Created by sunil on 29/8/16.
  */
-public class Applozic {
+public class KommunicateSettings {
 
     private static final String APPLICATION_KEY = "APPLICATION_KEY";
     private static final String DEVICE_REGISTRATION_ID = "DEVICE_REGISTRATION_ID";
     private static final String MY_PREFERENCE = "applozic_preference_key";
     private static final String NOTIFICATION_CHANNEL_VERSION_STATE = "NOTIFICATION_CHANNEL_VERSION_STATE";
     private static final String CUSTOM_NOTIFICATION_SOUND = "CUSTOM_NOTIFICATION_SOUND";
-    public static Applozic applozic;
+    public static KommunicateSettings kommunicateSettings;
     private SharedPreferences sharedPreferences;
     private Context context;
-    private ApplozicBroadcastReceiver applozicBroadcastReceiver;
+    private ConversationBroadcastReceiver conversationBroadcastReceiver;
 
-    private Applozic(Context context) {
-        this.context = ApplozicService.getContext(context);
+    private KommunicateSettings(Context context) {
+        this.context = AppContextService.getContext(context);
         this.sharedPreferences = this.context.getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
     }
 
-    public static Applozic init(Context context, String applicationKey) {
-        applozic = getInstance(context);
+    public static KommunicateSettings init(Context context, String applicationKey) {
+        kommunicateSettings = getInstance(context);
         PrefSettings.getInstance(context).setApplicationKey(applicationKey);
-        return applozic;
+        return kommunicateSettings;
     }
     public static void setDefaultLanguage(Context context){
         String deviceLanguage = context.getResources().getConfiguration().locale.getLanguage();
@@ -79,11 +79,11 @@ public class Applozic {
         KmSettings.updateChatContext(context,localeMetadata);
     }
 
-    public static Applozic getInstance(Context context) {
-        if (applozic == null) {
-            applozic = new Applozic(ApplozicService.getContext(context));
+    public static KommunicateSettings getInstance(Context context) {
+        if (kommunicateSettings == null) {
+            kommunicateSettings = new KommunicateSettings(AppContextService.getContext(context));
         }
-        return applozic;
+        return kommunicateSettings;
     }
 
     public void setGeoApiKey(String geoApiKey) {
@@ -124,12 +124,12 @@ public class Applozic {
         sharedPreferences.edit().putInt(NOTIFICATION_CHANNEL_VERSION_STATE, version).commit();
     }
 
-    public Applozic setDeviceRegistrationId(String registrationId) {
+    public KommunicateSettings setDeviceRegistrationId(String registrationId) {
         sharedPreferences.edit().putString(DEVICE_REGISTRATION_ID, registrationId).commit();
         return this;
     }
 
-    public Applozic setCustomNotificationSound(String filePath) {
+    public KommunicateSettings setCustomNotificationSound(String filePath) {
         sharedPreferences.edit().putString(CUSTOM_NOTIFICATION_SOUND, filePath).commit();
         return this;
     }
@@ -140,11 +140,11 @@ public class Applozic {
 
     public static void disconnectPublish(Context context, String deviceKeyString, String userKeyString, boolean useEncrypted) {
         if (!TextUtils.isEmpty(userKeyString) && !TextUtils.isEmpty(deviceKeyString)) {
-            Intent intent = new Intent(context, ApplozicMqttIntentService.class);
-            intent.putExtra(ApplozicMqttIntentService.USER_KEY_STRING, userKeyString);
-            intent.putExtra(ApplozicMqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
-            intent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
-            ApplozicMqttIntentService.enqueueWork(context, intent);
+            Intent intent = new Intent(context, MqttIntentService.class);
+            intent.putExtra(MqttIntentService.USER_KEY_STRING, userKeyString);
+            intent.putExtra(MqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
+            intent.putExtra(MqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
+            MqttIntentService.enqueueWork(context, intent);
         }
     }
 
@@ -186,71 +186,71 @@ public class Applozic {
     }
 
     public static void connectPublish(Context context, boolean useEncrypted) {
-        Intent subscribeIntent = new Intent(context, ApplozicMqttIntentService.class);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.SUBSCRIBE, true);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
-        ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
+        Intent subscribeIntent = new Intent(context, MqttIntentService.class);
+        subscribeIntent.putExtra(MqttIntentService.SUBSCRIBE, true);
+        subscribeIntent.putExtra(MqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
+        MqttIntentService.enqueueWork(context, subscribeIntent);
     }
 
     public static void subscribeToSupportGroup(Context context, boolean useEncrypted) {
-        Intent subscribeIntent = new Intent(context, ApplozicMqttIntentService.class);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.CONNECT_TO_SUPPORT_GROUP_TOPIC, true);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
-        ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
+        Intent subscribeIntent = new Intent(context, MqttIntentService.class);
+        subscribeIntent.putExtra(MqttIntentService.CONNECT_TO_SUPPORT_GROUP_TOPIC, true);
+        subscribeIntent.putExtra(MqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
+        MqttIntentService.enqueueWork(context, subscribeIntent);
     }
 
     public static void unSubscribeToSupportGroup(Context context, boolean useEncrypted) {
-        Intent subscribeIntent = new Intent(context, ApplozicMqttIntentService.class);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.DISCONNECT_FROM_SUPPORT_GROUP_TOPIC, true);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
-        ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
+        Intent subscribeIntent = new Intent(context, MqttIntentService.class);
+        subscribeIntent.putExtra(MqttIntentService.DISCONNECT_FROM_SUPPORT_GROUP_TOPIC, true);
+        subscribeIntent.putExtra(MqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
+        MqttIntentService.enqueueWork(context, subscribeIntent);
     }
 
     public static void subscribeToTeamTopic(Context context, boolean useEncrypted, ArrayList<String> teams) {
-        Intent subscribeIntent = new Intent(context, ApplozicMqttIntentService.class);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.CONNECT_TO_TEAM_TOPIC, true);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
-        subscribeIntent.putStringArrayListExtra(ApplozicMqttIntentService.TEAM_TOPIC_LIST, teams);
-        ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
+        Intent subscribeIntent = new Intent(context, MqttIntentService.class);
+        subscribeIntent.putExtra(MqttIntentService.CONNECT_TO_TEAM_TOPIC, true);
+        subscribeIntent.putExtra(MqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
+        subscribeIntent.putStringArrayListExtra(MqttIntentService.TEAM_TOPIC_LIST, teams);
+        MqttIntentService.enqueueWork(context, subscribeIntent);
     }
     public static void unSubscribeToTeamTopic(Context context, boolean useEncrypted) {
-        Intent subscribeIntent = new Intent(context, ApplozicMqttIntentService.class);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.DISCONNECT_FROM_TEAM_TOPIC, true);
-        subscribeIntent.putExtra(ApplozicMqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
-        ApplozicMqttIntentService.enqueueWork(context, subscribeIntent);
+        Intent subscribeIntent = new Intent(context, MqttIntentService.class);
+        subscribeIntent.putExtra(MqttIntentService.DISCONNECT_FROM_TEAM_TOPIC, true);
+        subscribeIntent.putExtra(MqttIntentService.USE_ENCRYPTED_TOPIC, useEncrypted);
+        MqttIntentService.enqueueWork(context, subscribeIntent);
     }
     public static void subscribeToTyping(Context context, Channel channel, Contact contact) {
-        Intent intent = new Intent(context, ApplozicMqttIntentService.class);
+        Intent intent = new Intent(context, MqttIntentService.class);
         if (channel != null) {
-            intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
+            intent.putExtra(MqttIntentService.CHANNEL, channel);
         } else if (contact != null) {
-            intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
+            intent.putExtra(MqttIntentService.CONTACT, contact);
         }
-        intent.putExtra(ApplozicMqttIntentService.SUBSCRIBE_TO_TYPING, true);
-        ApplozicMqttIntentService.enqueueWork(context, intent);
+        intent.putExtra(MqttIntentService.SUBSCRIBE_TO_TYPING, true);
+        MqttIntentService.enqueueWork(context, intent);
     }
 
     public static void unSubscribeToTyping(Context context, Channel channel, Contact contact) {
-        Intent intent = new Intent(context, ApplozicMqttIntentService.class);
+        Intent intent = new Intent(context, MqttIntentService.class);
         if (channel != null) {
-            intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
+            intent.putExtra(MqttIntentService.CHANNEL, channel);
         } else if (contact != null) {
-            intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
+            intent.putExtra(MqttIntentService.CONTACT, contact);
         }
-        intent.putExtra(ApplozicMqttIntentService.UN_SUBSCRIBE_TO_TYPING, true);
-        ApplozicMqttIntentService.enqueueWork(context, intent);
+        intent.putExtra(MqttIntentService.UN_SUBSCRIBE_TO_TYPING, true);
+        MqttIntentService.enqueueWork(context, intent);
     }
 
     public static void publishTypingStatus(Context context, Channel channel, Contact contact, boolean typingStarted) {
-        Intent intent = new Intent(context, ApplozicMqttIntentService.class);
+        Intent intent = new Intent(context, MqttIntentService.class);
 
         if (channel != null) {
-            intent.putExtra(ApplozicMqttIntentService.CHANNEL, channel);
+            intent.putExtra(MqttIntentService.CHANNEL, channel);
         } else if (contact != null) {
-            intent.putExtra(ApplozicMqttIntentService.CONTACT, contact);
+            intent.putExtra(MqttIntentService.CONTACT, contact);
         }
-        intent.putExtra(ApplozicMqttIntentService.TYPING, typingStarted);
-        ApplozicMqttIntentService.enqueueWork(context, intent);
+        intent.putExtra(MqttIntentService.TYPING, typingStarted);
+        MqttIntentService.enqueueWork(context, intent);
     }
 
     @Deprecated
@@ -325,21 +325,21 @@ public class Applozic {
     }
 
     public static void registerForPushNotification(Context context, PushNotificationHandler handler) {
-        registerForPushNotification(context, Applozic.getInstance(context).getDeviceRegistrationId(), handler);
+        registerForPushNotification(context, KommunicateSettings.getInstance(context).getDeviceRegistrationId(), handler);
     }
 
 
     @Deprecated
     public void registerUIListener(UIEventListener UIEventListener) {
-        applozicBroadcastReceiver = new ApplozicBroadcastReceiver(UIEventListener);
-        LocalBroadcastManager.getInstance(context).registerReceiver(applozicBroadcastReceiver, BroadcastService.getIntentFilter());
+        conversationBroadcastReceiver = new ConversationBroadcastReceiver(UIEventListener);
+        LocalBroadcastManager.getInstance(context).registerReceiver(conversationBroadcastReceiver, BroadcastService.getIntentFilter());
     }
 
     @Deprecated
     public void unregisterUIListener() {
-        if (applozicBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(context).unregisterReceiver(applozicBroadcastReceiver);
-            applozicBroadcastReceiver = null;
+        if (conversationBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(conversationBroadcastReceiver);
+            conversationBroadcastReceiver = null;
         }
     }
 }

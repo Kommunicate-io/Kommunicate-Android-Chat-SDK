@@ -57,7 +57,7 @@ import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
 import io.kommunicate.ui.kommunicate.views.KmToast;
 import io.kommunicate.ui.uilistener.KmActionCallback;
 import io.kommunicate.ui.utils.InsetHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.DateUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.file.FileUtils;
@@ -113,7 +113,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String jsonString = FileUtils.loadSettingsJsonFile(ApplozicService.getContext(getContext()));
+        String jsonString = FileUtils.loadSettingsJsonFile(AppContextService.getContext(getContext()));
         if (!TextUtils.isEmpty(jsonString)) {
             customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
@@ -218,8 +218,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         startNewConv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ApplozicService.getContext(getContext()) instanceof KmActionCallback) {
-                    ((KmActionCallback) ApplozicService.getContext(getContext())).onReceive(getContext(), null, START_NEW_CHAT);
+                if (AppContextService.getContext(getContext()) instanceof KmActionCallback) {
+                    ((KmActionCallback) AppContextService.getContext(getContext())).onReceive(getContext(), null, START_NEW_CHAT);
                 } else {
                     KmHelper.setStartNewChat(getActivity());
                 }
@@ -374,7 +374,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 messageList.add(0, message);
                 recyclerAdapter.notifyDataSetChanged();
                 emptyTextView.setVisibility(View.GONE);
-                emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoConversationLabel()) ? customizationSettings.getNoConversationLabel() : ApplozicService.getContext(context).getResources().getString(R.string.no_conversation));
+                emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoConversationLabel()) ? customizationSettings.getNoConversationLabel() : AppContextService.getContext(context).getResources().getString(R.string.no_conversation));
             }
         });
     }
@@ -576,9 +576,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
             });
         } else {
             if (!Utils.isInternetAvailable(getActivity())) {
-                KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.you_need_network_access_for_delete), Toast.LENGTH_SHORT).show();
+                KmToast.error(AppContextService.getContext(getContext()), AppContextService.getContext(getContext()).getString(R.string.you_need_network_access_for_delete), Toast.LENGTH_SHORT).show();
             } else {
-                KmToast.error(ApplozicService.getContext(getContext()), ApplozicService.getContext(getContext()).getString(R.string.delete_conversation_failed), Toast.LENGTH_SHORT).show();
+                KmToast.error(AppContextService.getContext(getContext()), AppContextService.getContext(getContext()).getString(R.string.delete_conversation_failed), Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -588,7 +588,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         boolean isLoadingConversation = (downloadConversation != null && downloadConversation.getStatus() == AsyncTask.Status.RUNNING);
         if (latestMessageForEachContact.isEmpty() && !isLoadingConversation) {
             emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoConversationLabel()) ? customizationSettings.getNoConversationLabel() : ApplozicService.getContext(getContext()).getResources().getString(R.string.no_conversation));
+            emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoConversationLabel()) ? customizationSettings.getNoConversationLabel() : AppContextService.getContext(getContext()).getResources().getString(R.string.no_conversation));
         } else {
             emptyTextView.setVisibility(View.GONE);
         }
@@ -616,7 +616,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     @Override
     public void onResume() {
         //Assigning to avoid notification in case if quick conversation fragment is opened....
-        toolbar.setTitle(ApplozicService.getContext(getContext()).getResources().getString(R.string.conversations));
+        toolbar.setTitle(AppContextService.getContext(getContext()).getResources().getString(R.string.conversations));
         toolbar.setTitleTextColor(KmThemeHelper.getInstance(getActivity(), customizationSettings).getToolbarTitleColor());
         toolbar.setSubtitle("");
         BroadcastService.selectMobiComKitAll();
@@ -847,7 +847,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 } else {
                     createdAt = messageList.isEmpty() ? null : messageList.get(messageList.size() - 1).getCreatedAtTime();
                 }
-                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(createdAt, searchString, MobiComUserPreference.getInstance(ApplozicService.getContextFromWeak(context)).getParentGroupKey());
+                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(createdAt, searchString, MobiComUserPreference.getInstance(AppContextService.getContextFromWeak(context)).getParentGroupKey());
             }
 
             return 0L;

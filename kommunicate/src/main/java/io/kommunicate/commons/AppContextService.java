@@ -7,7 +7,7 @@ import android.content.Context;
 
 import java.lang.ref.WeakReference;
 
-public class ApplozicService {
+public class AppContextService {
     private static Context application;
 
     public static Context getAppContext() {
@@ -15,7 +15,7 @@ public class ApplozicService {
     }
 
     public static void initApp(Application application) {
-        ApplozicService.application = application;
+        AppContextService.application = application;
     }
 
     public static Context getContext(Context context) {
@@ -36,9 +36,9 @@ public class ApplozicService {
         if (context != null && application == null) {
             configureSentryWithKommunicate(context);
             if (context instanceof Application) {
-                ApplozicService.application = context;
+                AppContextService.application = context;
             } else {
-                ApplozicService.application = context.getApplicationContext();
+                AppContextService.application = context.getApplicationContext();
             }
         }
     }

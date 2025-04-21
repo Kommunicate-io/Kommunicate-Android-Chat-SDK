@@ -2,8 +2,8 @@ package io.kommunicate.devkit.api.account.user;
 
 import android.content.Context;
 
+import io.kommunicate.devkit.exception.KommunicateException;
 import annotations.CleanUpRequired;
-import io.kommunicate.devkit.exception.ApplozicException;
 import io.kommunicate.commons.people.contact.Contact;
 import io.kommunicate.commons.task.CoreAsyncTask;
 
@@ -31,7 +31,7 @@ public class UserSearchTask extends CoreAsyncTask<Void, List<Contact>> {
     @Override
     protected List<Contact> doInBackground() {
         if (searchString == null) {
-            exception = new ApplozicException(EMPTY_SEARCH);
+            exception = new KommunicateException(EMPTY_SEARCH);
             return null;
         }
 

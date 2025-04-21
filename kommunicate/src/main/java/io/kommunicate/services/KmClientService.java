@@ -3,7 +3,7 @@ package io.kommunicate.services;
 import android.content.Context;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.HttpRequestUtils;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.commons.commons.core.utils.Utils;
@@ -163,7 +163,7 @@ public class KmClientService extends MobiComKitClientService {
                 }
             }
             jsonObject.put("rating", rating);
-            jsonObject.put("applicationId", Applozic.getInstance(context).getApplicationKey());
+            jsonObject.put("applicationId", KommunicateSettings.getInstance(context).getApplicationKey());
             jsonObject.put("supportAgentName", supportAgentId); //not a mistake or typo
             feedbackUserJson.put("name", userName);
             feedbackUserJson.put("userId", userId);

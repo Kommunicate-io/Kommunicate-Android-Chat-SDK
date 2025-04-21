@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 import io.kommunicate.utils.KmConstants;
 
 import android.text.TextUtils;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
@@ -43,7 +43,7 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
     public MobiComKitBroadcastReceiver(FragmentActivity fragmentActivity) {
         this.conversationUIService = new ConversationUIService(fragmentActivity);
         this.baseContactService = new AppContactService(fragmentActivity);
-        this.hideActionMessages = ApplozicClient.getInstance(fragmentActivity).isActionMessagesHidden();
+        this.hideActionMessages = SettingsSharedPreference.getInstance(fragmentActivity).isActionMessagesHidden();
     }
 
     @Override

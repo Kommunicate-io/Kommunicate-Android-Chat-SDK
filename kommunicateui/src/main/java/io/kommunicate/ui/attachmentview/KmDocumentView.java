@@ -50,7 +50,7 @@ import io.kommunicate.utils.KmUtils;
  */
 public class KmDocumentView {
 
-    private static final String TAG = "ApplozicDocumentView";
+    private static final String TAG = "KmDocumentView";
     RelativeLayout mainLayout;
     RelativeLayout downloadInProgressLayout;
     RelativeLayout downloadedLayout;

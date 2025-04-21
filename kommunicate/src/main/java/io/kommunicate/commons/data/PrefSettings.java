@@ -3,7 +3,7 @@ package io.kommunicate.commons.data;
 import android.content.Context;
 import android.text.TextUtils;
 
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 public class PrefSettings {
 
@@ -29,12 +29,12 @@ public class PrefSettings {
     private SecureSharedPreferences sharedPreferences;
 
     private PrefSettings(Context context) {
-        this.sharedPreferences = new SecureSharedPreferences(AL_PREF_SETTING_KEY, ApplozicService.getContext(context));
+        this.sharedPreferences = new SecureSharedPreferences(AL_PREF_SETTING_KEY, AppContextService.getContext(context));
     }
 
     public static PrefSettings getInstance(Context context) {
         if (prefSettings == null) {
-            prefSettings = new PrefSettings(ApplozicService.getContext(context));
+            prefSettings = new PrefSettings(AppContextService.getContext(context));
         }
         return prefSettings;
     }

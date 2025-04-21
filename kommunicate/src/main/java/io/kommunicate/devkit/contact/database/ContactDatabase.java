@@ -10,10 +10,10 @@ import android.text.TextUtils;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.database.MobiComDatabaseHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.contact.Contact;
@@ -36,9 +36,9 @@ public class ContactDatabase {
     private static final String cursor_query = "c.userId AS _id,c.fullName,c.contactNO,c.displayName,c.contactImageURL,c.contactImageLocalURI,c.email,c.applicationId,c.connected,c.lastSeenAt,c.unreadCount,c.blocked,c.blockedBy,c.status,c.contactType,c.userTypeId,c.deletedAtTime,c.notificationAfterTime,c.userRoleType,c.lastMessagedAt,c.userMetadata";
 
     public ContactDatabase(Context context) {
-        this.context = ApplozicService.getContext(context);
-        this.userPreferences = MobiComUserPreference.getInstance(ApplozicService.getContext(context));
-        this.dbHelper = MobiComDatabaseHelper.getInstance(ApplozicService.getContext(context));
+        this.context = AppContextService.getContext(context);
+        this.userPreferences = MobiComUserPreference.getInstance(AppContextService.getContext(context));
+        this.dbHelper = MobiComDatabaseHelper.getInstance(AppContextService.getContext(context));
     }
 
 
@@ -491,7 +491,7 @@ public class ContactDatabase {
                     } else {
                         String selection = "deletedAtTime=0";
                         List<String> selectionArgs = new ArrayList<>();
-                        if (ApplozicClient.getInstance(context).isShowMyContacts()) {
+                        if (SettingsSharedPreference.getInstance(context).isShowMyContacts()) {
                             if (!TextUtils.isEmpty(searchString)) {
                                 selection += " and fullName like ? AND contactType != 0 AND userId NOT IN (?)";
                                 selectionArgs.add("%" + searchString.replaceAll("'", "''") + "%");

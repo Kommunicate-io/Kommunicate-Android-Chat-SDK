@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
@@ -182,7 +182,7 @@ public class BroadcastService {
                 if (message.getConversationId() != null) {
                     ConversationService.getInstance(context).getConversation(message.getConversationId());
                 }
-                if (ApplozicClient.getInstance(context).isNotificationStacking()) {
+                if (SettingsSharedPreference.getInstance(context).isNotificationStacking()) {
                     notificationService.notifyUser(contact, channel, message, index);
                 } else {
                     notificationService.notifyUserForNormalMessage(contact, channel, message, index);

@@ -8,7 +8,7 @@ import net.sqlcipher.database.SQLiteStatement;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.database.MobiComDatabaseHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.channel.Conversation;
@@ -28,13 +28,13 @@ public class ConversationDatabaseService {
     private Context context;
 
     private ConversationDatabaseService(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.dbHelper = MobiComDatabaseHelper.getInstance(context);
     }
 
     public static synchronized ConversationDatabaseService getInstance(Context context) {
         if (conversationDatabaseService == null) {
-            conversationDatabaseService = new ConversationDatabaseService(ApplozicService.getContext(context));
+            conversationDatabaseService = new ConversationDatabaseService(AppContextService.getContext(context));
         }
         return conversationDatabaseService;
     }

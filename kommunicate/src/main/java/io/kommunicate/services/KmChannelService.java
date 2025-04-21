@@ -5,7 +5,7 @@ import android.database.Cursor;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import io.kommunicate.devkit.database.MobiComDatabaseHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.people.channel.ChannelUserMapper;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class KmChannelService {
 
     public static KmChannelService getInstance(Context context) {
         if (kmChannelService == null) {
-            kmChannelService = new KmChannelService(ApplozicService.getContext(context));
+            kmChannelService = new KmChannelService(AppContextService.getContext(context));
         }
         return kmChannelService;
     }

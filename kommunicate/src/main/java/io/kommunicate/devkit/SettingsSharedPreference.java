@@ -10,7 +10,7 @@ import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.listners.ResultCallback;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Created by devashish on 8/21/2015.
  */
-public class ApplozicClient {
+public class SettingsSharedPreference {
 
     public static final String SERVER_SYNC = "SERVER_SYNC_[CONVERSATION]_[CONTACT]_[CHANNEL]";
     public static final String AL_MESSAGE_META_DATA_KEY = "AL_MESSAGE_META_DATA_KEY";
@@ -57,33 +57,33 @@ public class ApplozicClient {
     private static final String MAX_CREATED_AT_KEY = "mck.sms.createdAt.max";
     private static final String AL_CONVERSATION_LIST_PAGE_SIZE_KEY = "AL_CONVERSATION_LIST_PAGE_SIZE_KEY";
     private static final int conversationListDefaultMainPageSize = 60;
-    private static final String APPLOZIC_CONTACT_PIC = "applozic_ic_contact_picture_holo_light";
-    private static final String APPLOZIC_GROUP_ICON = "applozic_group_icon";
+    private static final String DEFAULT_CONTACT_PIC = "applozic_ic_contact_picture_holo_light";
+    private static final String DEFAULT_GROUP_ICON = "applozic_group_icon";
     private static final String LIST_CALL = "LIST_CALL";
 
-    public static ApplozicClient applozicClient;
+    public static SettingsSharedPreference settingsSharedPreference;
     public SharedPreferences sharedPreferences;
     private Context context;
 
-    private ApplozicClient(Context context) {
-        this.context = ApplozicService.getContext(context);
+    private SettingsSharedPreference(Context context) {
+        this.context = AppContextService.getContext(context);
         MobiComUserPreference.renameSharedPrefFile(context);
-        sharedPreferences = ApplozicService.getContext(context).getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
+        sharedPreferences = AppContextService.getContext(context).getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
     }
 
-    public static ApplozicClient getInstance(Context context) {
-        if (applozicClient == null) {
-            applozicClient = new ApplozicClient(ApplozicService.getContext(context));
+    public static SettingsSharedPreference getInstance(Context context) {
+        if (settingsSharedPreference == null) {
+            settingsSharedPreference = new SettingsSharedPreference(AppContextService.getContext(context));
         }
 
-        return applozicClient;
+        return settingsSharedPreference;
     }
 
     public boolean isHandleDisplayName() {
         return sharedPreferences.getBoolean(HANDLE_DISPLAY_NAME, true);
     }
 
-    public ApplozicClient setHandleDisplayName(boolean enable) {
+    public SettingsSharedPreference setHandleDisplayName(boolean enable) {
         sharedPreferences.edit().putBoolean(HANDLE_DISPLAY_NAME, enable).commit();
         return this;
     }
@@ -92,12 +92,12 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(HANDLE_DIAL, false);
     }
 
-    public ApplozicClient setHandleDial(boolean enable) {
+    public SettingsSharedPreference setHandleDial(boolean enable) {
         sharedPreferences.edit().putBoolean(HANDLE_DIAL, enable).commit();
         return this;
     }
 
-    public ApplozicClient hideChatListOnNotification() {
+    public SettingsSharedPreference hideChatListOnNotification() {
         sharedPreferences.edit().putBoolean(CHAT_LIST_HIDE_ON_NOTIFICATION, true).commit();
         return this;
     }
@@ -110,12 +110,12 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(CONTEXT_BASED_CHAT, false);
     }
 
-    public ApplozicClient setContextBasedChat(boolean enable) {
+    public SettingsSharedPreference setContextBasedChat(boolean enable) {
         sharedPreferences.edit().putBoolean(CONTEXT_BASED_CHAT, enable).commit();
         return this;
     }
 
-    public ApplozicClient hideNotificationSmallIcon() {
+    public SettingsSharedPreference hideNotificationSmallIcon() {
         sharedPreferences.edit().putBoolean(NOTIFICATION_SMALL_ICON, true).commit();
         return this;
     }
@@ -141,10 +141,10 @@ public class ApplozicClient {
     }
 
     public String getAppName() {
-        return sharedPreferences.getString(APP_NAME, "Applozic");
+        return sharedPreferences.getString(APP_NAME, "Kommunicate");
     }
 
-    public ApplozicClient setAppName(String notficationAppName) {
+    public SettingsSharedPreference setAppName(String notficationAppName) {
         sharedPreferences.edit().putString(APP_NAME, notficationAppName).commit();
         return this;
     }
@@ -153,30 +153,30 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(NOTIFICATION_DISABLE, false);
     }
 
-    public ApplozicClient enableNotification() {
+    public SettingsSharedPreference enableNotification() {
         sharedPreferences.edit().putBoolean(NOTIFICATION_DISABLE, false).commit();
         return this;
     }
 
-    public ApplozicClient disableNotification() {
+    public SettingsSharedPreference disableNotification() {
         sharedPreferences.edit().putBoolean(NOTIFICATION_DISABLE, true).commit();
         return this;
     }
 
     public String getDefaultContactImage() {
-        return sharedPreferences.getString(CONTACT_DEFAULT_IMAGE, APPLOZIC_CONTACT_PIC);
+        return sharedPreferences.getString(CONTACT_DEFAULT_IMAGE, DEFAULT_CONTACT_PIC);
     }
 
-    public ApplozicClient setDefaultContactImage(String imageName) {
+    public SettingsSharedPreference setDefaultContactImage(String imageName) {
         sharedPreferences.edit().putString(CONTACT_DEFAULT_IMAGE, imageName).commit();
         return this;
     }
 
     public String getDefaultChannelImage() {
-        return sharedPreferences.getString(GROUP_DEFAULT_IMAGE, APPLOZIC_GROUP_ICON);
+        return sharedPreferences.getString(GROUP_DEFAULT_IMAGE, DEFAULT_GROUP_ICON);
     }
 
-    public ApplozicClient setDefaultChannelImage(String groupImageName) {
+    public SettingsSharedPreference setDefaultChannelImage(String groupImageName) {
         sharedPreferences.edit().putString(GROUP_DEFAULT_IMAGE, groupImageName).commit();
         return this;
     }
@@ -185,7 +185,7 @@ public class ApplozicClient {
         return sharedPreferences.getString(MESSAGE_META_DATA_SERVICE, null);
     }
 
-    public ApplozicClient setMessageMetaDataServiceName(String messageMetaDataServiceName) {
+    public SettingsSharedPreference setMessageMetaDataServiceName(String messageMetaDataServiceName) {
         sharedPreferences.edit().putString(MESSAGE_META_DATA_SERVICE, messageMetaDataServiceName).commit();
         return this;
     }
@@ -194,12 +194,12 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(SHOW_MY_CONTACT_ONLY, false);
     }
 
-    public ApplozicClient enableShowMyContacts() {
+    public SettingsSharedPreference enableShowMyContacts() {
         sharedPreferences.edit().putBoolean(SHOW_MY_CONTACT_ONLY, true).commit();
         return this;
     }
 
-    public ApplozicClient disableShowMyContacts() {
+    public SettingsSharedPreference disableShowMyContacts() {
         sharedPreferences.edit().putBoolean(SHOW_MY_CONTACT_ONLY, false).commit();
         return this;
     }
@@ -216,14 +216,14 @@ public class ApplozicClient {
         return sharedPreferences.getString(AL_MESSAGE_META_DATA_KEY, null);
     }
 
-    public ApplozicClient setMessageMetaData(Map<String, String> messageMetaDataMap) {
+    public SettingsSharedPreference setMessageMetaData(Map<String, String> messageMetaDataMap) {
         if (messageMetaDataMap != null) {
             sharedPreferences.edit().putString(AL_MESSAGE_META_DATA_KEY, new JSONObject(messageMetaDataMap).toString()).commit();
         }
         return this;
     }
 
-    public ApplozicClient startGroupOfTwo() {
+    public SettingsSharedPreference startGroupOfTwo() {
         sharedPreferences.edit().putBoolean(START_GROUP_OF_TWO, true).commit();
         return this;
     }
@@ -232,12 +232,12 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(START_GROUP_OF_TWO, false);
     }
 
-    public ApplozicClient disableStartGroupOfTwo() {
+    public SettingsSharedPreference disableStartGroupOfTwo() {
         sharedPreferences.edit().putBoolean(START_GROUP_OF_TWO, false).commit();
         return this;
     }
 
-    public ApplozicClient showAppIconInNotification(boolean showOrHide) {
+    public SettingsSharedPreference showAppIconInNotification(boolean showOrHide) {
         sharedPreferences.edit().putBoolean(AL_SHOW_APP_ICON, showOrHide).commit();
         return this;
     }
@@ -256,7 +256,7 @@ public class ApplozicClient {
     }
 
 
-    public ApplozicClient enableShowUnreadCountBadge() {
+    public SettingsSharedPreference enableShowUnreadCountBadge() {
         sharedPreferences.edit().putBoolean(BADGE_COUNT_ENABLE, true).commit();
         return this;
     }
@@ -275,7 +275,7 @@ public class ApplozicClient {
     }
 
 
-    public ApplozicClient enableS3StorageService() {
+    public SettingsSharedPreference enableS3StorageService() {
         sharedPreferences.edit().putBoolean(S3_STORAGE_SERVICE_ENABLED, true).commit();
         return this;
     }
@@ -284,7 +284,7 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(S3_STORAGE_SERVICE_ENABLED, false);
     }
 
-    public ApplozicClient enableGoogleCloudService() {
+    public SettingsSharedPreference enableGoogleCloudService() {
         sharedPreferences.edit().putBoolean(GOOGLE_CLOUD_SERVICE_ENABLE, true).commit();
         return this;
     }
@@ -293,7 +293,7 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(GOOGLE_CLOUD_SERVICE_ENABLE, false);
     }
 
-    public ApplozicClient setStorageServiceEnabled(boolean enable) {
+    public SettingsSharedPreference setStorageServiceEnabled(boolean enable) {
         sharedPreferences.edit().putBoolean(STORAGE_SERVICE_ENABLE, enable).commit();
         return this;
     }
@@ -306,7 +306,7 @@ public class ApplozicClient {
         return (Map<String, String>) GsonUtils.getObjectFromJson(sharedPreferences.getString(CUSTOM_MESSAGE_TEMPLATE, null), Map.class);
     }
 
-    public ApplozicClient setMessageTemplates(Map<String, String> messageTemplates) {
+    public SettingsSharedPreference setMessageTemplates(Map<String, String> messageTemplates) {
         sharedPreferences.edit().putString(CUSTOM_MESSAGE_TEMPLATE, GsonUtils.getJsonFromObject(messageTemplates, Map.class)).commit();
         return this;
     }
@@ -315,7 +315,7 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(AL_SUBGROUP_SUPPORT, false);
     }
 
-    public ApplozicClient setSubGroupSupport(boolean subgroup) {
+    public SettingsSharedPreference setSubGroupSupport(boolean subgroup) {
         sharedPreferences.edit().putBoolean(AL_SUBGROUP_SUPPORT, subgroup).commit();
         return this;
     }
@@ -324,12 +324,12 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(HIDE_ACTION_MESSAGES, false);
     }
 
-    public ApplozicClient hideActionMessages(boolean hide) {
+    public SettingsSharedPreference hideActionMessages(boolean hide) {
         sharedPreferences.edit().putBoolean(HIDE_ACTION_MESSAGES, hide).commit();
         return this;
     }
 
-    public ApplozicClient setNotificationMuteThreashold(int threshold) {
+    public SettingsSharedPreference setNotificationMuteThreashold(int threshold) {
         sharedPreferences.edit().putInt(NOTIFICATION_MUTE_THRESHOLD, threshold).commit();
         return this;
     }
@@ -338,7 +338,7 @@ public class ApplozicClient {
         return sharedPreferences.getInt(NOTIFICATION_MUTE_THRESHOLD, 0);
     }
 
-    public ApplozicClient skipDeletedGroups(boolean skip) {
+    public SettingsSharedPreference skipDeletedGroups(boolean skip) {
         sharedPreferences.edit().putBoolean(SKIP_DELETED_GROUPS, skip).commit();
         return this;
     }
@@ -370,7 +370,7 @@ public class ApplozicClient {
         return sharedPreferences.getLong(MAX_CREATED_AT_KEY, Long.MAX_VALUE);
     }
 
-    public ApplozicClient setMaxCreatedAtTime(long createdAtTime) {
+    public SettingsSharedPreference setMaxCreatedAtTime(long createdAtTime) {
         sharedPreferences.edit().putLong(MAX_CREATED_AT_KEY, createdAtTime).commit();
         return this;
     }
@@ -379,12 +379,12 @@ public class ApplozicClient {
         return sharedPreferences.getLong(MIN_CREATED_AT_KEY, 0);
     }
 
-    public ApplozicClient setMinCreatedAtTime(long createdAtTime) {
+    public SettingsSharedPreference setMinCreatedAtTime(long createdAtTime) {
         sharedPreferences.edit().putLong(MIN_CREATED_AT_KEY, createdAtTime).commit();
         return this;
     }
 
-    public ApplozicClient disableChatForUser(final boolean disable, final ResultCallback callback) {
+    public SettingsSharedPreference disableChatForUser(final boolean disable, final ResultCallback callback) {
         Map<String, String> userMetadata;
         Contact contact = new AppContactService(context).getContactById(MobiComUserPreference.getInstance(context).getUserId());
         if (contact != null && contact.getMetadata() != null) {
@@ -416,7 +416,7 @@ public class ApplozicClient {
         return this;
     }
 
-    public ApplozicClient setChatDisabled(boolean disable) {
+    public SettingsSharedPreference setChatDisabled(boolean disable) {
         sharedPreferences.edit().putBoolean(Contact.DISABLE_CHAT_WITH_USER, disable).commit();
         return this;
     }
@@ -425,7 +425,7 @@ public class ApplozicClient {
         return sharedPreferences.getBoolean(Contact.DISABLE_CHAT_WITH_USER, false);
     }
 
-    public ApplozicClient setFetchConversationListMainPageSize(int mainPageSize) {
+    public SettingsSharedPreference setFetchConversationListMainPageSize(int mainPageSize) {
         sharedPreferences.edit().putInt(AL_CONVERSATION_LIST_PAGE_SIZE_KEY, mainPageSize).commit();
         return this;
     }

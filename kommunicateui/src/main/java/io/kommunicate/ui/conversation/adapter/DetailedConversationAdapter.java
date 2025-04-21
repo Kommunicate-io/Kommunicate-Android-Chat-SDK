@@ -53,7 +53,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.attachment.AttachmentManager;
@@ -72,6 +72,7 @@ import io.kommunicate.devkit.contact.MobiComVCFParser;
 import io.kommunicate.devkit.contact.VCFContactData;
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KmFontManager;
+import io.kommunicate.ui.KommunicateSetting;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.attachmentview.KmDocumentView;
 import io.kommunicate.ui.conversation.ConversationUIService;
@@ -259,7 +260,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this.imageCache = ImageCache.getInstance(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         this.messageList = messageList;
         this.customizationSettings = customizationSettings;
-        geoApiKey = Applozic.getInstance(context).getGeoApiKey();
+        geoApiKey = KommunicateSettings.getInstance(context).getGeoApiKey();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
             protected Bitmap processBitmap(Object data) {

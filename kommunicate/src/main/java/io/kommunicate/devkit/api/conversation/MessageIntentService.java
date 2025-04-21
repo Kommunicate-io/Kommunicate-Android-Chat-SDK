@@ -9,7 +9,7 @@ import androidx.core.app.CoreJobIntentService;
 
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.conversation.schedule.ScheduleMessageService;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.json.GsonUtils;
 
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class MessageIntentService extends CoreJobIntentService {
      * Convenience method for enqueuing work in to this service.
      */
     static public void enqueueWork(Context context, Intent work, Handler handler) {
-        enqueueWork(ApplozicService.getContext(context), MessageIntentService.class, JOB_ID, work);
+        enqueueWork(AppContextService.getContext(context), MessageIntentService.class, JOB_ID, work);
         if (work != null) {
             final Message message = (Message) GsonUtils.getObjectFromJson(work.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT), Message.class);
             if (uploadQueueMap != null && handler != null) {

@@ -12,12 +12,12 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import io.kommunicate.devkit.api.conversation.ApplozicConversation;
+import io.kommunicate.devkit.api.conversation.ConversationHelper;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.people.ChannelInfo;
 import io.kommunicate.commons.commons.core.utils.Utils;
@@ -83,7 +83,7 @@ public class KmConversationHelper {
         }
 
         if (conversationId == null) {
-            ApplozicConversation.getLatestMessageList(
+            ConversationHelper.getLatestMessageList(
                     context,
                     false,
                     new TaskListener<List<Message>>() {
@@ -196,7 +196,7 @@ public class KmConversationHelper {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
                 Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.isRootDetectionEnabled());
             } else {
-                if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
+                if (TextUtils.isEmpty(KommunicateSettings.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
                         callback.onFailure(Utils.getString(launchChat.getContext(), R.string.km_app_id_cannot_be_null));
                     }
@@ -293,7 +293,7 @@ public class KmConversationHelper {
             if (!TextUtils.isEmpty(launchChat.getApplicationId())) {
                 Kommunicate.init(launchChat.getContext(), launchChat.getApplicationId(), KmAppSettingPreferences.isRootDetectionEnabled());
             } else {
-                if (TextUtils.isEmpty(Applozic.getInstance(launchChat.getContext()).getApplicationKey())) {
+                if (TextUtils.isEmpty(KommunicateSettings.getInstance(launchChat.getContext()).getApplicationKey())) {
                     if (callback != null) {
                         Utils.printLog(null, TAG, Utils.getString(null, R.string.km_app_id_cannot_be_null));
                         callback.onFailure(Utils.getString(launchChat.getContext(), R.string.km_app_id_cannot_be_null));
@@ -392,7 +392,7 @@ public class KmConversationHelper {
                         resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
                     if (isSkipChatList) {
-                        ApplozicClient.getInstance(context).hideChatListOnNotification();
+                        SettingsSharedPreference.getInstance(context).hideChatListOnNotification();
                     }
                     if (callback != null) {
                         if (launchChat) {
@@ -437,7 +437,7 @@ public class KmConversationHelper {
                 }
 
                 if (launchChat.getMetadata() != null) {
-                    ApplozicClient.getInstance(context).setMessageMetaData(launchChat.getMetadata());
+                    SettingsSharedPreference.getInstance(context).setMessageMetaData(launchChat.getMetadata());
                 }
 
                 try {
@@ -525,7 +525,7 @@ public class KmConversationHelper {
             if (!TextUtils.isEmpty(conversationBuilder.getAppId())) {
                 Kommunicate.init(conversationBuilder.getContext(), conversationBuilder.getAppId(), KmAppSettingPreferences.isRootDetectionEnabled());
             } else {
-                if (TextUtils.isEmpty(Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey())) {
+                if (TextUtils.isEmpty(KommunicateSettings.getInstance(conversationBuilder.getContext()).getApplicationKey())) {
                     if (callback != null) {
                         Utils.printLog(null, TAG, Utils.getString(null, R.string.km_app_id_cannot_be_null));
                         callback.onFailure(Utils.getString(conversationBuilder.getContext(), R.string.km_app_id_cannot_be_null));
@@ -605,7 +605,7 @@ public class KmConversationHelper {
         }
 
         KmAppSettingPreferences.setInAppNotificationEnable(conversationBuilder.getInAppNotificationEnable());
-        ApplozicConversation.getLatestMessageList(
+        ConversationHelper.getLatestMessageList(
                 conversationBuilder.getContext(),
                 false,
                 new TaskListener<List<Message>>() {
@@ -645,7 +645,7 @@ public class KmConversationHelper {
                         resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
                     if (isSkipConversationList) {
-                        ApplozicClient.getInstance(context).hideChatListOnNotification();
+                        SettingsSharedPreference.getInstance(context).hideChatListOnNotification();
                     }
                     if (callback != null) {
                         if (launchConversation) {
@@ -689,7 +689,7 @@ public class KmConversationHelper {
                 }
 
                 if (conversationBuilder.getMessageMetadata() != null) {
-                    ApplozicClient.getInstance(context).setMessageMetaData(conversationBuilder.getMessageMetadata());
+                    SettingsSharedPreference.getInstance(context).setMessageMetaData(conversationBuilder.getMessageMetadata());
                 }
 
                 try {
@@ -792,7 +792,7 @@ public class KmConversationHelper {
             String label = ANDROID + appName;
             metadata.put(GROUP_CREATION_URL, label);
         } else {
-            String label = ANDROID + Applozic.getInstance(conversationBuilder.getContext()).getApplicationKey();
+            String label = ANDROID + KommunicateSettings.getInstance(conversationBuilder.getContext()).getApplicationKey();
             metadata.put(GROUP_CREATION_URL, label);
         }
         String languageCode = PrefSettings.getInstance(conversationBuilder.getContext()).getDeviceDefaultLanguageToBot();
@@ -831,8 +831,8 @@ public class KmConversationHelper {
             metadata.put(KmSettings.KM_CONVERSATION_METADATA, GsonUtils.getJsonFromObject(conversationBuilder.getConversationInfo(), Map.class));
         }
 
-        if (!TextUtils.isEmpty(ApplozicClient.getInstance(conversationBuilder.getContext()).getMessageMetaData())) {
-            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(ApplozicClient.getInstance(conversationBuilder.getContext()).getMessageMetaData(), Map.class);
+        if (!TextUtils.isEmpty(SettingsSharedPreference.getInstance(conversationBuilder.getContext()).getMessageMetaData())) {
+            Map<String, String> defaultMetadata = (Map<String, String>) GsonUtils.getObjectFromJson(SettingsSharedPreference.getInstance(conversationBuilder.getContext()).getMessageMetaData(), Map.class);
             if (defaultMetadata != null) {
                 metadata.putAll(defaultMetadata);
             }

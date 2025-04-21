@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.database.MobiComDatabaseHelper;
 import io.kommunicate.commons.AppSpecificSettings;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.DBUtils;
 
 public class KmDatabaseHelper extends MobiComDatabaseHelper {
@@ -72,12 +72,12 @@ public class KmDatabaseHelper extends MobiComDatabaseHelper {
     }
 
     private KmDatabaseHelper(Context context) {
-        this(context, "KM_" + (!TextUtils.isEmpty(AppSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName() : MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context))), null, DB_VERSION);
+        this(context, "KM_" + (!TextUtils.isEmpty(AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName() : MobiComKitClientService.getApplicationKey(AppContextService.getContext(context))), null, DB_VERSION);
     }
 
     public static KmDatabaseHelper getInstance(Context context) {
         if (sInstance == null) {
-            sInstance = new KmDatabaseHelper(ApplozicService.getContext(context));
+            sInstance = new KmDatabaseHelper(AppContextService.getContext(context));
         }
         return sInstance;
     }

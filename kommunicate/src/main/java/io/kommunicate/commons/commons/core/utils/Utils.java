@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import io.kommunicate.commons.AppSpecificSettings;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.file.FileContentProvider;
 
 import org.json.JSONException;
@@ -199,7 +199,7 @@ public class Utils {
 
     public static boolean isInternetAvailable(Context context) {
         ConnectivityManager cm =
-                (ConnectivityManager) ApplozicService.getContext(context).getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) AppContextService.getContext(context).getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return (activeNetwork != null &&
@@ -209,8 +209,8 @@ public class Utils {
 
     public static String getMetaDataValue(Context context, String metaDataName) {
         try {
-            PackageManager packageManager = ApplozicService.getContext(context).getPackageManager();
-            ApplicationInfo ai = packageManager.getApplicationInfo(ApplozicService.getContext(context).getPackageName(), PackageManager.GET_META_DATA);
+            PackageManager packageManager = AppContextService.getContext(context).getPackageManager();
+            ApplicationInfo ai = packageManager.getApplicationInfo(AppContextService.getContext(context).getPackageName(), PackageManager.GET_META_DATA);
             if (ai.metaData != null) {
                 return ai.metaData.getString(metaDataName);
 
@@ -227,15 +227,15 @@ public class Utils {
 
     public static boolean isAutomaticTimeEnabled(Context context, boolean isTimeZone) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return Settings.Global.getInt(ApplozicService.getContext(context).getContentResolver(), (isTimeZone ? Settings.Global.AUTO_TIME_ZONE : Settings.Global.AUTO_TIME), 0) == 1;
+            return Settings.Global.getInt(AppContextService.getContext(context).getContentResolver(), (isTimeZone ? Settings.Global.AUTO_TIME_ZONE : Settings.Global.AUTO_TIME), 0) == 1;
         } else {
-            return android.provider.Settings.System.getInt(ApplozicService.getContext(context).getContentResolver(), (isTimeZone ? Settings.System.AUTO_TIME_ZONE : Settings.System.AUTO_TIME), 0) == 1;
+            return android.provider.Settings.System.getInt(AppContextService.getContext(context).getContentResolver(), (isTimeZone ? Settings.System.AUTO_TIME_ZONE : Settings.System.AUTO_TIME), 0) == 1;
         }
     }
 
     public static int getLauncherIcon(Context context) {
         try {
-            ApplicationInfo ai = ApplozicService.getContext(context).getPackageManager().getApplicationInfo(ApplozicService.getContext(context).getPackageName(), PackageManager.GET_META_DATA);
+            ApplicationInfo ai = AppContextService.getContext(context).getPackageManager().getApplicationInfo(AppContextService.getContext(context).getPackageName(), PackageManager.GET_META_DATA);
             return ai.icon;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -245,7 +245,7 @@ public class Utils {
 
     public static Integer getMetaDataValueForResources(Context context, String metaDataName) {
         try {
-            ApplicationInfo ai = ApplozicService.getContext(context).getPackageManager().getApplicationInfo(ApplozicService.getContext(context).getPackageName(), PackageManager.GET_META_DATA);
+            ApplicationInfo ai = AppContextService.getContext(context).getPackageManager().getApplicationInfo(AppContextService.getContext(context).getPackageName(), PackageManager.GET_META_DATA);
             if (ai.metaData != null) {
                 Integer metaDataValue = ai.metaData.getInt(metaDataName);
                 return metaDataValue == 0 ? null : metaDataValue;
@@ -260,7 +260,7 @@ public class Utils {
 
     public static String getMetaDataValueForReceiver(Context context, String componentName, String metaDataName) {
         try {
-            ActivityInfo ai = ApplozicService.getContext(context).getPackageManager().getReceiverInfo(new ComponentName(ApplozicService.getContext(context), componentName), PackageManager.GET_META_DATA);
+            ActivityInfo ai = AppContextService.getContext(context).getPackageManager().getReceiverInfo(new ComponentName(AppContextService.getContext(context), componentName), PackageManager.GET_META_DATA);
             return ai.metaData.getString(metaDataName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -339,7 +339,7 @@ public class Utils {
     }
 
     public static boolean isDebugBuild(Context context) {
-        return (0 != (ApplozicService.getContext(context).getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+        return (0 != (AppContextService.getContext(context).getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
     }
 
     public static void writeToFile(Context context, String log) {
@@ -382,7 +382,7 @@ public class Utils {
             File dir = new File(context.getFilesDir().getAbsolutePath() + folder);
             File textLogFile = new File(dir, fileName);
             if (hasNougat()) {
-                return FileContentProvider.getUriForFile(ApplozicService.getContext(context), getMetaDataValue(context, COM_PACKAGE_NAME) + APPLOZIC_PROVIDER, textLogFile);
+                return FileContentProvider.getUriForFile(AppContextService.getContext(context), getMetaDataValue(context, COM_PACKAGE_NAME) + APPLOZIC_PROVIDER, textLogFile);
             }
             return Uri.fromFile(textLogFile);
         } catch (Exception e) {
@@ -392,15 +392,15 @@ public class Utils {
     }
 
     public static String getString(Context context, int resId) {
-        return ApplozicService.getContext(context).getString(resId);
+        return AppContextService.getContext(context).getString(resId);
     }
 
     public static int getColor(Context context, int resId) {
-        return ApplozicService.getContext(context).getResources().getColor(resId);
+        return AppContextService.getContext(context).getResources().getColor(resId);
     }
 
     public static String getPackageName(Context context) {
-        return ApplozicService.getContext(context).getPackageName();
+        return AppContextService.getContext(context).getPackageName();
     }
 
     public static HashMap<String, String> getUploadOverrideMap(String string) {

@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.encryption.SecurityUtils;
 
 import java.security.KeyPair;
@@ -33,7 +33,7 @@ public class SecureSharedPreferences implements SharedPreferences {
 
     public SecureSharedPreferences(String name, Context context) {
         //use application context
-        Context applicationContext = ApplozicService.getContext(context);
+        Context applicationContext = AppContextService.getContext(context);
         sharedPreferences = applicationContext.getSharedPreferences(name, Context.MODE_PRIVATE);
         this.name = name;
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {

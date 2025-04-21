@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.data.PrefSettings;
 
@@ -97,8 +97,8 @@ public class MobiComUserPreference {
 
 
     private MobiComUserPreference(Context context) {
-        this.context = ApplozicService.getContext(context);
-        ApplozicService.initWithContext(context);
+        this.context = AppContextService.getContext(context);
+        AppContextService.initWithContext(context);
         renameSharedPrefFile(this.context);
         sharedPreferences = this.context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         prefsEditor = sharedPreferences.edit();
@@ -107,7 +107,7 @@ public class MobiComUserPreference {
 
     public static MobiComUserPreference getInstance(Context context) {
         if (userpref == null) {
-            userpref = new MobiComUserPreference(ApplozicService.getContext(context));
+            userpref = new MobiComUserPreference(AppContextService.getContext(context));
         }
         return userpref;
     }

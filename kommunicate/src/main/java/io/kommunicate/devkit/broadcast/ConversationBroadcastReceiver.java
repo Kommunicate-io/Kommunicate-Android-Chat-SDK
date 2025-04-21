@@ -15,9 +15,9 @@ import io.kommunicate.commons.json.GsonUtils;
  * Created by reytum on 5/12/17.
  */
 
-public class ApplozicBroadcastReceiver extends BroadcastReceiver {
+public class ConversationBroadcastReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "ApplozicUIReceiver";
+    private static final String TAG = "ConversationBroadcastReceiver";
     private static final String LOAD_MORE = "loadMore";
     private static final String CONTACT_NUMBER = "contactNumber";
     private static final String contactId = "contactId";
@@ -30,7 +30,7 @@ public class ApplozicBroadcastReceiver extends BroadcastReceiver {
 
     private UIEventListener UIEventListener;
 
-    public ApplozicBroadcastReceiver(UIEventListener listener) {
+    public ConversationBroadcastReceiver(UIEventListener listener) {
         this.UIEventListener = listener;
     }
 

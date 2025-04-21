@@ -5,21 +5,21 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.HttpRequestUtils;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.authentication.JWT;
-import io.kommunicate.devkit.api.conversation.ApplozicMqttIntentService;
+import io.kommunicate.devkit.api.conversation.MqttIntentService;
 import io.kommunicate.devkit.api.conversation.ConversationIntentService;
 import io.kommunicate.devkit.api.notification.NotificationChannels;
 import io.kommunicate.devkit.contact.AppContactService;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.commons.AppSpecificSettings;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.contact.Contact;
@@ -50,8 +50,8 @@ public class RegisterUserClientService extends MobiComKitClientService {
     private static final String application_JSON = "application/json";
 
     public RegisterUserClientService(Context context) {
-        this.context = ApplozicService.getContext(context);
-        ApplozicService.initWithContext(context);
+        this.context = AppContextService.getContext(context);
+        AppContextService.initWithContext(context);
         this.httpRequestUtils = new HttpRequestUtils(context);
     }
 
@@ -88,11 +88,11 @@ public class RegisterUserClientService extends MobiComKitClientService {
         }
 
         if (TextUtils.isEmpty(user.getUserId())) {
-            throw new ApplozicException(EMPTY_USER_ID);
+            throw new KommunicateException(EMPTY_USER_ID);
         }
 
         if (!user.isValidUserId()) {
-            throw new ApplozicException(INVALID_USER_ID);
+            throw new KommunicateException(INVALID_USER_ID);
         }
 
         MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
@@ -158,7 +158,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
             if (registrationResponse.getNotificationAfter() != null) {
                 AppSpecificSettings.getInstance(context).setNotificationAfterTime(registrationResponse.getNotificationAfter());
             }
-            ApplozicClient.getInstance(context).skipDeletedGroups(user.isSkipDeletedGroups()).hideActionMessages(user.isHideActionMessages());
+            SettingsSharedPreference.getInstance(context).skipDeletedGroups(user.isSkipDeletedGroups()).hideActionMessages(user.isHideActionMessages());
             if (!TextUtils.isEmpty(registrationResponse.getUserEncryptionKey())) {
                 mobiComUserPreference.setUserEncryptionKey(registrationResponse.getUserEncryptionKey());
             }
@@ -172,7 +172,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
                 mobiComUserPreference.setUserTypeId(String.valueOf(user.getUserTypeId()));
             }
             if (!TextUtils.isEmpty(user.getNotificationSoundFilePath())) {
-                Applozic.getInstance(context).setCustomNotificationSound(user.getNotificationSoundFilePath());
+                KommunicateSettings.getInstance(context).setCustomNotificationSound(user.getNotificationSoundFilePath());
             }
             Contact contact = new Contact();
             contact.setUserId(user.getUserId());
@@ -186,10 +186,10 @@ public class RegisterUserClientService extends MobiComKitClientService {
             contact.setRoleType(user.getRoleType());
             contact.setStatus(registrationResponse.getStatusMessage());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Applozic.getInstance(context).setNotificationChannelVersion(NotificationChannels.NOTIFICATION_CHANNEL_VERSION - 1);
-                new NotificationChannels(context, Applozic.getInstance(context).getCustomNotificationSound()).prepareNotificationChannels();
+                KommunicateSettings.getInstance(context).setNotificationChannelVersion(NotificationChannels.NOTIFICATION_CHANNEL_VERSION - 1);
+                new NotificationChannels(context, KommunicateSettings.getInstance(context).getCustomNotificationSound()).prepareNotificationChannels();
             }
-            ApplozicClient.getInstance(context).setChatDisabled(contact.isChatForUserDisabled());
+            SettingsSharedPreference.getInstance(context).setChatDisabled(contact.isChatForUserDisabled());
             new AppContactService(context).upsert(contact);
 
 
@@ -197,9 +197,9 @@ public class RegisterUserClientService extends MobiComKitClientService {
             conversationIntentService.putExtra(ConversationIntentService.SYNC, false);
             ConversationIntentService.enqueueWork(context, conversationIntentService);
 
-            Intent intent = new Intent(context, ApplozicMqttIntentService.class);
-            intent.putExtra(ApplozicMqttIntentService.CONNECTED_PUBLISH, true);
-            ApplozicMqttIntentService.enqueueWork(context, intent);
+            Intent intent = new Intent(context, MqttIntentService.class);
+            intent.putExtra(MqttIntentService.CONNECTED_PUBLISH, true);
+            MqttIntentService.enqueueWork(context, intent);
 
         }
 
@@ -251,9 +251,9 @@ public class RegisterUserClientService extends MobiComKitClientService {
         user.setContactNumber(phoneNumber);
 
         final RegistrationResponse registrationResponse = createAccount(user);
-        Intent intent = new Intent(context, ApplozicMqttIntentService.class);
-        intent.putExtra(ApplozicMqttIntentService.CONNECTED_PUBLISH, true);
-        ApplozicMqttIntentService.enqueueWork(context, intent);
+        Intent intent = new Intent(context, MqttIntentService.class);
+        intent.putExtra(MqttIntentService.CONNECTED_PUBLISH, true);
+        MqttIntentService.enqueueWork(context, intent);
         return registrationResponse;
     }
 

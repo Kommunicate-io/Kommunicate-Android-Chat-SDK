@@ -7,15 +7,15 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.UserUpdateModel;
-import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.notification.NotificationChannels;
 import io.kommunicate.devkit.channel.service.ChannelService;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.devkit.api.HttpRequestUtils;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.MobiComKitConstants;
-import io.kommunicate.devkit.api.conversation.ApplozicMqttIntentService;
+import io.kommunicate.devkit.api.conversation.MqttIntentService;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.api.notification.MuteUserResponse;
 import io.kommunicate.devkit.database.MobiComDatabaseHelper;
@@ -163,10 +163,10 @@ public class UserClientService extends MobiComKitClientService {
         MessageDatabaseService.recentlyAddedMessage.clear();
         MobiComDatabaseHelper.getInstance(context).delDatabase();
         mobiComUserPreference.setUrl(url);
-        Intent intent = new Intent(context, ApplozicMqttIntentService.class);
-        intent.putExtra(ApplozicMqttIntentService.USER_KEY_STRING, userKeyString);
-        intent.putExtra(ApplozicMqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
-        ApplozicMqttIntentService.enqueueWork(context, intent);
+        Intent intent = new Intent(context, MqttIntentService.class);
+        intent.putExtra(MqttIntentService.USER_KEY_STRING, userKeyString);
+        intent.putExtra(MqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
+        MqttIntentService.enqueueWork(context, intent);
     }
 
     public ApiResponse logout(boolean fromLogin) {
@@ -177,7 +177,7 @@ public class UserClientService extends MobiComKitClientService {
         final String userKeyString = mobiComUserPreference.getSuUserKeyString();
         String url = mobiComUserPreference.getUrl();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Applozic.getInstance(context).setCustomNotificationSound(null);
+            KommunicateSettings.getInstance(context).setCustomNotificationSound(null);
             new NotificationChannels(context, null).deleteAllChannels();
         }
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -188,10 +188,10 @@ public class UserClientService extends MobiComKitClientService {
         MobiComDatabaseHelper.getInstance(context).delDatabase();
         mobiComUserPreference.setUrl(url);
         if (!fromLogin) {
-            Intent intent = new Intent(context, ApplozicMqttIntentService.class);
-            intent.putExtra(ApplozicMqttIntentService.USER_KEY_STRING, userKeyString);
-            intent.putExtra(ApplozicMqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
-            ApplozicMqttIntentService.enqueueWork(context, intent);
+            Intent intent = new Intent(context, MqttIntentService.class);
+            intent.putExtra(MqttIntentService.USER_KEY_STRING, userKeyString);
+            intent.putExtra(MqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
+            MqttIntentService.enqueueWork(context, intent);
         }
         return apiResponse;
     }
@@ -544,7 +544,7 @@ public class UserClientService extends MobiComKitClientService {
         return null;
     }
 
-    public ApiResponse getUsersBySearchString(String searchString) throws ApplozicException {
+    public ApiResponse getUsersBySearchString(String searchString) throws KommunicateException {
         if (TextUtils.isEmpty(searchString)) {
             return null;
         }
@@ -559,7 +559,7 @@ public class UserClientService extends MobiComKitClientService {
             Utils.printLog(context, TAG, "Search user response : " + response);
             apiResponse = (ApiResponse) GsonUtils.getObjectFromJson(response, ApiResponse.class);
         } catch (Exception e) {
-            throw new ApplozicException(e.getMessage());
+            throw new KommunicateException(e.getMessage());
         }
 
         return apiResponse;

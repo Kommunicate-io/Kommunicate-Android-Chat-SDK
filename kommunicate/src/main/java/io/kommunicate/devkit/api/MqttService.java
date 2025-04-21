@@ -39,10 +39,10 @@ import java.util.List;
 /**
  * Created by sunil on 26/11/15.
  */
-public class ApplozicMqttService extends MobiComKitClientService implements MqttCallback {
+public class MqttService extends MobiComKitClientService implements MqttCallback {
 
     private static final String STATUS = "status-v2";
-    private static final String TAG = "ApplozicMqttService";
+    private static final String TAG = "MqttService";
     private static final String TYPINGTOPIC = "typing-";
     private static final String OPEN_GROUP = "group-";
     private static final String MQTT_ENCRYPTION_TOPIC = "encr-";
@@ -54,23 +54,23 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
     private static final String MSG_DELIVERED = "MT_MESSAGE_DELIVERED";
     private static final String MSG_DELIVERED_READ = "MT_MESSAGE_DELIVERED_READ";
 
-    private static ApplozicMqttService applozicMqttService;
+    private static MqttService mqttService;
     private CoreMqttClient client;
     private MemoryPersistence memoryPersistence;
     private Context context;
 
-    private ApplozicMqttService(Context context) {
+    private MqttService(Context context) {
         super(context);
         this.context = context;
         memoryPersistence = new MemoryPersistence();
     }
 
-    public static ApplozicMqttService getInstance(Context context) {
+    public static MqttService getInstance(Context context) {
 
-        if (applozicMqttService == null) {
-            applozicMqttService = new ApplozicMqttService(context.getApplicationContext());
+        if (mqttService == null) {
+            mqttService = new MqttService(context.getApplicationContext());
         }
-        return applozicMqttService;
+        return mqttService;
     }
 
     private MqttConnectOptions getConnectionOptions() {
@@ -104,7 +104,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
 
             if (!client.isConnected()) {
                 Utils.printLog(context, TAG, "Connecting to mqtt...");
-                client.setCallback(ApplozicMqttService.this);
+                client.setCallback(MqttService.this);
                 client.connectWithResult(getConnectionOptions(), new IMqttActionListener() {
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
@@ -173,7 +173,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
             connectPublish(userKeyString, deviceKeyString, "1");
             subscribeToConversation(useEncrypted);
             if (client != null) {
-                client.setCallback(ApplozicMqttService.this);
+                client.setCallback(MqttService.this);
             }
         } catch (Exception e) {
             e.printStackTrace();

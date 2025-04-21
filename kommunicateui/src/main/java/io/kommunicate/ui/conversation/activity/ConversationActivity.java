@@ -1295,7 +1295,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } catch (Exception e) {
             e.printStackTrace();
         }
-        AlEventManager.getInstance().sendOnPluginDismissedEvent();
+        EventManager.getInstance().sendOnPluginDismissedEvent();
     }
 
     @Override

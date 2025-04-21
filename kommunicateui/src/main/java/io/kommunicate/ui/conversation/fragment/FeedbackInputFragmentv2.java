@@ -154,7 +154,7 @@ public class FeedbackInputFragmentv2 extends BottomSheetDialogFragment implement
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
         String jsonString = FileUtils.loadSettingsJsonFile(AppContextService.getContext(getContext()));
-        CustomizationSettings alCustomizationSettings;
+        CustomizationSettings customizationSettings;
         if (!TextUtils.isEmpty(jsonString)) {
             customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {

@@ -1330,12 +1330,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     @Override
     public void onMqttDisconnected() {
-        Applozic.unSubscribeToTyping(getContext(), channel, contact);
+        KommunicateSettings.unSubscribeToTyping(getContext(), channel, contact);
     }
 
     @Override
     public void onMqttConnected() {
-        Applozic.subscribeToTyping(getContext(), channel, contact);
+        KommunicateSettings.subscribeToTyping(getContext(), channel, contact);
     }
 
     @Override
@@ -1516,7 +1516,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         // check for conversation closed or not.
         if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS
-                && !alCustomizationSettings.isRestartConversationButtonVisibility()
+                && !customizationSettings.isRestartConversationButtonVisibility()
         ) {
             return;
         }
@@ -4722,7 +4722,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 });
             } else {
                 autoCompleteTextView.setAdapter(null);
-                messageEditText.setHint(!TextUtils.isEmpty(customizationSettings.getEditTextHintText()) ? customizationSettings.getEditTextHintText() : ApplozicService.getContext(getContext()).getString(R.string.enter_message_hint));
+                messageEditText.setHint(!TextUtils.isEmpty(customizationSettings.getEditTextHintText()) ? customizationSettings.getEditTextHintText() : AppContextService.getContext(getContext()).getString(R.string.enter_message_hint));
             }
         }
     }

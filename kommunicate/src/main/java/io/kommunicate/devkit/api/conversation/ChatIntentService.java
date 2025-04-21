@@ -10,12 +10,11 @@ import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.DateUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.devkit.api.conversation.ChatIntentService;
 
 /**
  * Created by sunil on 26/12/15.
  */
-public class ApplozicIntentService extends CoreJobIntentService {
+public class ChatIntentService extends CoreJobIntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *

@@ -72,7 +72,7 @@ public class KmDatabaseHelper extends MobiComDatabaseHelper {
     }
 
     private KmDatabaseHelper(Context context) {
-        this(context, "KM_" + (!TextUtils.isEmpty(AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName() : MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context))), null, DB_VERSION);
+        this(context, "KM_" + (!TextUtils.isEmpty(AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName() : MobiComKitClientService.getApplicationKey(AppContextService.getContext(context))), null, DB_VERSION);
     }
 
     public static KmDatabaseHelper getInstance(Context context) {

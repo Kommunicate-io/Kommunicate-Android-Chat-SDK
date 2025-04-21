@@ -312,7 +312,7 @@ public class KmWebViewActivity extends AppCompatActivity {
     }
 
     private void openUrlInBrowser(Uri url) {
-        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         CustomTabsIntent intent = new CustomTabsIntent.Builder()
                 .setDefaultColorSchemeParams(new CustomTabColorSchemeParams.Builder()
                         .setToolbarColor(themeHelper.getToolbarColor())

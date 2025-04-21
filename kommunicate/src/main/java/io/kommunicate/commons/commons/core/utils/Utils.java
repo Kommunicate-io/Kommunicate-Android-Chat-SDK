@@ -20,9 +20,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.commons.AppContextService;
-import io.kommunicate.commons.file.ALFileProvider;
+import io.kommunicate.commons.file.FileContentProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -326,10 +326,10 @@ public class Utils {
 
     public static void printLog(Context context, String tag, String message) {
         try {
-            if (isDebugBuild(context) || ALSpecificSettings.getInstance(context).isLoggingEnabledForReleaseBuild()) {
+            if (isDebugBuild(context) || AppSpecificSettings.getInstance(context).isLoggingEnabledForReleaseBuild()) {
                 Log.i(tag, message);
 
-                if (ALSpecificSettings.getInstance(context).isTextLoggingEnabled()) {
+                if (AppSpecificSettings.getInstance(context).isTextLoggingEnabled()) {
                     writeToFile(context, tag + " (" + DateUtils.getDateAndTimeInDefaultFormat(System.currentTimeMillis()) + ") : " + message);
                 }
             }
@@ -344,7 +344,7 @@ public class Utils {
 
     public static void writeToFile(Context context, String log) {
         try {
-            String fileName = "/" + ALSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
+            String fileName = "/" + AppSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
             BufferedWriter bufferedWriter = null;
             try {
                 String folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_NAME);
@@ -377,12 +377,12 @@ public class Utils {
 
     public static Uri getTextLogFileUri(Context context) {
         try {
-            String fileName = "/" + ALSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
+            String fileName = "/" + AppSpecificSettings.getInstance(context).getTextLogFileName() + ".txt";
             String folder = "/" + Utils.getMetaDataValue(context, MAIN_FOLDER_NAME);
             File dir = new File(context.getFilesDir().getAbsolutePath() + folder);
             File textLogFile = new File(dir, fileName);
             if (hasNougat()) {
-                return ALFileProvider.getUriForFile(AppContextService.getContext(context), getMetaDataValue(context, COM_PACKAGE_NAME) + APPLOZIC_PROVIDER, textLogFile);
+                return FileContentProvider.getUriForFile(AppContextService.getContext(context), getMetaDataValue(context, COM_PACKAGE_NAME) + APPLOZIC_PROVIDER, textLogFile);
             }
             return Uri.fromFile(textLogFile);
         } catch (Exception e) {

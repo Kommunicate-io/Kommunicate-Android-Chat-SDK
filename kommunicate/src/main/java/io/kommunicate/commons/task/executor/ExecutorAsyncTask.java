@@ -6,6 +6,7 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.commons.task.BaseAsyncTask;
 
 import java.util.concurrent.Callable;
@@ -26,6 +27,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
  * @author shubham tewari
  */
+@Deprecated
+@CleanUpRequired(reason = "Migrated to coroutines")
 public abstract class ExecutorAsyncTask<Progress, Result> extends BaseAsyncTask<Progress, Result> {
     private static final String TAG = "ExecutorAsyncTask";
 

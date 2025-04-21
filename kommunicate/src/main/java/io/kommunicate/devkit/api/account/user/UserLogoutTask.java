@@ -2,8 +2,8 @@ package io.kommunicate.devkit.api.account.user;
 
 import android.content.Context;
 
-import io.kommunicate.devkit.listners.AlLogoutHandler;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.devkit.listners.LogoutHandler;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 
@@ -11,13 +11,13 @@ import annotations.CleanUpRequired;
 
 @Deprecated
 @CleanUpRequired(reason = "Migrated UserLogoutTask to UserLogoutUseCase")
-public class UserLogoutTask extends AlAsyncTask<Void, Boolean> {
+public class UserLogoutTask extends CoreAsyncTask<Void, Boolean> {
 
     private TaskListener taskListener;
     private final WeakReference<Context> context;
     UserClientService userClientService;
     private Exception mException;
-    private AlLogoutHandler logoutHandler;
+    private LogoutHandler logoutHandler;
 
     public UserLogoutTask(TaskListener listener, Context context) {
         this.taskListener = listener;
@@ -25,7 +25,7 @@ public class UserLogoutTask extends AlAsyncTask<Void, Boolean> {
         userClientService = new UserClientService(context);
     }
 
-    public UserLogoutTask(AlLogoutHandler listener, Context context) {
+    public UserLogoutTask(LogoutHandler listener, Context context) {
         this.logoutHandler = listener;
         this.context = new WeakReference<Context>(context);
         userClientService = new UserClientService(context);

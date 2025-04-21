@@ -5,7 +5,7 @@ import android.os.ResultReceiver
 import io.kommunicate.devkit.KommunicateSettings
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService
 import io.kommunicate.devkit.api.account.register.RegistrationResponse
-import io.kommunicate.devkit.listners.AlLoginHandler
+import io.kommunicate.devkit.listners.LoginHandler
 import io.kommunicate.services.KmUserClientService
 import io.kommunicate.users.KMUser
 import io.kommunicate.utils.APIResult
@@ -68,13 +68,13 @@ class KMUserLoginUseCase(
          * coroutine internally don't invoke explicitly.
          *
          * This method provides a simpler way to execute the use case and handle success or failure
-         * using a provided [AlLoginHandler].
+         * using a provided [LoginHandler].
          *
          * @param context The Android context for accessing resources and services.
          * @param user The [KMUser] object containing user details for login or registration.
          * @param isAgent Boolean flag indicating if the user is an agent or a regular user.
          * @param preChatReceiver Optional [ResultReceiver] to handle pre-chat events.
-         * @param loginHandler Optional [AlLoginHandler] for handling login success or failure callbacks.
+         * @param loginHandler Optional [LoginHandler] for handling login success or failure callbacks.
          * @return [UseCaseExecutor] for cancelling the coroutine.
          */
         fun executeWithExecutor(
@@ -82,7 +82,7 @@ class KMUserLoginUseCase(
             user: KMUser,
             isAgent: Boolean,
             preChatReceiver: ResultReceiver? = null,
-            loginHandler: AlLoginHandler? = null,
+            loginHandler: LoginHandler? = null,
         ): UseCaseExecutor<KMUserLoginUseCase, APIResult<RegistrationResponse>> {
 
             val kmUserLoginUseCase = KMUserLoginUseCase(context, user, isAgent, preChatReceiver)

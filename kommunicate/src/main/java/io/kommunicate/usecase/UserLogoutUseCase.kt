@@ -1,7 +1,7 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import io.kommunicate.devkit.listners.AlLogoutHandler
+import io.kommunicate.devkit.listners.LogoutHandler
 import io.kommunicate.services.KmUserClientService
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
@@ -48,7 +48,7 @@ class UserLogoutUseCase(
         @JvmStatic
         fun executeWithExecutor(
             context: Context,
-            logoutHandler: AlLogoutHandler? = null
+            logoutHandler: LogoutHandler? = null
         ): UseCaseExecutor<UserLogoutUseCase, APIResult<Boolean>> {
 
             val userLogoutUseCase = UserLogoutUseCase(context)

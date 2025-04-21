@@ -11,13 +11,13 @@ import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.listners.ConversationListHandler;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConversationListTask extends AlAsyncTask<Void, List<AlConversation>> {
+public class ConversationListTask extends CoreAsyncTask<Void, List<ConversationDetails>> {
 
     private WeakReference<Context> context;
     private String searchString;
@@ -48,7 +48,7 @@ public class ConversationListTask extends AlAsyncTask<Void, List<AlConversation>
     }
 
     @Override
-    protected List<AlConversation> doInBackground() {
+    protected List<ConversationDetails> doInBackground() {
         List<Message> messageList = null;
 
         try {
@@ -63,12 +63,12 @@ public class ConversationListTask extends AlAsyncTask<Void, List<AlConversation>
             }
 
             List<String> recList = new ArrayList<String>();
-            List<AlConversation> conversationList = new ArrayList<AlConversation>();
+            List<ConversationDetails> conversationList = new ArrayList<ConversationDetails>();
 
             if (isForMessageList) {
                 if (messageList != null) {
                     for (Message message : messageList) {
-                        AlConversation conversation = new AlConversation();
+                        ConversationDetails conversation = new ConversationDetails();
 
                         if ((message.getGroupId() == null || message.getGroupId() == 0) && !recList.contains(message.getContactIds())) {
                             recList.add(message.getContactIds());
@@ -101,7 +101,7 @@ public class ConversationListTask extends AlAsyncTask<Void, List<AlConversation>
     }
 
     @Override
-    protected void onPostExecute(List<AlConversation> conversationList) {
+    protected void onPostExecute(List<ConversationDetails> conversationList) {
         super.onPostExecute(conversationList);
 
         handler.onResult(context.get(), conversationList, exception);

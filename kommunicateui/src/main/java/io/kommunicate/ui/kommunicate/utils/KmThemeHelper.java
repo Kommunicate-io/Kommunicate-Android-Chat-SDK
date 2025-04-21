@@ -5,7 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.text.TextUtils;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.commons.AppContextService;
 
@@ -25,7 +25,7 @@ public class KmThemeHelper implements KmCallback {
     private static KmThemeHelper kmThemeHelper;
     private final Context context;
     private final KmAppSettingPreferences appSettingPreferences;
-    private final AlCustomizationSettings alCustomizationSettings;
+    private final CustomizationSettings customizationSettings;
     private Boolean collectFeedback;
     private int primaryColor = -1;
     private int secondaryColor = -1;
@@ -40,16 +40,16 @@ public class KmThemeHelper implements KmCallback {
     private int richMessageThemeColor = -1;
     private Map<String, Boolean> hidePostCTA = new HashMap<>();
 
-    public static KmThemeHelper getInstance(Context context, AlCustomizationSettings alCustomizationSettings) {
+    public static KmThemeHelper getInstance(Context context, CustomizationSettings customizationSettings) {
         if (kmThemeHelper == null) {
-            kmThemeHelper = new KmThemeHelper(context, alCustomizationSettings);
+            kmThemeHelper = new KmThemeHelper(context, customizationSettings);
         }
         return kmThemeHelper;
     }
 
-    private KmThemeHelper(Context context, AlCustomizationSettings alCustomizationSettings) {
+    private KmThemeHelper(Context context, CustomizationSettings alCustomizationSettings) {
         this.context = AppContextService.getContext(context);
-        this.alCustomizationSettings = alCustomizationSettings;
+        this.customizationSettings = alCustomizationSettings;
         appSettingPreferences = KmAppSettingPreferences.getInstance();
         appSettingPreferences.setCallback(this);
     }
@@ -68,17 +68,17 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getToolbarTitleColor() {
-        toolbarTitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarTitleColor().get(1) : alCustomizationSettings.getToolbarTitleColor().get(0), context.getResources().getColor(R.color.toolbar_title_color));
+        toolbarTitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? customizationSettings.getToolbarTitleColor().get(1) : customizationSettings.getToolbarTitleColor().get(0), context.getResources().getColor(R.color.toolbar_title_color));
         return toolbarTitleColor;
     }
 
     public int getToolbarSubtitleColor() {
-        toolbarSubtitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarSubtitleColor().get(1) : alCustomizationSettings.getToolbarSubtitleColor().get(0), context.getResources().getColor(R.color.toolbar_subtitle_color));
+        toolbarSubtitleColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? customizationSettings.getToolbarSubtitleColor().get(1) : customizationSettings.getToolbarSubtitleColor().get(0), context.getResources().getColor(R.color.toolbar_subtitle_color));
         return toolbarSubtitleColor;
     }
 
     public int getSentMessageBackgroundColor() {
-        String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageBackgroundColor().get(1) : alCustomizationSettings.getSentMessageBackgroundColor().get(0);
+        String colorStr = isDarkModeEnabledForSDK() ? customizationSettings.getSentMessageBackgroundColor().get(1) : customizationSettings.getSentMessageBackgroundColor().get(0);
 
         if (TextUtils.isEmpty(colorStr)) {
             colorStr = appSettingPreferences.getPrimaryColor();
@@ -95,7 +95,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public Map<String, Boolean> getHidePostCTA() {
-        hidePostCTA = alCustomizationSettings.isHidePostCTA();
+        hidePostCTA = customizationSettings.isHidePostCTA();
         if (hidePostCTA == null) {
             hidePostCTA = new HashMap<>();
         }
@@ -103,7 +103,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public boolean isDisableFormPostSubmit() {
-        return alCustomizationSettings.isDisableFormPostSubmit();
+        return customizationSettings.isDisableFormPostSubmit();
     }
 
     public boolean isHidePostCTA() {
@@ -135,7 +135,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getSentMessageBorderColor() {
-        String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSentMessageBorderColor().get(1) : alCustomizationSettings.getSentMessageBorderColor().get(0);
+        String colorStr = isDarkModeEnabledForSDK() ? customizationSettings.getSentMessageBorderColor().get(1) : customizationSettings.getSentMessageBorderColor().get(0);
 
         if (TextUtils.isEmpty(colorStr)) {
             colorStr = appSettingPreferences.getPrimaryColor();
@@ -145,7 +145,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getSendButtonBackgroundColor() {
-        String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getSendButtonBackgroundColor().get(1) : alCustomizationSettings.getSendButtonBackgroundColor().get(0);
+        String colorStr = isDarkModeEnabledForSDK() ? customizationSettings.getSendButtonBackgroundColor().get(1) : customizationSettings.getSendButtonBackgroundColor().get(0);
 
         if (TextUtils.isEmpty(colorStr)) {
             colorStr = appSettingPreferences.getPrimaryColor();
@@ -155,7 +155,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getMessageStatusIconColor() {
-        String colorStr = isDarkModeEnabledForSDK() ? alCustomizationSettings.getMessageStatusIconColor().get(1) : alCustomizationSettings.getMessageStatusIconColor().get(0);
+        String colorStr = isDarkModeEnabledForSDK() ? customizationSettings.getMessageStatusIconColor().get(1) : customizationSettings.getMessageStatusIconColor().get(0);
 
         if (TextUtils.isEmpty(colorStr)) {
             colorStr = appSettingPreferences.getPrimaryColor();
@@ -171,23 +171,23 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public int getToolbarColor() {
-        toolbarColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getToolbarColor().get(1) : alCustomizationSettings.getToolbarColor().get(0), getPrimaryColor());
+        toolbarColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? customizationSettings.getToolbarColor().get(1) : customizationSettings.getToolbarColor().get(0), getPrimaryColor());
         return toolbarColor;
     }
 
     public int getStatusBarColor() {
-        statusBarColor = parseColorWithDefault(alCustomizationSettings.getStatusBarColor().get(isDarkModeEnabledForSDK() ? 1 : 0),
-                parseColorWithDefault(alCustomizationSettings.getToolbarColor().get(isDarkModeEnabledForSDK() ? 1 : 0), getPrimaryColor()));
+        statusBarColor = parseColorWithDefault(customizationSettings.getStatusBarColor().get(isDarkModeEnabledForSDK() ? 1 : 0),
+                parseColorWithDefault(customizationSettings.getToolbarColor().get(isDarkModeEnabledForSDK() ? 1 : 0), getPrimaryColor()));
         return statusBarColor;
     }
 
     public int getRichMessageThemeColor() {
-        richMessageThemeColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? alCustomizationSettings.getRichMessageThemeColor().get(1) : alCustomizationSettings.getRichMessageThemeColor().get(0), getPrimaryColor());
+        richMessageThemeColor = parseColorWithDefault(isDarkModeEnabledForSDK() ? customizationSettings.getRichMessageThemeColor().get(1) : customizationSettings.getRichMessageThemeColor().get(0), getPrimaryColor());
         return richMessageThemeColor;
     }
 
     public boolean isDarkModeEnabledForSDK() {
-        return !alCustomizationSettings.isAgentApp() && alCustomizationSettings.getUseDarkMode() && ((context.getResources().getConfiguration().uiMode &
+        return !customizationSettings.isAgentApp() && customizationSettings.getUseDarkMode() && ((context.getResources().getConfiguration().uiMode &
                 Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
     }
 

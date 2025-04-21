@@ -17,7 +17,7 @@ import io.kommunicate.ui.conversation.richmessaging.models.v2.KmAutoSuggestion;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
 
 public class KmAutoSuggestionArrayAdapter<T> extends ArrayAdapter<T> {
@@ -25,13 +25,13 @@ public class KmAutoSuggestionArrayAdapter<T> extends ArrayAdapter<T> {
     private ArrayList<T> fullList;
     private ArrayList<T> suggestions;
     private int layoutResourceId;
-    private AlCustomizationSettings alCustomizationSettings;
+    private CustomizationSettings customizationSettings;
 
-    public KmAutoSuggestionArrayAdapter(Context context, int layoutResourceId, T[] objects, AlCustomizationSettings alCustomizationSettings) {
+    public KmAutoSuggestionArrayAdapter(Context context, int layoutResourceId, T[] objects, CustomizationSettings customizationSettings) {
         super(context, layoutResourceId, objects);
         this.layoutResourceId = layoutResourceId;
         fullList = new ArrayList<>(Arrays.asList(objects));
-        this.alCustomizationSettings = alCustomizationSettings;
+        this.customizationSettings = customizationSettings;
     }
 
     @Override
@@ -54,13 +54,13 @@ public class KmAutoSuggestionArrayAdapter<T> extends ArrayAdapter<T> {
 
         LinearLayout autoSuggestionRowLayout = (LinearLayout)convertView.findViewById(R.id.km_auto_suggestion_row_layout);
         TextView nameView = (TextView) convertView.findViewById(R.id.km_name_tv);
-        KmThemeHelper themeHelper = KmThemeHelper.getInstance(getContext(),alCustomizationSettings);
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(getContext(), customizationSettings);
 
-        if (!TextUtils.isEmpty(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAutoSuggestionButtonBackgroundColor().get(1) : alCustomizationSettings.getAutoSuggestionButtonBackgroundColor().get(0))){
-            autoSuggestionRowLayout.setBackgroundColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAutoSuggestionButtonBackgroundColor().get(1) : alCustomizationSettings.getAutoSuggestionButtonBackgroundColor().get(0)));
+        if (!TextUtils.isEmpty(themeHelper.isDarkModeEnabledForSDK() ? customizationSettings.getAutoSuggestionButtonBackgroundColor().get(1) : customizationSettings.getAutoSuggestionButtonBackgroundColor().get(0))){
+            autoSuggestionRowLayout.setBackgroundColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? customizationSettings.getAutoSuggestionButtonBackgroundColor().get(1) : customizationSettings.getAutoSuggestionButtonBackgroundColor().get(0)));
         }
-        if (!TextUtils.isEmpty(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAutoSuggestionButtonTextColor().get(1) : alCustomizationSettings.getAutoSuggestionButtonTextColor().get(0))){
-           nameView.setTextColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? alCustomizationSettings.getAutoSuggestionButtonTextColor().get(1) : alCustomizationSettings.getAutoSuggestionButtonTextColor().get(0)));
+        if (!TextUtils.isEmpty(themeHelper.isDarkModeEnabledForSDK() ? customizationSettings.getAutoSuggestionButtonTextColor().get(1) : customizationSettings.getAutoSuggestionButtonTextColor().get(0))){
+           nameView.setTextColor(Color.parseColor(themeHelper.isDarkModeEnabledForSDK() ? customizationSettings.getAutoSuggestionButtonTextColor().get(1) : customizationSettings.getAutoSuggestionButtonTextColor().get(0)));
         }
 
         T source = fullList.get(position);

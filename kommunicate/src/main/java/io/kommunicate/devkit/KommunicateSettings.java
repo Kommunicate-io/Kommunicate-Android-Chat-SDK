@@ -13,24 +13,24 @@ import android.text.TextUtils;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
-import io.kommunicate.devkit.api.authentication.AlAuthService;
+import io.kommunicate.devkit.api.authentication.AuthService;
 import io.kommunicate.devkit.api.conversation.MqttIntentService;
 import io.kommunicate.devkit.api.notification.MobiComPushReceiver;
 import io.kommunicate.devkit.api.notification.NotificationChannels;
 import io.kommunicate.devkit.broadcast.ConversationBroadcastReceiver;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
-import io.kommunicate.devkit.listners.AlCallback;
-import io.kommunicate.devkit.listners.AlLoginHandler;
-import io.kommunicate.devkit.listners.AlLogoutHandler;
-import io.kommunicate.devkit.listners.AlPushNotificationHandler;
+import io.kommunicate.devkit.listners.ResultCallback;
+import io.kommunicate.devkit.listners.LoginHandler;
+import io.kommunicate.devkit.listners.LogoutHandler;
+import io.kommunicate.devkit.listners.PushNotificationHandler;
 import io.kommunicate.devkit.listners.UIEventListener;
 
 import io.kommunicate.usecase.PushNotificationUseCase;
 import io.kommunicate.usecase.UserLoginUseCase;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.data.AlPrefSettings;
+import io.kommunicate.commons.data.PrefSettings;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
 
@@ -65,7 +65,7 @@ public class KommunicateSettings {
 
     public static KommunicateSettings init(Context context, String applicationKey) {
         kommunicateSettings = getInstance(context);
-        AlPrefSettings.getInstance(context).setApplicationKey(applicationKey);
+        PrefSettings.getInstance(context).setApplicationKey(applicationKey);
         return kommunicateSettings;
     }
     public static void setDefaultLanguage(Context context){
@@ -73,7 +73,7 @@ public class KommunicateSettings {
         if(TextUtils.isEmpty(deviceLanguage)){
             return;
         }
-        AlPrefSettings.getInstance(context).setDeviceDefaultLanguageToBot(deviceLanguage);
+        PrefSettings.getInstance(context).setDeviceDefaultLanguageToBot(deviceLanguage);
         Map<String, String> localeMetadata = new HashMap<>();
         localeMetadata.put(KM_USER_LOCALE,deviceLanguage);
         KmSettings.updateChatContext(context,localeMetadata);
@@ -87,25 +87,25 @@ public class KommunicateSettings {
     }
 
     public void setGeoApiKey(String geoApiKey) {
-        AlPrefSettings.getInstance(context).setGeoApiKey(geoApiKey);
+        PrefSettings.getInstance(context).setGeoApiKey(geoApiKey);
     }
 
     public String getGeoApiKey() {
-        String geoApiKey = AlPrefSettings.getInstance(context).getGeoApiKey();
+        String geoApiKey = PrefSettings.getInstance(context).getGeoApiKey();
         if (!TextUtils.isEmpty(geoApiKey)) {
             return geoApiKey;
         }
-        return Utils.getMetaDataValue(context, AlPrefSettings.GOOGLE_API_KEY_META_DATA);
+        return Utils.getMetaDataValue(context, PrefSettings.GOOGLE_API_KEY_META_DATA);
     }
 
     public String getApplicationKey() {
-        String decryptedApplicationKey = AlPrefSettings.getInstance(context).getApplicationKey();
+        String decryptedApplicationKey = PrefSettings.getInstance(context).getApplicationKey();
         if (!TextUtils.isEmpty(decryptedApplicationKey)) {
             return decryptedApplicationKey;
         }
         String existingAppKey = sharedPreferences.getString(APPLICATION_KEY, null);
         if (!TextUtils.isEmpty(existingAppKey)) {
-            AlPrefSettings.getInstance(context).setApplicationKey(existingAppKey);
+            PrefSettings.getInstance(context).setApplicationKey(existingAppKey);
             sharedPreferences.edit().remove(APPLICATION_KEY).commit();
         }
         return existingAppKey;
@@ -164,7 +164,7 @@ public class KommunicateSettings {
     }
 
     public static void connectPublishWithVerifyToken(final Context context, String loadingMessage) {
-        AlAuthService.verifyToken(context, loadingMessage, new AlCallback() {
+        AuthService.verifyToken(context, loadingMessage, new ResultCallback() {
             @Override
             public void onSuccess(Object response) {
                 connectPublish(context, true);
@@ -255,7 +255,7 @@ public class KommunicateSettings {
 
     @Deprecated
     @CleanUpRequired(reason = "Not used anywhere")
-    public static void loginUser(Context context, User user, AlLoginHandler loginHandler) {
+    public static void loginUser(Context context, User user, LoginHandler loginHandler) {
         if (MobiComUserPreference.getInstance(context).isLoggedIn()) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
             registrationResponse.setMessage(context.getString(R.string.user_logged_in));
@@ -265,7 +265,7 @@ public class KommunicateSettings {
         }
     }
 
-    public static void connectUser(Context context, User user, AlLoginHandler loginHandler) {
+    public static void connectUser(Context context, User user, LoginHandler loginHandler) {
         if (isConnected(context)) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
             registrationResponse.setMessage(context.getString(R.string.user_logged_in));
@@ -284,7 +284,7 @@ public class KommunicateSettings {
         }
     }
 
-    public static void connectUserWithoutCheck(Context context, User user, AlLoginHandler loginHandler) {
+    public static void connectUserWithoutCheck(Context context, User user, LoginHandler loginHandler) {
         UserLoginUseCase.Companion.executeWithExecutor(context, user, loginHandler);
     }
 
@@ -306,7 +306,7 @@ public class KommunicateSettings {
 
     @Deprecated
     @CleanUpRequired(reason = "Not Used Anywhere")
-    public static void loginUser(Context context, User user, boolean withLoggedInCheck, AlLoginHandler loginHandler) {
+    public static void loginUser(Context context, User user, boolean withLoggedInCheck, LoginHandler loginHandler) {
         if (withLoggedInCheck && MobiComUserPreference.getInstance(context).isLoggedIn()) {
             RegistrationResponse registrationResponse = new RegistrationResponse();
             registrationResponse.setMessage(context.getString(R.string.user_logged_in));
@@ -316,15 +316,15 @@ public class KommunicateSettings {
         }
     }
 
-    public static void logoutUser(final Context context, AlLogoutHandler logoutHandler) {
+    public static void logoutUser(final Context context, LogoutHandler logoutHandler) {
         UserLogoutUseCase.executeWithExecutor(context, logoutHandler);
     }
 
-    public static void registerForPushNotification(Context context, String pushToken, AlPushNotificationHandler handler) {
+    public static void registerForPushNotification(Context context, String pushToken, PushNotificationHandler handler) {
         PushNotificationUseCase.executeWithExecutor(context, pushToken, handler);
     }
 
-    public static void registerForPushNotification(Context context, AlPushNotificationHandler handler) {
+    public static void registerForPushNotification(Context context, PushNotificationHandler handler) {
         registerForPushNotification(context, KommunicateSettings.getInstance(context).getDeviceRegistrationId(), handler);
     }
 

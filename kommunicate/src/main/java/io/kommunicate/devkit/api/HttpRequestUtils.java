@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
-import io.kommunicate.devkit.api.authentication.AlAuthService;
+import io.kommunicate.devkit.api.authentication.AuthService;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.encryption.EncryptionUtils;
@@ -272,7 +272,7 @@ public class HttpRequestUtils {
                 connection.setRequestProperty(APPLICATION_KEY_HEADER, applicationKey);
             }
 
-            if (!AlAuthService.isTokenValid(context) && !isRefreshTokenInProgress) {
+            if (!AuthService.isTokenValid(context) && !isRefreshTokenInProgress) {
                 new RegisterUserClientService(context).refreshAuthToken(applicationKey, userPreferences.getUserId());
             }
 

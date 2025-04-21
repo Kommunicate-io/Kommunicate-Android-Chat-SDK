@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.AlJobIntentService;
+import androidx.core.app.CoreJobIntentService;
 
 import android.text.TextUtils;
 
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by sunil on 30/12/15.
  */
-public class MqttIntentService extends AlJobIntentService {
+public class MqttIntentService extends CoreJobIntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *

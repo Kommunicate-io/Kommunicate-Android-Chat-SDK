@@ -468,7 +468,7 @@ public class KmBookingRMAdapter extends KmRichMessageAdapter {
         final KmBookingDetailsModel detailsModel = new KmBookingDetailsModel();
         detailsModel.setSessionId(model.getSessionId());
 
-        final KmBookingDetailsModel.ALBookingDetails bookingDetails = detailsModel.getPersonInfo();
+        final KmBookingDetailsModel.BookingDetailsModel bookingDetails = detailsModel.getPersonInfo();
 
         holder.titleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

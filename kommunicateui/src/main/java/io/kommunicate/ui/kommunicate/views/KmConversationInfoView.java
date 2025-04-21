@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.ui.R;
 
 import androidx.annotation.Nullable;
@@ -51,7 +51,7 @@ public class KmConversationInfoView extends LinearLayout {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlEventManager.getInstance().sendOnConversationInfoClicked();
+                EventManager.getInstance().sendOnConversationInfoClicked();
             }
         });
     }

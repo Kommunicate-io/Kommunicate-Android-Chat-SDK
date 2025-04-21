@@ -12,26 +12,26 @@ import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.devkit.api.conversation.MobiComConversationService;
 import io.kommunicate.devkit.api.conversation.service.ConversationService;
 import io.kommunicate.devkit.api.notification.MuteNotificationRequest;
-import io.kommunicate.devkit.api.people.AlGetPeopleTask;
+import io.kommunicate.devkit.api.people.GetPeopleTask;
 import io.kommunicate.devkit.api.people.ChannelInfo;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.cache.MessageSearchCache;
 import io.kommunicate.devkit.channel.database.ChannelDatabaseService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
-import io.kommunicate.devkit.feed.AlResponse;
+import io.kommunicate.devkit.feed.Response;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.feed.ChannelFeed;
 import io.kommunicate.devkit.feed.ChannelFeedApiResponse;
 import io.kommunicate.devkit.feed.ChannelFeedListResponse;
 import io.kommunicate.devkit.feed.ChannelUsersFeed;
 import io.kommunicate.devkit.feed.GroupInfoUpdate;
-import io.kommunicate.devkit.listners.AlChannelListener;
+import io.kommunicate.devkit.listners.ChannelListener;
 import io.kommunicate.devkit.sync.SyncChannelFeed;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.channel.ChannelUserMapper;
-import io.kommunicate.commons.task.AlTask;
+import io.kommunicate.commons.task.CoreTask;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -269,13 +269,13 @@ public class ChannelService {
         syncChannels(false);
     }
 
-    public synchronized AlResponse createChannel(final ChannelInfo channelInfo) {
+    public synchronized Response createChannel(final ChannelInfo channelInfo) {
 
         if (channelInfo == null) {
             return null;
         }
 
-        AlResponse alResponse = new AlResponse();
+        Response response = new Response();
         ChannelFeedApiResponse channelFeedResponse = null;
 
         try {
@@ -286,25 +286,25 @@ public class ChannelService {
             }
 
             if (channelFeedResponse.isSuccess()) {
-                alResponse.setStatus(AlResponse.SUCCESS);
+                response.setStatus(Response.SUCCESS);
                 ChannelFeed channelFeed = channelFeedResponse.getResponse();
 
                 if (channelFeed != null) {
                     ChannelFeed[] channelFeeds = new ChannelFeed[1];
                     channelFeeds[0] = channelFeed;
                     processChannelFeedList(channelFeeds, true);
-                    alResponse.setResponse(getChannel(channelFeed));
+                    response.setResponse(getChannel(channelFeed));
                 }
             } else {
-                alResponse.setStatus(AlResponse.ERROR);
-                alResponse.setResponse(channelFeedResponse.getErrorResponse());
+                response.setStatus(Response.ERROR);
+                response.setResponse(channelFeedResponse.getErrorResponse());
             }
         } catch (Exception e) {
-            alResponse.setStatus(AlResponse.ERROR);
-            alResponse.setException(e);
+            response.setStatus(Response.ERROR);
+            response.setException(e);
         }
 
-        return alResponse;
+        return response;
     }
 
     public Channel getChannel(ChannelFeed channelFeed) {
@@ -636,24 +636,24 @@ public class ChannelService {
         return null;
     }
 
-    public AlResponse createGroupOfTwoWithResponse(ChannelInfo channelInfo) {
+    public Response createGroupOfTwoWithResponse(ChannelInfo channelInfo) {
         if (channelInfo == null) {
             return null;
         }
 
-        AlResponse alResponse = new AlResponse();
+        Response response = new Response();
 
         if (!TextUtils.isEmpty(channelInfo.getClientGroupId())) {
             Channel channel = channelDatabaseService.getChannelByClientGroupId(channelInfo
                     .getClientGroupId());
             if (channel != null) {
-                alResponse.setStatus(AlResponse.SUCCESS);
-                alResponse.setResponse(channel);
+                response.setStatus(Response.SUCCESS);
+                response.setResponse(channel);
             } else {
                 ChannelFeedApiResponse channelFeedApiResponse = channelClientService
                         .createChannelWithResponse(channelInfo);
                 if (channelFeedApiResponse == null) {
-                    alResponse.setStatus(AlResponse.ERROR);
+                    response.setStatus(Response.ERROR);
                 } else {
                     if (channelFeedApiResponse.isSuccess()) {
                         ChannelFeed channelFeed = channelFeedApiResponse.getResponse();
@@ -661,8 +661,8 @@ public class ChannelService {
                             ChannelFeed[] channelFeeds = new ChannelFeed[1];
                             channelFeeds[0] = channelFeed;
                             processChannelFeedList(channelFeeds, true);
-                            alResponse.setStatus(AlResponse.SUCCESS);
-                            alResponse.setResponse(getChannel(channelFeed));
+                            response.setStatus(Response.SUCCESS);
+                            response.setResponse(getChannel(channelFeed));
                         }
                     } else {
                         ChannelFeed channelFeed = channelClientService.getChannelInfo(channelInfo
@@ -671,14 +671,14 @@ public class ChannelService {
                             ChannelFeed[] channelFeeds = new ChannelFeed[1];
                             channelFeeds[0] = channelFeed;
                             processChannelFeedList(channelFeeds, false);
-                            alResponse.setStatus(AlResponse.SUCCESS);
-                            alResponse.setResponse(getChannel(channelFeed));
+                            response.setStatus(Response.SUCCESS);
+                            response.setResponse(getChannel(channelFeed));
                         }
                     }
                 }
             }
         }
-        return alResponse;
+        return response;
     }
 
     public List<ChannelFeed> getGroupInfoFromGroupIds(List<String> groupIds) {
@@ -880,12 +880,12 @@ public class ChannelService {
         return channelDatabaseService.getParentGroupKey(parentClientGroupKey);
     }
 
-    public void getChannelByChannelKeyAsync(Integer groupId, AlChannelListener channelListener) {
-        AlTask.execute(new AlGetPeopleTask(context, null, null, groupId, channelListener, null, null, this));
+    public void getChannelByChannelKeyAsync(Integer groupId, ChannelListener channelListener) {
+        CoreTask.execute(new GetPeopleTask(context, null, null, groupId, channelListener, null, null, this));
     }
 
-    public void getChannelByClientKeyAsync(String clientChannelKey, AlChannelListener channelListener) {
-        AlTask.execute(new AlGetPeopleTask(context, null, clientChannelKey, null, channelListener, null, null, this));
+    public void getChannelByClientKeyAsync(String clientChannelKey, ChannelListener channelListener) {
+        CoreTask.execute(new GetPeopleTask(context, null, clientChannelKey, null, channelListener, null, null, this));
     }
 
     /**

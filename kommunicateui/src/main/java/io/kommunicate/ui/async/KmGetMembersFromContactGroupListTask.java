@@ -3,6 +3,7 @@ package io.kommunicate.ui.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.devkit.channel.service.ChannelClientService;
 import io.kommunicate.devkit.channel.service.ChannelService;
@@ -19,8 +20,9 @@ import java.util.Set;
 /**
  * Created by reytum on 27/10/17.
  */
-
-public class KmGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, KmGetMembersFromContactGroupListTask.AlGetMembersModel> {
+@Deprecated
+@CleanUpRequired(reason = "Migrated to Coroutines")
+public class KmGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, KmGetMembersFromContactGroupListTask.GetMembersModel> {
 
     WeakReference<Context> context;
     private String groupType;
@@ -39,9 +41,9 @@ public class KmGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, 
     }
 
     @Override
-    protected AlGetMembersModel doInBackground(Void... voids) {
+    protected GetMembersModel doInBackground(Void... voids) {
 
-        AlGetMembersModel model = new AlGetMembersModel();
+        GetMembersModel model = new GetMembersModel();
 
         try {
             ChannelFeedListResponse response = ChannelClientService.getInstance(context.get()).getMemebersFromContactGroupIds(groupIds, groupNames, groupType);
@@ -71,7 +73,7 @@ public class KmGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, 
     }
 
     @Override
-    protected void onPostExecute(AlGetMembersModel model) {
+    protected void onPostExecute(GetMembersModel model) {
         if (model != null) {
             if (model.getMembers() != null && model.getMembers().length != 0) {
                 listener.onSuccess(context.get(), model.getResponse(), model.getMembers());
@@ -88,7 +90,7 @@ public class KmGetMembersFromContactGroupListTask extends AsyncTask<Void, Void, 
         void onFailure(Context context, String response, Exception e);
     }
 
-    public class AlGetMembersModel {
+    public class GetMembersModel {
         String[] members;
         String response;
         Exception exception;

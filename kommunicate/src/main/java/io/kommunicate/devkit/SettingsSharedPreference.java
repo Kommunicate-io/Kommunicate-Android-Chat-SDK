@@ -9,7 +9,7 @@ import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.devkit.contact.AppContactService;
-import io.kommunicate.devkit.listners.AlCallback;
+import io.kommunicate.devkit.listners.ResultCallback;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
@@ -384,7 +384,7 @@ public class SettingsSharedPreference {
         return this;
     }
 
-    public SettingsSharedPreference disableChatForUser(final boolean disable, final AlCallback callback) {
+    public SettingsSharedPreference disableChatForUser(final boolean disable, final ResultCallback callback) {
         Map<String, String> userMetadata;
         Contact contact = new AppContactService(context).getContactById(MobiComUserPreference.getInstance(context).getUserId());
         if (contact != null && contact.getMetadata() != null) {
@@ -397,7 +397,7 @@ public class SettingsSharedPreference {
 
         User user = new User();
         user.setMetadata(userMetadata);
-        UserService.getInstance(context).updateUser(user, true, new AlCallback() {
+        UserService.getInstance(context).updateUser(user, true, new ResultCallback() {
             @Override
             public void onSuccess(Object response) {
                 sharedPreferences.edit().putBoolean(Contact.DISABLE_CHAT_WITH_USER, disable).commit();

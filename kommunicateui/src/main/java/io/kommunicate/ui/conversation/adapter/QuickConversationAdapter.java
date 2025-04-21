@@ -33,7 +33,7 @@ import io.kommunicate.devkit.channel.database.ChannelDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.alphanumbericcolor.AlphaNumberColorUtil;
 import io.kommunicate.ui.conversation.ConversationUIService;
@@ -88,15 +88,15 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private EmojiconHandler emojiconHandler;
     private List<Message> originalList;
     private TextAppearanceSpan highlightTextSpan;
-    private AlCustomizationSettings alCustomizationSettings;
+    private CustomizationSettings customizationSettings;
     private View view;
     private ConversationUIService conversationUIService;
     private int loggedInUserRoleType;
     private String loggedInUserId;
     private boolean isDarkMode;
 
-    public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
-        this.alCustomizationSettings = alCustomizationSettings;
+    public void setAlCustomizationSettings(CustomizationSettings customizationSettings) {
+        this.customizationSettings = customizationSettings;
     }
 
     public void setDarkMode(boolean isDarkMode) {
@@ -171,7 +171,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 myholder.alphabeticTextView.setVisibility(View.GONE);
                 myholder.onlineTextView.setVisibility(View.GONE);
 
-                if (alCustomizationSettings.isOnlineStatusMasterList() && message.getGroupId() == null) {
+                if (customizationSettings.isOnlineStatusMasterList() && message.getGroupId() == null) {
                     myholder.onlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.VISIBLE : View.GONE);
                     myholder.offlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.GONE : View.VISIBLE);
                 }
@@ -539,7 +539,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 if (menuItems[i].equals(context.getResources().getString(R.string.delete_group)) && (isUserPresentInGroup || !isChannelDeleted || isSupportGroup)) {
                     continue;
                 }
-                if (menuItems[i].equals(context.getResources().getString(R.string.delete_conversation_context)) && !alCustomizationSettings.isDeleteOption()) {
+                if (menuItems[i].equals(context.getResources().getString(R.string.delete_conversation_context)) && !customizationSettings.isDeleteOption()) {
                     continue;
                 }
 

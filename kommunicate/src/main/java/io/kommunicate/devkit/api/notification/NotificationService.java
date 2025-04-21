@@ -27,7 +27,7 @@ import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
-import io.kommunicate.devkit.listners.AlConstantsHandler;
+import io.kommunicate.devkit.listners.ConstantsHandler;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
@@ -54,8 +54,8 @@ public class NotificationService {
     public static final String NOTIFICATION_TEXT_NOT_AVAILABLE = "You received a message";
     public static final int NOTIFICATION_ID = 1000;
     private static final String TAG = "NotificationService";
-    private static final String NOTIFICATION_SMALL_ICON_METADATA = "com.applozic.mobicomkit.notification.smallIcon";
-    private static final String NOTIFICATION_SMALL_ICON_COLOR = "com.applozic.mobicomkit.notification.iconColor";
+    private static final String NOTIFICATION_SMALL_ICON_METADATA = "io.kommunicate.devkit.notification.smallIcon";
+    private static final String NOTIFICATION_SMALL_ICON_COLOR = "io.kommunicate.devkit.notification.iconColor";
     private static String GROUP_KEY = "applozic_key";
     MessageDatabaseService messageDatabaseService;
     List<Message> unReadMessageList = new ArrayList<>();
@@ -570,8 +570,8 @@ public class NotificationService {
     }
 
     public String getText(int index) {
-        if (context.getApplicationContext() instanceof AlConstantsHandler) {
-            return getTextFromIndex(((AlConstantsHandler) context.getApplicationContext()).getNotificationTexts(), index);
+        if (context.getApplicationContext() instanceof ConstantsHandler) {
+            return getTextFromIndex(((ConstantsHandler) context.getApplicationContext()).getNotificationTexts(), index);
         }
 
         return constArray[index];

@@ -9,14 +9,14 @@ import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.SyncCallService;
 import io.kommunicate.devkit.api.notification.MobiComPushReceiver;
-import io.kommunicate.devkit.broadcast.AlEventManager;
-import io.kommunicate.devkit.broadcast.AlMessageEvent;
+import io.kommunicate.devkit.broadcast.EventManager;
+import io.kommunicate.devkit.broadcast.MessageEvent;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.feed.GcmMessageResponse;
 import io.kommunicate.devkit.feed.InstantMessageResponse;
 import io.kommunicate.devkit.feed.MqttMessageResponse;
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.encryption.EncryptionUtils;
 import io.kommunicate.commons.json.GsonUtils;
@@ -55,7 +55,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
     private static final String MSG_DELIVERED_READ = "MT_MESSAGE_DELIVERED_READ";
 
     private static MqttService mqttService;
-    private AlMqttClient client;
+    private CoreMqttClient client;
     private MemoryPersistence memoryPersistence;
     private Context context;
 
@@ -92,14 +92,14 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
         return client != null && client.isConnected();
     }
 
-    private AlMqttClient connect() {
+    private CoreMqttClient connect() {
         String userId = MobiComUserPreference.getInstance(context).getUserId();
         try {
             if (TextUtils.isEmpty(userId)) {
                 return client;
             }
             if (client == null) {
-                client = new AlMqttClient(getMqttBaseUrl(), userId + "-" + new Date().getTime(), memoryPersistence);
+                client = new CoreMqttClient(getMqttBaseUrl(), userId + "-" + new Date().getTime(), memoryPersistence);
             }
 
             if (!client.isConnected()) {
@@ -131,7 +131,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
     public synchronized void connectPublish(final String userKeyString, final String deviceKeyString, final String status) {
 
         try {
-            final AlMqttClient client = connect();
+            final CoreMqttClient client = connect();
             if (client == null || !client.isConnected()) {
                 return;
             }
@@ -254,7 +254,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
 
     public synchronized void publishCustomData(final String customTopic, final String data, final boolean useEncrypted) {
         try {
-            final AlMqttClient client = connect();
+            final CoreMqttClient client = connect();
             if (client == null || !client.isConnected()) {
                 return;
             }
@@ -428,7 +428,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                                 final SyncCallService syncCallService = SyncCallService.getInstance(context);
                                 MobiComPushReceiver.addPushNotificationId(mqttMessageResponse.getId());
 
-                                AlEventManager.getInstance().postMqttEventData(mqttMessageResponse);
+                                EventManager.getInstance().postMqttEventData(mqttMessageResponse);
 
                                 Utils.printLog(context, TAG, "MQTT message type: " + mqttMessageResponse.getType());
                                 if (NOTIFICATION_TYPE.MESSAGE_RECEIVED.getValue().equals(mqttMessageResponse.getType()) || MESSAGE_RECEIVED.equals(mqttMessageResponse.getType())) {
@@ -594,7 +594,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                                         GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
                                         if (messageResponse.getMessage() != null && messageResponse.getMessage().getMessage() != null) {
                                             long notificationAfterTime = Long.parseLong(messageResponse.getMessage().getMessage());
-                                            ALSpecificSettings.getInstance(context).setNotificationAfterTime(notificationAfterTime);
+                                            AppSpecificSettings.getInstance(context).setNotificationAfterTime(notificationAfterTime);
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -621,11 +621,11 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                                 }
 
                                 if (NOTIFICATION_TYPE.ACTIVATED.getValue().equals(mqttMessageResponse.getType())) {
-                                    BroadcastService.sendUserActivatedBroadcast(context, AlMessageEvent.ActionType.USER_ACTIVATED);
+                                    BroadcastService.sendUserActivatedBroadcast(context, MessageEvent.ActionType.USER_ACTIVATED);
                                 }
 
                                 if (NOTIFICATION_TYPE.DEACTIVATED.getValue().equals(mqttMessageResponse.getType())) {
-                                    BroadcastService.sendUserActivatedBroadcast(context, AlMessageEvent.ActionType.USER_DEACTIVATED);
+                                    BroadcastService.sendUserActivatedBroadcast(context, MessageEvent.ActionType.USER_DEACTIVATED);
                                 }
 
                                 if(NOTIFICATION_TYPE.USER_ONLINE_STATUS.getValue().equals(mqttMessageResponse.getType())) {
@@ -665,7 +665,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
 
     public synchronized void publishMessageStatus(final String messageStatusTopic, final String data) {
         try {
-            final AlMqttClient client = connect();
+            final CoreMqttClient client = connect();
             if (client == null || !client.isConnected()) {
                 return;
             }

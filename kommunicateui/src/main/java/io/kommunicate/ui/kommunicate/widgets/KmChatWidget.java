@@ -23,7 +23,7 @@ import android.widget.TextView;
 import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.attachment.FileClientService;
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.ui.R;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.commons.image.ImageLoader;
@@ -103,7 +103,7 @@ public class KmChatWidget {
         unreadCountText = rootView.findViewById(R.id.unreadSmsCount);
         KmFloatingView = (ImageView) rootView.findViewById(R.id.km_floating_widget);
         kmChatWidgetHelper = new KmChatWidgetHelper(this, mContext);
-        AlEventManager.getInstance().registerUIListener(TAG, kmChatWidgetHelper);
+        EventManager.getInstance().registerUIListener(TAG, kmChatWidgetHelper);
         setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

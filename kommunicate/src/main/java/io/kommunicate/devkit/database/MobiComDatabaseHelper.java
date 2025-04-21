@@ -5,7 +5,7 @@ import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 import android.text.TextUtils;
 
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserClientService;
@@ -249,7 +249,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private Context context;
 
     private MobiComDatabaseHelper(Context context) {
-        this(context, !TextUtils.isEmpty(ALSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? ALSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName() : "MCK_" + MobiComKitClientService.getApplicationKey(AppContextService.getContext(context)), null, DB_VERSION);
+        this(context, !TextUtils.isEmpty(AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName() : "MCK_" + MobiComKitClientService.getApplicationKey(AppContextService.getContext(context)), null, DB_VERSION);
         this.context = AppContextService.getContext(context);
     }
 

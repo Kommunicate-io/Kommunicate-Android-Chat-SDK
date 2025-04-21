@@ -39,7 +39,7 @@ public class KmListRMAdapter extends KmRichMessageAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(context).inflate(R.layout.km_rich_list_item, parent, false);
-        return new AlListItemViewHolder(itemView);
+        return new ListItemViewHolder(itemView);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class KmListRMAdapter extends KmRichMessageAdapter {
     @Override
     public void bindItems(RecyclerView.ViewHolder viewHolder, int position) {
         KmRichMessageModel.KmElementModel element = elementList.get(position);
-        AlListItemViewHolder holder = (AlListItemViewHolder) viewHolder;
+        ListItemViewHolder holder = (ListItemViewHolder) viewHolder;
 
         if (!TextUtils.isEmpty(element.getTitle())) {
             holder.headerTv.setVisibility(View.VISIBLE);
@@ -79,14 +79,14 @@ public class KmListRMAdapter extends KmRichMessageAdapter {
         return elementList != null ? elementList.size() : 0;
     }
 
-    private class AlListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView headerTv;
         private TextView detailsTv;
         private RelativeLayout rootLayout;
         private ImageView listImage;
 
-        public AlListItemViewHolder(View itemView) {
+        public ListItemViewHolder(View itemView) {
             super(itemView);
 
             headerTv = itemView.findViewById(R.id.listItemHeaderText);

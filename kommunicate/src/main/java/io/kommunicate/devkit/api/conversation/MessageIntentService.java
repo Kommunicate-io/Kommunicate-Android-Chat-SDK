@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Process;
 import androidx.annotation.NonNull;
-import androidx.core.app.AlJobIntentService;
+import androidx.core.app.CoreJobIntentService;
 
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.conversation.schedule.ScheduleMessageService;
@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by devashish on 15/12/13.
  */
-public class MessageIntentService extends AlJobIntentService {
+public class MessageIntentService extends CoreJobIntentService {
 
     private static final String TAG = "MessageIntentService";
     private MessageClientService messageClientService;

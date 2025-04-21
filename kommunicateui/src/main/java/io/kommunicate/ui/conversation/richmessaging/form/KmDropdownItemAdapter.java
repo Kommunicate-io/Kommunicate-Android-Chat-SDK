@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmFormPayloadModel;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
 
@@ -37,7 +37,7 @@ public class KmDropdownItemAdapter extends ArrayAdapter<KmFormPayloadModel.Optio
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         TextView label = (TextView) super.getDropDownView(position, convertView, parent);
-        KmThemeHelper kmThemeHelper = KmThemeHelper.getInstance(context, new AlCustomizationSettings());
+        KmThemeHelper kmThemeHelper = KmThemeHelper.getInstance(context, new CustomizationSettings());
         if (kmThemeHelper.isDarkModeEnabledForSDK()){
             label.setTextColor(Color.WHITE);
             label.setBackgroundColor(Color.BLACK);

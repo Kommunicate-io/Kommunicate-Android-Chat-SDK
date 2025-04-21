@@ -18,7 +18,7 @@ import io.kommunicate.devkit.api.notification.NotificationChannels;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.feed.ApiResponse;
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
@@ -80,11 +80,11 @@ public class RegisterUserClientService extends MobiComKitClientService {
         user.setEnableEncryption(user.isEnableEncryption());
 
         if (!TextUtils.isEmpty(user.getAlBaseUrl())) {
-            ALSpecificSettings.getInstance(context).setAlBaseUrl(user.getAlBaseUrl());
+            AppSpecificSettings.getInstance(context).setAlBaseUrl(user.getAlBaseUrl());
         }
 
         if (!TextUtils.isEmpty(user.getKmBaseUrl())) {
-            ALSpecificSettings.getInstance(context).setKmBaseUrl(user.getKmBaseUrl());
+            AppSpecificSettings.getInstance(context).setKmBaseUrl(user.getKmBaseUrl());
         }
 
         if (TextUtils.isEmpty(user.getUserId())) {
@@ -156,7 +156,7 @@ public class RegisterUserClientService extends MobiComKitClientService {
             mobiComUserPreference.setUserBlockSyncTime("10000");
             mobiComUserPreference.setUserDeactivated(registrationResponse.isDeactivate());
             if (registrationResponse.getNotificationAfter() != null) {
-                ALSpecificSettings.getInstance(context).setNotificationAfterTime(registrationResponse.getNotificationAfter());
+                AppSpecificSettings.getInstance(context).setNotificationAfterTime(registrationResponse.getNotificationAfter());
             }
             SettingsSharedPreference.getInstance(context).skipDeletedGroups(user.isSkipDeletedGroups()).hideActionMessages(user.isHideActionMessages());
             if (!TextUtils.isEmpty(registrationResponse.getUserEncryptionKey())) {
@@ -286,11 +286,11 @@ public class RegisterUserClientService extends MobiComKitClientService {
         user.setAppVersionCode(MOBICOMKIT_VERSION_CODE);
 
         if (!TextUtils.isEmpty(user.getAlBaseUrl())) {
-            ALSpecificSettings.getInstance(context).setAlBaseUrl(user.getAlBaseUrl());
+            AppSpecificSettings.getInstance(context).setAlBaseUrl(user.getAlBaseUrl());
         }
 
         if (!TextUtils.isEmpty(user.getKmBaseUrl())) {
-            ALSpecificSettings.getInstance(context).setKmBaseUrl(user.getKmBaseUrl());
+            AppSpecificSettings.getInstance(context).setKmBaseUrl(user.getKmBaseUrl());
         }
 
         MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);

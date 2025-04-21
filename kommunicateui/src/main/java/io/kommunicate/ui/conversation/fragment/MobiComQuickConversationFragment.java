@@ -39,11 +39,11 @@ import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.SyncCallService;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.DimensionsUtils;
 import io.kommunicate.ui.KmLinearLayoutManager;
 import io.kommunicate.ui.R;
@@ -91,7 +91,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     protected boolean loadMore = false;
     protected SyncCallService syncCallService;
     ConversationUIService conversationUIService;
-    AlCustomizationSettings alCustomizationSettings;
+    CustomizationSettings customizationSettings;
     String searchString;
     private DownloadConversation downloadConversation;
     private BaseContactService baseContactService;
@@ -115,11 +115,11 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         super.onCreate(savedInstanceState);
         String jsonString = FileUtils.loadSettingsJsonFile(AppContextService.getContext(getContext()));
         if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
-            alCustomizationSettings = new AlCustomizationSettings();
+            customizationSettings = new CustomizationSettings();
         }
-        themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
+        themeHelper = KmThemeHelper.getInstance(getContext(), customizationSettings);
         syncCallService = SyncCallService.getInstance(getActivity());
         conversationUIService = new ConversationUIService(getActivity());
         baseContactService = new AppContactService(getActivity());
@@ -141,7 +141,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                              Bundle savedInstanceState) {
         View list = inflater.inflate(R.layout.mobicom_message_list, container, false);
         isCurrentlyInDarkMode = themeHelper.isDarkModeEnabledForSDK();
-        if (!alCustomizationSettings.isAgentApp()) {
+        if (!customizationSettings.isAgentApp()) {
             LinearLayout kmMessageLinearLayout = list.findViewById(R.id.km_message_linear_layout);
             if (kmMessageLinearLayout != null) {
                 kmMessageLinearLayout.setVisibility(View.GONE);
@@ -158,20 +158,20 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         }
         recyclerAdapter = new QuickConversationAdapter(getContext(), messageList, null);
         recyclerAdapter.setDarkMode(isCurrentlyInDarkMode);
-        recyclerAdapter.setAlCustomizationSettings(alCustomizationSettings);
+        recyclerAdapter.setAlCustomizationSettings(customizationSettings);
 
         faqButtonLayout = getActivity().findViewById(R.id.faqButtonLayout);
         faqButtonLayout.setVisibility(View.VISIBLE);
 
-        if (alCustomizationSettings.isFaqOptionEnabled() || KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || alCustomizationSettings.isFaqOptionEnabled(1)) {
+        if (customizationSettings.isFaqOptionEnabled() || KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || customizationSettings.isFaqOptionEnabled(1)) {
             TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
             TextView conversationTextView = faqButtonLayout.findViewById(R.id.km_conversation_text_view);
             if (textView != null) {
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl(alCustomizationSettings.isHideChatInHelpcenter());
-                        AlEventManager.getInstance().sendOnFaqClick(FaqUrl);
+                        String FaqUrl = new KmClientService(getContext(), Kommunicate.getFaqPageName()).getHelpCenterUrl(customizationSettings.isHideChatInHelpcenter());
+                        EventManager.getInstance().sendOnFaqClick(FaqUrl);
                         ConversationActivity.openFaq(getActivity(), FaqUrl);
                     }
                 });
@@ -193,7 +193,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         if (conversationTextView != null) {
             conversationTextView.setTextColor(themeHelper.getToolbarTitleColor());
         }
-        if (!TextUtils.isEmpty(alCustomizationSettings.getMenuIconOnConversationScreen())) {
+        if (!TextUtils.isEmpty(customizationSettings.getMenuIconOnConversationScreen())) {
             Drawable overflowIcon = ContextCompat.getDrawable(Objects.requireNonNull(getContext()), R.drawable.km_baseline_more_vert);
             toolbar.setOverflowIcon(overflowIcon);
         }
@@ -209,7 +209,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         startNewConv = list.findViewById(R.id.start_new_conversation);
 //        KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) ? Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
 
-        if (alCustomizationSettings != null && alCustomizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
+        if (customizationSettings != null && customizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
             startNewConv.setVisibility(View.VISIBLE);
         } else {
             startNewConv.setVisibility(View.GONE);
@@ -284,9 +284,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
     private void setupModes(boolean isDarkModeEnabled) {
         ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(themeHelper.getToolbarTitleColor());
-        emptyTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? alCustomizationSettings.getNoConversationLabelTextColor().get(1).trim() : alCustomizationSettings.getNoConversationLabelTextColor().get(0).trim()));
-        KmUtils.setGradientSolidColor(startNewConv, themeHelper.parseColorWithDefault(alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(isDarkModeEnabled ? 1 : 0),
-                themeHelper.parseColorWithDefault(alCustomizationSettings.getToolbarColor().get(isDarkModeEnabled ? 1 : 0), themeHelper.getPrimaryColor())));
+        emptyTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? customizationSettings.getNoConversationLabelTextColor().get(1).trim() : customizationSettings.getNoConversationLabelTextColor().get(0).trim()));
+        KmUtils.setGradientSolidColor(startNewConv, themeHelper.parseColorWithDefault(customizationSettings.getStartNewConversationButtonBackgroundColor().get(isDarkModeEnabled ? 1 : 0),
+                themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(isDarkModeEnabled ? 1 : 0), themeHelper.getPrimaryColor())));
         recyclerView.setBackgroundColor(getResources().getColor(isCurrentlyInDarkMode ? R.color.dark_mode_default : R.color.conversation_list_all_background));
         recyclerAdapter.setDarkMode(isDarkModeEnabled);
         recyclerAdapter.notifyDataSetChanged();
@@ -300,18 +300,18 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 //        if (alCustomizationSettings.isRefreshOption()) {
 //            menu.findItem(R.id.refresh).setVisible(true);
 //        }
-        if (alCustomizationSettings.isProfileOption()) {
+        if (customizationSettings.isProfileOption()) {
             menu.findItem(R.id.applozicUserProfile).setVisible(true);
         }
-        if (alCustomizationSettings.isMessageSearchOption()) {
+        if (customizationSettings.isMessageSearchOption()) {
             menu.findItem(R.id.menu_search).setVisible(true);
         }
-        if (alCustomizationSettings.isLogoutOption()) {
+        if (customizationSettings.isLogoutOption()) {
             menu.findItem(R.id.logout).setVisible(true);
         }
 
-        if (!alCustomizationSettings.isAgentApp() && alCustomizationSettings.isToolbarTitleCenterAligned()) {
-            if (alCustomizationSettings.isProfileOption() || alCustomizationSettings.isMessageSearchOption() || alCustomizationSettings.isLogoutOption()) {
+        if (!customizationSettings.isAgentApp() && customizationSettings.isToolbarTitleCenterAligned()) {
+            if (customizationSettings.isProfileOption() || customizationSettings.isMessageSearchOption() || customizationSettings.isLogoutOption()) {
                 centerToolbarTitle(toolbar, true);
             } else {
                 centerToolbarTitle(toolbar, false);
@@ -374,7 +374,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 messageList.add(0, message);
                 recyclerAdapter.notifyDataSetChanged();
                 emptyTextView.setVisibility(View.GONE);
-                emptyTextView.setText(!TextUtils.isEmpty(alCustomizationSettings.getNoConversationLabel()) ? alCustomizationSettings.getNoConversationLabel() : AppContextService.getContext(context).getResources().getString(R.string.no_conversation));
+                emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoConversationLabel()) ? customizationSettings.getNoConversationLabel() : AppContextService.getContext(context).getResources().getString(R.string.no_conversation));
             }
         });
     }
@@ -588,7 +588,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         boolean isLoadingConversation = (downloadConversation != null && downloadConversation.getStatus() == AsyncTask.Status.RUNNING);
         if (latestMessageForEachContact.isEmpty() && !isLoadingConversation) {
             emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(!TextUtils.isEmpty(alCustomizationSettings.getNoConversationLabel()) ? alCustomizationSettings.getNoConversationLabel() : AppContextService.getContext(getContext()).getResources().getString(R.string.no_conversation));
+            emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoConversationLabel()) ? customizationSettings.getNoConversationLabel() : AppContextService.getContext(getContext()).getResources().getString(R.string.no_conversation));
         } else {
             emptyTextView.setVisibility(View.GONE);
         }
@@ -617,7 +617,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public void onResume() {
         //Assigning to avoid notification in case if quick conversation fragment is opened....
         toolbar.setTitle(AppContextService.getContext(getContext()).getResources().getString(R.string.conversations));
-        toolbar.setTitleTextColor(KmThemeHelper.getInstance(getActivity(), alCustomizationSettings).getToolbarTitleColor());
+        toolbar.setTitleTextColor(KmThemeHelper.getInstance(getActivity(), customizationSettings).getToolbarTitleColor());
         toolbar.setSubtitle("");
         BroadcastService.selectMobiComKitAll();
         super.onResume();
@@ -706,11 +706,11 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
     public void updateLastSeenStatus(final String userId) {
 
-        if (alCustomizationSettings == null) {
+        if (customizationSettings == null) {
             return;
         }
 
-        if (!alCustomizationSettings.isOnlineStatusMasterList()) {
+        if (!customizationSettings.isOnlineStatusMasterList()) {
             return;
         }
         if (getActivity() == null) {
@@ -921,9 +921,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                     if (emptyTextView != null) {
                         emptyTextView.setVisibility(messageList.isEmpty() ? View.VISIBLE : View.GONE);
                         if (!TextUtils.isEmpty(searchString) && messageList.isEmpty()) {
-                            emptyTextView.setText(!TextUtils.isEmpty(alCustomizationSettings.getNoSearchFoundForChatMessages()) ? alCustomizationSettings.getNoSearchFoundForChatMessages() : getResources().getString(R.string.search_not_found_for_messages));
+                            emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoSearchFoundForChatMessages()) ? customizationSettings.getNoSearchFoundForChatMessages() : getResources().getString(R.string.search_not_found_for_messages));
                         } else if (TextUtils.isEmpty(searchString) && messageList.isEmpty()) {
-                            emptyTextView.setText(!TextUtils.isEmpty(alCustomizationSettings.getNoConversationLabel()) ? alCustomizationSettings.getNoConversationLabel() : getResources().getString(R.string.no_conversation));
+                            emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoConversationLabel()) ? customizationSettings.getNoConversationLabel() : getResources().getString(R.string.no_conversation));
                         }
                     }
                 }

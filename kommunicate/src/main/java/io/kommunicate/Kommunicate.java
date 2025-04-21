@@ -35,10 +35,10 @@ import io.kommunicate.usecase.FAQType;
 import io.kommunicate.usecase.FaqUseCase;
 import io.kommunicate.usecase.HelpDocsKeyUseCase;
 import io.kommunicate.usecase.KMUserLoginUseCase;
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.data.AlPrefSettings;
+import io.kommunicate.commons.data.PrefSettings;
 import io.kommunicate.commons.data.SecureSharedPreferences;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
@@ -674,12 +674,12 @@ public class Kommunicate {
 
     public  static  void setServerConfiguration(Context context,KMServerConfiguration configuration){
         if (configuration == KMServerConfiguration.EUCONFIGURATION) {
-            ALSpecificSettings.getInstance(context).setAlBaseUrl(BuildConfig.EU_CHAT_SERVER_URL);
-            ALSpecificSettings.getInstance(context).setKmBaseUrl(BuildConfig.EU_API_SERVER_URL);
+            AppSpecificSettings.getInstance(context).setAlBaseUrl(BuildConfig.EU_CHAT_SERVER_URL);
+            AppSpecificSettings.getInstance(context).setKmBaseUrl(BuildConfig.EU_API_SERVER_URL);
             MobiComUserPreference.getInstance(context).setMqttBrokerUrl(BuildConfig.MQTT_URL_EU);
         } else {
-            ALSpecificSettings.getInstance(context).setAlBaseUrl(BuildConfig.CHAT_SERVER_URL);
-            ALSpecificSettings.getInstance(context).setKmBaseUrl(BuildConfig.API_SERVER_URL);
+            AppSpecificSettings.getInstance(context).setAlBaseUrl(BuildConfig.CHAT_SERVER_URL);
+            AppSpecificSettings.getInstance(context).setKmBaseUrl(BuildConfig.API_SERVER_URL);
             MobiComUserPreference.getInstance(context).setMqttBrokerUrl(BuildConfig.MQTT_URL);
 
         }
@@ -1076,7 +1076,7 @@ public class Kommunicate {
     }
 
     public static void removeApplicationKey(Context context) {
-        new SecureSharedPreferences(AlPrefSettings.AL_PREF_SETTING_KEY, AppContextService.getContext(context)).edit().remove(APPLICATION_KEY).commit();
+        new SecureSharedPreferences(PrefSettings.AL_PREF_SETTING_KEY, AppContextService.getContext(context)).edit().remove(APPLICATION_KEY).commit();
     }
 
     public static void setChatText(Context context, String PreFilledText) {

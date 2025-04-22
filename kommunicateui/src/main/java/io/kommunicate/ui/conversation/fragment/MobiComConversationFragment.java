@@ -4969,7 +4969,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 }
                             }
                             if (TextUtils.isEmpty(message.getMessage())) {
-                                messageTextView.setText(ApplozicService.getContext(getContext()).getString(R.string.video_string));
+                                messageTextView.setText(AppContextService.getContext(getContext()).getString(R.string.video_string));
                             } else {
                                 messageTextView.setText(message.getMessage());
                             }

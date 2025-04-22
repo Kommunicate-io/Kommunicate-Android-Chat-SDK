@@ -50,8 +50,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
@@ -63,13 +63,13 @@ import io.kommunicate.devkit.api.conversation.MobiComMessageService;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.api.conversation.service.ConversationService;
 import io.kommunicate.devkit.api.people.UserIntentService;
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KommunicateSetting;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.ConversationUIService;
@@ -93,7 +93,7 @@ import io.kommunicate.ui.uilistener.KmStoragePermission;
 import io.kommunicate.ui.uilistener.KmStoragePermissionListener;
 import io.kommunicate.ui.uilistener.MobicomkitUriListener;
 import io.kommunicate.ui.utils.InsetHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.file.FileUtils;
@@ -176,7 +176,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     int resourceId;
     RelativeLayout childFragmentLayout;
     MobiComMessageService mobiComMessageService;
-    AlCustomizationSettings alCustomizationSettings;
+    CustomizationSettings customizationSettings;
     ConnectivityReceiver connectivityReceiver;
     File mediaFile;
     File profilePhotoFile;
@@ -277,14 +277,14 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onStop() {
         super.onStop();
         if (KmChatWidget.getInstance(this) == null) {
-            Applozic.disconnectPublish(this);
+            KommunicateSettings.disconnectPublish(this);
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Applozic.connectPublishWithVerifyToken(this, getString(R.string.please_wait_info));
+        KommunicateSettings.connectPublishWithVerifyToken(this, getString(R.string.please_wait_info));
         syncMessages();
         if (!Utils.isInternetAvailable(getApplicationContext())) {
             String errorMessage = getResources().getString(R.string.internet_connection_not_available);
@@ -365,18 +365,18 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ApplozicService.initWithContext(this);
+        AppContextService.initWithContext(this);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
-            alCustomizationSettings = new AlCustomizationSettings();
+            customizationSettings = new CustomizationSettings();
         }
         setupActivityResultCallback();
-        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
-        themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
-        if (!TextUtils.isEmpty(alCustomizationSettings.getChatBackgroundImageName())) {
-            resourceId = getResources().getIdentifier(alCustomizationSettings.getChatBackgroundImageName(), "drawable", getPackageName());
+        configureSentryWithKommunicateUI(this, customizationSettings.toString());
+        themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
+        if (!TextUtils.isEmpty(customizationSettings.getChatBackgroundImageName())) {
+            resourceId = getResources().getIdentifier(customizationSettings.getChatBackgroundImageName(), "drawable", getPackageName());
         }
         if (resourceId != 0) {
             getWindow().setBackgroundDrawableResource(resourceId);
@@ -396,7 +396,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);
         quickConversationFragment = new MobiComQuickConversationFragment();
         connectivityReceiver = new ConnectivityReceiver();
-        geoApiKey = Applozic.getInstance(this).getGeoApiKey();
+        geoApiKey = KommunicateSettings.getInstance(this).getGeoApiKey();
         activityToOpenOnClickOfCallButton = Utils.getMetaDataValue(getApplicationContext(), ACTIVITY_TO_OPEN_ONCLICK_OF_CALL_BUTTON_META_DATA);
         layout = (LinearLayout) findViewById(R.id.footerAd);
         applozicPermission = new KmPermissions(this, layout);
@@ -404,7 +404,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         contactsGroupId = MobiComUserPreference.getInstance(this).getContactsGroupId();
         serviceDisconnectionLayout = findViewById(R.id.serviceDisconnectionLayout);
         deviceRootedLayout = findViewById(R.id.deviceRootedLayout);
-        if (Utils.hasMarshmallow() && !alCustomizationSettings.isGlobalStoragePermissionDisabled()) {
+        if (Utils.hasMarshmallow() && !customizationSettings.isGlobalStoragePermissionDisabled()) {
             applozicPermission.checkRuntimePermissionForStorage();
         }
 
@@ -413,7 +413,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         inviteMessage = Utils.getMetaDataValue(getApplicationContext(), SHARE_TEXT);
         retry = 0;
 
-        if (KmUtils.isServiceDisconnected(this, alCustomizationSettings != null && alCustomizationSettings.isAgentApp(), customToolbarLayout)) {
+        if (KmUtils.isServiceDisconnected(this, customizationSettings != null && customizationSettings.isAgentApp(), customToolbarLayout)) {
             serviceDisconnectionLayout.setVisibility(View.VISIBLE);
         } else if(KmUtils.isDeviceRooted()) {
             deviceRootedLayout.setVisibility(View.VISIBLE);
@@ -468,7 +468,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             UserIntentService.enqueueWork(this, lastSeenStatusIntent);
         }
 
-        if (ApplozicClient.getInstance(this).isAccountClosed() || ApplozicClient.getInstance(this).isNotAllowed()) {
+        if (SettingsSharedPreference.getInstance(this).isAccountClosed() || SettingsSharedPreference.getInstance(this).isNotAllowed()) {
             accountStatusAsyncTask = new SyncAccountStatusAsyncTask(this, layout, snackbar);
             accountStatusAsyncTask.execute();
         }
@@ -509,9 +509,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             }
         };
 
-        AlEventManager.getInstance().sendOnPluginLaunchEvent();
-        if (alCustomizationSettings.isUseDeviceDefaultLanguage()) {
-            Applozic.setDefaultLanguage(this);
+        EventManager.getInstance().sendOnPluginLaunchEvent();
+        if (customizationSettings.isUseDeviceDefaultLanguage()) {
+            KommunicateSettings.setDefaultLanguage(this);
         }
     }
 
@@ -540,7 +540,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
                         // Process URIs
                         for (Uri uri: uris) {
-                            int returnCode = kmAttachmentsController.processFile(uri, alCustomizationSettings, prePostUIMethods);
+                            int returnCode = kmAttachmentsController.processFile(uri, customizationSettings, prePostUIMethods);
                             doReturnCodeActions(returnCode);
                         }
                     } catch (Exception exception) {
@@ -551,7 +551,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     }
                     return null;
                 },
-                alCustomizationSettings.isMultipleAttachmentSelectionEnabled()
+                customizationSettings.isMultipleAttachmentSelectionEnabled()
         );
     }
 
@@ -586,7 +586,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         try {
-            if (KmUtils.isServiceDisconnected(this, alCustomizationSettings != null && alCustomizationSettings.isAgentApp(), customToolbarLayout)) {
+            if (KmUtils.isServiceDisconnected(this, customizationSettings != null && customizationSettings.isAgentApp(), customToolbarLayout)) {
                 serviceDisconnectionLayout.setVisibility(View.VISIBLE);
             } else {
                 if (intent.getExtras() != null) {
@@ -602,7 +602,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                                 message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
                             }
                         }
-                        AlEventManager.getInstance().sendOnNotificationClick(message);
+                        EventManager.getInstance().sendOnNotificationClick(message);
                     }
                     BroadcastService.setContextBasedChat(intent.getExtras().getBoolean(ConversationUIService.CONTEXT_BASED_CHAT));
                     if (BroadcastService.isIndividual() && intent.getExtras().getBoolean(MobiComKitConstants.QUICK_LIST)) {
@@ -765,7 +765,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     public void processingLocation() {
-        if (alCustomizationSettings.isLocationShareViaMap() && !TextUtils.isEmpty(geoApiKey) && !API_KYE_STRING.equals(geoApiKey)) {
+        if (customizationSettings.isLocationShareViaMap() && !TextUtils.isEmpty(geoApiKey) && !API_KYE_STRING.equals(geoApiKey)) {
             Intent toMapActivity = new Intent(this, MobicomLocationActivity.class);
             startActivityForResult(toMapActivity, MultimediaOptionFragment.REQUEST_CODE_SEND_LOCATION);
         } else {
@@ -839,13 +839,13 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } else if (id == R.id.logout) {
             LocalBroadcastManager.getInstance(this).sendBroadcastSync(new Intent("KmLogoutOption"));
             try {
-                if (!TextUtils.isEmpty(alCustomizationSettings.getLogoutPackage())) {
-                    Class loginActivity = Class.forName(alCustomizationSettings.getLogoutPackage().trim());
+                if (!TextUtils.isEmpty(customizationSettings.getLogoutPackage())) {
+                    Class loginActivity = Class.forName(customizationSettings.getLogoutPackage().trim());
                     if (loginActivity != null) {
                         if (getApplication() instanceof KmActionCallback) {
-                            ((KmActionCallback) getApplication()).onReceive(this, alCustomizationSettings.getLogoutPackage().trim(), "logoutCall");
+                            ((KmActionCallback) getApplication()).onReceive(this, customizationSettings.getLogoutPackage().trim(), "logoutCall");
                         } else {
-                            KmHelper.performLogout(this, alCustomizationSettings.getLogoutPackage().trim());
+                            KmHelper.performLogout(this, customizationSettings.getLogoutPackage().trim());
                         }
                     }
                 }
@@ -855,7 +855,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
             }
         } else if (id == android.R.id.home) {
-            AlEventManager.getInstance().sendOnBackButtonClicked(getSupportFragmentManager().getBackStackEntryCount() > 1);
+            EventManager.getInstance().sendOnBackButtonClicked(getSupportFragmentManager().getBackStackEntryCount() > 1);
         }
         return false;
     }
@@ -1040,7 +1040,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     public void processVideoCall(Contact contactObj, Integer conversationId) {
         this.contact = baseContactService.getContactById(contactObj.getContactIds());
-        if (ApplozicClient.getInstance(getApplicationContext()).isIPCallEnabled()) {
+        if (SettingsSharedPreference.getInstance(getApplicationContext()).isIPCallEnabled()) {
             try {
                 if (Utils.hasMarshmallow() && !PermissionsUtils.checkPermissionForCameraAndMicrophone(this)) {
                     applozicPermission.checkRuntimePermissionForCameraAndAudioRecording();
@@ -1063,7 +1063,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         this.currentConversationId = conversationId;
         try {
 
-            if (ApplozicClient.getInstance(getApplicationContext()).isIPCallEnabled()) {
+            if (SettingsSharedPreference.getInstance(getApplicationContext()).isIPCallEnabled()) {
                 if (Utils.hasMarshmallow() && !PermissionsUtils.checkPermissionForCameraAndMicrophone(this)) {
                     applozicPermission.checkRuntimePermissionForCameraAndAudioRecording();
                     return;
@@ -1295,7 +1295,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         } catch (Exception e) {
             e.printStackTrace();
         }
-        AlEventManager.getInstance().sendOnPluginDismissedEvent();
+        EventManager.getInstance().sendOnPluginDismissedEvent();
     }
 
     @Override
@@ -1346,7 +1346,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         Context context;
         RegisterUserClientService registerUserClientService;
         String loggedInUserId;
-        ApplozicClient applozicClient;
+        SettingsSharedPreference settingsSharedPreference;
         WeakReference<Snackbar> snackBarWeakReference;
         WeakReference<LinearLayout> linearLayoutWeakReference;
 
@@ -1355,7 +1355,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             this.registerUserClientService = new RegisterUserClientService(context);
             this.linearLayoutWeakReference = new WeakReference<LinearLayout>(linearLayout);
             this.snackBarWeakReference = new WeakReference<Snackbar>(snackbar);
-            this.applozicClient = ApplozicClient.getInstance(context);
+            this.settingsSharedPreference = SettingsSharedPreference.getInstance(context);
             this.loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
         }
 
@@ -1375,7 +1375,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-            if (applozicClient.isAccountClosed() || applozicClient.isNotAllowed()) {
+            if (settingsSharedPreference.isAccountClosed() || settingsSharedPreference.isNotAllowed()) {
                 LinearLayout linearLayout = null;
                 Snackbar snackbar = null;
                 if (snackBarWeakReference != null) {
@@ -1385,7 +1385,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                     linearLayout = linearLayoutWeakReference.get();
                 }
                 if (snackbar != null && linearLayout != null) {
-                    snackbar = Snackbar.make(linearLayout, applozicClient.isAccountClosed() ?
+                    snackbar = Snackbar.make(linearLayout, settingsSharedPreference.isAccountClosed() ?
                                     R.string.account_closed : R.string.free_version_not_allowed_on_release_build,
                             Snackbar.LENGTH_INDEFINITE);
                     snackbar.show();

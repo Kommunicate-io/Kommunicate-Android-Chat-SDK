@@ -5,17 +5,17 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.api.attachment.FileClientService;
-import io.kommunicate.devkit.api.people.AlGetPeopleTask;
+import io.kommunicate.devkit.api.people.GetPeopleTask;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.cache.MessageSearchCache;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
-import io.kommunicate.devkit.listners.AlContactListener;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.devkit.listners.ContactListener;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.image.ImageUtils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
-import io.kommunicate.commons.task.AlTask;
+import io.kommunicate.commons.task.CoreTask;
 
 import java.io.File;
 import java.util.Date;
@@ -32,7 +32,7 @@ public class AppContactService implements BaseContactService {
     FileClientService fileClientService;
 
     public AppContactService(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.contactDatabase = new ContactDatabase(context);
         this.fileClientService = new FileClientService(context);
     }
@@ -216,8 +216,8 @@ public class AppContactService implements BaseContactService {
         contactDatabase.updateLocalImageUri(contact);
     }
 
-    public void getContactByIdAsync(String userId, AlContactListener contactListener) {
-        AlTask.execute(new AlGetPeopleTask(context, userId, null, null, null, contactListener, this, null));
+    public void getContactByIdAsync(String userId, ContactListener contactListener) {
+        CoreTask.execute(new GetPeopleTask(context, userId, null, null, null, contactListener, this, null));
     }
 
 }

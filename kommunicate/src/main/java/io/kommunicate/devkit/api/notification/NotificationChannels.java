@@ -12,10 +12,10 @@ import android.text.TextUtils;
 
 import androidx.annotation.RequiresApi;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.commons.commons.core.utils.Utils;
 
 import io.kommunicate.utils.KmConstants;
@@ -47,7 +47,7 @@ public class NotificationChannels {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void prepareNotificationChannels() {
-        if (Applozic.getInstance(context).getNotificationChannelVersion() < NOTIFICATION_CHANNEL_VERSION) {
+        if (KommunicateSettings.getInstance(context).getNotificationChannelVersion() < NOTIFICATION_CHANNEL_VERSION) {
             if (isNotificationChannelCreated()) {
                 deleteNotificationChannel();
             }
@@ -55,7 +55,7 @@ public class NotificationChannels {
                 deleteSilentNotificationChannel();
             }
             if (isAppChannelCreated()) {
-                Applozic.getInstance(context).setCustomNotificationSound(null);
+                KommunicateSettings.getInstance(context).setCustomNotificationSound(null);
                 soundFilePath = null;
                 deleteAppNotificationChannel();
             }
@@ -67,14 +67,14 @@ public class NotificationChannels {
             } else {
                 try {
                     createAppNotificationChannel();
-                } catch (ApplozicException e) {
+                } catch (KommunicateException e) {
                     e.printStackTrace();
                 }
             }
             createSilentNotificationChannel();
             createCallNotificationChannel();
 
-            Applozic.getInstance(context).setNotificationChannelVersion(NOTIFICATION_CHANNEL_VERSION);
+            KommunicateSettings.getInstance(context).setNotificationChannelVersion(NOTIFICATION_CHANNEL_VERSION);
         }
     }
 
@@ -122,9 +122,9 @@ public class NotificationChannels {
             NotificationChannel mChannel = new NotificationChannel(MobiComKitConstants.AL_PUSH_NOTIFICATION, name, importance);
             mChannel.enableLights(true);
             mChannel.setLightColor(Color.GREEN);
-            mChannel.setShowBadge(ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled());
+            mChannel.setShowBadge(SettingsSharedPreference.getInstance(context).isUnreadCountBadgeEnabled());
 
-            if (ApplozicClient.getInstance(context).getVibrationOnNotification()) {
+            if (SettingsSharedPreference.getInstance(context).getVibrationOnNotification()) {
                 mChannel.enableVibration(true);
                 mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             }
@@ -139,7 +139,7 @@ public class NotificationChannels {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private synchronized void createAppNotificationChannel() throws ApplozicException {
+    private synchronized void createAppNotificationChannel() throws KommunicateException {
         CharSequence name = MobiComKitConstants.APP_NOTIFICATION_NAME;
         int importance = NotificationManager.IMPORTANCE_HIGH;
 
@@ -147,10 +147,10 @@ public class NotificationChannels {
             NotificationChannel mChannel = new NotificationChannel(MobiComKitConstants.AL_APP_NOTIFICATION, name, importance);
             mChannel.enableLights(true);
             mChannel.setLightColor(Color.GREEN);
-            mChannel.setShowBadge(ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled());
+            mChannel.setShowBadge(SettingsSharedPreference.getInstance(context).isUnreadCountBadgeEnabled());
             String notificationTone = Utils.getMetaDataValue(context.getApplicationContext(), KmConstants.NOTIFICATION_TONE);
 
-            if (ApplozicClient.getInstance(context).getVibrationOnNotification()) {
+            if (SettingsSharedPreference.getInstance(context).getVibrationOnNotification()) {
                 mChannel.enableVibration(true);
                 mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             }
@@ -160,7 +160,7 @@ public class NotificationChannels {
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION).build();
 
             if (TextUtils.isEmpty(soundFilePath)) {
-                throw new ApplozicException(CUSTOM_SOUND_PATH + SET_SOUND_PATH);
+                throw new KommunicateException(CUSTOM_SOUND_PATH + SET_SOUND_PATH);
             }
             mChannel.setSound(TextUtils.isEmpty(notificationTone) ? Uri.parse(soundFilePath) : Uri.parse("android.resource://" + context.getPackageName() + "/raw/" + notificationTone), audioAttributes);
             mNotificationManager.createNotificationChannel(mChannel);
@@ -178,7 +178,7 @@ public class NotificationChannels {
             mChannel.enableLights(true);
             mChannel.setLightColor(Color.BLUE);
 
-            if (ApplozicClient.getInstance(context).getVibrationOnNotification()) {
+            if (SettingsSharedPreference.getInstance(context).getVibrationOnNotification()) {
                 mChannel.enableVibration(true);
                 mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             }
@@ -202,7 +202,7 @@ public class NotificationChannels {
             NotificationChannel mChannel = new NotificationChannel(MobiComKitConstants.AL_SILENT_NOTIFICATION, name, importance);
             mChannel.enableLights(true);
             mChannel.setLightColor(Color.GREEN);
-            if (ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled()) {
+            if (SettingsSharedPreference.getInstance(context).isUnreadCountBadgeEnabled()) {
                 mChannel.setShowBadge(true);
             } else {
                 mChannel.setShowBadge(false);

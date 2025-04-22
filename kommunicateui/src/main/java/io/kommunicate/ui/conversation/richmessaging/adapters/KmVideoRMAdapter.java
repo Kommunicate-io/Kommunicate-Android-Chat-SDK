@@ -21,7 +21,7 @@ import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.richmessaging.callbacks.KmRichMessageListener;
 import io.kommunicate.ui.conversation.richmessaging.models.KmRichMessageModel;
@@ -37,7 +37,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
 
     private List<KmRichMessageModel.KmPayloadModel> payloadList;
     double currentPos, totalDuration;
-    private AlCustomizationSettings alCustomizationSettings;
+    private CustomizationSettings customizationSettings;
     private static final String PATH_ONE = "<iframe width=\"100%\" height=\"100%\" src=\"";
     private static final String PATH_TWO = "\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen></iframe>";
     private static final String text_html = "text/html";
@@ -45,9 +45,9 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
     private static final String TIME_WITHOUT_HR = "%02d:%02d";
 
 
-    KmVideoRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed, AlCustomizationSettings alCustomizationSettings) {
+    KmVideoRMAdapter(Context context, KmRichMessageModel model, KmRichMessageListener listener, Message message, KmThemeHelper themeHelper, boolean isMessageProcessed, CustomizationSettings customizationSettings) {
         super(context, model, listener, message, themeHelper);
-        this.alCustomizationSettings = alCustomizationSettings;
+        this.customizationSettings = customizationSettings;
         if (model.getPayload() != null) {
             this.payloadList = Arrays.asList((KmRichMessageModel.KmPayloadModel[])
                     GsonUtils.getObjectFromJson(model.getPayload(), KmRichMessageModel.KmPayloadModel[].class));
@@ -78,7 +78,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
         if (payloadList != null) {
             final KmRichMessageModel.KmPayloadModel payloadModel = payloadList.get(position);
             WebSettings webSettings = holder.webview.getSettings();
-            webSettings.setJavaScriptEnabled(alCustomizationSettings.isJavaScriptEnabled());
+            webSettings.setJavaScriptEnabled(customizationSettings.isJavaScriptEnabled());
             holder.webview.setWebChromeClient(new WebChromeClient());
 
             holder.webview.getSettings().setPluginState(WebSettings.PluginState.ON);

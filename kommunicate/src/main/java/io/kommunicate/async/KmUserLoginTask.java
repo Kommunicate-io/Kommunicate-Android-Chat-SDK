@@ -7,7 +7,7 @@ import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.account.user.UserClientService;
 import io.kommunicate.devkit.api.account.user.UserLoginTask;
-import io.kommunicate.devkit.listners.AlLoginHandler;
+import io.kommunicate.devkit.listners.LoginHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -25,7 +25,7 @@ import io.kommunicate.utils.KmConstants;
 public class KmUserLoginTask extends UserLoginTask {
     private Exception e;
     private KMUser user;
-    private AlLoginHandler handler;
+    private LoginHandler handler;
     private WeakReference<Context> context;
     private RegistrationResponse response;
     private KmUserClientService userClientService;
@@ -33,7 +33,7 @@ public class KmUserLoginTask extends UserLoginTask {
     private ResultReceiver prechatReceiver;
 
 
-    public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context) {
+    public KmUserLoginTask(KMUser user, boolean isAgent, LoginHandler listener, Context context) {
         super(user, listener, context);
         this.user = user;
         this.context = new WeakReference<Context>(context);
@@ -42,7 +42,7 @@ public class KmUserLoginTask extends UserLoginTask {
         this.isAgent = isAgent;
     }
 
-    public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context, ResultReceiver prechatReceiver) {
+    public KmUserLoginTask(KMUser user, boolean isAgent, LoginHandler listener, Context context, ResultReceiver prechatReceiver) {
         super(user, listener, context);
         this.user = user;
         this.context = new WeakReference<Context>(context);

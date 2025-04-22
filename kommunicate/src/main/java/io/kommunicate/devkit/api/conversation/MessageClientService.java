@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.HttpRequestUtils;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.MobiComKitConstants;
@@ -20,13 +20,13 @@ import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.feed.MessageResponse;
 import io.kommunicate.devkit.sync.SmsSyncRequest;
 import io.kommunicate.devkit.sync.SyncMessageFeed;
 import io.kommunicate.devkit.sync.SyncUserDetailsResponse;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
@@ -109,7 +109,7 @@ public class MessageClientService extends MobiComKitClientService {
 
     public MessageClientService(Context context) {
         super(context);
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.httpRequestUtils = new HttpRequestUtils(context);
         this.baseContactService = new AppContactService(context);
@@ -366,7 +366,7 @@ public class MessageClientService extends MobiComKitClientService {
 
     public String getMessageDeleteForAllResponse(String messageKey, boolean deleteForAll) throws Exception {
         if (TextUtils.isEmpty(messageKey)) {
-            throw new ApplozicException(empty_msg);
+            throw new KommunicateException(empty_msg);
         }
         StringBuilder urlBuilder = new StringBuilder(getMessageDeleteForAllUrl()).append(messageKey);
         if (deleteForAll) {
@@ -737,7 +737,7 @@ public class MessageClientService extends MobiComKitClientService {
             params = isSkipRead ? "skipRead=" + isSkipRead + "&startIndex=0&pageSize=50" + "&" : "startIndex=0&pageSize=50&";
         }
         if (contact == null && channel == null) {
-            params = "startIndex=0&mainPageSize=" + ApplozicClient.getInstance(context).getFetchConversationListMainPageSize() + "&";
+            params = "startIndex=0&mainPageSize=" + SettingsSharedPreference.getInstance(context).getFetchConversationListMainPageSize() + "&";
         }
         if (contact != null && !TextUtils.isEmpty(contact.getUserId())) {
             params += "userId=" + contact.getUserId() + "&";
@@ -754,7 +754,7 @@ public class MessageClientService extends MobiComKitClientService {
                 params += CONVERSATION_REQ;
             }
         }
-        params = params + "&" + delGroup_inc + String.valueOf(!ApplozicClient.getInstance(context).isSkipDeletedGroups());
+        params = params + "&" + delGroup_inc + String.valueOf(!SettingsSharedPreference.getInstance(context).isSkipDeletedGroups());
 
         if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getCategoryName())) {
             params = params + "&category=" + MobiComUserPreference.getInstance(context).getCategoryName();

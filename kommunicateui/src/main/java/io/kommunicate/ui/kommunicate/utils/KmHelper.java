@@ -9,10 +9,10 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.widget.Toast;
 
-import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import io.kommunicate.devkit.api.account.user.User;
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.views.KmToast;
 import io.kommunicate.ui.utils.RichMessageSharedPreference;
@@ -101,7 +101,7 @@ public class KmHelper {
             KmConversationHelper.launchConversationIfLoggedIn(context, new KmCallback() {
                 @Override
                 public void onSuccess(Object message) {
-                    AlEventManager.getInstance().sendOnStartNewConversation((Integer) message);
+                    EventManager.getInstance().sendOnStartNewConversation((Integer) message);
 
                     dialog.dismiss();
                 }
@@ -129,7 +129,7 @@ public class KmHelper {
         kmUser.setEmail(user.getEmail());
         kmUser.setContactNumber(user.getContactNumber());
         kmUser.setDisplayName(user.getDisplayName());
-        kmUser.setApplicationId(Applozic.getInstance(context).getApplicationKey());
+        kmUser.setApplicationId(KommunicateSettings.getInstance(context).getApplicationKey());
 
         try {
             Kommunicate.login(context, kmUser, new KMLoginHandler() {

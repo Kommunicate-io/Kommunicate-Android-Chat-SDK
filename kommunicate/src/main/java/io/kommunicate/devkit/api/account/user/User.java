@@ -35,7 +35,7 @@ public class User extends JsonMarker {
     private String imageLink;
     private boolean enableEncryption;
     private Short pushNotificationFormat;
-    private Short authenticationTypeId = AuthenticationType.APPLOZIC.getValue();
+    private Short authenticationTypeId = AuthenticationType.KOMMUNICATE.getValue();
     private String displayName;
     private String appModuleName;
     private Short userTypeId;
@@ -346,7 +346,7 @@ public class User extends JsonMarker {
 
     public enum AuthenticationType {
 
-        CLIENT(Short.valueOf("0")), APPLOZIC(Short.valueOf("1")), FACEBOOK(Short.valueOf("2"));
+        CLIENT(Short.valueOf("0")), KOMMUNICATE(Short.valueOf("1")), FACEBOOK(Short.valueOf("2"));
         private Short value;
 
         AuthenticationType(Short c) {

@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.AlJobIntentService;
+import androidx.core.app.CoreJobIntentService;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserDetail;
@@ -14,18 +14,18 @@ import io.kommunicate.devkit.api.conversation.MessageClientService;
 import io.kommunicate.devkit.api.conversation.MobiComConversationService;
 import io.kommunicate.devkit.api.conversation.SyncCallService;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
 
-import static io.kommunicate.devkit.api.conversation.ApplozicConversation.isMessageStatusPublished;
+import static io.kommunicate.devkit.api.conversation.ConversationHelper.isMessageStatusPublished;
 
 import annotations.CleanUpRequired;
 
 /**
  * Created by devashish on 15/12/13.
  */
-public class UserIntentService extends AlJobIntentService {
+public class UserIntentService extends CoreJobIntentService {
 
     private static final String TAG = "UserIntentService";
     public static final String USER_ID = "userId";
@@ -47,7 +47,7 @@ public class UserIntentService extends AlJobIntentService {
      * Convenience method for enqueuing work in to this service.
      */
     static public void enqueueWork(Context context, Intent work) {
-        enqueueWork(ApplozicService.getContext(context), UserIntentService.class, JOB_ID, work);
+        enqueueWork(AppContextService.getContext(context), UserIntentService.class, JOB_ID, work);
     }
 
     @Override

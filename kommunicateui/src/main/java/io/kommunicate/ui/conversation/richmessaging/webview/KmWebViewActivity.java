@@ -14,19 +14,21 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.browser.customtabs.CustomTabColorSchemeParams;
+import androidx.browser.customtabs.CustomTabsIntent;
 
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.DownloadListener;
 import android.webkit.URLUtil;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
@@ -51,7 +53,7 @@ public class KmWebViewActivity extends AppCompatActivity {
     Toolbar toolbar;
     private Map<String, String> txnData;
     private boolean isPaymentRequest = false;
-    AlCustomizationSettings alCustomizationSettings;
+    CustomizationSettings customizationSettings;
     private ProgressBar loadingProgressBar;
     private static final String JS_INTERFACE_NAME = "AlWebViewScreen";
     public static final String SURL = "surl";
@@ -73,15 +75,15 @@ public class KmWebViewActivity extends AppCompatActivity {
 
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
-            alCustomizationSettings = new AlCustomizationSettings();
+            customizationSettings = new CustomizationSettings();
         }
-        configureSentryWithKommunicateUI(this, alCustomizationSettings.toString());
+        configureSentryWithKommunicateUI(this, customizationSettings.toString());
 
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, alCustomizationSettings);
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(themeHelper.getPrimaryColor()));
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -224,18 +226,34 @@ public class KmWebViewActivity extends AppCompatActivity {
 
     public void loadUrl(String url) {
         if (!TextUtils.isEmpty(url)) {
-            webView.getSettings().setJavaScriptEnabled(alCustomizationSettings.isJavaScriptEnabled());
+            webView.getSettings().setJavaScriptEnabled(customizationSettings.isJavaScriptEnabled());
             webView.getSettings().setLoadWithOverviewMode(true);
             webView.getSettings().setUseWideViewPort(true);
             webView.setWebViewClient(new WebViewClient() {
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    if (isRedirectingFromHelpCenter(Uri.parse(url))) {
+                        openUrlInBrowser(Uri.parse(url));
+                        return true;
+                    }
                     if (loadingProgressBar != null) {
                         loadingProgressBar.setVisibility(View.VISIBLE);
                     }
                     view.loadUrl(url);
                     return true;
+                }
+
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                    if (isRedirectingFromHelpCenter(request.getUrl())) {
+                        openUrlInBrowser(request.getUrl());
+                        return true;
+                    }
+                    if (loadingProgressBar != null) {
+                        loadingProgressBar.setVisibility(View.VISIBLE);
+                    }
+                    return super.shouldOverrideUrlLoading(view, request);
                 }
 
                 @Override
@@ -281,10 +299,27 @@ public class KmWebViewActivity extends AppCompatActivity {
         webView.getSettings().setDomStorageEnabled(true);
         webView.clearHistory();
         webView.clearCache(true);
-        webView.getSettings().setJavaScriptEnabled(alCustomizationSettings.isJavaScriptEnabled());
+        webView.getSettings().setJavaScriptEnabled(customizationSettings.isJavaScriptEnabled());
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setUseWideViewPort(false);
         webView.getSettings().setLoadWithOverviewMode(false);
         webView.addJavascriptInterface(new KmWebViewJsInterface(KmWebViewActivity.this), JS_INTERFACE_NAME);
+    }
+
+    private boolean isRedirectingFromHelpCenter(Uri url) {
+        String helpCenterURL = "helpcenter.kommunicate.io";
+        return webView.getUrl() != null && webView.getUrl().contains(helpCenterURL) && url.getHost() != null && !url.getHost().equals(helpCenterURL);
+    }
+
+    private void openUrlInBrowser(Uri url) {
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
+        CustomTabsIntent intent = new CustomTabsIntent.Builder()
+                .setDefaultColorSchemeParams(new CustomTabColorSchemeParams.Builder()
+                        .setToolbarColor(themeHelper.getToolbarColor())
+                        .build())
+                .setStartAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .setExitAnimations(this, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .build();
+        intent.launchUrl(this, url);
     }
 }

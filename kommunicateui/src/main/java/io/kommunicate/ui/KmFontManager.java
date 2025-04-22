@@ -20,12 +20,12 @@ public class KmFontManager extends JsonMarker {
     private Typeface toolbarSubtitleFont;
     private Typeface messageEditTextFont;
 
-    public KmFontManager(Context context, AlCustomizationSettings alCustomizationSettings) {
+    public KmFontManager(Context context, CustomizationSettings customizationSettings) {
         this.context = context;
 
         try {
-            if (alCustomizationSettings != null) {
-                KmFontModel fontModel = alCustomizationSettings.getFontModel();
+            if (customizationSettings != null) {
+                KmFontModel fontModel = customizationSettings.getFontModel();
 
                 if (fontModel != null) {
                     messageTextFont = getTypeFace(fontModel.getMessageTextFont());

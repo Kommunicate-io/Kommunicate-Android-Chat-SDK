@@ -38,12 +38,12 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name=".devkit.api.conversation.ApplozicIntentService"
+            android:name=".devkit.api.conversation.ChatIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
         <service
-            android:name=".devkit.api.conversation.ApplozicMqttIntentService"
+            android:name=".devkit.api.conversation.MqttIntentService"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"
             tools:node="merge" />
@@ -82,7 +82,7 @@
 
         <meta-data
             android:name="activity.open.on.notification"
-            android:value="io.kommunicate.ui.R.conversation.activity.ConversationActivity" />
+            android:value="io.kommunicate.ui.conversation.activity.ConversationActivity" />
 
         <meta-data
             android:name="com.package.name"
@@ -97,7 +97,7 @@
             android:value="tcp://socket.kommunicate.io:1883" />
 
         <meta-data
-            android:name="com.applozic.mobicomkit.notification.tone"
+            android:name="io.kommunicate.devkit.notification.tone"
             android:value="eventually" />
 
 

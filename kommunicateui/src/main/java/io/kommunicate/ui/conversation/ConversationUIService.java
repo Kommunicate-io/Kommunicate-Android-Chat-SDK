@@ -23,8 +23,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserClientService;
@@ -36,7 +36,7 @@ import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.async.FileTaskAsync;
 import io.kommunicate.ui.async.KmChannelDeleteTask;
@@ -116,7 +116,7 @@ public class ConversationUIService {
         this.baseContactService = new AppContactService(fragmentActivity);
         this.notificationManager = (NotificationManager) fragmentActivity.getSystemService(Context.NOTIFICATION_SERVICE);
         this.fileClientService = new FileClientService(fragmentActivity);
-        isActionMessageHidden = ApplozicClient.getInstance(fragmentActivity).isActionMessagesHidden();
+        isActionMessageHidden = SettingsSharedPreference.getInstance(fragmentActivity).isActionMessagesHidden();
     }
 
     public MobiComQuickConversationFragment getQuickConversationFragment() {
@@ -234,13 +234,13 @@ public class ConversationUIService {
                     e.printStackTrace();
                 }
                 String jsonString = FileUtils.loadSettingsJsonFile(getConversationFragment().getContext());
-                AlCustomizationSettings alCustomizationSettings;
+                CustomizationSettings customizationSettings;
                 if (!TextUtils.isEmpty(jsonString)) {
-                    alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+                    customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
                 } else {
-                    alCustomizationSettings = new AlCustomizationSettings();
+                    customizationSettings = new CustomizationSettings();
                 }
-                boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB(), true, alCustomizationSettings.getMinimumCompressionThresholdForVideosInMB());
+                boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, customizationSettings.getMinimumCompressionThresholdForImagesInMB(), true, customizationSettings.getMinimumCompressionThresholdForVideosInMB());
                 if (isFileCompressionNeeded) {
                     new FileTaskAsync(file, selectedFileUri, getConversationFragment().getContext(), new PrePostUIMethods() {
                         @Override
@@ -287,14 +287,14 @@ public class ConversationUIService {
                         e.printStackTrace();
                     }
                     String jsonString = FileUtils.loadSettingsJsonFile(getConversationFragment().getContext());
-                    AlCustomizationSettings alCustomizationSettings;
+                    CustomizationSettings customizationSettings;
                     if (!TextUtils.isEmpty(jsonString)) {
-                        alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+                        customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
                     } else {
-                        alCustomizationSettings = new AlCustomizationSettings();
+                        customizationSettings = new CustomizationSettings();
                     }
                     String mimeType = FileUtils.getMimeTypeByContentUriOrOther(getConversationFragment().getContext(), selectedFileUri);
-                    boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, alCustomizationSettings.getMinimumCompressionThresholdForImagesInMB(), true, alCustomizationSettings.getMinimumCompressionThresholdForVideosInMB());
+                    boolean isFileCompressionNeeded = FileUtils.isCompressionNeeded(getConversationFragment().getContext(), selectedFileUri, fileSize, true, customizationSettings.getMinimumCompressionThresholdForImagesInMB(), true, customizationSettings.getMinimumCompressionThresholdForVideosInMB());
                     if (isFileCompressionNeeded) {
                         new FileTaskAsync(file, selectedFileUri, getConversationFragment().getContext(), new PrePostUIMethods() {
                             ProgressDialog progressDialog = new ProgressDialog(getConversationFragment().getContext());
@@ -916,7 +916,7 @@ public class ConversationUIService {
                 if (Utils.isInternetAvailable(fragmentActivity)) {
                     Utils.printLog(fragmentActivity, TAG, "Reconnecting to mqtt.");
                     ((MobiComKitActivityInterface) fragmentActivity).retry();
-                    Applozic.connectPublish(fragmentActivity);
+                    KommunicateSettings.connectPublish(fragmentActivity);
 
                 }
             }

@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import io.kommunicate.ui.conversation.richmessaging.models.v2.KmRichMessageModel;
 import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.devkit.broadcast.AlEventManager;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.conversation.activity.FullScreenImageActivity;
 import io.kommunicate.ui.conversation.activity.MobiComKitActivityInterface;
@@ -24,7 +24,7 @@ import io.kommunicate.ui.conversation.richmessaging.models.v2.KmRMActionModel;
 import io.kommunicate.ui.conversation.richmessaging.webview.KmWebViewActivity;
 import io.kommunicate.ui.kommunicate.adapters.KmAutoSuggestionAdapter;
 import io.kommunicate.ui.kommunicate.views.KmToast;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import com.google.gson.Gson;
@@ -83,7 +83,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
     @Override
     public void onAction(Context context, String action, Message message, Object object, Map<String, Object> replyMetadata) {
-        AlEventManager.getInstance().sendOnRichMessageButtonClickEvent(message.getGroupId(), action, object);
+        EventManager.getInstance().sendOnRichMessageButtonClickEvent(message.getGroupId(), action, object);
         switch (action) {
             case KmRichMessage.SEND_GUEST_LIST:
                 List<KmGuestCountModel> guestCountModels = (List<KmGuestCountModel>) object;
@@ -175,7 +175,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
 
     private void updateLanguage(String languageCode) {
         if (!TextUtils.isEmpty(languageCode)) {
-            KmSettings.updateUserLanguage(ApplozicService.getAppContext(), languageCode);
+            KmSettings.updateUserLanguage(AppContextService.getAppContext(), languageCode);
         }
     }
 
@@ -329,7 +329,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
         Utils.printLog(context, TAG, "Submitting data : " + GsonUtils.getJsonFromObject(formStateModel != null ? dataMap : submitButtonModel.getFormData(), Map.class));
 
         if (submitButtonModel.getPostBackToKommunicate() != null && submitButtonModel.getPostBackToKommunicate().equalsIgnoreCase("true")) {
-            sendFormDataAsMessage(message, metadata, dataMap, "", "");
+            sendFormDataAsMessage(message, metadata, dataMap, submitButtonModel.getMessage(), submitButtonModel.getAddFormLabelInMessage());
 
             if (richMessageListener != null) {
                 richMessageListener.onAction(context, NOTIFY_ITEM_CHANGE, message, dataMap, submitButtonModel.getReplyMetadata());
@@ -640,7 +640,7 @@ public class RichMessageActionProcessor implements KmRichMessageListener {
     public void sendBookingDetailsMessage(KmBookingDetailsModel model, Map<String, String> replyMetadata) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(GUEST_DETAIL, "true");
-        metadata.put(PERSON_INFO, GsonUtils.getJsonFromObject(model.getPersonInfo(), KmBookingDetailsModel.ALBookingDetails.class));
+        metadata.put(PERSON_INFO, GsonUtils.getJsonFromObject(model.getPersonInfo(), KmBookingDetailsModel.BookingDetailsModel.class));
         metadata.put(SESSION_ID, model.getSessionId());
         metadata.put(SKIPBOT, "true");
 

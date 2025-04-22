@@ -35,17 +35,17 @@ public class KmSpeechSetting extends JsonMarker {
         this.sendMessageOnSpeechEnd = sendMessageOnSpeechEnd;
     }
 
-    public static String getSpeechToTextLanguageCode(Context context, AlCustomizationSettings alCustomizationSettings) {
+    public static String getSpeechToTextLanguageCode(Context context, CustomizationSettings customizationSettings) {
         if (!TextUtils.isEmpty(KmPrefSettings.getInstance(context).getSpeechToTextLanguage())) {
             return KmPrefSettings.getInstance(context).getSpeechToTextLanguage();
         }
-        return alCustomizationSettings.getSpeechToText().getLanguageCode();
+        return customizationSettings.getSpeechToText().getLanguageCode();
     }
 
-    public static String getTextToSpeechLanguageCode(Context context, AlCustomizationSettings alCustomizationSettings) {
+    public static String getTextToSpeechLanguageCode(Context context, CustomizationSettings customizationSettings) {
         if (!TextUtils.isEmpty(KmPrefSettings.getInstance(context).getTextToSpeechLanguage())) {
             return KmPrefSettings.getInstance(context).getTextToSpeechLanguage();
         }
-        return alCustomizationSettings.getTextToSpeech().getLanguageCode();
+        return customizationSettings.getTextToSpeech().getLanguageCode();
     }
 }

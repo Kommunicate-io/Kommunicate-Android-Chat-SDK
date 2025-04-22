@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import androidx.annotation.VisibleForTesting;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserDetail;
@@ -24,12 +24,12 @@ import io.kommunicate.devkit.cache.MessageSearchCache;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.feed.ChannelFeed;
 import io.kommunicate.devkit.listners.MediaUploadProgressHandler;
 import io.kommunicate.devkit.sync.SyncUserDetailsResponse;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.AnnotationExclusionStrategy;
@@ -82,13 +82,13 @@ public class MobiComConversationService {
     private static final String group_Feeds = "groupFeeds";
 
     public MobiComConversationService(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         this.messageClientService = new MessageClientService(context);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.baseContactService = new AppContactService(context);
         this.conversationService = ConversationService.getInstance(context);
         this.channelService = ChannelService.getInstance(context);
-        this.isHideActionMessage = ApplozicClient.getInstance(context).isActionMessagesHidden();
+        this.isHideActionMessage = SettingsSharedPreference.getInstance(context).isActionMessagesHidden();
     }
 
     @VisibleForTesting
@@ -148,10 +148,10 @@ public class MobiComConversationService {
             return;
         }
 
-        ApplozicException e = null;
+        KommunicateException e = null;
 
         if (!message.hasAttachment()) {
-            e = new ApplozicException(NO_ATTACHMENT);
+            e = new KommunicateException(NO_ATTACHMENT);
             if (handler != null) {
                 handler.onUploadStarted(e, null);
                 handler.onProgressUpdate(0, e, null);
@@ -167,7 +167,7 @@ public class MobiComConversationService {
 
     public synchronized List<Message> getLatestMessagesGroupByPeople(Long createdAt, String searchString, Integer parentGroupKey) {
 
-        if (!ApplozicClient.getInstance(context).wasServerCallDoneBefore(null, null, null) || createdAt != null && createdAt != 0) {
+        if (!SettingsSharedPreference.getInstance(context).wasServerCallDoneBefore(null, null, null) || createdAt != null && createdAt != 0) {
             getMessagesWithNetworkMetaData(null, createdAt, null, null, null, false, false);
         }
 
@@ -177,7 +177,7 @@ public class MobiComConversationService {
     public synchronized NetworkListDecorator<Message> getLatestMessagesGroupByPeopleWithNetworkMetaData(Long createdAt, String searchString, Integer parentGroupKey) {
         boolean networkFail = false;
 
-        if (!ApplozicClient.getInstance(context).wasServerCallDoneBefore(null, null, null) || createdAt != null && createdAt != 0) {
+        if (!SettingsSharedPreference.getInstance(context).wasServerCallDoneBefore(null, null, null) || createdAt != null && createdAt != 0) {
             NetworkListDecorator<Message> networkListDecorator = getMessagesWithNetworkMetaData(null, createdAt, null, null, null, false, false);
             networkFail = networkListDecorator.wasNetworkFail();
         }
@@ -210,33 +210,33 @@ public class MobiComConversationService {
             return new NetworkListDecorator<>(null, true);
         }
 
-        AlConversationResponse alConversationResponse = null;
+        ConversationResponse conversationResponse = null;
         boolean wasNetworkFail = false; //for determining network fail in case of exception
         try {
-            alConversationResponse = (AlConversationResponse) GsonUtils.getObjectFromJson(messageClientService.getMessages(contact, channel, startTime, endTime, conversationId, isSkipRead), AlConversationResponse.class);
+            conversationResponse = (ConversationResponse) GsonUtils.getObjectFromJson(messageClientService.getMessages(contact, channel, startTime, endTime, conversationId, isSkipRead), ConversationResponse.class);
         } catch (Exception e) {
             e.printStackTrace();
             wasNetworkFail = true;
         }
 
-        if (alConversationResponse == null) {
+        if (conversationResponse == null) {
             return new NetworkListDecorator<>(null, wasNetworkFail);
         }
 
         List<Message> messageList = new ArrayList<>();
 
         try {
-            if (alConversationResponse.getUserDetails() != null) {
-                MessageSearchCache.processUserDetails(alConversationResponse.getUserDetails());
+            if (conversationResponse.getUserDetails() != null) {
+                MessageSearchCache.processUserDetails(conversationResponse.getUserDetails());
             }
 
-            if (alConversationResponse.getGroupFeeds() != null) {
-                MessageSearchCache.processChannelFeeds(alConversationResponse.getGroupFeeds());
+            if (conversationResponse.getGroupFeeds() != null) {
+                MessageSearchCache.processChannelFeeds(conversationResponse.getGroupFeeds());
             }
 
             List<String> messageKeys = new ArrayList<>();
 
-            for (Message message : alConversationResponse.getMessage()) {
+            for (Message message : conversationResponse.getMessage()) {
                 if (message.getTo() == null) {
                     continue;
                 }
@@ -262,7 +262,7 @@ public class MobiComConversationService {
                 }
             }
 
-            if (alConversationResponse.getMessage() != null) {
+            if (conversationResponse.getMessage() != null) {
                 Collections.reverse(messageList);
                 MessageSearchCache.setMessageList(messageList);
             }
@@ -285,9 +285,9 @@ public class MobiComConversationService {
             return null;
         }
 
-        AlConversationResponse kmConversationResponse = null;
+        ConversationResponse kmConversationResponse = null;
         try {
-            kmConversationResponse = (AlConversationResponse) GsonUtils.getObjectFromJson(messageClientService.getMessages(contact, channel, startTime, endTime, conversationId, isSkipRead), KmConversationResponse.class);
+            kmConversationResponse = (ConversationResponse) GsonUtils.getObjectFromJson(messageClientService.getMessages(contact, channel, startTime, endTime, conversationId, isSkipRead), KmConversationResponse.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -362,8 +362,8 @@ public class MobiComConversationService {
         }
 
         if (isServerCallNotRequired && (!cachedMessageList.isEmpty() &&
-                ApplozicClient.getInstance(context).wasServerCallDoneBefore(contact, channel, conversationId)
-                || (contact == null && channel == null && cachedMessageList.isEmpty() && ApplozicClient.getInstance(context).wasServerCallDoneBefore(contact, channel, conversationId)))) {
+                SettingsSharedPreference.getInstance(context).wasServerCallDoneBefore(contact, channel, conversationId)
+                || (contact == null && channel == null && cachedMessageList.isEmpty() && SettingsSharedPreference.getInstance(context).wasServerCallDoneBefore(contact, channel, conversationId)))) {
             Utils.printLog(context, TAG, "cachedMessageList size is : " + cachedMessageList.size());
             return cachedMessageList;
         }
@@ -385,7 +385,7 @@ public class MobiComConversationService {
             return cachedMessageList;
         }
 
-        ApplozicClient.getInstance(context).updateServerCallDoneStatus(contact, channel, conversationId);
+        SettingsSharedPreference.getInstance(context).updateServerCallDoneStatus(contact, channel, conversationId);
 
         try {
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(new ArrayAdapterFactory())
@@ -556,8 +556,8 @@ public class MobiComConversationService {
         }
 
         if (isServerCallNotRequired && (!cachedMessageList.isEmpty() &&
-                ApplozicClient.getInstance(context).wasServerCallDoneBefore(contact, channel, conversationId)
-                || (contact == null && channel == null && cachedMessageList.isEmpty() && ApplozicClient.getInstance(context).wasServerCallDoneBefore(contact, channel, conversationId)))) {
+                SettingsSharedPreference.getInstance(context).wasServerCallDoneBefore(contact, channel, conversationId)
+                || (contact == null && channel == null && cachedMessageList.isEmpty() && SettingsSharedPreference.getInstance(context).wasServerCallDoneBefore(contact, channel, conversationId)))) {
             Utils.printLog(context, TAG, "cachedMessageList size is : " + cachedMessageList.size());
             return new NetworkListDecorator<>(cachedMessageList, false);
         }
@@ -579,7 +579,7 @@ public class MobiComConversationService {
             return new NetworkListDecorator<>(cachedMessageList, true);
         }
 
-        ApplozicClient.getInstance(context).updateServerCallDoneStatus(contact, channel, conversationId);
+        SettingsSharedPreference.getInstance(context).updateServerCallDoneStatus(contact, channel, conversationId);
 
         boolean wasNetworkFail = false; //for the try catch
 
@@ -733,24 +733,24 @@ public class MobiComConversationService {
 
     public List<Message> getConversationSearchList(String searchString) throws Exception {
         String response = messageClientService.getMessageSearchResult(searchString);
-        ApiResponse<AlConversationResponse> apiResponse = (ApiResponse<AlConversationResponse>) GsonUtils.getObjectFromJson(response, new TypeToken<ApiResponse<AlConversationResponse>>() {
+        ApiResponse<ConversationResponse> apiResponse = (ApiResponse<ConversationResponse>) GsonUtils.getObjectFromJson(response, new TypeToken<ApiResponse<ConversationResponse>>() {
         }.getType());
         if (apiResponse != null) {
             if (apiResponse.isSuccess()) {
                 processMessageSearchResult(apiResponse.getResponse());
                 return Arrays.asList(apiResponse.getResponse().getMessage());
             } else if (apiResponse.getErrorResponse() != null) {
-                throw new ApplozicException(GsonUtils.getJsonFromObject(apiResponse.getErrorResponse(), List.class));
+                throw new KommunicateException(GsonUtils.getJsonFromObject(apiResponse.getErrorResponse(), List.class));
             }
         }
         return null;
     }
 
-    private void processMessageSearchResult(AlConversationResponse alConversationResponse) {
-        if (alConversationResponse != null) {
-            MessageSearchCache.processChannelFeeds(alConversationResponse.getGroupFeeds());
-            MessageSearchCache.processUserDetails(alConversationResponse.getUserDetails());
-            MessageSearchCache.setMessageList(Arrays.asList(alConversationResponse.getMessage()));
+    private void processMessageSearchResult(ConversationResponse conversationResponse) {
+        if (conversationResponse != null) {
+            MessageSearchCache.processChannelFeeds(conversationResponse.getGroupFeeds());
+            MessageSearchCache.processUserDetails(conversationResponse.getUserDetails());
+            MessageSearchCache.setMessageList(Arrays.asList(conversationResponse.getMessage()));
         }
     }
 
@@ -762,32 +762,32 @@ public class MobiComConversationService {
             return cachedConversationList;
         }
 
-        AlConversationResponse alConversationResponse = null;
+        ConversationResponse conversationResponse = null;
         try {
-            ApiResponse<AlConversationResponse> apiResponse = (ApiResponse<AlConversationResponse>) GsonUtils.getObjectFromJson(messageClientService.getAlConversationList(status, pageSize, lastFetchTime), new TypeToken<ApiResponse<AlConversationResponse>>() {
+            ApiResponse<ConversationResponse> apiResponse = (ApiResponse<ConversationResponse>) GsonUtils.getObjectFromJson(messageClientService.getAlConversationList(status, pageSize, lastFetchTime), new TypeToken<ApiResponse<ConversationResponse>>() {
             }.getType());
             if (apiResponse != null) {
-                alConversationResponse = apiResponse.getResponse();
+                conversationResponse = apiResponse.getResponse();
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         }
 
-        if (alConversationResponse == null) {
+        if (conversationResponse == null) {
             return null;
         }
 
         try {
-            if (alConversationResponse.getUserDetails() != null) {
-                processUserDetails(alConversationResponse.getUserDetails());
+            if (conversationResponse.getUserDetails() != null) {
+                processUserDetails(conversationResponse.getUserDetails());
             }
 
-            if (alConversationResponse.getGroupFeeds() != null) {
-                ChannelService.getInstance(context).processChannelFeedList(alConversationResponse.getGroupFeeds(), false);
+            if (conversationResponse.getGroupFeeds() != null) {
+                ChannelService.getInstance(context).processChannelFeedList(conversationResponse.getGroupFeeds(), false);
             }
 
-            Message[] messages = alConversationResponse.getMessage();
+            Message[] messages = conversationResponse.getMessage();
             MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(context);
 
             if (messages != null && messages.length > 0 && cachedConversationList.size() > 0 && cachedConversationList.get(0).isLocalMessage()) {
@@ -1107,25 +1107,25 @@ public class MobiComConversationService {
             switch (message.what) {
                 case UPLOAD_STARTED:
                     if (progressHandler != null) {
-                        progressHandler.onUploadStarted(e != null ? new ApplozicException(e) : null, oldMessageKey);
+                        progressHandler.onUploadStarted(e != null ? new KommunicateException(e) : null, oldMessageKey);
                     }
                     break;
 
                 case UPLOAD_PROGRESS:
                     if (progressHandler != null) {
-                        progressHandler.onProgressUpdate(message.arg1, e != null ? new ApplozicException(e) : null, oldMessageKey);
+                        progressHandler.onProgressUpdate(message.arg1, e != null ? new KommunicateException(e) : null, oldMessageKey);
                     }
                     break;
 
                 case UPLOAD_COMPLETED:
                     if (progressHandler != null) {
-                        progressHandler.onCompleted(e != null ? new ApplozicException(e) : null, oldMessageKey);
+                        progressHandler.onCompleted(e != null ? new KommunicateException(e) : null, oldMessageKey);
                     }
                     break;
 
                 case UPLOAD_CANCELLED:
                     if (progressHandler != null) {
-                        progressHandler.onCancelled(e != null ? new ApplozicException(e) : null, oldMessageKey);
+                        progressHandler.onCancelled(e != null ? new KommunicateException(e) : null, oldMessageKey);
                     }
                     break;
 

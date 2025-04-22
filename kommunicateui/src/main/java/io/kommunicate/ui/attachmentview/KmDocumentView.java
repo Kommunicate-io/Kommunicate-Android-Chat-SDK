@@ -32,7 +32,7 @@ import io.kommunicate.devkit.api.attachment.AttachmentViewProperties;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.MessageIntentService;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.views.KmToast;
 import io.kommunicate.ui.uilistener.KmStoragePermission;
@@ -50,7 +50,7 @@ import io.kommunicate.utils.KmUtils;
  */
 public class KmDocumentView {
 
-    private static final String TAG = "ApplozicDocumentView";
+    private static final String TAG = "KmDocumentView";
     RelativeLayout mainLayout;
     RelativeLayout downloadInProgressLayout;
     RelativeLayout downloadedLayout;
@@ -74,7 +74,7 @@ public class KmDocumentView {
     private KmStoragePermissionListener kmStoragePermissionListener;
     private Handler mHandler = new Handler();
     private static final String AUDIO = "audio";
-    private AlCustomizationSettings alCustomizationSettings = new AlCustomizationSettings();
+    private CustomizationSettings customizationSettings = new CustomizationSettings();
     private static final String AUDIO_DURATION = "00:00";
 
 
@@ -105,7 +105,7 @@ public class KmDocumentView {
 
         if (audio_duration_textView != null) {
             if (isAgentApp()) {
-                audio_duration_textView.setTextColor(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor().get(0) : alCustomizationSettings.getReceivedMessageTextColor().get(0)));
+                audio_duration_textView.setTextColor(Color.parseColor(message.isTypeOutbox() ? customizationSettings.getSentMessageTextColor().get(0) : customizationSettings.getReceivedMessageTextColor().get(0)));
             } else {
                 audio_duration_textView.setTextColor(context.getResources().getColor(message.isTypeOutbox() ? R.color.white : R.color.black));
             }
@@ -137,8 +137,8 @@ public class KmDocumentView {
             }
         }
         if (isAgentApp()) {
-            fileText.setTextColor(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor().get(0) : alCustomizationSettings.getReceivedMessageTextColor().get(0)));
-            audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor().get(0)) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor().get(0)), PorterDuff.Mode.MULTIPLY);
+            fileText.setTextColor(Color.parseColor(message.isTypeOutbox() ? customizationSettings.getSentMessageTextColor().get(0) : customizationSettings.getReceivedMessageTextColor().get(0)));
+            audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? Color.parseColor(customizationSettings.getSentMessageTextColor().get(0)) : Color.parseColor(customizationSettings.getReceivedMessageTextColor().get(0)), PorterDuff.Mode.MULTIPLY);
         } else {
             audioseekbar.getProgressDrawable().setColorFilter(message.isTypeOutbox() ? 0xFFFFFFFF : 0xFFFFB242, PorterDuff.Mode.MULTIPLY);
             fileText.setTextColor(ContextCompat.getColor(context, message.isTypeOutbox() ? R.color.message_text_color : R.color.km_received_message_text_color));
@@ -226,8 +226,8 @@ public class KmDocumentView {
         if (context != null) {
             String jsonString = FileUtils.loadSettingsJsonFile(context);
             if (!TextUtils.isEmpty(jsonString)) {
-                alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
-                isAgentApp = alCustomizationSettings.isAgentApp();
+                customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
+                isAgentApp = customizationSettings.isAgentApp();
             }
         }
         return isAgentApp;

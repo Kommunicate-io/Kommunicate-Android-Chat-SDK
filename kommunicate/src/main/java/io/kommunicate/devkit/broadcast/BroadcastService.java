@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
@@ -18,7 +18,7 @@ import io.kommunicate.devkit.api.notification.NotificationService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
@@ -77,7 +77,7 @@ public class BroadcastService {
     }
 
     public static void sendLoadMoreBroadcast(Context context, boolean loadMore) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.LOAD_MORE).setLoadMore(loadMore));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.LOAD_MORE).setLoadMore(loadMore));
 
         Utils.printLog(context, TAG, "Sending " + INTENT_ACTIONS.LOAD_MORE.toString() + " broadcast");
         Intent intent = new Intent();
@@ -89,9 +89,9 @@ public class BroadcastService {
 
     public static void sendDeliveryReportForContactBroadcast(Context context, String action, String contactId) {
         if (INTENT_ACTIONS.MESSAGE_READ_AND_DELIVERED_FOR_CONTECT.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.ALL_MESSAGES_READ).setUserId(contactId));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.ALL_MESSAGES_READ).setUserId(contactId));
         } else if (INTENT_ACTIONS.MESSAGE_DELIVERY_FOR_CONTACT.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.ALL_MESSAGES_DELIVERED).setUserId(contactId));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.ALL_MESSAGES_DELIVERED).setUserId(contactId));
         }
 
         Utils.printLog(context, TAG, "Sending message delivery report of contact broadcast for " + action + ", " + contactId);
@@ -104,14 +104,14 @@ public class BroadcastService {
 
     public static void sendMessageUpdateBroadcast(Context context, String action, Message message) {
         if (!message.isSentToMany() && !message.isTypeOutbox()) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.MESSAGE_RECEIVED).setMessage(message));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.MESSAGE_RECEIVED).setMessage(message));
         }
         if (INTENT_ACTIONS.MESSAGE_SYNC_ACK_FROM_SERVER.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.MESSAGE_SENT).setMessage(message));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.MESSAGE_SENT).setMessage(message));
         } else if (INTENT_ACTIONS.SYNC_MESSAGE.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.MESSAGE_SYNC).setMessage(message));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.MESSAGE_SYNC).setMessage(message));
         } else if (INTENT_ACTIONS.MESSAGE_DELIVERY.toString().equals(action) || INTENT_ACTIONS.MESSAGE_READ_AND_DELIVERED.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.MESSAGE_DELIVERED).setMessage(message).setUserId(message.getContactIds()));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.MESSAGE_DELIVERED).setMessage(message).setUserId(message.getContactIds()));
         }
 
         Utils.printLog(context, TAG, "Sending message update broadcast for " + action + ", " + message.getKeyString());
@@ -123,7 +123,7 @@ public class BroadcastService {
     }
 
     public static void sendMessageDeleteBroadcast(Context context, String action, String keyString, String contactNumbers, Message message) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.MESSAGE_DELETED).setMessageKey(keyString).setUserId(contactNumbers));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.MESSAGE_DELETED).setMessageKey(keyString).setUserId(contactNumbers));
 
         Utils.printLog(context, TAG, "Sending message delete broadcast for " + action);
         Intent intentDelete = new Intent();
@@ -137,7 +137,7 @@ public class BroadcastService {
     }
 
     public static void sendConversationDeleteBroadcast(Context context, String action, String contactNumber, Integer channelKey, String response) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.CONVERSATION_DELETED).setUserId(contactNumber).setGroupId(channelKey).setResponse(response));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.CONVERSATION_DELETED).setUserId(contactNumber).setGroupId(channelKey).setResponse(response));
 
         Utils.printLog(context, TAG, "Sending conversation delete broadcast for " + action);
         Intent intentDelete = new Intent();
@@ -150,8 +150,8 @@ public class BroadcastService {
     }
 
     public static void sendUserActivatedBroadcast(Context context, String action) {
-        MobiComUserPreference.getInstance(context).setUserDeactivated(AlMessageEvent.ActionType.USER_DEACTIVATED.equals(action));
-        postEventData(context, new AlMessageEvent().setAction(action));
+        MobiComUserPreference.getInstance(context).setUserDeactivated(MessageEvent.ActionType.USER_DEACTIVATED.equals(action));
+        postEventData(context, new MessageEvent().setAction(action));
         Intent intent = new Intent();
         intent.setAction(action);
         sendBroadcast(context, intent);
@@ -159,7 +159,7 @@ public class BroadcastService {
 
     public static void sendNotificationBroadcast(Context context, Message message, int index) {
         if (message != null) {
-            if (ALSpecificSettings.getInstance(context).isAllNotificationMuted()) {
+            if (AppSpecificSettings.getInstance(context).isAllNotificationMuted()) {
                 return;
             }
             int notificationId = Utils.getLauncherIcon(context.getApplicationContext());
@@ -182,7 +182,7 @@ public class BroadcastService {
                 if (message.getConversationId() != null) {
                     ConversationService.getInstance(context).getConversation(message.getConversationId());
                 }
-                if (ApplozicClient.getInstance(context).isNotificationStacking()) {
+                if (SettingsSharedPreference.getInstance(context).isNotificationStacking()) {
                     notificationService.notifyUser(contact, channel, message, index);
                 } else {
                     notificationService.notifyUserForNormalMessage(contact, channel, message, index);
@@ -216,7 +216,7 @@ public class BroadcastService {
     }
 
     public static void sendUpdateLastSeenAtTimeBroadcast(Context context, String action, String contactId) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.UPDATE_LAST_SEEN).setUserId(contactId));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.UPDATE_LAST_SEEN).setUserId(contactId));
 
         Utils.printLog(context, TAG, "Sending lastSeenAt broadcast....");
         Intent intent = new Intent();
@@ -227,7 +227,7 @@ public class BroadcastService {
     }
 
     public static void sendUpdateTypingBroadcast(Context context, String action, String applicationId, String userId, String isTyping) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.UPDATE_TYPING_STATUS).setUserId(userId).setTyping(isTyping));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.UPDATE_TYPING_STATUS).setUserId(userId).setTyping(isTyping));
 
         Utils.printLog(context, TAG, "Sending typing Broadcast.......");
         Intent intentTyping = new Intent();
@@ -242,15 +242,15 @@ public class BroadcastService {
 
     public static void sendUpdate(Context context, boolean isMetadataUpdate, final String action) {
         if (INTENT_ACTIONS.MQTT_CONNECTED.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.MQTT_CONNECTED));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.MQTT_CONNECTED));
         } else if (INTENT_ACTIONS.MQTT_DISCONNECTED.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.MQTT_DISCONNECTED));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.MQTT_DISCONNECTED));
         } else if (INTENT_ACTIONS.USER_ONLINE.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.CURRENT_USER_ONLINE));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.CURRENT_USER_ONLINE));
         } else if (INTENT_ACTIONS.USER_OFFLINE.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.CURRENT_USER_OFFLINE));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.CURRENT_USER_OFFLINE));
         } else if (INTENT_ACTIONS.CHANNEL_SYNC.toString().equals(action)) {
-            postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.CHANNEL_UPDATED));
+            postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.CHANNEL_UPDATED));
         }
 
         Utils.printLog(context, TAG, action);
@@ -268,7 +268,7 @@ public class BroadcastService {
     public static void updateMessageMetadata(Context context, String messageKey, String action, String userId, Integer groupId, Boolean isOpenGroup, Map<String, String> metadata) {
 
         try {
-            AlMessageEvent messageEvent = new AlMessageEvent().setAction(AlMessageEvent.ActionType.MESSAGE_METADATA_UPDATED).setMessageKey(messageKey);
+            MessageEvent messageEvent = new MessageEvent().setAction(MessageEvent.ActionType.MESSAGE_METADATA_UPDATED).setMessageKey(messageKey);
             Intent intent = new Intent();
             intent.setAction(action);
             intent.putExtra(KEY_STRING, messageKey);
@@ -295,7 +295,7 @@ public class BroadcastService {
     }
 
     public static void sendConversationReadBroadcast(Context context, String action, String currentId, boolean isGroup) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.CONVERSATION_READ).setUserId(currentId).setGroup(isGroup));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.CONVERSATION_READ).setUserId(currentId).setGroup(isGroup));
 
         Utils.printLog(context, TAG, "Sending  Broadcast for conversation read ......");
         Intent intent = new Intent();
@@ -307,7 +307,7 @@ public class BroadcastService {
     }
 
     public static void sendMuteUserBroadcast(Context context, String action, boolean mute, String userId) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.ON_USER_MUTE).setUserId(userId).setLoadMore(mute));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.ON_USER_MUTE).setUserId(userId).setLoadMore(mute));
 
         Utils.printLog(context, TAG, "Sending Mute user Broadcast for user : " + userId + ", mute : " + mute);
         Intent intent = new Intent();
@@ -319,7 +319,7 @@ public class BroadcastService {
     }
 
     public static void sendUpdateUserDetailBroadcast(Context context, String action, String contactId) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.USER_DETAILS_UPDATED).setUserId(contactId));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.USER_DETAILS_UPDATED).setUserId(contactId));
 
         Utils.printLog(context, TAG, "Sending profileImage update....");
         Intent intent = new Intent();
@@ -335,7 +335,7 @@ public class BroadcastService {
     }
 
     public static void sendUpdateGroupMuteForGroupId(Context context, Integer groupId, String action) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.GROUP_MUTE).setGroup(true).setGroupId(groupId));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.GROUP_MUTE).setGroup(true).setGroupId(groupId));
 
         Utils.printLog(context, TAG, "Sending group mute update for groupId " + groupId);
         Intent intent = new Intent();
@@ -368,7 +368,7 @@ public class BroadcastService {
     }
 
     public static void sendAgentStatusBroadcast(Context context, String action, String userId, Integer status) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.AWAY_STATUS).setUserId(userId).setStatus(status));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.AWAY_STATUS).setUserId(userId).setStatus(status));
         Intent intent = new Intent();
         intent.setAction(action);
         intent.putExtra("userId", userId);
@@ -377,14 +377,14 @@ public class BroadcastService {
     }
 
     public static void onAutoText(Context context, String prefilledText) {
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.ACTION_POPULATE_CHAT_TEXT));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.ACTION_POPULATE_CHAT_TEXT));
         Intent intent = new Intent();
         intent.setAction(INTENT_ACTIONS.ACTION_POPULATE_CHAT_TEXT.toString());
         intent.putExtra("preFilled", prefilledText);
         sendBroadcast(context, intent);
     }
     public static void hideAssignee(Context context,Boolean hide){
-        postEventData(context, new AlMessageEvent().setAction(AlMessageEvent.ActionType.HIDE_ASSIGNEE_STATUS));
+        postEventData(context, new MessageEvent().setAction(MessageEvent.ActionType.HIDE_ASSIGNEE_STATUS));
         Intent intent = new Intent();
         intent.setAction(INTENT_ACTIONS.HIDE_ASSIGNEE_STATUS.toString());
         intent.putExtra("hideAssignee", hide);
@@ -433,8 +433,8 @@ public class BroadcastService {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-    private static void postEventData(Context context, AlMessageEvent messageEvent) {
-        AlEventManager.getInstance().postEventData(messageEvent);
+    private static void postEventData(Context context, MessageEvent messageEvent) {
+        EventManager.getInstance().postEventData(messageEvent);
     }
 
     public enum INTENT_ACTIONS {

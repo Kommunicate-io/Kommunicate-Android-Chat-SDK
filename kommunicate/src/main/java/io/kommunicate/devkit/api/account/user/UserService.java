@@ -9,14 +9,14 @@ import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.feed.ApiResponse;
 import io.kommunicate.devkit.feed.RegisteredUsersApiResponse;
 import io.kommunicate.devkit.feed.SyncBlockUserApiResponse;
-import io.kommunicate.devkit.listners.AlCallback;
+import io.kommunicate.devkit.listners.ResultCallback;
 import io.kommunicate.devkit.sync.SyncUserBlockFeed;
 import io.kommunicate.devkit.sync.SyncUserBlockListFeed;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.contact.Contact;
@@ -46,7 +46,7 @@ public class UserService {
     private MobiComUserPreference userPreference;
 
     private UserService(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
         userClientService = new UserClientService(context);
         userPreference = MobiComUserPreference.getInstance(context);
         baseContactService = new AppContactService(context);
@@ -54,7 +54,7 @@ public class UserService {
 
     public static UserService getInstance(Context context) {
         if (userService == null) {
-            userService = new UserService(ApplozicService.getContext(context));
+            userService = new UserService(AppContextService.getContext(context));
         }
         return userService;
     }
@@ -409,7 +409,7 @@ public class UserService {
         return response;
     }
 
-    public List<Contact> getUserListBySearch(String searchString) throws ApplozicException {
+    public List<Contact> getUserListBySearch(String searchString) throws KommunicateException {
         try {
             ApiResponse response = userClientService.getUsersBySearchString(searchString);
 
@@ -427,16 +427,16 @@ public class UserService {
                 return contactList;
             } else {
                 if (response.getErrorResponse() != null && !response.getErrorResponse().isEmpty()) {
-                    throw new ApplozicException(GsonUtils.getJsonFromObject(response.getErrorResponse(), List.class));
+                    throw new KommunicateException(GsonUtils.getJsonFromObject(response.getErrorResponse(), List.class));
                 }
             }
         } catch (Exception e) {
-            throw new ApplozicException(e.getMessage());
+            throw new KommunicateException(e.getMessage());
         }
         return null;
     }
 
-    public void updateUser(User user, boolean isForEmail,  AlCallback callback) {
+    public void updateUser(User user, boolean isForEmail,  ResultCallback callback) {
         UserUpdateUseCase.executeWithExecutor(context, user, isForEmail, callback);
     }
 

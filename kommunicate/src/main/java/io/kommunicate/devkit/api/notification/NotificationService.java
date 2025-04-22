@@ -17,8 +17,8 @@ import androidx.core.content.ContextCompat;
 import android.text.Html;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.Applozic;
-import io.kommunicate.devkit.ApplozicClient;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.attachment.FileClientService;
@@ -27,7 +27,7 @@ import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
-import io.kommunicate.devkit.listners.AlConstantsHandler;
+import io.kommunicate.devkit.listners.ConstantsHandler;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
@@ -54,8 +54,8 @@ public class NotificationService {
     public static final String NOTIFICATION_TEXT_NOT_AVAILABLE = "You received a message";
     public static final int NOTIFICATION_ID = 1000;
     private static final String TAG = "NotificationService";
-    private static final String NOTIFICATION_SMALL_ICON_METADATA = "com.applozic.mobicomkit.notification.smallIcon";
-    private static final String NOTIFICATION_SMALL_ICON_COLOR = "com.applozic.mobicomkit.notification.iconColor";
+    private static final String NOTIFICATION_SMALL_ICON_METADATA = "io.kommunicate.devkit.notification.smallIcon";
+    private static final String NOTIFICATION_SMALL_ICON_COLOR = "io.kommunicate.devkit.notification.iconColor";
     private static String GROUP_KEY = "applozic_key";
     MessageDatabaseService messageDatabaseService;
     List<Message> unReadMessageList = new ArrayList<>();
@@ -66,7 +66,7 @@ public class NotificationService {
     private int wearable_action_label;
     private int wearable_send_icon;
     private AppContactService appContactService;
-    private ApplozicClient applozicClient;
+    private SettingsSharedPreference settingsSharedPreference;
     private String activityToOpen;
     private int notificationDisableThreshold = 0;
     private NotificationChannels notificationChannels;
@@ -91,12 +91,12 @@ public class NotificationService {
         this.wearable_action_label = wearable_action_label;
         this.wearable_action_title = wearable_action_title;
         this.wearable_send_icon = wearable_send_icon;
-        this.applozicClient = ApplozicClient.getInstance(context);
+        this.settingsSharedPreference = SettingsSharedPreference.getInstance(context);
         this.appContactService = new AppContactService(context);
         this.activityToOpen = Utils.getMetaDataValue(context, ACTIVITY_OPEN);
         this.messageDatabaseService = new MessageDatabaseService(context);
-        this.notificationDisableThreshold = applozicClient.getNotificationMuteThreshold();
-        this.notificationFilePath = Applozic.getInstance(context).getCustomNotificationSound();
+        this.notificationDisableThreshold = settingsSharedPreference.getNotificationMuteThreshold();
+        this.notificationFilePath = KommunicateSettings.getInstance(context).getCustomNotificationSound();
         this.notificationIconColor = Utils.getMetaDataValueForResources(context,NOTIFICATION_SMALL_ICON_COLOR);
 
         notificationChannels = new NotificationChannels(context, notificationFilePath);
@@ -107,7 +107,7 @@ public class NotificationService {
     }
 
     public void notifyUser(Contact contact, Channel channel, Message message, int index) {
-        if (ApplozicClient.getInstance(context).isNotificationDisabled()) {
+        if (SettingsSharedPreference.getInstance(context).isNotificationDisabled()) {
             Utils.printLog(context, TAG, "Notification is disabled !!");
             return;
         }
@@ -150,10 +150,10 @@ public class NotificationService {
         } else {
             intent.putExtra(MobiComKitConstants.QUICK_LIST, true);
         }
-        if (applozicClient.isChatListOnNotificationIsHidden()) {
+        if (settingsSharedPreference.isChatListOnNotificationIsHidden()) {
             intent.putExtra(take_Order, true);
         }
-        if (applozicClient.isContextBasedChat()) {
+        if (settingsSharedPreference.isContextBasedChat()) {
             intent.putExtra(contextBasedChat, true);
         }
         intent.putExtra("sms_body", "text");
@@ -195,7 +195,7 @@ public class NotificationService {
 
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setAutoCancel(true);
-        if (ApplozicClient.getInstance(context).getVibrationOnNotification() && !muteNotifications(index)) {
+        if (SettingsSharedPreference.getInstance(context).getVibrationOnNotification() && !muteNotifications(index)) {
             mBuilder.setVibrate(pattern);
         }
         if (!muteNotifications(index)) {
@@ -235,11 +235,11 @@ public class NotificationService {
         String summaryText = "";
         if (count < 1) {
             summaryText = "";
-            mBuilder.setLargeIcon(notificationIconBitmap != null ? notificationIconBitmap : BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(message.getGroupId() != null ? applozicClient.getDefaultChannelImage() : applozicClient.getDefaultContactImage(), "drawable", context.getPackageName())));
+            mBuilder.setLargeIcon(notificationIconBitmap != null ? notificationIconBitmap : BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(message.getGroupId() != null ? settingsSharedPreference.getDefaultChannelImage() : settingsSharedPreference.getDefaultContactImage(), "drawable", context.getPackageName())));
             mBuilder.setContentText(getSpannedText(getMessageBody(message, count, channel, contact)));
         } else if (count >= 1 && count < 2) {
             summaryText = totalCount < 2 ? totalCount + " new message " : totalCount + " new messages ";
-            mBuilder.setLargeIcon(notificationIconBitmap != null ? notificationIconBitmap : BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(message.getGroupId() != null ? applozicClient.getDefaultChannelImage() : applozicClient.getDefaultContactImage(), "drawable", context.getPackageName())));
+            mBuilder.setLargeIcon(notificationIconBitmap != null ? notificationIconBitmap : BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(message.getGroupId() != null ? settingsSharedPreference.getDefaultChannelImage() : settingsSharedPreference.getDefaultContactImage(), "drawable", context.getPackageName())));
             mBuilder.setContentText(summaryText);
         } else {
             summaryText = totalCount + " messages from " + count + " chats";
@@ -308,7 +308,7 @@ public class NotificationService {
             }
             return Utils.getStyleString(notificationTitle);
         } else {
-            return Utils.getStyleString(ApplozicClient.getInstance(context).getAppName());
+            return Utils.getStyleString(SettingsSharedPreference.getInstance(context).getAppName());
         }
     }
 
@@ -345,7 +345,7 @@ public class NotificationService {
     }
 
     private NotificationInfo getNotificationInfo(Contact contact, Channel channel, Message message) {
-        if (ApplozicClient.getInstance(context).isNotificationDisabled()) {
+        if (SettingsSharedPreference.getInstance(context).isNotificationDisabled()) {
             Utils.printLog(context, TAG, "Notification is disabled");
             return null;
         }
@@ -439,10 +439,10 @@ public class NotificationService {
         Intent intent = new Intent(context, activity);
         intent.putExtra(key_String, message.getKeyString());
         intent.putExtra(group_Id, message.getGroupId());
-        if (applozicClient.isChatListOnNotificationIsHidden()) {
+        if (settingsSharedPreference.isChatListOnNotificationIsHidden()) {
             intent.putExtra(take_Order, true);
         }
-        if (applozicClient.isContextBasedChat()) {
+        if (settingsSharedPreference.isContextBasedChat()) {
             intent.putExtra(contextBasedChat, true);
         }
         intent.putExtra(sent_from_notification, true);
@@ -466,7 +466,7 @@ public class NotificationService {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, notificationChannels.getDefaultChannelId(muteNotifications(index)));
 
         mBuilder.setSmallIcon(notificationInfo.smallIconResourceId)
-                .setLargeIcon(ApplozicClient.getInstance(context).isShowAppIconInNotification() ? BitmapFactory.decodeResource(context.getResources(), iconResourceId) : notificationIconBitmap != null ? notificationIconBitmap : BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(channel != null && !(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) ? applozicClient.getDefaultChannelImage() : applozicClient.getDefaultContactImage(), "drawable", context.getPackageName())))
+                .setLargeIcon(SettingsSharedPreference.getInstance(context).isShowAppIconInNotification() ? BitmapFactory.decodeResource(context.getResources(), iconResourceId) : notificationIconBitmap != null ? notificationIconBitmap : BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(channel != null && !(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())) ? settingsSharedPreference.getDefaultChannelImage() : settingsSharedPreference.getDefaultContactImage(), "drawable", context.getPackageName())))
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setPriority(muteNotifications(index) ? NotificationCompat.PRIORITY_LOW : NotificationCompat.PRIORITY_MAX)
                 .setWhen(System.currentTimeMillis())
@@ -478,7 +478,7 @@ public class NotificationService {
 
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setAutoCancel(true);
-        if (ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled()) {
+        if (SettingsSharedPreference.getInstance(context).isUnreadCountBadgeEnabled()) {
             int totalCount = messageDatabaseService.getTotalUnreadCount();
             if (totalCount != 0) {
                 mBuilder.setNumber(totalCount);
@@ -570,8 +570,8 @@ public class NotificationService {
     }
 
     public String getText(int index) {
-        if (context.getApplicationContext() instanceof AlConstantsHandler) {
-            return getTextFromIndex(((AlConstantsHandler) context.getApplicationContext()).getNotificationTexts(), index);
+        if (context.getApplicationContext() instanceof ConstantsHandler) {
+            return getTextFromIndex(((ConstantsHandler) context.getApplicationContext()).getNotificationTexts(), index);
         }
 
         return constArray[index];

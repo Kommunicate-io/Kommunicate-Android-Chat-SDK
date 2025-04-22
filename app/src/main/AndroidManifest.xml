@@ -85,7 +85,7 @@
             tools:node="replace"/>-->
 
 <!--        <meta-data-->
-<!--            android:name="com.applozic.mobicomkit.notification.iconColor"-->
+<!--            android:name="io.kommunicate.devkit.notification.iconColor"-->
 <!--            android:resource="@color/colorPrimary">-->
 <!--        </meta-data>-->
 

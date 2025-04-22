@@ -21,10 +21,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import io.kommunicate.ui.AlCustomizationSettings;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.GsonUtils;
@@ -153,14 +153,14 @@ public class FeedbackInputFragmentv2 extends BottomSheetDialogFragment implement
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
-        String jsonString = FileUtils.loadSettingsJsonFile(ApplozicService.getContext(getContext()));
-        AlCustomizationSettings alCustomizationSettings;
+        String jsonString = FileUtils.loadSettingsJsonFile(AppContextService.getContext(getContext()));
+        CustomizationSettings customizationSettings;
         if (!TextUtils.isEmpty(jsonString)) {
-            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
-            alCustomizationSettings = new AlCustomizationSettings();
+            customizationSettings = new CustomizationSettings();
         }
-        themeHelper = KmThemeHelper.getInstance(getContext(), alCustomizationSettings);
+        themeHelper = KmThemeHelper.getInstance(getContext(), customizationSettings);
         isCurrentlyInDarkMode = themeHelper.isDarkModeEnabledForSDK();
     }
 

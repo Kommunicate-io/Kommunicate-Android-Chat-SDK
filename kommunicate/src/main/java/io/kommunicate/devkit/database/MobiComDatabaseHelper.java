@@ -5,11 +5,11 @@ import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 import android.text.TextUtils;
 
-import io.kommunicate.commons.ALSpecificSettings;
+import io.kommunicate.commons.AppSpecificSettings;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserClientService;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.DBUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 
@@ -249,8 +249,8 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private Context context;
 
     private MobiComDatabaseHelper(Context context) {
-        this(context, !TextUtils.isEmpty(ALSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName()) ? ALSpecificSettings.getInstance(ApplozicService.getContext(context)).getDatabaseName() : "MCK_" + MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context)), null, DB_VERSION);
-        this.context = ApplozicService.getContext(context);
+        this(context, !TextUtils.isEmpty(AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName() : "MCK_" + MobiComKitClientService.getApplicationKey(AppContextService.getContext(context)), null, DB_VERSION);
+        this.context = AppContextService.getContext(context);
     }
 
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -266,20 +266,20 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         // don't accidentally leak an Activity's context.
         // See this article for more information: http://bit.ly/6LRzfx
         if (sInstance == null) {
-            sInstance = new MobiComDatabaseHelper(ApplozicService.getContext(context));
+            sInstance = new MobiComDatabaseHelper(AppContextService.getContext(context));
         }
         return sInstance;
     }
 
     public SQLiteDatabase getReadableDatabase() {
-        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
+        String appId = MobiComKitClientService.getApplicationKey(AppContextService.getContext(context));
         SQLiteDatabase database = super.getReadableDatabase(appId);
         database.enableWriteAheadLogging();
         return database;
     }
 
     public SQLiteDatabase getWritableDatabase() {
-        String appId = MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context));
+        String appId = MobiComKitClientService.getApplicationKey(AppContextService.getContext(context));
         SQLiteDatabase database = super.getWritableDatabase(appId);
         database.enableWriteAheadLogging();
         return database;

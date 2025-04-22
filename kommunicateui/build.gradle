@@ -53,6 +53,7 @@ dependencies {
     api libs.glide
     api libs.cardview
     api libs.material
+    implementation libs.browser
     api libs.swiperefreshlayout
     implementation libs.media3.exoplayer
     implementation libs.media3.ui

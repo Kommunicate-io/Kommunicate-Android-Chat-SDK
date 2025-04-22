@@ -4,12 +4,12 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
-import io.kommunicate.devkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 import io.kommunicate.devkit.listners.MessageListHandler;
 import io.kommunicate.commons.commons.core.utils.DateUtils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.contact.Contact;
-import io.kommunicate.commons.task.AlAsyncTask;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import annotations.CleanUpRequired;
 
 @Deprecated
 @CleanUpRequired(reason = "Migrated MessageListTask to MessageListUseCase")
-public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
+public class MessageListTask extends CoreAsyncTask<Void, List<Message>> {
 
     private WeakReference<Context> context;
     private Contact contact;
@@ -33,7 +33,7 @@ public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
     private Long endTime;
     private MessageListHandler handler;
     private boolean isForMessageList;
-    private ApplozicException exception;
+    private KommunicateException exception;
     private String searchString;
     private static final String INTERNAL_ERR = "Some internal error occurred";
 
@@ -59,7 +59,7 @@ public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
             }
 
             if (messageList == null && exception == null) {
-                exception = new ApplozicException(INTERNAL_ERR);
+                exception = new KommunicateException(INTERNAL_ERR);
             }
 
             if (isForMessageList) {
@@ -112,7 +112,7 @@ public class MessageListTask extends AlAsyncTask<Void, List<Message>> {
                 }
             }
         } catch (Exception e) {
-            exception = new ApplozicException(e.getMessage());
+            exception = new KommunicateException(e.getMessage());
         }
         return messageList;
     }

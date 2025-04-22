@@ -15,7 +15,7 @@ import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.database.MobiComDatabaseHelper;
 import io.kommunicate.devkit.feed.GroupInfoUpdate;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.channel.ChannelUserMapper;
@@ -49,14 +49,14 @@ public class ChannelDatabaseService {
     private static final String SELECTION_QUERY = "cu.userId = (SELECT userId FROM channel_User_X WHERE channelKey = ? AND role = ?)";
 
     private ChannelDatabaseService(Context context) {
-        this.context = ApplozicService.getContext(context);
-        this.mobiComUserPreference = MobiComUserPreference.getInstance(ApplozicService.getContext(context));
-        this.dbHelper = MobiComDatabaseHelper.getInstance(ApplozicService.getContext(context));
+        this.context = AppContextService.getContext(context);
+        this.mobiComUserPreference = MobiComUserPreference.getInstance(AppContextService.getContext(context));
+        this.dbHelper = MobiComDatabaseHelper.getInstance(AppContextService.getContext(context));
     }
 
     public synchronized static ChannelDatabaseService getInstance(Context context) {
         if (channelDatabaseService == null) {
-            channelDatabaseService = new ChannelDatabaseService(ApplozicService.getContext(context));
+            channelDatabaseService = new ChannelDatabaseService(AppContextService.getContext(context));
         }
         return channelDatabaseService;
     }

@@ -3,11 +3,11 @@ package io.kommunicate.devkit.api;
 import android.content.Context;
 import android.text.TextUtils;
 
-import io.kommunicate.devkit.Applozic;
+import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 
-import io.kommunicate.commons.ALSpecificSettings;
-import io.kommunicate.commons.ApplozicService;
+import io.kommunicate.commons.AppSpecificSettings;
+import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
 
 
@@ -47,19 +47,19 @@ public class MobiComKitClientService {
     }
 
     public MobiComKitClientService(Context context) {
-        this.context = ApplozicService.getContext(context);
+        this.context = AppContextService.getContext(context);
     }
 
     public static String getApplicationKey(Context context) {
-        String applicationKey = Applozic.getInstance(ApplozicService.getContext(context)).getApplicationKey();
+        String applicationKey = KommunicateSettings.getInstance(AppContextService.getContext(context)).getApplicationKey();
         if (!TextUtils.isEmpty(applicationKey)) {
             return applicationKey;
         }
-        return Utils.getMetaDataValue(ApplozicService.getContext(context), APPLICATION_KEY_HEADER_VALUE_METADATA);
+        return Utils.getMetaDataValue(AppContextService.getContext(context), APPLICATION_KEY_HEADER_VALUE_METADATA);
     }
 
     public static String getAppModuleName(Context context) {
-        return Utils.getMetaDataValue(ApplozicService.getContext(context), APP_MODULE_NAME_META_DATA_KEY);
+        return Utils.getMetaDataValue(AppContextService.getContext(context), APP_MODULE_NAME_META_DATA_KEY);
     }
 
     public String getBaseUrl() {
@@ -68,7 +68,7 @@ public class MobiComKitClientService {
         if (!TextUtils.isEmpty(SELECTED_BASE_URL)) {
             return SELECTED_BASE_URL;
         } else {
-            String alCustomUrl = ALSpecificSettings.getInstance(context).getAlBaseUrl();
+            String alCustomUrl = AppSpecificSettings.getInstance(context).getAlBaseUrl();
             if (!TextUtils.isEmpty(alCustomUrl)) {
                 return alCustomUrl;
             }
@@ -83,7 +83,7 @@ public class MobiComKitClientService {
     }
 
     public String getKmBaseUrl() {
-        String kmCustomUrl = ALSpecificSettings.getInstance(context).getKmBaseUrl();
+        String kmCustomUrl = AppSpecificSettings.getInstance(context).getKmBaseUrl();
 
         if (!TextUtils.isEmpty(kmCustomUrl)) {
             return kmCustomUrl;

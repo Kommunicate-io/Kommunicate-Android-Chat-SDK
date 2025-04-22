@@ -14,6 +14,8 @@ import io.kommunicate.commons.commons.core.utils.DBUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 
 import io.kommunicate.database.DatabaseMigrationHelper;
+import io.sentry.Hint;
+import io.sentry.Sentry;
 
 public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
@@ -257,7 +259,12 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
         SQLiteDatabase.loadLibs(context);
         if (!DBUtils.isDatabaseEncrypted(context, name)) {
-            DatabaseMigrationHelper.migrateDatabase(context, name);
+            try {
+                DatabaseMigrationHelper.migrateDatabase(context, name);
+            } catch (Exception e) {
+                // Database Exception handled.
+                Sentry.captureException(e);
+            }
         }
     }
 

@@ -530,11 +530,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 uris -> {
                     try {
                         if (uris.isEmpty()) {
-                            KmToast.error(this, R.string.mobicom_no_attachment_warning, Toast.LENGTH_SHORT).show();
+                            KmToast.error(this, R.string.no_attachment_warning, Toast.LENGTH_SHORT).show();
                             return null;
                         }
                         if (uris.size() > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
-                            KmToast.error(this, R.string.mobicom_max_attachment_warning, Toast.LENGTH_SHORT).show();
+                            KmToast.error(this, R.string.max_attachment_warning, Toast.LENGTH_SHORT).show();
                             return null;
                         }
 
@@ -628,7 +628,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         // Inflate the menu; this adds items to the action bar if it is present.
         showActionBar(true);
         //return false;
-        getMenuInflater().inflate(R.menu.mobicom_basic_menu_for_normal_message, menu);
+        getMenuInflater().inflate(R.menu.basic_menu_for_normal_message, menu);
         MenuItem searchItem = menu.findItem(R.id.menu_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
@@ -1386,7 +1386,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 }
                 if (snackbar != null && linearLayout != null) {
                     snackbar = Snackbar.make(linearLayout, settingsSharedPreference.isAccountClosed() ?
-                                    R.string.applozic_account_closed : R.string.applozic_free_version_not_allowed_on_release_build,
+                                    R.string.account_closed : R.string.free_version_not_allowed_on_release_build,
                             Snackbar.LENGTH_INDEFINITE);
                     snackbar.show();
                 }

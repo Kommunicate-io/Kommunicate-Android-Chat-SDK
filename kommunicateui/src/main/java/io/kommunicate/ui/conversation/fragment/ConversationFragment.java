@@ -115,8 +115,8 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
         multimediaPopupGrid.setVisibility(View.GONE);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.secret_message_timer_array, R.layout.mobiframework_custom_spinner);
-        adapter.setDropDownViewResource(R.layout.mobiframework_custom_spinner);
+                R.array.secret_message_timer_array, R.layout.custom_spinner);
+        adapter.setDropDownViewResource(R.layout.custom_spinner);
 
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
 

@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/mobicom_attachment_download"
+        android:background="@drawable/attachment_download"
         android:orientation="horizontal"
         android:visibility="visible">
 
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="20dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/mobicom_emoji_23ec" />
+            android:src="@drawable/emoji_23ec" />
 
         <TextView
             android:id="@+id/attachment_size_text"
@@ -77,7 +77,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/mobicom_attachment_download"
+        android:background="@drawable/attachment_download"
         android:orientation="horizontal"
         android:visibility="gone">
 
@@ -103,7 +103,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/mobicom_attachment_download"
+        android:background="@drawable/attachment_download"
         android:orientation="horizontal"
         android:visibility="gone">
 

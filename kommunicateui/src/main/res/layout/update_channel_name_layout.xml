@@ -22,7 +22,7 @@
         android:layout_marginTop="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/applozic_group_profile"
+            android:id="@+id/group_profile"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_alignParentTop="true"
@@ -31,13 +31,13 @@
             app:srcCompat="@drawable/km_ic_contact_picture_180_holo_light" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/applozic_group_profile_camera"
+            android:id="@+id/group_profile_camera"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_alignBottom="@+id/applozic_group_profile"
-            android:layout_alignEnd="@+id/applozic_group_profile"
-            android:layout_alignRight="@+id/applozic_group_profile"
-            android:background="@color/applozic_transparent_color"
+            android:layout_alignBottom="@+id/group_profile"
+            android:layout_alignEnd="@+id/group_profile"
+            android:layout_alignRight="@+id/group_profile"
+            android:background="@color/core_transparent_color"
             android:clickable="true" />
     </RelativeLayout>
 

@@ -128,7 +128,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mobicom_multi_attachment_activity);
+        setContentView(R.layout.multi_attachment_activity);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
             customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
@@ -200,7 +200,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
 
                             for (int index = 0; index < clipData.getItemCount(); index++) {
                                 if (index == customizationSettings.getMaxAttachmentAllowed()) {
-                                    KmToast.error(this, R.string.mobicom_max_attachment_warning, Toast.LENGTH_SHORT).show();
+                                    KmToast.error(this, R.string.max_attachment_warning, Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
@@ -229,11 +229,11 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
                     try {
                         configureAddAttachmentButton();
                         if (uris.isEmpty()) {
-                            KmToast.error(this, R.string.mobicom_no_attachment_warning, Toast.LENGTH_SHORT).show();
+                            KmToast.error(this, R.string.no_attachment_warning, Toast.LENGTH_SHORT).show();
                             return null;
                         }
                         if (uris.size() > KmAttachmentsController.NO_OF_MULTI_SELECTIONS_ALLOWED) {
-                            KmToast.error(this, R.string.mobicom_max_attachment_warning, Toast.LENGTH_SHORT).show();
+                            KmToast.error(this, R.string.max_attachment_warning, Toast.LENGTH_SHORT).show();
                             return null;
                         }
 
@@ -270,11 +270,11 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
      * initialize the views
      */
     private void initViews() {
-        sendAttachment = (Button) findViewById(R.id.mobicom_attachment_send_btn);
-        cancelAttachment = (Button) findViewById(R.id.mobicom_attachment_cancel_btn);
+        sendAttachment = (Button) findViewById(R.id.attachment_send_btn);
+        cancelAttachment = (Button) findViewById(R.id.attachment_cancel_btn);
         attachmentAction = (FrameLayout) findViewById(R.id.attachment_action_button);
-        galleryImagesGridView = (GridView) findViewById(R.id.mobicom_attachment_grid_View);
-        messageEditText = (EditText) findViewById(R.id.mobicom_attachment_edit_text);
+        galleryImagesGridView = (GridView) findViewById(R.id.attachment_grid_View);
+        messageEditText = (EditText) findViewById(R.id.attachment_edit_text);
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         if (themeHelper.isDarkModeEnabledForSDK()) {
             idRootLinearLayout = findViewById(R.id.idRootLinearLayout);
@@ -297,7 +297,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (attachmentFileList.isEmpty()) {
-                    KmToast.error(getApplicationContext(), R.string.mobicom_select_attachment_text, Toast.LENGTH_SHORT).show();
+                    KmToast.error(getApplicationContext(), R.string.select_attachment_text, Toast.LENGTH_SHORT).show();
                     return;
                 }
 

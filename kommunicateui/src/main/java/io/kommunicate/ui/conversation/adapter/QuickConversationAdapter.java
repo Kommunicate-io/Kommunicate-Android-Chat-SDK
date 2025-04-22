@@ -135,10 +135,10 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (viewType == 2) {
-            View v2 = inflater.inflate(R.layout.mobicom_message_list_header_footer, parent, false);
+            View v2 = inflater.inflate(R.layout.message_list_header_footer, parent, false);
             return new FooterViewHolder(v2);
         } else {
-            view = inflater.inflate(R.layout.mobicom_message_row_view, parent, false);
+            view = inflater.inflate(R.layout.message_row_view, parent, false);
             return new Myholder(view);
         }
     }
@@ -259,7 +259,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     myholder.messageTextView.setText(KmUtils.getAttachmentName(message));
                 } else if (myholder.attachmentIcon != null && message.getContentType() == Message.ContentType.LOCATION.getValue()) {
                     myholder.attachmentIcon.setVisibility(View.VISIBLE);
-                    myholder.attachmentIcon.setImageResource(R.drawable.mobicom_notification_location_icon);
+                    myholder.attachmentIcon.setImageResource(R.drawable.notification_location_icon);
                     myholder.messageTextView.setText(context.getString(R.string.Location));
                 } else if (message.getContentType() == Message.ContentType.PRICE.getValue()) {
                     myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, ConversationUIService.FINAL_PRICE_TEXT + message.getMessage(), emojiconHandler));
@@ -287,9 +287,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         myholder.sentOrReceived.setImageResource(R.drawable.km_ic_action_call_holo_light);
                         myholder.messageTextView.setTextColor(context.getResources().getColor(message.isIncomingCall() ? R.color.incoming_call : R.color.outgoing_call));
                     } else if (getItemViewType(position) == 0) {
-                        myholder.sentOrReceived.setImageResource(R.drawable.mobicom_social_forward);
+                        myholder.sentOrReceived.setImageResource(R.drawable.social_forward);
                     } else {
-                        myholder.sentOrReceived.setImageResource(R.drawable.mobicom_social_reply);
+                        myholder.sentOrReceived.setImageResource(R.drawable.social_reply);
                     }
                 }
                 if (myholder.createdAtTime != null) {
@@ -394,7 +394,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         if (message.getMetadata() == null || message.getMetadata().isEmpty()) {
             if (attachmentIcon != null) {
                 attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
-                attachmentIcon.setColorFilter(R.color.applozic_green_color);
+                attachmentIcon.setColorFilter(R.color.core_green_color);
                 return;
             }
         }
@@ -411,7 +411,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 attachmentIcon.setImageResource(R.drawable.km_ic_action_call_holo_light);
             } else {
                 attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
-                attachmentIcon.setColorFilter(R.color.applozic_green_color);
+                attachmentIcon.setColorFilter(R.color.core_green_color);
             }
         }
     }

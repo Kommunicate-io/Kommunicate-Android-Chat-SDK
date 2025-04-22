@@ -42,8 +42,8 @@
     <string name="phone_call_permission_granted">फोन कॉल की अनुमति दी गई है</string>
     <string name="phone_camera_permission_granted">कैमरा अनुमति दी गई है</string>
     <string name="record_audio_permission_granted">ऑडियो रिकार्ड अनुमति दी गई है</string>
-    <string name="mobicom_max_attachment_warning">अधिकतम लगाव सीमा तक पहुंची</string>
-    <string name="mobicom_select_attachment_text">कम से कम एक अटैचमेंट चुनें</string>
+    <string name="max_attachment_warning">अधिकतम लगाव सीमा तक पहुंची</string>
+    <string name="select_attachment_text">कम से कम एक अटैचमेंट चुनें</string>
     <string name="audio_recording_send_text">ऑडियो रिकॉर्ड करने के लिए प्रारंभ पर टैप करें</string>
     <string name="km_audio_permission_missing">ऑडियो रिकॉर्डर लॉन्च करने में असमर्थ</string>
     <string name="km_message_info">संदेश जानकारी</string>
@@ -54,7 +54,7 @@
     <string name="please_wait_creating_group_of_two">कृपया प्रतीक्षा करें...</string>
     <string name="sort_contacts_by_lastSeenAt">पिछले द्वारा देखा द्वारा क्रमबद्ध</string>
     <string name="sort_contacts_by_recent_chats">हाल ही की चैट के आधार पर क्रमबद्ध करें</string>
-    <string name="app_name">Applozic</string>
+    <string name="app_name">Kommunicate</string>
     <string name="conversations">बातचीत</string>
     <string name="channel_create_title">नया समूह</string>
     <string name="channel_members_title">सदस्य जोड़ें</string>
@@ -77,7 +77,7 @@
     <string name="action_settings">सेटिंग्स</string>
     <string name="user_block">ब्लॉक</string>
     <string name="user_un_block">अनब्लॉक</string>
-    <string name="applozic_my_profile_option_info">प्रोफाइल</string>
+    <string name="my_profile_option_info">प्रोफाइल</string>
     <string name="location_services_disabled_message">स्थान भेजने के लिए आपके स्थान तक पहुंच की आवश्यकता है। स्थान पहुंच चालू करें</string>
     <string name="location_services_disabled_title">स्थान सेवाएं अक्षम</string>
     <string name="location_service_settings">सेटिंग्स</string>
@@ -113,8 +113,8 @@
     <string name="wearable_action_label"> को जवाब दें</string>
 
     <string name ="you_string">आप</string>
-    <string name="applozic_account_closed">अपने ऐप में चैट को सक्रिय करने के लिए कृपया एप्लीकोज से संपर्क करें</string>
-    <string name="applozic_free_version_not_allowed_on_release_build">अपने ऐप में चैट को सक्रिय करने के लिए कृपया एप्लीकोज से संपर्क करें</string>
+    <string name="account_closed">अपने ऐप में चैट को सक्रिय करने के लिए कृपया एप्लीकोज से संपर्क करें</string>
+    <string name="free_version_not_allowed_on_release_build">अपने ऐप में चैट को सक्रिय करने के लिए कृपया एप्लीकोज से संपर्क करें</string>
     <string name ="ok_alert">ठीक</string>
     <string name ="subtitle_last_seen_at_time">अंतिम बार देखा गया</string>
     <string name="is_typing">टाइप कर रहा है...</string>
@@ -158,14 +158,14 @@
     <string name="user_block_info">ब्लॉक [नाम]? अवरुद्ध उपयोगकर्ता अब आपको संदेश भेजने में सक्षम नहीं होगा</string>
     <string name="user_un_block_info">एक संदेश भेजने के लिए [नाम] को अनवरोधित करें</string>
     <string name="please_wait_info">एक क्षण प्रतीक्षा करें...</string>
-    <string name="applozic_userId_error_info_in_logs">कृपया आईडी रिक्त नहीं हो सकती और चैनल कुंजी को रिक्त नहीं होना चाहिए</string>
-    <string name="applozic_add_user_to_multiple_channel_error_info_in_logs">यूज़र आईडी रिक्त या रिक्त नहीं हो सकती और चैनल की सूची रिक्त नहीं होनी चाहिए</string>
+    <string name="userId_error_info_in_logs">कृपया आईडी रिक्त नहीं हो सकती और चैनल कुंजी को रिक्त नहीं होना चाहिए</string>
+    <string name="add_user_to_multiple_channel_error_info_in_logs">यूज़र आईडी रिक्त या रिक्त नहीं हो सकती और चैनल की सूची रिक्त नहीं होनी चाहिए</string>
     <string name="unable_share_message">साझा करने में असमर्थ आप इस समूह के प्रतिभागी नहीं हैं</string>
     <string name="user_is_blocked">भेजने में असमर्थ, उपयोगकर्ता ब्लॉक है</string>
     <string name="when_on_wifi">जब वाईफाई चालू है</string>
     <string name="when_on_cellular_network">जब सेलुलर नेटवर्क चालू है</string>
     <string name="media_auto_download">मीडिया ऑटो डाउनलोड</string>
-    <string name="applozic_network_usage">नेटवर्क उपयोग</string>
+    <string name="network_usage">नेटवर्क उपयोग</string>
     <string name="enable_vibration_notification">सूचना पर कंपन सक्षम करें</string>
     <string name="group_members_limit_exceeds">सीमा तक पहुंचे, किसी व्यक्ति को पहले समूह से निकालें</string>
     <string name="user_has_been_deleted_text">भेजने हटा दिया गया है</string>

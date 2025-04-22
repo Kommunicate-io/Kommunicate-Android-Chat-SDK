@@ -62,11 +62,11 @@
                 android:textSize="16sp"
                 android:visibility="gone" />
 
-            <include layout="@layout/mobicom_attachment_preview_layout" />
+            <include layout="@layout/attachment_preview_layout" />
 
-            <include layout="@layout/mobicom_contact_share_layout" />
+            <include layout="@layout/contact_share_layout" />
 
-            <include layout="@layout/mobicom_chat_location_view" />
+            <include layout="@layout/chat_location_view" />
 
             <include layout="@layout/km_document_attachment" />
 

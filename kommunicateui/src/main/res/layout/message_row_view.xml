@@ -24,7 +24,7 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
-            android:background="@drawable/mobiframework_circular_text_view"
+            android:background="@drawable/circular_text_view"
             android:gravity="center"
             android:text=""
             android:textColor="@color/km_white_color"

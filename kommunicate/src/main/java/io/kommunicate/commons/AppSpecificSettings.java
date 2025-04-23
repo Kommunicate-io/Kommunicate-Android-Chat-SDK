@@ -21,11 +21,12 @@ public class AppSpecificSettings {
     private static final String DATABASE_NAME = "DATABASE_NAME";
     private static final String ENABLE_TEXT_LOGGING = "ENABLE_TEXT_LOGGING";
     private static final String TEXT_LOG_FILE_NAME = "TEXT_LOG_FILE_NAME";
-    private static final String AL_BASE_URL = "AL_BASE_URL";
+    private static final String BASE_URL = "AL_BASE_URL";
     private static final String KM_BASE_URL = "KM_BASE_URL";
-    private static final String AL_SUPPORT_EMAIL_ID = "AL_SUPPORT_EMAIL_ID";
+    private static final String SUPPORT_EMAIL_ID = "AL_SUPPORT_EMAIL_ID";
     private static final String ENABLE_LOGGING_IN_RELEASE_BUILD = "ENABLE_LOGGING_IN_RELEASE_BUILD";
-    private static final String AL_NOTIFICATION_AFTER_TIME = "AL_NOTIFICATION_AFTER_TIME";
+    private static final String NOTIFICATION_AFTER_TIME = "AL_NOTIFICATION_AFTER_TIME";
+    private static final String DATABASE_MIGRATION_RETRY_COUNT = "DATABASE_MIGRATION_RETRY_COUNT";
 
     private AppSpecificSettings(Context context) {
         this.sharedPreferences = AppContextService.getContext(context).getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
@@ -66,11 +67,11 @@ public class AppSpecificSettings {
     }
 
     public String getAlBaseUrl() {
-        return sharedPreferences.getString(AL_BASE_URL, null);
+        return sharedPreferences.getString(BASE_URL, null);
     }
 
     public AppSpecificSettings setAlBaseUrl(String url) {
-        sharedPreferences.edit().putString(AL_BASE_URL, url).commit();
+        sharedPreferences.edit().putString(BASE_URL, url).commit();
         return this;
     }
 
@@ -84,11 +85,11 @@ public class AppSpecificSettings {
     }
 
     public String getSupportEmailId() {
-        return sharedPreferences.getString(AL_SUPPORT_EMAIL_ID, APPLOZIC_SUPPORT);
+        return sharedPreferences.getString(SUPPORT_EMAIL_ID, APPLOZIC_SUPPORT);
     }
 
     public AppSpecificSettings setSupportEmailId(String emailId) {
-        sharedPreferences.edit().putString(AL_SUPPORT_EMAIL_ID, emailId).commit();
+        sharedPreferences.edit().putString(SUPPORT_EMAIL_ID, emailId).commit();
         return this;
     }
 
@@ -102,14 +103,23 @@ public class AppSpecificSettings {
     }
 
     public AppSpecificSettings setNotificationAfterTime(long notificationAfterTime) {
-        sharedPreferences.edit().putLong(AL_NOTIFICATION_AFTER_TIME, notificationAfterTime).commit();
+        sharedPreferences.edit().putLong(NOTIFICATION_AFTER_TIME, notificationAfterTime).commit();
         return this;
     }
 
     public boolean isAllNotificationMuted() {
-        long notificationAfterTime = sharedPreferences.getLong(AL_NOTIFICATION_AFTER_TIME, 0);
+        long notificationAfterTime = sharedPreferences.getLong(NOTIFICATION_AFTER_TIME, 0);
         Date date = Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime();
         return (notificationAfterTime - date.getTime() > 0);
+    }
+
+    public int getCurrentDatabaseMigrationRetryCount() {
+        return sharedPreferences.getInt(DATABASE_MIGRATION_RETRY_COUNT, 0);
+    }
+
+    public AppSpecificSettings setCurrentDatabaseMigrationRetryCount(int databaseMigrationRetryCount) {
+        sharedPreferences.edit().putInt(DATABASE_MIGRATION_RETRY_COUNT, databaseMigrationRetryCount).apply();
+        return this;
     }
 
     public boolean clearAll() {

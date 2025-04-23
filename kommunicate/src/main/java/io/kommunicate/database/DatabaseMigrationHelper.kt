@@ -7,7 +7,6 @@ import io.kommunicate.commons.AppContextService
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteException
 import kotlin.Throws
-import kotlin.jvm.Throws
 
 object DatabaseMigrationHelper {
     private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"

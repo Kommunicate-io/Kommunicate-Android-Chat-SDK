@@ -14,6 +14,8 @@ import io.kommunicate.commons.commons.core.utils.DBUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 
 import io.kommunicate.database.DatabaseMigrationHelper;
+import io.sentry.Hint;
+import io.sentry.Sentry;
 
 public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
@@ -247,6 +249,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "MobiComDatabaseHelper";
     private static MobiComDatabaseHelper sInstance;
     private Context context;
+    private static final int MAX_DATABASE_MIGRATION_RETRY_COUNT = 3;
 
     private MobiComDatabaseHelper(Context context) {
         this(context, !TextUtils.isEmpty(AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName() : "MCK_" + MobiComKitClientService.getApplicationKey(AppContextService.getContext(context)), null, DB_VERSION);
@@ -256,8 +259,17 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
         SQLiteDatabase.loadLibs(context);
-        if (!DBUtils.isDatabaseEncrypted(context, name)) {
-            DatabaseMigrationHelper.migrateDatabase(context, name);
+        AppSpecificSettings appSpecificSettings = AppSpecificSettings.getInstance(context);
+        int currentRetryCount = appSpecificSettings.getCurrentDatabaseMigrationRetryCount();
+        if (!DBUtils.isDatabaseEncrypted(context, name) && currentRetryCount < MAX_DATABASE_MIGRATION_RETRY_COUNT) {
+            try {
+                DatabaseMigrationHelper.migrateDatabase(context, name);
+            } catch (Exception e) {
+                // Database Exception handled.
+                Sentry.captureException(e);
+            }
+            currentRetryCount+=1;
+            appSpecificSettings.setCurrentDatabaseMigrationRetryCount(currentRetryCount);
         }
     }
 

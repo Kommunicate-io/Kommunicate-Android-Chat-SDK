@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.uiwidgets.kommunicate.utils;
+package io.kommunicate.ui.kommunicate.utils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

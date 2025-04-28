@@ -3602,7 +3602,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     @Override
                     public void onFailure(@NonNull Exception error) {
                         businessConversationLL.setVisibility(GONE);
-                        Toast.makeText(requireContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

@@ -2,16 +2,15 @@ package io.kommunicate;
 
 import static io.kommunicate.utils.KmConstants.KM_USER_LOCALE;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.feed.GroupInfoUpdate;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.channel.Channel;
+import io.kommunicate.devkit.SettingsSharedPreference;
+import io.kommunicate.devkit.feed.GroupInfoUpdate;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Channel;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import io.kommunicate.callbacks.KmCallback;
-import io.kommunicate.callbacks.KmGetConversationInfoCallback;
 import io.kommunicate.callbacks.TaskListener;
 import io.kommunicate.preference.KmDefaultSettingPreference;
 import io.kommunicate.usecase.AssigneeUpdateUseCase;
@@ -48,8 +46,7 @@ public class KmSettings {
             return;
         }
 
-        //getting the message metadata already in the applozic preferences
-        String existingMetaDataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        String existingMetaDataString = SettingsSharedPreference.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
 
         if (TextUtils.isEmpty(existingMetaDataString)) { //case 1: no existing metadata
@@ -70,7 +67,7 @@ public class KmSettings {
         }
 
         existingMetadata.put(KM_CHAT_CONTEXT, messageMetaDataString);
-        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+        SettingsSharedPreference.getInstance(context).setMessageMetaData(existingMetadata);
     }
 
     public static void updateUserLanguage(Context context, String languageCode) {
@@ -80,7 +77,7 @@ public class KmSettings {
     }
 
     public static void updateMessageMetadata(Context context, Map<String, String> metadata) {
-        String existingMetadataString = ApplozicClient.getInstance(context).getMessageMetaData();
+        String existingMetadataString = SettingsSharedPreference.getInstance(context).getMessageMetaData();
         Map<String, String> existingMetadata;
         if (TextUtils.isEmpty(existingMetadataString)) {
             existingMetadata = new HashMap<>();
@@ -89,7 +86,7 @@ public class KmSettings {
         }
 
         existingMetadata.putAll(metadata);
-        ApplozicClient.getInstance(context).setMessageMetaData(existingMetadata);
+        SettingsSharedPreference.getInstance(context).setMessageMetaData(existingMetadata);
     }
 
     public static void updateConversation(Context context, GroupInfoUpdate groupInfoUpdate, TaskListener<Context> listener) {

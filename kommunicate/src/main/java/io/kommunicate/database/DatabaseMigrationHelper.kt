@@ -2,15 +2,17 @@ package io.kommunicate.database
 
 import android.content.Context
 import android.database.Cursor
-import com.applozic.mobicomkit.api.MobiComKitClientService
-import com.applozic.mobicommons.ApplozicService
+import io.kommunicate.devkit.api.MobiComKitClientService
+import io.kommunicate.commons.AppContextService
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteException
+import kotlin.Throws
 
 object DatabaseMigrationHelper {
     private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
 
     @JvmStatic
+    @Throws(Exception::class)
     fun migrateDatabase(context: Context, dbName: String) {
         val databaseName = if(context.getDatabasePath(dbName).exists()) {
             dbName
@@ -21,7 +23,7 @@ object DatabaseMigrationHelper {
         }
 
         val password =
-            MobiComKitClientService.getApplicationKey(ApplozicService.getContext(context))
+            MobiComKitClientService.getApplicationKey(AppContextService.getContext(context))
 
         // Load SQLCipher libraries
         SQLiteDatabase.loadLibs(context)
@@ -70,6 +72,7 @@ object DatabaseMigrationHelper {
     }
 
     // Copy tables and data from one database to another
+    @Throws(Exception::class)
     private fun copyDataBetweenDatabases(sourceDb: SQLiteDatabase, destinationDb: SQLiteDatabase) {
         val cursor: Cursor =
             sourceDb.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null)

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="whitesmoke">#f5f5f5</color>
+    <color name="contact_name">#ff0099cc</color>
+    <color name="main_color">#ff33B5E5</color>
+    <color name="primary_dark_color">#ff178ab4</color>
+
+    <color name="instruction_color">#ff337ab7</color>
+    <color name="empty_conversation_text_color">#838b83</color>
+    <color name="edittext_hint_color">#bdbdbd</color>
+
+    <color name="sent_message_text_color">#ffffffff</color>
+    <color name="message_text_color">#ffffff</color>
+    <color name="sent_message_bg_color">#ff33B5E5</color>
+    <!--<color name="received_message_bg_color">#ffffffff</color>-->
+    <color name="received_message_bg_color">#ffffffff</color>
+    <color name="received_message_bg_color_night">#313131</color>
+
+    <!-- <color name="sent_message_bg_color">#ff3EABF6</color>-->
+
+    <color name="send_message_layout_background_color">#ffffffff</color>
+    <color name="message_details_text_color">#838b83</color>
+    <color name="conversation_list_all_background">#FFFFFFFF</color>
+    <color name="dark_mode_default">#1D1B20</color>
+    <color name="dark_mode_icon_color_default">#5F46F8</color>
+    <color name="chatbar_text_color">#919EAD</color>
+    <color name="km_text_color_hint">#8f8b8b</color>
+    <color name="km_away_message_text_color">#A9A4A4</color>
+    <color name="createdAtTime_background_night">#B3B3B3</color>
+    <color name="messageReceiver_background_night">#FAFAFA</color>
+    <!-- <color name="conversation_list_all_background">#FFFAFAFA</color> -->
+
+    <color name="conversation_list_background">#FFFAFAFA</color>
+    <!--  <color name="conversation_list_background">#FFF1F1F1</color> -->
+    <color name="core_message_status_color">#ff000000</color>
+
+
+    <color name="compose_action_button">#db4437</color>
+    <color name="core_action_button">#FFE5E4E2</color>
+
+    <color name="attachment_background_color">#FFFFFFFF</color>
+
+    <color name="incoming_call">#ff0099cc</color>
+    <color name="outgoing_call">#ff008000</color>
+
+    <color name="toolbar_title_color">#FFFFFFFF</color>
+    <color name="toolbar_subtitle_color">#FFFFFFFF</color>
+
+    <color name="contact_name_text_color">#ff000000</color>
+    <color name="contact_userId_text_color">#838b83</color>
+    <color name="core_multimedia_grid_view_background_color">#F0F0F0</color>
+
+    <color name="core_theme_color_primary">#5c5aa7</color>
+    <color name="core_theme_color_primary_dark">#27256d</color>
+    <color name="core_theme_color_accent">#FF607D8B</color>
+    <color name="message_status_icon_colors">#5c5aa7</color>
+    <color name="default_start_new_button_color">#5c5aa7</color>
+    <color name="default_start_new_button_text_color">#ffffff</color>
+    <color name="prechat_lead_collection_image_background">#e9e9e9</color>
+    <color name="prechat_edittext_text_color">#444446</color>
+
+    <color name="core_theme_color_app">#ff0099cc</color>
+    <color name="core_theme_color_control_activated">#ff0099cc</color>
+    <color name="core_theme_color_control_highlight">#ff0099ee</color>
+    <color name="core_theme_primary_text">#FF000000</color>
+    <color name="core_theme_secondary_text">#FFFFFFFF</color>
+    <color name="core_theme_icons">#FF727272</color>
+    <color name="core_theme_divider">#FFB6B6B6</color>
+    <color name="core_message_border_color">#ffffff</color>
+
+    <color name="error_background_color">#ff0000</color>
+    <color name="core_share_contact_background">#fff5f5ff</color>
+    <color name="core_share_contact_divider">#FFB6B6B6</color>
+    <color name="core_lite_black_color">#b2b2b2</color>
+    <color name="core_green_color">#5fba7d</color>
+    <color name="core_profile_devider_color">#F8F8F8</color>
+    <color name="core_location_view_divider_color">#d2d2d2</color>
+    <color name="core_transparent_color">#00000000</color>
+    <color name="core_white_color">#FFFFFFFF</color>
+    <color name="core_black_color">#000000</color>
+    <color name="core_dark_black_color">#ff000000</color>
+    <color name="core_darker_gray_color">#aaa</color>
+    <color name="core_gray_color">#333333</color>
+    <color name="core_lite_gray_color">#666666</color>
+    <color name="core_custom_channel_message_text_color">#cccccc</color>
+    <color name="core_reply_sent_message_bg_color">#C0C0C0</color>
+    <color name="core_reply_received_message_bg_color">#F5F5F5</color>
+</resources>

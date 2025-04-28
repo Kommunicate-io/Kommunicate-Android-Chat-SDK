@@ -1,7 +1,7 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicommons.json.GsonUtils
+import io.kommunicate.commons.json.GsonUtils
 import com.google.gson.reflect.TypeToken
 import io.kommunicate.callbacks.TaskListener
 import io.kommunicate.models.FeedbackDetailsData

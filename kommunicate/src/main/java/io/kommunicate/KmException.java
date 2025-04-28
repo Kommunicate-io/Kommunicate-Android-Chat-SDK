@@ -1,12 +1,12 @@
 package io.kommunicate;
 
-import com.applozic.mobicomkit.exception.ApplozicException;
+import io.kommunicate.devkit.exception.KommunicateException;
 
 /**
  * Created by ashish on 07/05/18.
  */
 
-public class KmException extends ApplozicException {
+public class KmException extends KommunicateException {
     public KmException(String message) {
         super(message);
     }

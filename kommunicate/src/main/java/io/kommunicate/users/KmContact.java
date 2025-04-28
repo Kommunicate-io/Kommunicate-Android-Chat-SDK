@@ -1,6 +1,6 @@
 package io.kommunicate.users;
 
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.commons.people.contact.Contact;
 
 /**
  * Created by ashish on 30/01/18.

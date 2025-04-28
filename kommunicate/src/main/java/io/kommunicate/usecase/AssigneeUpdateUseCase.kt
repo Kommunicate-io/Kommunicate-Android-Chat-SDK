@@ -1,7 +1,7 @@
 package io.kommunicate.usecase
 
-import com.applozic.mobicomkit.feed.ApiResponse
-import com.applozic.mobicommons.ApplozicService
+import io.kommunicate.devkit.feed.ApiResponse
+import io.kommunicate.commons.AppContextService
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.kommunicate.callbacks.KmCallback
@@ -32,7 +32,7 @@ class AssigneeUpdateUseCase(
     private val takeOverFromBot: Boolean = true
 ) : UseCase<APIResult<String>> {
 
-    private val clientService = KmClientService(ApplozicService.getAppContext())
+    private val clientService = KmClientService(AppContextService.getAppContext())
 
     /**
      * Executes the assignee update operation.

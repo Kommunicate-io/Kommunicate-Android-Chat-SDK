@@ -4,15 +4,18 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.api.MobiComKitConstants;
-import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicommons.ApplozicService;
+import io.kommunicate.devkit.api.MobiComKitConstants;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.commons.AppContextService;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.R;
 import io.kommunicate.callbacks.KmRemoveMemberCallback;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmConversationRemoveMemberTask to RemoveMemberUseCase")
 public class KmConversationRemoveMemberTask extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<Context> context;
@@ -42,7 +45,7 @@ public class KmConversationRemoveMemberTask extends AsyncTask<Void, Void, Boolea
                     return MobiComKitConstants.SUCCESS.equals(removeResponse);
                 }
             } else {
-                throw new Exception(ApplozicService.getContext(context.get()).getString(R.string.applozic_userId_error_info_in_logs));
+                throw new Exception(AppContextService.getContext(context.get()).getString(R.string.userId_error_info_in_logs));
             }
         } catch (Exception e) {
             e.printStackTrace();

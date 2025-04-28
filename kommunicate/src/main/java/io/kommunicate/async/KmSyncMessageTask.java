@@ -3,9 +3,9 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.api.conversation.SyncCallService;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.devkit.api.conversation.SyncCallService;
+import io.kommunicate.commons.AppContextService;
+import io.kommunicate.commons.commons.core.utils.Utils;
 
 import java.lang.ref.WeakReference;
 
@@ -22,15 +22,15 @@ public class KmSyncMessageTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-            if (!Utils.isInternetAvailable(ApplozicService.getContextFromWeak(context))) {
+            if (!Utils.isInternetAvailable(AppContextService.getContextFromWeak(context))) {
                 return null;
             }
-            SyncCallService.getInstance(ApplozicService.getContextFromWeak(context)).syncMessages(null);
+            SyncCallService.getInstance(AppContextService.getContextFromWeak(context)).syncMessages(null);
             if(metadataUpdate) {
-                SyncCallService.getInstance(ApplozicService.getContextFromWeak(context)).syncMessageMetadata();
+                SyncCallService.getInstance(AppContextService.getContextFromWeak(context)).syncMessageMetadata();
             }
         } catch (Exception e) {
-            Utils.printLog(ApplozicService.getContextFromWeak(context), TAG, e.getMessage());
+            Utils.printLog(AppContextService.getContextFromWeak(context), TAG, e.getMessage());
         }
         return null;
     }

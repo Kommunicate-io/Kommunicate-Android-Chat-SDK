@@ -5,23 +5,23 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.HttpRequestUtils;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.User;
-import com.applozic.mobicomkit.api.account.user.UserClientService;
-import com.applozic.mobicomkit.api.conversation.ApplozicMqttIntentService;
-import com.applozic.mobicomkit.api.conversation.ConversationIntentService;
-import com.applozic.mobicomkit.api.notification.NotificationChannels;
-import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.exception.InvalidApplicationException;
-import com.applozic.mobicomkit.exception.UnAuthoriseException;
-import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.encryption.EncryptionUtils;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.people.contact.Contact;
+import io.kommunicate.devkit.KommunicateSettings;
+import io.kommunicate.devkit.SettingsSharedPreference;
+import io.kommunicate.devkit.api.HttpRequestUtils;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.api.account.user.User;
+import io.kommunicate.devkit.api.account.user.UserClientService;
+import io.kommunicate.devkit.api.conversation.MqttIntentService;
+import io.kommunicate.devkit.api.conversation.ConversationIntentService;
+import io.kommunicate.devkit.api.notification.NotificationChannels;
+import io.kommunicate.devkit.contact.AppContactService;
+import io.kommunicate.devkit.exception.InvalidApplicationException;
+import io.kommunicate.devkit.exception.UnAuthoriseException;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.encryption.EncryptionUtils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.contact.Contact;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -44,7 +44,7 @@ import io.kommunicate.feeds.KmRegistrationResponse;
 import io.kommunicate.network.SSLPinningConfig;
 import io.kommunicate.users.KMUser;
 
-import static com.applozic.mobicomkit.api.HttpRequestUtils.DEVICE_KEY_HEADER;
+import static io.kommunicate.devkit.api.HttpRequestUtils.DEVICE_KEY_HEADER;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -371,7 +371,7 @@ public class KmUserClientService extends UserClientService {
         final KmRegistrationResponse kmRegistrationResponse = gson.fromJson(response, KmRegistrationResponse.class);
         RegistrationResponse registrationResponse = null;
         if (kmRegistrationResponse != null && kmRegistrationResponse.getResult() != null) {
-            registrationResponse = kmRegistrationResponse.getResult().getApplozicUser();
+            registrationResponse = kmRegistrationResponse.getResult().getKommunicateUser();
         }
 
         if (registrationResponse == null) {
@@ -408,13 +408,13 @@ public class KmUserClientService extends UserClientService {
         mobiComUserPreference.setPricingPackage(registrationResponse.getPricingPackage());
         mobiComUserPreference.setAuthenticationType(String.valueOf(user.getAuthenticationTypeId()));
         mobiComUserPreference.setUserRoleType(registrationResponse.getRoleType());
-        ApplozicClient.getInstance(context).skipDeletedGroups(user.isSkipDeletedGroups());
+        SettingsSharedPreference.getInstance(context).skipDeletedGroups(user.isSkipDeletedGroups());
 
         if (user.getUserTypeId() != null) {
             mobiComUserPreference.setUserTypeId(String.valueOf(user.getUserTypeId()));
         }
         if (!TextUtils.isEmpty(user.getNotificationSoundFilePath())) {
-            Applozic.getInstance(context).setCustomNotificationSound(user.getNotificationSoundFilePath());
+            KommunicateSettings.getInstance(context).setCustomNotificationSound(user.getNotificationSoundFilePath());
         }
 
         Contact contact = new Contact();
@@ -429,8 +429,8 @@ public class KmUserClientService extends UserClientService {
         contact.setMetadata(user.getMetadata());
         contact.setStatus(registrationResponse.getStatusMessage());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Applozic.getInstance(context).setNotificationChannelVersion(NotificationChannels.NOTIFICATION_CHANNEL_VERSION - 1);
-            new NotificationChannels(context, Applozic.getInstance(context).getCustomNotificationSound()).prepareNotificationChannels();
+            KommunicateSettings.getInstance(context).setNotificationChannelVersion(NotificationChannels.NOTIFICATION_CHANNEL_VERSION - 1);
+            new NotificationChannels(context, KommunicateSettings.getInstance(context).getCustomNotificationSound()).prepareNotificationChannels();
         }
         new AppContactService(context).upsert(contact);
 
@@ -444,9 +444,9 @@ public class KmUserClientService extends UserClientService {
         mutedUserListService.putExtra(ConversationIntentService.MUTED_USER_LIST_SYNC, true);
         ConversationIntentService.enqueueWork(context, mutedUserListService);
 
-        Intent intent = new Intent(context, ApplozicMqttIntentService.class);
-        intent.putExtra(ApplozicMqttIntentService.CONNECTED_PUBLISH, true);
-        ApplozicMqttIntentService.enqueueWork(context, intent);
+        Intent intent = new Intent(context, MqttIntentService.class);
+        intent.putExtra(MqttIntentService.CONNECTED_PUBLISH, true);
+        MqttIntentService.enqueueWork(context, intent);
 
         return registrationResponse;
     }

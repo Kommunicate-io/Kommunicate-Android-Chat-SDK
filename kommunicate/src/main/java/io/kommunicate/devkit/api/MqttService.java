@@ -1,0 +1,858 @@
+package io.kommunicate.devkit.api;
+
+import android.content.Context;
+import android.os.Process;
+import android.text.TextUtils;
+
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.devkit.api.account.user.User;
+import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.SyncCallService;
+import io.kommunicate.devkit.api.notification.MobiComPushReceiver;
+import io.kommunicate.devkit.broadcast.EventManager;
+import io.kommunicate.devkit.broadcast.MessageEvent;
+import io.kommunicate.devkit.broadcast.BroadcastService;
+import io.kommunicate.devkit.channel.service.ChannelService;
+import io.kommunicate.devkit.feed.GcmMessageResponse;
+import io.kommunicate.devkit.feed.InstantMessageResponse;
+import io.kommunicate.devkit.feed.MqttMessageResponse;
+import io.kommunicate.commons.AppSpecificSettings;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.encryption.EncryptionUtils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.contact.Contact;
+
+import org.eclipse.paho.client.mqttv3.IMqttActionListener;
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by sunil on 26/11/15.
+ */
+public class MqttService extends MobiComKitClientService implements MqttCallback {
+
+    private static final String STATUS = "status-v2";
+    private static final String TAG = "MqttService";
+    private static final String TYPINGTOPIC = "typing-";
+    private static final String OPEN_GROUP = "group-";
+    private static final String MQTT_ENCRYPTION_TOPIC = "encr-";
+    private static final String SUPPORT_GROUP_TOPIC = "support-channel";
+    private static final String TEAM_TOPIC = "teamid";
+    private static final String KM_REMOVE_GROUP = "KM_REMOVE_GROUP";
+    private static final String SUCCESS = "success";
+    private static final String MESSAGE_RECEIVED = "MESSAGE_RECEIVED";
+    private static final String MSG_DELIVERED = "MT_MESSAGE_DELIVERED";
+    private static final String MSG_DELIVERED_READ = "MT_MESSAGE_DELIVERED_READ";
+
+    private static MqttService mqttService;
+    private CoreMqttClient client;
+    private MemoryPersistence memoryPersistence;
+    private Context context;
+
+    private MqttService(Context context) {
+        super(context);
+        this.context = context;
+        memoryPersistence = new MemoryPersistence();
+    }
+
+    public static MqttService getInstance(Context context) {
+
+        if (mqttService == null) {
+            mqttService = new MqttService(context.getApplicationContext());
+        }
+        return mqttService;
+    }
+
+    private MqttConnectOptions getConnectionOptions() {
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
+        String authToken = userPreference.getUserAuthToken();
+
+        MqttConnectOptions connOpts = new MqttConnectOptions();
+
+        if (!TextUtils.isEmpty(authToken)) {
+            connOpts.setUserName(getApplicationKey(context));
+            connOpts.setPassword(authToken.toCharArray());
+        }
+        connOpts.setConnectionTimeout(60);
+        connOpts.setWill(STATUS, (userPreference.getSuUserKeyString() + "," + userPreference.getDeviceKeyString() + "," + "0").getBytes(), 0, true);
+        return connOpts;
+    }
+
+    public boolean isConnected() {
+        return client != null && client.isConnected();
+    }
+
+    private CoreMqttClient connect() {
+        String userId = MobiComUserPreference.getInstance(context).getUserId();
+        try {
+            if (TextUtils.isEmpty(userId)) {
+                return client;
+            }
+            if (client == null) {
+                client = new CoreMqttClient(getMqttBaseUrl(), userId + "-" + new Date().getTime(), memoryPersistence);
+            }
+
+            if (!client.isConnected()) {
+                Utils.printLog(context, TAG, "Connecting to mqtt...");
+                client.setCallback(MqttService.this);
+                client.connectWithResult(getConnectionOptions(), new IMqttActionListener() {
+                    @Override
+                    public void onSuccess(IMqttToken asyncActionToken) {
+                        Utils.printLog(context, TAG, "Mqtt Connection successfull to : " + client.getServerURI());
+                        BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.MQTT_CONNECTED.toString());
+                    }
+
+                    @Override
+                    public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                        Utils.printLog(context, TAG, "Mqtt Connection failed");
+                        BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.MQTT_DISCONNECTED.toString());
+                    }
+                });
+            }
+        } catch (MqttException e) {
+            Utils.printLog(context, TAG, "Connecting already in progress.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return client;
+    }
+
+    public synchronized void connectPublish(final String userKeyString, final String deviceKeyString, final String status) {
+
+        try {
+            final CoreMqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+            MqttMessage message = new MqttMessage();
+            message.setRetained(false);
+            message.setPayload((userKeyString + "," + deviceKeyString + "," + status).getBytes());
+            Utils.printLog(context, TAG, "UserKeyString,DeviceKeyString,status:" + userKeyString + "," + deviceKeyString + "," + status);
+            message.setQos(0);
+            client.publish(STATUS, message, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    BroadcastService.sendUpdate(context, "1".equals(status) ? BroadcastService.INTENT_ACTIONS.USER_ONLINE.toString() : BroadcastService.INTENT_ACTIONS.USER_OFFLINE.toString());
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.MQTT_DISCONNECTED.toString());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void subscribe(boolean useEncrypted) {
+        if (!Utils.isInternetAvailable(context)) {
+            return;
+        }
+        final String deviceKeyString = MobiComUserPreference.getInstance(context).getDeviceKeyString();
+        final String userKeyString = MobiComUserPreference.getInstance(context).getSuUserKeyString();
+        if (TextUtils.isEmpty(deviceKeyString) || TextUtils.isEmpty(userKeyString)) {
+            return;
+        }
+        try {
+            final MqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+            connectPublish(userKeyString, deviceKeyString, "1");
+            subscribeToConversation(useEncrypted);
+            if (client != null) {
+                client.setCallback(MqttService.this);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unSubscribe(boolean useEncrypted) {
+        unSubscribeToConversation(useEncrypted);
+    }
+
+    public synchronized void subscribeToConversation(boolean useEncrypted) {
+        try {
+            String userKeyString = MobiComUserPreference.getInstance(context).getSuUserKeyString();
+            if (TextUtils.isEmpty(userKeyString)) {
+                return;
+            }
+            if (client != null && client.isConnected()) {
+                Utils.printLog(context, TAG, "Subscribing to conversation topic : " + (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + userKeyString);
+                client.subscribe((useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + userKeyString, 0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unSubscribeToConversation(final boolean useEncrypted) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (client == null || !client.isConnected()) {
+                        return;
+                    }
+                    String userKeyString = MobiComUserPreference.getInstance(context).getSuUserKeyString();
+                    Utils.printLog(context, TAG, "UnSubscribing to conversation topic : " + (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + userKeyString);
+                    client.unsubscribe((useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + userKeyString);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+    }
+
+    public synchronized void subscribeToCustomTopic(String customTopic, boolean useEncrypted) {
+        try {
+            final MqttClient client = connect();
+            if (client != null && client.isConnected()) {
+                String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + customTopic;
+                Utils.printLog(context, TAG, "Subscribing to topic : " + topic);
+                client.subscribe(topic, 0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unSubscribeToCustomTopic(final String customTopic, final boolean useEncrypted) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (client == null || !client.isConnected()) {
+                        return;
+                    }
+                    String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + customTopic;
+                    Utils.printLog(context, TAG, "UnSubscribing from topic : " + topic);
+                    client.unsubscribe(topic);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+    }
+
+    public synchronized void publishCustomData(final String customTopic, final String data, final boolean useEncrypted) {
+        try {
+            final CoreMqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+            MqttMessage message = new MqttMessage();
+            message.setRetained(false);
+            message.setPayload(data.getBytes());
+            message.setQos(0);
+            final String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + customTopic;
+            client.publish(topic, message, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Utils.printLog(context, TAG, "Sent data : " + data + " to topic : " + topic);
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Utils.printLog(context, TAG, "Error in sending data : " + data + " to topic : " + topic);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void subscribeToSupportGroup(boolean useEncrypted) {
+        try {
+            String userKeyString = MobiComUserPreference.getInstance(context).getSuUserKeyString();
+            if (TextUtils.isEmpty(userKeyString)) {
+                return;
+            }
+            final MqttClient client = connect();
+            if (client != null && client.isConnected()) {
+                String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + SUPPORT_GROUP_TOPIC + "-" + getApplicationKey(context);
+                Utils.printLog(context, TAG, "Subscribing to support group topic : " + topic);
+                client.subscribe(topic, 0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unSubscribeToSupportGroup(final boolean useEncrypted) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (client == null || !client.isConnected()) {
+                        return;
+                    }
+                    String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + SUPPORT_GROUP_TOPIC + "-" + getApplicationKey(context);
+                    Utils.printLog(context, TAG, "UnSubscribing to support group topic : " + topic);
+                    client.unsubscribe(topic);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+    }
+
+    public synchronized void subscribeToTeamTopic(boolean useEncrypted, List<String> teams) {
+        try {
+            String userKeyString = MobiComUserPreference.getInstance(context).getSuUserKeyString();
+            if (TextUtils.isEmpty(userKeyString)) {
+                return;
+            }
+            final MqttClient client = connect();
+            if (client != null && client.isConnected()) {
+                for(String team: teams) {
+                    String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + TEAM_TOPIC + "-" + team;
+                    Utils.printLog(context, TAG, "Subscribing to team topic : " + topic);
+                    client.subscribe(topic, 0);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unSubscribeToTeamTopic(final boolean useEncrypted, final List<String> teams) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (client == null || !client.isConnected()) {
+                        return;
+                    }
+                    for(String team: teams) {
+                        String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + TEAM_TOPIC + "-" + team;
+                        Utils.printLog(context, TAG, "Unsubscribing to team topic : " + topic);
+                        client.unsubscribe(topic);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+    }
+
+    public void disconnectPublish(String userKeyString, String deviceKeyString, String status, boolean useEncrypted) {
+        try {
+            connectPublish(userKeyString, deviceKeyString, status);
+            unSubscribe(useEncrypted);
+            if (!MobiComUserPreference.getInstance(context).isLoggedIn()) {
+                disconnect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disconnect() {
+        if (client != null && client.isConnected()) {
+            try {
+                client.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static boolean isMqttResponseForLoggedInUserDelete(Context context, MqttMessageResponse mqttMessageResponse) {
+        String userIdFromMqttResponse = mqttMessageResponse.getMessage().toString();
+        return NOTIFICATION_TYPE.USER_DELETE_NOTIFICATION.getValue().equals(mqttMessageResponse.getType()) && !TextUtils.isEmpty(userIdFromMqttResponse) && userIdFromMqttResponse.equals(MobiComUserPreference.getInstance(context).getUserId());
+    }
+
+    @Override
+    public void connectionLost(Throwable throwable) {
+        BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.MQTT_DISCONNECTED.toString());
+    }
+
+    @Override
+    public void messageArrived(final String s, final MqttMessage mqttMessage) throws Exception {
+        Utils.printLog(context, TAG, "Received MQTT message: " + new String(mqttMessage.getPayload()));
+        try {
+            if (!TextUtils.isEmpty(s) && s.startsWith(TYPINGTOPIC)) {
+                String[] typingResponse = mqttMessage.toString().split(",");
+                String applicationId = typingResponse[0];
+                String userId = User.getDecodedUserId(typingResponse[1]);
+                String isTypingStatus = typingResponse[2];
+                BroadcastService.sendUpdateTypingBroadcast(context, BroadcastService.INTENT_ACTIONS.UPDATE_TYPING_STATUS.toString(), applicationId, userId, isTypingStatus);
+            } else {
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final MqttMessageResponse mqttMessageResponse;
+                            String messageDataString = null;
+
+                            if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())
+                                    && !TextUtils.isEmpty(s) && s.startsWith(MQTT_ENCRYPTION_TOPIC)) {
+                                if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getEncryptionKey())) {
+                                    messageDataString = EncryptionUtils.decrypt(MobiComUserPreference.getInstance(context).getEncryptionKey(),mqttMessage.toString().trim(), MobiComUserPreference.getInstance(context).getEncryptionIV());
+                                }
+                                if (TextUtils.isEmpty(messageDataString.trim())) {
+                                    return;
+                                }
+                                mqttMessageResponse = (MqttMessageResponse) GsonUtils.getObjectFromJson(messageDataString, MqttMessageResponse.class);
+                            } else {
+                                messageDataString = mqttMessage.toString();
+                                mqttMessageResponse = (MqttMessageResponse) GsonUtils.getObjectFromJson(messageDataString, MqttMessageResponse.class);
+                            }
+
+                            if (mqttMessageResponse != null) {
+                                if (MobiComPushReceiver.processPushNotificationId(mqttMessageResponse.getId())) {
+                                    return;
+                                }
+                                final SyncCallService syncCallService = SyncCallService.getInstance(context);
+                                MobiComPushReceiver.addPushNotificationId(mqttMessageResponse.getId());
+
+                                EventManager.getInstance().postMqttEventData(mqttMessageResponse);
+
+                                Utils.printLog(context, TAG, "MQTT message type: " + mqttMessageResponse.getType());
+                                if (NOTIFICATION_TYPE.MESSAGE_RECEIVED.getValue().equals(mqttMessageResponse.getType()) || MESSAGE_RECEIVED.equals(mqttMessageResponse.getType())) {
+
+                                    GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
+                                    if (messageResponse == null) {
+                                        return;
+                                    }
+                                    Message message = messageResponse.getMessage();
+                                    if (message.getGroupId() != null) {
+                                        Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
+
+                                        //For agent app. If user replies to an Initial conversation then update the channel.
+                                        if(channel != null && channel.getKmStatus() == Channel.NOTSTARTED_CONVERSATIONS && message.getGroupStatus() != null && !message.getGroupStatus().equals(Message.GroupStatus.INITIAL.getValue())) {
+                                            channel.setKmStatus(Channel.ALL_CONVERSATIONS);
+                                            ChannelService.getInstance(context).updateChannel(channel);
+                                        }
+
+                                        if (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) {
+                                            if (!MobiComUserPreference.getInstance(context).getDeviceKeyString().equals(message.getDeviceKeyString())) {
+                                                syncCallService.syncMessages(message.getKeyString(), message);
+                                            }
+                                        } else {
+                                            if (message.isGroupDeleteAction()) {
+                                                syncCallService.deleteChannelConversationThread(message.getGroupId());
+                                                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, message.getGroupId(), SUCCESS);
+                                            }
+                                            syncCallService.syncMessages(null);
+                                        }
+                                    } else {
+                                        syncCallService.syncMessages(null);
+                                    }
+                                }
+
+                                if (NOTIFICATION_TYPE.MESSAGE_DELIVERED.getValue().equals(mqttMessageResponse.getType())
+                                        || MSG_DELIVERED.equals(mqttMessageResponse.getType())) {
+                                    String[] splitKeyString = (mqttMessageResponse.getMessage()).toString().split(",");
+                                    String keyString = splitKeyString[0];
+                                    //String userId = splitKeyString[1];
+                                    syncCallService.updateDeliveryStatus(keyString);
+                                }
+
+                                if (NOTIFICATION_TYPE.MESSAGE_DELIVERED_AND_READ.getValue().equals(mqttMessageResponse.getType())
+                                        || MSG_DELIVERED_READ.equals(mqttMessageResponse.getType())) {
+                                    String[] splitKeyString = (mqttMessageResponse.getMessage()).toString().split(",");
+                                    String keyString = splitKeyString[0];
+                                    syncCallService.updateReadStatus(keyString);
+                                }
+
+                                if (NOTIFICATION_TYPE.CONVERSATION_DELIVERED_AND_READ.getValue().equals(mqttMessageResponse.getType())) {
+                                    String contactId = mqttMessageResponse.getMessage().toString();
+                                    syncCallService.updateDeliveryStatusForContact(contactId, true);
+                                }
+
+                                if (NOTIFICATION_TYPE.CONVERSATION_READ.getValue().equals(mqttMessageResponse.getType())) {
+                                    syncCallService.updateConversationReadStatus(mqttMessageResponse.getMessage().toString(), false);
+                                }
+
+                                if (NOTIFICATION_TYPE.GROUP_CONVERSATION_READ.getValue().equals(mqttMessageResponse.getType())) {
+                                    InstantMessageResponse instantMessageResponse = (InstantMessageResponse) GsonUtils.getObjectFromJson(messageDataString, InstantMessageResponse.class);
+                                    syncCallService.updateConversationReadStatus(instantMessageResponse.getMessage(), true);
+                                }
+
+                                if (NOTIFICATION_TYPE.USER_CONNECTED.getValue().equals(mqttMessageResponse.getType())) {
+                                    syncCallService.updateConnectedStatus(mqttMessageResponse.getMessage().toString(), new Date(), true);
+                                }
+
+                                if (NOTIFICATION_TYPE.USER_DISCONNECTED.getValue().equals(mqttMessageResponse.getType())) {
+                                    //disconnect comes with timestamp, ranjeet,1449866097000
+                                    String[] parts = mqttMessageResponse.getMessage().toString().split(",");
+                                    String userId = parts[0];
+                                    Date lastSeenAt = new Date();
+                                    if (parts.length >= 2 && !parts[1].equals("null")) {
+                                        lastSeenAt = new Date(Long.parseLong(parts[1]));
+                                    }
+                                    syncCallService.updateConnectedStatus(userId, lastSeenAt, false);
+                                }
+
+                                if (NOTIFICATION_TYPE.CONVERSATION_DELETED.getValue().equals(mqttMessageResponse.getType())) {
+                                    syncCallService.deleteConversationThread(mqttMessageResponse.getMessage().toString());
+                                    BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), mqttMessageResponse.getMessage().toString(), 0, SUCCESS);
+                                }
+
+                                if (NOTIFICATION_TYPE.GROUP_CONVERSATION_DELETED.getValue().equals(mqttMessageResponse.getType())) {
+                                    InstantMessageResponse instantMessageResponse = (InstantMessageResponse) GsonUtils.getObjectFromJson(messageDataString, InstantMessageResponse.class);
+                                    syncCallService.deleteChannelConversationThread(instantMessageResponse.getMessage());
+                                    BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, Integer.valueOf(instantMessageResponse.getMessage()), SUCCESS);
+                                }
+
+                                if (NOTIFICATION_TYPE.MESSAGE_DELETED.getValue().equals(mqttMessageResponse.getType())) {
+                                    GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
+                                    String messageKey = mqttMessageResponse.getMessage().toString().split(",")[0];
+                                    Message message = messageResponse.getMessage();
+                                    syncCallService.deleteMessage(messageKey, message.getGroupId());
+                                    BroadcastService.sendMessageDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString(), messageKey, null, message);
+                                }
+
+                                if (NOTIFICATION_TYPE.MESSAGE_SENT.getValue().equals(mqttMessageResponse.getType())) {
+                                    GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
+                                    Message sentMessageSync = messageResponse.getMessage();
+                                    if (!TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getUserId()) ||
+                                            sentMessageSync.getTo().equals(MobiComUserPreference.getInstance(context).getUserId())) {
+                                        if (sentMessageSync.getGroupId() != null) {
+
+                                            Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(sentMessageSync.getGroupId());
+                                            if (channel != null && channel.getKmStatus() == Channel.NOTSTARTED_CONVERSATIONS &&  sentMessageSync.getGroupStatus() != null && !sentMessageSync.getGroupStatus().equals(Message.GroupStatus.INITIAL.getValue())) {
+                                                channel.setKmStatus(Channel.ALL_CONVERSATIONS);
+                                                ChannelService.getInstance(context).updateChannel(channel);
+                                            }
+                                        }
+                                        syncCallService.syncMessages(sentMessageSync.getKeyString(), sentMessageSync);
+                                    }
+                                }
+
+                                if (NOTIFICATION_TYPE.USER_BLOCKED.getValue().equals(mqttMessageResponse.getType()) ||
+                                        NOTIFICATION_TYPE.USER_UN_BLOCKED.getValue().equals(mqttMessageResponse.getType())) {
+                                    syncCallService.syncBlockUsers();
+                                }
+
+                                if (NOTIFICATION_TYPE.USER_DETAIL_CHANGED.getValue().equals(mqttMessageResponse.getType()) || NOTIFICATION_TYPE.USER_DELETE_NOTIFICATION.getValue().equals(mqttMessageResponse.getType())) {
+                                    String userId = mqttMessageResponse.getMessage().toString();
+                                    syncCallService.syncUserDetail(userId);
+
+                                    if (isMqttResponseForLoggedInUserDelete(context, mqttMessageResponse)) {
+                                        syncCallService.processLoggedUserDelete();
+                                    }
+                                }
+
+                                if (NOTIFICATION_TYPE.MESSAGE_METADATA_UPDATE.getValue().equals(mqttMessageResponse.getType())) {
+                                    try {
+                                        GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
+                                        String keyString = messageResponse.getMessage().getKeyString();
+                                        Message messageObject = messageResponse.getMessage();
+                                        syncCallService.syncMessageMetadataUpdate(keyString, false, messageObject);
+                                        if(messageObject.isDeletedForAll()) {
+                                            syncCallService.deleteMessage(keyString, messageObject.getGroupId());
+                                            BroadcastService.sendMessageDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_MESSAGE.toString(), keyString, null, messageObject);
+                                        }
+                                    } catch (Exception e) {
+                                        Utils.printLog(context, TAG, e.getMessage());
+                                    }
+                                }
+
+                                if (NOTIFICATION_TYPE.USER_MUTE_NOTIFICATION.getValue().equals(mqttMessageResponse.getType())) {
+                                    try {
+                                        InstantMessageResponse response = (InstantMessageResponse) GsonUtils.getObjectFromJson(messageDataString, InstantMessageResponse.class);
+                                        if (response.getMessage() != null) {
+                                            String muteFlag = String.valueOf(response.getMessage().charAt(response.getMessage().length() - 1));
+                                            if ("1".equals(muteFlag)) {
+                                                syncCallService.syncMutedUserList(false, null);
+                                            } else if ("0".equals(muteFlag)) {
+                                                String userId = response.getMessage().substring(0, response.getMessage().length() - 2);
+                                                syncCallService.syncMutedUserList(false, userId);
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                if (NOTIFICATION_TYPE.MUTE_NOTIFICATIONS.getValue().equals(mqttMessageResponse.getType())) {
+                                    try {
+                                        GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
+                                        if (messageResponse.getMessage() != null && messageResponse.getMessage().getMessage() != null) {
+                                            long notificationAfterTime = Long.parseLong(messageResponse.getMessage().getMessage());
+                                            AppSpecificSettings.getInstance(context).setNotificationAfterTime(notificationAfterTime);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                if (NOTIFICATION_TYPE.GROUP_MUTE_NOTIFICATION.getValue().equals(mqttMessageResponse.getType())) {
+                                    try {
+                                        InstantMessageResponse response = (InstantMessageResponse) GsonUtils.getObjectFromJson(messageDataString, InstantMessageResponse.class);
+                                        if (!TextUtils.isEmpty(response.getMessage())) {
+                                            String[] parts = response.getMessage().split(":");
+                                            if (parts.length > 0) {
+                                                Integer groupId = Integer.parseInt(parts[0]);
+                                                if (parts.length == 2) {
+                                                    Long notificationMuteTillTime = Long.parseLong(parts[1]);
+                                                    ChannelService.getInstance(context).updateNotificationAfterTime(groupId, notificationMuteTillTime);
+                                                    BroadcastService.sendUpdateGroupMuteForGroupId(context, groupId, BroadcastService.INTENT_ACTIONS.GROUP_MUTE.toString());
+                                                }
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                if (NOTIFICATION_TYPE.ACTIVATED.getValue().equals(mqttMessageResponse.getType())) {
+                                    BroadcastService.sendUserActivatedBroadcast(context, MessageEvent.ActionType.USER_ACTIVATED);
+                                }
+
+                                if (NOTIFICATION_TYPE.DEACTIVATED.getValue().equals(mqttMessageResponse.getType())) {
+                                    BroadcastService.sendUserActivatedBroadcast(context, MessageEvent.ActionType.USER_DEACTIVATED);
+                                }
+
+                                if(NOTIFICATION_TYPE.USER_ONLINE_STATUS.getValue().equals(mqttMessageResponse.getType())) {
+                                    String[] parts = mqttMessageResponse.getMessage().toString().split(",");
+                                    syncCallService.updateAwayStatus(parts[0], Integer.valueOf(parts[1]));
+                                }
+                                if(NOTIFICATION_TYPE.GROUP_UPDATE.getValue().equals(mqttMessageResponse.getType())) {
+                                    try {
+                                        GcmMessageResponse messageResponse = (GcmMessageResponse) GsonUtils.getObjectFromJson(messageDataString, GcmMessageResponse.class);
+                                        Message message = messageResponse.getMessage();
+                                        if(messageResponse.getMessage() != null && message.getMetadata() != null
+                                        && message.getMetadata().containsKey(KM_REMOVE_GROUP)
+                                        && "true".equals(message.getMetadata().get(KM_REMOVE_GROUP))) {
+                                            ChannelService.getInstance(context).deleteChannelFromDb(messageResponse.getMessage().getGroupId());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                thread.start();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void publishMessageStatus(final String messageStatusTopic, final String data) {
+        try {
+            final CoreMqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+            MqttMessage message = new MqttMessage();
+            message.setRetained(false);
+            message.setPayload(data.getBytes());
+            message.setQos(0);
+            client.publish(messageStatusTopic, message, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    Utils.printLog(context, TAG, "Sent data : " + data + " to topic : " + messageStatusTopic);
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    Utils.printLog(context, TAG, "Error in sending data : " + data + " to topic : " + messageStatusTopic);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void publishTopic(final String applicationId, final String status, final String loggedInUserId, final String userId) {
+        try {
+            final MqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+            MqttMessage message = new MqttMessage();
+            message.setRetained(false);
+            message.setPayload((applicationId + "," + User.getEncodedUserId(loggedInUserId) + "," + status).getBytes());
+            message.setQos(0);
+            client.publish("typing" + "-" + applicationId + "-" + User.getEncodedUserId(userId), message);
+            Utils.printLog(context, TAG, "Published " + new String(message.getPayload()) + " to topic: " + "typing" + "-" + applicationId + "-" + User.getEncodedUserId(userId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void subscribeToTypingTopic(Channel channel) {
+        try {
+            String currentId = null;
+            if (channel != null) {
+                currentId = String.valueOf(channel.getKey());
+            } else {
+                MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
+                currentId = mobiComUserPreference.getUserId();
+            }
+
+            final MqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+
+            client.subscribe("typing-" + getApplicationKey(context) + "-" + User.getEncodedUserId(currentId), 0);
+            Utils.printLog(context, TAG, "Subscribed to topic: " + "typing-" + getApplicationKey(context) + "-" + User.getEncodedUserId(currentId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unSubscribeToTypingTopic(Channel channel) {
+        try {
+            String currentId = null;
+            if (channel != null) {
+                currentId = String.valueOf(channel.getKey());
+            } else {
+                MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
+                currentId = mobiComUserPreference.getUserId();
+            }
+
+            final MqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+
+            client.unsubscribe("typing-" + getApplicationKey(context) + "-" + User.getEncodedUserId(currentId));
+            Utils.printLog(context, TAG, "UnSubscribed to topic: " + "typing-" + getApplicationKey(context) + "-" + User.getEncodedUserId(currentId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+
+    }
+
+    public void typingStarted(Contact contact, Channel channel) {
+        String currentId;
+        if (channel != null) {
+            currentId = String.valueOf(channel.getKey());
+        } else {
+            currentId = contact.getUserId();
+        }
+        MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
+        publishTopic(getApplicationKey(context), "1", User.getEncodedUserId(mobiComUserPreference.getUserId()), User.getEncodedUserId(currentId));
+    }
+
+    public void typingStopped(Contact contact, Channel channel) {
+        String currentId;
+        if (channel != null) {
+            currentId = String.valueOf(channel.getKey());
+        } else {
+            currentId = contact.getUserId();
+        }
+        MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
+        publishTopic(getApplicationKey(context), "0", User.getEncodedUserId(mobiComUserPreference.getUserId()), User.getEncodedUserId(currentId));
+    }
+
+    public synchronized void subscribeToOpenGroupTopic(Channel channel) {
+        try {
+            String currentId = null;
+            if (channel != null) {
+                currentId = String.valueOf(channel.getKey());
+            }
+            final MqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+
+            client.subscribe(OPEN_GROUP + getApplicationKey(context) + "-" + User.getEncodedUserId(currentId), 0);
+            Utils.printLog(context, TAG, "Subscribed to Open group: " + OPEN_GROUP + getApplicationKey(context) + "-" + User.getEncodedUserId(currentId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void unSubscribeToOpenGroupTopic(Channel channel) {
+        try {
+            String currentId = null;
+            if (channel != null) {
+                currentId = String.valueOf(channel.getKey());
+            }
+
+            final MqttClient client = connect();
+            if (client == null || !client.isConnected()) {
+                return;
+            }
+
+            client.unsubscribe(OPEN_GROUP + getApplicationKey(context) + "-" + User.getEncodedUserId(currentId));
+            Utils.printLog(context, TAG, "UnSubscribed to topic: " + OPEN_GROUP + getApplicationKey(context) + "-" + User.getEncodedUserId(currentId));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static enum NOTIFICATION_TYPE {
+        MESSAGE_RECEIVED("APPLOZIC_01"), MESSAGE_SENT("APPLOZIC_02"),
+        MESSAGE_SENT_UPDATE("APPLOZIC_03"), MESSAGE_DELIVERED("APPLOZIC_04"),
+        MESSAGE_DELETED("APPLOZIC_05"), CONVERSATION_DELETED("APPLOZIC_06"),
+        MESSAGE_READ("APPLOZIC_07"), MESSAGE_DELIVERED_AND_READ("APPLOZIC_08"),
+        CONVERSATION_READ("APPLOZIC_09"), CONVERSATION_DELIVERED_AND_READ("APPLOZIC_10"),
+        USER_CONNECTED("APPLOZIC_11"), USER_DISCONNECTED("APPLOZIC_12"),
+        GROUP_DELETED("APPLOZIC_13"), GROUP_LEFT("APPLOZIC_14"), GROUP_SYNC("APPLOZIC_15"),
+        USER_BLOCKED("APPLOZIC_16"), USER_UN_BLOCKED("APPLOZIC_17"),
+        ACTIVATED("APPLOZIC_18"),
+        DEACTIVATED("APPLOZIC_19"),
+        REGISTRATION("APPLOZIC_20"),
+        GROUP_CONVERSATION_READ("APPLOZIC_21"),
+        GROUP_MESSAGE_DELETED("APPLOZIC_22"),
+        GROUP_CONVERSATION_DELETED("APPLOZIC_23"),
+        APPLOZIC_TEST("APPLOZIC_24"),
+        USER_ONLINE_STATUS("APPLOZIC_25"),
+        CONVERSATION_DELETED_NEW("APPLOZIC_27"),
+        CONVERSATION_DELIVERED_AND_READ_NEW("APPLOZIC_28"),
+        CONVERSATION_READ_NEW("APPLOZIC_29"),
+        USER_DETAIL_CHANGED("APPLOZIC_30"),
+        MESSAGE_METADATA_UPDATE("APPLOZIC_33"),
+        USER_DELETE_NOTIFICATION("APPLOZIC_34"),
+        USER_MUTE_NOTIFICATION("APPLOZIC_37"),
+        MUTE_NOTIFICATIONS("APPLOZIC_38"),
+        GROUP_MUTE_NOTIFICATION("APPLOZIC_39"),
+        WAITING_QUEUE_UPDATE("APPLOZIC_40"),
+        AGENT_SCORECARD_UPDATE("APPLOZIC_41"),
+        GROUP_UPDATE("APPLOZIC_42");
+
+        private String value;
+
+        private NOTIFICATION_TYPE(String c) {
+            value = c;
+        }
+
+        public String getValue() {
+            return String.valueOf(value);
+        }
+    }
+
+}

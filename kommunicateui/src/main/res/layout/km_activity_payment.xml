@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.webview.KmWebViewActivity">
+    tools:context=".conversation.richmessaging.webview.KmWebViewActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/applozic_dark_black_color"
+        android:background="@color/core_dark_black_color"
         android:elevation="4dp"
-        android:theme="@style/Applozic_FullScreen_Theme"
-        app:popupTheme="@style/Applozic_PopUpTheme"
+        android:theme="@style/KommunicateFullScreenTheme"
+        app:popupTheme="@style/KommunicatePopUpTheme"
         app:subtitleTextAppearance="@style/ToolbarSubtitle"
         app:titleTextAppearance="@style/ToolbarTitle" />
 

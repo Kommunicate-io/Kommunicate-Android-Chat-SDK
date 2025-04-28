@@ -3,12 +3,9 @@ package io.kommunicate.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.json.GsonUtils;
+import io.kommunicate.commons.AppContextService;
 
 import java.util.Set;
-
-import io.kommunicate.KmConversationBuilder;
 
 public class KmDefaultSettingPreference {
 
@@ -22,7 +19,7 @@ public class KmDefaultSettingPreference {
     private static final String KM_DEFAULT_SETTING_PREFERENCE = "KOMMUNICATE_SETTING_PREFS";
 
     private KmDefaultSettingPreference() {
-        preferences = ApplozicService.getAppContext().getSharedPreferences(KM_DEFAULT_SETTING_PREFERENCE, Context.MODE_PRIVATE);
+        preferences = AppContextService.getAppContext().getSharedPreferences(KM_DEFAULT_SETTING_PREFERENCE, Context.MODE_PRIVATE);
     }
 
 

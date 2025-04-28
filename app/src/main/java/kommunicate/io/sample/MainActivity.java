@@ -4,8 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Handler;
 
-import com.applozic.mobicomkit.uiwidgets.kommunicate.views.KmToast;
-import com.applozic.mobicommons.commons.core.utils.Utils;
+import io.kommunicate.ui.kommunicate.views.KmToast;
+import io.kommunicate.commons.commons.core.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -23,8 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.SettingsSharedPreference;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,13 +74,13 @@ public class MainActivity extends AppCompatActivity {
                     final String mUserIdText = mUserId.getText().toString().trim();
                     String mPasswordText = mPassword.getText().toString().trim();
                     if (TextUtils.isEmpty(mUserIdText) || mUserId.getText().toString().trim().length() == 0) {
-                        KmToast.error(getBaseContext(), com.applozic.mobicomkit.uiwidgets.R.string.enter_user_id, Toast.LENGTH_SHORT).show();
+                        KmToast.error(getBaseContext(), io.kommunicate.ui.R.string.enter_user_id, Toast.LENGTH_SHORT).show();
                         return;
                     }
 
                     final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
                     progressDialog.setTitle(getString(R.string.login));
-                    progressDialog.setMessage(getString(com.applozic.mobicomkit.uiwidgets.R.string.please_wait));
+                    progressDialog.setMessage(getString(io.kommunicate.ui.R.string.please_wait));
                     progressDialog.setCancelable(false);
                     progressDialog.show();
                     initLoginData(mUserId.getText().toString().trim(), mPassword.getText().toString().trim(), progressDialog);
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
                 progressDialog.setTitle(getString(R.string.login));
-                progressDialog.setMessage(getString(com.applozic.mobicomkit.uiwidgets.R.string.please_wait));
+                progressDialog.setMessage(getString(io.kommunicate.ui.R.string.please_wait));
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 Kommunicate.init(MainActivity.this, APP_ID);
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         if (exit) {
             finish();
         } else {
-            KmToast.success(this, com.applozic.mobicomkit.uiwidgets.R.string.press_back_exit, Toast.LENGTH_SHORT).show();
+            KmToast.success(this, io.kommunicate.ui.R.string.press_back_exit, Toast.LENGTH_SHORT).show();
             exit = true;
 
             new Handler().postDelayed(new Runnable() {
@@ -202,11 +202,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
                 if (KMUser.RoleType.USER_ROLE.getValue().equals(registrationResponse.getRoleType())) {
-                    ApplozicClient.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
+                    SettingsSharedPreference.getInstance(context).hideActionMessages(true).setMessageMetaData(null);
                 } else {
                     Map<String, String> metadata = new HashMap<>();
                     metadata.put(SKIPBOT, "true");
-                    ApplozicClient.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
+                    SettingsSharedPreference.getInstance(context).hideActionMessages(false).setMessageMetaData(metadata);
                 }
 
                 try {

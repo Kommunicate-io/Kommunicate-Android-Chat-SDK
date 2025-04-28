@@ -20,7 +20,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
-            android:background="@color/mobitexter_main_color"
+            android:background="@color/main_color"
             android:gravity="center_horizontal"
             android:paddingBottom="10dp"
             android:paddingTop="10dp"

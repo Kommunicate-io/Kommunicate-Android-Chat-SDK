@@ -3,11 +3,8 @@ package io.kommunicate.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.json.GsonUtils;
-
-import java.util.Map;
+import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
+import io.kommunicate.commons.AppContextService;
 
 public class KmConversationInfoSetting {
     private static KmConversationInfoSetting kmConversationInfoSetting;
@@ -27,7 +24,7 @@ public class KmConversationInfoSetting {
 
     public static KmConversationInfoSetting getInstance(Context context) {
         if (kmConversationInfoSetting == null) {
-            kmConversationInfoSetting = new KmConversationInfoSetting(ApplozicService.getContext(context));
+            kmConversationInfoSetting = new KmConversationInfoSetting(AppContextService.getContext(context));
         } else {
             sharedPreferences = context.getSharedPreferences(MobiComUserPreference.AL_USER_PREF_KEY, Context.MODE_PRIVATE);
         }

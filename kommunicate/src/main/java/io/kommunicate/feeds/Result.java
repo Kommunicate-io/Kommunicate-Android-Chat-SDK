@@ -1,7 +1,7 @@
 
 package io.kommunicate.feeds;
 
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -278,7 +278,7 @@ public class Result {
         this.adminDisplayName = adminDisplayName;
     }
 
-    public RegistrationResponse getApplozicUser() {
+    public RegistrationResponse getKommunicateUser() {
         return applozicUser;
     }
 

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.applozic.mobicommons.ApplozicService;
+import io.kommunicate.commons.AppContextService;
 
 public class KmBotPreference {
     private static final String KM_BOT_PREFERENCE = "km_bot_preference";
@@ -15,12 +15,12 @@ public class KmBotPreference {
     private static KmBotPreference kmBotPreference;
 
     private KmBotPreference(Context context) {
-        sharedPreferences = ApplozicService.getContext(context).getSharedPreferences(KM_BOT_PREFERENCE, Context.MODE_PRIVATE);
+        sharedPreferences = AppContextService.getContext(context).getSharedPreferences(KM_BOT_PREFERENCE, Context.MODE_PRIVATE);
     }
 
     public static KmBotPreference getInstance(Context context) {
         if (kmBotPreference == null) {
-            kmBotPreference = new KmBotPreference(ApplozicService.getContext(context));
+            kmBotPreference = new KmBotPreference(AppContextService.getContext(context));
         }
         return kmBotPreference;
     }

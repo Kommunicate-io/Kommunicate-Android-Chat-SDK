@@ -3,12 +3,11 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.ResultReceiver;
 
-import com.applozic.mobicomkit.Applozic;
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-import com.applozic.mobicomkit.api.account.user.UserClientService;
-import com.applozic.mobicomkit.api.account.user.UserLoginTask;
-import com.applozic.mobicomkit.listners.AlLoginHandler;
+import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
+import io.kommunicate.devkit.api.account.register.RegistrationResponse;
+import io.kommunicate.devkit.api.account.user.UserClientService;
+import io.kommunicate.devkit.api.account.user.UserLoginTask;
+import io.kommunicate.devkit.listners.LoginHandler;
 
 import java.lang.ref.WeakReference;
 
@@ -16,7 +15,6 @@ import annotations.CleanUpRequired;
 import io.kommunicate.services.KmUserClientService;
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
-import io.kommunicate.utils.KmAppSettingPreferences;
 
 /**
  * Created by ashish on 10/02/18.
@@ -27,7 +25,7 @@ import io.kommunicate.utils.KmAppSettingPreferences;
 public class KmUserLoginTask extends UserLoginTask {
     private Exception e;
     private KMUser user;
-    private AlLoginHandler handler;
+    private LoginHandler handler;
     private WeakReference<Context> context;
     private RegistrationResponse response;
     private KmUserClientService userClientService;
@@ -35,7 +33,7 @@ public class KmUserLoginTask extends UserLoginTask {
     private ResultReceiver prechatReceiver;
 
 
-    public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context) {
+    public KmUserLoginTask(KMUser user, boolean isAgent, LoginHandler listener, Context context) {
         super(user, listener, context);
         this.user = user;
         this.context = new WeakReference<Context>(context);
@@ -44,7 +42,7 @@ public class KmUserLoginTask extends UserLoginTask {
         this.isAgent = isAgent;
     }
 
-    public KmUserLoginTask(KMUser user, boolean isAgent, AlLoginHandler listener, Context context, ResultReceiver prechatReceiver) {
+    public KmUserLoginTask(KMUser user, boolean isAgent, LoginHandler listener, Context context, ResultReceiver prechatReceiver) {
         super(user, listener, context);
         this.user = user;
         this.context = new WeakReference<Context>(context);

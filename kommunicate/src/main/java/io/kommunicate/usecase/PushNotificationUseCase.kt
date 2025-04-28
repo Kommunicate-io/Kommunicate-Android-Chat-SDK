@@ -1,9 +1,9 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse
-import com.applozic.mobicomkit.listners.AlPushNotificationHandler
+import io.kommunicate.devkit.api.account.register.RegisterUserClientService
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.listners.PushNotificationHandler
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure
@@ -47,18 +47,18 @@ class PushNotificationUseCase(
 
         /**
          * Executes the use case with the given [UseCaseExecutor].
-         * Provides an easy way to handle success or failure using a provided [AlPushNotificationHandler].
+         * Provides an easy way to handle success or failure using a provided [PushNotificationHandler].
          *
          * @param context The Android context for accessing resources and services.
          * @param pushNotificationId The new push notification ID to be updated.
-         * @param pushNotificationHandler Optional [AlPushNotificationHandler] for handling success or failure callbacks.
+         * @param pushNotificationHandler Optional [PushNotificationHandler] for handling success or failure callbacks.
          * @return [UseCaseExecutor] for managing coroutine execution.
          */
         @JvmStatic
         fun executeWithExecutor(
             context: Context,
             pushNotificationId: String,
-            pushNotificationHandler: AlPushNotificationHandler? = null
+            pushNotificationHandler: PushNotificationHandler? = null
         ): UseCaseExecutor<PushNotificationUseCase, APIResult<RegistrationResponse>> {
             val useCase = PushNotificationUseCase(context, pushNotificationId)
 

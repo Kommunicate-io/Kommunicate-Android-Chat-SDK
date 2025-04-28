@@ -24,7 +24,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.applozic.mobicomkit.uiwidgets.R
+import io.kommunicate.ui.R
 import com.google.gson.JsonParser
 import io.kommunicate.users.KMUser
 import kommunicate.io.sample.data.RequestTokenData

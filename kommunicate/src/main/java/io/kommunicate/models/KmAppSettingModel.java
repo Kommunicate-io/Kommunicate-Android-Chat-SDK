@@ -1,6 +1,6 @@
 package io.kommunicate.models;
 
-import com.applozic.mobicommons.json.JsonMarker;
+import io.kommunicate.commons.json.JsonMarker;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.HashMap;
@@ -47,6 +47,7 @@ public class KmAppSettingModel extends JsonMarker {
         private List<KmPrechatInputModel> leadCollection;
         private KmCompanySetting companySetting;
         private KmSubscriptionDetails subscriptionDetails;
+        private String currentActivatedPlan;
 
         public KmSubscriptionDetails getSubscriptionDetails() {
             return subscriptionDetails;
@@ -118,6 +119,14 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setChatWidget(KmChatWidget chatWidget) {
             this.chatWidget = chatWidget;
+        }
+
+        public void setCurrentActivatedPlan(String currentActivatedPlan) {
+            this.currentActivatedPlan = currentActivatedPlan;
+        }
+
+        public String getCurrentActivatedPlan() {
+            return currentActivatedPlan;
         }
     }
 

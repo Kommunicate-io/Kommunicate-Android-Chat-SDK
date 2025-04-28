@@ -88,7 +88,7 @@ class VideoMessageTest {
 
         val recyclerViewCount = getRecyclerViewItemCount(
             allOf(
-                withId(com.applozic.mobicomkit.uiwidgets.R.id.videoTemplateContainer),
+                withId(io.kommunicate.ui.R.id.videoTemplateContainer),
                 hasWidthGreaterThan(0)
             )
         )
@@ -97,7 +97,7 @@ class VideoMessageTest {
             onView(
                 withRecyclerViewItem(
                     allOf(
-                        withId(com.applozic.mobicomkit.uiwidgets.R.id.videoTemplateContainer),
+                        withId(io.kommunicate.ui.R.id.videoTemplateContainer),
                         hasWidthGreaterThan(0)
                     ),
                     position
@@ -114,7 +114,7 @@ class VideoMessageTest {
                 }
 
                 if (richMessagePayloadJson.get(position).asJsonObject.has("caption")) {
-                    val captionView = view.findViewById<TextView>(com.applozic.mobicomkit.uiwidgets.R.id.tv_caption)
+                    val captionView = view.findViewById<TextView>(io.kommunicate.ui.R.id.tv_caption)
                     assertEquals("Caption of video doesn't match", richMessagePayloadJson.get(position).asJsonObject.get("caption").asString, captionView.text)
                 }
             }
@@ -122,12 +122,12 @@ class VideoMessageTest {
     }
 
     private fun validateYoutubeVideo(view: View) {
-        val webView = view.findViewById<WebView>(com.applozic.mobicomkit.uiwidgets.R.id.web_view)
+        val webView = view.findViewById<WebView>(io.kommunicate.ui.R.id.web_view)
         assertTrue("Web View Player is not visible", webView.visibility == View.VISIBLE)
     }
 
     private fun validateNormalVideo(view: View) {
-        val mediaPlayer = view.findViewById<View>(com.applozic.mobicomkit.uiwidgets.R.id.playerView)
+        val mediaPlayer = view.findViewById<View>(io.kommunicate.ui.R.id.playerView)
         assertTrue("Video Player is not visible", mediaPlayer.visibility == View.VISIBLE)
     }
 }

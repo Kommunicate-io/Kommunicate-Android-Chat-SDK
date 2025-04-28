@@ -25,14 +25,14 @@ object KmConstants {
     const val CONVERSATION_ASSIGNEE: String = "CONVERSATION_ASSIGNEE"
     const val KM_CONVERSATION_TITLE: String = "KM_CONVERSATION_TITLE"
     const val KM_HELPCENTER_URL: String = "KM_HELPCENTER_URL"
-    const val PRECHAT_ACTIVITY_NAME: String = "com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity"
-    const val CONVERSATION_ACTIVITY_NAME: String = "com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+    const val PRECHAT_ACTIVITY_NAME: String = "io.kommunicate.ui.kommunicate.activities.LeadCollectionActivity"
+    const val CONVERSATION_ACTIVITY_NAME: String = "io.kommunicate.ui.conversation.activity.ConversationActivity"
     const val STATUS_AWAY: Int = 2
     const val STATUS_ONLINE: Int = 3
     const val STATUS_OFFLINE: Int = 0
     const val STATUS_CONNECTED: Int = 1
     const val MESSAGE_CLUBBING_TIME_FRAME: Long = 300000L
-    const val NOTIFICATION_TONE: String = "com.applozic.mobicomkit.notification.tone"
+    const val NOTIFICATION_TONE: String = "io.kommunicate.devkit.notification.tone"
     const val CLOSE_CONVERSATION_SCREEN: String = "CLOSE_CONVERSATION_SCREEN"
     const val AWS_ENCRYPTED: String = "AWS-ENCRYPTED-"
     const val KM_USER_LOCALE: String = "kmUserLocale"

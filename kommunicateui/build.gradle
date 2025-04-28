@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.applozic.mobicomkit.uiwidgets"
+    namespace = "io.kommunicate.ui"
 
     lintOptions {
         abortOnError false
@@ -16,7 +16,7 @@ android {
         targetSdkVersion 35
         minSdkVersion 21
         versionCode 1
-        versionName "2.13.3"
+        versionName "2.14.0"
         buildToolsVersion = '34.0.0'
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true

@@ -10,7 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.web.sugar.Web.onWebView
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
 import io.kommunicate.Kommunicate
 import io.kommunicate.callbacks.KMLoginHandler
 import io.kommunicate.callbacks.KmCallback
@@ -77,7 +77,7 @@ class FAQTest {
             .perform(waitForLatch(latch))
 
         // Click on FAQ Button
-        onView(allOf(withId(com.applozic.mobicomkit.uiwidgets.R.id.kmFaqOption), isDisplayed()))
+        onView(allOf(withId(io.kommunicate.ui.R.id.kmFaqOption), isDisplayed()))
             .perform(click())
 
         // Check correct page is load in web view.

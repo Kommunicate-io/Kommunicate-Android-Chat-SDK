@@ -18,9 +18,9 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.FlakyTest
-import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity.EMAIL_VALIDATION_REGEX
-import com.applozic.mobicomkit.uiwidgets.kommunicate.activities.LeadCollectionActivity.PHONE_NUMBER_VALIDATION_REGEX
-import com.applozic.mobicomkit.uiwidgets.kommunicate.adapters.KmPrechatInputAdapter
+import io.kommunicate.ui.kommunicate.activities.LeadCollectionActivity.EMAIL_VALIDATION_REGEX
+import io.kommunicate.ui.kommunicate.activities.LeadCollectionActivity.PHONE_NUMBER_VALIDATION_REGEX
+import io.kommunicate.ui.kommunicate.adapters.KmPrechatInputAdapter
 import com.google.android.material.textfield.TextInputEditText
 import io.kommunicate.KmConversationBuilder
 import io.kommunicate.Kommunicate
@@ -31,13 +31,11 @@ import io.kommunicate.users.KMUser
 import kommunicate.io.sample.network.KommunicateChatAPI
 import kommunicate.io.sample.network.KommunicateDashboardAPI
 import kommunicate.io.sample.network.RetrofitClient
-import kommunicate.io.sample.utils.clearAppData
 import kommunicate.io.sample.utils.getAuthToken
 import kommunicate.io.sample.utils.getRandomString
 import kommunicate.io.sample.utils.sendMessageAsUser
 import kommunicate.io.sample.utils.waitFor
 import kommunicate.io.sample.utils.waitForLatch
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -53,14 +51,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.FixMethodOrder
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import java.util.concurrent.CountDownLatch
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import com.applozic.mobicomkit.uiwidgets.R as Rui
+import io.kommunicate.ui.R as Rui
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(AndroidJUnit4::class)

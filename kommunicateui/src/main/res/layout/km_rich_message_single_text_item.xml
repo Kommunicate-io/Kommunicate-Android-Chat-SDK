@@ -27,6 +27,6 @@
         android:paddingRight="12dp"
         android:paddingBottom="8dp"
         android:text="5 Star"
-        android:textColor="@color/applozic_theme_color_primary"
+        android:textColor="@color/core_theme_color_primary"
         android:textSize="15sp" />
 </LinearLayout>

@@ -1,11 +1,11 @@
 package io.kommunicate.usecase
 
 import android.content.Context
-import com.applozic.mobicomkit.api.account.register.RegisterUserClientService
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse
-import com.applozic.mobicomkit.api.account.user.User
-import com.applozic.mobicomkit.api.account.user.UserClientService
-import com.applozic.mobicomkit.listners.AlLoginHandler
+import io.kommunicate.devkit.api.account.register.RegisterUserClientService
+import io.kommunicate.devkit.api.account.register.RegistrationResponse
+import io.kommunicate.devkit.api.account.user.User
+import io.kommunicate.devkit.api.account.user.UserClientService
+import io.kommunicate.devkit.listners.LoginHandler
 import io.kommunicate.utils.APIResult
 import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure
@@ -59,13 +59,13 @@ class UserLoginUseCase(
          *
          * @param context The Android [Context] for accessing resources and services.
          * @param user The [User] object containing the user details for login or registration.
-         * @param loginHandler An optional [AlLoginHandler] to handle the success or failure callbacks.
+         * @param loginHandler An optional [LoginHandler] to handle the success or failure callbacks.
          * @return A [UseCaseExecutor] instance for managing the execution of the use case.
          */
         fun executeWithExecutor(
             context: Context,
             user: User,
-            loginHandler: AlLoginHandler?
+            loginHandler: LoginHandler?
         ): UseCaseExecutor<UserLoginUseCase, APIResult<RegistrationResponse>> {
             val userLoginUseCase = UserLoginUseCase(context, user)
             val executor = UseCaseExecutor(

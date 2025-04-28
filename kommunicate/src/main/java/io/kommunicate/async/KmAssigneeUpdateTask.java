@@ -2,10 +2,10 @@ package io.kommunicate.async;
 
 import android.text.TextUtils;
 
-import com.applozic.mobicomkit.feed.ApiResponse;
-import com.applozic.mobicommons.ApplozicService;
-import com.applozic.mobicommons.json.GsonUtils;
-import com.applozic.mobicommons.task.AlAsyncTask;
+import io.kommunicate.devkit.feed.ApiResponse;
+import io.kommunicate.commons.AppContextService;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.task.CoreAsyncTask;
 
 import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmCallback;
@@ -13,7 +13,7 @@ import io.kommunicate.services.KmClientService;
 
 @Deprecated
 @CleanUpRequired(reason = "Migrated KmAssigneeUpdateTask to AssigneeUpdateUseCase")
-public class KmAssigneeUpdateTask extends AlAsyncTask<Void, String> {
+public class KmAssigneeUpdateTask extends CoreAsyncTask<Void, String> {
     private Integer groupId;
     private String assigneeId;
     private boolean switchAssignee;
@@ -34,7 +34,7 @@ public class KmAssigneeUpdateTask extends AlAsyncTask<Void, String> {
         this.sendNotifyMessage = sendNotifyMessage;
         this.takeOverFromBot = takeOverFromBot;
         this.callback = callback;
-        this.clientService = new KmClientService(ApplozicService.getAppContext());
+        this.clientService = new KmClientService(AppContextService.getAppContext());
     }
 
     @Override

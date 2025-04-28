@@ -3,12 +3,15 @@ package io.kommunicate.async;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.channel.service.ChannelService;
+import io.kommunicate.devkit.channel.service.ChannelService;
 
 import java.lang.ref.WeakReference;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmCallback;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmDeleteConversationTask to DeleteConversationUseCase")
 public class KmDeleteConversationTask extends AsyncTask<Void, Void, String> {
 
     private static final String SUCCESS = "success";

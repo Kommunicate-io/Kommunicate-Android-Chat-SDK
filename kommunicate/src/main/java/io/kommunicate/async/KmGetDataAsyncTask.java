@@ -8,9 +8,12 @@ import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.Map;
 
+import annotations.CleanUpRequired;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmHttpClient;
 
+@Deprecated
+@CleanUpRequired(reason = "Migrated KmGetDataAsyncTask to GetDataUseCase")
 public class KmGetDataAsyncTask extends AsyncTask<Void, Void, String> {
 
     private WeakReference<Context> context;

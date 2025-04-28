@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the theme applied to the application or activity -->
+
+    <style name="KommunicateAppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/Kommunicate_ActionBar</item>
+        <item name="actionBarStyle">@style/Kommunicate_ActionBar</item>
+        <!-- Set AppCompat’s color theming attrs -->
+        <item name="colorPrimary">@color/main_color</item>
+        <item name="colorPrimaryDark">@color/primary_dark_color</item>
+        <item name="colorAccent">@color/holo_blue</item>
+
+
+        <!--
+                <item name="android:actionDropDownStyle">@style/actionDropDownStyle</item>
+                <item name="actionDropDownStyle">@style/actionDropDownStyle</item> -->
+
+    </style>
+
+    <style name="KommunicateTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/core_theme_color_primary</item>
+        <item name="colorPrimaryDark">@color/core_theme_color_primary_dark</item>
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="colorAccent">@color/core_theme_color_primary</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <!--http://stackoverflow.com/questions/21536018/android-get-support-action-bar-always-returns-null
+    use android:windowNoTitle as false-->
+
+
+    <style name="itemTextStyle.AppTheme" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="TextAppearance.Widget.IconMenu.Item" parent="TextAppearance.AppCompat.Small.Inverse">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="ToolBarStyle" parent="Widget.AppCompat.Toolbar">
+
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+        <item name="actionMenuTextColor">@android:color/black</item>
+        <!--<item name="actionOverflowButtonStyle">@style/ActionButtonOverflowStyle</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>-->
+    </style>
+
+    <style name="Kommunicate.People.Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/core_theme_color_primary</item>
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/core_theme_color_primary_dark</item>
+
+        <!-- colorAccent is used as the default value for colorControlActivated
+             which is used to tint widgets -->
+        <item name="colorAccent">@color/white</item>
+
+        <!-- You can also set colorControlNormal, colorControlActivated
+             colorControlHighlight & colorSwitchThumbNormal. -->
+
+
+        <item name="colorControlActivated">@color/core_theme_color_control_activated</item>
+        <item name="colorControlHighlight">@color/core_theme_color_control_highlight</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <!--actionbar icon color-->
+        <item name="android:textColorSecondary">@color/core_theme_secondary_text</item>
+    </style>
+
+
+    <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ToolbarSubtitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="KommunicateTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:subtitleTextStyle">@style/KommunicateTheme.ActionBar.TitleTextStyle</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+    </style>
+
+    <style name="KommunicateTheme.ActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="KommunicateTheme.ActionBar.SubTitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Subtitle">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="KommunicateTheme_ActionButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton">
+
+
+        <item name="android:width">20dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+    </style>
+
+    <style name="KommunicatePopUpTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="actionDropDownStyle" parent="android:style/Widget.Holo.Light.Spinner"></style>
+
+    <style name="KommunicateFullScreenTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimaryDark">@color/dark_black</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
+</resources>

@@ -2,8 +2,8 @@ package io.kommunicate;
 
 import android.content.Context;
 
-import com.applozic.mobicomkit.api.ApplozicMqttService;
-import com.applozic.mobicomkit.api.MobiComKitClientService;
+import io.kommunicate.devkit.api.MqttService;
+import io.kommunicate.devkit.api.MobiComKitClientService;
 
 public class KmCustomEventManager extends MobiComKitClientService {
     private static final String TAG = "KmEventManager";
@@ -25,14 +25,14 @@ public class KmCustomEventManager extends MobiComKitClientService {
     }
 
     public void publishDataToTopic(String topic, String data, boolean useEncrypted) {
-        ApplozicMqttService.getInstance(context).publishCustomData(topic, data, useEncrypted);
+        MqttService.getInstance(context).publishCustomData(topic, data, useEncrypted);
     }
 
     public void subscribeToTopic(String topic, boolean useEncrypted) {
-        ApplozicMqttService.getInstance(context).subscribeToCustomTopic(topic, useEncrypted);
+        MqttService.getInstance(context).subscribeToCustomTopic(topic, useEncrypted);
     }
 
     public void unSubscribeToTopic(String topic, boolean useEncrypted) {
-        ApplozicMqttService.getInstance(context).unSubscribeToCustomTopic(topic, useEncrypted);
+        MqttService.getInstance(context).unSubscribeToCustomTopic(topic, useEncrypted);
     }
 }

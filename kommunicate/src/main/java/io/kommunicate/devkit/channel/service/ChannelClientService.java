@@ -241,7 +241,11 @@ public class ChannelClientService extends MobiComKitClientService {
         }
     }
 
-    public SyncChannelInfoFeed getSingelChannelFeed(String channelKey) {
+    public SyncChannelInfoFeed getSingleChannelFeed(String channelKey) {
+        if (TextUtils.isEmpty(channelKey)) {
+            Utils.printLog(context, TAG, "Channel key is empty or null");
+            return null;
+        }
         String url = getSingleChannelInfoSyncUrl() + "?" +
                 GROUP_ID
                 + "=" + channelKey;
@@ -251,6 +255,7 @@ public class ChannelClientService extends MobiComKitClientService {
             Utils.printLog(context, TAG, "Channel Info sync call response for channelKey " + channelKey + " : " + response);
             return (SyncChannelInfoFeed) GsonUtils.getObjectFromJson(response, SyncChannelInfoFeed.class);
         } catch (Exception e) {
+            Utils.printLog(context, TAG, "Error getting channel info: " + e.getMessage());
             return null;
         }
     }

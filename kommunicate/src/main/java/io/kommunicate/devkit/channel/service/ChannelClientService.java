@@ -26,6 +26,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Set;
 
+import io.kommunicate.devkit.sync.SyncChannelInfoFeed;
 import io.kommunicate.models.InQueueData;
 
 /**
@@ -35,6 +36,7 @@ public class ChannelClientService extends MobiComKitClientService {
     private static final String CHANNEL_INFO_URL = "/rest/ws/group/info";
     // private static final String CHANNEL_SYNC_URL = "/rest/ws/group/list";
     private static final String CHANNEL_SYNC_URL = "/rest/ws/group/v5/list";
+    private static final String CHANNEL_INFO_SYNC_URL = "/rest/ws/group/v2/info";
     private static final String CREATE_CHANNEL_URL = "/rest/ws/group/v2.1/create";
     private static final String IN_QUEUE_MESSAGE_URL = "/rest/ws/group/waiting/list?teamId=";
     private static final String CREATE_MULTIPLE_CHANNEL_URL = "/rest/ws/group/create/multiple";
@@ -92,6 +94,10 @@ public class ChannelClientService extends MobiComKitClientService {
 
     public String getChannelSyncUrl() {
         return getBaseUrl() + CHANNEL_SYNC_URL;
+    }
+
+    public String getSingleChannelInfoSyncUrl() {
+        return getBaseUrl() + CHANNEL_INFO_SYNC_URL;
     }
 
     public String getCreateChannelUrl() {
@@ -230,6 +236,20 @@ public class ChannelClientService extends MobiComKitClientService {
                     appli_json);
             Utils.printLog(context, TAG, "Channel sync call response: " + response);
             return (SyncChannelFeed) GsonUtils.getObjectFromJson(response, SyncChannelFeed.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public SyncChannelInfoFeed getSingelChannelFeed(String channelKey) {
+        String url = getSingleChannelInfoSyncUrl() + "?" +
+                GROUP_ID
+                + "=" + channelKey;
+        try {
+            String response = httpRequestUtils.getResponse(url, appli_json,
+                    appli_json);
+            Utils.printLog(context, TAG, "Channel Info sync call response for channelKey " + channelKey + " : " + response);
+            return (SyncChannelInfoFeed) GsonUtils.getObjectFromJson(response, SyncChannelInfoFeed.class);
         } catch (Exception e) {
             return null;
         }

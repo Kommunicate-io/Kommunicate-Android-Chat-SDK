@@ -32,6 +32,7 @@ import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.people.channel.Channel;
 import io.kommunicate.commons.people.channel.ChannelUserMapper;
 import io.kommunicate.commons.task.CoreTask;
+import io.kommunicate.devkit.sync.SyncChannelInfoFeed;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -254,6 +255,27 @@ public class ChannelService {
             if (syncChannelFeed.getResponse() != null) {
                 processChannelList(syncChannelFeed.getResponse());
 
+                BroadcastService.sendUpdate(context, isMetadataUpdate, BroadcastService
+                        .INTENT_ACTIONS.CHANNEL_SYNC.toString());
+            }
+            if(!TextUtils.isEmpty(syncChannelFeed.getGeneratedAt())) {
+                userpref.setChannelSyncTime(syncChannelFeed.getGeneratedAt());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void syncInfoChannels(boolean isMetadataUpdate, String channelKey) {
+        try {
+            final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
+            SyncChannelInfoFeed syncChannelFeed = channelClientService.getSingelChannelFeed(channelKey);
+            if (syncChannelFeed == null || !syncChannelFeed.isSuccess()) {
+                return;
+            }
+
+            if (syncChannelFeed.getResponse() != null) {
+                processChannelFeedForSync(syncChannelFeed.getResponse());
                 BroadcastService.sendUpdate(context, isMetadataUpdate, BroadcastService
                         .INTENT_ACTIONS.CHANNEL_SYNC.toString());
             }

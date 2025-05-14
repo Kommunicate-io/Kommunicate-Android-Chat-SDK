@@ -291,9 +291,9 @@ public class MobiComMessageService {
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(messageList.get(i).getContentType())) {
                         if (messageList.get(i).isGroupMetaDataUpdated()) {
-                            syncChannelForMetadata = true;
+                            ChannelService.getInstance(context).syncInfoChannels(true, messageList.get(i).getClientGroupId());
                         } else if (channelLastSyncTime == 0L || messageList.get(i).getCreatedAtTime() > channelLastSyncTime) {
-                            syncChannel = true;
+                            ChannelService.getInstance(context).syncInfoChannels(false, messageList.get(i).getClientGroupId());
                         }
                         //Todo: fix this, what if there are mulitple messages.
                         ChannelService.isUpdateTitle = true;
@@ -459,9 +459,9 @@ public class MobiComMessageService {
         Long channelLastSyncTime = Long.parseLong(MobiComUserPreference.getInstance(context).getChannelSyncTime());
         if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())) {
             if (message.isGroupMetaDataUpdated()) {
-                ChannelService.getInstance(context).syncChannels(true);
+                ChannelService.getInstance(context).syncInfoChannels(true, message.getClientGroupId());
             } else if (channelLastSyncTime == 0L || message.getCreatedAtTime() > channelLastSyncTime) {
-                ChannelService.getInstance(context).syncChannels(false);
+                ChannelService.getInstance(context).syncInfoChannels(false, message.getClientGroupId());
             }
         }
         Channel channel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());

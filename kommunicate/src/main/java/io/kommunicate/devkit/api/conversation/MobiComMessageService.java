@@ -265,6 +265,8 @@ public class MobiComMessageService {
         boolean syncChannel = false;
         boolean syncChannelForMetadata = false;
         boolean syncGroupOfTwoForBlockList = false;
+        Set<String> syncChannelKeys = new HashSet<>();
+        Set<String> syncChannelForMetadataKeys = new HashSet<>();
 
         Utils.printLog(context, TAG, "Starting syncMessages for lastSyncTime: " + userpref.getLastSyncTime());
         SyncMessageFeed syncMessageFeed = messageClientService.getMessageFeed(userpref.getLastSyncTime(), false);
@@ -291,9 +293,9 @@ public class MobiComMessageService {
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     if (Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(messageList.get(i).getContentType())) {
                         if (messageList.get(i).isGroupMetaDataUpdated()) {
-                            ChannelService.getInstance(context).syncInfoChannels(true, messageList.get(i).getClientGroupId());
+                            syncChannelForMetadataKeys.add(messageList.get(i).getClientGroupId());
                         } else if (channelLastSyncTime == 0L || messageList.get(i).getCreatedAtTime() > channelLastSyncTime) {
-                            ChannelService.getInstance(context).syncInfoChannels(false, messageList.get(i).getClientGroupId());
+                            syncChannelKeys.add(messageList.get(i).getClientGroupId());
                         }
                         //Todo: fix this, what if there are mulitple messages.
                         ChannelService.isUpdateTitle = true;
@@ -303,6 +305,14 @@ public class MobiComMessageService {
                     }
                     processMessage(messageList.get(i), messageList.get(i).getTo(), ((messageList.size() - 1) - i));
                     MobiComUserPreference.getInstance(context).setLastInboxSyncTime(messageList.get(i).getCreatedAtTime());
+                }
+
+                for (String channelkey : syncChannelKeys) {
+                    ChannelService.getInstance(context).syncInfoChannels(false, channelkey);
+                }
+
+                for (String channelkey : syncChannelForMetadataKeys) {
+                    ChannelService.getInstance(context).syncInfoChannels(true, channelkey);
                 }
 
                 if (syncChannel) {

@@ -307,6 +307,8 @@ public class MobiComMessageService {
                     MobiComUserPreference.getInstance(context).setLastInboxSyncTime(messageList.get(i).getCreatedAtTime());
                 }
 
+                syncChannelKeys.removeAll(syncChannelForMetadataKeys);
+                
                 for (String channelkey : syncChannelKeys) {
                     ChannelService.getInstance(context).syncInfoChannels(false, channelkey);
                 }

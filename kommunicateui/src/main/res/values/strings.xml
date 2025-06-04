@@ -45,7 +45,7 @@
     <string name="root_device_message">You can\'t use the Kommunicate SDK in this device as it\'s rooted.</string>
     <string name="trial_user_disconnection_message">Trial users cannot access this feature in release mode. \nPlease upgrade your plan to continue. \nFor further assistance, contact support at support@kommunicate.io.</string>
     <string name="mobile_not_supported_message">Your current plan does not support mobile access. \nPlease update your subscription to gain full access.</string>
-    <string name="churned_user_disconnection_message">The app provider needs to renew their subscription to enable access to messaging features.</string>
+    <string name="churned_user_disconnection_message">Your app provider needs to renew their subscription to enable access to messaging features.</string>
     <string name="powered_by_kommunicate_message">We are powered by Kommunicate.</string>
     <string name="share_using">Share using</string>
     <string name="warning">Warning</string>

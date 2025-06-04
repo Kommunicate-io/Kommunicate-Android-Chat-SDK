@@ -32,7 +32,9 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="7dp" />
 
+    <!-- Message 1 -->
     <TextView
+        android:id="@+id/trialUserMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -45,9 +47,55 @@
         android:letterSpacing="0.06"
         android:lineSpacingExtra="7sp"
         android:minLines="3"
-        android:text="@string/account_disconnection_message"
+        android:text="@string/trial_user_disconnection_message"
         android:gravity="center"
         android:textColor="@color/km_service_disconnection_text_color"
         android:textSize="14sp"
-        android:textStyle="normal" />
+        android:textStyle="normal"
+        android:visibility="gone" />
+
+    <!-- Message 2 -->
+    <TextView
+        android:id="@+id/mobileNotSupportedInPlan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="39dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0.06"
+        android:lineSpacingExtra="7sp"
+        android:minLines="3"
+        android:text="@string/mobile_not_supported_message"
+        android:gravity="center"
+        android:textColor="@color/km_service_disconnection_text_color"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        android:visibility="gone" />
+
+    <!-- Message 3 -->
+    <TextView
+        android:id="@+id/churnedAccountID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="39dp"
+        android:layout_marginStart="39dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0.06"
+        android:lineSpacingExtra="7sp"
+        android:minLines="3"
+        android:text="@string/churned_user_disconnection_message"
+        android:gravity="center"
+        android:textColor="@color/km_service_disconnection_text_color"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        android:visibility="gone" />
+
 </LinearLayout>

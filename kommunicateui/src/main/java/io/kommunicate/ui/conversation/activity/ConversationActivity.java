@@ -123,6 +123,7 @@ import java.util.Set;
 
 import io.kommunicate.async.KmSyncMessageTask;
 import io.kommunicate.usecase.AutoSuggestionsUseCase;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 import io.sentry.Hint;
@@ -362,6 +363,31 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         return false;
     }
 
+    private void showDisconnectionMessage() {
+        serviceDisconnectionLayout.setVisibility(View.VISIBLE);
+
+        // Hide all messages initially
+        findViewById(R.id.trialUserMessage).setVisibility(View.GONE);
+        findViewById(R.id.mobileNotSupportedInPlan).setVisibility(View.GONE);
+        findViewById(R.id.churnedAccountID).setVisibility(View.GONE);
+
+        String subscriptionDetails = KmAppSettingPreferences.getCurrentSubscriptionDetails();
+        if (subscriptionDetails == null) {
+            findViewById(R.id.mobileNotSupportedInPlan).setVisibility(View.VISIBLE);
+            return;
+        }
+
+        String lowerCaseSub = subscriptionDetails.toLowerCase();
+
+        if (lowerCaseSub.contains("trial")) {
+            findViewById(R.id.trialUserMessage).setVisibility(View.VISIBLE);
+        } else if (lowerCaseSub.contains("churn")) {
+            findViewById(R.id.churnedAccountID).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.mobileNotSupportedInPlan).setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -403,6 +429,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         childFragmentLayout = (RelativeLayout) findViewById(R.id.layout_child_activity);
         contactsGroupId = MobiComUserPreference.getInstance(this).getContactsGroupId();
         serviceDisconnectionLayout = findViewById(R.id.serviceDisconnectionLayout);
+        TextView mobileNotSupportedInPlanMessage = findViewById(R.id.mobileNotSupportedInPlan);
+        TextView trialUserMessage = findViewById(R.id.trialUserMessage);
+        TextView churnedAccountIDMessage = findViewById(R.id.churnedAccountID);
         deviceRootedLayout = findViewById(R.id.deviceRootedLayout);
         if (Utils.hasMarshmallow() && !customizationSettings.isGlobalStoragePermissionDisabled()) {
             applozicPermission.checkRuntimePermissionForStorage();
@@ -414,7 +443,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         retry = 0;
 
         if (KmUtils.isServiceDisconnected(this, customizationSettings != null && customizationSettings.isAgentApp(), customToolbarLayout)) {
-            serviceDisconnectionLayout.setVisibility(View.VISIBLE);
+            showDisconnectionMessage();
         } else if(KmUtils.isDeviceRooted()) {
             deviceRootedLayout.setVisibility(View.VISIBLE);
         } else {
@@ -587,7 +616,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
         try {
             if (KmUtils.isServiceDisconnected(this, customizationSettings != null && customizationSettings.isAgentApp(), customToolbarLayout)) {
-                serviceDisconnectionLayout.setVisibility(View.VISIBLE);
+                showDisconnectionMessage();
             } else {
                 if (intent.getExtras() != null) {
                     if (intent.getExtras().getBoolean(SENT_FROM_NOTIFICATION)) {

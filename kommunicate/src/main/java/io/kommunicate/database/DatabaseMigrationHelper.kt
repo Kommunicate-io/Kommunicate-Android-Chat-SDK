@@ -11,6 +11,17 @@ import kotlin.Throws
 object DatabaseMigrationHelper {
     private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
 
+    // Check if table exists in destination DB
+    private fun tableExists(db: SQLiteDatabase, tableName: String): Boolean {
+        val cursor = db.rawQuery(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+            arrayOf(tableName)
+        )
+        val exists = cursor.moveToFirst()
+        cursor.close()
+        return exists
+    }
+
     @JvmStatic
     @Throws(Exception::class)
     fun migrateDatabase(context: Context, dbName: String) {
@@ -80,6 +91,12 @@ object DatabaseMigrationHelper {
             do {
                 val tableName = cursor.getString(0)
                 if (tableName == "android_metadata" || tableName == "sqlite_sequence") {
+                    continue
+                }
+
+                // Verifies if table exist
+                if (tableExists(destinationDb, tableName)) {
+                    println("Table $tableName already exists in destination DB, skipping creation.")
                     continue
                 }
 

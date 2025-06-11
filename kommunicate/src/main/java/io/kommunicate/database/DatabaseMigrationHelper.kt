@@ -13,13 +13,10 @@ object DatabaseMigrationHelper {
 
     // Check if table exists in destination DB
     private fun tableExists(db: SQLiteDatabase, tableName: String): Boolean {
-        val cursor = db.rawQuery(
-            "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+        return db.rawQuery(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name=? LIMIT 1",
             arrayOf(tableName)
-        )
-        val exists = cursor.moveToFirst()
-        cursor.close()
-        return exists
+        ).use { cursor -> cursor.moveToFirst() }
     }
 
     @JvmStatic

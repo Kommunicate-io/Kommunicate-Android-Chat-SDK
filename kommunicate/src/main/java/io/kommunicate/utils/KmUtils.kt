@@ -58,7 +58,9 @@ object KmUtils {
                 && !isDebuggable)
                 && (MobiComUserPreference.getInstance(context).pricingPackage == PackageType.STARTUP.value
                 || MobiComUserPreference.getInstance(context).pricingPackage == PackageType.START_MONTHLY.value
-                || MobiComUserPreference.getInstance(context).pricingPackage == PackageType.START_YEARLY.value)
+                || MobiComUserPreference.getInstance(context).pricingPackage == PackageType.START_YEARLY.value
+                || MobiComUserPreference.getInstance(context).pricingPackage == PackageType.TRIAL_ACCOUNT.value
+                || MobiComUserPreference.getInstance(context).pricingPackage == PackageType.CHURNED_ACCOUNT.value)
         if (customToolbarLayout != null) {
             customToolbarLayout.visibility = View.GONE
         }
@@ -256,6 +258,8 @@ object KmUtils {
         EARLY_BIRD_MONTHLY(107),
         EARLY_BIRD_YEARLY(108),
         START_MONTHLY(112),
-        START_YEARLY(113)
+        START_YEARLY(113),
+        TRIAL_ACCOUNT(111),
+        CHURNED_ACCOUNT(100),
     }
 }

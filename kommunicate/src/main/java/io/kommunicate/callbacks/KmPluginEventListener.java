@@ -20,4 +20,5 @@ public interface KmPluginEventListener {
     void onVoiceButtonClick(String action);
     void onRatingEmoticonsClick(Integer ratingValue);
     void onRateConversationClick();
+    void onCurrentOpenedConversation(Integer conversationId);
 }

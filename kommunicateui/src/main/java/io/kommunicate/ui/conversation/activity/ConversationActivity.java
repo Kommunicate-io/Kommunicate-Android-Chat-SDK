@@ -904,7 +904,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         channel = clickedChannel;
                         conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, null, channel, conversationId, searchString, null, null);
                         addFragment(ConversationActivity.this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
-                        EventManager.getInstance().sendOnCurrentOpenedConversation(conversationId);
+                        EventManager.getInstance().sendOnCurrentOpenedConversation(conversation.getId());
                     }
                 });
             }

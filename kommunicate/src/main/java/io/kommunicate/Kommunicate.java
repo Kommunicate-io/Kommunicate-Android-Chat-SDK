@@ -437,8 +437,8 @@ public class Kommunicate {
             }
 
             Kommunicate.init(context, applicationID);
-        } catch (Exception ignored) {
-            // Optionally log or handle silently
+        } catch (Exception e) {
+            Utils.printLog(context, TAG, "Failed to initialize Kommunicate: " + e.getMessage());
         }
     }
     

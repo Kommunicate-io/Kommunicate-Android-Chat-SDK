@@ -23,6 +23,7 @@ import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.notification.MobiComPushReceiver;
 import io.kommunicate.devkit.api.people.ChannelInfo;
 import io.kommunicate.devkit.broadcast.BroadcastService;
+import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.database.ContactDatabase;
 import io.kommunicate.devkit.exception.KommunicateException;
 
@@ -290,6 +291,157 @@ public class Kommunicate {
         KmAppSettingPreferences.setInAppNotificationEnable(isEnable);
     }
 
+    /**
+     * Universal function to handle Kommunicate login, conversation building, and launching.
+     *
+     * @param context The context from which the chat screen will be launched.
+     * @param appID Application ID. Required if kmUser is null or kmUser.getApplicationId() is not set.
+     * @param kmUser KMUser containing user details. If null, a visitor user will be created.
+     * @param kmConversationBuilder Builder used to create a conversation.
+     * @param shouldMaintainSession Indicates whether to maintain the session when {@code kmUser} is not provided and a random (visitor) user is used for login.
+     * @param callback Callback to return success (conversation ID) or failure (error message).
+     * @throws KmException If an unexpected error occurs during initialization or conversation launch.
+     */
+    public static void launchConversationWithUser(
+            @NotNull Context context,
+            final String appID,
+            final KMUser kmUser,
+            final KmConversationBuilder kmConversationBuilder,
+            final Boolean shouldMaintainSession,
+            final KmCallback callback
+    ) throws KmException {
+
+        if (callback == null) {
+            throw new IllegalArgumentException("Callback cannot be null.");
+        }
+
+        final boolean isVisitorUser = (kmUser == null);
+
+        // Resolve and validate application ID
+        String resolvedAppId = resolveAppId(appID, kmUser);
+        if (resolvedAppId == null || resolvedAppId.isEmpty()) {
+            callback.onFailure("APP_ID_IS_MISSING");
+            return;
+        }
+
+        initializeKommunicate(context, resolvedAppId);
+
+        final KmConversationBuilder conversationBuilder =
+                (kmConversationBuilder != null) ? kmConversationBuilder : new KmConversationBuilder(context);
+
+        // Define post-login action
+        Runnable proceedAfterLogin = () ->
+                conversationBuilder.setContext(context).createConversation(new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        openConversationUI(context, message, callback);
+                    }
+
+                    @Override
+                    public void onFailure(Object error) {
+                        callback.onFailure("CONVERSATION_BUILDING_FAILED: " + error);
+                    }
+                });
+
+        // Login logic
+        Runnable loginAndProceed = () -> loginUser(context, kmUser, isVisitorUser, proceedAfterLogin, callback);
+
+        // Check current login state
+        try {
+            String loggedInUserId = ChannelService.getInstance(context).getLoggedInUserId();
+            String inputUserId = (kmUser != null) ? kmUser.getUserId() : null;
+
+            boolean isSameUser = inputUserId != null && inputUserId.equals(loggedInUserId);
+            boolean shouldSkipLogin = KMUser.isLoggedIn(context) && (isSameUser || (isVisitorUser && shouldMaintainSession));
+
+            if (shouldSkipLogin) {
+                proceedAfterLogin.run();
+            } else {
+                loginAndProceed.run();
+            }
+        } catch (Exception e) {
+            callback.onFailure("USER_CHECK_FAILED: " + e.getMessage());
+        }
+    }
+
+    private static void loginUser(Context context, KMUser kmUser, boolean isVisitorUser, Runnable onSuccess, KmCallback callback) {
+        if (isVisitorUser) {
+            Kommunicate.loginAsVisitor(context, new KMLoginHandler() {
+                @Override
+                public void onSuccess(RegistrationResponse response, Context ctx) {
+                    onSuccess.run();
+                }
+
+                @Override
+                public void onFailure(RegistrationResponse response, Exception e) {
+                    callback.onFailure("LOGIN_USER_FAILED");
+                }
+            });
+        } else {
+            try {
+                Kommunicate.login(context, kmUser, new KMLoginHandler() {
+                    @Override
+                    public void onSuccess(RegistrationResponse response, Context ctx) {
+                        onSuccess.run();
+                    }
+
+                    @Override
+                    public void onFailure(RegistrationResponse response, Exception e) {
+                        callback.onFailure("LOGIN_USER_FAILED");
+                    }
+                });
+            } catch (Exception e) {
+                callback.onFailure("LOGIN_EXCEPTION: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void openConversationUI(Context context, Object message, KmCallback callback) {
+        try {
+            int conversationId = Integer.parseInt(String.valueOf(message));
+
+            KmConversationHelper.openConversation(context, true, conversationId, new KmCallback() {
+                @Override
+                public void onSuccess(Object msg) {
+                    callback.onSuccess(msg);
+                }
+
+                @Override
+                public void onFailure(Object error) {
+                    callback.onFailure("OPEN_CONVERSATION_FAILED: " + error);
+                }
+            });
+        } catch (NumberFormatException e) {
+            callback.onFailure("INVALID_CONVERSATION_ID: " + message);
+        } catch (KmException e) {
+            callback.onFailure("OPEN_CONVERSATION_EXCEPTION: " + e.getMessage());
+        }
+    }
+
+    private static String resolveAppId(String appID, KMUser kmUser) {
+        if (appID != null && !appID.trim().isEmpty()) {
+            return appID.trim();
+        }
+        if (kmUser != null && kmUser.getApplicationId() != null) {
+            return kmUser.getApplicationId().trim();
+        }
+        return null;
+    }
+
+    private static void initializeKommunicate(Context context, String applicationID) {
+        try {
+            String currentAppKey = KommunicateSettings.getInstance(context).getApplicationKey();
+
+            if (TextUtils.isEmpty(currentAppKey) || PLACEHOLDER_APP_ID.equals(currentAppKey)) {
+                PrefSettings.getInstance(context).setApplicationKey(applicationID);
+            }
+
+            Kommunicate.init(context, applicationID);
+        } catch (Exception e) {
+            Utils.printLog(context, TAG, "Failed to initialize Kommunicate: " + e.getMessage());
+        }
+    }
+    
     /**
      * To Check the Login status & launch the Pre Chat Lead Collection Screen
      *

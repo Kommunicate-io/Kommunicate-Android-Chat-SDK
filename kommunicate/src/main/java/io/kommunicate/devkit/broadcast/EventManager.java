@@ -231,6 +231,12 @@ public class EventManager {
             kmPluginEventListener.onRateConversationClick();
         }
     }
+
+    public void sendOnCurrentOpenedConversation(Integer conversationID) {
+        if (kmPluginEventListener != null && conversationID != null) {
+            kmPluginEventListener.onCurrentOpenedConversation(conversationID);
+        }
+    }
     private void handleState(Message message) {
         if (message != null) {
             Bundle bundle = message.getData();

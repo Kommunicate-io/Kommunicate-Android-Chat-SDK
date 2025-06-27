@@ -33,6 +33,7 @@ import io.kommunicate.devkit.api.attachment.FileMeta;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.broadcast.BroadcastService;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
@@ -140,6 +141,7 @@ public class ConversationUIService {
             Integer conversationId = ((ConversationActivity) fragmentActivity).getConversationId();
             conversationFragment = getConversationFragment(fragmentActivity, contact, channel, conversationId, null, null, null);
             ConversationActivity.addFragment(fragmentActivity, conversationFragment, CONVERSATION_FRAGMENT);
+            EventManager.getInstance().sendOnCurrentOpenedConversation(conversationId);
         }
         return conversationFragment;
     }
@@ -152,6 +154,7 @@ public class ConversationUIService {
                 if (conversationFragment == null) {
                     conversationFragment = getConversationFragment(fragmentActivity, contact, null, conversationId, searchString, messageSearchString, null);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
+                    EventManager.getInstance().sendOnCurrentOpenedConversation(conversationId);
                 } else {
                     MessageInfoFragment messageInfoFragment = (MessageInfoFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.MESSGAE_INFO_FRAGMENT);
                     if (messageInfoFragment != null) {
@@ -160,6 +163,7 @@ public class ConversationUIService {
                         }
                     }
                     conversationFragment.loadConversation(contact, conversationId, messageSearchString);
+                    EventManager.getInstance().sendOnCurrentOpenedConversation(conversationId);
                 }
             }
         });
@@ -173,6 +177,7 @@ public class ConversationUIService {
                 if (conversationFragment == null) {
                     conversationFragment = getConversationFragment(fragmentActivity, null, channel, conversationId, searchString, messageSearchString, preFilledMessage);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
+                    EventManager.getInstance().sendOnCurrentOpenedConversation(conversationId);
                 } else {
                     MessageInfoFragment messageInfoFragment = (MessageInfoFragment) UIService.getFragmentByTag(fragmentActivity, ConversationUIService.MESSGAE_INFO_FRAGMENT);
                     if (messageInfoFragment != null && fragmentActivity.getSupportFragmentManager() != null) {

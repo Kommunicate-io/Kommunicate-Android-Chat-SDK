@@ -464,6 +464,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         conversation = ConversationUIService.getConversationFragment(this, contact, null, currentConversationId, null, null, null);
                     }
                     addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
+                    EventManager.getInstance().sendOnCurrentOpenedConversation(currentConversationId);
                 }
             } else {
                 setSearchListFragment(quickConversationFragment);
@@ -903,6 +904,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                         channel = clickedChannel;
                         conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, null, channel, conversationId, searchString, null, null);
                         addFragment(ConversationActivity.this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
+                        EventManager.getInstance().sendOnCurrentOpenedConversation(conversation.getId());
                     }
                 });
             }

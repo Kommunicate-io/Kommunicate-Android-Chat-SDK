@@ -324,7 +324,7 @@ public class Kommunicate {
             return;
         }
 
-        initializeKommunicate(context, resolvedAppId);
+        boolean isAppIdSame = initializeKommunicate(context, resolvedAppId);
 
         final KmConversationBuilder conversationBuilder =
                 (kmConversationBuilder != null) ? kmConversationBuilder : new KmConversationBuilder(context);
@@ -352,7 +352,7 @@ public class Kommunicate {
             String inputUserId = (kmUser != null) ? kmUser.getUserId() : null;
 
             boolean isSameUser = inputUserId != null && inputUserId.equals(loggedInUserId);
-            boolean shouldSkipLogin = KMUser.isLoggedIn(context) && (isSameUser || (isVisitorUser && shouldMaintainSession));
+            boolean shouldSkipLogin = KMUser.isLoggedIn(context) && isAppIdSame && (isSameUser || (isVisitorUser && shouldMaintainSession));
 
             if (shouldSkipLogin) {
                 proceedAfterLogin.run();
@@ -428,20 +428,27 @@ public class Kommunicate {
         return null;
     }
 
-    private static void initializeKommunicate(Context context, String applicationID) {
+    private static boolean initializeKommunicate(Context context, String applicationID) {
         try {
             String currentAppKey = KommunicateSettings.getInstance(context).getApplicationKey();
+
+            boolean isAppIdChanged = !TextUtils.isEmpty(currentAppKey)
+                    && !PLACEHOLDER_APP_ID.equals(currentAppKey)
+                    && !applicationID.equals(currentAppKey);
 
             if (TextUtils.isEmpty(currentAppKey) || PLACEHOLDER_APP_ID.equals(currentAppKey)) {
                 PrefSettings.getInstance(context).setApplicationKey(applicationID);
             }
 
             Kommunicate.init(context, applicationID);
+
+            return !isAppIdChanged;
         } catch (Exception e) {
             Utils.printLog(context, TAG, "Failed to initialize Kommunicate: " + e.getMessage());
+            return true; // Don't block flow even if init fails
         }
     }
-    
+
     /**
      * To Check the Login status & launch the Pre Chat Lead Collection Screen
      *

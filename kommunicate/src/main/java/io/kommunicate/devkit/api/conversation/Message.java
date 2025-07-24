@@ -149,7 +149,9 @@ public class Message extends JsonMarker implements Parcelable {
         for (int i = 0; i < metadataSize; i++) {
             String key = in.readString();
             String value = in.readString();
-            metadata.put(key, value);
+            if (key != null) {
+                metadata.put(key, value);
+            }
         }
         status = (short) in.readInt();
         hidden = in.readByte() != 0;

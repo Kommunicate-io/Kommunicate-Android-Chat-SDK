@@ -144,7 +144,15 @@ public class Message extends JsonMarker implements Parcelable {
         topicId = in.readString();
         connected = in.readByte() != 0;
         contentType = (short) in.readInt();
-        metadata = in.readHashMap(String.class.getClassLoader());
+        int metadataSize = in.readInt();
+        metadata = new HashMap<>();
+        for (int i = 0; i < metadataSize; i++) {
+            String key = in.readString();
+            String value = in.readString();
+            if (key != null) {
+                metadata.put(key, value);
+            }
+        }
         status = (short) in.readInt();
         hidden = in.readByte() != 0;
         replyMessage = in.readInt();
@@ -896,7 +904,16 @@ public class Message extends JsonMarker implements Parcelable {
         dest.writeString(topicId);
         dest.writeByte((byte) (connected ? 1 : 0));
         dest.writeInt(contentType);
-        dest.writeMap(metadata);
+//        dest.writeMap(metadata);
+        if (metadata != null) {
+            dest.writeInt(metadata.size());
+            for (Map.Entry<String, String> entry : metadata.entrySet()) {
+                dest.writeString(entry.getKey());
+                dest.writeString(entry.getValue());
+            }
+        } else {
+            dest.writeInt(0);
+        }
         dest.writeInt(status);
         dest.writeByte((byte) (hidden ? 1 : 0));
         dest.writeInt(replyMessage);

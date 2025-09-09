@@ -22,19 +22,19 @@ public class KmToast {
 
     public static Toast makeText(Context context, String text, int duration) {
         if (context == null) {
-            return null;
+            return Toast.makeText(null, text, duration);
         }
 
         Context appContext = context.getApplicationContext();
         View layout;
 
-        if (context instanceof Activity) {
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            layout = inflater.inflate(R.layout.km_recorder_message_layout,
-                    (ViewGroup) ((Activity) context).findViewById(R.id.custom_toast_container));
+        if (context instanceof Activity activity) {
+            LayoutInflater inflater = activity.getLayoutInflater();
+            ViewGroup parent = activity.findViewById(R.id.custom_toast_container);
+            layout = inflater.inflate(R.layout.km_recorder_message_layout, parent, false);
         } else {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            layout = inflater.inflate(R.layout.km_recorder_message_layout, null);
+            LayoutInflater inflater = LayoutInflater.from(appContext);
+            layout = inflater.inflate(R.layout.km_recorder_message_layout, null, false);
         }
 
         TextView textView = layout.findViewById(R.id.toastText);
@@ -129,3 +129,5 @@ public class KmToast {
         return currentToast;
     }
 }
+
+

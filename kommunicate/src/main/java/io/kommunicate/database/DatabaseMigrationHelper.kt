@@ -4,9 +4,8 @@ import android.content.Context
 import android.database.Cursor
 import io.kommunicate.devkit.api.MobiComKitClientService
 import io.kommunicate.commons.AppContextService
-import net.sqlcipher.database.SQLiteDatabase
-import net.sqlcipher.database.SQLiteException
-import kotlin.Throws
+import net.zetetic.database.sqlcipher.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 
 object DatabaseMigrationHelper {
     private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
@@ -34,7 +33,7 @@ object DatabaseMigrationHelper {
             MobiComKitClientService.getApplicationKey(AppContextService.getContext(context))
 
         // Load SQLCipher libraries
-        SQLiteDatabase.loadLibs(context)
+        System.loadLibrary("sqlcipher")
 
         // File paths for unencrypted and temporary encrypted databases
         val unencryptedDbFile = context.getDatabasePath(databaseName)
@@ -45,18 +44,19 @@ object DatabaseMigrationHelper {
         }
 
         // Open the unencrypted database
-        val unencryptedDb = SQLiteDatabase.openDatabase(
+        val unencryptedDb = android.database.sqlite.SQLiteDatabase.openDatabase(
             unencryptedDbFile.path,
-            "",  // Empty string since it's not encrypted
             null,
-            SQLiteDatabase.OPEN_READWRITE
+            android.database.sqlite.SQLiteDatabase.OPEN_READWRITE
         )
+
 
         // Create the temporary encrypted database
         val encryptedDb = SQLiteDatabase.openOrCreateDatabase(
             encryptedTempDbFile.path,
-            password,  // Password for encryption
-            null
+            password.toByteArray(Charsets.UTF_8), // Convert the password String to a byte array
+            null, // CursorFactory
+            null  // SQLiteDatabaseHook
         )
 
         // Copy data from unencrypted to encrypted database
@@ -81,7 +81,7 @@ object DatabaseMigrationHelper {
 
     // Copy tables and data from one database to another
     @Throws(Exception::class)
-    private fun copyDataBetweenDatabases(sourceDb: SQLiteDatabase, destinationDb: SQLiteDatabase) {
+    private fun copyDataBetweenDatabases(sourceDb: android.database.sqlite.SQLiteDatabase, destinationDb: SQLiteDatabase) {
         val cursor: Cursor =
             sourceDb.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null)
         if (cursor.moveToFirst()) {
@@ -126,7 +126,7 @@ object DatabaseMigrationHelper {
     }
 
     // Get the CREATE TABLE SQL statement for a specific table
-    private fun getTableCreateSql(db: SQLiteDatabase, tableName: String): String? {
+    private fun getTableCreateSql(db: android.database.sqlite.SQLiteDatabase, tableName: String): String? {
         val cursor: Cursor = db.rawQuery(
             "SELECT sql FROM sqlite_master WHERE type='table' AND name=?",
             arrayOf(tableName)

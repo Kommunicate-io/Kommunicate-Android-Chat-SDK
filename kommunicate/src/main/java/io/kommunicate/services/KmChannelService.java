@@ -2,7 +2,7 @@ package io.kommunicate.services;
 
 import android.content.Context;
 import android.database.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import io.kommunicate.devkit.database.MobiComDatabaseHelper;
 import io.kommunicate.commons.AppContextService;

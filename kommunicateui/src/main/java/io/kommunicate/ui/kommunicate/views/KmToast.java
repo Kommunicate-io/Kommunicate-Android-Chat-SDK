@@ -21,14 +21,26 @@ import io.kommunicate.utils.KmUtils;
 public class KmToast {
 
     public static Toast makeText(Context context, String text, int duration) {
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-        View layout = inflater.inflate(R.layout.km_recorder_message_layout,
-                (ViewGroup) ((Activity) context).findViewById(R.id.custom_toast_container));
+        if (context == null) {
+            return null;
+        }
 
-        TextView textView = (TextView) layout.findViewById(R.id.toastText);
+        Context appContext = context.getApplicationContext();
+        View layout;
+
+        if (context instanceof Activity) {
+            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            layout = inflater.inflate(R.layout.km_recorder_message_layout,
+                    (ViewGroup) ((Activity) context).findViewById(R.id.custom_toast_container));
+        } else {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            layout = inflater.inflate(R.layout.km_recorder_message_layout, null);
+        }
+
+        TextView textView = layout.findViewById(R.id.toastText);
         textView.setText(text);
 
-        Toast toast = new Toast(context.getApplicationContext());
+        Toast toast = new Toast(appContext);
         toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 0, Utils.dpToPx(89));
         toast.setDuration(duration);
         toast.setView(layout);
@@ -37,7 +49,11 @@ public class KmToast {
     }
 
     public static Toast makeText(Context context, View view, int duration) {
-        Toast toast = new Toast(context.getApplicationContext());
+        if (context == null) {
+            return null;
+        }
+        Context appContext = context.getApplicationContext();
+        Toast toast = new Toast(appContext);
         toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.setDuration(duration);
         toast.setView(view);

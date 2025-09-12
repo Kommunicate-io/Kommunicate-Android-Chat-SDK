@@ -52,7 +52,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation libs.core.ktx
-    implementation 'net.zetetic:sqlcipher-android:4.8.0@aar'
+    implementation 'net.zetetic:sqlcipher-android:4.9.0@aar'
     implementation 'androidx.sqlite:sqlite-framework:2.2.0'
     api libs.org.eclipse.paho.client.mqttv3
     api libs.localbroadcastmanager

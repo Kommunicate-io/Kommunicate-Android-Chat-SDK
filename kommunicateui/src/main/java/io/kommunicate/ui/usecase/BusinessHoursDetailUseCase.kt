@@ -81,10 +81,13 @@ class BusinessHoursDetailUseCase(
         @JvmStatic
         fun executeWithExecutor(
             context: Context,
-            teamId: String,
+            teamId: String?,
             callback: TaskListener<BusinessSettingsResponse>
-        ): UseCaseExecutor<BusinessHoursDetailUseCase, APIResult<BusinessSettingsResponse>> {
-
+        ): UseCaseExecutor<BusinessHoursDetailUseCase, APIResult<BusinessSettingsResponse>>? {
+            if (teamId == null) {
+                callback.onFailure(IllegalArgumentException("teamId cannot be null"))
+                return null
+            }
             val kmUserDetailUseCase = BusinessHoursDetailUseCase(context, teamId)
             val executor = UseCaseExecutor(
                 kmUserDetailUseCase,

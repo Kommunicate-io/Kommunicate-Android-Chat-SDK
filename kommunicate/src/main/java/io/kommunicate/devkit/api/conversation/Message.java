@@ -208,7 +208,7 @@ public class Message extends JsonMarker implements Parcelable {
     }
 
     public Boolean isRead() {
-        return read || isTypeOutbox() || getScheduledAt() != null;
+        return (read != null && read) || isTypeOutbox() || getScheduledAt() != null;
     }
 
     public void setRead(Boolean read) {

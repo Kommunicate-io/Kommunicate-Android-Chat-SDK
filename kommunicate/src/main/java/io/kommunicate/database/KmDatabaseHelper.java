@@ -1,7 +1,7 @@
 package io.kommunicate.database;
 
 import android.content.Context;
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.api.MobiComKitClientService;

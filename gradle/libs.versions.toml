@@ -1,5 +1,4 @@
 [versions]
-androidDatabaseSqlcipher = "4.5.0"
 androidGradlePlugin = '8.5.2'
 appcompat = "1.7.0"
 browser = "1.8.0"
@@ -42,7 +41,6 @@ coreKtxVersion = "1.6.1"
 sentryPluginVersion = "4.11.0"
 
 [libraries]
-android-database-sqlcipher = { module = "net.zetetic:android-database-sqlcipher", version.ref = "androidDatabaseSqlcipher" }
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }

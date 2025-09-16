@@ -2,9 +2,10 @@ package io.kommunicate.commons.commons.core.utils;
 
 import android.content.Context;
 import android.database.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteStatement;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
 
+import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 import io.kommunicate.devkit.api.MobiComKitClientService;
@@ -60,10 +61,13 @@ public class DBUtils {
         // Attempt to open the database with the given password
         SQLiteDatabase db = null;
         try {
-            db = SQLiteDatabase.openDatabase(dbFile.getPath(), appId, null, SQLiteDatabase.OPEN_READONLY);
+            // Corrected method call with byte array for password
+            db = SQLiteDatabase.openDatabase(dbFile.getPath(), appId.getBytes(), null, SQLiteDatabase.OPEN_READONLY, null, null);
             db.close();
             return true;
-        } catch (net.sqlcipher.database.SQLiteException e) {
+        } catch (SQLiteException e) { // Updated exception package
+            // This exception is thrown if the password is wrong or the DB is not encrypted,
+            // which for this check, means it's not encrypted with the given key.
             return false;
         } finally {
             if (db != null && db.isOpen()) {

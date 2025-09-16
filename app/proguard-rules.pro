@@ -23,4 +23,6 @@
 -printconfiguration proguard-merged-config.txt
 -keep class net.sqlcipher.** { *; }
 -keep class javax.crypto.** { *; }
+-keep class net.zetetic.database.sqlcipher.* { *; }
+-keep class net.zetetic.database.sqlcipher.** { *; }
 -keepattributes *Annotation*

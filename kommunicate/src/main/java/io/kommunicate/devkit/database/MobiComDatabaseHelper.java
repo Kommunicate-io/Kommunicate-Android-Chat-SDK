@@ -1,8 +1,8 @@
 package io.kommunicate.devkit.database;
 
 import android.content.Context;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
 import android.text.TextUtils;
 
 import io.kommunicate.commons.AppSpecificSettings;
@@ -257,8 +257,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-        SQLiteDatabase.loadLibs(context);
+        super(context, name, MobiComKitClientService.getApplicationKey(context), factory, version, 0, null, null, false);        System.loadLibrary("sqlcipher");
         AppSpecificSettings appSpecificSettings = AppSpecificSettings.getInstance(context);
         int currentRetryCount = appSpecificSettings.getCurrentDatabaseMigrationRetryCount();
         if (!DBUtils.isDatabaseEncrypted(context, name) && currentRetryCount < MAX_DATABASE_MIGRATION_RETRY_COUNT) {
@@ -284,15 +283,15 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getReadableDatabase() {
-        String appId = MobiComKitClientService.getApplicationKey(AppContextService.getContext(context));
-        SQLiteDatabase database = super.getReadableDatabase(appId);
+        // The password is now handled by the constructor.
+        SQLiteDatabase database = super.getReadableDatabase();
         database.enableWriteAheadLogging();
         return database;
     }
 
     public SQLiteDatabase getWritableDatabase() {
-        String appId = MobiComKitClientService.getApplicationKey(AppContextService.getContext(context));
-        SQLiteDatabase database = super.getWritableDatabase(appId);
+        // The password is now handled by the constructor.
+        SQLiteDatabase database = super.getWritableDatabase();
         database.enableWriteAheadLogging();
         return database;
     }

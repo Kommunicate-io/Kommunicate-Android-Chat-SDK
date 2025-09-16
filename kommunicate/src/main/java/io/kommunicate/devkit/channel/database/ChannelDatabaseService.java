@@ -3,12 +3,12 @@ package io.kommunicate.devkit.channel.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
-import net.sqlcipher.database.SQLiteStatement;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;

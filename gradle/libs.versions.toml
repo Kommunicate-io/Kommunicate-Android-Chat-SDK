@@ -1,5 +1,4 @@
 [versions]
-androidDatabaseSqlcipher = "4.5.0"
 androidGradlePlugin = '8.5.2'
 appcompat = "1.7.0"
 browser = "1.8.0"
@@ -34,7 +33,7 @@ retrofit = "2.11.0"
 robolectric = "4.13"
 runner = "1.6.2"
 seleniumJava = "4.1.0"
-sentryAndroid = "6.28.0"
+sentryAndroid = "7.18.0"
 silicompressor = "2.2.4"
 swiperefreshlayout = "1.1.0"
 googleSecret = "2.0.1"
@@ -42,7 +41,6 @@ coreKtxVersion = "1.6.1"
 sentryPluginVersion = "4.11.0"
 
 [libraries]
-android-database-sqlcipher = { module = "net.zetetic:android-database-sqlcipher", version.ref = "androidDatabaseSqlcipher" }
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
 cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }

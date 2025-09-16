@@ -3,8 +3,8 @@ package io.kommunicate.devkit.contact.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteStatement;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteStatement;
 import android.text.TextUtils;
 
 import androidx.loader.content.CursorLoader;

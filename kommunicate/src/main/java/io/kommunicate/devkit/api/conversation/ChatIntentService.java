@@ -48,6 +48,14 @@ public class ChatIntentService extends CoreJobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
+
+        // If the service is started by the system before a user has logged in,
+        // the SDK won't have the necessary credentials. Abort early to prevent crashes.
+        if (!MobiComUserPreference.getInstance(this).isLoggedIn()) {
+            Utils.printLog(this, "ChatIntentService", "Service triggered, but user is not logged in. Aborting work.");
+            return;
+        }
+
         boolean connectivityChange = intent.getBooleanExtra(AL_SYNC_ON_CONNECTIVITY, false);
         boolean timeChangeReceiver = intent.getBooleanExtra(AL_TIME_CHANGE_RECEIVER, false);
 

@@ -56,18 +56,26 @@ public class DBUtils {
 
     public static boolean isDatabaseEncrypted(Context context, String dbName) {
         String appId = MobiComKitClientService.getApplicationKey(AppContextService.getContext(context));
-        File dbFile = context.getDatabasePath(dbName);
 
-        // Attempt to open the database with the given password
+        // 💡 DEFENSIVE CHECK: Prevent crash if appId is null
+        if (appId == null || appId.isEmpty()) {
+            Log.e("DatabaseCheck", "Application ID is missing. Kommunicate SDK may not be initialized.");
+            return false;
+        }
+
+        File dbFile = context.getDatabasePath(dbName);
+        if (!dbFile.exists()) {
+            return false; // Database file doesn't exist, so it's not encrypted.
+        }
+
         SQLiteDatabase db = null;
         try {
-            // Corrected method call with byte array for password
+            // Now it's safe to call getBytes()
             db = SQLiteDatabase.openDatabase(dbFile.getPath(), appId.getBytes(), null, SQLiteDatabase.OPEN_READONLY, null, null);
             db.close();
-            return true;
-        } catch (SQLiteException e) { // Updated exception package
-            // This exception is thrown if the password is wrong or the DB is not encrypted,
-            // which for this check, means it's not encrypted with the given key.
+            return true; // Successfully opened with the key, so it's encrypted.
+        } catch (SQLiteException e) {
+            // This is expected if the password (appId) is wrong or DB isn't encrypted.
             return false;
         } finally {
             if (db != null && db.isOpen()) {

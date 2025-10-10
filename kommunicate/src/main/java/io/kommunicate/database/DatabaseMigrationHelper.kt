@@ -32,6 +32,12 @@ object DatabaseMigrationHelper {
         val password =
             MobiComKitClientService.getApplicationKey(AppContextService.getContext(context))
 
+        // Check added to prevent crash in case of null or empty application key
+        if (password.isNullOrEmpty()) {
+            System.err.println("Migration failed: Application Key is missing. Is the SDK initialized?")
+            return
+        }
+
         // Load SQLCipher libraries
         System.loadLibrary("sqlcipher")
 

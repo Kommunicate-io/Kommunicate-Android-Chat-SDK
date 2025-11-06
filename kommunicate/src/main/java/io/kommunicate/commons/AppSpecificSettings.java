@@ -28,6 +28,16 @@ public class AppSpecificSettings {
     private static final String NOTIFICATION_AFTER_TIME = "AL_NOTIFICATION_AFTER_TIME";
     private static final String DATABASE_MIGRATION_RETRY_COUNT = "DATABASE_MIGRATION_RETRY_COUNT";
 
+    private static final String DATABASE_RE_KEYED_TO_KEYSTORE = "DATABASE_RE_KEYED_TO_KEYSTORE";
+
+    public boolean isDbRekeyedToKeystore() {
+        return sharedPreferences.getBoolean(DATABASE_RE_KEYED_TO_KEYSTORE, false);
+    }
+
+    public void setDbRekeyedToKeystore(boolean rekeyed) {
+        sharedPreferences.edit().putBoolean(DATABASE_RE_KEYED_TO_KEYSTORE, rekeyed).apply();
+    }
+
     private AppSpecificSettings(Context context) {
         this.sharedPreferences = AppContextService.getContext(context).getSharedPreferences(MY_PREFERENCE, Context.MODE_PRIVATE);
     }

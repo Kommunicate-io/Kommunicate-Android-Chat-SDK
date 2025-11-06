@@ -105,7 +105,9 @@ object DatabaseMigrationHelper {
 
                 // Copy table schema
                 val createTableSql = getTableCreateSql(sourceDb, tableName)
-                destinationDb.execSQL(createTableSql)
+                if (createTableSql != null) {
+                    destinationDb.execSQL(createTableSql)
+                }
 
                 // Copy data from the table
                 val tableCursor: Cursor = sourceDb.query(tableName, null, null, null, null, null, null)

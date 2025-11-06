@@ -8,6 +8,7 @@ import net.zetetic.database.sqlcipher.SQLiteStatement;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
+import io.kommunicate.database.DatabaseKeyProvider;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.commons.AppContextService;
 
@@ -55,13 +56,8 @@ public class DBUtils {
     }
 
     public static boolean isDatabaseEncrypted(Context context, String dbName) {
-        String appId = MobiComKitClientService.getApplicationKey(AppContextService.getContext(context));
-
-        // 💡 DEFENSIVE CHECK: Prevent crash if appId is null
-        if (appId == null || appId.isEmpty()) {
-            Log.e("DatabaseCheck", "Application ID is missing. Kommunicate SDK may not be initialized.");
-            return false;
-        }
+        // 💡 CHANGE: Get the key from the secure provider.
+        String key = DatabaseKeyProvider.getDatabaseKey(AppContextService.getContext(context));
 
         File dbFile = context.getDatabasePath(dbName);
         if (!dbFile.exists()) {
@@ -70,12 +66,12 @@ public class DBUtils {
 
         SQLiteDatabase db = null;
         try {
-            // Now it's safe to call getBytes()
-            db = SQLiteDatabase.openDatabase(dbFile.getPath(), appId.getBytes(), null, SQLiteDatabase.OPEN_READONLY, null, null);
+            // Use the secure key to attempt to open the database.
+            db = SQLiteDatabase.openDatabase(dbFile.getPath(), key, null, SQLiteDatabase.OPEN_READONLY, null);
             db.close();
             return true; // Successfully opened with the key, so it's encrypted.
         } catch (SQLiteException e) {
-            // This is expected if the password (appId) is wrong or DB isn't encrypted.
+            // This is expected if the key is wrong or the DB isn't encrypted.
             return false;
         } finally {
             if (db != null && db.isOpen()) {

@@ -6,6 +6,7 @@ import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
 import android.text.TextUtils;
 
 import io.kommunicate.commons.AppSpecificSettings;
+import io.kommunicate.database.DatabaseKeyProvider;
 import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserClientService;
@@ -252,12 +253,16 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private static final int MAX_DATABASE_MIGRATION_RETRY_COUNT = 3;
 
     private MobiComDatabaseHelper(Context context) {
+        // The DB name can still be derived from the application key for uniqueness,
+        // but the encryption key will be different.
         this(context, !TextUtils.isEmpty(AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName() : "MCK_" + MobiComKitClientService.getApplicationKey(AppContextService.getContext(context)), null, DB_VERSION);
         this.context = AppContextService.getContext(context);
     }
 
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, MobiComKitClientService.getApplicationKey(context), factory, version, 0, null, null, false);        System.loadLibrary("sqlcipher");
+        // 💡 CHANGE: Pass the secure key from DatabaseKeyProvider instead of the application key.
+        super(context, name, DatabaseKeyProvider.getDatabaseKey(context), factory, version, 0, null, null, false);
+        System.loadLibrary("sqlcipher");
         AppSpecificSettings appSpecificSettings = AppSpecificSettings.getInstance(context);
         int currentRetryCount = appSpecificSettings.getCurrentDatabaseMigrationRetryCount();
         if (!DBUtils.isDatabaseEncrypted(context, name) && currentRetryCount < MAX_DATABASE_MIGRATION_RETRY_COUNT) {

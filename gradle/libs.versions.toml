@@ -39,6 +39,9 @@ swiperefreshlayout = "1.1.0"
 googleSecret = "2.0.1"
 coreKtxVersion = "1.6.1"
 sentryPluginVersion = "4.11.0"
+sqlcipherAndroid = "4.9.0"
+sqliteFramework = "2.6.1"
+securityCrypto = "1.1.0-alpha06"
 
 [libraries]
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
@@ -82,6 +85,9 @@ sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentryAnd
 silicompressor = { module = "com.iceteck.silicompressorr:silicompressor", version.ref = "silicompressor" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtxVersion" }
+sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipherAndroid" }
+sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "sqliteFramework" }
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

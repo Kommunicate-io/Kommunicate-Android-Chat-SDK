@@ -6,9 +6,15 @@ import io.kommunicate.devkit.api.MobiComKitClientService
 import io.kommunicate.commons.AppContextService
 import net.zetetic.database.sqlcipher.SQLiteDatabase
 import android.database.sqlite.SQLiteException
+import android.util.Log
+import io.kommunicate.commons.AppSpecificSettings
+import java.io.File
+import kotlin.io.path.exists
 
 object DatabaseMigrationHelper {
     private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
+    private const val TAG = "DatabaseMigrationHelper"
+
 
     // Check if table exists in destination DB
     private fun tableExists(db: SQLiteDatabase, tableName: String): Boolean {
@@ -131,6 +137,76 @@ object DatabaseMigrationHelper {
             } while (cursor.moveToNext())
         }
         cursor.close()
+    }
+
+
+    /**
+     * Re-encrypts the database from the old key (applicationId) to the new Keystore-based key.
+     * This is a one-time migration for users upgrading the app.
+     *
+     * @return true if re-keying was successful or not needed, false if it failed and requires intervention.
+     */
+    @JvmStatic
+    fun rekeyDatabaseToKeystore(context: Context, dbName: String): Boolean {
+        val appSettings = AppSpecificSettings.getInstance(context)
+        if (appSettings.isDbRekeyedToKeystore) {
+            // Already migrated, nothing to do.
+            Log.i(TAG, "Database re-keying already completed. Skipping.")
+            return true
+        }
+
+        val dbFile: File = context.getDatabasePath(dbName)
+        if (!dbFile.exists()) {
+            // New installation, no database to migrate. Mark as complete.
+            appSettings.isDbRekeyedToKeystore = true
+            Log.i(TAG, "New installation detected. Marking re-keying as complete.")
+            return true
+        }
+
+        // 1. Get the old and new keys
+        val oldKey = MobiComKitClientService.getApplicationKey(context)
+        val newKey = DatabaseKeyProvider.getDatabaseKey(context)
+        if (oldKey.isNullOrEmpty()) {
+            // This happens if the service starts before the SDK is initialized on an upgraded app.
+            // We cannot migrate without the old key. Return false to signal a critical failure.
+            Log.e(TAG, "CRITICAL: Cannot re-key database because the old application key is missing. A logout is required to recover.")
+            return false
+        }
+        try {
+            // 3. Open the database with the OLD key and re-key it within a `use` block.
+            SQLiteDatabase.openDatabase(
+                dbFile.path,
+                oldKey,
+                null,
+                SQLiteDatabase.OPEN_READWRITE,
+                null
+            ).use { database ->
+                // 4. Re-key the database to the NEW key using PRAGMA rekey
+                val newKeyHex = bytesToHex(newKey.toByteArray())
+                database.execSQL("PRAGMA rekey = '$newKeyHex'")
+            }
+
+            // 5. Mark migration as complete
+            appSettings.isDbRekeyedToKeystore = true
+            Log.i(TAG, "Database successfully re-keyed to use Android Keystore.")
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to re-key database. The database might be corrupt or the old key is incorrect.", e)
+            // The re-key failed. Return false to signal this failure.
+            return false
+        }
+
+    }
+    private fun bytesToHex(bytes: ByteArray): String {
+        val hexString = StringBuilder(2 * bytes.size)
+        for (b in bytes) {
+            val hex = Integer.toHexString(0xff and b.toInt())
+            if (hex.length == 1) {
+                hexString.append('0')
+            }
+            hexString.append(hex)
+        }
+        return hexString.toString()
     }
 
     // Get the CREATE TABLE SQL statement for a specific table

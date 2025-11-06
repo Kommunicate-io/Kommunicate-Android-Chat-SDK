@@ -253,9 +253,8 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private static final int MAX_DATABASE_MIGRATION_RETRY_COUNT = 3;
 
     private MobiComDatabaseHelper(Context context) {
-        // The DB name can still be derived from the application key for uniqueness,
-        // but the encryption key will be different.
-        this(context, !TextUtils.isEmpty(AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName()) ? AppSpecificSettings.getInstance(AppContextService.getContext(context)).getDatabaseName() : "MCK_" + MobiComKitClientService.getApplicationKey(AppContextService.getContext(context)), null, DB_VERSION);
+        // This constructor now just determines the DB name and delegates to the main one.
+        this(context, getDbName(context), null, DB_VERSION);
         this.context = AppContextService.getContext(context);
     }
 
@@ -278,11 +277,38 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public static MobiComDatabaseHelper getInstance(Context context) {
-        // Use the application context, which will ensure that you
-        // don't accidentally leak an Activity's context.
-        // See this article for more information: http://bit.ly/6LRzfx
+        // Use the application context to avoid leaks.
+        Context appContext = AppContextService.getContext(context);
+        String dbName = getDbName(appContext);
+
+        // Run the one-time re-keying migration BEFORE creating the helper instance.
+        boolean migrationSuccessful = DatabaseMigrationHelper.rekeyDatabaseToKeystore(appContext, dbName);
+
+        if (!migrationSuccessful) {
+            // This is the critical failure path where the old key was likely missing.
+            // To recover, we must clear the old state and force a fresh login.
+            Utils.printLog(appContext, TAG, "Database re-keying failed. Deleting database and logging out user to recover.");
+
+            // 1. Delete the corrupt/inaccessible database file.
+            appContext.deleteDatabase(dbName);
+
+            // 2. Perform a full logout.
+            // Assuming you have a static logout method. Adjust if necessary.
+            new UserClientService(appContext).logout();
+
+            // 3. Mark the re-keying as "complete" now, because the old DB is gone.
+            // The next login will create a fresh DB with the new key.
+            AppSpecificSettings.getInstance(appContext).setDbRekeyedToKeystore(true);
+        }
+
+        // Now that migration is handled, create the singleton instance as usual.
+        // It will be correctly initialized with the new Keystore-based key.
         if (sInstance == null) {
-            sInstance = new MobiComDatabaseHelper(AppContextService.getContext(context));
+            synchronized (MobiComDatabaseHelper.class) {
+                if (sInstance == null) {
+                    sInstance = new MobiComDatabaseHelper(appContext, dbName, null, DB_VERSION);
+                }
+            }
         }
         return sInstance;
     }
@@ -301,6 +327,14 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         return database;
     }
 
+    private static String getDbName(Context context) {
+        // Your existing logic to get the database name
+        String dbName = AppSpecificSettings.getInstance(context).getDatabaseName();
+        if (!TextUtils.isEmpty(dbName)) {
+            return dbName;
+        }
+        return "MCK_" + MobiComKitClientService.getApplicationKey(context);
+    }
     @Override
     public void onCreate(SQLiteDatabase database) {
         //Store Database name in shared preference ...

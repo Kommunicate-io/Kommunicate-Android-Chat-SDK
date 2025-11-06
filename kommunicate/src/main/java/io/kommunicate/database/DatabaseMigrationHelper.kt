@@ -2,14 +2,13 @@ package io.kommunicate.database
 
 import android.content.Context
 import android.database.Cursor
-import io.kommunicate.devkit.api.MobiComKitClientService
-import io.kommunicate.commons.AppContextService
-import net.zetetic.database.sqlcipher.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
+import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.AppSpecificSettings
+import io.kommunicate.devkit.api.MobiComKitClientService
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 import java.io.File
-import kotlin.io.path.exists
 
 object DatabaseMigrationHelper {
     private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
@@ -173,6 +172,7 @@ object DatabaseMigrationHelper {
             return false
         }
         try {
+            System.loadLibrary("sqlcipher")
             // 3. Open the database with the OLD key and re-key it within a `use` block.
             SQLiteDatabase.openDatabase(
                 dbFile.path,

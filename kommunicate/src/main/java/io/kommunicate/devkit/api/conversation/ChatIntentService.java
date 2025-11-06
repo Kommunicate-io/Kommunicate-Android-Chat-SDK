@@ -2,9 +2,12 @@ package io.kommunicate.devkit.api.conversation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.CoreJobIntentService;
 
+import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.commons.AppContextService;
@@ -49,6 +52,14 @@ public class ChatIntentService extends CoreJobIntentService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
 
+
+        // This is a more robust check. It verifies that the SDK's static
+        // variables, like the application ID, have been initialized for this process.
+        // The application ID is used as the database encryption key.
+        if (TextUtils.isEmpty(MobiComKitClientService.getApplicationKey(this))) {
+            Utils.printLog(this, "ChatIntentService", "Service triggered, but SDK not initialized (Application ID is missing). Aborting work.");
+            return;
+        }
         // If the service is started by the system before a user has logged in,
         // the SDK won't have the necessary credentials. Abort early to prevent crashes.
         if (!MobiComUserPreference.getInstance(this).isLoggedIn()) {

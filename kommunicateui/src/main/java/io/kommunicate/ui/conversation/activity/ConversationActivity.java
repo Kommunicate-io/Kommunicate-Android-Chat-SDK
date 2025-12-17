@@ -42,6 +42,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
@@ -833,13 +834,24 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
 
     @Override
     public boolean isPermissionGranted() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED
+                    && ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED;
+        }
         return !PermissionsUtils.checkSelfForStoragePermission(this);
     }
 
     @Override
     public void checkPermission(KmStoragePermission storagePermission) {
-        PermissionsUtils.requestPermissions(this, PermissionsUtils.getStoragePermission(getApplicationContext()), PermissionsUtils.REQUEST_STORAGE);
         this.alStoragePermission = storagePermission;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            List<String> permissions = new ArrayList<>();
+            permissions.add(android.Manifest.permission.READ_MEDIA_IMAGES);
+            permissions.add(android.Manifest.permission.READ_MEDIA_VIDEO);
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[0]), KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
+        } else {
+            PermissionsUtils.requestPermissions(this, PermissionsUtils.getStoragePermission(getApplicationContext()), KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
+        }
     }
 
     public void processLocation() {

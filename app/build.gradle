@@ -9,8 +9,8 @@ android {
     defaultConfig {
         applicationId "io.kommunicate.app"
         compileSdk 34
-        minSdkVersion 21
-        targetSdkVersion 35
+        minSdkVersion 23
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -54,7 +54,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api project(':kommunicateui')
-    //implementation 'io.kommunicate.sdk:kommunicateui:2.2.2'
+    //implementation 'io.kommunicate.sdk:kommunicateui:2.14.5'
     implementation libs.appcompat
     implementation libs.multidex
     implementation libs.core.ktx

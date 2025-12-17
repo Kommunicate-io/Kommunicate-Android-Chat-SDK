@@ -266,10 +266,10 @@ public class ChannelService {
         }
     }
 
-    public synchronized void syncInfoChannels(boolean isMetadataUpdate, String channelKey) {
+    public synchronized void syncInfoChannels(boolean isMetadataUpdate, String clientChannelKey) {
         try {
             final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
-            SyncChannelInfoFeed syncChannelFeed = channelClientService.getSingleChannelFeed(channelKey);
+            SyncChannelInfoFeed syncChannelFeed = channelClientService.getSingleChannelFeed(clientChannelKey);
             if (syncChannelFeed == null || !syncChannelFeed.isSuccess()) {
                 return;
             }

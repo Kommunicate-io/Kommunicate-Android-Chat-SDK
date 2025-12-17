@@ -22,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Set;
@@ -194,7 +195,12 @@ public class ChannelClientService extends MobiComKitClientService {
     }
 
     public ChannelFeed getChannelInfo(String clientGroupId) {
-        return getChannelInfoByParameters(CLIENT_GROUPID + "=" + clientGroupId);
+        try {
+            return getChannelInfoByParameters(CLIENT_GROUPID + "=" + URLEncoder.encode(clientGroupId, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public ChannelFeed getChannelInfo(Integer channelKey) {
@@ -241,18 +247,18 @@ public class ChannelClientService extends MobiComKitClientService {
         }
     }
 
-    public SyncChannelInfoFeed getSingleChannelFeed(String channelKey) {
-        if (TextUtils.isEmpty(channelKey)) {
-            Utils.printLog(context, TAG, "Channel key is empty or null");
+    public SyncChannelInfoFeed getSingleChannelFeed(String clientChannelKey) {
+        if (TextUtils.isEmpty(clientChannelKey)) {
+            Utils.printLog(context, TAG, "Client group Id is empty or null");
             return null;
         }
-        String url = getSingleChannelInfoSyncUrl() + "?" +
-                GROUP_ID
-                + "=" + channelKey;
         try {
+            String url = getSingleChannelInfoSyncUrl() + "?" +
+                    CLIENT_GROUPID +
+                    "=" + URLEncoder.encode(clientChannelKey, "UTF-8");
             String response = httpRequestUtils.getResponse(url, appli_json,
                     appli_json);
-            Utils.printLog(context, TAG, "Channel Info sync call response for channelKey " + channelKey + " : " + response);
+            Utils.printLog(context, TAG, "Channel Info sync call response for client Group Id " + clientChannelKey + " : " + response);
             return (SyncChannelInfoFeed) GsonUtils.getObjectFromJson(response, SyncChannelInfoFeed.class);
         } catch (Exception e) {
             Utils.printLog(context, TAG, "Error getting channel info: " + e.getMessage());

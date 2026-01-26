@@ -54,7 +54,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api project(':kommunicateui')
-    //implementation 'io.kommunicate.sdk:kommunicateui:2.14.5'
+    //implementation 'io.kommunicate.sdk:kommunicateui:2.14.6'
     implementation libs.appcompat
     implementation libs.multidex
     implementation libs.core.ktx

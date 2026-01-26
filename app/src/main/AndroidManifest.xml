@@ -4,12 +4,14 @@
 
     <uses-permission android:name="io.kommunicate.app.permission.MAPS_RECEIVE" />
 
-        <!--Permissions to be used when using these features-->
-        <uses-permission
-            android:name="android.permission.CAMERA"
-            tools:node="merge" />
+    <!--Permissions to be used when using these features-->
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        tools:node="merge" />
 
     <!--Storage Permission required for API >= 33 -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -23,15 +25,15 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
         tools:node="merge" />
-        <uses-permission
-            android:name="android.permission.RECORD_AUDIO"
-            tools:node="merge" />
-        <uses-permission
-            android:name="android.permission.ACCESS_COARSE_LOCATION"
-            tools:node="merge" />
-        <uses-permission
-            android:name="android.permission.ACCESS_FINE_LOCATION"
-            tools:node="merge" />
+    <uses-permission
+        android:name="android.permission.RECORD_AUDIO"
+        tools:node="merge" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        tools:node="merge" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        tools:node="merge" />
 
     <application
         android:name="kommunicate.io.sample.KommunicateApplication"
@@ -84,9 +86,9 @@
             android:value="https://api-test.kommunicate.io"
             tools:node="replace"/>-->
 
-<!--        <meta-data-->
-<!--            android:name="io.kommunicate.devkit.notification.iconColor"-->
-<!--            android:resource="@color/colorPrimary">-->
+<!--        <meta-data
+            android:name="io.kommunicate.devkit.notification.iconColor"
+            android:resource="@color/colorPrimary">-->
 <!--        </meta-data>-->
 
     </application>

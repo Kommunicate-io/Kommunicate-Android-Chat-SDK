@@ -12,35 +12,22 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
-
-import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
-import io.kommunicate.ui.kommunicate.views.KmToast;
-import io.kommunicate.ui.utils.InsetHelper;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
-import io.kommunicate.ui.CustomizationSettings;
-import io.kommunicate.ui.R;
-import io.kommunicate.ui.conversation.ConversationUIService;
-import io.kommunicate.ui.instruction.KmPermissions;
-import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
-import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.file.FileUtils;
-import io.kommunicate.commons.json.GsonUtils;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -53,9 +40,21 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 
+import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
+import io.kommunicate.ui.CustomizationSettings;
+import io.kommunicate.ui.R;
+import io.kommunicate.ui.conversation.ConversationUIService;
+import io.kommunicate.ui.instruction.KmPermissions;
+import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
+import io.kommunicate.ui.kommunicate.views.KmToast;
+import io.kommunicate.ui.utils.InsetHelper;
 import io.kommunicate.utils.KmUtils;
-
 
 public class MobicomLocationActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -75,40 +74,30 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     Marker myLocationMarker;
     KmPermissions kmPermissions;
     static final String TAG = "MobicomLocationActivity";
+    private static final String PERF_TAG = "MobiLoc_Perf"; // Performance logging tag
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private LinearLayout locationLinearLayout;
     private TextView sendLocationText;
     private Toolbar toolbar;
     private KmThemeHelper themeHelper;
-
+    private ProgressBar progressBar;
+    private long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startTime = System.currentTimeMillis();
+        Utils.printLog(this, PERF_TAG, "onCreate: Start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_km_location);
 
         toolbar = findViewById(R.id.toolbar_map_screen);
+        progressBar = findViewById(R.id.km_progress_bar);
         toolbar.setTitle(getResources().getString(R.string.send_location));
         setSupportActionBar(toolbar);
-        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
-        if (!TextUtils.isEmpty(jsonString)) {
-            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
-        } else {
-            customizationSettings = new CustomizationSettings();
-        }
 
-        configureSentryWithKommunicateUI(this, customizationSettings.toString());
-        themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
-
-        toolbar.setBackgroundColor(themeHelper.getToolbarColor());
-        toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
-                themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0), themeHelper.getPrimaryColor()));
-        KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), iconColor);
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+        Utils.printLog(this, PERF_TAG, "onCreate: Starting LoadSettingsAsyncTask at " + (System.currentTimeMillis() - startTime) + "ms");
+        new LoadSettingsAsyncTask().execute();
 
         layout = (LinearLayout) findViewById(R.id.footerAd);
         sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);
@@ -116,10 +105,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         kmPermissions = new KmPermissions(MobicomLocationActivity.this, layout);
         locationLinearLayout = findViewById(R.id.km_location_linear_layout);
         sendLocationText = findViewById(R.id.km_send_location_text);
-        if (themeHelper.isDarkModeEnabledForSDK()) {
-            locationLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
-            sendLocationText.setTextColor(getResources().getColor(R.color.white));
-        }
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -129,7 +114,61 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         connectivityReceiver = new ConnectivityReceiver();
         registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         setupInsets();
+        Utils.printLog(this, PERF_TAG, "onCreate: End at " + (System.currentTimeMillis() - startTime) + "ms");
     }
+
+    private class LoadSettingsAsyncTask extends AsyncTask<Void, Void, String> {
+        private long asyncStartTime;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+
+
+        @Override
+        protected String doInBackground(Void... params) {
+            asyncStartTime = System.currentTimeMillis();
+            Utils.printLog(MobicomLocationActivity.this, PERF_TAG, "LoadSettings: doInBackground Start");
+            String result = FileUtils.loadSettingsJsonFile(getApplicationContext());
+            Utils.printLog(MobicomLocationActivity.this, PERF_TAG, "LoadSettings: doInBackground End. Duration: " + (System.currentTimeMillis() - asyncStartTime) + "ms");
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String jsonString) {
+            super.onPostExecute(jsonString);
+            Utils.printLog(MobicomLocationActivity.this, PERF_TAG, "LoadSettings: onPostExecute Start at " + (System.currentTimeMillis() - startTime) + "ms");
+            progressBar.setVisibility(View.GONE);
+
+            if (!TextUtils.isEmpty(jsonString)) {
+                customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
+            } else {
+                customizationSettings = new CustomizationSettings();
+            }
+            // All UI setup that depends on customizationSettings should be here
+            configureSentryWithKommunicateUI(MobicomLocationActivity.this, customizationSettings.toString());
+            themeHelper = KmThemeHelper.getInstance(MobicomLocationActivity.this, customizationSettings);
+
+            toolbar.setBackgroundColor(themeHelper.getToolbarColor());
+            toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
+                    themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0), themeHelper.getPrimaryColor()));
+            KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), iconColor);
+            KmUtils.setStatusBarColor(MobicomLocationActivity.this, themeHelper.getStatusBarColor());
+
+            if (themeHelper.isDarkModeEnabledForSDK()) {
+                locationLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
+                sendLocationText.setTextColor(getResources().getColor(R.color.white));
+            }
+            Utils.printLog(MobicomLocationActivity.this, PERF_TAG, "LoadSettings: onPostExecute End at " + (System.currentTimeMillis() - startTime) + "ms");
+        }
+    }
+
 
     private void setupInsets() {
         InsetHelper.configureSystemInsets(
@@ -149,6 +188,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
+        Utils.printLog(this, PERF_TAG, "onMapReady: Start at " + (System.currentTimeMillis() - startTime) + "ms");
         try {
             if (mCurrentLocation != null) {
                 position = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
@@ -203,12 +243,12 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         } catch (Exception e) {
             Utils.printLog(MobicomLocationActivity.this, TAG, "Check if location permission are added");
         }
-
+        Utils.printLog(this, PERF_TAG, "onMapReady: End at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        new ConversationUIService(this).onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOCATION_SERVICE_ENABLE) {
             if (((LocationManager) getSystemService(Context.LOCATION_SERVICE))
                     .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -304,6 +344,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             }
 
             if (mCurrentLocation != null) {
+                Utils.printLog(this, PERF_TAG, "onConnected: Requesting map async at " + (System.currentTimeMillis() - startTime) + "ms");
                 mapFragment.getMapAsync(this);
             }
 
@@ -324,6 +365,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                 }
                 mCurrentLocation = location;
                 if (reloadMap) {
+                    Utils.printLog(this, PERF_TAG, "onLocationChanged: Location found, requesting map async at " + (System.currentTimeMillis() - startTime) + "ms");
                     mapFragment.getMapAsync(this);
                 }
             }

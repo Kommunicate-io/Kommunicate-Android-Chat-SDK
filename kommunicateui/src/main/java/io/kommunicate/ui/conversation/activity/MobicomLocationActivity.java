@@ -39,6 +39,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Arrays;
+
 import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
@@ -230,6 +232,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Utils.printLog(this, PERF_TAG, "onActivityResult: request=" + requestCode + ", result=" + resultCode + " at " + (System.currentTimeMillis() - startTime) + "ms");
         if (requestCode == LOCATION_SERVICE_ENABLE) {
             if (((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 googleApiClient.connect();
@@ -240,7 +243,10 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     }
 
     public void processingLocation() {
-        if (!((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        boolean isGpsProviderEnabled = ((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER);
+        Utils.printLog(this, PERF_TAG, "processingLocation: GPS provider enabled = " + isGpsProviderEnabled + " at " + (System.currentTimeMillis() - startTime) + "ms");
+
+        if (!isGpsProviderEnabled) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.location_services_disabled_title)
                     .setMessage(R.string.location_services_disabled_message)
@@ -306,7 +312,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     @Override
     public void onConnectionSuspended(int i) {
-        Utils.printLog(this, TAG, "onConnectionSuspended() called.");
+        Utils.printLog(this, PERF_TAG, "onConnectionSuspended: Cause code = " + i + " at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override
@@ -362,7 +368,9 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) { }
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Utils.printLog(this, PERF_TAG, "onConnectionFailed: " + connectionResult.toString() + " at " + (System.currentTimeMillis() - startTime) + "ms");
+    }
 
     @Override
     protected void onDestroy() {
@@ -383,6 +391,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PermissionsUtils.REQUEST_LOCATION) {
+            Utils.printLog(this, PERF_TAG, "onRequestPermissionsResult: For Location with result: " + Arrays.toString(grantResults) + " at " + (System.currentTimeMillis() - startTime) + "ms");
             if (PermissionsUtils.verifyPermissions(grantResults)) {
                 showSnackBar(R.string.location_permission_granted);
                 processingLocation();

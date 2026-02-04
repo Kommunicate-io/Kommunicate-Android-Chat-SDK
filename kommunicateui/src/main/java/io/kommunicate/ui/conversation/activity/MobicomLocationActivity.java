@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -46,7 +47,6 @@ import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
-import io.kommunicate.ui.conversation.ConversationUIService;
 import io.kommunicate.ui.conversation.task.LoadSettingsAsyncTask;
 import io.kommunicate.ui.instruction.KmPermissions;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
@@ -322,21 +322,14 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if (mCurrentLocation == null) {
-                Utils.printLog(this, PERF_TAG, "onConnected: No last location, requesting updates at " + (System.currentTimeMillis() - startTime) + "ms");
-                KmToast.error(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
-                locationRequest = new LocationRequest();
-                locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                locationRequest.setInterval(UPDATE_INTERVAL);
-                locationRequest.setFastestInterval(FASTEST_INTERVAL);
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-            }
-
-            if (mCurrentLocation != null) {
-                Utils.printLog(this, PERF_TAG, "onConnected: Found existing last location at " + (System.currentTimeMillis() - startTime) + "ms");
-                updateMapCamera(mCurrentLocation);
-            }
+            // Bypassing getLastLocation() due to ANR. Directly requesting fresh location.
+            Utils.printLog(this, PERF_TAG, "onConnected: Bypassing cached location, requesting fresh updates at " + (System.currentTimeMillis() - startTime) + "ms");
+            KmToast.error(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
+            locationRequest = new LocationRequest();
+            locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            locationRequest.setInterval(UPDATE_INTERVAL);
+            locationRequest.setFastestInterval(FASTEST_INTERVAL);
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
 
         } catch (Exception e) {
             e.printStackTrace();

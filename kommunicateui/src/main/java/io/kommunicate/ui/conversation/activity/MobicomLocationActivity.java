@@ -319,9 +319,16 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     public void onConnected(Bundle bundle) {
         Utils.printLog(this, PERF_TAG, "onConnected: Start at " + (System.currentTimeMillis() - startTime) + "ms");
         try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            boolean fineLocationPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+            boolean coarseLocationPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+            Utils.printLog(this, PERF_TAG, "onConnected: Permissions fine=" + fineLocationPermission + ", coarse=" + coarseLocationPermission);
+
+            if (!fineLocationPermission && !coarseLocationPermission) {
+                Utils.printLog(this, PERF_TAG, "onConnected: No location permissions, exiting.");
                 return;
             }
+
             // Bypassing getLastLocation() due to ANR. Directly requesting fresh location.
             Utils.printLog(this, PERF_TAG, "onConnected: Bypassing cached location, requesting fresh updates at " + (System.currentTimeMillis() - startTime) + "ms");
             KmToast.error(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
@@ -329,10 +336,18 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             locationRequest.setInterval(UPDATE_INTERVAL);
             locationRequest.setFastestInterval(FASTEST_INTERVAL);
-            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+
+            Utils.printLog(this, PERF_TAG, "onConnected: LocationRequest params: " + locationRequest.toString());
+
+            try {
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+                Utils.printLog(this, PERF_TAG, "onConnected: requestLocationUpdates call succeeded at " + (System.currentTimeMillis() - startTime) + "ms");
+            } catch (Exception e) {
+                Utils.printLog(this, PERF_TAG, "onConnected: requestLocationUpdates FAILED with exception: " + e.getMessage());
+            }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Utils.printLog(this, PERF_TAG, "onConnected: FAILED with general exception: " + e.getMessage());
         }
         Utils.printLog(this, PERF_TAG, "onConnected: End at " + (System.currentTimeMillis() - startTime) + "ms");
     }

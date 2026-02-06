@@ -463,6 +463,11 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         if (message == null || messageDatabaseService == null) {
             return;
         }
+        //proactive checks for NPE error
+        if( TextUtils.isEmpty(message.getContactIds()) && message.getGroupId()==null){
+            Utils.printLog(getActivity(), "AL", "Not updating as message does not have ContactIds or groupId");
+            return;
+        }
         List<Message> lastMessage = new ArrayList<>();
         if (message.getGroupId() != null) {
             lastMessage = messageDatabaseService.getLatestMessageByChannelKey(message.getGroupId());

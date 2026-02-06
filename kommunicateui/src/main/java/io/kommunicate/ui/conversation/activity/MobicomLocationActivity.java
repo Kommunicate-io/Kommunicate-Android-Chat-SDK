@@ -87,7 +87,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         startTime = System.currentTimeMillis();
-        Utils.printLog(this, PERF_TAG, "onCreate: Start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_km_location);
 
@@ -133,7 +132,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         locationLinearLayout = findViewById(R.id.km_location_linear_layout);
         sendLocationText = findViewById(R.id.km_send_location_text);
 
-        Utils.printLog(this, PERF_TAG, "onCreate: Calling getMapAsync at " + (System.currentTimeMillis() - startTime) + "ms");
         mapFragment.getMapAsync(this);
 
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -145,7 +143,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         connectivityReceiver = new ConnectivityReceiver();
         registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         setupInsets();
-        Utils.printLog(this, PERF_TAG, "onCreate: End at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     private void setupInsets() {
@@ -165,7 +162,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
-        Utils.printLog(this, PERF_TAG, "onMapReady: Start at " + (System.currentTimeMillis() - startTime) + "ms");
         this.googleMap = googleMap;
         try {
             if (mCurrentLocation != null) {
@@ -196,7 +192,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             sendLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.printLog(MobicomLocationActivity.this, TAG, "On click of send location button");
                     if (myLocationMarker != null) {
                         Intent intent = new Intent();
                         intent.putExtra(LATITUDE, myLocationMarker.getPosition().latitude);
@@ -209,7 +204,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         } catch (Exception e) {
             Utils.printLog(MobicomLocationActivity.this, TAG, "Check if location permission are added");
         }
-        Utils.printLog(this, PERF_TAG, "onMapReady: End at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     private void updateMapCamera(Location location) {
@@ -232,7 +226,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Utils.printLog(this, PERF_TAG, "onActivityResult: request=" + requestCode + ", result=" + resultCode + " at " + (System.currentTimeMillis() - startTime) + "ms");
         if (requestCode == LOCATION_SERVICE_ENABLE) {
             if (((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 googleApiClient.connect();
@@ -282,7 +275,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     @Override
     protected void onStart() {
         super.onStart();
-        Utils.printLog(this, PERF_TAG, "onStart: at " + (System.currentTimeMillis() - startTime) + "ms");
         if (googleApiClient != null) {
             googleApiClient.connect();
         }
@@ -291,28 +283,23 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     @Override
     protected void onResume() {
         super.onResume();
-        Utils.printLog(this, PERF_TAG, "onResume: at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Utils.printLog(this, PERF_TAG, "onPause: at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override
     protected void onStop() {
-        Utils.printLog(this, PERF_TAG, "onStop: Start at " + (System.currentTimeMillis() - startTime) + "ms");
         super.onStop();
         if (googleApiClient != null) {
             googleApiClient.disconnect();
         }
-        Utils.printLog(this, PERF_TAG, "onStop: End at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Utils.printLog(this, PERF_TAG, "onConnectionSuspended: Cause code = " + i + " at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override
@@ -330,14 +317,11 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
             }
 
             // Bypassing getLastLocation() due to ANR. Directly requesting fresh location.
-            Utils.printLog(this, PERF_TAG, "onConnected: Bypassing cached location, requesting fresh updates at " + (System.currentTimeMillis() - startTime) + "ms");
             KmToast.error(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
             locationRequest = new LocationRequest();
             locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             locationRequest.setInterval(UPDATE_INTERVAL);
             locationRequest.setFastestInterval(FASTEST_INTERVAL);
-
-            Utils.printLog(this, PERF_TAG, "onConnected: LocationRequest params: " + locationRequest.toString());
 
             try {
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
@@ -349,7 +333,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         } catch (Exception e) {
             Utils.printLog(this, PERF_TAG, "onConnected: FAILED with general exception: " + e.getMessage());
         }
-        Utils.printLog(this, PERF_TAG, "onConnected: End at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override
@@ -382,7 +365,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     @Override
     protected void onDestroy() {
-        Utils.printLog(this, PERF_TAG, "onDestroy: at " + (System.currentTimeMillis() - startTime) + "ms");
         if (loadSettingsAsyncTask != null) {
             loadSettingsAsyncTask.cancel(true);
         }
@@ -399,7 +381,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PermissionsUtils.REQUEST_LOCATION) {
-            Utils.printLog(this, PERF_TAG, "onRequestPermissionsResult: For Location with result: " + Arrays.toString(grantResults) + " at " + (System.currentTimeMillis() - startTime) + "ms");
             if (PermissionsUtils.verifyPermissions(grantResults)) {
                 showSnackBar(R.string.location_permission_granted);
                 processingLocation();

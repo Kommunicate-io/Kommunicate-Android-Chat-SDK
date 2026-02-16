@@ -44,8 +44,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //api project(':kommunicate')
-    api 'io.kommunicate.sdk:kommunicate:2.14.5'
+    api project(':kommunicate')
+    //api 'io.kommunicate.sdk:kommunicate:2.14.5'
     api libs.firebase.messaging
     api libs.play.services.maps
     api libs.gms.play.services.location
@@ -61,6 +61,8 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.core.ktx
     implementation libs.multidex
+    implementation "io.noties.markwon:core:4.6.2"
+    implementation "io.noties.markwon:html:4.6.2"
 }
 
 task sourcesJar(type: Jar) {

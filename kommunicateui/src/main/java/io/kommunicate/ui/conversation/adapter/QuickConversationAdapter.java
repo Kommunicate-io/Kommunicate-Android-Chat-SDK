@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
 import android.util.LruCache;
@@ -96,7 +97,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private String loggedInUserId;
     private boolean isDarkMode;
     private Markwon markwon;
-    private LruCache<String, Spannable> markdownCache;
+    private LruCache<String, Spanned> markdownCache;
 
     public void setAlCustomizationSettings(CustomizationSettings customizationSettings) {
         this.customizationSettings = customizationSettings;
@@ -135,9 +136,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory());
         final int cacheSize = maxMemory / 8;
-        markdownCache = new LruCache<String, Spannable>(cacheSize) {
+        markdownCache = new LruCache<String, Spanned>(cacheSize) {
             @Override
-            protected int sizeOf(String key, Spannable value) {
+            protected int sizeOf(String key, Spanned value) {
                 return value.toString().getBytes().length;
             }
         };
@@ -289,9 +290,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 }
                 else {
                     String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
-                    Spannable markdown = markdownCache.get(message.getKeyString());
+                    Spanned markdown = markdownCache.get(message.getKeyString());
                     if (markdown == null) {
-                        markdown = (Spannable) markwon.toMarkdown(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler).toString());
+                        markdown = markwon.toMarkdown(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler).toString());
                         markdownCache.put(message.getKeyString(), markdown);
                     }
                     myholder.messageTextView.setText(markdown);

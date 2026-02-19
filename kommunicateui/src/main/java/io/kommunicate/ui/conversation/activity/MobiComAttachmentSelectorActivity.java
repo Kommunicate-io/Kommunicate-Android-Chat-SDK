@@ -17,7 +17,6 @@ import android.os.Bundle;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.TextUtils;
 import android.view.View;
@@ -36,6 +35,7 @@ import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KommunicateSetting;
 import io.kommunicate.ui.R;
+import io.kommunicate.ui.activities.KmBaseActivity;
 import io.kommunicate.ui.conversation.ConversationUIService;
 import io.kommunicate.ui.conversation.adapter.MobiComAttachmentGridViewAdapter;
 import io.kommunicate.ui.kommunicate.KmAttachmentsController;
@@ -60,7 +60,7 @@ import io.sentry.Sentry;
 
 import static java.util.Collections.disjoint;
 
-public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
+public class MobiComAttachmentSelectorActivity extends KmBaseActivity {
 
     public static final String MULTISELECT_SELECTED_FILES = "multiselect.selectedFiles";
     public static final String MULTISELECT_MESSAGE = "multiselect.message";
@@ -128,6 +128,7 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupEdgeToEdge();
         setContentView(R.layout.multi_attachment_activity);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
@@ -139,8 +140,6 @@ public class MobiComAttachmentSelectorActivity extends AppCompatActivity {
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
         setupActivityResultCallback();
         kmAttachmentsController = new KmAttachmentsController(this);
-
-        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, customizationSettings).getStatusBarColor());
 
         restrictedWords = FileUtils.loadRestrictedWordsFile(this);
         fileClientService = new FileClientService(this);

@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
@@ -40,13 +39,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Arrays;
-
 import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
+import io.kommunicate.ui.activities.KmBaseActivity;
 import io.kommunicate.ui.conversation.task.LoadSettingsAsyncTask;
 import io.kommunicate.ui.instruction.KmPermissions;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
@@ -54,7 +52,7 @@ import io.kommunicate.ui.kommunicate.views.KmToast;
 import io.kommunicate.ui.utils.InsetHelper;
 import io.kommunicate.utils.KmUtils;
 
-public class MobicomLocationActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MobicomLocationActivity extends KmBaseActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
 
     SupportMapFragment mapFragment;
     GoogleMap googleMap;
@@ -88,6 +86,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     protected void onCreate(Bundle savedInstanceState) {
         startTime = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
+        setupEdgeToEdge();
         setContentView(R.layout.activity_km_location);
 
         toolbar = findViewById(R.id.toolbar_map_screen);
@@ -115,7 +114,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
                 int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
                         themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0), themeHelper.getPrimaryColor()));
                 KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), iconColor);
-                KmUtils.setStatusBarColor(MobicomLocationActivity.this, themeHelper.getStatusBarColor());
 
                 if (themeHelper.isDarkModeEnabledForSDK()) {
                     locationLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
@@ -360,7 +358,7 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Utils.printLog(this, PERF_TAG, "onConnectionFailed: " + connectionResult.toString() + " at " + (System.currentTimeMillis() - startTime) + "ms");
+        Utils.printLog(this, PERF_TAG, "onConnectionFailed: " + connectionResult + " at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override

@@ -37,7 +37,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -73,6 +72,7 @@ import io.kommunicate.devkit.contact.BaseContactService;
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KommunicateSetting;
 import io.kommunicate.ui.R;
+import io.kommunicate.ui.activities.KmBaseActivity;
 import io.kommunicate.ui.conversation.ConversationUIService;
 import io.kommunicate.ui.conversation.MessageCommunicator;
 import io.kommunicate.ui.conversation.MobiComKitBroadcastReceiver;
@@ -135,7 +135,7 @@ import static io.kommunicate.ui.utils.SentryUtils.configureSentryWithKommunicate
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener, CustomToolbarListener {
+public class ConversationActivity extends KmBaseActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener, CustomToolbarListener {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
@@ -393,15 +393,19 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppContextService.initWithContext(this);
-        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
+        String jsonString = getIntent().getStringExtra("customizationSettings");
+        if (TextUtils.isEmpty(jsonString)) {
+            jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
+        }
         if (!TextUtils.isEmpty(jsonString)) {
             customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
             customizationSettings = new CustomizationSettings();
         }
+        themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
+        setupEdgeToEdge(true, themeHelper.getStatusBarColor());
         setupActivityResultCallback();
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
-        themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         if (!TextUtils.isEmpty(customizationSettings.getChatBackgroundImageName())) {
             resourceId = getResources().getIdentifier(customizationSettings.getChatBackgroundImageName(), "drawable", getPackageName());
         }
@@ -414,7 +418,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
         setSupportActionBar(toolbar);
         setToolbarTitleSubtitleColorFromSettings();
 
@@ -595,7 +598,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     private void setupModes() {
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
         setToolbarTitleSubtitleColorFromSettings();
     }
 

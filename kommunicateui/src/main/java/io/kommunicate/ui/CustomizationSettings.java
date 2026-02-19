@@ -160,6 +160,15 @@ public class CustomizationSettings extends JsonMarker {
     private int minimumCompressionThresholdForVideosInMB = 5;
     private boolean hideAttachmentOptionsWithBots = false;
     private boolean hideChatBarWithBots = false;
+    private boolean enableEdgeToEdge = true;
+
+    public boolean isEnableEdgeToEdge() {
+        return enableEdgeToEdge;
+    }
+
+    public void setEnableEdgeToEdge(boolean enableEdgeToEdge) {
+        this.enableEdgeToEdge = enableEdgeToEdge;
+    }
 
     public boolean getUseDarkMode() {
         return useDarkMode;

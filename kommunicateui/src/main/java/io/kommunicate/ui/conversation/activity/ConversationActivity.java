@@ -50,6 +50,35 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import io.kommunicate.async.KmSyncMessageTask;
+import io.kommunicate.commons.AppContextService;
+import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.file.MediaPicker;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.SearchListFragment;
+import io.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.channel.Conversation;
+import io.kommunicate.commons.people.contact.Contact;
 import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
@@ -63,9 +92,9 @@ import io.kommunicate.devkit.api.conversation.MobiComMessageService;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.api.conversation.service.ConversationService;
 import io.kommunicate.devkit.api.people.UserIntentService;
-import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.devkit.broadcast.BroadcastService;
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
+import io.kommunicate.devkit.broadcast.EventManager;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.contact.BaseContactService;
@@ -94,41 +123,14 @@ import io.kommunicate.ui.uilistener.KmStoragePermission;
 import io.kommunicate.ui.uilistener.KmStoragePermissionListener;
 import io.kommunicate.ui.uilistener.MobicomkitUriListener;
 import io.kommunicate.ui.utils.InsetHelper;
-import io.kommunicate.commons.AppContextService;
-import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
-import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.file.FileUtils;
-import io.kommunicate.commons.file.MediaPicker;
-import io.kommunicate.commons.json.GsonUtils;
-import io.kommunicate.commons.people.SearchListFragment;
-import io.kommunicate.commons.people.channel.Channel;
-import io.kommunicate.commons.people.channel.Conversation;
-import io.kommunicate.commons.people.contact.Contact;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import io.kommunicate.async.KmSyncMessageTask;
+import io.kommunicate.ui.utils.SentryUtils;
 import io.kommunicate.usecase.AutoSuggestionsUseCase;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 import io.sentry.Hint;
 import io.sentry.Sentry;
+
 import static io.kommunicate.ui.utils.SentryUtils.configureSentryWithKommunicateUI;
 
 
@@ -393,10 +395,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppContextService.initWithContext(this);
-        String jsonString = getIntent().getStringExtra("customizationSettings");
-        if (TextUtils.isEmpty(jsonString)) {
-            jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
-        }
+        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
             customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
@@ -448,10 +447,10 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
 
         if (KmUtils.isServiceDisconnected(this, customizationSettings != null && customizationSettings.isAgentApp(), customToolbarLayout)) {
             showDisconnectionMessage();
-        } else if(KmUtils.isDeviceRooted()) {
+        } else if (KmUtils.isDeviceRooted()) {
             deviceRootedLayout.setVisibility(View.VISIBLE);
         } else {
-             if (savedInstanceState != null) {
+            if (savedInstanceState != null) {
                 capturedImageUri = savedInstanceState.getString(CAPTURED_IMAGE_URI) != null ?
                         Uri.parse(savedInstanceState.getString(CAPTURED_IMAGE_URI)) : null;
                 videoFileUri = savedInstanceState.getString(CAPTURED_VIDEO_URI) != null ?
@@ -573,7 +572,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                         }
 
                         // Process URIs
-                        for (Uri uri: uris) {
+                        for (Uri uri : uris) {
                             int returnCode = kmAttachmentsController.processFile(uri, customizationSettings, prePostUIMethods);
                             doReturnCodeActions(returnCode);
                         }
@@ -1233,7 +1232,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         } else {
             if (imageVideoSelector != null) {
                 MediaPicker.INSTANCE.createMediaPickerIntent(imageVideoSelector, FileUtils.GalleryFilterOptions.IMAGE_VIDEO);
-            }else  {
+            } else {
                 KmToast.error(ConversationActivity.this, "Unable to process attachment", Toast.LENGTH_SHORT).show();
             }
         }

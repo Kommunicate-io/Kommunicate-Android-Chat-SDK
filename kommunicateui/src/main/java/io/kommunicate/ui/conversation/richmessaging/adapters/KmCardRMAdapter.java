@@ -30,6 +30,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmUtils;
 
 public class KmCardRMAdapter extends KmRichMessageAdapter {
@@ -122,7 +123,7 @@ public class KmCardRMAdapter extends KmRichMessageAdapter {
             viewHolder.productPrice.setBackground(drawable);
 
             if (payloadModel.getHeader() != null && !TextUtils.isEmpty(payloadModel.getHeader().getImgSrc())) {
-                Glide.with(context).load(payloadModel.getHeader().getImgSrc()).into(viewHolder.productImage);
+                Glide.with(context).load(KmAppSettingPreferences.appendSasToken(payloadModel.getHeader().getImgSrc())).into(viewHolder.productImage);
                 viewHolder.productImage.setVisibility(View.VISIBLE);
                 viewHolder.productImageOverlay.setVisibility(View.VISIBLE);
                 viewHolder.productPrice.setBackground(context.getResources().getDrawable(R.drawable.km_rich_messaging_price_border));

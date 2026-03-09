@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.Arrays;
 import java.util.List;
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 public class KmImageRMAdapter extends KmRichMessageAdapter {
 
@@ -66,7 +67,7 @@ public class KmImageRMAdapter extends KmRichMessageAdapter {
                 }
                 if (!TextUtils.isEmpty(payloadModel.getUrl())) {
                     Glide.with(context)
-                            .load(payloadModel.getUrl())
+                            .load(KmAppSettingPreferences.appendSasToken(payloadModel.getUrl()))
                             .into(imageViewHolder.imageView);
                 } else {
                     Glide.with(context).load(R.drawable.attachment_file).into(imageViewHolder.imageView);

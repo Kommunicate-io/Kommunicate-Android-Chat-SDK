@@ -147,6 +147,7 @@ public class KmAppSettingModel extends JsonMarker {
         private boolean disableChatWidget;
         private int csatRatingBase = 3;
         private int botTypingIndicatorInterval;
+        private String sasT;
 
         public String getPosition() {
             return position;
@@ -243,6 +244,14 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setBotTypingIndicatorInterval(int botTypingIndicatorInterval) {
             this.botTypingIndicatorInterval = botTypingIndicatorInterval;
+        }
+
+        public String getSasT() {
+            return sasT;
+        }
+
+        public void setSasT(String sasT) {
+            this.sasT = sasT;
         }
     }
 

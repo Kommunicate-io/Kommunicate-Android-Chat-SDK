@@ -31,6 +31,8 @@ import io.kommunicate.commons.json.GsonUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import io.kommunicate.utils.KmAppSettingPreferences;
+
 
 public class KmVideoRMAdapter extends KmRichMessageAdapter {
 
@@ -93,7 +95,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
                 }
 
                 holder.webViewRoot.setVisibility(View.VISIBLE);
-                String currentUrl = PATH_ONE + payloadModel.getUrl() + PATH_TWO;
+                String currentUrl = PATH_ONE + KmAppSettingPreferences.appendSasToken(payloadModel.getUrl()) + PATH_TWO;
                 holder.webview.loadData(currentUrl, text_html, "utf-8");
             } else if (!TextUtils.isEmpty(payloadModel.getUrl())) {
                 holder.webViewRoot.setVisibility(View.GONE);
@@ -109,7 +111,7 @@ public class KmVideoRMAdapter extends KmRichMessageAdapter {
                 holder.playerView.setPlayer(player);
 
                 holder.playerView.setVisibility(View.VISIBLE);
-                Uri videoUri = Uri.parse(payloadModel.getUrl());
+                Uri videoUri = Uri.parse(KmAppSettingPreferences.appendSasToken(payloadModel.getUrl()));
                 MediaItem mediaItem = MediaItem.fromUri(videoUri);
 
                 player.setMediaItem(mediaItem);

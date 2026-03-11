@@ -2,6 +2,8 @@ package io.kommunicate.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Base64
+import android.util.Log
 import annotations.CleanUpRequired
 import io.kommunicate.devkit.KommunicateSettings
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
@@ -14,6 +16,7 @@ import io.kommunicate.usecase.AppSettingUseCase
 
 object KmAppSettingPreferences {
 
+    private const val TAG = "KmAppSettingPreferences"
     private var callback: KmCallback? = null
     const val CLEAR_THEME_INSTANCE: String = "CLEAR_THEME_INSTANCE"
     private const val KM_THEME_PREFERENCES = "KM_THEME_PREFERENCES"
@@ -34,6 +37,7 @@ object KmAppSettingPreferences {
     private const val IN_APP_NOTIFICATION = "IN_APP_NOTIFICATION"
     private const val RATING_BASE = "RATING_BASE"
     private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
+    private const val SAS_TOKEN = "SAS_TOKEN"
 
     @JvmStatic
     @CleanUpRequired(
@@ -144,19 +148,53 @@ object KmAppSettingPreferences {
         }
 
     @Suppress("UNCHECKED_CAST")
-    var uploadOverrideHeader: HashMap<String, String>
+    @JvmStatic
+    var uploadOverrideHeader: HashMap<String, String>?
         get() = GsonUtils.getObjectFromJson<Any>(
             preferences.getString(
                 UPLOAD_OVERRIDE_HEADER,
                 null
             ), HashMap::class.java
-        ) as HashMap<String, String>
+        ) as HashMap<String, String>?
         private set(headers) {
             preferences.edit().putString(
                 UPLOAD_OVERRIDE_HEADER,
                 GsonUtils.getJsonFromObject(headers, HashMap::class.java)
             ).apply()
         }
+
+    @JvmStatic
+    var sasToken: String?
+        get() = preferences.getString(SAS_TOKEN, null)
+        private set(token) {
+            val decodedToken = if (token != null) {
+                try {
+                    String(Base64.decode(token, Base64.DEFAULT))
+                } catch (e: Exception) {
+                    Log.e(TAG, "Failed to decode sasT: ${e.message}")
+                    token
+                }
+            } else {
+                null
+            }
+            Log.d(TAG, "Saving decoded sasT to preferences: $decodedToken")
+            preferences.edit().putString(SAS_TOKEN, decodedToken).apply()
+        }
+
+    @JvmStatic
+    fun appendSasToken(url: String?): String? {
+        val currentToken = sasToken
+        if (url == null || currentToken.isNullOrEmpty()) {
+            Log.d(TAG, "Not appending sasToken. URL is null: ${url == null}, Token is null/empty: ${currentToken.isNullOrEmpty()}")
+            return url
+        }
+        val finalUrl = if (url.contains("?")) {
+            "$url&$currentToken"
+        } else {
+            "$url?$currentToken"
+        }
+        return finalUrl
+    }
 
     val isSessionExpired: Boolean
         get() {
@@ -186,6 +224,7 @@ object KmAppSettingPreferences {
         AppSettingUseCase.executeWithExecutor(
             context,
             KommunicateSettings.getInstance(context).applicationKey,
+            true,
             object : KmCallback {
                 override fun onSuccess(message: Any) {
                 }
@@ -198,6 +237,7 @@ object KmAppSettingPreferences {
     @JvmStatic
     fun fetchAppSetting(context: Context, appId: String): KmAppSettingModel? {
         val response: String? = KmService(context).getAppSetting(appId)
+        Log.d(TAG, "App setting response: $response")
         val appSettingModel = response?.let {
             GsonUtils.getObjectFromJson<Any>(
                 it,
@@ -255,6 +295,11 @@ object KmAppSettingPreferences {
             }
             checkIsSingleThreaded(it.isSingleThreaded)
             ratingBase = it.csatRatingBase
+            
+            if (!it.sasT.isNullOrEmpty()) {
+                Log.d(TAG, "sasT found in chatWidget: ${it.sasT}")
+                sasToken = it.sasT
+            }
         }
         appSetting.response?.let {
             isCollectFeedback = it.isCollectFeedback

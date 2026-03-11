@@ -36,7 +36,6 @@ public class KmThemeHelper implements KmCallback {
     private int toolbarTitleColor = -1;
     private int toolbarSubtitleColor = -1;
     private int toolbarColor = -1;
-    private int statusBarColor = -1;
     private int richMessageThemeColor = -1;
     private Map<String, Boolean> hidePostCTA = new HashMap<>();
 
@@ -175,10 +174,12 @@ public class KmThemeHelper implements KmCallback {
         return toolbarColor;
     }
 
+    /**
+     * @deprecated Deprecated due to Android 15 edge-to-edge migration.
+     */
+    @Deprecated
     public int getStatusBarColor() {
-        statusBarColor = parseColorWithDefault(customizationSettings.getStatusBarColor().get(isDarkModeEnabledForSDK() ? 1 : 0),
-                parseColorWithDefault(customizationSettings.getToolbarColor().get(isDarkModeEnabledForSDK() ? 1 : 0), getPrimaryColor()));
-        return statusBarColor;
+        return getToolbarColor();
     }
 
     public int getRichMessageThemeColor() {
@@ -187,7 +188,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public boolean isDarkModeEnabledForSDK() {
-        return !customizationSettings.isAgentApp() && customizationSettings.getUseDarkMode() && ((context.getResources().getConfiguration().uiMode &
+        return customizationSettings.getUseDarkMode() && ((context.getResources().getConfiguration().uiMode &
                 Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
     }
 

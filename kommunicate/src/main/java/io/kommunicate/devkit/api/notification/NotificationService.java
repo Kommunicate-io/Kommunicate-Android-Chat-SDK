@@ -9,14 +9,23 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
-import android.text.Html;
-import android.text.TextUtils;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
+import io.kommunicate.R;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.channel.ChannelUtils;
+import io.kommunicate.commons.people.contact.Contact;
 import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.SettingsSharedPreference;
 import io.kommunicate.devkit.api.MobiComKitConstants;
@@ -28,21 +37,11 @@ import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
 import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.listners.ConstantsHandler;
-import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.json.GsonUtils;
-import io.kommunicate.commons.people.channel.Channel;
-import io.kommunicate.commons.people.channel.ChannelUtils;
-import io.kommunicate.commons.people.contact.Contact;
-
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.List;
+import io.noties.markwon.Markwon;
+import io.noties.markwon.html.HtmlPlugin;
 
 import static io.kommunicate.devkit.api.notification.VideoCallNotificationHelper.CALL_AUDIO_ONLY;
 import static io.kommunicate.devkit.api.notification.VideoCallNotificationHelper.CALL_ID;
-
-import io.kommunicate.R;
 
 /**
  * Created with IntelliJ IDEA.
@@ -84,6 +83,7 @@ public class NotificationService {
     private static final String group_Id = "groupId";
     private static final String take_Order = "takeOrder";
     private static final String ACTIVITY_OPEN = "activity.open.on.notification";
+    private Markwon markwon;
 
     public NotificationService(int iconResourceID, Context context, int wearable_action_label, int wearable_action_title, int wearable_send_icon) {
         this.context = context;
@@ -98,6 +98,7 @@ public class NotificationService {
         this.notificationDisableThreshold = settingsSharedPreference.getNotificationMuteThreshold();
         this.notificationFilePath = KommunicateSettings.getInstance(context).getCustomNotificationSound();
         this.notificationIconColor = Utils.getMetaDataValueForResources(context,NOTIFICATION_SMALL_ICON_COLOR);
+        this.markwon = Markwon.builder(context).usePlugin(HtmlPlugin.create()).build();
 
         notificationChannels = new NotificationChannels(context, notificationFilePath);
 
@@ -561,12 +562,8 @@ public class NotificationService {
         notificationManager.notify(message.getGroupId() != null ? String.valueOf(message.getGroupId()).hashCode() : message.getContactIds().hashCode(), incomingCallNotification);
     }
 
-    public String getSpannedText(CharSequence message) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return Html.fromHtml(message.toString(), Html.FROM_HTML_MODE_COMPACT).toString();
-        } else {
-            return Html.fromHtml(message.toString()).toString();
-        }
+    public CharSequence getSpannedText(CharSequence message) {
+        return markwon.toMarkdown(message.toString());
     }
 
     public String getText(int index) {

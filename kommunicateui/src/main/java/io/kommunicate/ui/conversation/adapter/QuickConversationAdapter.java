@@ -290,10 +290,15 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 }
                 else {
                     String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
-                    Spanned markdown = markdownCache.get(message.getKeyString());
-                    if (markdown == null) {
+                    Spanned markdown;
+                    if (!TextUtils.isEmpty(message.getKeyString())) {
+                        markdown = markdownCache.get(message.getKeyString());
+                        if (markdown == null) {
+                            markdown = markwon.toMarkdown(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler).toString());
+                            markdownCache.put(message.getKeyString(), markdown);
+                        }
+                    } else {
                         markdown = markwon.toMarkdown(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler).toString());
-                        markdownCache.put(message.getKeyString(), markdown);
                     }
                     myholder.messageTextView.setText(markdown);
                     showConversationSourceIcon(channel, myholder.attachmentIcon);

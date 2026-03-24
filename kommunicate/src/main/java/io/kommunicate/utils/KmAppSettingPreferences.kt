@@ -177,7 +177,6 @@ object KmAppSettingPreferences {
             } else {
                 null
             }
-            Log.d(TAG, "Saving decoded sasT to preferences: $decodedToken")
             preferences.edit().putString(SAS_TOKEN, decodedToken).apply()
         }
 
@@ -237,7 +236,6 @@ object KmAppSettingPreferences {
     @JvmStatic
     fun fetchAppSetting(context: Context, appId: String): KmAppSettingModel? {
         val response: String? = KmService(context).getAppSetting(appId)
-        Log.d(TAG, "App setting response: $response")
         val appSettingModel = response?.let {
             GsonUtils.getObjectFromJson<Any>(
                 it,
@@ -297,7 +295,6 @@ object KmAppSettingPreferences {
             ratingBase = it.csatRatingBase
             
             if (!it.sasT.isNullOrEmpty()) {
-                Log.d(TAG, "sasT found in chatWidget: ${it.sasT}")
                 sasToken = it.sasT
             }
         }

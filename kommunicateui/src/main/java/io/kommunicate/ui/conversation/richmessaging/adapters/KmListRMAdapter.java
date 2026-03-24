@@ -89,7 +89,7 @@ public class KmListRMAdapter extends KmRichMessageAdapter {
             }
         }
         String finalImageUrl = KmAppSettingPreferences.appendSasToken(imageUrl);
-        Log.d(TAG, "Image URL with SAS token: " + finalImageUrl);
+        Log.d(TAG, "Image URL built with SAS token");
         return new GlideUrl(finalImageUrl, builder.build());
     }
 

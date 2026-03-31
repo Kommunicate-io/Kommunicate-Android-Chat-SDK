@@ -402,7 +402,11 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             customizationSettings = new CustomizationSettings();
         }
         themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
-        setupEdgeToEdge(true, themeHelper.getStatusBarColor());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            setupEdgeToEdge(true, themeHelper.getStatusBarColor());
+        } else {
+            KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+        }
         setupActivityResultCallback();
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
         if (!TextUtils.isEmpty(customizationSettings.getChatBackgroundImageName())) {

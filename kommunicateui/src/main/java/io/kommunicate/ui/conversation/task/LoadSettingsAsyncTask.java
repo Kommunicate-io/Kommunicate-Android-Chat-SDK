@@ -35,7 +35,11 @@ public class LoadSettingsAsyncTask extends AsyncTask<Void, Void, CustomizationSe
 
     @Override
     protected CustomizationSettings doInBackground(Void... params) {
-        String jsonString = FileUtils.loadSettingsJsonFile(context.get());
+        Context taskContext = context.get();
+        if (taskContext == null) {
+            return new CustomizationSettings();
+        }
+        String jsonString = FileUtils.loadSettingsJsonFile(taskContext);
         if (!TextUtils.isEmpty(jsonString)) {
             return (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         }

@@ -128,14 +128,14 @@ public class MobiComAttachmentSelectorActivity extends KmBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupEdgeToEdge();
-        setContentView(R.layout.multi_attachment_activity);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
             customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
             customizationSettings = new CustomizationSettings();
         }
+        setupEdgeToEdge(customizationSettings);
+        setContentView(R.layout.multi_attachment_activity);
 
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
         setupActivityResultCallback();

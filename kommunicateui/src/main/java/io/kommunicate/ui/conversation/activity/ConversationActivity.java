@@ -403,7 +403,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         }
         themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            setupEdgeToEdge(true, themeHelper.getStatusBarColor());
+            setupEdgeToEdge(customizationSettings, true, themeHelper.getStatusBarColor());
         } else {
             KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
         }

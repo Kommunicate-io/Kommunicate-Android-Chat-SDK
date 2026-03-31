@@ -15,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -41,6 +42,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
 import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
@@ -86,7 +89,13 @@ public class MobicomLocationActivity extends KmBaseActivity implements OnMapRead
     protected void onCreate(Bundle savedInstanceState) {
         startTime = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
-        setupEdgeToEdge();
+        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
+        if (!TextUtils.isEmpty(jsonString)) {
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
+        } else {
+            customizationSettings = new CustomizationSettings();
+        }
+        setupEdgeToEdge(customizationSettings);
         setContentView(R.layout.activity_km_location);
 
         toolbar = findViewById(R.id.toolbar_map_screen);

@@ -36,6 +36,7 @@ public class KmThemeHelper implements KmCallback {
     private int toolbarTitleColor = -1;
     private int toolbarSubtitleColor = -1;
     private int toolbarColor = -1;
+    private int statusBarColor = -1;
     private int richMessageThemeColor = -1;
     private Map<String, Boolean> hidePostCTA = new HashMap<>();
 
@@ -179,7 +180,9 @@ public class KmThemeHelper implements KmCallback {
      */
     @Deprecated
     public int getStatusBarColor() {
-        return getToolbarColor();
+        String colorStr = isDarkModeEnabledForSDK() ? customizationSettings.getStatusBarColor().get(1) : customizationSettings.getStatusBarColor().get(0);
+        statusBarColor = parseColorWithDefault(colorStr, getToolbarColor());
+        return statusBarColor;
     }
 
     public int getRichMessageThemeColor() {

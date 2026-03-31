@@ -70,15 +70,14 @@ public class KmWebViewActivity extends KmBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupEdgeToEdge();
-        setContentView(R.layout.km_activity_payment);
-
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
             customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
             customizationSettings = new CustomizationSettings();
         }
+        setupEdgeToEdge(customizationSettings);
+        setContentView(R.layout.km_activity_payment);
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
 
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);

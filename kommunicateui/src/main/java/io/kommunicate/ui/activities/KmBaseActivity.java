@@ -4,16 +4,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import io.kommunicate.ui.CustomizationSettings;
+
 public abstract class KmBaseActivity extends AppCompatActivity {
 
     protected void setupEdgeToEdge(boolean lightStatusBar, int statusBarColor) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setStatusBarColor(statusBarColor);
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         if (controller != null) {
             controller.setAppearanceLightStatusBars(lightStatusBar);
             controller.setAppearanceLightNavigationBars(lightStatusBar);
         }
+    }
+
+    protected void setupEdgeToEdge(CustomizationSettings customizationSettings, boolean lightStatusBar, int statusBarColor) {
+        if (customizationSettings == null || !customizationSettings.isEnableEdgeToEdge()) {
+            return;
+        }
+        setupEdgeToEdge(lightStatusBar, statusBarColor);
+    }
+
+    protected void setupEdgeToEdge(CustomizationSettings customizationSettings, boolean lightStatusBar) {
+        setupEdgeToEdge(customizationSettings, lightStatusBar, 0);
+    }
+
+    protected void setupEdgeToEdge(CustomizationSettings customizationSettings) {
+        setupEdgeToEdge(customizationSettings, true);
     }
 
     protected void setupEdgeToEdge(boolean lightStatusBar) {

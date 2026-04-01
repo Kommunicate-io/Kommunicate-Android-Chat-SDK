@@ -292,13 +292,24 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                     String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
                     Spanned markdown;
                     if (!TextUtils.isEmpty(message.getKeyString())) {
-                        markdown = markdownCache.get(message.getKeyString());
+                        String cacheKey = message.getKeyString() + ":" + messageSubString;
+                        markdown = markdownCache.get(cacheKey);
                         if (markdown == null) {
-                            markdown = markwon.toMarkdown(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler).toString());
-                            markdownCache.put(message.getKeyString(), markdown);
+                            CharSequence smiledText = EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler);
+                            if (smiledText instanceof android.text.Spanned || smiledText instanceof android.text.Spannable) {
+                                markdown = (Spanned) smiledText;
+                            } else {
+                                markdown = markwon.toMarkdown(smiledText.toString());
+                            }
+                            markdownCache.put(cacheKey, markdown);
                         }
                     } else {
-                        markdown = markwon.toMarkdown(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler).toString());
+                        CharSequence smiledText = EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler);
+                        if (smiledText instanceof android.text.Spanned || smiledText instanceof android.text.Spannable) {
+                            markdown = (Spanned) smiledText;
+                        } else {
+                            markdown = markwon.toMarkdown(smiledText.toString());
+                        }
                     }
                     myholder.messageTextView.setText(markdown);
                     showConversationSourceIcon(channel, myholder.attachmentIcon);

@@ -184,7 +184,6 @@ object KmAppSettingPreferences {
     fun appendSasToken(url: String?): String? {
         val currentToken = sasToken
         if (url == null || currentToken.isNullOrEmpty()) {
-            Log.d(TAG, "Not appending sasToken. URL is null: ${url == null}, Token is null/empty: ${currentToken.isNullOrEmpty()}")
             return url
         }
         val finalUrl = if (url.contains("?")) {

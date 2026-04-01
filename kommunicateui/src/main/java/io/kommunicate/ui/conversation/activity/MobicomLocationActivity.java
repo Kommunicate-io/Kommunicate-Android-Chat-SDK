@@ -102,6 +102,9 @@ public class MobicomLocationActivity extends KmBaseActivity implements OnMapRead
 
             @Override
             public void onPostExecute(CustomizationSettings customizationSettings) {
+                if (customizationSettings == null) {
+                    customizationSettings = new CustomizationSettings();
+                }
                 MobicomLocationActivity.this.customizationSettings = customizationSettings;
                 progressBar.setVisibility(View.GONE);
                 setupEdgeToEdge(customizationSettings);
@@ -219,6 +222,7 @@ public class MobicomLocationActivity extends KmBaseActivity implements OnMapRead
             googleMap.animateCamera(CameraUpdateFactory.zoomTo(17), 2000, null);
         } else {
             myLocationMarker = googleMap.addMarker(markerOptions.position(position).title(""));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(position));
         }
     }
 

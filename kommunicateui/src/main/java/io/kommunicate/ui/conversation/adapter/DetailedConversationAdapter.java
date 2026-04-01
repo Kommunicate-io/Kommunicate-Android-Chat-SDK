@@ -1260,7 +1260,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 } else {
                     myHolder.mapImageView.setVisibility(View.GONE);
                     myHolder.chatLocation.setVisibility(View.GONE);
-                    markwon.setMarkdown(myHolder.messageTextView, EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler).toString());
+                    markwon.setMarkdown(myHolder.messageTextView, EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler));
                 }
 
                 if (myHolder.messageTextLayout != null) {
@@ -1403,6 +1403,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
             if (showSourceURls(message, position)) {
                 String json = message.getMetadata().get(SOURCE_URL);
                 if (json == null) {
+                    myHolder.urlsLayout.removeAllViews();
+                    myHolder.sourceText.setVisibility(View.GONE);
+                    myHolder.urlsLayout.setVisibility(View.GONE);
+                    myHolder.sourceUrlDivider.setVisibility(View.GONE);
                     return;
                 }
                 myHolder.sourceText.setVisibility(View.VISIBLE);
@@ -1430,6 +1434,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     });
                     myHolder.urlsLayout.addView(view);
                 }
+            } else {
+                myHolder.urlsLayout.removeAllViews();
+                myHolder.sourceText.setVisibility(View.GONE);
+                myHolder.urlsLayout.setVisibility(View.GONE);
+                myHolder.sourceUrlDivider.setVisibility(View.GONE);
             }
         }
     }

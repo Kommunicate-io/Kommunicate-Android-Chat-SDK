@@ -41,7 +41,10 @@ public class LoadSettingsAsyncTask extends AsyncTask<Void, Void, CustomizationSe
         }
         String jsonString = FileUtils.loadSettingsJsonFile(taskContext);
         if (!TextUtils.isEmpty(jsonString)) {
-            return (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
+            CustomizationSettings customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
+            if (customizationSettings != null) {
+                return customizationSettings;
+            }
         }
         return new CustomizationSettings();
     }

@@ -404,6 +404,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             setupEdgeToEdge(customizationSettings, shouldUseLightSystemBars(customizationSettings), themeHelper.getStatusBarColor());
+            if (!customizationSettings.isEnableEdgeToEdge()) {
+                KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+            }
         } else {
             KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
         }

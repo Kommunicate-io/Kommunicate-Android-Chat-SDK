@@ -1260,8 +1260,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 } else {
                     myHolder.mapImageView.setVisibility(View.GONE);
                     myHolder.chatLocation.setVisibility(View.GONE);
-                    markwon.setMarkdown(myHolder.messageTextView, EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler));
-                }
+                    markwon.setMarkdown(myHolder.messageTextView, EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler).toString());                }
 
                 if (myHolder.messageTextLayout != null) {
                     GradientDrawable bgShape;

@@ -134,8 +134,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         channelImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory());
-        final int cacheSize = maxMemory / 8;
+        final long maxMemory = Runtime.getRuntime().maxMemory();
+        final int cacheSize = (int) Math.max(1L, Math.min(maxMemory / 8L, (long) Integer.MAX_VALUE));
         markdownCache = new LruCache<String, Spanned>(cacheSize) {
             @Override
             protected int sizeOf(String key, Spanned value) {

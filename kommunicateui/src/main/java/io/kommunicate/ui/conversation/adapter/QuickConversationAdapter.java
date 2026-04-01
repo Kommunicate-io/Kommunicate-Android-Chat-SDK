@@ -296,20 +296,12 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                         markdown = markdownCache.get(cacheKey);
                         if (markdown == null) {
                             CharSequence smiledText = EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler);
-                            if (smiledText instanceof android.text.Spanned || smiledText instanceof android.text.Spannable) {
-                                markdown = (Spanned) smiledText;
-                            } else {
-                                markdown = markwon.toMarkdown(smiledText.toString());
-                            }
+                            markdown = markwon.toMarkdown(smiledText.toString());
                             markdownCache.put(cacheKey, markdown);
                         }
                     } else {
                         CharSequence smiledText = EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler);
-                        if (smiledText instanceof android.text.Spanned || smiledText instanceof android.text.Spannable) {
-                            markdown = (Spanned) smiledText;
-                        } else {
-                            markdown = markwon.toMarkdown(smiledText.toString());
-                        }
+                        markdown = markwon.toMarkdown(smiledText.toString());
                     }
                     myholder.messageTextView.setText(markdown);
                     showConversationSourceIcon(channel, myholder.attachmentIcon);

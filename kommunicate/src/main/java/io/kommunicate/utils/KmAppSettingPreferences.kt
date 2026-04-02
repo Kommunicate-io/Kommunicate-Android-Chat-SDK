@@ -293,9 +293,7 @@ object KmAppSettingPreferences {
             checkIsSingleThreaded(it.isSingleThreaded)
             ratingBase = it.csatRatingBase
             
-            if (!it.sasT.isNullOrEmpty()) {
-                sasToken = it.sasT
-            }
+            sasToken = it.sasT
         }
         appSetting.response?.let {
             isCollectFeedback = it.isCollectFeedback

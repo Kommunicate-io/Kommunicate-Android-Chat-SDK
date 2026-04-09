@@ -3721,24 +3721,47 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     private void updateWaitingStatus() {
         if (channel != null && channel.getKmStatus() == Channel.IN_QUEUE_CONVERSATION) {
+            final Long teamId = parseLongOrNull(channel.getTeamId());
+            final Long clientGroupId = parseLongOrNull(channel.getClientGroupId());
+            if (teamId == null || clientGroupId == null) {
+                kmInQueueView.setVisibility(GONE);
+                return;
+            }
             WaitingQueueStatusUseCase.executeWithExecutor(
                     requireContext(),
-                    Long.parseLong(channel.getTeamId()),
+                    teamId,
                     new TaskListener<List<Long>>() {
                         @Override
                         public void onSuccess(List<Long> status) {
+                            if (!isAdded() || status == null) {
+                                return;
+                            }
                             kmInQueueView.setVisibility(VISIBLE);
-                            int position = status.indexOf(Long.parseLong(channel.getClientGroupId())) + 1;
+                            int position = status.indexOf(clientGroupId) + 1;
                             kmInQueueView.setupInQueueMessage(position);
                         }
 
                         @Override
                         public void onFailure(@NonNull Exception error) {
+                            if (!isAdded()) {
+                                return;
+                            }
                             Toast.makeText(requireContext(), "Unable to fetch waiting status", Toast.LENGTH_SHORT).show();
                             Sentry.captureException(error);
                             kmInQueueView.setVisibility(GONE);
                         }
                     });
+        }
+    }
+
+    private Long parseLongOrNull(String value) {
+        if (TextUtils.isEmpty(value)) {
+            return null;
+        }
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException ignore) {
+            return null;
         }
     }
 

@@ -35,6 +35,7 @@ import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
 import io.kommunicate.ui.utils.InsetHelper;
 import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.utils.KmUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,6 +89,7 @@ public class KmWebViewActivity extends KmBaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().show();
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
+        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
 
         webView = findViewById(R.id.paymentWebView);
         loadingProgressBar = findViewById(R.id.loadingProgress);

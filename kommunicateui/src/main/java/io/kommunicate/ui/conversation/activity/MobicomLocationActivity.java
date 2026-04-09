@@ -113,6 +113,7 @@ public class MobicomLocationActivity extends KmBaseActivity implements OnMapRead
 
                 toolbar.setBackgroundColor(themeHelper.getToolbarColor());
                 toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
+                KmUtils.setStatusBarColor(MobicomLocationActivity.this, themeHelper.getStatusBarColor());
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
                 int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),

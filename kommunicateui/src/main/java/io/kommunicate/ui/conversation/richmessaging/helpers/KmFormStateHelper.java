@@ -113,7 +113,11 @@ public class KmFormStateHelper {
 
             if (formStateModel.getDropdownFieldArray() != null) {
                 for (int i = 0; i < formStateModel.getDropdownFieldArray().size(); i++) {
-                    formDataMap.put(formPayloadModelList.get(formStateModel.getDropdownFieldArray().keyAt(i)).getDropdownList().getName(), formStateModel.getDropdownFieldArray().valueAt(i).getValue());
+                    int key = formStateModel.getDropdownFieldArray().keyAt(i);
+                    KmFormPayloadModel.Options selectedOption = formStateModel.getDropdownFieldArray().valueAt(i);
+                    if (selectedOption != null && selectedOption.getValue() != null) {
+                        formDataMap.put(formPayloadModelList.get(key).getDropdownList().getName(), selectedOption.getValue());
+                    }
                 }
             }
         }

@@ -105,7 +105,8 @@ public class KmFormStateModel extends JsonMarker {
         }
         SparseArray<KmFormPayloadModel.Options> result = new SparseArray<>();
         for (int i=0; i<dropdownFieldArray.size(); i++) {
-            result.put(dropdownFieldArray.keyAt(i), GsonUtils.getObjectFromJson(dropdownFieldArray.get(i), KmFormPayloadModel.Options.class));
+            int key = dropdownFieldArray.keyAt(i);
+            result.put(key, GsonUtils.getObjectFromJson(dropdownFieldArray.get(key), KmFormPayloadModel.Options.class));
         }
         return result;
     }
@@ -113,7 +114,8 @@ public class KmFormStateModel extends JsonMarker {
     public void setDropdownFieldArray(SparseArray<KmFormPayloadModel.Options> dropdownFieldArray) {
         SparseArray<String> result = new SparseArray<>();
         for (int i=0; i<dropdownFieldArray.size(); i++) {
-            result.put(dropdownFieldArray.keyAt(i), GsonUtils.getJsonFromObject(dropdownFieldArray.get(i), KmFormPayloadModel.Options.class));
+            int key = dropdownFieldArray.keyAt(i);
+            result.put(key, GsonUtils.getJsonFromObject(dropdownFieldArray.get(key), KmFormPayloadModel.Options.class));
         }
         this.dropdownFieldArray = result;
     }

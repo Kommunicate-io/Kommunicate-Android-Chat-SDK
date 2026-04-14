@@ -86,7 +86,7 @@ public class KmWebViewActivity extends KmBaseActivity {
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(themeHelper.getPrimaryColor()));
         getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(customizationSettings.isShowBackButtonOnFaqPage());
         getSupportActionBar().show();
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());

@@ -16,7 +16,7 @@ android {
         targetSdkVersion 35
         minSdkVersion 21
         versionCode 1
-        versionName "2.14.6"
+        versionName "2.16.0"
         buildToolsVersion = '34.0.0'
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
@@ -61,6 +61,8 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.core.ktx
     implementation libs.multidex
+    implementation "io.noties.markwon:core:4.6.2"
+    implementation "io.noties.markwon:html:4.6.2"
 }
 
 task sourcesJar(type: Jar) {

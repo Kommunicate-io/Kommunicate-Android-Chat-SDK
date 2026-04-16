@@ -52,7 +52,36 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.vectordrawable.graphics.drawable.AnimatorInflaterCompat;
 
+import com.bumptech.glide.Glide;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
+import java.io.File;
+import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.commons.commons.core.utils.DateUtils;
+import io.kommunicate.commons.commons.core.utils.LocationUtils;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.commons.commons.image.ImageCache;
+import io.kommunicate.commons.commons.image.ImageLoader;
+import io.kommunicate.commons.commons.image.ImageUtils;
+import io.kommunicate.commons.emoticon.EmojiconHandler;
+import io.kommunicate.commons.emoticon.EmoticonUtils;
+import io.kommunicate.commons.file.FileUtils;
+import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.contact.Contact;
 import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
@@ -72,7 +101,6 @@ import io.kommunicate.devkit.contact.MobiComVCFParser;
 import io.kommunicate.devkit.contact.VCFContactData;
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.KmFontManager;
-import io.kommunicate.ui.KommunicateSetting;
 import io.kommunicate.ui.R;
 import io.kommunicate.ui.attachmentview.KmDocumentView;
 import io.kommunicate.ui.conversation.ConversationUIService;
@@ -90,39 +118,10 @@ import io.kommunicate.ui.uilistener.ContextMenuClickListener;
 import io.kommunicate.ui.uilistener.KmStoragePermission;
 import io.kommunicate.ui.uilistener.KmStoragePermissionListener;
 import io.kommunicate.ui.utils.KmViewHelper;
-import io.kommunicate.commons.commons.core.utils.DateUtils;
-import io.kommunicate.commons.commons.core.utils.LocationUtils;
-import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.commons.image.ImageCache;
-import io.kommunicate.commons.commons.image.ImageLoader;
-import io.kommunicate.commons.commons.image.ImageUtils;
-import io.kommunicate.commons.emoticon.EmojiconHandler;
-import io.kommunicate.commons.emoticon.EmoticonUtils;
-import io.kommunicate.commons.file.FileUtils;
-import io.kommunicate.commons.json.GsonUtils;
-import io.kommunicate.commons.people.channel.Channel;
-import io.kommunicate.commons.people.contact.Contact;
-import com.bumptech.glide.Glide;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONObject;
-
-import java.io.File;
-import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-
-import androidx.vectordrawable.graphics.drawable.AnimatorInflaterCompat;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
+import io.noties.markwon.Markwon;
 import io.sentry.Hint;
 import io.sentry.Sentry;
 
@@ -175,6 +174,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
     private List<WebView> webViews = new ArrayList<>();
     private boolean useInnerTimeStampDesign;
     private boolean isDarkModeEnabled = false;
+    private Markwon markwon;
     private static final String IMAGE = "image";
     private static final String VIDEO = "video";
     private static final String AUDIO = "audio";
@@ -260,6 +260,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this.imageCache = ImageCache.getInstance(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         this.messageList = messageList;
         this.customizationSettings = customizationSettings;
+        this.markwon = Markwon.create(context);
         geoApiKey = KommunicateSettings.getInstance(context).getGeoApiKey();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override
@@ -468,7 +469,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                         }
                     }
                 }
-            } else if (type == 6)  {
+            } else if (type == 6) {
                 MyViewHolder6 myViewholder6 = (MyViewHolder6) holder;
                 if (message.getMetadata() != null) {
                     String json = message.getMetadata().get(FEEDBACK);
@@ -483,10 +484,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     if (KmAppSettingPreferences.getRatingBase() != 3) {
                         switch (ratingValue) {
                             case 1:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context,  R.drawable.star));
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.star));
                                 break;
                             case 2:
-                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context,  R.drawable.ic_two_star_filled));
+                                myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_two_star_filled));
                                 break;
                             case 4:
                                 myViewholder6.imageViewFeedbackRating.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_four_star_filled));
@@ -572,8 +573,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         dialogMessage.setText(message);
 
         ImageButton btnClose = dialog.findViewById(R.id.dialog_close);
-        btnClose.setOnClickListener( view -> {
-                dialog.dismiss();
+        btnClose.setOnClickListener(view -> {
+            dialog.dismiss();
         });
 
         dialog.show();
@@ -1259,8 +1260,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 } else {
                     myHolder.mapImageView.setVisibility(View.GONE);
                     myHolder.chatLocation.setVisibility(View.GONE);
-                    myHolder.messageTextView.setText(EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler));
-                }
+                    markwon.setMarkdown(myHolder.messageTextView, EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler).toString());                }
 
                 if (myHolder.messageTextLayout != null) {
                     GradientDrawable bgShape;
@@ -1401,18 +1401,23 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
             if (showSourceURls(message, position)) {
                 String json = message.getMetadata().get(SOURCE_URL);
-                if(json == null) {
+                if (json == null) {
+                    myHolder.urlsLayout.removeAllViews();
+                    myHolder.sourceText.setVisibility(View.GONE);
+                    myHolder.urlsLayout.setVisibility(View.GONE);
+                    myHolder.sourceUrlDivider.setVisibility(View.GONE);
                     return;
                 }
                 myHolder.sourceText.setVisibility(View.VISIBLE);
                 myHolder.urlsLayout.setVisibility(View.VISIBLE);
                 myHolder.sourceUrlDivider.setVisibility(View.VISIBLE);
 
-                Type listType = new TypeToken<List<SourceUrl>>() {}.getType();
+                Type listType = new TypeToken<List<SourceUrl>>() {
+                }.getType();
                 List<SourceUrl> links = GsonUtils.getObjectFromJson(json, listType);
 
                 myHolder.urlsLayout.removeAllViews();
-                for(SourceUrl url : links) {
+                for (SourceUrl url : links) {
                     SpannableString content = new SpannableString(url.getTitle());
                     content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
 
@@ -1420,7 +1425,7 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                             .from(myHolder.urlsLayout.getContext())
                             .inflate(R.layout.km_link_view, null, false);
 
-                    TextView tv =  view.findViewById(R.id.src_urls_textview);
+                    TextView tv = view.findViewById(R.id.src_urls_textview);
                     tv.setText(content);
 
                     view.setOnClickListener((data) -> {
@@ -1428,6 +1433,11 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     });
                     myHolder.urlsLayout.addView(view);
                 }
+            } else {
+                myHolder.urlsLayout.removeAllViews();
+                myHolder.sourceText.setVisibility(View.GONE);
+                myHolder.urlsLayout.setVisibility(View.GONE);
+                myHolder.sourceUrlDivider.setVisibility(View.GONE);
             }
         }
     }
@@ -2135,4 +2145,3 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 }
-

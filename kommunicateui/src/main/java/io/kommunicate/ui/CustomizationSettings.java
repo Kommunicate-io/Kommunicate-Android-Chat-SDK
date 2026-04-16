@@ -145,6 +145,7 @@ public class CustomizationSettings extends JsonMarker {
     private boolean rateConversationMenuOption;
     private boolean javaScriptEnabled = true;
     private boolean hideChatInHelpcenter = true;
+    private boolean showBackButtonOnFaqPage = true;
     private boolean checkboxAsMultipleButton = false;
     private String staticTopMessage = "";
     private String staticTopIcon = "";
@@ -160,6 +161,15 @@ public class CustomizationSettings extends JsonMarker {
     private int minimumCompressionThresholdForVideosInMB = 5;
     private boolean hideAttachmentOptionsWithBots = false;
     private boolean hideChatBarWithBots = false;
+    private boolean enableEdgeToEdge = true;
+
+    public boolean isEnableEdgeToEdge() {
+        return enableEdgeToEdge;
+    }
+
+    public void setEnableEdgeToEdge(boolean enableEdgeToEdge) {
+        this.enableEdgeToEdge = enableEdgeToEdge;
+    }
 
     public boolean getUseDarkMode() {
         return useDarkMode;
@@ -793,6 +803,10 @@ public class CustomizationSettings extends JsonMarker {
 
     public boolean isHideChatInHelpcenter() {
         return hideChatInHelpcenter;
+    }
+
+    public boolean isShowBackButtonOnFaqPage() {
+        return showBackButtonOnFaqPage;
     }
 
     public boolean isToolbarTitleCenterAligned() {

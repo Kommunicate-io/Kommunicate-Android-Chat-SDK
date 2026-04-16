@@ -175,9 +175,13 @@ public class KmThemeHelper implements KmCallback {
         return toolbarColor;
     }
 
+    /**
+     * @deprecated Deprecated due to Android 15 edge-to-edge migration.
+     */
+    @Deprecated
     public int getStatusBarColor() {
-        statusBarColor = parseColorWithDefault(customizationSettings.getStatusBarColor().get(isDarkModeEnabledForSDK() ? 1 : 0),
-                parseColorWithDefault(customizationSettings.getToolbarColor().get(isDarkModeEnabledForSDK() ? 1 : 0), getPrimaryColor()));
+        String colorStr = isDarkModeEnabledForSDK() ? customizationSettings.getStatusBarColor().get(1) : customizationSettings.getStatusBarColor().get(0);
+        statusBarColor = parseColorWithDefault(colorStr, getToolbarColor());
         return statusBarColor;
     }
 
@@ -187,7 +191,7 @@ public class KmThemeHelper implements KmCallback {
     }
 
     public boolean isDarkModeEnabledForSDK() {
-        return !customizationSettings.isAgentApp() && customizationSettings.getUseDarkMode() && ((context.getResources().getConfiguration().uiMode &
+        return customizationSettings.getUseDarkMode() && ((context.getResources().getConfiguration().uiMode &
                 Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
     }
 

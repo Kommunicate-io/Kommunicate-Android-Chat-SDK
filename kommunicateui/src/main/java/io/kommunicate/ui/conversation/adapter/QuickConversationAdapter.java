@@ -5,13 +5,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.util.LruCache;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +24,25 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import io.kommunicate.commons.commons.core.utils.DateUtils;
+import io.kommunicate.commons.commons.image.ImageLoader;
+import io.kommunicate.commons.commons.image.ImageUtils;
+import io.kommunicate.commons.emoticon.EmojiconHandler;
+import io.kommunicate.commons.emoticon.EmoticonUtils;
+import io.kommunicate.commons.people.channel.Channel;
+import io.kommunicate.commons.people.channel.ChannelUtils;
+import io.kommunicate.commons.people.contact.Contact;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.api.conversation.database.MessageDatabaseService;
@@ -40,24 +58,8 @@ import io.kommunicate.ui.conversation.ConversationUIService;
 import io.kommunicate.ui.conversation.activity.MobiComKitActivityInterface;
 import io.kommunicate.ui.instruction.InstructionUtil;
 import io.kommunicate.ui.utils.KmViewHelper;
-import io.kommunicate.commons.commons.core.utils.DateUtils;
-import io.kommunicate.commons.commons.image.ImageLoader;
-import io.kommunicate.commons.commons.image.ImageUtils;
-import io.kommunicate.commons.emoticon.EmojiconHandler;
-import io.kommunicate.commons.emoticon.EmoticonUtils;
-import io.kommunicate.commons.people.channel.Channel;
-import io.kommunicate.commons.people.channel.ChannelUtils;
-import io.kommunicate.commons.people.contact.Contact;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.kommunicate.utils.KmUtils;
+import io.noties.markwon.Markwon;
 
 /**
  * Created by adarsh on 4/7/15.
@@ -94,6 +96,8 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private int loggedInUserRoleType;
     private String loggedInUserId;
     private boolean isDarkMode;
+    private Markwon markwon;
+    private LruCache<String, Spanned> markdownCache;
 
     public void setAlCustomizationSettings(CustomizationSettings customizationSettings) {
         this.customizationSettings = customizationSettings;
@@ -109,6 +113,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         this.contactService = new AppContactService(context);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.messageList = messageList;
+        this.markwon = Markwon.create(context);
         conversationUIService = new ConversationUIService((FragmentActivity) context);
         loggedInUserRoleType = MobiComUserPreference.getInstance(context).getUserRoleType();
         loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();
@@ -129,6 +134,14 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         channelImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
         highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
+        final long maxMemory = Runtime.getRuntime().maxMemory();
+        final int cacheSize = (int) Math.max(1L, Math.min(maxMemory / 8L, (long) Integer.MAX_VALUE));
+        markdownCache = new LruCache<String, Spanned>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Spanned value) {
+                return value.toString().getBytes().length;
+            }
+        };
     }
 
     @Override
@@ -277,7 +290,20 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 }
                 else {
                     String messageSubString = (!TextUtils.isEmpty(message.getMessage()) ? message.getMessage().substring(0, Math.min(message.getMessage().length(), 50)) : "");
-                    myholder.messageTextView.setText(EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler));
+                    Spanned markdown;
+                    if (!TextUtils.isEmpty(message.getKeyString())) {
+                        String cacheKey = message.getKeyString() + ":" + messageSubString;
+                        markdown = markdownCache.get(cacheKey);
+                        if (markdown == null) {
+                            CharSequence smiledText = EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler);
+                            markdown = markwon.toMarkdown(smiledText.toString());
+                            markdownCache.put(cacheKey, markdown);
+                        }
+                    } else {
+                        CharSequence smiledText = EmoticonUtils.getSmiledText(context, messageSubString, emojiconHandler);
+                        markdown = markwon.toMarkdown(smiledText.toString());
+                    }
+                    myholder.messageTextView.setText(markdown);
                     showConversationSourceIcon(channel, myholder.attachmentIcon);
                     KmUtils.setIconInsideTextView(myholder.messageTextView);
                 }

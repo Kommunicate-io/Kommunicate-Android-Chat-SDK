@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 public class ListKmRichMessage extends KmRichMessage {
 
@@ -61,7 +62,7 @@ public class ListKmRichMessage extends KmRichMessage {
 
                     if (!TextUtils.isEmpty(payload.getHeaderImgSrc())) {
                         headerImage.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(payload.getHeaderImgSrc()).into(headerImage);
+                        Glide.with(context).load(KmAppSettingPreferences.appendSasToken(payload.getHeaderImgSrc())).into(headerImage);
                     } else {
                         headerImage.setVisibility(View.GONE);
                     }

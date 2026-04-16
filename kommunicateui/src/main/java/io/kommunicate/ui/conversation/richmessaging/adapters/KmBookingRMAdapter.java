@@ -37,6 +37,7 @@ import java.util.List;
 
 import static android.view.View.GONE;
 import static io.kommunicate.ui.conversation.richmessaging.types.ListKmRichMessage.MAX_ACTIONS_LIMIT;
+import io.kommunicate.utils.KmAppSettingPreferences;
 
 /**
  * Created by ashish on 28/02/18.
@@ -321,7 +322,7 @@ public class KmBookingRMAdapter extends KmRichMessageAdapter {
             viewHolder.productPrice.setText(context.getString(R.string.rupee_symbol, String.valueOf(hotel.getPrice().getRoomPrice())));
 
             if (!TextUtils.isEmpty(hotel.getHotelPicture())) {
-                Glide.with(context).load(hotel.getHotelPicture()).into(viewHolder.productImage);
+                Glide.with(context).load(KmAppSettingPreferences.appendSasToken(hotel.getHotelPicture())).into(viewHolder.productImage);
             } else {
                 viewHolder.productImage.setImageBitmap(null);
             }
@@ -359,7 +360,7 @@ public class KmBookingRMAdapter extends KmRichMessageAdapter {
             final KmRichMessageModel.KmPayloadModel payload = payloadList.get(position);
 
             if (!TextUtils.isEmpty(payload.getHeaderImageUrl())) {
-                Glide.with(context).load(payload.getHeaderImageUrl()).into(viewHolder.productImage);
+                Glide.with(context).load(KmAppSettingPreferences.appendSasToken(payload.getHeaderImageUrl())).into(viewHolder.productImage);
                 viewHolder.productImage.setVisibility(View.VISIBLE);
                 viewHolder.productImageOverlay.setVisibility(View.VISIBLE);
                 viewHolder.productPrice.setBackground(context.getResources().getDrawable(R.drawable.km_rich_messaging_price_border));
@@ -440,7 +441,7 @@ public class KmBookingRMAdapter extends KmRichMessageAdapter {
             }
 
             if (!TextUtils.isEmpty(hotel.getHotelPicture())) {
-                Glide.with(context).load(hotel.getHotelPicture()).into(holder.productImage);
+                Glide.with(context).load(KmAppSettingPreferences.appendSasToken(hotel.getHotelPicture())).into(holder.productImage);
             } else {
                 holder.productImage.setImageDrawable(null);
             }

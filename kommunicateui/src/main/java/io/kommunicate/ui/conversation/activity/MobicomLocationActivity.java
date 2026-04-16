@@ -12,35 +12,19 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
-
-import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
-import io.kommunicate.ui.kommunicate.views.KmToast;
-import io.kommunicate.ui.utils.InsetHelper;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
-import io.kommunicate.ui.CustomizationSettings;
-import io.kommunicate.ui.R;
-import io.kommunicate.ui.conversation.ConversationUIService;
-import io.kommunicate.ui.instruction.KmPermissions;
-import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
-import io.kommunicate.commons.commons.core.utils.Utils;
-import io.kommunicate.commons.file.FileUtils;
-import io.kommunicate.commons.json.GsonUtils;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -53,13 +37,25 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 
+import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
+import io.kommunicate.commons.commons.core.utils.Utils;
+import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
+import io.kommunicate.ui.CustomizationSettings;
+import io.kommunicate.ui.R;
+import io.kommunicate.ui.activities.KmBaseActivity;
+import io.kommunicate.ui.conversation.task.LoadSettingsAsyncTask;
+import io.kommunicate.ui.instruction.KmPermissions;
+import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
+import io.kommunicate.ui.kommunicate.views.KmToast;
+import io.kommunicate.ui.utils.InsetHelper;
 import io.kommunicate.utils.KmUtils;
 
-
-public class MobicomLocationActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
+public class MobicomLocationActivity extends KmBaseActivity implements OnMapReadyCallback, LocationListener, GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks, ActivityCompat.OnRequestPermissionsResultCallback {
 
     SupportMapFragment mapFragment;
+    GoogleMap googleMap;
     LatLng position;
     RelativeLayout sendLocation;
     private LinearLayout layout;
@@ -68,59 +64,80 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
     protected GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     public static final int LOCATION_SERVICE_ENABLE = 1001;
-    protected static final long UPDATE_INTERVAL = 5;
-    protected static final long FASTEST_INTERVAL = 1;
+    protected static final long UPDATE_INTERVAL = 5000; // 5 seconds
+    protected static final long FASTEST_INTERVAL = 1000; // 1 second
     private ConnectivityReceiver connectivityReceiver;
     CustomizationSettings customizationSettings;
     Marker myLocationMarker;
     KmPermissions kmPermissions;
     static final String TAG = "MobicomLocationActivity";
+    private static final String PERF_TAG = "MobiLoc_Perf";
     private static final String LATITUDE = "latitude";
     private static final String LONGITUDE = "longitude";
     private LinearLayout locationLinearLayout;
     private TextView sendLocationText;
     private Toolbar toolbar;
     private KmThemeHelper themeHelper;
-
+    private ProgressBar progressBar;
+    private LoadSettingsAsyncTask loadSettingsAsyncTask;
+    private long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        startTime = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
+        customizationSettings = new CustomizationSettings();
         setContentView(R.layout.activity_km_location);
 
         toolbar = findViewById(R.id.toolbar_map_screen);
+        progressBar = findViewById(R.id.km_progress_bar);
         toolbar.setTitle(getResources().getString(R.string.send_location));
         setSupportActionBar(toolbar);
-        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
-        if (!TextUtils.isEmpty(jsonString)) {
-            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
-        } else {
-            customizationSettings = new CustomizationSettings();
-        }
 
-        configureSentryWithKommunicateUI(this, customizationSettings.toString());
-        themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
+        loadSettingsAsyncTask = new LoadSettingsAsyncTask(this, new LoadSettingsAsyncTask.TaskListener() {
+            @Override
+            public void onPreExecute() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
 
-        toolbar.setBackgroundColor(themeHelper.getToolbarColor());
-        toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            @Override
+            public void onPostExecute(CustomizationSettings customizationSettings) {
+                if (customizationSettings == null) {
+                    customizationSettings = new CustomizationSettings();
+                }
+                MobicomLocationActivity.this.customizationSettings = customizationSettings;
+                progressBar.setVisibility(View.GONE);
+                setupEdgeToEdge(customizationSettings);
+                configureSentryWithKommunicateUI(MobicomLocationActivity.this, customizationSettings.toString());
+                themeHelper = KmThemeHelper.getInstance(MobicomLocationActivity.this, customizationSettings);
 
-        int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
-                themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0), themeHelper.getPrimaryColor()));
-        KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), iconColor);
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+                toolbar.setBackgroundColor(themeHelper.getToolbarColor());
+                toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
+                KmUtils.setStatusBarColor(MobicomLocationActivity.this, themeHelper.getStatusBarColor());
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        layout = (LinearLayout) findViewById(R.id.footerAd);
-        sendLocation = (RelativeLayout) findViewById(R.id.sendLocation);
+                int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
+                        themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0), themeHelper.getPrimaryColor()));
+                KmUtils.setGradientSolidColor(findViewById(R.id.locationIcon), iconColor);
+
+                if (themeHelper.isDarkModeEnabledForSDK()) {
+                    locationLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
+                    sendLocationText.setTextColor(getResources().getColor(R.color.white));
+                }
+            }
+        });
+        loadSettingsAsyncTask.execute();
+
+        layout = findViewById(R.id.footerAd);
+        sendLocation = findViewById(R.id.sendLocation);
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         kmPermissions = new KmPermissions(MobicomLocationActivity.this, layout);
         locationLinearLayout = findViewById(R.id.km_location_linear_layout);
         sendLocationText = findViewById(R.id.km_send_location_text);
-        if (themeHelper.isDarkModeEnabledForSDK()) {
-            locationLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
-            sendLocationText.setTextColor(getResources().getColor(R.color.white));
-        }
-        googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+
+        mapFragment.getMapAsync(this);
+
+        googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API).build();
@@ -146,51 +163,38 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         );
     }
 
-
     @Override
     public void onMapReady(final GoogleMap googleMap) {
+        this.googleMap = googleMap;
         try {
             if (mCurrentLocation != null) {
-                position = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                googleMap.clear();
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.draggable(true);
-                if (myLocationMarker == null) {
-                    myLocationMarker = googleMap.addMarker(markerOptions.position(position).title(""));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 20));
-                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(17), 2000, null);
-                } else {
-                    googleMap.addMarker(markerOptions.position(myLocationMarker.getPosition()).title(""));
-                }
-                googleMap.setMyLocationEnabled(true);
-                googleMap.getUiSettings().setZoomGesturesEnabled(true);
-                googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-                    @Override
-                    public void onMarkerDragStart(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDrag(Marker marker) {
-
-                    }
-
-                    @Override
-                    public void onMarkerDragEnd(Marker marker) {
-                        if (myLocationMarker != null) {
-                            myLocationMarker.remove();
-                        }
-                        MarkerOptions newMarkerOptions = new MarkerOptions();
-                        newMarkerOptions.draggable(true);
-                        myLocationMarker = googleMap.addMarker(newMarkerOptions.position(marker.getPosition()).title(""));
-                    }
-                });
+                Utils.printLog(this, PERF_TAG, "onMapReady: Found existing location. Updating camera.");
+                updateMapCamera(mCurrentLocation);
             }
+
+            googleMap.setMyLocationEnabled(true);
+            googleMap.getUiSettings().setZoomGesturesEnabled(true);
+            googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+                @Override
+                public void onMarkerDragStart(Marker marker) { }
+
+                @Override
+                public void onMarkerDrag(Marker marker) { }
+
+                @Override
+                public void onMarkerDragEnd(Marker marker) {
+                    if (myLocationMarker != null) {
+                        myLocationMarker.remove();
+                    }
+                    MarkerOptions newMarkerOptions = new MarkerOptions();
+                    newMarkerOptions.draggable(true);
+                    myLocationMarker = googleMap.addMarker(newMarkerOptions.position(marker.getPosition()).title(""));
+                }
+            });
 
             sendLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utils.printLog(MobicomLocationActivity.this, TAG, "On click of send location button");
                     if (myLocationMarker != null) {
                         Intent intent = new Intent();
                         intent.putExtra(LATITUDE, myLocationMarker.getPosition().latitude);
@@ -203,26 +207,43 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         } catch (Exception e) {
             Utils.printLog(MobicomLocationActivity.this, TAG, "Check if location permission are added");
         }
+    }
 
+    private void updateMapCamera(Location location) {
+        if (googleMap == null) {
+            return;
+        }
+        position = new LatLng(location.getLatitude(), location.getLongitude());
+        googleMap.clear();
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.draggable(true);
+        if (myLocationMarker == null) {
+            myLocationMarker = googleMap.addMarker(markerOptions.position(position).title(""));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 20));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(17), 2000, null);
+        } else {
+            myLocationMarker = googleMap.addMarker(markerOptions.position(position).title(""));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(position));
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        new ConversationUIService(this).onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOCATION_SERVICE_ENABLE) {
-            if (((LocationManager) getSystemService(Context.LOCATION_SERVICE))
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 googleApiClient.connect();
             } else {
                 KmToast.error(MobicomLocationActivity.this, R.string.unable_to_fetch_location, Toast.LENGTH_LONG).show();
             }
-            return;
         }
     }
 
     public void processingLocation() {
-        if (!((LocationManager) getSystemService(Context.LOCATION_SERVICE))
-                .isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        boolean isGpsProviderEnabled = ((LocationManager) getSystemService(Context.LOCATION_SERVICE)).isProviderEnabled(LocationManager.GPS_PROVIDER);
+        Utils.printLog(this, PERF_TAG, "processingLocation: GPS provider enabled = " + isGpsProviderEnabled + " at " + (System.currentTimeMillis() - startTime) + "ms");
+
+        if (!isGpsProviderEnabled) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(R.string.location_services_disabled_title)
                     .setMessage(R.string.location_services_disabled_message)
@@ -247,7 +268,6 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         }
     }
 
-
     public void processLocation() {
         if (Utils.hasMarshmallow()) {
             kmPermissions.checkRuntimePermissionForLocationActivity();
@@ -264,6 +284,15 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     @Override
     protected void onStop() {
@@ -275,57 +304,49 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.w(TAG,
-                "onConnectionSuspended() called.");
-
     }
 
     @Override
     public void onConnected(Bundle bundle) {
+        Utils.printLog(this, PERF_TAG, "onConnected: Start at " + (System.currentTimeMillis() - startTime) + "ms");
         try {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
+            boolean fineLocationPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+            boolean coarseLocationPermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+            Utils.printLog(this, PERF_TAG, "onConnected: Permissions fine=" + fineLocationPermission + ", coarse=" + coarseLocationPermission);
+
+            if (!fineLocationPermission && !coarseLocationPermission) {
+                Utils.printLog(this, PERF_TAG, "onConnected: No location permissions, exiting.");
                 return;
             }
-            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if (mCurrentLocation == null) {
-                KmToast.error(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
-                locationRequest = new LocationRequest();
-                locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                locationRequest.setInterval(UPDATE_INTERVAL);
-                locationRequest.setFastestInterval(FASTEST_INTERVAL);
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-            }
 
-            if (mCurrentLocation != null) {
-                mapFragment.getMapAsync(this);
+            // Bypassing getLastLocation() due to ANR. Directly requesting fresh location.
+            KmToast.error(this, R.string.waiting_for_current_location, Toast.LENGTH_SHORT).show();
+            locationRequest = new LocationRequest();
+            locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            locationRequest.setInterval(UPDATE_INTERVAL);
+            locationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+            try {
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+                Utils.printLog(this, PERF_TAG, "onConnected: requestLocationUpdates call succeeded at " + (System.currentTimeMillis() - startTime) + "ms");
+            } catch (Exception e) {
+                Utils.printLog(this, PERF_TAG, "onConnected: requestLocationUpdates FAILED with exception: " + e.getMessage());
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Utils.printLog(this, PERF_TAG, "onConnected: FAILED with general exception: " + e.getMessage());
         }
-
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        Utils.printLog(this, PERF_TAG, "onLocationChanged: New location received at " + (System.currentTimeMillis() - startTime) + "ms");
         try {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-            boolean reloadMap = false;
             if (location != null) {
-                if (mCurrentLocation == null) {
-                    reloadMap = true;
-                }
                 mCurrentLocation = location;
-                if (reloadMap) {
-                    mapFragment.getMapAsync(this);
-                }
+                updateMapCamera(location);
             }
         } catch (Exception e) {
         }
@@ -343,11 +364,14 @@ public class MobicomLocationActivity extends AppCompatActivity implements OnMapR
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Utils.printLog(this, PERF_TAG, "onConnectionFailed: " + connectionResult + " at " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     @Override
     protected void onDestroy() {
+        if (loadSettingsAsyncTask != null) {
+            loadSettingsAsyncTask.cancel(true);
+        }
         super.onDestroy();
         try {
             if (connectivityReceiver != null) {

@@ -18,7 +18,7 @@ android {
         compileSdk 34
         targetSdkVersion 35
         versionCode 1
-        versionName "2.14.5"
+        versionName "2.16.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "KOMMUNICATE_VERSION", "\"" + versionName + "\""
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
@@ -54,6 +54,8 @@ dependencies {
     implementation libs.core.ktx
     implementation 'net.zetetic:sqlcipher-android:4.9.0@aar'
     implementation 'androidx.sqlite:sqlite-framework:2.2.0'
+    implementation "io.noties.markwon:core:4.6.2"
+    implementation "io.noties.markwon:html:4.6.2"
     api libs.org.eclipse.paho.client.mqttv3
     api libs.localbroadcastmanager
     api libs.appcompat

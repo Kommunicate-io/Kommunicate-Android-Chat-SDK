@@ -1,11 +1,8 @@
 package io.kommunicate.ui.conversation.richmessaging.adapters;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +10,28 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import io.kommunicate.devkit.api.conversation.Message;
-import io.kommunicate.ui.R;
-import io.kommunicate.ui.conversation.richmessaging.callbacks.KmRichMessageListener;
-import io.kommunicate.ui.conversation.richmessaging.models.KmRichMessageModel;
-import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
-import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
-import com.bumptech.glide.Glide;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.ui.R;
+import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
+import io.kommunicate.ui.conversation.richmessaging.callbacks.KmRichMessageListener;
+import io.kommunicate.ui.conversation.richmessaging.models.KmRichMessageModel;
+import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
+import io.kommunicate.utils.KmAppSettingPreferences;
+
 public class KmListRMAdapter extends KmRichMessageAdapter {
 
+    private static final String TAG = "KmListRMAdapter";
     private List<KmRichMessageModel.KmElementModel> elementList;
     private Map<String, Object> replyMetadata;
 
@@ -68,10 +74,23 @@ public class KmListRMAdapter extends KmRichMessageAdapter {
 
         if (!TextUtils.isEmpty(element.getImgSrc())) {
             holder.listImage.setVisibility(View.VISIBLE);
-            Glide.with(context).load(element.getImgSrc()).into(holder.listImage);
+            Glide.with(context).load(getGlideUrl(element.getImgSrc())).into(holder.listImage);
         } else {
             holder.listImage.setVisibility(View.GONE);
         }
+    }
+
+    private GlideUrl getGlideUrl(String imageUrl) {
+        LazyHeaders.Builder builder = new LazyHeaders.Builder();
+        HashMap<String, String> headers = KmAppSettingPreferences.getUploadOverrideHeader();
+        if (headers != null) {
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                builder.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+        String finalImageUrl = KmAppSettingPreferences.appendSasToken(imageUrl);
+        Log.d(TAG, "Image URL built with SAS token");
+        return new GlideUrl(finalImageUrl, builder.build());
     }
 
     @Override

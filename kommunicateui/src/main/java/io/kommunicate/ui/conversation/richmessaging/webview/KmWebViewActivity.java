@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -30,11 +29,13 @@ import android.widget.Toast;
 
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
+import io.kommunicate.ui.activities.KmBaseActivity;
 import io.kommunicate.ui.conversation.richmessaging.KmRichMessage;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
 import io.kommunicate.ui.utils.InsetHelper;
 import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.utils.KmUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,9 +46,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import io.kommunicate.utils.KmConstants;
-import io.kommunicate.utils.KmUtils;
 
-public class KmWebViewActivity extends AppCompatActivity {
+public class KmWebViewActivity extends KmBaseActivity {
 
     WebView webView;
     Toolbar toolbar;
@@ -71,14 +71,14 @@ public class KmWebViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.km_activity_payment);
-
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
             customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
         } else {
             customizationSettings = new CustomizationSettings();
         }
+        setupEdgeToEdge(customizationSettings);
+        setContentView(R.layout.km_activity_payment);
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
 
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -86,10 +86,9 @@ public class KmWebViewActivity extends AppCompatActivity {
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(themeHelper.getPrimaryColor()));
         getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(customizationSettings.isShowBackButtonOnFaqPage());
         getSupportActionBar().show();
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
-
         KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
 
         webView = findViewById(R.id.paymentWebView);

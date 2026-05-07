@@ -11,10 +11,14 @@ import androidx.appcompat.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import android.text.TextUtils;
 import android.view.View;
@@ -53,6 +57,7 @@ public class KmWebViewActivity extends KmBaseActivity {
     Toolbar toolbar;
     private Map<String, String> txnData;
     private boolean isPaymentRequest = false;
+    private boolean isHelpCenterFaqPage = false;
     CustomizationSettings customizationSettings;
     private ProgressBar loadingProgressBar;
     private static final String JS_INTERFACE_NAME = "AlWebViewScreen";
@@ -106,6 +111,11 @@ public class KmWebViewActivity extends KmBaseActivity {
                 String helpCenterUrl = alWebViewBundle.getString(KmConstants.KM_HELPCENTER_URL);
 
                 if (!TextUtils.isEmpty(helpCenterUrl)) {
+                    isHelpCenterFaqPage = true;
+                    boolean showFaqStatusBar = customizationSettings.isShowStatusBarOnFaqPage();
+                    boolean showFaqToolbar = customizationSettings.isShowBackButtonOnFaqPage();
+                    applyFaqHeaderVisibility(showFaqToolbar);
+                    applyFaqStatusBarVisibility(showFaqStatusBar);
                     loadUrl(helpCenterUrl);
                     webView.getSettings().setBuiltInZoomControls(false);
                     webView.getSettings().setDisplayZoomControls(false);
@@ -143,6 +153,31 @@ public class KmWebViewActivity extends KmBaseActivity {
         setupInsets();
     }
 
+    private void applyFaqHeaderVisibility(boolean showFaqToolbar) {
+        if (showFaqToolbar || getSupportActionBar() == null) {
+            return;
+        }
+        getSupportActionBar().hide();
+        toolbar.setVisibility(View.GONE);
+    }
+
+    private void applyFaqStatusBarVisibility(boolean showFaqStatusBar) {
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        if (controller == null) {
+            return;
+        }
+        if (showFaqStatusBar) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+            controller.show(WindowInsetsCompat.Type.statusBars());
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+            controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            controller.hide(WindowInsetsCompat.Type.statusBars());
+        }
+    }
+
     private void setupDownloadListener(WebView webView) {
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             try {
@@ -174,6 +209,9 @@ public class KmWebViewActivity extends KmBaseActivity {
     }
 
     private void setupInsets() {
+        if (isHelpCenterFaqPage && !customizationSettings.isShowStatusBarOnFaqPage()) {
+            return;
+        }
         InsetHelper.configureSystemInsets(
                 toolbar,
                 -1,
@@ -188,7 +226,7 @@ public class KmWebViewActivity extends KmBaseActivity {
 
         sb.append(HTML_HEAD_HEAD);
         sb.append(BODY_ONLOAD);
-        sb.append(String.format(FORMID_ACTION));
+        sb.append(String.format(FORMID_ACTION, url, "post"));
 
         for (Map.Entry<String, String> item : postData) {
             sb.append(String.format(INPUT_NAME_HIDDEN, item.getKey(), item.getValue()));
@@ -220,6 +258,22 @@ public class KmWebViewActivity extends KmBaseActivity {
                 }
             });
             alertDialog.show();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && isHelpCenterFaqPage && !customizationSettings.isShowStatusBarOnFaqPage()) {
+            applyFaqStatusBarVisibility(false);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isHelpCenterFaqPage && !customizationSettings.isShowStatusBarOnFaqPage()) {
+            applyFaqStatusBarVisibility(false);
         }
     }
 

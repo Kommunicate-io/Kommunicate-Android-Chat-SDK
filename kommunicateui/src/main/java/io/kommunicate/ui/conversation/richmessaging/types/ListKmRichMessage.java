@@ -60,9 +60,13 @@ public class ListKmRichMessage extends KmRichMessage {
                         headerText.setVisibility(View.GONE);
                     }
 
-                    if (!TextUtils.isEmpty(payload.getHeaderImgSrc())) {
+                    String headerImageUrl = !TextUtils.isEmpty(payload.getHeaderImgSrc())
+                            ? payload.getHeaderImgSrc()
+                            : payload.getHeaderImageUrl();
+
+                    if (!TextUtils.isEmpty(headerImageUrl)) {
                         headerImage.setVisibility(View.VISIBLE);
-                        Glide.with(context).load(KmAppSettingPreferences.appendSasToken(payload.getHeaderImgSrc())).into(headerImage);
+                        Glide.with(context).load(KmAppSettingPreferences.appendSasToken(headerImageUrl)).into(headerImage);
                     } else {
                         headerImage.setVisibility(View.GONE);
                     }

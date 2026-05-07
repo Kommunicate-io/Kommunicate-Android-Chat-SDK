@@ -146,6 +146,7 @@ public class CustomizationSettings extends JsonMarker {
     private boolean javaScriptEnabled = true;
     private boolean hideChatInHelpcenter = true;
     private boolean showBackButtonOnFaqPage = true;
+    private boolean showStatusBarOnFaqPage = true;
     private boolean checkboxAsMultipleButton = false;
     private String staticTopMessage = "";
     private String staticTopIcon = "";
@@ -807,6 +808,10 @@ public class CustomizationSettings extends JsonMarker {
 
     public boolean isShowBackButtonOnFaqPage() {
         return showBackButtonOnFaqPage;
+    }
+
+    public boolean isShowStatusBarOnFaqPage() {
+        return showStatusBarOnFaqPage;
     }
 
     public boolean isToolbarTitleCenterAligned() {

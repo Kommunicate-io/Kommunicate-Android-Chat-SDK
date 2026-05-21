@@ -187,6 +187,6 @@
   "isVideoCompressionEnabled": false,
   "minimumCompressionThresholdForVideosInMB": 10,
   "hideAttachmentOptionsWithBots": false,
-  "showBackButtonOnFaqPage": true,
-  "showStatusBarOnFaqPage": true
+  "showBackButtonOnFaqPage": false,
+  "showStatusBarOnFaqPage": false
 }

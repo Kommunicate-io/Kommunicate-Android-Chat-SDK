@@ -11,17 +11,14 @@ import androidx.appcompat.app.AlertDialog;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.WindowManager;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.browser.customtabs.CustomTabColorSchemeParams;
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.URLUtil;
 import android.webkit.WebResourceRequest;
@@ -30,6 +27,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
@@ -66,10 +67,10 @@ public class KmWebViewActivity extends KmBaseActivity {
     public static final String DEFAULT_REQUEST_TYPE = "application/x-www-form-urlencoded";
     public static final String REQUEST_TYPE_JSON = "json";
     public static final String Al_WEB_VIEW_BUNDLE = "alWebViewBundle";
-    private static final String BODY_ONLOAD = "<body onload='form1.submit()'>";
+    private static final String BODY_ONLOAD = "<body onload=\'form1.submit()\'>";
     private static final String HTML_HEAD_HEAD = "<html><head></head>";
-    private static final String FORMID_ACTION = "<form id='form1' action='%s' method='%s'>";
-    private static final String INPUT_NAME_HIDDEN = "<input name='%s' type='hidden' value='%s' />";
+    private static final String FORMID_ACTION = "<form id=\'form1\' action='%s\' method=\'%s\'>";
+    private static final String INPUT_NAME_HIDDEN = "<input name='%s\' type=\'hidden\' value='%s\' />";
     private static final String FORM_BODY_HTML = "</form></body></html>";
     private static final String text_html = "text/html";
 
@@ -168,11 +169,9 @@ public class KmWebViewActivity extends KmBaseActivity {
         }
         if (showFaqStatusBar) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
             controller.show(WindowInsetsCompat.Type.statusBars());
         } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
             controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
             controller.hide(WindowInsetsCompat.Type.statusBars());
         }

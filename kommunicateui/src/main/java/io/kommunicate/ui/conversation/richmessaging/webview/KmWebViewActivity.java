@@ -56,6 +56,7 @@ public class KmWebViewActivity extends KmBaseActivity {
 
     WebView webView;
     Toolbar toolbar;
+    View webViewContainer;
     private Map<String, String> txnData;
     private boolean isPaymentRequest = false;
     private boolean isHelpCenterFaqPage = false;
@@ -88,6 +89,7 @@ public class KmWebViewActivity extends KmBaseActivity {
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
 
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        webViewContainer = findViewById(R.id.webViewContainer);
         setSupportActionBar(toolbar);
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(themeHelper.getPrimaryColor()));
@@ -209,6 +211,19 @@ public class KmWebViewActivity extends KmBaseActivity {
 
     private void setupInsets() {
         if (isHelpCenterFaqPage && !customizationSettings.isShowStatusBarOnFaqPage()) {
+            return;
+        }
+        if (isHelpCenterFaqPage && !customizationSettings.isShowBackButtonOnFaqPage()) {
+            InsetHelper.configureInset(
+                    webViewContainer,
+                    InsetHelper.systemTypeMask | InsetHelper.cameraTypeMask,
+                    0,
+                    0,
+                    -1,
+                    0,
+                    true,
+                    null
+            );
             return;
         }
         InsetHelper.configureSystemInsets(

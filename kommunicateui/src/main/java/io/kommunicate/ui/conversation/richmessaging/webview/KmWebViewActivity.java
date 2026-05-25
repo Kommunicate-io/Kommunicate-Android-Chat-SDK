@@ -18,6 +18,7 @@ import androidx.browser.customtabs.CustomTabsIntent;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.URLUtil;
 import android.webkit.WebResourceRequest;
@@ -26,6 +27,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
@@ -51,8 +56,10 @@ public class KmWebViewActivity extends KmBaseActivity {
 
     WebView webView;
     Toolbar toolbar;
+    View webViewContainer;
     private Map<String, String> txnData;
     private boolean isPaymentRequest = false;
+    private boolean isHelpCenterFaqPage = false;
     CustomizationSettings customizationSettings;
     private ProgressBar loadingProgressBar;
     private static final String JS_INTERFACE_NAME = "AlWebViewScreen";
@@ -61,10 +68,10 @@ public class KmWebViewActivity extends KmBaseActivity {
     public static final String DEFAULT_REQUEST_TYPE = "application/x-www-form-urlencoded";
     public static final String REQUEST_TYPE_JSON = "json";
     public static final String Al_WEB_VIEW_BUNDLE = "alWebViewBundle";
-    private static final String BODY_ONLOAD = "<body onload='form1.submit()'>";
+    private static final String BODY_ONLOAD = "<body onload=\'form1.submit()\'>";
     private static final String HTML_HEAD_HEAD = "<html><head></head>";
-    private static final String FORMID_ACTION = "<form id='form1' action='%s' method='%s'>";
-    private static final String INPUT_NAME_HIDDEN = "<input name='%s' type='hidden' value='%s' />";
+    private static final String FORMID_ACTION = "<form id=\'form1\' action='%s\' method=\'%s\'>";
+    private static final String INPUT_NAME_HIDDEN = "<input name='%s\' type=\'hidden\' value='%s\' />";
     private static final String FORM_BODY_HTML = "</form></body></html>";
     private static final String text_html = "text/html";
 
@@ -82,6 +89,7 @@ public class KmWebViewActivity extends KmBaseActivity {
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
 
         toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        webViewContainer = findViewById(R.id.webViewContainer);
         setSupportActionBar(toolbar);
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(themeHelper.getPrimaryColor()));
@@ -106,6 +114,11 @@ public class KmWebViewActivity extends KmBaseActivity {
                 String helpCenterUrl = alWebViewBundle.getString(KmConstants.KM_HELPCENTER_URL);
 
                 if (!TextUtils.isEmpty(helpCenterUrl)) {
+                    isHelpCenterFaqPage = true;
+                    boolean showFaqStatusBar = customizationSettings.isShowStatusBarOnFaqPage();
+                    boolean showFaqToolbar = customizationSettings.isShowBackButtonOnFaqPage();
+                    applyFaqHeaderVisibility(showFaqToolbar);
+                    applyFaqStatusBarVisibility(showFaqStatusBar);
                     loadUrl(helpCenterUrl);
                     webView.getSettings().setBuiltInZoomControls(false);
                     webView.getSettings().setDisplayZoomControls(false);
@@ -143,6 +156,29 @@ public class KmWebViewActivity extends KmBaseActivity {
         setupInsets();
     }
 
+    private void applyFaqHeaderVisibility(boolean showFaqToolbar) {
+        if (showFaqToolbar || getSupportActionBar() == null) {
+            return;
+        }
+        getSupportActionBar().hide();
+        toolbar.setVisibility(View.GONE);
+    }
+
+    private void applyFaqStatusBarVisibility(boolean showFaqStatusBar) {
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        if (controller == null) {
+            return;
+        }
+        if (showFaqStatusBar) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            controller.show(WindowInsetsCompat.Type.statusBars());
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            controller.hide(WindowInsetsCompat.Type.statusBars());
+        }
+    }
+
     private void setupDownloadListener(WebView webView) {
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             try {
@@ -174,6 +210,22 @@ public class KmWebViewActivity extends KmBaseActivity {
     }
 
     private void setupInsets() {
+        if (isHelpCenterFaqPage && !customizationSettings.isShowStatusBarOnFaqPage()) {
+            return;
+        }
+        if (isHelpCenterFaqPage && !customizationSettings.isShowBackButtonOnFaqPage()) {
+            InsetHelper.configureInset(
+                    webViewContainer,
+                    InsetHelper.systemTypeMask | InsetHelper.cameraTypeMask,
+                    0,
+                    0,
+                    -1,
+                    0,
+                    true,
+                    null
+            );
+            return;
+        }
         InsetHelper.configureSystemInsets(
                 toolbar,
                 -1,
@@ -188,7 +240,7 @@ public class KmWebViewActivity extends KmBaseActivity {
 
         sb.append(HTML_HEAD_HEAD);
         sb.append(BODY_ONLOAD);
-        sb.append(String.format(FORMID_ACTION));
+        sb.append(String.format(FORMID_ACTION, url, "post"));
 
         for (Map.Entry<String, String> item : postData) {
             sb.append(String.format(INPUT_NAME_HIDDEN, item.getKey(), item.getValue()));
@@ -220,6 +272,22 @@ public class KmWebViewActivity extends KmBaseActivity {
                 }
             });
             alertDialog.show();
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && isHelpCenterFaqPage && !customizationSettings.isShowStatusBarOnFaqPage()) {
+            applyFaqStatusBarVisibility(false);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isHelpCenterFaqPage && !customizationSettings.isShowStatusBarOnFaqPage()) {
+            applyFaqStatusBarVisibility(false);
         }
     }
 

@@ -3789,10 +3789,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         updateSupportGroupTitleAndImageAndHideSubtitle(channel);
 
+        String conversationAssigneeId = channel.getConversationAssignee();
+        if (TextUtils.isEmpty(conversationAssigneeId)) {
+            return;
+        }
+
         UserDetailUseCase.executeWithExecutor(
                 requireContext(),
-                channel.getConversationAssignee(),
+                conversationAssigneeId,
                 contactCallback -> {
+                    if (contactCallback == null) {
+                        return;
+                    }
                     conversationAssignee = contactCallback;
                     updateSupportGroupTitleAndImageAndHideSubtitle(channel);
                     switchContactStatus(contactCallback, contactCallback.isUserOnline());

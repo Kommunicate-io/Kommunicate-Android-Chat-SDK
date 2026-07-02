@@ -257,7 +257,9 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, MobiComKitClientService.getApplicationKey(context), factory, version, 0, null, null, false);        System.loadLibrary("sqlcipher");
+        super(context, name, MobiComKitClientService.getApplicationKey(context), factory, version, 0, null, null, false);
+        setWriteAheadLoggingEnabled(true);
+        System.loadLibrary("sqlcipher");
         AppSpecificSettings appSpecificSettings = AppSpecificSettings.getInstance(context);
         int currentRetryCount = appSpecificSettings.getCurrentDatabaseMigrationRetryCount();
         if (!DBUtils.isDatabaseEncrypted(context, name) && currentRetryCount < MAX_DATABASE_MIGRATION_RETRY_COUNT) {
@@ -284,16 +286,12 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
     public SQLiteDatabase getReadableDatabase() {
         // The password is now handled by the constructor.
-        SQLiteDatabase database = super.getReadableDatabase();
-        database.enableWriteAheadLogging();
-        return database;
+        return super.getReadableDatabase();
     }
 
     public SQLiteDatabase getWritableDatabase() {
         // The password is now handled by the constructor.
-        SQLiteDatabase database = super.getWritableDatabase();
-        database.enableWriteAheadLogging();
-        return database;
+        return super.getWritableDatabase();
     }
 
     @Override

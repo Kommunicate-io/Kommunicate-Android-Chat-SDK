@@ -55,16 +55,12 @@ public class KmDatabaseHelper extends MobiComDatabaseHelper {
 
     @Override
     public SQLiteDatabase getReadableDatabase() {
-        SQLiteDatabase database = super.getReadableDatabase();
-        database.enableWriteAheadLogging();
-        return database;
+        return super.getReadableDatabase();
     }
 
     @Override
     public SQLiteDatabase getWritableDatabase() {
-        SQLiteDatabase database = super.getWritableDatabase();
-        database.enableWriteAheadLogging();
-        return database;
+        return super.getWritableDatabase();
     }
 
     @Override

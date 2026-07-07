@@ -3,11 +3,8 @@ package io.kommunicate.ui.conversation.activity;
 import static io.kommunicate.ui.utils.SentryUtils.configureSentryWithKommunicateUI;
 
 import android.annotation.TargetApi;
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -55,7 +52,6 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
-import java.util.List;
 
 /**
  * Created by devashish on 22/9/14.
@@ -223,29 +219,7 @@ public class FullScreenImageActivity extends KmBaseActivity {
 
             Uri uri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                ClipData clip =
-                        ClipData.newUri(getContentResolver(), "a Photo", uri);
-
-                shareIntent.setClipData(clip);
-                shareIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            } else {
-                List<ResolveInfo> resInfoList =
-                        getPackageManager()
-                                .queryIntentActivities(shareIntent, PackageManager.MATCH_DEFAULT_ONLY);
-
-                for (ResolveInfo resolveInfo : resInfoList) {
-                    String packageName = resolveInfo.activityInfo.packageName;
-                    grantUriPermission(packageName, uri,
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    grantUriPermission(packageName, uri,
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                }
-            }
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             shareIntent.setType(FileUtils.getMimeType(new File(message.getFilePaths().get(0))));

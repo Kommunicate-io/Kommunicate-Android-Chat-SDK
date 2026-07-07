@@ -32,14 +32,12 @@ public class KmChannelService {
     }
 
     public String getUserInSupportGroup(Integer channelKey) {
+        Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-            Cursor cursor = db.query(CHANNEL_USER_X, null, CHANNEL_KEY_ROLE, new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
+            cursor = db.query(CHANNEL_USER_X, null, CHANNEL_KEY_ROLE, new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
             List<ChannelUserMapper> channelUserMappers = getListOfUsers(cursor);
-
-            cursor.close();
-            dbHelper.close();
 
             if (channelUserMappers == null || channelUserMappers.isEmpty()) {
                 return "";
@@ -48,6 +46,8 @@ public class KmChannelService {
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            closeCursor(cursor);
         }
         return null;
     }
@@ -56,15 +56,13 @@ public class KmChannelService {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            cursor = db.query(CHANNEL_USER_X, null, CHANNEL_KEY_ROLE, new String[]{String.valueOf(channelKey), String.valueOf(3)}, null, null, null);
+            cursor = db.query(CHANNEL_USER_X, null, CHANNEL_KEY_ROLE, new String[]{String.valueOf(channelKey), String.valueOf(role)}, null, null, null);
 
             return getListOfUserIds(cursor);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (cursor != null && !cursor.isClosed()) {
-                cursor.close();
-            }
+            closeCursor(cursor);
         }
         return null;
     }
@@ -81,9 +79,7 @@ public class KmChannelService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
+            closeCursor(cursor);
         }
         return userIdList;
     }
@@ -100,11 +96,15 @@ public class KmChannelService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
+            closeCursor(cursor);
         }
         return channelUserMapper;
+    }
+
+    private static void closeCursor(Cursor cursor) {
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
     }
 
     public static ChannelUserMapper getChannelUser(Cursor cursor) {

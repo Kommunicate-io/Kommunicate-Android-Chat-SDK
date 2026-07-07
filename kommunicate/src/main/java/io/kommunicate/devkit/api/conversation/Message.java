@@ -118,7 +118,9 @@ public class Message extends JsonMarker implements Parcelable {
         emailIds = in.readString();
         shared = in.readByte() != 0;
         sent = in.readByte() != 0;
-        delivered = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        // Fix for delivered:
+        Boolean parcelDelivered = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        delivered = parcelDelivered != null ? parcelDelivered : false; // Default to false if null
         type = (short) in.readInt();
         storeOnDevice = in.readByte() != 0;
         contactIds = in.readString();
@@ -137,7 +139,9 @@ public class Message extends JsonMarker implements Parcelable {
         clientGroupId = in.readString();
         fileMeta = in.readParcelable(FileMeta.class.getClassLoader());
         messageId = (Long) in.readValue(Long.class.getClassLoader());
-        read = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        // Fix for read:
+        Boolean parcelRead = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        read = parcelRead != null ? parcelRead : false; // Default to false if null
         attDownloadInProgress = in.readByte() != 0;
         applicationId = in.readString();
         conversationId = (Integer) in.readValue(Integer.class.getClassLoader());
@@ -662,7 +666,7 @@ public class Message extends JsonMarker implements Parcelable {
     }
 
     public boolean isChannelCustomMessage() {
-        return contentType == ContentType.CHANNEL_CUSTOM_MESSAGE.getValue();
+        return ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(getContentType());
     }
 
     public boolean isDeliveredAndRead() {
@@ -1097,24 +1101,17 @@ public class Message extends JsonMarker implements Parcelable {
                 ", key='" + key + '\'' +
                 ", deviceKey='" + deviceKey + '\'' +
                 ", userKey='" + userKey + '\'' +
-                ", emailIds='" + emailIds + '\'' +
-                ", shared=" + shared +
                 ", sent=" + sent +
                 ", delivered=" + delivered +
                 ", type=" + type +
-                ", storeOnDevice=" + storeOnDevice +
                 ", contactIds='" + contactIds + '\'' +
                 ", groupId=" + groupId +
-                ", sendToDevice=" + sendToDevice +
-                ", scheduledAt=" + scheduledAt +
                 ", source=" + source +
-                ", timeToLive=" + timeToLive +
                 ", sentToServer=" + sentToServer +
                 ", fileMetaKey='" + fileMetaKey + '\'' +
                 ", filePaths=" + filePaths +
                 ", pairedMessageKey='" + pairedMessageKey + '\'' +
                 ", sentMessageTimeAtServer=" + sentMessageTimeAtServer +
-                ", canceled=" + canceled +
                 ", clientGroupId='" + clientGroupId + '\'' +
                 ", fileMeta=" + fileMeta +
                 ", messageId=" + messageId +
@@ -1122,8 +1119,6 @@ public class Message extends JsonMarker implements Parcelable {
                 ", attDownloadInProgress=" + attDownloadInProgress +
                 ", applicationId='" + applicationId + '\'' +
                 ", conversationId=" + conversationId +
-                ", topicId='" + topicId + '\'' +
-                ", connected=" + connected +
                 ", contentType=" + contentType +
                 ", metadata=" + metadata +
                 ", status=" + status +

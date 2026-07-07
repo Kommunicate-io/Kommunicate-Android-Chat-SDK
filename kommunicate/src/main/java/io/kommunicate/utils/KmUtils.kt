@@ -17,6 +17,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import io.kommunicate.devkit.SettingsSharedPreference
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
 import io.kommunicate.devkit.api.account.user.User
@@ -171,9 +172,8 @@ object KmUtils {
     @JvmStatic
     fun setStatusBarColor(activity: Activity, color: Int) {
         val window = activity.window
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = color
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.decorView.setBackgroundColor(color)
     }
 
     @JvmStatic

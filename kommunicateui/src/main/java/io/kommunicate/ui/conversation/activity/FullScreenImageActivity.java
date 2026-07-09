@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -33,6 +32,7 @@ import android.widget.TextView;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.conversation.Message;
 import io.kommunicate.devkit.broadcast.ConnectivityReceiver;
+import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 
 import io.kommunicate.ui.activities.KmBaseActivity;
@@ -43,6 +43,7 @@ import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.commons.commons.image.ImageUtils;
 import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.GsonUtils;
+import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
@@ -61,18 +62,30 @@ public class FullScreenImageActivity extends KmBaseActivity {
     ImageView gifImageView;
     private Message message;
     private ConnectivityReceiver connectivityReceiver;
+    private CustomizationSettings customizationSettings;
     private static final int HEIGHT = 1600;
     private static final int WIDTH = 1600;
 
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setupEdgeToEdge(true);
+        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
+        if (!TextUtils.isEmpty(jsonString)) {
+            customizationSettings = (CustomizationSettings) GsonUtils.getObjectFromJson(jsonString, CustomizationSettings.class);
+        } else {
+            customizationSettings = new CustomizationSettings();
+        }
+
+        setupEdgeToEdge(customizationSettings);
         setContentView(R.layout.image_full_screen);
         configureSentryWithKommunicateUI(this, "");
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
+        int toolbarColor = themeHelper.getStatusBarColor();
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(toolbarColor));
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().show();
         showUi();

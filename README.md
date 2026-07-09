@@ -1,204 +1,289 @@
-<img align="center" src="https://raw.githubusercontent.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/master/img/Header.png" width="900" />
+# Kommunicate Android SDK for Chat
 
-## [Kommunicate](https://www.kommunicate.io/?utm_source=github&utm_medium=readme&utm_campaign=android) Android Chat SDK for Customer Support
-
-An Open Source Android SDK for enabling AI Chatbot and Live Chat into your App
+An Open Source Android SDK for enabling AI Agent and Live Chat into your Android App
 
 ## Overview
 
-Kommunicate provides open source live chat SDK in android. The Kommunicate SDK is flexible, lightweight and easily integrable. It lets you easily add real-time live chat and in-app messaging in your mobile applications and websites for customer support. The SDK is equipped with advance messaging options such as sending attachments, sharing location and rich messaging. 
+Kommunicate provides an open source chat SDK in android. The Kommunicate SDK is flexible, lightweight and easily integrable. It lets you easily add real-time AI agent, live chat, and in-app messaging in your Android app. The SDK is equipped with advanced messaging options such as sending attachments, sharing location and rich messaging.
 
-Kommunicate SDK lets you integrate custom chatbots in your mobile apps for automating tasks. It comes with multiple features to make it a full-fledged customer support SDK.
+Kommunicate SDK lets you integrate custom AI agents in your mobile apps for automating tasks. It comes with multiple features to make it a full-fledged customer support SDK.
 
-<img align="center" src="./img/BotChat.gif" height="520" />
+Kommunicate also includes a built-in human-in-the-loop support system. When an AI agent is unable to understand or resolve a customer query, it can seamlessly escalate the conversation to a live support agent. Human agents can then continue the conversation directly from the Kommunicate platform.
 
- 
+In addition, Kommunicate unifies customer conversations from websites, email, voice, and messaging channels such as WhatsApp, Telegram, Instagram, Viber, and LINE into a single platform, enabling better team collaboration, faster response times, and more efficient issue resolution.
+
+![Kommunicate mobile chat](images/kommunicate-mobile-chat.gif)
 
 ## Get Started
 
 To get started with Kommunicate Android SDK, head over to the Kommunicate website and [Signup](https://dashboard.kommunicate.io/signup?utm_source=github&utm_medium=readme&utm_campaign=android) to get your Application ID.
 
-This is a sample that implements the Kommunicate android chat SDK. To use this sample you need to provide your application ID in app level build.gradle file's defaultConfig [Refer here](https://github.com/Kommunicate-io/Kommunicate-Android-Chat-SDK/blob/f78948edd81124847d1b6ee2179eadd968ec57b1/app/build.gradle#L13). Replace <Your-APP_ID> with the application ID obtained from Kommunicate dashboard.
+## Build an AI Agent with Kommunicate and Integrate It into Your Android App
 
-## Build a BOT on Kommunicate and integrate it in your Android app
+### Kompose AI Agent Builder
 
-### Kompose
+Kompose is a no-code AI agent builder that helps businesses build and deploy customer support AI agents across chat, email, and voice channels. Creating an AI agent with Kompose requires no coding skills, simply upload your training materials and provide clear instructions on how the agent should respond and behave.
 
-[Kompose](https://dashboard.kommunicate.io/bots/bot-builder) is a Kommunicate’s bot builder that help you in building your own bot, a techie, non-techie, or a person who doesn’t have any idea about chatbots can also build the bot. Anyone can create a chatbot with the Kompose without any assistance.
+![Kompose AI Agent Builder](images/kompose-ai-agent-builder.png)
 
-<img align="center" src="./img/botInteg.gif" height="520" />
+The Kommunicate platform includes a feature-rich chat widget with capabilities such as:
 
+- File and attachment sharing
+- Voice AI interactions
+- Lead capture forms
+- Rich messaging experiences
+- Location sharing
+- Human agent handoff
+- Conversation analytics and reporting
 
+Kommunicate also provides detailed insights into AI agent performance, helping teams identify unanswered queries, optimize responses, and continuously improve automation. When required, conversations can be seamlessly transferred from the AI agent to a human support representative, ensuring customers always receive the assistance they need. All conversations are centrally managed within the Kommunicate platform, allowing support teams to monitor, respond to, and track customer interactions efficiently.
 
-### Following is the UI to create the BOT
+## Prerequisites
 
-<img align="center" src="./img/botCreation.png" height="520" />
+- Android 5.0 (API level 21) or higher
+- Java 21 or higher
+- Kotlin version: 2.0 or higher
+- Android Gradle Plugin 8.0 or higher
 
+## Installation
 
-## Dialogflow chatbot integration in your Android app
+To add the Kommunicate SDK to your Android project, configure the following dependency in your root `build.gradle` file if you are using Gradle 6.7 or earlier.
 
-Dialogflow is a Google-owned NLP platform to facilitate human-computer interactions such as chatbots, voice bots, etc. 
+```gradle
+allprojects {
+    repositories {
+        maven { url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk' }
+    }
+}
+```
 
-Kommunicate's Dialogflow integration provides a more versatile, customizable and better chatting experience. Kommunicate Android Live Chat SDK supports all of Dialogflow's features such as Google Assistant, Rich Messaging, etc. On top of that, it is equipped with advanced features such as bot-human handoff, conversation managing dashboard, reporting, and others. 
 
-You can connect your Dialogflow chatbot with Kommunicate in the following 4 simple steps. [Here](https://www.kommunicate.io/blog/build-chatbot-with-dialogflow-android-sdk/) is a step by step blog to add Kommunicate SDK in your Android app. 
+If you are using Gradle 6.8 or higher, add the following to your `settings.gradle` file:
 
-### Step 1: Get your API credentials from Dialogflow
-- Login to Dialogflow console and select your agent from the dropdown in the left panel.
-- Click on the settings button. It will open a setting page for the agent.
-- Inside the general tab search for GOOGLE PROJECTS and click on your service account.
-- After getting redirected to your SERVICE ACCOUNT, create a key in JSON format for your project from the actions section and it will get automatically downloaded.
+```gradle
+dependencyResolutionManagement {
+    repositories {
+        maven { url 'https://kommunicate.jfrog.io/artifactory/kommunicate-android-sdk' }
+    }
+}
+```
 
-### Step 2: Create a free Kommunicate account
-Create a free account on [Kommunicate](https://dashboard.kommunicate.io/signup) and navigate to the [Bots section](https://dashboard.kommunicate.io/bots/bot-integrations).
 
-### Step 3: Integrate your Dialogflow chatbot with Kommunicate
-- In the Bot integrations section, choose Dialogflow. A popup window will open.
-- Upload your Key file here and proceed.
-- Give a name and image to your chatbot. It will be visible to the users chatting with your chatbot.
-- Enable/Disable chatbot to human handoff. If enabled, it will automatically assign conversations to humans in case the chatbot is not able to answer.
+Next, for all Gradle versions, add the dependency to your module `build.gradle` file:
 
-### Step 4: Install the Kommunicate Android SDK to your app
-You can add the Kommunicate SDK in your Android app easily. More information on how to integrate with your Andriod app [here](https://docs.kommunicate.io/docs/android-installation.html). 
+```gradle
+dependencies {
+    implementation 'io.kommunicate.sdk:kommunicateui:2.16.0'
+}
+```
 
-> Note: Here's a [sample chatbot](https://docs.kommunicate.io/docs/bot-samples) for you to get started with Dialogflow. 
 
-## Amazon Lex Integration
+Once the build sync is done, you have installed Kommunicate on your app and can proceed to the next step.
 
-Amazon Lex is an AWS service for building conversational interfaces using voice and text, enabling human-computer interactions such as chatbots, voice bots, etc.
+## ProGuard Rules
 
-Kommunicate's Amazon Lex integration offers a more versatile, customizable, and enhanced chatting experience. The Kommunicate Android Live Chat SDK supports Amazon Lex's features, allowing seamless voice and text interactions directly within your Android app. Additionally, it comes equipped with advanced features such as bot-human handoff, a conversation management dashboard, reporting, and more.
+Add these proguard rules in the `proguard-rules.pro` file. If you skip this step then your app might crash in the release build if minify enable is set to true.
 
-You can integrate Amazon Lex Bot with Kommunicate by following the below steps. [Here](https://www.youtube.com/watch?v=cuaAiutVkow) is a video for the same.
+```proguard
+-keep class net.sqlcipher.** { *; }
+-keep class javax.crypto.** { *; }
+-keep class net.zetetic.database.sqlcipher.* { *; }
+-keep class net.zetetic.database.sqlcipher.** { *; }
+-keepattributes *Annotation*
+-keep class io.kommunicate.** { *; }
+-keep class io.kommunicate.ui.** { *; }
+```
 
-### Step 1: Get your credentials from Amazon Lex
 
-**A. Access Key ID & Secret access key:** An access key ID and secret access key are required to sign requests you make using the AWS SDKs. To get your access key [sign into your AWS console](https://aws.amazon.com/console/) as a Root or IAM user.
+## Permissions
 
-  1. Open the [Identity and Access Management (IAM)](https://us-east-1.console.aws.amazon.com/iam/) panel in the same AWS account where the Lex bot is present.
+Add permissions if you need to use certain features like Camera, Storage, Location then you need to add it to your own app's `AndroidManifest.xml` file.
 
-  2. Go to Access management -> Users. Create a user by clicking the Add Users button. Add a user name, e.g., "Lex-bot".
+If you use Camera and Gallery Storage feature, add these permissions:
 
-  3. Set permissions: Choose "Attach Policies Directly".
+```xml
+<uses-permission
+    android:name="android.permission.CAMERA"
+    tools:node="merge" />
 
-  4. Select the following two permissions: AmazonLexReadOnly & AmazonLexRunBotsOnly.
+<uses-permission
+    android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    android:maxSdkVersion="32"
+    tools:ignore="ScopedStorage"
+    tools:node="merge" />
 
-  5. Keep the "Tags" empty and proceed to Next.
+<uses-permission
+    android:name="android.permission.READ_EXTERNAL_STORAGE"
+    android:maxSdkVersion="32"
+    tools:node="merge" />
 
-  6. On the next page confirm the attached permissions to the user and click on “Create User”.
+<!-- Permissions to be used when your app targets API 33 or higher -->
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+```
 
-  7. Now that your user is created, select the user, and on the next page click on Security Credentials.
+If you use Audio record / Speech to text feature, add these permissions:
 
-  8. Scroll down and click on Create Access Key.
+```xml
+<uses-permission
+    android:name="android.permission.RECORD_AUDIO"
+    tools:node="merge" />
+```
 
-  9. Select Third-Party Service and proceed next to generate the access keys.
+If you use Location feature, add these permissions:
 
-A. **Bot name in Lex platform:** Lex requires a name for your bot when you create it. Once you create the bot, you can also get it from the bot list in Lex home page.
+```xml
+<uses-permission
+    android:name="android.permission.ACCESS_COARSE_LOCATION"
+    tools:node="merge" />
 
-B. **Bot Alias:** You create a bot alias when you publish the bot. It helps you to work with multiple versions of your bot. Update the bot alias in Kommunicate if you want Kommunicate to connect with a specific version of the bot.
+<uses-permission
+    android:name="android.permission.ACCESS_FINE_LOCATION"
+    tools:node="merge" />
+```
 
-C. **Region**: AWS region where Lex service is running. You can find your region in the top-right corner following the user name in the AWS console.
 
+For more information on authentication, push notification, customization, etc, check out our official documentation [here](https://docs.kommunicate.io/docs/android-installation).
 
-### Step 2: Create a free Kommunicate account
+## AI Integration Availability
 
-Create a free account on [Kommunicate](https://dashboard.kommunicate.io/signup) and navigate to the [Bots section](https://dashboard.kommunicate.io/bots/bot-integrations).
+Kommunicate provides integration with the latest AI models from OpenAI, Anthropic, and Google Gemini.
 
-### Step 3: Integrate your Amazon Lex Bot with Kommunicate
+## OpenAI-powered AI Agent Integration for Android App
 
-Once you have the above information follow the below steps to integrate the bot with Kommunicate:
+Kommunicate's OpenAI integration enables businesses to deploy AI-powered customer support agents using OpenAI's latest models. These agents can answer customer queries, automate repetitive support tasks, and seamlessly transfer conversations to human agents when required.
 
-  1. Log in to Kommunicate and go to [bot section](https://dashboard.kommunicate.io/bots/bot-integrations).
+### Integrations Options
 
-  2. Click the Integrate Bot in the Amazon Lex card.
+You can connect OpenAI to Kommunicate in two ways:
 
-  3. Fill in the required detail and click next.
+#### Managed Integration via Kommunicate
 
-  4. Give your bot a name. This name will be visible to your users who interact with the bot.
+- No OpenAI account setup required
+- Select an OpenAI model directly within Kommunicate
+- Simplified billing and configuration
 
-  5. Enable/Disable the autoHandoff setting if you want your bot to assign the conversation to a human agent in your team when the conversation is hung up by the bot.
+#### Bring Your Own OpenAI API Key
 
-  6. Click on Let this bot handle all new conversations. All new Conversations started after the integration will be assigned to this bot and your bot will start answering them.
+- Connect your existing OpenAI account
+- Full control over model selection and API usage
+- Use your own OpenAI billing account
 
-### Step 4: Install the chat widget on your website
+### Deployment Steps
 
-You can install the Kommunicate chat widget on your website by adding a code snippet to your website. More information on how to integrate with your website [here](https://docs.kommunicate.io/docs/web-installation.html).
+#### Step 1: Create an AI Agent
 
-## OpenAI Integration
+Navigate to Agent Integrations and create a new AI agent using Kompose AI Agent Builder.
 
-OpenAI is an AI research organization that focuses on developing and promoting friendly artificial intelligence, enabling seamless human-computer interactions through advanced models like GPT.
+![Agent Integrations create AI agent](images/agent-integrations-create-agent.png)
 
-Kommunicate's OpenAI integration offers a more versatile, customizable, and enhanced chatting experience. The Kommunicate Android Live Chat SDK supports all of OpenAI's features, such as natural language understanding and dynamic response generation. Additionally, it is equipped with advanced features such as bot-human handoff, a conversation management dashboard, reporting, and more.
+#### Step 2: Configure OpenAI
 
-You can integrate OpenAI Bot with Kommunicate by following the below steps. [Here](https://www.youtube.com/watch?v=dZM9OOK66KU) is a video for the same
+Choose either:
 
-### How to integrate Kommunicate bot with ChatGPT
+- Integration via Kommunicate and select an OpenAI model, or
+- Integration via API Key and enter your OpenAI API credentials.
 
-**Step 1:**  Login to your Kommunicate account. If you don’t have an account, [Signup for free today!](https://dashboard.kommunicate.io/signup)
+Configure model settings such as response length and creativity, then save your configuration.
 
+![OpenAI configuration](images/openai-configuration.png)
 
-**Step 2:** Once you are in, click on the **Bot Integration** icon on the left panel of the screen. 
+#### Step 3: Train Your AI Agent
 
-**Step 3:**  Now you can create a new bot or edit your active chatbot by clicking the **Go to bot builder button**.
+Upload documents, connect your help center, or add website URLs to build your AI agent's knowledge base.
 
-**Step 4:** Click on Settings in the top-right corner of the page.
+![Kompose AI Agent Builder knowledge source](images/kompose-ai-agent-builder.png)
 
-**Step 5:** Turn the toggle on for **Get answers from web**. That’s all!
+## Google CX Agent Studio Integration for Android App
 
-Please disable the toggle for **Small Talk** when you turn on ChatGPT.
+Kommunicate integrates with Google CX Agent Studio, allowing organizations to deploy Dialogflow and CX Agent Studio agents through Kommunicate's omnichannel support platform.
 
-That’s how much it takes to integrate ChatGPT into your Kommunicate bot.
+### Why Use This Integration?
 
-## Gemini Bot
+- Leverage existing Google CX Agent Studio agents
+- Add live chat and human handoff capabilities
+- Access centralized conversation management
+- Deploy across web and mobile channels
 
-Gemini, developed by Google DeepMind, is an advanced AI platform designed for powerful, natural language-driven interactions like chatbots and voice assistants.
+### Steps to Deploy Google CX Agent Studio AI Agent with Kommunicate
 
-Kommunicate’s Gemini integration enhances the chat experience with versatile and customizable features. The Kommunicate Android Live Chat SDK leverages Gemini’s capabilities, including intelligent response generation and robust language understanding. Additionally, it offers advanced functionality like bot-human handoff, conversation management, real-time reporting, and more.
+#### Step 1: Connect Google CX Agent Studio
 
-### How to integrate Kommunicate bot with Gemini
+![Google CX Agent Studio credentials](images/google-cx-credentials.png)
 
-**Step 1:**  Login to your Kommunicate account. If you don’t have an account, [Signup for free today!](https://dashboard.kommunicate.io/signup)
+#### Step 2: Add Google Credentials
 
-**Step 2:** Once you are in, click on the **Bot Integration** icon on the left panel of the screen.
+Enter the required Google Cloud and CX Agent Studio credentials, including project details and authentication information.
 
-**Step 3:**  Click the **Integrate Bot** in the Gemini card.
+Once validated, Kommunicate will establish the connection with your Google agent.
 
-**Step 4:** Once you reach the Integration Page, there will be an option of **Integration via Kommunicate**.
+## Google Gemini Integration for Android App
 
-**Step 5:** After selecting the desired Gemini model from the dropdown menu, click on **Save and Proceed**.
+Kommunicate's Google Gemini integration enables businesses and developers to build, deploy, and manage AI-powered customer support agents across websites and digital channels. Use the latest AI models from Google Gemini.
 
-**Step 6:** Give your bot a name. This name will be visible to your users who interact with the bot.
+### Ways to Connect Google Gemini with Kommunicate
 
-**Step 7:** Enable/Disable the autoHandoff setting if you want your bot to assign the conversation to a human agent in your team when the conversation is hung up by the bot.
+You can create an Google Gemini-powered AI agent in Kommunicate using either of the following methods:
 
-**Step 8:** Click on "Let this bot handle all new conversations". All new Conversations started after the integration will be assigned to this bot and your bot will start answering them.
+#### Integration via Kommunicate
 
-That’s how much it takes to integrate Gemini into your Kommunicate bot.
+Use Kommunicate's managed Google Gemini integration and select your preferred Gemini model directly from the platform.
 
-## Other Features
+#### Integration via Google Gemini API Key
 
-**Live chat widget:**  Make it easier for your visitors and users to reach you with an instant website and in-app support through chat. The widget is highly customizable. 
+Connect your own Google Gemini account by providing a Gemini API key and configuring the AI agent within Kommunicate.
 
-**Chatbots:** Automate and speed up your customer service by integrating AI-powered chatbots. Build your chatbots and deploy them using Kommunicate and seamlessly add them in the live chat.
+### Setup Instructions
 
-**Conversations:** Manage all your customer queries coming from the live chat plugin. Easily manage and assign agents to cater to user conversations.
+#### Step 1: Create an AI Agent
 
-**Dashboard:** A powerful dashboard to see, analyze and act upon your customer conversation data. Helps you analyze the performance of support agents as well.
+After signing up for Kommunicate, navigate to Agent Integrations and create a new AI agent using Kompose AI Agent Builder or select Gemini integration.
 
-**Helpcenter:** Create your knowledge base and deploy on a dedicated page to cater to generic and recurring customer queries. Your customers will also be able to directly access FAQs in chat.
+![Agent Integrations create AI agent](images/agent-integrations-create-agent.png)
 
-**Mailbox:** A simple and powerful team inbox for ticketing, managing, receiving and replying to all your customer support emails. 
+#### Step 2: Choose Your Google Gemini Integration Method
 
-**Integrations:** Easily move data between Kommunicate and your other favorite apps. Integrate your favorite CRM, knowledge base software and other apps.
+Select how you would like to connect Google Gemini to your AI agent:
 
-**Conversation Routing:** Select routing rules for incoming conversations for both your agents and bots. Choose between automatic assignments or to notify all.
+- Integration via Kommunicate - Choose a Google Gemini model directly from Kommunicate and start building your AI agent.
+- Integration via API Key - Connect your Google Gemini account by entering your OpenAI API key and configuring the agent with your preferred model and settings.
 
-**Smart Rich Messaging:** Leverage rich messages using buttons, cards, carousels, forms or lists to provide an exquisite support chat experience to your customers.
+Once configured, save the settings and begin training your AI agent with your website content, documents, or help center articles.
 
-**Quick Replies:** Quickly respond to generic user queries using Quick Replies. Easily create and manage templated messages from your dashboard.
+![Google Gemini integration method](images/google-gemini-integration.png)
 
+## Anthropic Integration for Android App
 
-## Technical Documentation
+Kommunicate's Anthropic integration enables businesses and developers to build, deploy, and manage AI-powered customer support agents across websites and digital channels. Use the latest AI models from Anthropic and resolve customer support queries accurately and instantly.
 
-Detailed instructions for installing, configuring and customizing the Kommunicate Android SDK are [availble here](https://docs.kommunicate.io/docs/android-installation.html).
+### Ways to Connect Anthropic with Kommunicate
 
+You can create an Anthropic-powered AI agent in Kommunicate using either of the following methods:
+
+#### Integration via Kommunicate
+
+Use Kommunicate's managed Anthropic integration and select your preferred Anthropic model directly from the platform.
+
+#### Integration via Google Gemini API Key
+
+Connect your own Anthropic account by providing an Anthropic API key and configuring the AI agent within Kommunicate.
+
+### Setup Instructions
+
+#### Step 1: Create an AI Agent
+
+After signing up for Kommunicate, navigate to Agent Integrations and create a new AI agent using Kompose AI Agent Builder or select Anthropic integration.
+
+![Agent Integrations create AI agent](images/agent-integrations-create-agent.png)
+
+#### Step 2: Choose Your Anthropic Integration Method
+
+Select how you would like to connect Anthropic to your AI agent:
+
+- Integration via Kommunicate - Choose an Anthropic model directly from Kommunicate and start building your AI agent.
+- Integration via API Key - Connect your Antropic account by entering your OpenAI API key and configuring the agent with your preferred model and settings.
+
+Once configured, save the settings and begin training your AI agent with your website content, documents, or help center articles.
+
+![Google Gemini integration method](images/google-gemini-integration.png)

@@ -12,7 +12,7 @@ Kommunicate also includes a built-in human-in-the-loop support system. When an A
 
 In addition, Kommunicate unifies customer conversations from websites, email, voice, and messaging channels such as WhatsApp, Telegram, Instagram, Viber, and LINE into a single platform, enabling better team collaboration, faster response times, and more efficient issue resolution.
 
-![Kommunicate mobile chat](images/kommunicate-mobile-chat.png)
+![Kommunicate mobile chat](images/kommunicate-mobile-chat.gif)
 
 ## Get Started
 
@@ -57,7 +57,6 @@ allprojects {
 }
 ```
 
-![Installation root build.gradle](images/installation-root-build-gradle.png)
 
 If you are using Gradle 6.8 or higher, add the following to your `settings.gradle` file:
 
@@ -69,7 +68,6 @@ dependencyResolutionManagement {
 }
 ```
 
-![Installation settings.gradle](images/installation-settings-gradle.png)
 
 Next, for all Gradle versions, add the dependency to your module `build.gradle` file:
 
@@ -79,7 +77,6 @@ dependencies {
 }
 ```
 
-![Installation module build.gradle](images/installation-module-build-gradle.png)
 
 Once the build sync is done, you have installed Kommunicate on your app and can proceed to the next step.
 
@@ -97,7 +94,6 @@ Add these proguard rules in the `proguard-rules.pro` file. If you skip this step
 -keep class io.kommunicate.ui.** { *; }
 ```
 
-![ProGuard rules](images/proguard-rules.png)
 
 ## Permissions
 
@@ -127,10 +123,6 @@ If you use Camera and Gallery Storage feature, add these permissions:
 <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 ```
 
-![Permissions for camera and storage](images/permissions-camera-storage.png)
-
-![Permissions for media storage](images/permissions-media-storage.png)
-
 If you use Audio record / Speech to text feature, add these permissions:
 
 ```xml
@@ -138,8 +130,6 @@ If you use Audio record / Speech to text feature, add these permissions:
     android:name="android.permission.RECORD_AUDIO"
     tools:node="merge" />
 ```
-
-![Permissions for audio record](images/permissions-audio-record.png)
 
 If you use Location feature, add these permissions:
 
@@ -153,7 +143,6 @@ If you use Location feature, add these permissions:
     tools:node="merge" />
 ```
 
-![Permissions for location](images/permissions-location.png)
 
 For more information on authentication, push notification, customization, etc, check out our official documentation [here](https://docs.kommunicate.io/docs/android-installation).
 

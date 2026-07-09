@@ -400,10 +400,13 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             customizationSettings = new CustomizationSettings();
         }
         themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            setupEdgeToEdge(customizationSettings, shouldUseLightSystemBars(customizationSettings), themeHelper.getStatusBarColor());
-        }
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+
+        setupEdgeToEdge(
+                customizationSettings,
+                shouldUseLightSystemBars(customizationSettings),
+                themeHelper.getStatusBarColor()
+        );
+
         setupActivityResultCallback();
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
         if (!TextUtils.isEmpty(customizationSettings.getChatBackgroundImageName())) {
@@ -598,7 +601,11 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     private void setupModes() {
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+        setupEdgeToEdge(
+                customizationSettings,
+                shouldUseLightSystemBars(customizationSettings),
+                themeHelper.getStatusBarColor()
+        );
         setToolbarTitleSubtitleColorFromSettings();
     }
 

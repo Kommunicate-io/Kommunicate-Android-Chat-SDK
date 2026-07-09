@@ -84,7 +84,6 @@ public class KmWebViewActivity extends KmBaseActivity {
         } else {
             customizationSettings = new CustomizationSettings();
         }
-        setupEdgeToEdge(customizationSettings);
         setContentView(R.layout.km_activity_payment);
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
 
@@ -92,12 +91,16 @@ public class KmWebViewActivity extends KmBaseActivity {
         webViewContainer = findViewById(R.id.webViewContainer);
         setSupportActionBar(toolbar);
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
+        setupEdgeToEdge(
+                customizationSettings,
+                shouldUseLightSystemBars(customizationSettings),
+                themeHelper.getStatusBarColor()
+        );
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(themeHelper.getPrimaryColor()));
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(customizationSettings.isShowBackButtonOnFaqPage());
         getSupportActionBar().show();
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
 
         webView = findViewById(R.id.paymentWebView);
         loadingProgressBar = findViewById(R.id.loadingProgress);

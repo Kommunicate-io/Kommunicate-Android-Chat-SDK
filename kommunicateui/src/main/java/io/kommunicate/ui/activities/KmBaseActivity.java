@@ -17,6 +17,9 @@ public abstract class KmBaseActivity extends AppCompatActivity {
             controller.setAppearanceLightStatusBars(lightStatusBar);
             controller.setAppearanceLightNavigationBars(lightStatusBar);
         }
+        if (statusBarColor != 0) {
+            getWindow().getDecorView().setBackgroundColor(statusBarColor);
+        }
     }
 
     protected void setupEdgeToEdge(CustomizationSettings customizationSettings, boolean lightStatusBar, int statusBarColor) {

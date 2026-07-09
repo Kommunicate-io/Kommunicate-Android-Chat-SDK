@@ -12,7 +12,7 @@ android {
         abortOnError false
     }
     defaultConfig {
-        compileSdk 34
+        compileSdk 35
         targetSdkVersion 35
         minSdkVersion 21
         versionCode 1
@@ -44,8 +44,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-//    api project(':kommunicate')
-    api 'io.kommunicate.sdk:kommunicate:2.16.2'
+    api project(':kommunicate')
+//    api 'io.kommunicate.sdk:kommunicate:2.16.2'
     api libs.firebase.messaging
     api libs.play.services.maps
     api libs.gms.play.services.location

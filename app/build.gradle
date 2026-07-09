@@ -14,7 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "APP_ID", '"<<YOUR_APP_ID>>"'
+        buildConfigField "String", "APP_ID", '"1de229e1897fa19317af97b7b6acdee7c"'
         multiDexEnabled true
     }
 
@@ -54,7 +54,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api project(':kommunicateui')
-    //implementation 'io.kommunicate.sdk:kommunicateui:2.15.0'
+//    implementation 'io.kommunicate.sdk:kommunicateui:2.16.2'
     implementation libs.appcompat
     implementation libs.multidex
     implementation libs.core.ktx

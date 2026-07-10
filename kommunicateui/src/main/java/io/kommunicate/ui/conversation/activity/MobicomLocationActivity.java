@@ -107,9 +107,9 @@ public class MobicomLocationActivity extends KmBaseActivity implements OnMapRead
                 }
                 MobicomLocationActivity.this.customizationSettings = customizationSettings;
                 progressBar.setVisibility(View.GONE);
+                themeHelper = KmThemeHelper.getInstance(MobicomLocationActivity.this, customizationSettings);
                 setupEdgeToEdge(customizationSettings, shouldUseLightSystemBars(customizationSettings), themeHelper.getStatusBarColor());
                 configureSentryWithKommunicateUI(MobicomLocationActivity.this, customizationSettings.toString());
-                themeHelper = KmThemeHelper.getInstance(MobicomLocationActivity.this, customizationSettings);
                 toolbar.setBackgroundColor(themeHelper.getToolbarColor());
                 toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);

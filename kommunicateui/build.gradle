@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "io.kommunicate.ui"
+    compileSdk 35
 
     lintOptions {
         abortOnError false
     }
     defaultConfig {
-        compileSdk 35
         targetSdkVersion 35
         minSdkVersion 21
         versionCode 1

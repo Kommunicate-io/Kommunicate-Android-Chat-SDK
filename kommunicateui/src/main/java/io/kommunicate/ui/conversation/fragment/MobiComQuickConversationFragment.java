@@ -690,8 +690,13 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                         loading = true;
                         loadMore = false;
 
+                        final Context context = getContext();
+                        if (context == null) {
+                            return;
+                        }
+
                         recyclerView.post(() -> {
-                            DownloadConversation downloadConversation = new DownloadConversation(getContext(), false, listIndex);
+                            downloadConversation = new DownloadConversation(context, false, listIndex);
                             downloadConversation.setTextViewWeakReference(emptyTextView);
                             downloadConversation.setSwipeRefreshLayoutWeakReference(swipeLayout);
                             downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

@@ -448,7 +448,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     protected Message lastUserMessage;
     private static final String[] WHATSAPP_SOURCE = {"WHATSAPPCLOUDAPI", "WHATSAPPTWILIO", "WHATSAPPDIALOG360"};
-    ;
+
     private static final String CONVERSATION_SOURCE = "source";
 
     private LinearLayout messageListLinearLayout;

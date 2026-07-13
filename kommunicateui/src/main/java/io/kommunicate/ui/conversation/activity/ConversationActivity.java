@@ -3,14 +3,12 @@ package io.kommunicate.ui.conversation.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
@@ -402,10 +400,13 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             customizationSettings = new CustomizationSettings();
         }
         themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            setupEdgeToEdge(customizationSettings, shouldUseLightSystemBars(customizationSettings), themeHelper.getStatusBarColor());
-        }
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+
+        setupEdgeToEdge(
+                customizationSettings,
+                shouldUseLightSystemBars(customizationSettings),
+                themeHelper.getStatusBarColor()
+        );
+
         setupActivityResultCallback();
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
         if (!TextUtils.isEmpty(customizationSettings.getChatBackgroundImageName())) {
@@ -600,7 +601,11 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     private void setupModes() {
         toolbar.setBackgroundColor(themeHelper.getToolbarColor());
         customToolbarLayout.setBackgroundColor(themeHelper.getToolbarColor());
-        KmUtils.setStatusBarColor(this, themeHelper.getStatusBarColor());
+        setupEdgeToEdge(
+                customizationSettings,
+                shouldUseLightSystemBars(customizationSettings),
+                themeHelper.getStatusBarColor()
+        );
         setToolbarTitleSubtitleColorFromSettings();
     }
 
@@ -1185,31 +1190,8 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, capturedImageUri);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                ClipData clip =
-                        ClipData.newUri(getContentResolver(), "a Photo", capturedImageUri);
-
-                cameraIntent.setClipData(clip);
-                cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            } else {
-                List<ResolveInfo> resInfoList =
-                        getPackageManager()
-                                .queryIntentActivities(cameraIntent, PackageManager.MATCH_DEFAULT_ONLY);
-
-                for (ResolveInfo resolveInfo : resInfoList) {
-                    String packageName = resolveInfo.activityInfo.packageName;
-                    grantUriPermission(packageName, capturedImageUri,
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    grantUriPermission(packageName, capturedImageUri,
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                }
-            }
+            cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             if (cameraIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
                 if (mediaFile != null) {
@@ -1243,7 +1225,6 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     }
 
     public void showVideoCapture() {
-
         try {
             Intent videoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
             String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
@@ -1254,32 +1235,8 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             videoFileUri = FileProvider.getUriForFile(this, Utils.getMetaDataValue(this, MobiComKitConstants.PACKAGE_NAME) + ".provider", mediaFile);
 
             videoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoFileUri);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                videoIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                videoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                ClipData clip =
-                        ClipData.newUri(getContentResolver(), "a Video", videoFileUri);
-
-                videoIntent.setClipData(clip);
-                videoIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                videoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            } else {
-                List<ResolveInfo> resInfoList =
-                        getPackageManager()
-                                .queryIntentActivities(videoIntent, PackageManager.MATCH_DEFAULT_ONLY);
-
-                for (ResolveInfo resolveInfo : resInfoList) {
-                    String packageName = resolveInfo.activityInfo.packageName;
-                    grantUriPermission(packageName, videoFileUri,
-                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    grantUriPermission(packageName, videoFileUri,
-                            Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                }
-            }
+            videoIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            videoIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             if (videoIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
                 if (mediaFile != null) {
@@ -1287,11 +1244,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                     startActivityForResult(videoIntent, MultimediaOptionFragment.REQUEST_CODE_CAPTURE_VIDEO_ACTIVITY);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

@@ -107,13 +107,11 @@ public class MobicomLocationActivity extends KmBaseActivity implements OnMapRead
                 }
                 MobicomLocationActivity.this.customizationSettings = customizationSettings;
                 progressBar.setVisibility(View.GONE);
-                setupEdgeToEdge(customizationSettings);
-                configureSentryWithKommunicateUI(MobicomLocationActivity.this, customizationSettings.toString());
                 themeHelper = KmThemeHelper.getInstance(MobicomLocationActivity.this, customizationSettings);
-
+                setupEdgeToEdge(customizationSettings, shouldUseLightSystemBars(customizationSettings), themeHelper.getStatusBarColor());
+                configureSentryWithKommunicateUI(MobicomLocationActivity.this, customizationSettings.toString());
                 toolbar.setBackgroundColor(themeHelper.getToolbarColor());
                 toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
-                KmUtils.setStatusBarColor(MobicomLocationActivity.this, themeHelper.getStatusBarColor());
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
                 int iconColor = themeHelper.parseColorWithDefault(customizationSettings.getAttachmentIconsBackgroundColor().get(themeHelper.isDarkModeEnabledForSDK() ? 1 : 0),
@@ -176,10 +174,12 @@ public class MobicomLocationActivity extends KmBaseActivity implements OnMapRead
             googleMap.getUiSettings().setZoomGesturesEnabled(true);
             googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
                 @Override
-                public void onMarkerDragStart(Marker marker) { }
+                public void onMarkerDragStart(Marker marker) {
+                }
 
                 @Override
-                public void onMarkerDrag(Marker marker) { }
+                public void onMarkerDrag(Marker marker) {
+                }
 
                 @Override
                 public void onMarkerDragEnd(Marker marker) {

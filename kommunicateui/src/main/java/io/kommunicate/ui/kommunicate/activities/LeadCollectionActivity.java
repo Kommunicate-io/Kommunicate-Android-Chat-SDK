@@ -1,6 +1,7 @@
 package io.kommunicate.ui.kommunicate.activities;
 
 import static io.kommunicate.ui.utils.SentryUtils.configureSentryWithKommunicateUI;
+import static io.sentry.android.core.ContextUtils.getApplicationContext;
 
 import android.app.ProgressDialog;
 import android.os.ResultReceiver;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
+import io.kommunicate.ui.activities.KmBaseActivity;
 import io.kommunicate.ui.kommunicate.adapters.KmPrechatInputAdapter;
 
 import io.kommunicate.Kommunicate;
@@ -38,7 +40,7 @@ import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 
-public class LeadCollectionActivity extends AppCompatActivity implements View.OnClickListener {
+public class LeadCollectionActivity extends KmBaseActivity implements View.OnClickListener {
     public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     public static final String PHONE_NUMBER_VALIDATION_REGEX = "^\\d{10}$";
     public static final String NUMBER_VALIDATION_REGEX = "[0-9]+";
@@ -63,7 +65,12 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             customizationSettings = new CustomizationSettings();
         }
         configureSentryWithKommunicateUI(this, customizationSettings.toString());
-        KmUtils.setStatusBarColor(this, KmThemeHelper.getInstance(this, customizationSettings).getStatusBarColor());
+        KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
+        setupEdgeToEdge(
+                customizationSettings,
+                shouldUseLightSystemBars(customizationSettings),
+                themeHelper.getStatusBarColor()
+        );
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);
             returnDataMap = getIntent().getBooleanExtra(KmConstants.PRECHAT_RETURN_DATA_MAP, false);
@@ -71,7 +78,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
             if (!TextUtils.isEmpty(preChatModelListJson)) {
                 inputModelList = Arrays.asList((KmPrechatInputModel[]) GsonUtils.getObjectFromJson(preChatModelListJson, KmPrechatInputModel[].class));
                 for (KmPrechatInputModel model : inputModelList) {
-                    if(!TextUtils.isEmpty(model.getField())) {
+                    if (!TextUtils.isEmpty(model.getField())) {
                         if (model.getField().equals(getString(R.string.emailEt))) {
                             model.setValidationRegex(EMAIL_VALIDATION_REGEX);
                         } else if (model.getField().equals(getString(R.string.phoneNumberEt))) {
@@ -115,7 +122,7 @@ public class LeadCollectionActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         if (prechatInputAdapter != null && prechatInputAdapter.areFieldsValid()) {
-            if(returnDataMap) {
+            if (returnDataMap) {
                 sendPrechatData(prechatInputAdapter.getDataMap());
                 return;
             }

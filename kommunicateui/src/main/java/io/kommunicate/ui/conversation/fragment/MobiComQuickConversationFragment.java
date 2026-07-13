@@ -687,12 +687,15 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                         return;
                     }
                     if (loadMore && !loading && (visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                        DownloadConversation downloadConversation = new DownloadConversation(getContext(), false, listIndex);
-                        downloadConversation.setTextViewWeakReference(emptyTextView);
-                        downloadConversation.setSwipeRefreshLayoutWeakReference(swipeLayout);
-                        downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         loading = true;
                         loadMore = false;
+
+                        recyclerView.post(() -> {
+                            DownloadConversation downloadConversation = new DownloadConversation(getContext(), false, listIndex);
+                            downloadConversation.setTextViewWeakReference(emptyTextView);
+                            downloadConversation.setSwipeRefreshLayoutWeakReference(swipeLayout);
+                            downloadConversation.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        });
                     }
                 }
             }

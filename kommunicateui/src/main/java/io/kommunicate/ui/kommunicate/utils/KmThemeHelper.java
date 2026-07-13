@@ -175,10 +175,6 @@ public class KmThemeHelper implements KmCallback {
         return toolbarColor;
     }
 
-    /**
-     * @deprecated Deprecated due to Android 15 edge-to-edge migration.
-     */
-    @Deprecated
     public int getStatusBarColor() {
         String colorStr = isDarkModeEnabledForSDK() ? customizationSettings.getStatusBarColor().get(1) : customizationSettings.getStatusBarColor().get(0);
         statusBarColor = parseColorWithDefault(colorStr, getToolbarColor());

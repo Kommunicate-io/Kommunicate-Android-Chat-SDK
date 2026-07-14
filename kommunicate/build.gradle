@@ -8,6 +8,7 @@ plugins {
 
 android {
     namespace = "io.kommunicate"
+    compileSdk 35
 
     lintOptions {
         abortOnError false
@@ -15,10 +16,9 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        compileSdk 35
         targetSdkVersion 35
         versionCode 1
-        versionName "2.16.3"
+        versionName "2.16.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "KOMMUNICATE_VERSION", "\"" + versionName + "\""
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'

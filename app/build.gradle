@@ -6,9 +6,10 @@ plugins {
 
 android {
     namespace "io.kommunicate.app"
+    compileSdk 35
+
     defaultConfig {
         applicationId "io.kommunicate.app"
-        compileSdk 35
         minSdkVersion 23
         targetSdkVersion 35
         versionCode 1

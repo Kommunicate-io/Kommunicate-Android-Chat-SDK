@@ -663,7 +663,7 @@ public class MessageDatabaseService {
                     values.put("url", fileMeta.getUrl());
                 }
             }
-            id = database.insertOrThrow("sms", null, values);
+            id = database.insertWithOnConflict("sms", null, values, SQLiteDatabase.CONFLICT_IGNORE);
         } catch (Throwable ex) {
             ex.printStackTrace();
             Utils.printLog(context, TAG, " Ignore Duplicate entry in sms table, sms: " + message);

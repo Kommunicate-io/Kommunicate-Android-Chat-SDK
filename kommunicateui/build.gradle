@@ -21,6 +21,9 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         buildConfigField "String", "KOMMUNICATE_UI_VERSION", "\"" + versionName + "\""
+        aarMetadata {
+            minCompileSdk = 34
+        }
     }
 
     buildTypes {

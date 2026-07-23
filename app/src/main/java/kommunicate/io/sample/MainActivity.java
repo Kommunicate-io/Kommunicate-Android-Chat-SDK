@@ -8,6 +8,7 @@ import io.kommunicate.ui.kommunicate.views.KmToast;
 import io.kommunicate.commons.commons.core.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -122,6 +123,29 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        initOnBackPressed();
+    }
+
+    private void initOnBackPressed() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (exit) {
+                    finish();
+                } else {
+                    KmToast.success(MainActivity.this, io.kommunicate.ui.R.string.press_back_exit, Toast.LENGTH_SHORT).show();
+                    exit = true;
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            exit = false;
+                        }
+                    }, 3000);
+                }
+            }
+        });
     }
 
     public boolean isPlaceHolderAppId() {
@@ -168,25 +192,6 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(layout, resId,
                 Snackbar.LENGTH_SHORT)
                 .show();
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (exit) {
-            finish();
-        } else {
-            KmToast.success(this, io.kommunicate.ui.R.string.press_back_exit, Toast.LENGTH_SHORT).show();
-            exit = true;
-
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exit = false;
-                }
-            }, 3000);
-        }
-
     }
 
     public void initLoginData(String userId, String password, final ProgressDialog progressDialog) {

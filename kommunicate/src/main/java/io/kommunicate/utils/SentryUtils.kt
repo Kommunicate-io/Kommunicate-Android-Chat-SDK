@@ -6,6 +6,7 @@ import io.kommunicate.commons.data.PrefSettings
 import io.kommunicate.BuildConfig
 import io.sentry.IScope
 import io.sentry.Sentry
+import io.sentry.android.core.SentryAndroid
 import io.sentry.protocol.User
 
 object SentryUtils {
@@ -13,7 +14,7 @@ object SentryUtils {
     @JvmStatic
     fun configureSentryWithKommunicate(context: Context) {
         if(BuildConfig.DEBUG) {
-            Sentry.init { options ->
+            SentryAndroid.init(context) { options ->
                 options.dsn = BuildConfig.SENTRY_DSN
                 options.isEnabled = false
             }

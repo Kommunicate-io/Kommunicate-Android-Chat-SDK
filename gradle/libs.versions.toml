@@ -17,7 +17,6 @@ isoparser = "1.0.6"
 javaClient = "8.0.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-kotlinVersion = '2.4.10'
 jfrogVersion = "6.0.4"
 kotlinxCoroutinesCore = "1.7.3"
 material = "1.12.0"
@@ -87,7 +86,6 @@ test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "cor
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-#kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 jfrog = { id = "com.jfrog.artifactory", version.ref = "jfrogVersion" }
 google-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleSecret"}
 sentry = { id = "io.sentry.android.gradle", version.ref = "sentryPluginVersion"}

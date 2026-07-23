@@ -15,7 +15,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "APP_ID", '"1de229e1897fa19317af97b7b6acdee7c"'
+        buildConfigField "String", "APP_ID", '"<<YOUR_APP_ID>>"'
         multiDexEnabled true
     }
 

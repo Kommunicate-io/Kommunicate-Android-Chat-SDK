@@ -1,20 +1,19 @@
 plugins {
     alias libs.plugins.android.library
-    alias libs.plugins.kotlin.android
     alias libs.plugins.jfrog
     alias libs.plugins.meaven.local
 }
 
 android {
     namespace = "io.kommunicate.ui"
-    compileSdk 35
+    compileSdk 37
 
     lintOptions {
         abortOnError false
     }
     defaultConfig {
-        targetSdkVersion 35
-        minSdkVersion 21
+        targetSdkVersion 36
+        minSdkVersion 23
         versionCode 1
         versionName "2.16.4"
         buildToolsVersion = '34.0.0'
@@ -22,20 +21,20 @@ android {
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         buildConfigField "String", "KOMMUNICATE_UI_VERSION", "\"" + versionName + "\""
+        aarMetadata {
+            minCompileSdk = 34
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = '17'
     }
     buildFeatures {
         buildConfig true
@@ -45,7 +44,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicate')
-//    api 'io.kommunicate.sdk:kommunicate:2.16.3'
+//    api 'io.kommunicate.sdk:kommunicate:2.16.4'
     api libs.firebase.messaging
     api libs.play.services.maps
     api libs.gms.play.services.location
@@ -73,7 +72,7 @@ task javadoc(type: Javadoc) {
     failOnError false // add this line
     source = android.sourceSets.main.java.srcDirs
     //source = android.sourceSets.main.allJava
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += project.files(androidComponents.sdkComponents.bootClasspath)
 }
 task javadocJar(type: Jar, dependsOn: javadoc) {
     archiveClassifier = 'javadoc'

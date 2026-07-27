@@ -1,12 +1,11 @@
 package io.kommunicate.ui.kommunicate.activities;
 
 import static io.kommunicate.ui.utils.SentryUtils.configureSentryWithKommunicateUI;
-import static io.sentry.android.core.ContextUtils.getApplicationContext;
 
 import android.app.ProgressDialog;
 import android.os.ResultReceiver;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.OnBackPressedCallback;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +37,6 @@ import java.util.Map;
 
 import io.kommunicate.users.KMUser;
 import io.kommunicate.utils.KmConstants;
-import io.kommunicate.utils.KmUtils;
 
 public class LeadCollectionActivity extends KmBaseActivity implements View.OnClickListener {
     public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
@@ -104,15 +102,22 @@ public class LeadCollectionActivity extends KmBaseActivity implements View.OnCli
 
         Button startConversationButton = findViewById(R.id.start_conversation);
         startConversationButton.setOnClickListener(this);
+
+        initOnBackPressed();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (prechatReceiver != null) {
-            prechatReceiver.send(KmConstants.PRECHAT_RESULT_FAILURE, null);
-        }
-
+    private void initOnBackPressed() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (prechatReceiver != null) {
+                    prechatReceiver.send(KmConstants.PRECHAT_RESULT_FAILURE, null);
+                }
+                setEnabled(false);
+                getOnBackPressedDispatcher().onBackPressed();
+                setEnabled(true);
+            }
+        });
     }
 
     private void setGreetingsText() {

@@ -1,17 +1,17 @@
 plugins {
     alias libs.plugins.android.application
-    alias libs.plugins.kotlin.android
+    alias libs.plugins.google.services
     alias libs.plugins.google.secrets
 }
 
 android {
     namespace "io.kommunicate.app"
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "io.kommunicate.app"
         minSdkVersion 23
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -23,20 +23,17 @@ android {
         release {
             minifyEnabled false
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = '17'
     }
     buildFeatures {
         buildConfig true
@@ -55,7 +52,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     api project(':kommunicateui')
-//    implementation 'io.kommunicate.sdk:kommunicateui:2.16.3'
+//    implementation 'io.kommunicate.sdk:kommunicateui:2.16.4'
     implementation libs.appcompat
     implementation libs.multidex
     implementation libs.core.ktx
@@ -82,6 +79,3 @@ dependencies {
 secrets {
     defaultPropertiesFileName = "release.secrets.properties"
 }
-
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'org.jetbrains.kotlin.android'

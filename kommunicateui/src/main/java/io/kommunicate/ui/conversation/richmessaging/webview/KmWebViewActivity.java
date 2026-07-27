@@ -6,6 +6,7 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 
 import android.graphics.drawable.ColorDrawable;
@@ -157,6 +158,35 @@ public class KmWebViewActivity extends KmBaseActivity {
         }
         setupDownloadListener(webView);
         setupInsets();
+        initOnBackPressed();
+    }
+
+    private void initOnBackPressed() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (webView != null && webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(KmWebViewActivity.this);
+
+                    alertDialog.setTitle(getString(R.string.warning));
+                    alertDialog.setMessage(getString(isPaymentRequest ? R.string.cancel_transaction : R.string.go_back));
+
+                    alertDialog.setPositiveButton(getString(R.string.yes_alert), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+                    alertDialog.setNegativeButton(getString(R.string.no_alert), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialog.show();
+                }
+            }
+        });
     }
 
     private void applyFaqHeaderVisibility(boolean showFaqToolbar) {
@@ -251,31 +281,6 @@ public class KmWebViewActivity extends KmBaseActivity {
         sb.append(FORM_BODY_HTML);
 
         webView.loadData(sb.toString(), text_html, "utf-8");
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (webView != null && webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            AlertDialog.Builder alertDialog = new AlertDialog.Builder(KmWebViewActivity.this);
-
-            alertDialog.setTitle(getString(R.string.warning));
-            alertDialog.setMessage(getString(isPaymentRequest ? R.string.cancel_transaction : R.string.go_back));
-
-            alertDialog.setPositiveButton(getString(R.string.yes_alert), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            alertDialog.setNegativeButton(getString(R.string.no_alert), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            alertDialog.show();
-        }
     }
 
     @Override

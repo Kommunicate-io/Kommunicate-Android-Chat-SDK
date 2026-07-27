@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.annotation.NonNull;
@@ -550,6 +551,48 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         if (customizationSettings.isUseDeviceDefaultLanguage()) {
             KommunicateSettings.setDefaultLanguage(this);
         }
+
+        initOnBackPressed();
+    }
+
+    private void initOnBackPressed() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+                    try {
+                        Intent upIntent = KommunicateSetting.getInstance(ConversationActivity.this).getParentActivityIntent(ConversationActivity.this);
+                        if (upIntent != null && isTaskRoot()) {
+                            TaskStackBuilder.create(ConversationActivity.this).addNextIntentWithParentStack(upIntent).startActivities();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    ConversationActivity.this.finish();
+                    return;
+                }
+                Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
+                ConversationFragment conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentByTag(ConversationUIService.CONVERSATION_FRAGMENT);
+                if (conversationFragment != null && conversationFragment.isVisible() && conversationFragment.isAttachmentOptionsOpen()) {
+                    conversationFragment.handleAttachmentToggle();
+                    return;
+                }
+
+                if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
+                    Intent upIntent = KommunicateSetting.getInstance(ConversationActivity.this).getParentActivityIntent(ConversationActivity.this);
+                    if (upIntent != null && isTaskRoot()) {
+                        TaskStackBuilder.create(ConversationActivity.this).addNextIntentWithParentStack(upIntent).startActivities();
+                    }
+                    ConversationActivity.this.finish();
+                } else if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                    getSupportFragmentManager().popBackStack();
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     private void setupWindowInsets() {
@@ -944,40 +987,6 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         conversation = conversationFragment;
     }
 
-
-    @Override
-    public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-            try {
-                Intent upIntent = KommunicateSetting.getInstance(this).getParentActivityIntent(this);
-                if (upIntent != null && isTaskRoot()) {
-                    TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            this.finish();
-            return;
-        }
-        Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
-        ConversationFragment conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentByTag(ConversationUIService.CONVERSATION_FRAGMENT);
-        if (conversationFragment != null && conversationFragment.isVisible() && conversationFragment.isAttachmentOptionsOpen()) {
-            conversationFragment.handleAttachmentToggle();
-            return;
-        }
-
-        if (takeOrder && getSupportFragmentManager().getBackStackEntryCount() == 2) {
-            Intent upIntent = KommunicateSetting.getInstance(this).getParentActivityIntent(this);
-            if (upIntent != null && isTaskRoot()) {
-                TaskStackBuilder.create(this).addNextIntentWithParentStack(upIntent).startActivities();
-            }
-            ConversationActivity.this.finish();
-        } else if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     public void updateLatestMessage(Message message, String formattedContactNumber) {

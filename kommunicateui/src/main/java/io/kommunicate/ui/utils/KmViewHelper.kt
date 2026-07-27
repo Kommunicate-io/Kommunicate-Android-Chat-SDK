@@ -94,7 +94,7 @@ object KmViewHelper {
             .listener(object : RequestListener<Drawable?> {
                 override fun onLoadFailed(
                     e: GlideException?,
-                    model: Any,
+                    model: Any?,
                     target: Target<Drawable?>,
                     isFirstResource: Boolean
                 ): Boolean {
@@ -104,7 +104,7 @@ object KmViewHelper {
                 }
 
                 override fun onResourceReady(
-                    resource: Drawable?,
+                    resource: Drawable,
                     model: Any,
                     target: Target<Drawable?>,
                     dataSource: DataSource,

@@ -1,44 +1,43 @@
 [versions]
-androidGradlePlugin = '8.5.2'
+androidGradlePlugin = '9.3.0'
 appcompat = "1.7.0"
 browser = "1.8.0"
 circleimageview = "2.2.0"
 cardview = "1.0.0"
 constraintlayout = "2.0.4"
-coreKtx = "1.13.1"
+coreKtx = "1.18.0"
 espressoCore = "3.6.1"
 fakeKeystore = "2.0.0"
-firebaseMessaging = "20.1.0"
+firebaseMessaging = "25.1.1"
 flexbox = "3.0.0"
-glide = "4.9.0"
-googleServices = '4.3.8'
+glide = "4.16.0"
+googleServices = "4.5.0"
 gson = "2.8.6"
 isoparser = "1.0.6"
 javaClient = "8.0.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-kotlinVersion = '2.0.10'
-jfrogVersion = '5.2.3'
+jfrogVersion = "6.0.4"
 kotlinxCoroutinesCore = "1.7.3"
 material = "1.12.0"
-media3Exoplayer = "1.2.1"
-media3Ui = "1.2.1"
+media3Exoplayer = "1.10.1"
+media3Ui = "1.10.1"
 multidex = "2.0.1"
 okhttp = "4.12.0"
 orgEclipsePahoClientMqttv3 = "1.2.0"
 localbroadcastmanager = "1.0.0"
-playServicesLocation = "17.0.0"
-playServicesMaps = "17.0.0"
+playServicesLocation = "21.3.0"
+playServicesMaps = "20.0.0"
 retrofit = "2.11.0"
-robolectric = "4.13"
+robolectric = "4.16.1"
 runner = "1.6.2"
 seleniumJava = "4.1.0"
-sentryAndroid = "7.18.0"
+sentryAndroid = "8.49.0"
 silicompressor = "2.2.4"
 swiperefreshlayout = "1.1.0"
 googleSecret = "2.0.1"
 coreKtxVersion = "1.6.1"
-sentryPluginVersion = "4.11.0"
+sentryPluginVersion = "6.15.0"
 
 [libraries]
 browser = { module = "androidx.browser:browser", version.ref = "browser" }
@@ -87,7 +86,6 @@ test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "cor
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 jfrog = { id = "com.jfrog.artifactory", version.ref = "jfrogVersion" }
 google-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleSecret"}
 sentry = { id = "io.sentry.android.gradle", version.ref = "sentryPluginVersion"}

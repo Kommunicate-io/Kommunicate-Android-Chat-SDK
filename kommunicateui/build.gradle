@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "io.kommunicate.ui"
-    compileSdk 37
+    compileSdk 36
 
     lintOptions {
         abortOnError false
@@ -16,14 +16,10 @@ android {
         minSdkVersion 23
         versionCode 1
         versionName "2.16.4"
-        buildToolsVersion = '34.0.0'
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         buildConfigField "String", "KOMMUNICATE_UI_VERSION", "\"" + versionName + "\""
-        aarMetadata {
-            minCompileSdk = 34
-        }
     }
 
     buildTypes {

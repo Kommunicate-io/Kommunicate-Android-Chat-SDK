@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace "io.kommunicate.app"
-    compileSdk 37
+    compileSdk 36
 
     defaultConfig {
         applicationId "io.kommunicate.app"

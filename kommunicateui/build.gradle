@@ -40,7 +40,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicate')
-//    api 'io.kommunicate.sdk:kommunicate:2.16.4'
+//    api 'io.kommunicate.sdk:kommunicate:2.16.5'
     api libs.firebase.messaging
     api libs.play.services.maps
     api libs.gms.play.services.location

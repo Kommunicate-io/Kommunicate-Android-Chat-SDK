@@ -648,6 +648,10 @@ public class KmConversationHelper {
                         SettingsSharedPreference.getInstance(context).hideChatListOnNotification();
                     }
                     if (callback != null) {
+                        if (channel == null) {
+                            callback.onFailure(new IllegalStateException("Conversation response did not produce a local channel"));
+                            return;
+                        }
                         if (launchConversation) {
                             openParticularConversation(context, isSkipConversationList, channel.getKey(), preFilledMessage, callback);
                         } else {
@@ -660,7 +664,7 @@ public class KmConversationHelper {
                         resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
                     }
                     if (callback != null) {
-                        callback.onFailure(e.getMessage());
+                        callback.onFailure(e);
                     }
                 }
             }

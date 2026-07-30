@@ -640,28 +640,32 @@ public class KmConversationHelper {
         return new KmStartConversationHandler() {
             @Override
             public void onSuccess(Channel channel, Context context) {
+                if (resultReceiver != null) {
+                    resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
+                }
+                if (callback != null && channel == null) {
+                    callback.onFailure(new IllegalStateException("Conversation response did not produce a local channel"));
+                    return;
+                }
+
                 try {
-                    if (resultReceiver != null) {
-                        resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
-                    }
                     if (isSkipConversationList) {
                         SettingsSharedPreference.getInstance(context).hideChatListOnNotification();
                     }
-                    if (callback != null) {
-                        if (launchConversation) {
-                            openParticularConversation(context, isSkipConversationList, channel.getKey(), preFilledMessage, callback);
-                        } else {
-                            callback.onSuccess(channel.getKey());
-                        }
+                    if (callback != null && launchConversation) {
+                        openParticularConversation(context, isSkipConversationList, channel.getKey(), preFilledMessage, callback);
+                        return;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (resultReceiver != null) {
-                        resultReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
-                    }
                     if (callback != null) {
-                        callback.onFailure(e.getMessage());
+                        callback.onFailure(e);
                     }
+                    return;
+                }
+
+                if (callback != null) {
+                    callback.onSuccess(channel.getKey());
                 }
             }
 

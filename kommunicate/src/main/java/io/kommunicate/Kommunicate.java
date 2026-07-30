@@ -115,6 +115,34 @@ public class Kommunicate {
     private static final String KM_CHAT_BUILDER_CANTBE_NULL = "KmChatBuilder cannot be null";
     private static final String NEEDS_ACTIVITY_CONTEXT = "This method needs Activity context";
     private static final String LAUNCHED_CHAT_LIST = "Successfully launched chat list";
+    private static final Object LOGIN_LOCK = new Object();
+    private static final Map<String, PendingLogin> PENDING_LOGINS = new HashMap<>();
+
+    private static final class PendingLoginCallback {
+        private final KMLoginHandler handler;
+        private final Context context;
+
+        private PendingLoginCallback(KMLoginHandler handler, Context context) {
+            this.handler = handler;
+            this.context = context;
+        }
+    }
+
+    private static final class PendingLogin {
+        private final List<PendingLoginCallback> callbacks = new ArrayList<>();
+        private boolean registerForPush;
+
+        private PendingLogin(KMLoginHandler handler, Context context, boolean registerForPush) {
+            add(handler, context, registerForPush);
+        }
+
+        private void add(KMLoginHandler handler, Context context, boolean registerForPush) {
+            if (handler != null) {
+                callbacks.add(new PendingLoginCallback(handler, context));
+            }
+            this.registerForPush |= registerForPush;
+        }
+    }
 
     public static void setFaqPageName(String faqPageName) {
         Kommunicate.faqPageName = faqPageName;
@@ -169,7 +197,7 @@ public class Kommunicate {
                 logout(context, new KMLogoutHandler() {
                     @Override
                     public void onSuccess(Context context) {
-                        login(context, kmUser, getKmLoginHandlerWithPush(handler), null);
+                        startLogin(context, kmUser, handler, null, true);
                     }
 
                     @Override
@@ -180,46 +208,92 @@ public class Kommunicate {
             }
         } else {
 
-            login(context, kmUser, getKmLoginHandlerWithPush(handler), null);
+            startLogin(context, kmUser, handler, null, true);
         }
     }
 
-    private static KMLoginHandler getKmLoginHandlerWithPush(final KMLoginHandler handler) {
-        return new KMLoginHandler() {
-            @Override
-            public void onSuccess(RegistrationResponse registrationResponse, final Context context) {
-                if (handler != null) {
-                    handler.onSuccess(registrationResponse, context);
-                }
-                Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
-                    @Override
-                    public void onSuccess(RegistrationResponse registrationResponse) {
-                        Utils.printLog(context, TAG, "Registered for push notifications : " + registrationResponse);
-                    }
-
-                    @Override
-                    public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                        Utils.printLog(context, TAG, "Failed to register for push notifications : " + registrationResponse + " \n\n " + exception);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                if (handler != null) {
-                    handler.onFailure(registrationResponse, exception);
-                }
-            }
-        };
+    public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler, ResultReceiver prechatReceiver) {
+        startLogin(context, kmUser, handler, prechatReceiver, false);
     }
 
-    public static void login(final Context context, final KMUser kmUser, final KMLoginHandler handler, ResultReceiver prechatReceiver) {
+    private static void startLogin(final Context context, final KMUser kmUser, final KMLoginHandler handler,
+                                   ResultReceiver prechatReceiver, boolean registerForPush) {
         if (kmUser != null) {
             kmUser.setHideActionMessages(true);
             kmUser.setSkipDeletedGroups(true);
         }
 
-        KMUserLoginUseCase.Companion.executeWithExecutor(context, kmUser, false, prechatReceiver, handler);
+        final String loginKey = getLoginKey(context, kmUser);
+        synchronized (LOGIN_LOCK) {
+            PendingLogin pendingLogin = PENDING_LOGINS.get(loginKey);
+            if (pendingLogin != null) {
+                pendingLogin.add(handler, context, registerForPush);
+                Utils.printLog(context, TAG, "Login already in progress for the requested user; joining existing request.");
+                return;
+            }
+            PENDING_LOGINS.put(loginKey, new PendingLogin(handler, context, registerForPush));
+        }
+
+        KMUserLoginUseCase.Companion.executeWithExecutor(context, kmUser, false, prechatReceiver, new KMLoginHandler() {
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse, Context callbackContext) {
+                PendingLogin pendingLogin = removePendingLogin(loginKey);
+                if (pendingLogin == null) {
+                    return;
+                }
+                for (PendingLoginCallback pendingCallback : pendingLogin.callbacks) {
+                    try {
+                        pendingCallback.handler.onSuccess(registrationResponse, pendingCallback.context);
+                    } catch (Exception callbackException) {
+                        Utils.printLog(pendingCallback.context, TAG, "Login success callback failed: " + callbackException);
+                    }
+                }
+                if (pendingLogin.registerForPush) {
+                    registerPushAfterLogin(callbackContext);
+                }
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                PendingLogin pendingLogin = removePendingLogin(loginKey);
+                if (pendingLogin == null) {
+                    return;
+                }
+                for (PendingLoginCallback pendingCallback : pendingLogin.callbacks) {
+                    try {
+                        pendingCallback.handler.onFailure(registrationResponse, exception);
+                    } catch (Exception callbackException) {
+                        Utils.printLog(pendingCallback.context, TAG, "Login failure callback failed: " + callbackException);
+                    }
+                }
+            }
+        });
+    }
+
+    private static String getLoginKey(Context context, KMUser kmUser) {
+        String applicationKey = KommunicateSettings.getInstance(context).getApplicationKey();
+        String userId = kmUser != null ? kmUser.getUserId() : null;
+        return String.valueOf(applicationKey) + '\u0000' + String.valueOf(userId);
+    }
+
+    private static PendingLogin removePendingLogin(String loginKey) {
+        synchronized (LOGIN_LOCK) {
+            return PENDING_LOGINS.remove(loginKey);
+        }
+    }
+
+    private static void registerPushAfterLogin(final Context context) {
+        Kommunicate.registerForPushNotification(context, new KmPushNotificationHandler() {
+            @Override
+            public void onSuccess(RegistrationResponse registrationResponse) {
+                Utils.printLog(context, TAG, "Registered for push notifications : " + registrationResponse);
+            }
+
+            @Override
+            public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                Utils.printLog(context, TAG, "Failed to register for push notifications : " + registrationResponse + " \n\n " + exception);
+            }
+        });
     }
 
     /**

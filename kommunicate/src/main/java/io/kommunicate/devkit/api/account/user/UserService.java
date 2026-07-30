@@ -280,7 +280,7 @@ public class UserService {
     }
 
     public String updateDisplayNameORImageLink(String displayName, String profileImageLink, String localURL, String status, String contactNumber, Map<String, String> metadata) {
-        return updateDisplayNameORImageLink(displayName, profileImageLink, localURL, status, null, null, null, null);
+        return updateDisplayNameORImageLink(displayName, profileImageLink, localURL, status, contactNumber, null, metadata, null);
     }
 
     public String updateDisplayNameORImageLink(String displayName, String profileImageLink, String localURL, String status, String contactNumber, String emailId, Map<String, String> metadata, String userId) {
@@ -371,7 +371,7 @@ public class UserService {
     }
 
     public String updateLoggedInUser(User user) {
-        return updateDisplayNameORImageLink(user.getDisplayName(), user.getImageLink(), user.getLocalImageUri(), user.getStatus(), user.getContactNumber(), user.getMetadata());
+        return updateDisplayNameORImageLink(user.getDisplayName(), user.getImageLink(), user.getLocalImageUri(), user.getStatus(), user.getContactNumber(), user.getEmail(), user.getMetadata(), null);
     }
 
     public String updateUser(User user) {

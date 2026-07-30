@@ -118,17 +118,27 @@ public class Kommunicate {
     private static final Object LOGIN_LOCK = new Object();
     private static final Map<String, PendingLogin> PENDING_LOGINS = new HashMap<>();
 
+    private static final class PendingLoginCallback {
+        private final KMLoginHandler handler;
+        private final Context context;
+
+        private PendingLoginCallback(KMLoginHandler handler, Context context) {
+            this.handler = handler;
+            this.context = context;
+        }
+    }
+
     private static final class PendingLogin {
-        private final List<KMLoginHandler> handlers = new ArrayList<>();
+        private final List<PendingLoginCallback> callbacks = new ArrayList<>();
         private boolean registerForPush;
 
-        private PendingLogin(KMLoginHandler handler, boolean registerForPush) {
-            add(handler, registerForPush);
+        private PendingLogin(KMLoginHandler handler, Context context, boolean registerForPush) {
+            add(handler, context, registerForPush);
         }
 
-        private void add(KMLoginHandler handler, boolean registerForPush) {
+        private void add(KMLoginHandler handler, Context context, boolean registerForPush) {
             if (handler != null) {
-                handlers.add(handler);
+                callbacks.add(new PendingLoginCallback(handler, context));
             }
             this.registerForPush |= registerForPush;
         }
@@ -217,11 +227,11 @@ public class Kommunicate {
         synchronized (LOGIN_LOCK) {
             PendingLogin pendingLogin = PENDING_LOGINS.get(loginKey);
             if (pendingLogin != null) {
-                pendingLogin.add(handler, registerForPush);
+                pendingLogin.add(handler, context, registerForPush);
                 Utils.printLog(context, TAG, "Login already in progress for the requested user; joining existing request.");
                 return;
             }
-            PENDING_LOGINS.put(loginKey, new PendingLogin(handler, registerForPush));
+            PENDING_LOGINS.put(loginKey, new PendingLogin(handler, context, registerForPush));
         }
 
         KMUserLoginUseCase.Companion.executeWithExecutor(context, kmUser, false, prechatReceiver, new KMLoginHandler() {
@@ -231,11 +241,11 @@ public class Kommunicate {
                 if (pendingLogin == null) {
                     return;
                 }
-                for (KMLoginHandler pendingHandler : pendingLogin.handlers) {
+                for (PendingLoginCallback pendingCallback : pendingLogin.callbacks) {
                     try {
-                        pendingHandler.onSuccess(registrationResponse, callbackContext);
+                        pendingCallback.handler.onSuccess(registrationResponse, pendingCallback.context);
                     } catch (Exception callbackException) {
-                        Utils.printLog(callbackContext, TAG, "Login success callback failed: " + callbackException);
+                        Utils.printLog(pendingCallback.context, TAG, "Login success callback failed: " + callbackException);
                     }
                 }
                 if (pendingLogin.registerForPush) {
@@ -249,11 +259,11 @@ public class Kommunicate {
                 if (pendingLogin == null) {
                     return;
                 }
-                for (KMLoginHandler pendingHandler : pendingLogin.handlers) {
+                for (PendingLoginCallback pendingCallback : pendingLogin.callbacks) {
                     try {
-                        pendingHandler.onFailure(registrationResponse, exception);
+                        pendingCallback.handler.onFailure(registrationResponse, exception);
                     } catch (Exception callbackException) {
-                        Utils.printLog(context, TAG, "Login failure callback failed: " + callbackException);
+                        Utils.printLog(pendingCallback.context, TAG, "Login failure callback failed: " + callbackException);
                     }
                 }
             }

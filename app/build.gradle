@@ -16,19 +16,16 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "APP_ID", '"<<YOUR_APP_ID>>"'
-        multiDexEnabled true
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -51,10 +48,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api project(':kommunicateui')
-//    implementation 'io.kommunicate.sdk:kommunicateui:2.16.5'
+    implementation project(':kommunicateui')
+//    implementation 'io.kommunicate.sdk:kommunicateui:2.16.6'
     implementation libs.appcompat
-    implementation libs.multidex
     implementation libs.core.ktx
     implementation libs.retrofit
     implementation libs.converter.gson

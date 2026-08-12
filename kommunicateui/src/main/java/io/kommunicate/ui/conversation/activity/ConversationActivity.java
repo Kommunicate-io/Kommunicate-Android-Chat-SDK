@@ -405,7 +405,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         setupEdgeToEdge(
                 customizationSettings,
                 shouldUseLightSystemBars(customizationSettings),
-                themeHelper.getStatusBarColor()
+                themeHelper.getConfiguredStatusBarColor()
         );
 
         setupActivityResultCallback();
@@ -647,7 +647,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         setupEdgeToEdge(
                 customizationSettings,
                 shouldUseLightSystemBars(customizationSettings),
-                themeHelper.getStatusBarColor()
+                themeHelper.getConfiguredStatusBarColor()
         );
         setToolbarTitleSubtitleColorFromSettings();
     }

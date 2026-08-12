@@ -67,7 +67,7 @@ public class LeadCollectionActivity extends KmBaseActivity implements View.OnCli
         setupEdgeToEdge(
                 customizationSettings,
                 shouldUseLightSystemBars(customizationSettings),
-                themeHelper.getStatusBarColor()
+                themeHelper.getConfiguredStatusBarColor()
         );
         if (getIntent() != null) {
             prechatReceiver = getIntent().getParcelableExtra(KmConstants.PRECHAT_RESULT_RECEIVER);

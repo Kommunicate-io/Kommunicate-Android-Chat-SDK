@@ -175,7 +175,7 @@ public class KmThemeHelper implements KmCallback {
         return toolbarColor;
     }
 
-    public int getStatusBarColor() {
+    public int getConfiguredStatusBarColor() {
         String colorStr = isDarkModeEnabledForSDK() ? customizationSettings.getStatusBarColor().get(1) : customizationSettings.getStatusBarColor().get(0);
         statusBarColor = parseColorWithDefault(colorStr, getToolbarColor());
         return statusBarColor;

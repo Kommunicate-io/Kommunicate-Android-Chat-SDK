@@ -60,6 +60,7 @@ import io.kommunicate.ui.instruction.InstructionUtil;
 import io.kommunicate.ui.utils.KmViewHelper;
 import io.kommunicate.utils.KmUtils;
 import io.noties.markwon.Markwon;
+import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 
 /**
  * Created by adarsh on 4/7/15.
@@ -113,7 +114,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         this.contactService = new AppContactService(context);
         this.messageDatabaseService = new MessageDatabaseService(context);
         this.messageList = messageList;
-        this.markwon = Markwon.create(context);
+        this.markwon = Markwon.builder(context)
+                .usePlugin(StrikethroughPlugin.create())
+                .build();
         conversationUIService = new ConversationUIService((FragmentActivity) context);
         loggedInUserRoleType = MobiComUserPreference.getInstance(context).getUserRoleType();
         loggedInUserId = MobiComUserPreference.getInstance(context).getUserId();

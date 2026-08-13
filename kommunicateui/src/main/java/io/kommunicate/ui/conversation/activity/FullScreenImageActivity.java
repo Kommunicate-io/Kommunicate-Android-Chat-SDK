@@ -83,7 +83,7 @@ public class FullScreenImageActivity extends KmBaseActivity {
         setSupportActionBar(toolbar);
 
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
-        int toolbarColor = themeHelper.getStatusBarColor();
+        int toolbarColor = themeHelper.getConfiguredStatusBarColor();
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(toolbarColor));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

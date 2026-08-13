@@ -17,7 +17,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 36
         versionCode 1
-        versionName "2.16.6"
+        versionName "2.16.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "KOMMUNICATE_VERSION", "\"" + versionName + "\""
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
@@ -52,6 +52,7 @@ dependencies {
     implementation 'androidx.sqlite:sqlite-framework:2.2.0'
     implementation "io.noties.markwon:core:4.6.2"
     implementation "io.noties.markwon:html:4.6.2"
+    implementation "io.noties.markwon:ext-strikethrough:4.6.2"
     api libs.org.eclipse.paho.client.mqttv3
     api libs.localbroadcastmanager
     api libs.appcompat

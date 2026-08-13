@@ -38,6 +38,7 @@ import io.kommunicate.devkit.channel.service.ChannelService;
 import io.kommunicate.devkit.contact.AppContactService;
 import io.kommunicate.devkit.listners.ConstantsHandler;
 import io.noties.markwon.Markwon;
+import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 import io.noties.markwon.html.HtmlPlugin;
 
 import static io.kommunicate.devkit.api.notification.VideoCallNotificationHelper.CALL_AUDIO_ONLY;
@@ -98,7 +99,10 @@ public class NotificationService {
         this.notificationDisableThreshold = settingsSharedPreference.getNotificationMuteThreshold();
         this.notificationFilePath = KommunicateSettings.getInstance(context).getCustomNotificationSound();
         this.notificationIconColor = Utils.getMetaDataValueForResources(context,NOTIFICATION_SMALL_ICON_COLOR);
-        this.markwon = Markwon.builder(context).usePlugin(HtmlPlugin.create()).build();
+        this.markwon = Markwon.builder(context)
+                .usePlugin(HtmlPlugin.create())
+                .usePlugin(StrikethroughPlugin.create())
+                .build();
 
         notificationChannels = new NotificationChannels(context, notificationFilePath);
 

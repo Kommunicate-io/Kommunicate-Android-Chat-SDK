@@ -95,7 +95,7 @@ public class KmWebViewActivity extends KmBaseActivity {
         setupEdgeToEdge(
                 customizationSettings,
                 shouldUseLightSystemBars(customizationSettings),
-                themeHelper.getStatusBarColor()
+                themeHelper.getConfiguredStatusBarColor()
         );
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(themeHelper.getPrimaryColor()));
         getSupportActionBar().setTitle("");

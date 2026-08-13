@@ -49,7 +49,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':kommunicateui')
-//    implementation 'io.kommunicate.sdk:kommunicateui:2.16.6'
+//    implementation 'io.kommunicate.sdk:kommunicateui:2.16.7'
     implementation libs.appcompat
     implementation libs.core.ktx
     implementation libs.retrofit

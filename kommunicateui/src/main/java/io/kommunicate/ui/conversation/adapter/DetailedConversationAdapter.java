@@ -122,6 +122,7 @@ import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmConstants;
 import io.kommunicate.utils.KmUtils;
 import io.noties.markwon.Markwon;
+import io.noties.markwon.ext.strikethrough.StrikethroughPlugin;
 import io.sentry.Hint;
 import io.sentry.Sentry;
 
@@ -260,7 +261,9 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         this.imageCache = ImageCache.getInstance(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         this.messageList = messageList;
         this.customizationSettings = customizationSettings;
-        this.markwon = Markwon.create(context);
+        this.markwon = Markwon.builder(context)
+                .usePlugin(StrikethroughPlugin.create())
+                .build();
         geoApiKey = KommunicateSettings.getInstance(context).getGeoApiKey();
         contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
             @Override

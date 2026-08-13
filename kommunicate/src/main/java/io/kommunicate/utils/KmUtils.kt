@@ -1,6 +1,5 @@
 package io.kommunicate.utils
 
-import android.app.Activity
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
@@ -8,17 +7,15 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
+import io.kommunicate.BuildConfig
 import io.kommunicate.devkit.SettingsSharedPreference
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
 import io.kommunicate.devkit.api.account.user.User
@@ -27,7 +24,6 @@ import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.commons.core.utils.Utils
 import io.kommunicate.commons.file.FileUtils
 import io.kommunicate.commons.json.GsonUtils
-import io.kommunicate.BuildConfig
 import io.kommunicate.KmSettings
 import io.kommunicate.Kommunicate
 import org.json.JSONException
@@ -168,14 +164,6 @@ object KmUtils {
     @JvmStatic
     fun setIconInsideTextView(textView: TextView) {
         textView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-    }
-
-    @JvmStatic
-    fun setStatusBarColor(activity: Activity, color: Int) {
-        val window = activity.window
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = color
     }
 
     @JvmStatic

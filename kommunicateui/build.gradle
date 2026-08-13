@@ -18,7 +18,6 @@ android {
         versionName "2.16.6"
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
-        multiDexEnabled true
         buildConfigField "String", "KOMMUNICATE_UI_VERSION", "\"" + versionName + "\""
     }
 
@@ -40,13 +39,14 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicate')
-//    api 'io.kommunicate.sdk:kommunicate:2.16.5'
+//    api 'io.kommunicate.sdk:kommunicate:2.16.6'
     api libs.firebase.messaging
     api libs.play.services.maps
     api libs.gms.play.services.location
     api libs.circleimageview
     api libs.glide
     api libs.cardview
+    api libs.activity
     api libs.material
     implementation libs.browser
     api libs.swiperefreshlayout
@@ -55,9 +55,9 @@ dependencies {
     implementation libs.flexbox
     implementation libs.constraintlayout
     implementation libs.core.ktx
-    implementation libs.multidex
     implementation "io.noties.markwon:core:4.6.2"
     implementation "io.noties.markwon:html:4.6.2"
+    implementation "io.noties.markwon:ext-strikethrough:4.6.2"
 }
 
 task sourcesJar(type: Jar) {

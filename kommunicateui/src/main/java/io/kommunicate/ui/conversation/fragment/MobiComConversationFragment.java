@@ -576,6 +576,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         individualMessageSendLayout.setBackgroundColor(themeHelper.parseColorWithDefault(
                 customizationSettings.getMessageEditTextBackgroundColor().get(isDarkModeEnabled ? 1 : 0), currentModeColor
         ));
+        if (newMessagesButton != null && newMessagesButton.getBackground() != null) {
+            newMessagesButton.getBackground().mutate().setTint(themeHelper.getToolbarColor());
+        }
         setupDotColorStatus();
         if (recyclerDetailConversationAdapter != null) {
             recyclerDetailConversationAdapter.setupDarkMode(isDarkModeEnabled);
@@ -644,14 +647,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         startNewConv = list.findViewById(R.id.start_new_conversation);
         startNewConv.setVisibility(GONE);
         newMessagesButton = list.findViewById(R.id.new_messages_button);
-        newMessagesButton.getBackground().mutate().setTint(themeHelper.getToolbarColor());
         newMessagesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 smoothScrollToLatestMessage();
             }
         });
-        isFollowingNewMessages = true;
+        resetNewMessageNavigation();
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();
 
@@ -800,6 +802,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     BroadcastService.currentConversationId = conversation.getId();
                     if (onSelected) {
                         currentConversationId = conversation.getId();
+                        resetNewMessageNavigation();
                         if (messageList != null) {
                             messageList.clear();
                         }
@@ -1810,6 +1813,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                resetNewMessageNavigation();
                 if (recyclerDetailConversationAdapter != null) {
                     messageList.clear();
                     if (messageList.isEmpty()) {
@@ -2850,6 +2854,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (newMessagesButton != null) {
             newMessagesButton.setVisibility(GONE);
         }
+    }
+
+    private void resetNewMessageNavigation() {
+        isFollowingNewMessages = true;
+        isScrollInteractionInProgress = false;
+        hideNewMessagesButton();
     }
 
     @Override

@@ -1922,16 +1922,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void run() {
                 //Todo: Handle disappearing messages.
+                boolean existingMessage = messageList.contains(message);
                 boolean added = updateMessageList(message, false);
                 if (added) {
                     //Todo: update unread count
                     recyclerDetailConversationAdapter.updateLastSentMessage(message);
                     recyclerDetailConversationAdapter.notifyDataSetChanged();
-                    if (isFollowingNewMessages || message.isTypeOutbox()) {
-                        scrollToLatestMessage();
-                    } else {
-                        showNewMessagesButton();
-                    }
                     emptyTextView.setVisibility(View.GONE);
                     currentConversationId = message.getConversationId();
                     channelKey = message.getGroupId();
@@ -1946,6 +1942,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         } catch (Exception e) {
                             Utils.printLog(getContext(), TAG, "Got exception while read");
                         }
+                    }
+                }
+                if (added || existingMessage) {
+                    if (isFollowingNewMessages || message.isTypeOutbox()) {
+                        scrollToLatestMessage();
+                    } else {
+                        showNewMessagesButton();
                     }
                 }
                 selfDestructMessage(message);

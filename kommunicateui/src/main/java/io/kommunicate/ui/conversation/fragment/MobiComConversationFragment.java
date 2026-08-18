@@ -1065,8 +1065,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         || newState == RecyclerView.SCROLL_STATE_SETTLING) {
                     isScrollInteractionInProgress = true;
                 } else if (isScrollInteractionInProgress) {
-                    if (!recyclerView.canScrollVertically(1)) {
-                        isFollowingNewMessages = true;
+                    isFollowingNewMessages = !recyclerView.canScrollVertically(1);
+                    if (isFollowingNewMessages) {
                         hideNewMessagesButton();
                     }
                     isScrollInteractionInProgress = false;

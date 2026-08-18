@@ -648,7 +648,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         newMessagesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                scrollToLatestMessage();
+                smoothScrollToLatestMessage();
             }
         });
         isFollowingNewMessages = true;
@@ -2828,6 +2828,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         hideNewMessagesButton();
         if (linearLayoutManager != null && !messageList.isEmpty()) {
             linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
+        }
+    }
+
+    private void smoothScrollToLatestMessage() {
+        isFollowingNewMessages = true;
+        hideNewMessagesButton();
+        if (recyclerView != null && recyclerView.getAdapter() != null
+                && recyclerView.getAdapter().getItemCount() > 0) {
+            recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount() - 1);
         }
     }
 

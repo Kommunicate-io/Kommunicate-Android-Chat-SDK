@@ -5284,7 +5284,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             kmAwayView.setVisibility(show && customizationSettings.isEnableAwayMessage() ? VISIBLE : GONE);
         }
         //don't hide any message if away view is visible
-        if (show && customizationSettings.isEnableAwayMessage()) {
+        if (show && customizationSettings.isEnableAwayMessage() && isFollowingNewMessages) {
             linearLayoutManager.scrollToPosition(messageList.size() - 1);
         }
     }

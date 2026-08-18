@@ -419,6 +419,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     private List<String> localTeams;
     private RelativeLayout faqButtonLayout;
     private Button startNewConv;
+    private Button newMessagesButton;
+    private boolean isFollowingNewMessages = true;
+    private boolean isScrollInteractionInProgress;
     private static final String KMEVENT = "KM_EVENT";
     private static final String QUICK_REPLY_CLICK = "QUICKREPLY_CLICK";
     private static final String SKIP_BOT = "skipBot";
@@ -640,6 +643,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         frameLayoutProgressbar = list.findViewById(R.id.idProgressBarLayout);
         startNewConv = list.findViewById(R.id.start_new_conversation);
         startNewConv.setVisibility(GONE);
+        newMessagesButton = list.findViewById(R.id.new_messages_button);
+        newMessagesButton.getBackground().mutate().setTint(themeHelper.getToolbarColor());
+        newMessagesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                scrollToLatestMessage();
+            }
+        });
+        isFollowingNewMessages = true;
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();
 
@@ -1046,11 +1058,29 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 if (recyclerDetailConversationAdapter != null) {
                     recyclerDetailConversationAdapter.contactImageLoader.setPauseWork(newState == RecyclerView.SCROLL_STATE_DRAGGING);
                 }
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING
+                        || newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    isScrollInteractionInProgress = true;
+                } else if (isScrollInteractionInProgress) {
+                    if (!recyclerView.canScrollVertically(1)) {
+                        isFollowingNewMessages = true;
+                        hideNewMessagesButton();
+                    }
+                    isScrollInteractionInProgress = false;
+                }
             }
 
             @Override
             public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
                 //super.onScrolled(recyclerView, dx, dy);
+                if (isScrollInteractionInProgress) {
+                    if (dy < 0) {
+                        isFollowingNewMessages = false;
+                    } else if (!recyclerView.canScrollVertically(1)) {
+                        isFollowingNewMessages = true;
+                        hideNewMessagesButton();
+                    }
+                }
                 if (loadMore) {
                     int topRowVerticalPosition =
                             (recyclerView == null || recyclerView.getChildCount() == 0) ?
@@ -1893,7 +1923,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     //Todo: update unread count
                     recyclerDetailConversationAdapter.updateLastSentMessage(message);
                     recyclerDetailConversationAdapter.notifyDataSetChanged();
-                    linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
+                    if (isFollowingNewMessages || message.isTypeOutbox()) {
+                        scrollToLatestMessage();
+                    } else {
+                        showNewMessagesButton();
+                    }
                     emptyTextView.setVisibility(View.GONE);
                     currentConversationId = message.getConversationId();
                     channelKey = message.getGroupId();
@@ -2789,6 +2823,26 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         return toAdd;
     }
 
+    private void scrollToLatestMessage() {
+        isFollowingNewMessages = true;
+        hideNewMessagesButton();
+        if (linearLayoutManager != null && !messageList.isEmpty()) {
+            linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
+        }
+    }
+
+    private void showNewMessagesButton() {
+        if (newMessagesButton != null) {
+            newMessagesButton.setVisibility(VISIBLE);
+        }
+    }
+
+    private void hideNewMessagesButton() {
+        if (newMessagesButton != null) {
+            newMessagesButton.setVisibility(GONE);
+        }
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -3322,8 +3376,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             Message typingMessage = new Message();
             typingMessage.setTypingMessage();
             messageList.add(typingMessage);
-            linearLayoutManager.scrollToPosition(messageList.size() - 1);
             recyclerDetailConversationAdapter.onItemInserted(messageList.size() - 1);
+            if (isFollowingNewMessages) {
+                linearLayoutManager.scrollToPosition(messageList.size() - 1);
+            }
         } else {
             try {
                 int position;

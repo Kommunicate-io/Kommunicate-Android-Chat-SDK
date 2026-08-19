@@ -121,6 +121,28 @@
                 android:textColor="@color/default_start_new_button_text_color"
                 android:textSize="14sp"
                 android:visibility="visible" />
+
+            <Button
+                android:id="@+id/new_messages_button"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/km_new_messages_button_background"
+                android:drawableEnd="@drawable/km_ic_arrow_down"
+                android:drawablePadding="8dp"
+                android:drawableTint="@color/km_white_color"
+                android:elevation="4dp"
+                android:fontFamily="sans-serif-medium"
+                android:minWidth="0dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="12dp"
+                android:text="@string/km_new_messages"
+                android:textAllCaps="false"
+                android:textColor="@color/km_white_color"
+                android:textSize="14sp"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <TextView

@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   //Note: Adding any new url array , Follow the same order.
+    <!-- These arrays are index-aligned. Add every supported API base URL to all three. -->
     <string-array name="km_base_url">
         <item>https://api.kommunicate.io</item>
         <item>https://api-test.kommunicate.io</item>
+        <item>https://api-eu.kommunicate.io</item>
+        <item>https://api-in.kommunicate.io</item>
     </string-array>
 
     <string-array name="km_dashboard_url">
         <item>https://dashboard.kommunicate.io</item>
         <item>https://dashboard-test.kommunicate.io</item>
+        <item>https://dashboard.kommunicate.io</item>
+        <item>https://dashboard.kommunicate.io</item>
     </string-array>
 
     <string-array name="km_helpcenter_url">
         <item>https://helpcenter.kommunicate.io</item>
         <item>https://helpcenter-test.kommunicate.io</item>
+        <item>https://helpcenter.kommunicate.io</item>
+        <item>https://helpcenter.kommunicate.io</item>
     </string-array>
     <string-array name="km_skip_encryption_endpoints">
         <item>/rest/ws/register/client</item>

@@ -31,7 +31,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "boolean", "SSL_PINNING_ENFORCED", "false"
+        }
         release {
+            buildConfigField "boolean", "SSL_PINNING_ENFORCED", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -42,6 +46,12 @@ android {
     }
     buildFeatures {
         buildConfig true
+    }
+}
+
+androidComponents {
+    beforeVariants(selector().withBuildType("release")) { variantBuilder ->
+        variantBuilder.enableUnitTest = true
     }
 }
 
@@ -59,6 +69,9 @@ dependencies {
     api libs.gson
     api libs.silicompressor
     api libs.sentry.android
+    testImplementation libs.junit
+    testImplementation libs.robolectric
+    testImplementation "org.mockito:mockito-core:5.12.0"
     api(libs.isoparser) {
         exclude(
                 group : "org.aspectj",

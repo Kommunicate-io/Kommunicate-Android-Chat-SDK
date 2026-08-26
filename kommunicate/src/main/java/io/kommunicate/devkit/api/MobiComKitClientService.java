@@ -127,7 +127,7 @@ public class MobiComKitClientService {
             throw new IOException(NOT_HTTP_CONN);
 
         try {
-            conn.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
+            SSLPinningConfig.configure(conn);
             conn.setAllowUserInteraction(false);
             conn.setInstanceFollowRedirects(true);
             conn.setRequestMethod("GET");

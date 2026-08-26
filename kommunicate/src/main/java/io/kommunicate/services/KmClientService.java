@@ -131,9 +131,14 @@ public class KmClientService extends MobiComKitClientService {
             return null;
         }
 
-        return context.getResources()
-                .getStringArray(context.getResources()
-                        .getIdentifier(urlMapper, "array", context.getPackageName()))[baseUrlList.indexOf(getKmBaseUrl())];
+        int baseUrlIndex = baseUrlList.indexOf(getKmBaseUrl());
+        int mappedUrlResource = context.getResources().getIdentifier(urlMapper, "array", context.getPackageName());
+        if (baseUrlIndex < 0 || mappedUrlResource == 0) {
+            return null;
+        }
+
+        String[] mappedUrls = context.getResources().getStringArray(mappedUrlResource);
+        return baseUrlIndex < mappedUrls.length ? mappedUrls[baseUrlIndex] : null;
     }
 
     /**

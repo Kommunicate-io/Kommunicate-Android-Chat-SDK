@@ -7,8 +7,15 @@ Release-only Network Security Configuration files repeat the same exact-host inv
 ## Pin roles
 
 - Each entry in `pinsByHost` in `SSLPinningConfig.kt` contains the currently deployed leaf public-key pin and that host's issuer backup pin.
-- Issuer backup pins allow a leaf certificate to be renewed or replaced under the same approved issuer without disabling supported app versions.
+- Every backup pin was verified against the issuer/intermediate certificate in the host's served chain on 2026-08-26. It allows the server to deploy a renewed or re-keyed leaf certificate without an app release only while the new chain continues to include that pinned issuer key.
+- These are issuer fallback pins, not dormant Kommunicate-controlled leaf keys. Changing CA or intermediate requires the replacement leaf or issuer pin to be shipped in an SDK release before the server chain changes.
 - A pin is a public identifier, not a private key or secret. Never add certificate private keys to this repository.
+
+## Pin expiration policy
+
+The release pin sets intentionally do not declare an expiration date. Android disables pinning after that date, which avoids stranding an old app but also makes pinning fail open. This SDK applies the same pin inventory through both Network Security Configuration and programmatic verification, so an XML-only expiration would provide inconsistent behavior and would not prevent programmatic connections from failing.
+
+The selected policy is to fail closed and preserve the VAPT control. Availability is handled through the verified issuer fallback pins and the staged rotation procedure below. Before changing an issuer/intermediate, Infrastructure must provide the new chain and a compatible SDK must be released and adopted. If the organization later chooses a fail-open expiration policy, the same reviewed deadline must be implemented in both enforcement paths and covered by release tests.
 
 ## Verified host inventory
 
@@ -45,7 +52,7 @@ Do not re-enable the Canada endpoint until Infrastructure provides a supported r
 4. Run the pinning unit tests and the release MITM test described below, then publish the SDK.
 5. Wait until the agreed minimum supported SDK adoption threshold is reached.
 6. Deploy the new server certificate and verify login, conversations, uploads, downloads, and notification media with both the previous and latest supported SDK releases.
-7. Remove obsolete leaf pins only in a later SDK release. Always retain at least one separately managed rotation pin.
+7. Remove obsolete pins only in a later SDK release, while retaining a verified fallback for the next approved certificate chain.
 
 Do not deploy a certificate chain for which no SPKI in a supported app's pin set is present. If an emergency rotation cannot use a pre-shipped pin, restore the previous certificate while a compatible SDK release is distributed; do not add a remote or release-mode pinning bypass.
 

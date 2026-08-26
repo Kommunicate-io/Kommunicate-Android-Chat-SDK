@@ -128,4 +128,7 @@ object SSLPinningConfig {
     @JvmStatic
     internal fun hasBackupPin(hostname: String, pin: String): Boolean =
         pinsForHost(hostname)?.backup == pin
+
+    internal fun pinInventory(): Map<String, Set<String>> =
+        pinsByHost.mapValues { (_, pinSet) -> pinSet.all }
 }

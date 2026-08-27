@@ -9,6 +9,7 @@
     <string name="group_name_hint">Name of the group</string>
     <string name="empty_conversations">No conversations!</string>
     <string name="enter_message_hint">Type your message...</string>
+    <string name="km_new_messages">New messages</string>
     <string name="send_text">SEND</string>
     <string name="cancel_text">CANCEL</string>
     <string name="ok_text">OK</string>

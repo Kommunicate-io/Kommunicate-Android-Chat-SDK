@@ -15,7 +15,7 @@ android {
         targetSdkVersion 36
         minSdkVersion 23
         versionCode 1
-        versionName "2.16.7"
+        versionName "2.16.8"
         consumerProguardFiles 'proguard-rules.txt'
         vectorDrawables.useSupportLibrary = true
         buildConfigField "String", "KOMMUNICATE_UI_VERSION", "\"" + versionName + "\""
@@ -39,7 +39,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':kommunicate')
-//    api 'io.kommunicate.sdk:kommunicate:2.16.7'
+//    api 'io.kommunicate.sdk:kommunicate:2.16.8'
     api libs.firebase.messaging
     api libs.play.services.maps
     api libs.gms.play.services.location

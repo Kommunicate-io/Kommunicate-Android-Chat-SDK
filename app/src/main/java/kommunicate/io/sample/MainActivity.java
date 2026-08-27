@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Kommunicate.init(this, APP_ID);
+        Kommunicate.enableSSLPinning(true);
 
         layout = (LinearLayout) findViewById(R.id.footerSnack);
         mUserId = (EditText) findViewById(R.id.userId_editText);

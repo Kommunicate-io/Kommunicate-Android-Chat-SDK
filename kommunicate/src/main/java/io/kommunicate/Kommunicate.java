@@ -166,10 +166,6 @@ public class Kommunicate {
         init(context, applicationKey, true);
     }
 
-    /**
-     * Release builds always enforce SSL pinning. This setting is retained for debug builds.
-     */
-    @Deprecated
     public static void enableSSLPinning(boolean isEnable) {
         KmAppSettingPreferences.setSSLPinningEnabled(isEnable);
     }

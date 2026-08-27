@@ -112,7 +112,7 @@ public class HttpRequestUtils {
             }
             url = new URL(urlString);
             connection = (HttpsURLConnection) url.openConnection();
-            SSLPinningConfig.configure(connection);
+            connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
             connection.setRequestMethod(isPatchRequest ? PATCH : POST);
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -186,7 +186,7 @@ public class HttpRequestUtils {
         try {
             url = new URL(urlString);
             connection = (HttpsURLConnection) url.openConnection();
-            SSLPinningConfig.configure(connection);
+            connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
             connection.setInstanceFollowRedirects(true);
             connection.setRequestMethod("GET");
             connection.setUseCaches(false);

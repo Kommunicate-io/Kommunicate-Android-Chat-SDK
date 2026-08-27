@@ -513,7 +513,7 @@ public class KmUserClientService extends UserClientService {
     private HttpURLConnection createAndGetConnectionObjectForMethodGet(String urlString, String contentType, String accept) throws Exception {
         URL url = new URL(urlString);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-        SSLPinningConfig.configure(connection);
+        connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
         connection.setInstanceFollowRedirects(true);
         connection.setRequestMethod(GET);
         connection.setUseCaches(false);

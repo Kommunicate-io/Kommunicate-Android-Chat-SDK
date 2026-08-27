@@ -47,7 +47,7 @@ public class MultipartUtility {
 
         URL url = new URL(requestURL);
         httpConn = (HttpsURLConnection) url.openConnection();
-        SSLPinningConfig.configure(httpConn);
+        httpConn.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
         httpConn.setUseCaches(false);
         httpConn.setDoOutput(true);
         httpConn.setDoInput(true);
@@ -63,7 +63,7 @@ public class MultipartUtility {
         isUploadOveridden = true;
         URL url = new URL(requestURL);
         httpConn = (HttpsURLConnection) url.openConnection();
-        SSLPinningConfig.configure(httpConn);
+        httpConn.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
         httpConn.setUseCaches(false);
         httpConn.setDoOutput(true);
         httpConn.setDoInput(true);

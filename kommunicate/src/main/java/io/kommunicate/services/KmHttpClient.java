@@ -45,7 +45,7 @@ public class KmHttpClient {
             }
             url = new URL(urlString);
             connection = (HttpsURLConnection) url.openConnection();
-            SSLPinningConfig.configure(connection);
+            connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
             connection.setRequestMethod(POST);
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -112,7 +112,7 @@ public class KmHttpClient {
         try {
             url = new URL(urlString);
             connection = (HttpsURLConnection) url.openConnection();
-            SSLPinningConfig.configure(connection);
+            connection.setSSLSocketFactory(SSLPinningConfig.createPinnedSSLSocketFactory());
             connection.setInstanceFollowRedirects(true);
             connection.setRequestMethod(GET);
             connection.setUseCaches(false);

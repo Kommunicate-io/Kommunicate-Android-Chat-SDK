@@ -61,10 +61,8 @@ object SSLPinningConfig {
                 val publicKeyHashBase64 = Base64.encodeToString(publicKeyHash, Base64.NO_WRAP)
 
                 val isSSLPinningEnabled = KmAppSettingPreferences.isSSLPinningEnabled
-                if (isSSLPinningEnabled) {
-                    if (!expectedPublicKeyHash.contains(publicKeyHashBase64)) {
-                        throw CertificateException("Public key pinning failure")
-                    }
+                if (isSSLPinningEnabled && !expectedPublicKeyHash.contains(publicKeyHashBase64)) {
+                    throw CertificateException("Public key pinning failure")
                 }
             }
 

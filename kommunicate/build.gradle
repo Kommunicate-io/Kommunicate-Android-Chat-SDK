@@ -59,7 +59,6 @@ dependencies {
     api libs.gson
     api libs.silicompressor
     api libs.sentry.android
-    testImplementation libs.junit
     api(libs.isoparser) {
         exclude(
                 group : "org.aspectj",

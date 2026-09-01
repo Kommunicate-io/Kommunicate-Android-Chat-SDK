@@ -647,12 +647,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         startNewConv = list.findViewById(R.id.start_new_conversation);
         startNewConv.setVisibility(GONE);
         newMessagesButton = list.findViewById(R.id.new_messages_button);
-        newMessagesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                smoothScrollToLatestMessage();
-            }
-        });
+        if (newMessagesButton != null) {
+            newMessagesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    smoothScrollToLatestMessage();
+                }
+            });
+        }
         resetNewMessageNavigation();
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();

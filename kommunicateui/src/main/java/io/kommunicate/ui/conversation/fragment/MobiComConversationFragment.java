@@ -1947,7 +1947,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
                 }
                 if (added || existingMessage) {
-                    if (isFollowingNewMessages || message.isTypeOutbox()) {
+                    if (isFollowingNewMessages) {
                         scrollToLatestMessage();
                     } else {
                         showNewMessagesButton();
@@ -2740,9 +2740,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             }
                         } else if (!message.isVideoNotificationMessage() && !message.isHidden()) {
                             messageList.add(message);
-                            linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
                             emptyTextView.setVisibility(View.GONE);
                             recyclerDetailConversationAdapter.notifyDataSetChanged();
+                            if (isFollowingNewMessages) {
+                                scrollToLatestMessage();
+                            } else {
+                                showNewMessagesButton();
+                            }
                         }
                     } catch (Exception ex) {
                         Utils.printLog(getContext(), TAG, "Exception while updating delivery status in UI.");

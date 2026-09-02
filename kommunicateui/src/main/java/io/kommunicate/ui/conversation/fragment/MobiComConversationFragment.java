@@ -647,12 +647,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         startNewConv = list.findViewById(R.id.start_new_conversation);
         startNewConv.setVisibility(GONE);
         newMessagesButton = list.findViewById(R.id.new_messages_button);
-        newMessagesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                smoothScrollToLatestMessage();
-            }
-        });
+        if (newMessagesButton != null) {
+            newMessagesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    smoothScrollToLatestMessage();
+                }
+            });
+        }
         resetNewMessageNavigation();
         customToolbarLayout = toolbar.findViewById(R.id.custom_toolbar_root_layout);
         loggedInUserId = MobiComUserPreference.getInstance(getContext()).getUserId();
@@ -1945,7 +1947,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
                 }
                 if (added || existingMessage) {
-                    if (isFollowingNewMessages || message.isTypeOutbox()) {
+                    if (isFollowingNewMessages) {
                         scrollToLatestMessage();
                     } else {
                         showNewMessagesButton();
@@ -2738,9 +2740,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             }
                         } else if (!message.isVideoNotificationMessage() && !message.isHidden()) {
                             messageList.add(message);
-                            linearLayoutManager.scrollToPositionWithOffset(messageList.size() - 1, 0);
                             emptyTextView.setVisibility(View.GONE);
                             recyclerDetailConversationAdapter.notifyDataSetChanged();
+                            if (isFollowingNewMessages) {
+                                scrollToLatestMessage();
+                            } else {
+                                showNewMessagesButton();
+                            }
                         }
                     } catch (Exception ex) {
                         Utils.printLog(getContext(), TAG, "Exception while updating delivery status in UI.");

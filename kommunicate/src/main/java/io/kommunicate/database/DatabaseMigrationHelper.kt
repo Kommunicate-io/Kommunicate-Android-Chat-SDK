@@ -2,13 +2,15 @@ package io.kommunicate.database
 
 import android.content.Context
 import android.database.Cursor
-import io.kommunicate.devkit.api.MobiComKitClientService
-import io.kommunicate.commons.AppContextService
-import net.zetetic.database.sqlcipher.SQLiteDatabase
 import android.database.sqlite.SQLiteException
+import io.kommunicate.commons.AppContextService
+import io.kommunicate.commons.commons.core.utils.DBUtils
+import io.kommunicate.devkit.api.MobiComKitClientService
+import net.zetetic.database.sqlcipher.SQLiteDatabase
+import java.io.File
 
 object DatabaseMigrationHelper {
-    private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
+    private const val TEMP_ENCRYPTED_DB_SUFFIX = ".encrypted.tmp"
 
     // Check if table exists in destination DB
     private fun tableExists(db: SQLiteDatabase, tableName: String): Boolean {
@@ -19,6 +21,7 @@ object DatabaseMigrationHelper {
     }
 
     @JvmStatic
+    @Synchronized
     @Throws(Exception::class)
     fun migrateDatabase(context: Context, dbName: String) {
         val databaseName = if(context.getDatabasePath(dbName).exists()) {
@@ -41,36 +44,53 @@ object DatabaseMigrationHelper {
         // Load SQLCipher libraries
         System.loadLibrary("sqlcipher")
 
-        // File paths for unencrypted and temporary encrypted databases
+        // Another caller may have completed migration while this caller waited.
+        if (DBUtils.isDatabaseEncrypted(context, databaseName)) {
+            return
+        }
+
+        // Use a database-specific temporary file so unrelated databases cannot collide.
         val unencryptedDbFile = context.getDatabasePath(databaseName)
-        val encryptedTempDbFile = context.getDatabasePath(TEMP_ENCRYPTED_DB_NAME)
+        val encryptedTempDbFile = File(unencryptedDbFile.path + TEMP_ENCRYPTED_DB_SUFFIX)
 
         if (!unencryptedDbFile.exists()) {
             throw SQLiteException("Unencrypted database does not exist")
         }
 
-        // Open the unencrypted database
-        val unencryptedDb = android.database.sqlite.SQLiteDatabase.openDatabase(
-            unencryptedDbFile.path,
-            null,
-            android.database.sqlite.SQLiteDatabase.OPEN_READWRITE
-        )
+        // An interrupted attempt must not be reused as the migration destination.
+        if (encryptedTempDbFile.exists() &&
+            !android.database.sqlite.SQLiteDatabase.deleteDatabase(encryptedTempDbFile)
+        ) {
+            throw SQLiteException("Unable to remove incomplete encrypted database")
+        }
 
+        try {
+            val unencryptedDb = android.database.sqlite.SQLiteDatabase.openDatabase(
+                unencryptedDbFile.path,
+                null,
+                android.database.sqlite.SQLiteDatabase.OPEN_READWRITE
+            )
 
-        // Create the temporary encrypted database
-        val encryptedDb = SQLiteDatabase.openOrCreateDatabase(
-            encryptedTempDbFile.path,
-            password.toByteArray(Charsets.UTF_8), // Convert the password String to a byte array
-            null, // CursorFactory
-            null  // SQLiteDatabaseHook
-        )
+            try {
+                val encryptedDb = SQLiteDatabase.openOrCreateDatabase(
+                    encryptedTempDbFile.path,
+                    password.toByteArray(Charsets.UTF_8),
+                    null,
+                    null
+                )
 
-        // Copy data from unencrypted to encrypted database
-        copyDataBetweenDatabases(unencryptedDb, encryptedDb)
-
-        // Close the databases
-        unencryptedDb.close()
-        encryptedDb.close()
+                try {
+                    copyDataBetweenDatabases(unencryptedDb, encryptedDb)
+                } finally {
+                    encryptedDb.close()
+                }
+            } finally {
+                unencryptedDb.close()
+            }
+        } catch (exception: Exception) {
+            android.database.sqlite.SQLiteDatabase.deleteDatabase(encryptedTempDbFile)
+            throw exception
+        }
 
         // Replace the unencrypted database with the encrypted one
         if (unencryptedDbFile.delete()) {

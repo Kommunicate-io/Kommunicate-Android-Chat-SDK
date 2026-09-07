@@ -7,10 +7,9 @@ import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.commons.core.utils.DBUtils
 import io.kommunicate.devkit.api.MobiComKitClientService
 import net.zetetic.database.sqlcipher.SQLiteDatabase
-import java.io.File
 
 object DatabaseMigrationHelper {
-    private const val TEMP_ENCRYPTED_DB_SUFFIX = ".encrypted.tmp"
+    private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
 
     // Check if table exists in destination DB
     private fun tableExists(db: SQLiteDatabase, tableName: String): Boolean {
@@ -49,19 +48,12 @@ object DatabaseMigrationHelper {
             return
         }
 
-        // Use a database-specific temporary file so unrelated databases cannot collide.
+        // File paths for unencrypted and temporary encrypted databases
         val unencryptedDbFile = context.getDatabasePath(databaseName)
-        val encryptedTempDbFile = File(unencryptedDbFile.path + TEMP_ENCRYPTED_DB_SUFFIX)
+        val encryptedTempDbFile = context.getDatabasePath(TEMP_ENCRYPTED_DB_NAME)
 
         if (!unencryptedDbFile.exists()) {
             throw SQLiteException("Unencrypted database does not exist")
-        }
-
-        // An interrupted attempt must not be reused as the migration destination.
-        if (encryptedTempDbFile.exists() &&
-            !android.database.sqlite.SQLiteDatabase.deleteDatabase(encryptedTempDbFile)
-        ) {
-            throw SQLiteException("Unable to remove incomplete encrypted database")
         }
 
         try {

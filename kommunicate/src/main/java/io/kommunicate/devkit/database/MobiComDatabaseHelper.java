@@ -262,8 +262,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         System.loadLibrary("sqlcipher");
         AppSpecificSettings appSpecificSettings = AppSpecificSettings.getInstance(context);
         int currentRetryCount = appSpecificSettings.getCurrentDatabaseMigrationRetryCount();
-        boolean databaseEncrypted = DBUtils.isDatabaseEncrypted(context, name);
-        if (!databaseEncrypted && currentRetryCount < MAX_DATABASE_MIGRATION_RETRY_COUNT) {
+        if (!DBUtils.isDatabaseEncrypted(context, name) && currentRetryCount < MAX_DATABASE_MIGRATION_RETRY_COUNT) {
             try {
                 DatabaseMigrationHelper.migrateDatabase(context, name);
             } catch (Exception e) {

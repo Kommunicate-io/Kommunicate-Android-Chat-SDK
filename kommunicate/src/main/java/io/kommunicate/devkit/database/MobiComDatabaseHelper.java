@@ -247,7 +247,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_INDEX_SMS_TYPE = "CREATE INDEX IF NOT EXISTS INDEX_SMS_TYPE ON sms (type)";
     private static final String CREATE_INDEX_ON_CREATED_AT = "CREATE INDEX IF NOT EXISTS message_createdAt ON sms (createdAt)";
     private static final String TAG = "MobiComDatabaseHelper";
-    private static MobiComDatabaseHelper sInstance;
+    private static volatile MobiComDatabaseHelper sInstance;
     private Context context;
     private static final int MAX_DATABASE_MIGRATION_RETRY_COUNT = 3;
 
@@ -274,14 +274,21 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static synchronized MobiComDatabaseHelper getInstance(Context context) {
+    public static MobiComDatabaseHelper getInstance(Context context) {
         // Use the application context, which will ensure that you
         // don't accidentally leak an Activity's context.
         // See this article for more information: http://bit.ly/6LRzfx
-        if (sInstance == null) {
-            sInstance = new MobiComDatabaseHelper(AppContextService.getContext(context));
+        MobiComDatabaseHelper instance = sInstance;
+        if (instance == null) {
+            synchronized (MobiComDatabaseHelper.class) {
+                instance = sInstance;
+                if (instance == null) {
+                    instance = new MobiComDatabaseHelper(AppContextService.getContext(context));
+                    sInstance = instance;
+                }
+            }
         }
-        return sInstance;
+        return instance;
     }
 
     public SQLiteDatabase getReadableDatabase() {

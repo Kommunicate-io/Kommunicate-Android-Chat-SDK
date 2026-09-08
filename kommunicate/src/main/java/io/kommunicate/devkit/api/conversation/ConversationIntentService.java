@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.core.app.CoreJobIntentService;
 import androidx.core.content.IntentCompat;
 
-import java.io.Serializable;
-
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.commons.AppContextService;
@@ -94,7 +92,6 @@ public class ConversationIntentService extends CoreJobIntentService {
      * queued work unreadable after an SDK update. The legacy readers allow already queued work
      * from older SDK versions to finish.
      */
-    @SuppressWarnings("deprecation")
     private Message getMessage(Intent intent) {
         try {
             String messageJson = intent.getStringExtra(AL_MESSAGE_JSON);
@@ -107,8 +104,7 @@ public class ConversationIntentService extends CoreJobIntentService {
                 return parcelableMessage;
             }
 
-            Serializable serializableMessage = intent.getSerializableExtra(AL_MESSAGE);
-            return serializableMessage instanceof Message ? (Message) serializableMessage : null;
+            return IntentCompat.getSerializableExtra(intent, AL_MESSAGE, Message.class);
         } catch (RuntimeException exception) {
             // BadParcelableException can be thrown by work queued with an incompatible Message
             // parcel layout. Returning null lets onHandleWork perform the normal full sync.

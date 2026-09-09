@@ -56,6 +56,12 @@ object DatabaseMigrationHelper {
             throw SQLiteException("Unencrypted database does not exist")
         }
 
+        if (encryptedTempDbFile.exists() &&
+            !android.database.sqlite.SQLiteDatabase.deleteDatabase(encryptedTempDbFile)
+        ) {
+            throw SQLiteException("Unable to delete stale temporary encrypted database")
+        }
+
         try {
             val unencryptedDb = android.database.sqlite.SQLiteDatabase.openDatabase(
                 unencryptedDbFile.path,

@@ -3,13 +3,17 @@ package io.kommunicate.devkit.api.conversation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.CoreJobIntentService;
+import androidx.core.content.IntentCompat;
 
+import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.devkit.api.account.user.UserService;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
+import io.sentry.Sentry;
 
 /**
  * Created by devashish on 15/12/13.
@@ -18,6 +22,7 @@ public class ConversationIntentService extends CoreJobIntentService {
 
     public static final String SYNC = "AL_SYNC";
     public static final String AL_MESSAGE = "AL_MESSAGE";
+    public static final String AL_MESSAGE_JSON = "AL_MESSAGE_JSON";
     private static final String TAG = "ConversationIntent";
     public static final String MESSAGE_METADATA_UPDATE = "MessageMetadataUpdate";
     public static final String MUTED_USER_LIST_SYNC = "MutedUserListSync";
@@ -71,7 +76,7 @@ public class ConversationIntentService extends CoreJobIntentService {
             return;
         }
 
-        Message message = (Message) intent.getSerializableExtra(AL_MESSAGE);
+        Message message = getMessage(intent);
 
         if (message != null) {
             mobiComMessageService.processInstantMessage(message);
@@ -79,6 +84,33 @@ public class ConversationIntentService extends CoreJobIntentService {
             if (sync) {
                 mobiComMessageService.syncMessages();
             }
+        }
+    }
+
+    /**
+     * New work is transported as JSON so changes to Message's Parcelable layout cannot make
+     * queued work unreadable after an SDK update. The legacy readers allow already queued work
+     * from older SDK versions to finish.
+     */
+    private Message getMessage(Intent intent) {
+        try {
+            String messageJson = intent.getStringExtra(AL_MESSAGE_JSON);
+            if (!TextUtils.isEmpty(messageJson)) {
+                return GsonUtils.getObjectFromJson(messageJson, Message.class);
+            }
+
+            Message parcelableMessage = IntentCompat.getParcelableExtra(intent, AL_MESSAGE, Message.class);
+            if (parcelableMessage != null) {
+                return parcelableMessage;
+            }
+
+            return IntentCompat.getSerializableExtra(intent, AL_MESSAGE, Message.class);
+        } catch (RuntimeException exception) {
+            // BadParcelableException can be thrown by work queued with an incompatible Message
+            // parcel layout. Returning null lets onHandleWork perform the normal full sync.
+            Utils.printLog(this, TAG, "Unable to read queued message; falling back to full sync: " + exception.getMessage());
+            Sentry.captureException(exception);
+            return null;
         }
     }
 
@@ -94,4 +126,3 @@ public class ConversationIntentService extends CoreJobIntentService {
         }
     }
 }
-

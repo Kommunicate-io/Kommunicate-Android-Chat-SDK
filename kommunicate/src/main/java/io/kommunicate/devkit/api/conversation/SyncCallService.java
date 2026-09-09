@@ -2,9 +2,9 @@ package io.kommunicate.devkit.api.conversation;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.text.TextUtils;
 
+import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.devkit.ConversationRunnables;
 import io.kommunicate.devkit.api.MqttService;
 import io.kommunicate.devkit.api.account.register.RegisterUserClientService;
@@ -120,7 +120,10 @@ public class SyncCallService {
                 Intent intent = new Intent(context, ConversationIntentService.class);
                 intent.putExtra(ConversationIntentService.SYNC, true);
                 if (message != null) {
-                    intent.putExtra(ConversationIntentService.AL_MESSAGE,(Parcelable) message);
+                    intent.putExtra(
+                            ConversationIntentService.AL_MESSAGE_JSON,
+                            GsonUtils.getJsonFromObject(message, Message.class)
+                    );
                 }
                 ConversationIntentService.enqueueWork(context, intent);
             }

@@ -140,6 +140,9 @@ public class FileClientService extends MobiComKitClientService {
                 if (connection.getResponseCode() == 200) {
                     // attachedImage = BitmapFactory.decodeStream(connection.getInputStream(),null,options);
                     attachedImage = BitmapFactory.decodeStream(connection.getInputStream());
+                    if (attachedImage == null) {
+                        return null;
+                    }
                     File file = FileClientService.getFilePath(imageName, context, contentType, true);
                     imageLocalPath = ImageUtils.saveImageToInternalStorage(file, attachedImage);
 

@@ -1,7 +1,9 @@
 package io.kommunicate.devkit.database;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteException;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteNotADatabaseException;
 import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
 import android.text.TextUtils;
 
@@ -16,6 +18,8 @@ import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.database.DatabaseMigrationHelper;
 import io.sentry.Hint;
 import io.sentry.Sentry;
+
+import java.io.File;
 
 public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
@@ -249,6 +253,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "MobiComDatabaseHelper";
     private static volatile MobiComDatabaseHelper sInstance;
     private Context context;
+    private final String databaseName;
     private static final int MAX_DATABASE_MIGRATION_RETRY_COUNT = 3;
 
     private MobiComDatabaseHelper(Context context) {
@@ -258,6 +263,8 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, MobiComKitClientService.getApplicationKey(context), factory, version, 0, null, null, false);
+        this.context = AppContextService.getContext(context);
+        this.databaseName = name;
         setWriteAheadLoggingEnabled(true);
         System.loadLibrary("sqlcipher");
         AppSpecificSettings appSpecificSettings = AppSpecificSettings.getInstance(context);
@@ -291,14 +298,46 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         return instance;
     }
 
-    public SQLiteDatabase getReadableDatabase() {
-        // The password is now handled by the constructor.
-        return super.getReadableDatabase();
+    public synchronized SQLiteDatabase getReadableDatabase() {
+        try {
+            return super.getReadableDatabase();
+        } catch (SQLiteNotADatabaseException exception) {
+            return recoverUnreadableDatabase(false, exception);
+        }
     }
 
-    public SQLiteDatabase getWritableDatabase() {
-        // The password is now handled by the constructor.
-        return super.getWritableDatabase();
+    public synchronized SQLiteDatabase getWritableDatabase() {
+        try {
+            return super.getWritableDatabase();
+        } catch (SQLiteNotADatabaseException exception) {
+            return recoverUnreadableDatabase(true, exception);
+        }
+    }
+
+    private SQLiteDatabase recoverUnreadableDatabase(boolean writable, SQLiteNotADatabaseException exception) {
+        boolean applicationKeyAvailable = !TextUtils.isEmpty(MobiComKitClientService.getApplicationKey(context));
+        if (!applicationKeyAvailable) {
+            throw exception;
+        }
+
+        super.close();
+        File databaseFile = context.getDatabasePath(databaseName);
+        if (!SQLiteDatabase.deleteDatabase(databaseFile)) {
+            throw exception;
+        }
+
+        AppSpecificSettings.getInstance(context).setCurrentDatabaseMigrationRetryCount(0);
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
+        userPreference.setLastSyncTime("0");
+        userPreference.setLastSyncTimeForMetadataUpdate("0");
+        userPreference.setChannelSyncTime("0");
+
+        try {
+            return writable ? super.getWritableDatabase() : super.getReadableDatabase();
+        } catch (SQLiteException recoveryException) {
+            exception.addSuppressed(recoveryException);
+            throw exception;
+        }
     }
 
     @Override

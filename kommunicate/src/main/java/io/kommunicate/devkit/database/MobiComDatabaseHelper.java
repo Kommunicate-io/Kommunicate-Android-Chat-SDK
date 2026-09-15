@@ -254,6 +254,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private static volatile MobiComDatabaseHelper sInstance;
     private Context context;
     private final String databaseName;
+    private final String databasePassword;
     private static final int MAX_DATABASE_MIGRATION_RETRY_COUNT = 3;
 
     private MobiComDatabaseHelper(Context context) {
@@ -262,9 +263,14 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, MobiComKitClientService.getApplicationKey(context), factory, version, 0, null, null, false);
+        this(context, name, factory, version, MobiComKitClientService.getApplicationKey(context));
+    }
+
+    private MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String databasePassword) {
+        super(context, name, databasePassword, factory, version, 0, null, null, false);
         this.context = AppContextService.getContext(context);
         this.databaseName = name;
+        this.databasePassword = databasePassword;
         setWriteAheadLoggingEnabled(true);
         System.loadLibrary("sqlcipher");
         AppSpecificSettings appSpecificSettings = AppSpecificSettings.getInstance(context);
@@ -315,8 +321,8 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     }
 
     private SQLiteDatabase recoverUnreadableDatabase(boolean writable, SQLiteNotADatabaseException exception) {
-        boolean applicationKeyAvailable = !TextUtils.isEmpty(MobiComKitClientService.getApplicationKey(context));
-        if (!applicationKeyAvailable) {
+        String currentApplicationKey = MobiComKitClientService.getApplicationKey(context);
+        if (TextUtils.isEmpty(databasePassword) || !TextUtils.equals(databasePassword, currentApplicationKey)) {
             throw exception;
         }
 

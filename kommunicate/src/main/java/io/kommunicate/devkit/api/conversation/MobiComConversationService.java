@@ -40,6 +40,7 @@ import io.kommunicate.commons.people.channel.Conversation;
 import io.kommunicate.commons.people.contact.Contact;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -385,20 +386,25 @@ public class MobiComConversationService {
             return cachedMessageList;
         }
 
-        SettingsSharedPreference.getInstance(context).updateServerCallDoneStatus(contact, channel, conversationId);
-
         try {
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(new ArrayAdapterFactory())
                     .setExclusionStrategies(new AnnotationExclusionStrategy()).create();
             JsonParser parser = new JsonParser();
+            JsonElement messageElement = parser.parse(data).getAsJsonObject().get("message");
+            if (messageElement == null || messageElement.isJsonNull()) {
+                Utils.printLog(context, TAG, "Message response does not contain message data.");
+                return cachedMessageList;
+            }
+
+            SettingsSharedPreference.getInstance(context).updateServerCallDoneStatus(contact, channel, conversationId);
+
             JSONObject jsonObject = new JSONObject(data);
             String channelFeedResponse = "";
             String conversationPxyResponse = "";
-            String element = parser.parse(data).getAsJsonObject().get("message").toString();
-            String userDetailsElement = parser.parse(data).getAsJsonObject().get("userDetails").toString();
+            JsonElement userDetailsElement = parser.parse(data).getAsJsonObject().get("userDetails");
 
-            if (!TextUtils.isEmpty(userDetailsElement)) {
-                UserDetail[] userDetails = (UserDetail[]) GsonUtils.getObjectFromJson(userDetailsElement, UserDetail[].class);
+            if (userDetailsElement != null && !userDetailsElement.isJsonNull()) {
+                UserDetail[] userDetails = (UserDetail[]) GsonUtils.getObjectFromJson(userDetailsElement.toString(), UserDetail[].class);
                 processUserDetails(userDetails);
             }
 
@@ -415,7 +421,7 @@ public class MobiComConversationService {
                 Conversation[] conversationPxy = (Conversation[]) GsonUtils.getObjectFromJson(conversationPxyResponse, Conversation[].class);
                 ConversationService.getInstance(context).processConversationArray(conversationPxy, channel, contact);
             }
-            Message[] messages = gson.fromJson(element, Message[].class);
+            Message[] messages = gson.fromJson(messageElement, Message[].class);
             MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(context);
             /*String connectedUsersResponse = parser.parse(data).getAsJsonObject().get("connectedUsers").toString();
             String[] connectedUserIds = (String[]) GsonUtils.getObjectFromJson(connectedUsersResponse, String[].class);*/
@@ -579,22 +585,27 @@ public class MobiComConversationService {
             return new NetworkListDecorator<>(cachedMessageList, true);
         }
 
-        SettingsSharedPreference.getInstance(context).updateServerCallDoneStatus(contact, channel, conversationId);
-
         boolean wasNetworkFail = false; //for the try catch
 
         try {
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(new ArrayAdapterFactory())
                     .setExclusionStrategies(new AnnotationExclusionStrategy()).create();
             JsonParser parser = new JsonParser();
+            JsonElement messageElement = parser.parse(data).getAsJsonObject().get("message");
+            if (messageElement == null || messageElement.isJsonNull()) {
+                Utils.printLog(context, TAG, "Message response does not contain message data.");
+                return new NetworkListDecorator<>(cachedMessageList, true);
+            }
+
+            SettingsSharedPreference.getInstance(context).updateServerCallDoneStatus(contact, channel, conversationId);
+
             JSONObject jsonObject = new JSONObject(data);
             String channelFeedResponse = "";
             String conversationPxyResponse = "";
-            String element = parser.parse(data).getAsJsonObject().get("message").toString();
-            String userDetailsElement = parser.parse(data).getAsJsonObject().get("userDetails").toString();
+            JsonElement userDetailsElement = parser.parse(data).getAsJsonObject().get("userDetails");
 
-            if (!TextUtils.isEmpty(userDetailsElement)) {
-                UserDetail[] userDetails = (UserDetail[]) GsonUtils.getObjectFromJson(userDetailsElement, UserDetail[].class);
+            if (userDetailsElement != null && !userDetailsElement.isJsonNull()) {
+                UserDetail[] userDetails = (UserDetail[]) GsonUtils.getObjectFromJson(userDetailsElement.toString(), UserDetail[].class);
                 processUserDetails(userDetails);
             }
 
@@ -611,7 +622,7 @@ public class MobiComConversationService {
                 Conversation[] conversationPxy = (Conversation[]) GsonUtils.getObjectFromJson(conversationPxyResponse, Conversation[].class);
                 ConversationService.getInstance(context).processConversationArray(conversationPxy, channel, contact);
             }
-            Message[] messages = gson.fromJson(element, Message[].class);
+            Message[] messages = gson.fromJson(messageElement, Message[].class);
             MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(context);
             /*String connectedUsersResponse = parser.parse(data).getAsJsonObject().get("connectedUsers").toString();
             String[] connectedUserIds = (String[]) GsonUtils.getObjectFromJson(connectedUsersResponse, String[].class);*/

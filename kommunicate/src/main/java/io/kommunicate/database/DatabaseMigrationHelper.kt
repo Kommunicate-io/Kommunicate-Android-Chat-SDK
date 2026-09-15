@@ -3,6 +3,8 @@ package io.kommunicate.database
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteException
+import android.system.ErrnoException
+import android.system.Os
 import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.commons.core.utils.DBUtils
 import io.kommunicate.devkit.api.MobiComKitClientService
@@ -90,16 +92,12 @@ object DatabaseMigrationHelper {
             throw exception
         }
 
-        // Replace the unencrypted database with the encrypted one
-        if (unencryptedDbFile.delete()) {
-            val renamed = encryptedTempDbFile.renameTo(unencryptedDbFile)
-            if (renamed) {
-                println("Migration completed and the encrypted database now has the original name.")
-            } else {
-                System.err.println("Failed to rename the encrypted database.")
-            }
-        } else {
-            System.err.println("Failed to delete the original unencrypted database.")
+        // Atomically replace the unencrypted database with the encrypted one.
+        try {
+            Os.rename(encryptedTempDbFile.path, unencryptedDbFile.path)
+            println("Migration completed and the encrypted database now has the original name.")
+        } catch (exception: ErrnoException) {
+            throw SQLiteException("Unable to replace the unencrypted database with the encrypted database", exception)
         }
     }
 

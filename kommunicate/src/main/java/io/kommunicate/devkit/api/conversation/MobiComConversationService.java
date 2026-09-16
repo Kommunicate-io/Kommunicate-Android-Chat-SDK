@@ -690,6 +690,7 @@ public class MobiComConversationService {
             wasNetworkFail = true;
         } catch (Exception exception) {
             exception.printStackTrace();
+            wasNetworkFail = true;
         }
 
         List<Message> finalMessageList = messageDatabaseService.getMessages(startTime, endTime, contact, channel, conversationId);

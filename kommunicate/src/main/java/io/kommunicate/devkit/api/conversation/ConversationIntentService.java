@@ -45,13 +45,15 @@ public class ConversationIntentService extends CoreJobIntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);
     }
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         if (intent == null) {
             return;
+        }
+        if (mobiComMessageService == null) {
+            mobiComMessageService = new MobiComMessageService(this, MessageIntentService.class);
         }
         boolean sync = intent.getBooleanExtra(SYNC, false);
         Utils.printLog(ConversationIntentService.this, TAG, "Syncing messages service started: " + sync);

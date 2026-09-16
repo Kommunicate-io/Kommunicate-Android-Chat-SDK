@@ -587,11 +587,18 @@ public class MobiComConversationService {
 
         boolean wasNetworkFail = false; //for the try catch
 
+        JsonObject jsonObject;
+        try {
+            JsonParser parser = new JsonParser();
+            jsonObject = parser.parse(data).getAsJsonObject();
+        } catch (JsonSyntaxException | IllegalStateException exception) {
+            exception.printStackTrace();
+            return new NetworkListDecorator<>(cachedMessageList, true);
+        }
+
         try {
             Gson gson = new GsonBuilder().registerTypeAdapterFactory(new ArrayAdapterFactory())
                     .setExclusionStrategies(new AnnotationExclusionStrategy()).create();
-            JsonParser parser = new JsonParser();
-            JsonObject jsonObject = parser.parse(data).getAsJsonObject();
             JsonElement messageElement = jsonObject.get("message");
             if (messageElement == null || messageElement.isJsonNull()) {
                 Utils.printLog(context, TAG, "Message response does not contain message data.");
@@ -690,7 +697,6 @@ public class MobiComConversationService {
             wasNetworkFail = true;
         } catch (Exception exception) {
             exception.printStackTrace();
-            wasNetworkFail = true;
         }
 
         List<Message> finalMessageList = messageDatabaseService.getMessages(startTime, endTime, contact, channel, conversationId);

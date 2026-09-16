@@ -303,7 +303,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         return instance;
     }
 
-    public synchronized SQLiteDatabase getReadableDatabase() {
+    public SQLiteDatabase getReadableDatabase() {
         try {
             return super.getReadableDatabase();
         } catch (SQLiteNotADatabaseException exception) {
@@ -311,7 +311,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public synchronized SQLiteDatabase getWritableDatabase() {
+    public SQLiteDatabase getWritableDatabase() {
         try {
             return super.getWritableDatabase();
         } catch (SQLiteNotADatabaseException exception) {
@@ -319,10 +319,17 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private SQLiteDatabase recoverUnreadableDatabase(boolean writable, SQLiteNotADatabaseException exception) {
+    private synchronized SQLiteDatabase recoverUnreadableDatabase(boolean writable, SQLiteNotADatabaseException exception) {
         String currentApplicationKey = MobiComKitClientService.getApplicationKey(context);
         if (TextUtils.isEmpty(databasePassword) || !TextUtils.equals(databasePassword, currentApplicationKey)) {
             throw exception;
+        }
+
+        try {
+            // Another thread may have recovered the database before this thread acquired the lock.
+            return writable ? super.getWritableDatabase() : super.getReadableDatabase();
+        } catch (SQLiteNotADatabaseException ignored) {
+            // The database is still unreadable. Continue with recovery.
         }
 
         super.close();

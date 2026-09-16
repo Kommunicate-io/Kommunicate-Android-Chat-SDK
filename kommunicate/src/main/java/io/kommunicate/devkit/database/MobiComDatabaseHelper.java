@@ -1,7 +1,6 @@
 package io.kommunicate.devkit.database;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteException;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
 import net.zetetic.database.sqlcipher.SQLiteNotADatabaseException;
 import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
@@ -340,7 +339,7 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
         try {
             return writable ? super.getWritableDatabase() : super.getReadableDatabase();
-        } catch (SQLiteException recoveryException) {
+        } catch (RuntimeException recoveryException) {
             exception.addSuppressed(recoveryException);
             throw exception;
         }

@@ -127,8 +127,9 @@ public class FileClientService extends MobiComKitClientService {
             options.inJustDecodeBounds = true;
             // Todo get the file format from server and append
             String imageName = FileUtils.getName(message.getFileMetas().getName()) + message.getCreatedAtTime() + "." + FileUtils.getFileFormat(message.getFileMetas().getName());
-            String imageLocalPath = getFilePath(imageName, context, message.getFileMetas().getContentType(), true).getAbsolutePath();
-            if (imageLocalPath != null) {
+            File thumbnailFile = getFilePath(imageName, context, message.getFileMetas().getContentType(), true);
+            String imageLocalPath = thumbnailFile.getAbsolutePath();
+            if (thumbnailFile.isFile()) {
                 try {
                     attachedImage = BitmapFactory.decodeFile(imageLocalPath);
                 } catch (Exception ex) {

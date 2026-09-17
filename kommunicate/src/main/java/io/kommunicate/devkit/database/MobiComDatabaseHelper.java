@@ -2,6 +2,7 @@ package io.kommunicate.devkit.database;
 
 import android.content.Context;
 import net.zetetic.database.sqlcipher.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteNotADatabaseException;
 import net.zetetic.database.sqlcipher.SQLiteOpenHelper;
 import android.text.TextUtils;
 
@@ -16,6 +17,8 @@ import io.kommunicate.commons.commons.core.utils.Utils;
 import io.kommunicate.database.DatabaseMigrationHelper;
 import io.sentry.Hint;
 import io.sentry.Sentry;
+
+import java.io.File;
 
 public class MobiComDatabaseHelper extends SQLiteOpenHelper {
 
@@ -249,6 +252,8 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "MobiComDatabaseHelper";
     private static volatile MobiComDatabaseHelper sInstance;
     private Context context;
+    private final String databaseName;
+    private final String databasePassword;
     private static final int MAX_DATABASE_MIGRATION_RETRY_COUNT = 3;
 
     private MobiComDatabaseHelper(Context context) {
@@ -257,7 +262,14 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, MobiComKitClientService.getApplicationKey(context), factory, version, 0, null, null, false);
+        this(context, name, factory, version, MobiComKitClientService.getApplicationKey(context));
+    }
+
+    private MobiComDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String databasePassword) {
+        super(context, name, databasePassword, factory, version, 0, null, null, false);
+        this.context = AppContextService.getContext(context);
+        this.databaseName = name;
+        this.databasePassword = databasePassword;
         setWriteAheadLoggingEnabled(true);
         System.loadLibrary("sqlcipher");
         AppSpecificSettings appSpecificSettings = AppSpecificSettings.getInstance(context);
@@ -292,13 +304,52 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getReadableDatabase() {
-        // The password is now handled by the constructor.
-        return super.getReadableDatabase();
+        try {
+            return super.getReadableDatabase();
+        } catch (SQLiteNotADatabaseException exception) {
+            return recoverUnreadableDatabase(false, exception);
+        }
     }
 
     public SQLiteDatabase getWritableDatabase() {
-        // The password is now handled by the constructor.
-        return super.getWritableDatabase();
+        try {
+            return super.getWritableDatabase();
+        } catch (SQLiteNotADatabaseException exception) {
+            return recoverUnreadableDatabase(true, exception);
+        }
+    }
+
+    private synchronized SQLiteDatabase recoverUnreadableDatabase(boolean writable, SQLiteNotADatabaseException exception) {
+        String currentApplicationKey = MobiComKitClientService.getApplicationKey(context);
+        if (TextUtils.isEmpty(databasePassword) || !TextUtils.equals(databasePassword, currentApplicationKey)) {
+            throw exception;
+        }
+
+        try {
+            // Another thread may have recovered the database before this thread acquired the lock.
+            return writable ? super.getWritableDatabase() : super.getReadableDatabase();
+        } catch (SQLiteNotADatabaseException ignored) {
+            // The database is still unreadable. Continue with recovery.
+        }
+
+        super.close();
+        File databaseFile = context.getDatabasePath(databaseName);
+        if (!SQLiteDatabase.deleteDatabase(databaseFile)) {
+            throw exception;
+        }
+
+        AppSpecificSettings.getInstance(context).setCurrentDatabaseMigrationRetryCount(0);
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
+        userPreference.setLastSyncTime("0");
+        userPreference.setLastSyncTimeForMetadataUpdate("0");
+        userPreference.setChannelSyncTime("0");
+
+        try {
+            return writable ? super.getWritableDatabase() : super.getReadableDatabase();
+        } catch (RuntimeException recoveryException) {
+            exception.addSuppressed(recoveryException);
+            throw exception;
+        }
     }
 
     @Override

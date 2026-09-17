@@ -9,6 +9,7 @@ import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.commons.core.utils.DBUtils
 import io.kommunicate.devkit.api.MobiComKitClientService
 import net.zetetic.database.sqlcipher.SQLiteDatabase
+import java.io.File
 
 object DatabaseMigrationHelper {
     private const val TEMP_ENCRYPTED_DB_NAME = "temp_encrypted.db"
@@ -72,20 +73,46 @@ object DatabaseMigrationHelper {
             )
 
             try {
-                val encryptedDb = SQLiteDatabase.openOrCreateDatabase(
-                    encryptedTempDbFile.path,
-                    password.toByteArray(Charsets.UTF_8),
-                    null,
-                    null
-                )
+                unencryptedDb.rawQuery("PRAGMA wal_checkpoint(TRUNCATE)", null).use { cursor ->
+                    if (!cursor.moveToFirst() || cursor.getInt(0) != 0) {
+                        throw SQLiteException("Unable to checkpoint source database before migration")
+                    }
+                }
+
+                unencryptedDb.rawQuery("PRAGMA journal_mode=DELETE", null).use { cursor ->
+                    if (!cursor.moveToFirst() || !cursor.getString(0).equals("delete", ignoreCase = true)) {
+                        throw SQLiteException("Unable to obtain exclusive access to source database")
+                    }
+                }
+
+                unencryptedDb.beginTransaction()
 
                 try {
-                    copyDataBetweenDatabases(unencryptedDb, encryptedDb)
+                    val encryptedDb = SQLiteDatabase.openOrCreateDatabase(
+                        encryptedTempDbFile.path,
+                        password.toByteArray(Charsets.UTF_8),
+                        null,
+                        null
+                    )
+
+                    try {
+                        copyDataBetweenDatabases(unencryptedDb, encryptedDb)
+                    } finally {
+                        encryptedDb.close()
+                    }
+                    unencryptedDb.setTransactionSuccessful()
                 } finally {
-                    encryptedDb.close()
+                    unencryptedDb.endTransaction()
                 }
             } finally {
                 unencryptedDb.close()
+            }
+
+            listOf("-wal", "-shm", "-journal").forEach { suffix ->
+                val sidecar = File(unencryptedDbFile.path + suffix)
+                if (sidecar.exists() && !sidecar.delete()) {
+                    throw SQLiteException("Unable to remove source database sidecar: ${sidecar.name}")
+                }
             }
         } catch (exception: Exception) {
             android.database.sqlite.SQLiteDatabase.deleteDatabase(encryptedTempDbFile)
@@ -97,6 +124,7 @@ object DatabaseMigrationHelper {
             Os.rename(encryptedTempDbFile.path, unencryptedDbFile.path)
             println("Migration completed and the encrypted database now has the original name.")
         } catch (exception: ErrnoException) {
+            android.database.sqlite.SQLiteDatabase.deleteDatabase(encryptedTempDbFile)
             throw SQLiteException("Unable to replace the unencrypted database with the encrypted database", exception)
         }
     }

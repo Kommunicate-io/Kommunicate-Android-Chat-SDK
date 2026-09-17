@@ -319,36 +319,38 @@ public class MobiComDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    private synchronized SQLiteDatabase recoverUnreadableDatabase(boolean writable, SQLiteNotADatabaseException exception) {
-        String currentApplicationKey = MobiComKitClientService.getApplicationKey(context);
-        if (TextUtils.isEmpty(databasePassword) || !TextUtils.equals(databasePassword, currentApplicationKey)) {
-            throw exception;
-        }
+    private SQLiteDatabase recoverUnreadableDatabase(boolean writable, SQLiteNotADatabaseException exception) {
+        synchronized (DatabaseMigrationHelper.class) {
+            String currentApplicationKey = MobiComKitClientService.getApplicationKey(context);
+            if (TextUtils.isEmpty(databasePassword) || !TextUtils.equals(databasePassword, currentApplicationKey)) {
+                throw exception;
+            }
 
-        try {
-            // Another thread may have recovered the database before this thread acquired the lock.
-            return writable ? super.getWritableDatabase() : super.getReadableDatabase();
-        } catch (SQLiteNotADatabaseException ignored) {
-            // The database is still unreadable. Continue with recovery.
-        }
+            try {
+                // Migration or another recovery may have completed before this thread acquired the lock.
+                return writable ? super.getWritableDatabase() : super.getReadableDatabase();
+            } catch (SQLiteNotADatabaseException ignored) {
+                // The database is still unreadable. Continue with recovery.
+            }
 
-        super.close();
-        File databaseFile = context.getDatabasePath(databaseName);
-        if (!SQLiteDatabase.deleteDatabase(databaseFile)) {
-            throw exception;
-        }
+            super.close();
+            File databaseFile = context.getDatabasePath(databaseName);
+            if (!SQLiteDatabase.deleteDatabase(databaseFile)) {
+                throw exception;
+            }
 
-        AppSpecificSettings.getInstance(context).setCurrentDatabaseMigrationRetryCount(0);
-        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
-        userPreference.setLastSyncTime("0");
-        userPreference.setLastSyncTimeForMetadataUpdate("0");
-        userPreference.setChannelSyncTime("0");
+            AppSpecificSettings.getInstance(context).setCurrentDatabaseMigrationRetryCount(0);
+            MobiComUserPreference userPreference = MobiComUserPreference.getInstance(context);
+            userPreference.setLastSyncTime("0");
+            userPreference.setLastSyncTimeForMetadataUpdate("0");
+            userPreference.setChannelSyncTime("0");
 
-        try {
-            return writable ? super.getWritableDatabase() : super.getReadableDatabase();
-        } catch (RuntimeException recoveryException) {
-            exception.addSuppressed(recoveryException);
-            throw exception;
+            try {
+                return writable ? super.getWritableDatabase() : super.getReadableDatabase();
+            } catch (RuntimeException recoveryException) {
+                exception.addSuppressed(recoveryException);
+                throw exception;
+            }
         }
     }
 

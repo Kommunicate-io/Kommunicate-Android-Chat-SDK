@@ -415,15 +415,30 @@ public abstract class ImageLoader {
 
             }
 
-            if (bitmap == null) {
+            if (bitmap == null && data instanceof Message
+                    && ((Message) data).getFileMetas() != null
+                    && ((Message) data).getFileMetas().getContentType() != null
+                    && ((Message) data).getFileMetas().getContentType().startsWith("video/")) {
+                HttpURLConnection conn = null;
+                MediaMetadataRetriever retriever = null;
                 try {
-                    HttpURLConnection conn = new URLServiceProvider(context).getDownloadConnection((Message) data);
-                    MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                    conn = new URLServiceProvider(context).getDownloadConnection((Message) data);
+                    retriever = new MediaMetadataRetriever();
                     retriever.setDataSource(String.valueOf(conn.getURL()), new HashMap<String, String>());
                     long timeUs = 2 * 1000000L;
                     bitmap = retriever.getFrameAtTime(timeUs);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
+                    // Keep the configured placeholder when the video cannot provide a frame.
+                } finally {
+                    if (retriever != null) {
+                        try {
+                            retriever.release();
+                        } catch (Exception ignored) {
+                        }
+                    }
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
                 }
             }
 

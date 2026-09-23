@@ -2,7 +2,9 @@ package io.kommunicate.ui.kommunicate.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -121,9 +123,16 @@ public class KmToast {
             toastLayout.setBackgroundColor(Utils.getColor(context, backgroundColorResId));
         }
 
-        NinePatchDrawable ninePatchDrawable = (NinePatchDrawable) KmUtils.getDrawable(context, R.drawable.toast_frame);
-        ninePatchDrawable.setColorFilter(Utils.getColor(context, backgroundColorResId), PorterDuff.Mode.SRC_IN);
-        toastLayout.setBackground(ninePatchDrawable);
+        try {
+            Drawable toastFrame = KmUtils.getDrawable(context, R.drawable.toast_frame);
+            if (toastFrame instanceof NinePatchDrawable && backgroundColorResId > 0) {
+                toastFrame.setColorFilter(Utils.getColor(context, backgroundColorResId), PorterDuff.Mode.SRC_IN);
+                toastLayout.setBackground(toastFrame);
+            }
+        } catch (Resources.NotFoundException ignored) {
+            // Keep the solid background applied above if a density split does
+            // not contain the custom toast frame.
+        }
         currentToast.setView(toastLayout);
 
         return currentToast;

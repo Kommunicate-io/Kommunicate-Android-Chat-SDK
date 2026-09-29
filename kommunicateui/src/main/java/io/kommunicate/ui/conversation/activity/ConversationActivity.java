@@ -901,9 +901,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             List<String> permissions = new ArrayList<>();
             permissions.add(android.Manifest.permission.READ_MEDIA_IMAGES);
             permissions.add(android.Manifest.permission.READ_MEDIA_VIDEO);
-            ActivityCompat.requestPermissions(this, permissions.toArray(new String[0]), KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[0]), PermissionsUtils.REQUEST_STORAGE);
         } else {
-            PermissionsUtils.requestPermissions(this, PermissionsUtils.getStoragePermission(getApplicationContext()), KmPermissions.REQUEST_STORAGE_MULTI_SELECT_GALLERY);
+            PermissionsUtils.requestPermissions(this, PermissionsUtils.getStoragePermission(getApplicationContext()), PermissionsUtils.REQUEST_STORAGE);
         }
     }
 

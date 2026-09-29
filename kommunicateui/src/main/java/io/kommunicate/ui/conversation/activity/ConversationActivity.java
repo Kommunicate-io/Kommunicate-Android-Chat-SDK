@@ -776,8 +776,10 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             return;
         }
         if (requestCode == PermissionsUtils.REQUEST_STORAGE) {
-            if (alStoragePermission != null) {
-                alStoragePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));
+            KmStoragePermission storagePermission = alStoragePermission;
+            alStoragePermission = null;
+            if (storagePermission != null) {
+                storagePermission.onAction(PermissionsUtils.verifyPermissions(grantResults));
             }
             if (PermissionsUtils.verifyPermissions(grantResults)) {
                 showSnackBar(R.string.storage_permission_granted);

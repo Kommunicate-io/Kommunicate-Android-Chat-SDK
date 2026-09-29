@@ -1,5 +1,6 @@
 package io.kommunicate.ui.utils
 
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
@@ -13,6 +14,30 @@ import androidx.core.view.updatePadding
  * Includes support for keyboard animations and edge-to-edge display.
  */
 object InsetHelper {
+
+    /**
+     * Some modified devices report API 34+ while shipping an older framework that does not
+     * contain WindowInsets.Type.systemOverlays(). AndroidX selects its API 34 implementation from
+     * SDK_INT and otherwise crashes while converting the platform insets.
+     */
+    private val platformInsetsApiUsable: Boolean by lazy {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            true
+        } else {
+            try {
+                Class.forName("android.view.WindowInsets\$Type")
+                    .getDeclaredMethod("systemOverlays")
+                true
+            } catch (_: ReflectiveOperationException) {
+                false
+            } catch (_: LinkageError) {
+                false
+            }
+        }
+    }
+
+    @JvmStatic
+    fun isPlatformInsetsApiUsable(): Boolean = platformInsetsApiUsable
 
     /**
      * [systemTypeMask] is a type mask for system bars (status bar and navigation bar).
@@ -104,6 +129,10 @@ object InsetHelper {
         isPadding: Boolean = true,
         adjustForKeyboard: ((isVisible: Boolean, keyboardHeight: Int) -> Unit)? = null
     ) {
+        if (!isPlatformInsetsApiUsable()) {
+            return
+        }
+
         var lastKeyboardHeight = 0
         var wasKeyboardVisible = false
 

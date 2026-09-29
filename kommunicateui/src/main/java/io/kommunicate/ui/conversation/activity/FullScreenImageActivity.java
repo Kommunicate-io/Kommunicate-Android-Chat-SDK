@@ -44,6 +44,7 @@ import io.kommunicate.commons.commons.image.ImageUtils;
 import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
+import io.kommunicate.ui.utils.InsetHelper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
@@ -81,6 +82,9 @@ public class FullScreenImageActivity extends KmBaseActivity {
         configureSentryWithKommunicateUI(this, "");
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+        if (customizationSettings.isEnableEdgeToEdge()) {
+            InsetHelper.configureSystemInsets(toolbar, -1, 0, true);
+        }
 
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         int toolbarColor = themeHelper.getConfiguredStatusBarColor();
@@ -153,13 +157,15 @@ public class FullScreenImageActivity extends KmBaseActivity {
                 }
             }
 
-            ViewCompat.setOnApplyWindowInsetsListener(getWindow().getDecorView(), (view, insets) -> {
-                boolean systemBarsVisible = insets.isVisible(WindowInsetsCompat.Type.systemBars());
-                if (systemBarsVisible) {
-                    getSupportActionBar().show();
-                }
-                return insets;
-            });
+            if (InsetHelper.isPlatformInsetsApiUsable()) {
+                ViewCompat.setOnApplyWindowInsetsListener(getWindow().getDecorView(), (view, insets) -> {
+                    boolean systemBarsVisible = insets.isVisible(WindowInsetsCompat.Type.systemBars());
+                    if (systemBarsVisible) {
+                        getSupportActionBar().show();
+                    }
+                    return insets;
+                });
+            }
             progressBar.setVisibility(View.GONE);
 
             connectivityReceiver = new ConnectivityReceiver();
@@ -195,6 +201,10 @@ public class FullScreenImageActivity extends KmBaseActivity {
     }
 
     private void showUi() {
+        if (!InsetHelper.isPlatformInsetsApiUsable()) {
+            return;
+        }
+
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         if (controller != null) {
             controller.show(WindowInsetsCompat.Type.systemBars());
@@ -202,6 +212,10 @@ public class FullScreenImageActivity extends KmBaseActivity {
     }
 
     private void hideUi() {
+        if (!InsetHelper.isPlatformInsetsApiUsable()) {
+            return;
+        }
+
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         if (controller != null) {
             controller.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);

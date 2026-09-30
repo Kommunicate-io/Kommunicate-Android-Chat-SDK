@@ -1379,9 +1379,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-    /** Returns the dashboard-controlled availability used by the future voice-mode UI. */
+    /** Returns dashboard-controlled availability for customer-facing SDK conversations. */
     public boolean isVoiceModeAvailable() {
-        return KmAppSettingPreferences.isVoiceChatEnabled();
+        return (customizationSettings == null || !customizationSettings.isAgentApp())
+                && KmAppSettingPreferences.isVoiceChatEnabled();
     }
 
     protected boolean canShowVoiceModeButton() {

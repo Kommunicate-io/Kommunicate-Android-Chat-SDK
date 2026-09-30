@@ -28,6 +28,7 @@ public class KmVoiceApiClient {
     private static final int TTS_SAMPLE_RATE = 24_000;
 
     private final String baseUrl;
+    private volatile HttpURLConnection activeConnection;
 
     public KmVoiceApiClient() {
         this(DEFAULT_BASE_URL);
@@ -42,6 +43,7 @@ public class KmVoiceApiClient {
         long startedAt = SystemClock.elapsedRealtime();
         Log.d(TAG, "stt_request_started audioBytes=" + pcmAudio.length);
         HttpURLConnection connection = openConnection("/voice/voice-to-text");
+        activeConnection = connection;
         try {
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Content-Type", "application/octet-stream");
@@ -71,6 +73,7 @@ public class KmVoiceApiClient {
                     + (SystemClock.elapsedRealtime() - startedAt), exception);
             throw exception;
         } finally {
+            clearActiveConnection(connection);
             connection.disconnect();
         }
     }
@@ -80,6 +83,7 @@ public class KmVoiceApiClient {
         long startedAt = SystemClock.elapsedRealtime();
         Log.d(TAG, "tts_request_started textLength=" + text.length());
         HttpURLConnection connection = openConnection("/voice/text-to-voice");
+        activeConnection = connection;
         try {
             connection.setRequestProperty("Accept", "audio/mpeg, audio/*;q=0.9");
             connection.setRequestProperty("Content-Type", "application/json");
@@ -109,7 +113,21 @@ public class KmVoiceApiClient {
                     + (SystemClock.elapsedRealtime() - startedAt), exception);
             throw exception;
         } finally {
+            clearActiveConnection(connection);
             connection.disconnect();
+        }
+    }
+
+    public void cancelActiveRequest() {
+        HttpURLConnection connection = activeConnection;
+        if (connection != null) {
+            connection.disconnect();
+        }
+    }
+
+    private void clearActiveConnection(HttpURLConnection connection) {
+        if (activeConnection == connection) {
+            activeConnection = null;
         }
     }
 

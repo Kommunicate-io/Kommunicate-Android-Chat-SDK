@@ -38,6 +38,7 @@ public class KmVoiceModeController {
     }
 
     private static final int MAX_PROCESSED_MESSAGE_IDS = 100;
+    private static final int RECORDER_RETRY_DELAY_MS = 50;
 
     private final Context context;
     private final Listener listener;
@@ -108,6 +109,7 @@ public class KmVoiceModeController {
         active = false;
         sessionGeneration++;
         audioRecorder.stop();
+        apiClient.cancelActiveRequest();
         playbackManager.stop();
         processedMessageIds.clear();
         setState(State.IDLE);
@@ -118,6 +120,7 @@ public class KmVoiceModeController {
 
     public void release() {
         stop();
+        mainHandler.removeCallbacksAndMessages(null);
         networkExecutor.shutdownNow();
     }
 
@@ -142,6 +145,9 @@ public class KmVoiceModeController {
         audioRecorder.stop();
         setState(State.PROCESSING_RESPONSE);
         networkExecutor.execute(() -> {
+            if (!isCurrentSession(generation)) {
+                return;
+            }
             try {
                 KmVoiceApiClient.AudioResponse response = apiClient.synthesize(text.trim());
                 runOnMain(() -> {
@@ -172,9 +178,15 @@ public class KmVoiceModeController {
         if (!isCurrentSession(generation) || audioRecorder.isRecording()) {
             return;
         }
-        setState(State.LISTENING);
         try {
-            audioRecorder.start();
+            if (audioRecorder.start()) {
+                setState(State.LISTENING);
+            } else if (isCurrentSession(generation)) {
+                mainHandler.postDelayed(
+                        () -> beginListening(generation),
+                        RECORDER_RETRY_DELAY_MS
+                );
+            }
         } catch (Exception exception) {
             fail(exception, generation);
         }
@@ -186,6 +198,9 @@ public class KmVoiceModeController {
         }
         setState(State.TRANSCRIBING);
         networkExecutor.execute(() -> {
+            if (!isCurrentSession(generation)) {
+                return;
+            }
             try {
                 String transcript = apiClient.transcribe(pcmAudio, conversationId);
                 runOnMain(() -> {

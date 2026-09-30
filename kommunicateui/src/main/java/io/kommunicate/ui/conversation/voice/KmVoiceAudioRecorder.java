@@ -27,8 +27,7 @@ public class KmVoiceAudioRecorder {
     private static final double VAD_INITIAL_NOISE_RMS = 0.002 * Short.MAX_VALUE;
     private static final double VAD_MIN_NOISE_RMS = 0.00005 * Short.MAX_VALUE;
     private static final double VAD_MIN_START_RMS = 160;
-    private static final int SILENCE_DURATION_MS = 600;
-    private static final int INITIAL_SPEECH_TIMEOUT_MS = 5_000;
+    private static final int END_OF_SPEECH_SILENCE_MS = 3_000;
     private static final int MAX_SEGMENT_DURATION_MS = 30_000;
     private static final int PRE_ROLL_BYTES = SAMPLE_RATE;
 
@@ -53,9 +52,12 @@ public class KmVoiceAudioRecorder {
     }
 
     @SuppressLint("MissingPermission")
-    public synchronized void start() {
-        if (recording || audioRecord != null) {
-            return;
+    public synchronized boolean start() {
+        if (recording) {
+            return true;
+        }
+        if (audioRecord != null) {
+            return false;
         }
         int minimumBufferSize = AudioRecord.getMinBufferSize(
                 SAMPLE_RATE,
@@ -67,7 +69,7 @@ public class KmVoiceAudioRecorder {
                     new IllegalStateException("Unable to determine audio buffer size");
             Log.e(TAG, "recording_start_failed", exception);
             listener.onError(exception);
-            return;
+            return false;
         }
 
         AudioRecord recorder = null;
@@ -95,6 +97,7 @@ public class KmVoiceAudioRecorder {
             );
             recordingThread.start();
             Log.d(TAG, "recording_started sampleRate=16000 channels=1 encoding=pcm16");
+            return true;
         } catch (Exception exception) {
             recording = false;
             audioRecord = null;
@@ -103,6 +106,7 @@ public class KmVoiceAudioRecorder {
             }
             Log.e(TAG, "recording_start_failed", exception);
             listener.onError(exception);
+            return false;
         }
     }
 
@@ -137,7 +141,7 @@ public class KmVoiceAudioRecorder {
         Deque<byte[]> preRoll = new ArrayDeque<>();
         int preRollSize = 0;
         boolean speechStarted = false;
-        long startedAt = SystemClock.elapsedRealtime();
+        long speechStartedAt = 0;
         long silenceStartedAt = 0;
         double noiseRms = estimatedNoiseRms;
         int speechStartFrames = 0;
@@ -199,25 +203,24 @@ public class KmVoiceAudioRecorder {
 
                     if (speechStartFrames >= VAD_START_FRAMES) {
                         speechStarted = true;
+                        speechStartedAt = now;
                         for (byte[] bufferedFrame : preRoll) {
                             speechAudio.write(bufferedFrame, 0, bufferedFrame.length);
                         }
                         preRoll.clear();
-                    } else if (now - startedAt >= INITIAL_SPEECH_TIMEOUT_MS) {
-                        break;
                     }
                 } else {
                     speechAudio.write(frame, 0, frame.length);
                     if (rms < noiseRms * VAD_END_FACTOR) {
                         if (silenceStartedAt == 0) {
                             silenceStartedAt = now;
-                        } else if (now - silenceStartedAt >= SILENCE_DURATION_MS) {
+                        } else if (now - silenceStartedAt >= END_OF_SPEECH_SILENCE_MS) {
                             break;
                         }
                     } else {
                         silenceStartedAt = 0;
                     }
-                    if (now - startedAt >= MAX_SEGMENT_DURATION_MS) {
+                    if (now - speechStartedAt >= MAX_SEGMENT_DURATION_MS) {
                         break;
                     }
                 }

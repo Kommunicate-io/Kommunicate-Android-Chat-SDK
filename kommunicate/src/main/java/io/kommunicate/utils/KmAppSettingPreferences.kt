@@ -110,11 +110,6 @@ object KmAppSettingPreferences {
         }
 
     @JvmStatic
-    fun cacheVoiceChatEnabled(isEnabled: Boolean) {
-        isVoiceChatEnabled = isEnabled
-    }
-
-    @JvmStatic
     var currentSubscriptionDetails: String?
         get() = preferences.getString(CURRENT_SUBSCRIPTION_DETAILS, null)
         private set(plan) {

@@ -92,26 +92,33 @@ public class KmHelper {
     }
 
     public static void setStartNewChat(final Context context) {
+        setStartNewChat(context, false);
+    }
+
+    public static void setStartNewChat(final Context context, final boolean startVoiceMode) {
         final ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage(Utils.getString(context, R.string.create_conversation_info));
         dialog.setCancelable(false);
         dialog.show();
 
         try {
-            KmConversationHelper.launchConversationIfLoggedIn(context, new KmCallback() {
-                @Override
-                public void onSuccess(Object message) {
-                    EventManager.getInstance().sendOnStartNewConversation((Integer) message);
+            KmConversationHelper.launchConversationIfLoggedIn(
+                    context,
+                    startVoiceMode,
+                    new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            EventManager.getInstance().sendOnStartNewConversation((Integer) message);
 
-                    dialog.dismiss();
-                }
+                            dialog.dismiss();
+                        }
 
-                @Override
-                public void onFailure(Object error) {
-                    dialog.dismiss();
-                    KmToast.error(context, Utils.getString(context, R.string.unable_to_create_conversation) + ": " + error, Toast.LENGTH_SHORT).show();
-                }
-            });
+                        @Override
+                        public void onFailure(Object error) {
+                            dialog.dismiss();
+                            KmToast.error(context, Utils.getString(context, R.string.unable_to_create_conversation) + ": " + error, Toast.LENGTH_SHORT).show();
+                        }
+                    });
         } catch (Exception e) {
             dialog.dismiss();
             e.printStackTrace();

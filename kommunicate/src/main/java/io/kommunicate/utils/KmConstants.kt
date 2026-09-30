@@ -22,6 +22,8 @@ object KmConstants {
     const val PRECHAT_LOGIN_CALL: String = "prechatLogin"
     const val KM_USER_DATA: String = "kmUserData"
     const val KM_PREFILLED_MESSAGE: String = "kmPreFilledMessage"
+    const val KM_START_VOICE_MODE: String = "kmStartVoiceMode"
+    const val KM_VOICE_MODE_LAUNCH_TIME: String = "kmVoiceModeLaunchTime"
     const val CONVERSATION_ASSIGNEE: String = "CONVERSATION_ASSIGNEE"
     const val KM_CONVERSATION_TITLE: String = "KM_CONVERSATION_TITLE"
     const val KM_HELPCENTER_URL: String = "KM_HELPCENTER_URL"

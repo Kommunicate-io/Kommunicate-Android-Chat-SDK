@@ -106,21 +106,58 @@
                 android:text="@string/no_conversation"
                 android:visibility="gone" />
 
-            <Button
-                android:id="@+id/start_new_conversation"
+            <LinearLayout
+                android:id="@+id/km_start_conversation_buttons"
                 android:layout_width="256dp"
                 android:layout_height="48dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="25dp"
                 android:background="@drawable/start_new_conv_shape"
-                android:fontFamily="sans-serif-medium"
-                android:letterSpacing="0.03"
-                android:text="@string/default_start_new_conversation"
-                android:textAllCaps="false"
-                android:textColor="@color/default_start_new_button_text_color"
-                android:textSize="14sp"
-                android:visibility="visible" />
+                android:elevation="2dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/start_new_conversation"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/core_transparent_color"
+                    android:elevation="0dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.03"
+                    android:stateListAnimator="@null"
+                    android:text="@string/default_start_new_conversation"
+                    android:textAllCaps="false"
+                    android:textColor="@color/default_start_new_button_text_color"
+                    android:textSize="14sp" />
+
+                <View
+                    android:id="@+id/km_start_conversation_button_divider"
+                    android:layout_width="1dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:alpha="0.5"
+                    android:background="@color/default_start_new_button_text_color"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/start_voice_conversation"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/core_transparent_color"
+                    android:elevation="0dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.03"
+                    android:stateListAnimator="@null"
+                    android:text="@string/km_voice_conversation_button"
+                    android:textAllCaps="false"
+                    android:textColor="@color/default_start_new_button_text_color"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/new_messages_button"

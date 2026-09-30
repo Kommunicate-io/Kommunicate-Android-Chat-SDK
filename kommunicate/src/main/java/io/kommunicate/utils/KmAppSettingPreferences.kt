@@ -38,6 +38,7 @@ object KmAppSettingPreferences {
     private const val RATING_BASE = "RATING_BASE"
     private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
     private const val SAS_TOKEN = "SAS_TOKEN"
+    private const val VOICE_CHAT = "VOICE_CHAT"
 
     @JvmStatic
     @CleanUpRequired(
@@ -100,6 +101,18 @@ object KmAppSettingPreferences {
         private set(isEnable) {
             preferences.edit().putBoolean(KM_COLLECT_FEEDBACK, isEnable).apply()
         }
+
+    @JvmStatic
+    var isVoiceChatEnabled: Boolean
+        get() = preferences.getBoolean(VOICE_CHAT, false)
+        private set(isEnabled) {
+            preferences.edit().putBoolean(VOICE_CHAT, isEnabled).apply()
+        }
+
+    @JvmStatic
+    fun cacheVoiceChatEnabled(isEnabled: Boolean) {
+        isVoiceChatEnabled = isEnabled
+    }
 
     @JvmStatic
     var currentSubscriptionDetails: String?
@@ -294,6 +307,7 @@ object KmAppSettingPreferences {
             ratingBase = it.csatRatingBase
             
             sasToken = it.sasT
+            isVoiceChatEnabled = it.isVoiceChat
         }
         appSetting.response?.let {
             isCollectFeedback = it.isCollectFeedback

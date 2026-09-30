@@ -130,6 +130,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static io.kommunicate.devkit.api.conversation.stat.SourceUrl.SOURCE_URL;
 import static io.kommunicate.utils.KmConstants.KM_SUMMARY;
+import static io.kommunicate.utils.KmConstants.KM_VOICE_MODE_STATUS;
 
 /**
  * Created by adarsh on 4/7/15.
@@ -358,6 +359,13 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         } else if (viewType == 8) {
             View typingViewHolder = layoutInflater.inflate(R.layout.km_typing_indicator_layout, parent, false);
             return new TypingMessageHolder(typingViewHolder, isDarkModeEnabled);
+        } else if (viewType == 9) {
+            View voiceStatusView = layoutInflater.inflate(
+                    R.layout.km_voice_status_message_layout,
+                    parent,
+                    false
+            );
+            return new VoiceStatusMessageHolder(voiceStatusView);
         }
         if (useInnerTimeStampDesign) {
             view = layoutInflater.inflate(R.layout.sent_message_list_view, parent, false);
@@ -553,6 +561,8 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                 } else {
                     ((TypingMessageHolder) holder).parentLayout.setVisibility(View.VISIBLE);
                 }
+            } else if (type == 9) {
+                ((VoiceStatusMessageHolder) holder).statusTextView.setText(message.getMessage());
             } else {
                 bindMessageView(holder, message, position);
             }
@@ -1727,6 +1737,10 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         if (message.isTypingMessage()) {
             return 8;
         }
+        if (message.getMetadata() != null
+                && Boolean.parseBoolean(message.getMetadata().get(KM_VOICE_MODE_STATUS))) {
+            return 9;
+        }
 
 
         return message.isTypeOutbox() ? 1 : 0;
@@ -2145,6 +2159,15 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         void setupDarkMode(boolean isDarkModeEnabled) {
             this.isDarkModeEnabled = isDarkModeEnabled;
             setupBackground();
+        }
+    }
+
+    static class VoiceStatusMessageHolder extends RecyclerView.ViewHolder {
+        final TextView statusTextView;
+
+        VoiceStatusMessageHolder(@NonNull View itemView) {
+            super(itemView);
+            statusTextView = itemView.findViewById(R.id.km_voice_status_message);
         }
     }
 }

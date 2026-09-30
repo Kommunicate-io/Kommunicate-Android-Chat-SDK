@@ -312,4 +312,10 @@
     <string name="summary_title">Summary</string>
     <string name="in_queue_position">You are currently #%1$s in the waiting queue, our agents will get back to you shortly</string>
     <string name="in_queue">In Queue...</string>
+    <string name="km_voice_mode_content_description">Open voice mode</string>
+    <string name="km_voice_microphone_content_description">Pause or resume voice mode</string>
+    <string name="km_voice_close_content_description">Close voice mode</string>
+    <string name="km_voice_listening">Listening...</string>
+    <string name="km_voice_transcribing">Transcribing...</string>
+    <string name="km_voice_powered_by">AI Agent powered by Kommunicate</string>
 </resources>

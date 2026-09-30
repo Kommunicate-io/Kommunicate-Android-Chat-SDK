@@ -1,0 +1,7 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/km_white_color" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/km_voice_close_border" />
+</shape>

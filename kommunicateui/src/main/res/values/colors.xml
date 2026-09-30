@@ -100,4 +100,14 @@
     <!--Action Bar Icon color-->
     <color name="km_toolbar_icon_color">#FFFFFF</color>
 
+    <!--Voice mode colors-->
+    <color name="km_voice_accent">#6258E8</color>
+    <color name="km_voice_microphone">#25C3F3</color>
+    <color name="km_voice_microphone_ring">#BEEFFF</color>
+    <color name="km_voice_close_border">#DDD8FF</color>
+    <color name="km_voice_status_background_color">#EFFAFF</color>
+    <color name="km_voice_status_border">#8FD8FF</color>
+    <color name="km_voice_status_text">#087A78</color>
+    <color name="km_voice_powered_by_text">#6E7882</color>
+
 </resources>

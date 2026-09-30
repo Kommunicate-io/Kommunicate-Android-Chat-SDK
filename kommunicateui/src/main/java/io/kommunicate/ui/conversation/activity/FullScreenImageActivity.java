@@ -83,7 +83,12 @@ public class FullScreenImageActivity extends KmBaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         if (customizationSettings.isEnableEdgeToEdge()) {
-            InsetHelper.configureSystemInsets(toolbar, -1, 0, true);
+            InsetHelper.configureSystemInsets(
+                    toolbar,
+                    InsetHelper.USE_SYSTEM_INSET,
+                    InsetHelper.NO_INSET,
+                    true
+            );
         }
 
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);

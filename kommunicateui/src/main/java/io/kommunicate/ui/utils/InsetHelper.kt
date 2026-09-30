@@ -15,6 +15,12 @@ import androidx.core.view.updatePadding
  */
 object InsetHelper {
 
+    /** Uses the system-provided inset for the configured side. */
+    const val USE_SYSTEM_INSET = -1
+
+    /** Applies no inset to the configured side. */
+    const val NO_INSET = 0
+
     /**
      * Some modified devices report API 34+ while shipping an older framework that does not
      * contain WindowInsets.Type.systemOverlays(). AndroidX selects its API 34 implementation from
@@ -81,22 +87,31 @@ object InsetHelper {
     @JvmStatic
     fun configureSystemInsets(
         view: View,
-        top: Int = -1,
-        bottom: Int = -1,
+        top: Int = USE_SYSTEM_INSET,
+        bottom: Int = USE_SYSTEM_INSET,
         isPadding: Boolean = true
     ) {
-        configureInset(view, systemTypeMask, 0, 0, top, bottom, isPadding)
+        configureInset(view, systemTypeMask, NO_INSET, NO_INSET, top, bottom, isPadding)
     }
 
     @JvmStatic
     fun configureSystemInsetsWithKeyboard(
         view: View,
-        top: Int = -1,
-        bottom: Int = -1,
+        top: Int = USE_SYSTEM_INSET,
+        bottom: Int = USE_SYSTEM_INSET,
         isPadding: Boolean = true,
         adjustForKeyboard: (isVisible: Boolean, keyboardHeight: Int) -> Unit
     ) {
-        configureInset(view, systemTypeMask, 0, 0, top, bottom, isPadding, adjustForKeyboard)
+        configureInset(
+            view,
+            systemTypeMask,
+            NO_INSET,
+            NO_INSET,
+            top,
+            bottom,
+            isPadding,
+            adjustForKeyboard
+        )
     }
 
     /**
@@ -122,10 +137,10 @@ object InsetHelper {
     fun configureInset(
         view: View,
         typeMask: Int,
-        left: Int = -1,
-        right: Int = -1,
-        top: Int = -1,
-        bottom: Int = -1,
+        left: Int = USE_SYSTEM_INSET,
+        right: Int = USE_SYSTEM_INSET,
+        top: Int = USE_SYSTEM_INSET,
+        bottom: Int = USE_SYSTEM_INSET,
         isPadding: Boolean = true,
         adjustForKeyboard: ((isVisible: Boolean, keyboardHeight: Int) -> Unit)? = null
     ) {
@@ -187,11 +202,11 @@ object InsetHelper {
      */
     private fun resolveInset(existingPadding: Int, insetValue: Int): Int {
         return when (existingPadding) {
-            -1 -> {
+            USE_SYSTEM_INSET -> {
                 insetValue
             }
-            0 -> {
-                0
+            NO_INSET -> {
+                NO_INSET
             }
             else -> {
                 insetValue + existingPadding

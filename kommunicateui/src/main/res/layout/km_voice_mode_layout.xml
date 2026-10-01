@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.kommunicate.ui.conversation.voice.KmVoiceModeView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/km_voice_mode_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="false"
+    android:focusable="false"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="36dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/km_voice_microphone_button"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/km_voice_microphone_background"
+            android:contentDescription="@string/km_voice_microphone_content_description"
+            android:padding="25dp"
+            android:src="@drawable/km_voice_microphone_icon" />
+
+        <ImageButton
+            android:id="@+id/km_voice_close_button"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="18dp"
+            android:background="@drawable/km_voice_close_background"
+            android:contentDescription="@string/km_voice_close_content_description"
+            android:padding="16dp"
+            android:src="@drawable/km_voice_close_icon" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="9dp"
+        android:paddingBottom="8dp"
+        android:text="@string/km_voice_powered_by"
+        android:textColor="@color/km_voice_powered_by_text"
+        android:textSize="13sp" />
+</io.kommunicate.ui.conversation.voice.KmVoiceModeView>

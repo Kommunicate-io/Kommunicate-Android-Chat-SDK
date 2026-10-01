@@ -108,6 +108,8 @@
     <color name="km_voice_status_background_color">#EFFAFF</color>
     <color name="km_voice_status_border">#8FD8FF</color>
     <color name="km_voice_status_text">#087A78</color>
+    <color name="km_voice_transcribing_background">#F8EEEE</color>
+    <color name="km_voice_transcribing_text">#4A1515</color>
     <color name="km_voice_powered_by_text">#6E7882</color>
 
 </resources>

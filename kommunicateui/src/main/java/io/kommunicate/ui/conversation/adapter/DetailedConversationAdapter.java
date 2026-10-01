@@ -562,7 +562,21 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
                     ((TypingMessageHolder) holder).parentLayout.setVisibility(View.VISIBLE);
                 }
             } else if (type == 9) {
-                ((VoiceStatusMessageHolder) holder).statusTextView.setText(message.getMessage());
+                VoiceStatusMessageHolder statusHolder = (VoiceStatusMessageHolder) holder;
+                boolean isTranscribing = TextUtils.equals(
+                        context.getString(R.string.km_voice_transcribing),
+                        message.getMessage()
+                );
+                statusHolder.statusTextView.setText(message.getMessage());
+                statusHolder.statusTextView.setBackgroundResource(isTranscribing
+                        ? R.drawable.km_voice_transcribing_background
+                        : R.drawable.km_voice_status_background);
+                statusHolder.statusTextView.setTextColor(ContextCompat.getColor(
+                        context,
+                        isTranscribing
+                                ? R.color.km_voice_transcribing_text
+                                : R.color.km_voice_status_text
+                ));
             } else {
                 bindMessageView(holder, message, position);
             }

@@ -60,7 +60,7 @@ public class KmVoiceModeController {
 
     private volatile boolean active;
     private long conversationId;
-    private int sessionGeneration;
+    private volatile int sessionGeneration;
     private AudioFocusRequest audioFocusRequest;
 
     public KmVoiceModeController(@NonNull Context context, @NonNull Listener listener) {
@@ -95,18 +95,18 @@ public class KmVoiceModeController {
         this.playbackManager = new KmVoicePlaybackManager(this.context, audioAttributes);
         this.audioRecorder = new KmVoiceAudioRecorder(new KmVoiceAudioRecorder.Listener() {
             @Override
-            public void onAudioCaptured(@NonNull byte[] pcmAudio) {
-                transcribe(pcmAudio, sessionGeneration);
+            public void onAudioCaptured(@NonNull byte[] pcmAudio, int generation) {
+                transcribe(pcmAudio, generation);
             }
 
             @Override
-            public void onNoSpeech() {
-                runOnMain(() -> beginListening(sessionGeneration));
+            public void onNoSpeech(int generation) {
+                runOnMain(() -> beginListening(generation));
             }
 
             @Override
-            public void onError(@NonNull Exception exception) {
-                fail(exception, sessionGeneration);
+            public void onError(@NonNull Exception exception, int generation) {
+                fail(exception, generation);
             }
         });
     }
@@ -216,7 +216,7 @@ public class KmVoiceModeController {
             return;
         }
         try {
-            if (audioRecorder.start()) {
+            if (audioRecorder.start(generation)) {
                 setState(State.LISTENING);
             } else if (isCurrentSession(generation)) {
                 mainHandler.postDelayed(

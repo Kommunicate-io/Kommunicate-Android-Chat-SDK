@@ -28,16 +28,16 @@ public class KmVoiceAudioRecorder {
     private static final double VAD_MIN_NOISE_RMS = 0.00005 * Short.MAX_VALUE;
     private static final double VAD_MIN_START_RMS = 160;
     private static final double VAD_MIN_END_RMS = VAD_MIN_START_RMS;
-    private static final int END_OF_SPEECH_SILENCE_MS = 3_000;
+    private static final int END_OF_SPEECH_SILENCE_MS = 2_000;
     private static final int MAX_SEGMENT_DURATION_MS = 30_000;
     private static final int PRE_ROLL_BYTES = SAMPLE_RATE;
 
     public interface Listener {
-        void onAudioCaptured(@NonNull byte[] pcmAudio);
+        void onAudioCaptured(@NonNull byte[] pcmAudio, int sessionGeneration);
 
-        void onNoSpeech();
+        void onNoSpeech(int sessionGeneration);
 
-        void onError(@NonNull Exception exception);
+        void onError(@NonNull Exception exception, int sessionGeneration);
     }
 
     private final Listener listener;
@@ -53,7 +53,7 @@ public class KmVoiceAudioRecorder {
     }
 
     @SuppressLint("MissingPermission")
-    public synchronized boolean start() {
+    public synchronized boolean start(int sessionGeneration) {
         if (recording) {
             return true;
         }
@@ -69,7 +69,7 @@ public class KmVoiceAudioRecorder {
             IllegalStateException exception =
                     new IllegalStateException("Unable to determine audio buffer size");
             Log.e(TAG, "recording_start_failed", exception);
-            listener.onError(exception);
+            listener.onError(exception, sessionGeneration);
             return false;
         }
 
@@ -93,7 +93,7 @@ public class KmVoiceAudioRecorder {
             recorder.startRecording();
             AudioRecord activeRecorder = recorder;
             Thread recordingThread = new Thread(
-                    () -> capture(activeRecorder, generation),
+                    () -> capture(activeRecorder, generation, sessionGeneration),
                     "KmVoiceRecorder"
             );
             recordingThread.start();
@@ -106,7 +106,7 @@ public class KmVoiceAudioRecorder {
                 recorder.release();
             }
             Log.e(TAG, "recording_start_failed", exception);
-            listener.onError(exception);
+            listener.onError(exception, sessionGeneration);
             return false;
         }
     }
@@ -136,7 +136,7 @@ public class KmVoiceAudioRecorder {
         estimatedNoiseRms = VAD_INITIAL_NOISE_RMS;
     }
 
-    private void capture(AudioRecord recorder, int generation) {
+    private void capture(AudioRecord recorder, int generation, int sessionGeneration) {
         short[] samples = new short[FRAME_SAMPLES];
         ByteArrayOutputStream speechAudio = new ByteArrayOutputStream();
         Deque<byte[]> preRoll = new ArrayDeque<>();
@@ -244,19 +244,19 @@ public class KmVoiceAudioRecorder {
         noiseCalibrated = true;
         if (captureError != null) {
             Log.e(TAG, "recording_failed", captureError);
-            listener.onError(captureError);
+            listener.onError(captureError, sessionGeneration);
             return;
         }
         byte[] audio = speechAudio.toByteArray();
         if (!speechStarted || audio.length < SAMPLE_RATE * 2 * 160 / 1_000) {
             Log.d(TAG, "recording_no_speech maxRms=" + maximumRms
                     + " noiseRms=" + Math.round(noiseRms));
-            listener.onNoSpeech();
+            listener.onNoSpeech(sessionGeneration);
         } else {
             Log.d(TAG, "recording_captured audioBytes=" + audio.length
                     + " maxRms=" + maximumRms
                     + " noiseRms=" + Math.round(noiseRms));
-            listener.onAudioCaptured(audio);
+            listener.onAudioCaptured(audio, sessionGeneration);
         }
     }
 

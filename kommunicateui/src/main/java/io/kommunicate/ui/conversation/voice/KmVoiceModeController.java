@@ -19,6 +19,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.kommunicate.devkit.api.voice.KmVoiceApiClient;
+
 /** Coordinates the non-UI voice conversation flow. */
 public class KmVoiceModeController {
     private static final String TAG = "KmVoiceMode";
@@ -36,7 +38,7 @@ public class KmVoiceModeController {
     public interface Listener {
         void onStateChanged(@NonNull State state);
 
-        void onTranscriptReady(@NonNull String transcript);
+        boolean onTranscriptReady(@NonNull String transcript);
 
         void onError(@NonNull Exception exception);
     }
@@ -247,8 +249,11 @@ public class KmVoiceModeController {
                         return;
                     }
                     setState(State.SENDING);
-                    listener.onTranscriptReady(transcript);
-                    setState(State.WAITING_FOR_RESPONSE);
+                    if (listener.onTranscriptReady(transcript)) {
+                        setState(State.WAITING_FOR_RESPONSE);
+                    } else {
+                        beginListening(generation);
+                    }
                 });
             } catch (Exception exception) {
                 recover(exception, generation);

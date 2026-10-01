@@ -1500,8 +1500,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         }
 
                         @Override
-                        public void onTranscriptReady(@NonNull String transcript) {
-                            sendMessage(transcript);
+                        public boolean onTranscriptReady(@NonNull String transcript) {
+                            return trySendMessage(transcript);
                         }
 
                         @Override
@@ -1809,13 +1809,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void sendMessage(String message) {
+        trySendMessage(message);
+    }
+
+    private boolean trySendMessage(String message) {
         isApiAutoSuggest = false;
         if (isCustomFieldMessage) {
-            validateCustomInputRegex(message);
-        } else {
-            messageEditText.setText("");
-            sendMessage(message, null, null, null, Message.ContentType.DEFAULT.getValue());
+            return validateCustomInputRegex(message);
         }
+        messageEditText.setText("");
+        sendMessage(message, null, null, null, Message.ContentType.DEFAULT.getValue());
+        return true;
     }
 
     protected void sendMessage() {
@@ -5330,14 +5334,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         });
     }
 
-    private void validateCustomInputRegex(String message) {
+    private boolean validateCustomInputRegex(String message) {
         if (customInputField == null) {
-            return;
+            return false;
         }
+        String input = message == null ? "" : message.trim();
         if (customInputField.getKM_FIELD().getValidation() != null
                 && !TextUtils.isEmpty(customInputField.getKM_FIELD().getValidation().getRegex())) {
             try {
-                if (!Pattern.compile(customInputField.getKM_FIELD().getValidation().getRegex()).matcher(messageEditText.getText().toString().trim()).find()) {
+                if (!Pattern.compile(customInputField.getKM_FIELD().getValidation().getRegex()).matcher(input).find()) {
                     kmAwayView.showInvalidEmail();
                     if (!TextUtils.isEmpty(customInputField.getKM_FIELD().getValidation().getErrorText())) {
                         KmToast.error(getContext(), customInputField.getKM_FIELD().getValidation().getErrorText(), Toast.LENGTH_SHORT).show();
@@ -5345,18 +5350,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         KmToast.error(getContext(), getResources().getString(R.string.invalid_regex_error), Toast.LENGTH_SHORT).show();
                     }
                     handleSendAndRecordButtonView(true);
-                    return;
+                    return false;
                 }
             } catch (PatternSyntaxException e) {
                 e.printStackTrace();
                 boolean isRegexMatching = true;
                 switch (customInputField.getKM_FIELD().getFieldType()) {
                     case (KmCustomInputModel.EMAIL): {
-                        isRegexMatching = Pattern.compile(LeadCollectionActivity.EMAIL_VALIDATION_REGEX).matcher(messageEditText.getText().toString().trim()).matches();
+                        isRegexMatching = Pattern.compile(LeadCollectionActivity.EMAIL_VALIDATION_REGEX).matcher(input).matches();
                         break;
                     }
                     case (KmCustomInputModel.PHONE_NUMBER): {
-                        isRegexMatching = Pattern.compile(LeadCollectionActivity.PHONE_NUMBER_VALIDATION_REGEX).matcher(messageEditText.getText().toString().trim()).matches();
+                        isRegexMatching = Pattern.compile(LeadCollectionActivity.PHONE_NUMBER_VALIDATION_REGEX).matcher(input).matches();
                         break;
                     }
                 }
@@ -5367,7 +5372,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         KmToast.error(getContext(), getResources().getString(R.string.invalid_regex_error), Toast.LENGTH_SHORT).show();
                     }
                     handleSendAndRecordButtonView(true);
-                    return;
+                    return false;
                 }
             }
         }
@@ -5376,6 +5381,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         messageEditText.setText("");
         sendMessage(message, customInputField.getReplyMetadata() != null ? customInputField.getReplyMetadata() : null, null, null, Message.ContentType.DEFAULT.getValue());
+        return true;
     }
 
     protected <T> KmAutoSuggestionArrayAdapter<T> getAdapter(T[] data) {

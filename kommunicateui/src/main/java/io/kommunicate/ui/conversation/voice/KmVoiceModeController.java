@@ -257,11 +257,11 @@ public class KmVoiceModeController {
     }
 
     private void recover(Exception exception, int generation) {
-        Log.e(TAG, "voice_session_recoverable_error", exception);
         runOnMain(() -> {
             if (!isCurrentSession(generation)) {
                 return;
             }
+            Log.e(TAG, "voice_session_recoverable_error", exception);
             setState(State.ERROR);
             listener.onError(exception);
             beginListening(generation);

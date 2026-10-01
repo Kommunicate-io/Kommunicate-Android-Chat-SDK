@@ -29,6 +29,7 @@ public class KmVoiceApiClient {
 
     private final String baseUrl;
     private volatile HttpURLConnection activeConnection;
+    private volatile boolean cancellationRequested;
 
     public KmVoiceApiClient() {
         this(DEFAULT_BASE_URL);
@@ -43,6 +44,7 @@ public class KmVoiceApiClient {
         long startedAt = SystemClock.elapsedRealtime();
         Log.d(TAG, "stt_request_started audioBytes=" + pcmAudio.length);
         HttpURLConnection connection = openConnection("/voice/voice-to-text");
+        cancellationRequested = false;
         activeConnection = connection;
         try {
             connection.setRequestProperty("Accept", "application/json");
@@ -69,8 +71,7 @@ public class KmVoiceApiClient {
                 throw new IOException("Invalid voice-to-text response", exception);
             }
         } catch (IOException exception) {
-            Log.e(TAG, "stt_request_failed durationMs="
-                    + (SystemClock.elapsedRealtime() - startedAt), exception);
+            logRequestFailure("stt", startedAt, exception);
             throw exception;
         } finally {
             clearActiveConnection(connection);
@@ -83,6 +84,7 @@ public class KmVoiceApiClient {
         long startedAt = SystemClock.elapsedRealtime();
         Log.d(TAG, "tts_request_started textLength=" + text.length());
         HttpURLConnection connection = openConnection("/voice/text-to-voice");
+        cancellationRequested = false;
         activeConnection = connection;
         try {
             connection.setRequestProperty("Accept", "audio/mpeg, audio/*;q=0.9");
@@ -109,8 +111,7 @@ public class KmVoiceApiClient {
                     connection.getContentType()
             );
         } catch (IOException exception) {
-            Log.e(TAG, "tts_request_failed durationMs="
-                    + (SystemClock.elapsedRealtime() - startedAt), exception);
+            logRequestFailure("tts", startedAt, exception);
             throw exception;
         } finally {
             clearActiveConnection(connection);
@@ -121,6 +122,7 @@ public class KmVoiceApiClient {
     public void cancelActiveRequest() {
         HttpURLConnection connection = activeConnection;
         if (connection != null) {
+            cancellationRequested = true;
             connection.disconnect();
         }
     }
@@ -128,6 +130,18 @@ public class KmVoiceApiClient {
     private void clearActiveConnection(HttpURLConnection connection) {
         if (activeConnection == connection) {
             activeConnection = null;
+            cancellationRequested = false;
+        }
+    }
+
+    private void logRequestFailure(String requestType,
+                                   long startedAt,
+                                   IOException exception) {
+        long duration = SystemClock.elapsedRealtime() - startedAt;
+        if (cancellationRequested) {
+            Log.d(TAG, requestType + "_request_cancelled durationMs=" + duration);
+        } else {
+            Log.e(TAG, requestType + "_request_failed durationMs=" + duration, exception);
         }
     }
 

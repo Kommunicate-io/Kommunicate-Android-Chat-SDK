@@ -27,6 +27,7 @@ public class KmVoiceAudioRecorder {
     private static final double VAD_INITIAL_NOISE_RMS = 0.002 * Short.MAX_VALUE;
     private static final double VAD_MIN_NOISE_RMS = 0.00005 * Short.MAX_VALUE;
     private static final double VAD_MIN_START_RMS = 160;
+    private static final double VAD_MIN_END_RMS = VAD_MIN_START_RMS;
     private static final int END_OF_SPEECH_SILENCE_MS = 3_000;
     private static final int MAX_SEGMENT_DURATION_MS = 30_000;
     private static final int PRE_ROLL_BYTES = SAMPLE_RATE;
@@ -144,6 +145,7 @@ public class KmVoiceAudioRecorder {
         long speechStartedAt = 0;
         long silenceStartedAt = 0;
         double noiseRms = estimatedNoiseRms;
+        double endThreshold = VAD_MIN_END_RMS;
         int speechStartFrames = 0;
         int maximumRms = 0;
         int calibrationFrameTarget = Math.max(
@@ -204,6 +206,10 @@ public class KmVoiceAudioRecorder {
                     if (speechStartFrames >= VAD_START_FRAMES) {
                         speechStarted = true;
                         speechStartedAt = now;
+                        endThreshold = Math.max(
+                                noiseRms * VAD_END_FACTOR,
+                                VAD_MIN_END_RMS
+                        );
                         for (byte[] bufferedFrame : preRoll) {
                             speechAudio.write(bufferedFrame, 0, bufferedFrame.length);
                         }
@@ -211,7 +217,7 @@ public class KmVoiceAudioRecorder {
                     }
                 } else {
                     speechAudio.write(frame, 0, frame.length);
-                    if (rms < noiseRms * VAD_END_FACTOR) {
+                    if (rms < endThreshold) {
                         if (silenceStartedAt == 0) {
                             silenceStartedAt = now;
                         } else if (now - silenceStartedAt >= END_OF_SPEECH_SILENCE_MS) {

@@ -3,6 +3,10 @@ package io.kommunicate.ui.conversation.voice;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -45,6 +49,9 @@ public class KmVoiceModeController {
     private final KmVoiceApiClient apiClient;
     private final KmVoiceAudioRecorder audioRecorder;
     private final KmVoicePlaybackManager playbackManager;
+    private final AudioManager audioManager;
+    private final AudioAttributes audioAttributes;
+    private final AudioManager.OnAudioFocusChangeListener focusChangeListener;
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final Set<String> processedMessageIds = new LinkedHashSet<>();
@@ -52,6 +59,7 @@ public class KmVoiceModeController {
     private volatile boolean active;
     private long conversationId;
     private int sessionGeneration;
+    private AudioFocusRequest audioFocusRequest;
 
     public KmVoiceModeController(@NonNull Context context, @NonNull Listener listener) {
         this(context, listener, new KmVoiceApiClient());
@@ -63,7 +71,26 @@ public class KmVoiceModeController {
         this.context = context.getApplicationContext();
         this.listener = listener;
         this.apiClient = apiClient;
-        this.playbackManager = new KmVoicePlaybackManager(this.context);
+        this.audioManager = (AudioManager) this.context.getSystemService(Context.AUDIO_SERVICE);
+        this.audioAttributes = new AudioAttributes.Builder()
+                .setUsage(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                        ? AudioAttributes.USAGE_ASSISTANT
+                        : AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build();
+        this.focusChangeListener = focusChange -> {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS ||
+                    focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT ||
+                    focusChange == AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK) {
+                runOnMain(() -> {
+                    if (active) {
+                        Log.d(TAG, "voice_session_stopped audioFocusLoss=" + focusChange);
+                        stop();
+                    }
+                });
+            }
+        };
+        this.playbackManager = new KmVoicePlaybackManager(this.context, audioAttributes);
         this.audioRecorder = new KmVoiceAudioRecorder(new KmVoiceAudioRecorder.Listener() {
             @Override
             public void onAudioCaptured(@NonNull byte[] pcmAudio) {
@@ -94,6 +121,13 @@ public class KmVoiceModeController {
             notifyError(exception);
             return false;
         }
+        if (!requestAudioFocus()) {
+            IllegalStateException exception =
+                    new IllegalStateException("Unable to obtain audio focus");
+            Log.e(TAG, "voice_session_start_failed", exception);
+            notifyError(exception);
+            return false;
+        }
         this.conversationId = conversationId;
         processedMessageIds.clear();
         active = true;
@@ -111,6 +145,7 @@ public class KmVoiceModeController {
         audioRecorder.stop();
         apiClient.cancelActiveRequest();
         playbackManager.stop();
+        abandonAudioFocus();
         processedMessageIds.clear();
         setState(State.IDLE);
         if (wasActive) {
@@ -246,7 +281,9 @@ public class KmVoiceModeController {
             active = false;
             sessionGeneration++;
             audioRecorder.stop();
+            apiClient.cancelActiveRequest();
             playbackManager.stop();
+            abandonAudioFocus();
             processedMessageIds.clear();
             updateState(State.ERROR);
             listener.onError(exception);
@@ -255,6 +292,47 @@ public class KmVoiceModeController {
 
     private boolean isCurrentSession(int generation) {
         return active && sessionGeneration == generation;
+    }
+
+    private boolean requestAudioFocus() {
+        if (audioManager == null) {
+            return false;
+        }
+        int result;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest = new AudioFocusRequest.Builder(
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
+            )
+                    .setAudioAttributes(audioAttributes)
+                    .setOnAudioFocusChangeListener(focusChangeListener)
+                    .build();
+            result = audioManager.requestAudioFocus(audioFocusRequest);
+        } else {
+            result = audioManager.requestAudioFocus(
+                    focusChangeListener,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
+            );
+        }
+        boolean granted = result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+        if (!granted && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest = null;
+        }
+        return granted;
+    }
+
+    private void abandonAudioFocus() {
+        if (audioManager == null) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (audioFocusRequest != null) {
+                audioManager.abandonAudioFocusRequest(audioFocusRequest);
+                audioFocusRequest = null;
+            }
+        } else {
+            audioManager.abandonAudioFocus(focusChangeListener);
+        }
     }
 
     private void setState(@NonNull State nextState) {

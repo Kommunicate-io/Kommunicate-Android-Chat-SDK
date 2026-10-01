@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import io.kommunicate.devkit.api.voice.KmVoiceApiClient;
+
 /** Plays binary TTS responses and owns their temporary files. */
 public class KmVoicePlaybackManager {
     private static final String TAG = "KmVoiceMode";

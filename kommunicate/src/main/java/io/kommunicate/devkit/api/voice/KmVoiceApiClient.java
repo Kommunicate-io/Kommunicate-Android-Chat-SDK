@@ -1,4 +1,4 @@
-package io.kommunicate.ui.conversation.voice;
+package io.kommunicate.devkit.api.voice;
 
 import android.os.SystemClock;
 import android.util.Log;
@@ -18,10 +18,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import io.kommunicate.BuildConfig;
+
 /** HTTP client for the Kommunicate voice-to-text and text-to-voice endpoints. */
 public class KmVoiceApiClient {
     private static final String TAG = "KmVoiceMode";
-    public static final String DEFAULT_BASE_URL = "https://omni-channel-test.kommunicate.io";
+    public static final String DEFAULT_BASE_URL = BuildConfig.VOICE_SERVER_URL;
     private static final int CONNECT_TIMEOUT_MS = 15_000;
     private static final int READ_TIMEOUT_MS = 30_000;
     private static final int STT_SAMPLE_RATE = 16_000;

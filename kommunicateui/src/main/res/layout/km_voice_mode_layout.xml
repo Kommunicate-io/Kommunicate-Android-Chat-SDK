@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="9dp"
+        android:paddingBottom="8dp"
         android:text="@string/km_voice_powered_by"
         android:textColor="@color/km_voice_powered_by_text"
         android:textSize="13sp" />

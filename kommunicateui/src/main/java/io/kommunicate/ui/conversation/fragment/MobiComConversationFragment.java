@@ -1559,6 +1559,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (voiceModeView == null || kmMessageLinearLayout == null) {
             return;
         }
+        if (getActivity() != null) {
+            Utils.toggleSoftKeyBoard(getActivity(), true);
+        }
         messageEditText.clearFocus();
         if (!voiceModeView.isModeVisible()) {
             messageComposerVisibilityBeforeVoiceMode = kmMessageLinearLayout.getVisibility();

@@ -1818,8 +1818,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return validateCustomInputRegex(message);
         }
         messageEditText.setText("");
-        sendMessage(message, null, null, null, Message.ContentType.DEFAULT.getValue());
-        return true;
+        return sendMessage(message, null, null, null, Message.ContentType.DEFAULT.getValue());
     }
 
     protected void sendMessage() {
@@ -1888,7 +1887,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         sendMessage(message, messageMetaData, null, null, messageContentType);
     }
 
-    public void sendMessage(String message, Map<String, String> messageMetaData, FileMeta fileMetas, String fileMetaKeyStrings, short messageContentType) {
+    public boolean sendMessage(String message, Map<String, String> messageMetaData, FileMeta fileMetas, String fileMetaKeyStrings, short messageContentType) {
         MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(getActivity());
         Message messageToSend = new Message();
 
@@ -1896,7 +1895,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (channel.getKmStatus() == Channel.CLOSED_CONVERSATIONS
                 && !customizationSettings.isRestartConversationButtonVisibility()
         ) {
-            return;
+            return false;
         }
 
         if (channel != null) {
@@ -1958,6 +1957,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         this.messageMetaData = null;
         filePath = null;
+        return true;
     }
 
     protected void processSendMessage() {
@@ -5380,8 +5380,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             updateUserFromCustomInput(message);
         }
         messageEditText.setText("");
-        sendMessage(message, customInputField.getReplyMetadata() != null ? customInputField.getReplyMetadata() : null, null, null, Message.ContentType.DEFAULT.getValue());
-        return true;
+        return sendMessage(message, customInputField.getReplyMetadata() != null ? customInputField.getReplyMetadata() : null, null, null, Message.ContentType.DEFAULT.getValue());
     }
 
     protected <T> KmAutoSuggestionArrayAdapter<T> getAdapter(T[] data) {

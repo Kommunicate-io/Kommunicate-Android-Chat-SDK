@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.util.Base64
 import android.util.Log
 import annotations.CleanUpRequired
-import io.kommunicate.devkit.KommunicateSettings
+import io.kommunicate.devkit.api.MobiComKitClientService
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
 import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.json.GsonUtils
@@ -227,17 +227,17 @@ object KmAppSettingPreferences {
         reason = "Not used anywhere"
     )
     fun fetchAppSettingAsync(context: Context) {
+        fetchAppSettingAsync(context, null)
+    }
+
+    @JvmStatic
+    fun fetchAppSettingAsync(context: Context, callback: KmCallback?) {
         AppSettingUseCase.executeWithExecutor(
             context,
-            KommunicateSettings.getInstance(context).applicationKey,
+            MobiComKitClientService.getApplicationKey(context),
             true,
-            object : KmCallback {
-                override fun onSuccess(message: Any) {
-                }
-
-                override fun onFailure(error: Any) {
-                }
-            })
+            callback
+        )
     }
 
     @JvmStatic

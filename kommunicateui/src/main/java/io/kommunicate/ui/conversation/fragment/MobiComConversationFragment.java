@@ -95,7 +95,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import io.kommunicate.devkit.KommunicateSettings;
 import io.kommunicate.devkit.SettingsSharedPreference;
-import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.MobiComKitConstants;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
@@ -251,7 +250,6 @@ import io.kommunicate.preference.KmBotPreference;
 import io.kommunicate.preference.KmConversationInfoSetting;
 import io.kommunicate.services.KmClientService;
 import io.kommunicate.services.KmService;
-import io.kommunicate.usecase.AppSettingUseCase;
 import io.kommunicate.usecase.GetBotTypeUseCase;
 import io.kommunicate.usecase.GetDataUseCase;
 import io.kommunicate.usecase.MessageDeleteUseCase;
@@ -1402,10 +1400,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             return;
         }
         Context applicationContext = getContext().getApplicationContext();
-        AppSettingUseCase.executeWithExecutor(
+        KmAppSettingPreferences.fetchAppSettingAsync(
                 applicationContext,
-                MobiComKitClientService.getApplicationKey(applicationContext),
-                true,
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {

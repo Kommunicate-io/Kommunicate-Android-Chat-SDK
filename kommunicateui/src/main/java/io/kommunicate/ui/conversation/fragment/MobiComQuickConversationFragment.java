@@ -34,7 +34,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import io.kommunicate.devkit.api.MobiComKitClientService;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.conversation.Message;
@@ -76,7 +75,6 @@ import java.util.Objects;
 import io.kommunicate.Kommunicate;
 import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmClientService;
-import io.kommunicate.usecase.AppSettingUseCase;
 import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmUtils;
 
@@ -299,10 +297,8 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
             return;
         }
         Context applicationContext = getContext().getApplicationContext();
-        AppSettingUseCase.executeWithExecutor(
+        KmAppSettingPreferences.fetchAppSettingAsync(
                 applicationContext,
-                MobiComKitClientService.getApplicationKey(applicationContext),
-                true,
                 new KmCallback() {
                     @Override
                     public void onSuccess(Object message) {

@@ -1,8 +1,6 @@
 package io.kommunicate.ui.conversation.voice;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -12,13 +10,13 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
 import io.kommunicate.devkit.api.voice.KmVoiceApiClient;
 
 /** Coordinates the non-UI voice conversation flow. */
@@ -115,8 +113,7 @@ public class KmVoiceModeController {
         if (active) {
             return true;
         }
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (!PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             SecurityException exception =
                     new SecurityException("Audio recording permission is required");
             Log.e(TAG, "voice_session_start_failed", exception);

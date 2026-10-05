@@ -28,6 +28,9 @@ public class KmVoiceApiClient {
     private static final int READ_TIMEOUT_MS = 30_000;
     private static final int STT_SAMPLE_RATE = 16_000;
     private static final int TTS_SAMPLE_RATE = 24_000;
+    private static final int MAX_JSON_RESPONSE_BYTES = 1024 * 1024;
+    private static final int MAX_AUDIO_RESPONSE_BYTES = 10 * 1024 * 1024;
+    private static final int MAX_ERROR_RESPONSE_BYTES = 64 * 1024;
 
     private final String baseUrl;
     private volatile HttpURLConnection activeConnection;
@@ -60,7 +63,7 @@ public class KmVoiceApiClient {
             connection.setFixedLengthStreamingMode(pcmAudio.length);
             writeRequest(connection, pcmAudio);
 
-            byte[] response = readSuccessfulResponse(connection);
+            byte[] response = readSuccessfulResponse(connection, MAX_JSON_RESPONSE_BYTES);
             try {
                 Object payload = new JSONTokener(
                         new String(response, StandardCharsets.UTF_8)
@@ -101,7 +104,7 @@ public class KmVoiceApiClient {
                 throw new IOException("Unable to create text-to-voice request", exception);
             }
             writeRequest(connection, payload.toString().getBytes(StandardCharsets.UTF_8));
-            byte[] audio = readSuccessfulResponse(connection);
+            byte[] audio = readSuccessfulResponse(connection, MAX_AUDIO_RESPONSE_BYTES);
             if (audio.length == 0) {
                 throw new IOException("Empty text-to-voice response");
             }
@@ -162,26 +165,44 @@ public class KmVoiceApiClient {
         }
     }
 
-    private byte[] readSuccessfulResponse(HttpURLConnection connection) throws IOException {
+    private byte[] readSuccessfulResponse(HttpURLConnection connection,
+                                          int maxSuccessfulResponseBytes) throws IOException {
         int responseCode = connection.getResponseCode();
-        InputStream responseStream = responseCode >= 200 && responseCode < 300
+        boolean successful = responseCode >= 200 && responseCode < 300;
+        InputStream responseStream = successful
                 ? connection.getInputStream()
                 : connection.getErrorStream();
-        byte[] response = responseStream == null ? new byte[0] : readFully(responseStream);
-        if (responseCode < 200 || responseCode >= 300) {
+        int maxResponseBytes = successful
+                ? maxSuccessfulResponseBytes
+                : MAX_ERROR_RESPONSE_BYTES;
+        byte[] response = responseStream == null
+                ? new byte[0]
+                : readFully(responseStream, maxResponseBytes, connection.getContentLength());
+        if (!successful) {
             String message = new String(response, StandardCharsets.UTF_8);
             throw new IOException("Voice API request failed (" + responseCode + "): " + message);
         }
         return response;
     }
 
-    private byte[] readFully(InputStream inputStream) throws IOException {
+    private byte[] readFully(InputStream inputStream,
+                             int maxBytes,
+                             int contentLength) throws IOException {
+        if (contentLength > maxBytes) {
+            throw new IOException("Voice API response exceeds the maximum allowed size");
+        }
+        int initialCapacity = contentLength > 0 ? contentLength : 8_192;
         try (InputStream stream = inputStream;
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream(initialCapacity)) {
             byte[] buffer = new byte[8_192];
             int count;
+            int totalBytes = 0;
             while ((count = stream.read(buffer)) != -1) {
+                if (count > maxBytes - totalBytes) {
+                    throw new IOException("Voice API response exceeds the maximum allowed size");
+                }
                 outputStream.write(buffer, 0, count);
+                totalBytes += count;
             }
             return outputStream.toByteArray();
         }

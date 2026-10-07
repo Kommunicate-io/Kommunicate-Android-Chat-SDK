@@ -147,17 +147,30 @@ public class KmRecordButton extends AppCompatImageView implements View.OnTouchLi
                     performClick();
                     recordView.onSpeechToTextTap();
                 }
+                longPressTriggered = false;
                 break;
             case MotionEvent.ACTION_CANCEL:
                 gestureHandler.removeCallbacks(longPressRunnable);
                 if (longPressTriggered) {
                     recordView.onActionCancel(this);
                 }
+                longPressTriggered = false;
                 break;
             default:
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        gestureHandler.removeCallbacks(longPressRunnable);
+        if (longPressTriggered && recordView != null) {
+            recordView.onActionCancel(this);
+        }
+        longPressTriggered = false;
+        stopScale();
+        super.onDetachedFromWindow();
     }
 
     @Override

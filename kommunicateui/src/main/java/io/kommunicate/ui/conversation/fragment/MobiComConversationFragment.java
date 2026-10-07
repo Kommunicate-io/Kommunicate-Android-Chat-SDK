@@ -3913,6 +3913,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         super.onPause();
         populateAutoSuggestion(false, null, null);
 
+        if (speechToText != null) {
+            speechToText.release();
+        }
+
         EventManager.getInstance().unregisterUIListener(TAG);
 
         if (isRecording) {
@@ -4797,6 +4801,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void onDestroyView() {
         startVoiceModeAfterPermissionGrant = false;
         startSpeechToTextAfterPermissionGrant = false;
+        if (speechToText != null) {
+            speechToText.release();
+            speechToText = null;
+        }
         if (voiceModeController != null) {
             voiceModeController.release();
             voiceModeController = null;

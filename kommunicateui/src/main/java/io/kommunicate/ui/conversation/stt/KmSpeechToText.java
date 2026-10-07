@@ -43,6 +43,7 @@ public class KmSpeechToText implements RecognitionListener {
     public void startListening() {
         languageCode =  KmSpeechSetting.getSpeechToTextLanguageCode(context, customizationSettings);
         if (PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+            releaseRecognizer();
             isStopped = false;
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
@@ -71,9 +72,23 @@ public class KmSpeechToText implements RecognitionListener {
 
     public void stopListening() {
         isStopped = true;
-        if (speechRecognizer != null) {
-            speechRecognizer.stopListening();
+        releaseRecognizer();
+    }
+
+    public void release() {
+        isStopped = true;
+        releaseRecognizer();
+    }
+
+    private void releaseRecognizer() {
+        if (speechRecognizer == null) {
+            return;
         }
+        SpeechRecognizer recognizer = speechRecognizer;
+        speechRecognizer = null;
+        recognizer.setRecognitionListener(null);
+        recognizer.cancel();
+        recognizer.destroy();
     }
 
     @Override
@@ -109,6 +124,7 @@ public class KmSpeechToText implements RecognitionListener {
         if (listener != null) {
             listener.onSpeechEnd(error);
         }
+        releaseRecognizer();
         //Utils.printLog(context, TAG, "Error : " + error);
     }
 
@@ -119,6 +135,7 @@ public class KmSpeechToText implements RecognitionListener {
             listener.onSpeechToTextResult(matches != null ? matches.get(0) : "");
             listener.onSpeechEnd(-1);
         }
+        releaseRecognizer();
         //Utils.printLog(context, TAG, "Received result : " + results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION));
     }
 

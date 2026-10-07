@@ -1,0 +1,19 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/km_voice_microphone_ring" />
+        </shape>
+    </item>
+    <item
+        android:bottom="7dp"
+        android:left="7dp"
+        android:right="7dp"
+        android:top="7dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/km_voice_microphone" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/km_white_color" />
+        </shape>
+    </item>
+</layer-list>

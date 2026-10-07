@@ -132,6 +132,11 @@ public class KmConversationHelper {
     }
 
     private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, String preFilledMessage, KmCallback callback) {
+        openParticularConversation(context, skipConversationList, conversationId, preFilledMessage,
+                false, 0L, callback);
+    }
+
+    private static void openParticularConversation(Context context, boolean skipConversationList, Integer conversationId, String preFilledMessage, boolean startVoiceMode, long voiceModeLaunchTime, KmCallback callback) {
         TaskListener<Channel> callbackListener = new TaskListener<Channel>() {
             @Override
             public void onSuccess(Channel channel) {
@@ -141,6 +146,10 @@ public class KmConversationHelper {
                     intent.putExtra(KmConstants.TAKE_ORDER, skipConversationList);
                     if (!TextUtils.isEmpty(preFilledMessage)) {
                         intent.putExtra(KmConstants.KM_PREFILLED_MESSAGE, preFilledMessage);
+                    }
+                    if (startVoiceMode) {
+                        intent.putExtra(KmConstants.KM_START_VOICE_MODE, true);
+                        intent.putExtra(KmConstants.KM_VOICE_MODE_LAUNCH_TIME, voiceModeLaunchTime);
                     }
                     context.startActivity(intent);
                     if (callback != null) {
@@ -458,7 +467,12 @@ public class KmConversationHelper {
 
     //meant to be used from the conversation screen start new conversation button
     public static void launchConversationIfLoggedIn(Context context, KmCallback callback) {
+        launchConversationIfLoggedIn(context, false, callback);
+    }
+
+    public static void launchConversationIfLoggedIn(Context context, boolean startVoiceMode, KmCallback callback) {
         if (Kommunicate.isLoggedIn(context)) {
+            long voiceModeLaunchTime = startVoiceMode ? System.currentTimeMillis() : 0L;
             KmConversationBuilder conversationBuilder = new KmConversationBuilder(context);
             KmDefaultSettingPreference defaultSettingPreference = KmDefaultSettingPreference.getInstance();
             if (defaultSettingPreference.getDefaultBotIds() != null) {
@@ -480,7 +494,8 @@ public class KmConversationHelper {
             conversationBuilder.setInAppNotificationEnable(KmAppSettingPreferences.isInAppNotificationEnable());
             try {
                 startConversation(true, conversationBuilder,
-                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null, callback));
+                        getStartConversationHandler(conversationBuilder.isSkipConversationList(), true, null, null,
+                                startVoiceMode, voiceModeLaunchTime, callback));
             } catch (KmException e) {
                 if (callback != null) {
                     callback.onFailure(e);
@@ -637,6 +652,11 @@ public class KmConversationHelper {
     }
 
     private static KmStartConversationHandler getStartConversationHandler(final boolean isSkipConversationList, final boolean launchConversation, final String preFilledMessage, final ResultReceiver resultReceiver, final KmCallback callback) {
+        return getStartConversationHandler(isSkipConversationList, launchConversation, preFilledMessage,
+                resultReceiver, false, 0L, callback);
+    }
+
+    private static KmStartConversationHandler getStartConversationHandler(final boolean isSkipConversationList, final boolean launchConversation, final String preFilledMessage, final ResultReceiver resultReceiver, final boolean startVoiceMode, final long voiceModeLaunchTime, final KmCallback callback) {
         return new KmStartConversationHandler() {
             @Override
             public void onSuccess(Channel channel, Context context) {
@@ -653,7 +673,8 @@ public class KmConversationHelper {
                         SettingsSharedPreference.getInstance(context).hideChatListOnNotification();
                     }
                     if (callback != null && launchConversation) {
-                        openParticularConversation(context, isSkipConversationList, channel.getKey(), preFilledMessage, callback);
+                        openParticularConversation(context, isSkipConversationList, channel.getKey(), preFilledMessage,
+                                startVoiceMode, voiceModeLaunchTime, callback);
                         return;
                     }
                 } catch (Exception e) {

@@ -41,7 +41,7 @@ public class KmThemeHelper implements KmCallback {
     private Map<String, Boolean> hidePostCTA = new HashMap<>();
 
     public static KmThemeHelper getInstance(Context context, CustomizationSettings customizationSettings) {
-        if (kmThemeHelper == null) {
+        if (kmThemeHelper == null || kmThemeHelper.customizationSettings != customizationSettings) {
             kmThemeHelper = new KmThemeHelper(context, customizationSettings);
         }
         return kmThemeHelper;

@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.util.Base64
 import android.util.Log
 import annotations.CleanUpRequired
-import io.kommunicate.devkit.KommunicateSettings
+import io.kommunicate.devkit.api.MobiComKitClientService
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference
 import io.kommunicate.commons.AppContextService
 import io.kommunicate.commons.json.GsonUtils
@@ -38,6 +38,7 @@ object KmAppSettingPreferences {
     private const val RATING_BASE = "RATING_BASE"
     private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
     private const val SAS_TOKEN = "SAS_TOKEN"
+    private const val VOICE_CHAT = "VOICE_CHAT"
 
     @JvmStatic
     @CleanUpRequired(
@@ -99,6 +100,13 @@ object KmAppSettingPreferences {
         get() = preferences.getBoolean(KM_COLLECT_FEEDBACK, false)
         private set(isEnable) {
             preferences.edit().putBoolean(KM_COLLECT_FEEDBACK, isEnable).apply()
+        }
+
+    @JvmStatic
+    var isVoiceChatEnabled: Boolean
+        get() = preferences.getBoolean(VOICE_CHAT, false)
+        private set(isEnabled) {
+            preferences.edit().putBoolean(VOICE_CHAT, isEnabled).apply()
         }
 
     @JvmStatic
@@ -219,17 +227,17 @@ object KmAppSettingPreferences {
         reason = "Not used anywhere"
     )
     fun fetchAppSettingAsync(context: Context) {
+        fetchAppSettingAsync(context, null)
+    }
+
+    @JvmStatic
+    fun fetchAppSettingAsync(context: Context, callback: KmCallback?) {
         AppSettingUseCase.executeWithExecutor(
             context,
-            KommunicateSettings.getInstance(context).applicationKey,
+            MobiComKitClientService.getApplicationKey(context),
             true,
-            object : KmCallback {
-                override fun onSuccess(message: Any) {
-                }
-
-                override fun onFailure(error: Any) {
-                }
-            })
+            callback
+        )
     }
 
     @JvmStatic
@@ -294,6 +302,7 @@ object KmAppSettingPreferences {
             ratingBase = it.csatRatingBase
             
             sasToken = it.sasT
+            isVoiceChatEnabled = it.isVoiceChat
         }
         appSetting.response?.let {
             isCollectFeedback = it.isCollectFeedback

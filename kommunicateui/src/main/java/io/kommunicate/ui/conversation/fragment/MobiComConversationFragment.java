@@ -540,13 +540,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             startVoiceModeOnOpen = arguments.getBoolean(KM_START_VOICE_MODE, startVoiceModeOnOpen);
             voiceModeLaunchTime = arguments.getLong(KM_VOICE_MODE_LAUNCH_TIME, voiceModeLaunchTime);
         }
-        isSpeechToTextEnabled = customizationSettings.getSpeechToText().isEnabled()
-                || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled()
-                || KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled()
-                || KmAppSettingPreferences.isSpeechToTextEnabled();
-        isTextToSpeechEnabled = customizationSettings.getTextToSpeech().isEnabled()
-                || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled()
-                || KmAppSettingPreferences.isTextToSpeechEnabled();
+        isSpeechToTextEnabled = isSpeechToTextAvailable();
+        isTextToSpeechEnabled = isTextToSpeechAvailable();
         botMessageDelayInterval = KmAppSettingPreferences.getInstance().getKmBotMessageDelayInterval();
         botTypingDelayManager = new KmBotTypingDelayManager(getContext(), this);
 
@@ -1434,13 +1429,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     private void updateSpeechSettingsAvailability() {
-        boolean speechToTextEnabled = customizationSettings.getSpeechToText().isEnabled()
-                || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled()
-                || KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled()
-                || KmAppSettingPreferences.isSpeechToTextEnabled();
-        boolean textToSpeechEnabled = customizationSettings.getTextToSpeech().isEnabled()
-                || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled()
-                || KmAppSettingPreferences.isTextToSpeechEnabled();
+        boolean speechToTextEnabled = isSpeechToTextAvailable();
+        boolean textToSpeechEnabled = isTextToSpeechAvailable();
 
         isSpeechToTextEnabled = speechToTextEnabled;
         if (recordView != null) {
@@ -1472,6 +1462,19 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         boolean hasTypedMessage = messageEditText != null
                 && !TextUtils.isEmpty(messageEditText.getText().toString().trim());
         handleSendAndRecordButtonView(hasTypedMessage);
+    }
+
+    private boolean isSpeechToTextAvailable() {
+        return customizationSettings.getSpeechToText().isEnabled()
+                || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled()
+                || KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled()
+                || KmAppSettingPreferences.isSpeechToTextEnabled();
+    }
+
+    private boolean isTextToSpeechAvailable() {
+        return customizationSettings.getTextToSpeech().isEnabled()
+                || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled()
+                || KmAppSettingPreferences.isTextToSpeechEnabled();
     }
 
     private void updateVoiceModeAvailabilityUi() {

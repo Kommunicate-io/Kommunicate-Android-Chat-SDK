@@ -659,7 +659,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         attachmentIconLayout = (LinearLayout) list.findViewById(R.id.attachment_icon_layout);
         recyclerView = (RecyclerView) list.findViewById(R.id.messageList);
         linearLayoutManager = new KmLinearLayoutManager(getActivity());
-        linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerViewPositionHelper = new RecyclerViewPositionHelper(recyclerView, linearLayoutManager);
@@ -5018,14 +5018,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
             if (isNewConversation && assignee != null && assignee.getRoleType().equals(User.RoleType.BOT.getValue()) && botMessageDelayInterval > 0) {
                 KmBotTypingDelayManager kmBotTypingDelayManager = new KmBotTypingDelayManager(getContext(), this);
+                boolean showTypingMessage = false;
                 handleTypingMessage(false);
                 for (Message message : nextMessageList) {
                     if (initial && !messageList.contains(message)) {
                         if (TextUtils.isEmpty(message.getKeyString())) {
                             messageList.add(0, message);
                             selfDestructMessage(message);
-                            setupConversationScreen();
-                            handleTypingMessage(true);
+                            showTypingMessage = true;
                         } else if (botDelayMessageList == null || !botDelayMessageList.contains(message)) {
                             if (botDelayMessageList == null) {
                                 botDelayMessageList = new HashSet<>();
@@ -5034,6 +5034,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             kmBotTypingDelayManager.addMessage(message);
                         }
                     }
+                }
+                setupConversationScreen();
+                if (showTypingMessage) {
+                    handleTypingMessage(true);
                 }
             } else {
                 for (Message message : nextMessageList) {

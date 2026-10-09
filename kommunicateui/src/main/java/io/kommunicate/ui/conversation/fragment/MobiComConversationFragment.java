@@ -6059,9 +6059,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 recordButton.stopScale();
             }
             toggleRecordViews(true);
-            if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
-                handleSendAndRecordButtonView(true);
-            }
+            boolean hasTypedMessage = messageEditText != null
+                    && !TextUtils.isEmpty(messageEditText.getText().toString().trim());
+            handleSendAndRecordButtonView(hasTypedMessage);
         } else {
             if (!PermissionsUtils.isAudioRecordingPermissionGranted(getContext())) {
                 startSpeechToTextAfterPermissionGrant = true;

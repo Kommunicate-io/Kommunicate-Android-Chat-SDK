@@ -103,10 +103,7 @@ public class KmSpeechToText implements RecognitionListener {
 
     @Override
     public void onRmsChanged(float rmsdB) {
-        //Utils.printLog(context, TAG, "RMS changed : " + rmsdB);
-        if (rmsdB >= 1.0f) {
-            recordButton.startScaleWithValue(1.0f + rmsdB / 15);
-        }
+        // Keep the microphone at its default size during speech-to-text.
     }
 
     @Override

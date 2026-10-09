@@ -404,7 +404,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected RichMessageActionProcessor richMessageActionProcessor;
     protected boolean isTextToSpeechEnabled;
     protected boolean isSpeechToTextEnabled;
-    protected boolean isSendOnSpeechEnd;
+    private boolean isAudioRecordingGesture;
     protected KmTextToSpeech textToSpeech;
     protected KmSpeechToText speechToText;
     protected KmVoiceModeController voiceModeController;
@@ -412,16 +412,21 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected ImageButton voiceModeButton;
     private Message voiceModeStatusMessage;
     private boolean startVoiceModeAfterPermissionGrant;
+    private boolean startSpeechToTextAfterPermissionGrant;
     private boolean startVoiceModeOnOpen;
     private long voiceModeLaunchTime;
     private final ActivityResultLauncher<String> voicePermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             granted -> {
-                boolean shouldStart = startVoiceModeAfterPermissionGrant;
+                boolean shouldStartVoiceMode = startVoiceModeAfterPermissionGrant;
+                boolean shouldStartSpeechToText = startSpeechToTextAfterPermissionGrant;
                 startVoiceModeAfterPermissionGrant = false;
-                if (granted && shouldStart) {
+                startSpeechToTextAfterPermissionGrant = false;
+                if (granted && shouldStartVoiceMode) {
                     startVoiceMode();
-                } else if (shouldStart) {
+                } else if (granted && shouldStartSpeechToText) {
+                    startSpeechToTextListening();
+                } else if (shouldStartVoiceMode) {
                     clearVoiceModeLaunch();
                     onVoiceModeError(new SecurityException("Audio recording permission is required"));
                 }
@@ -535,9 +540,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             startVoiceModeOnOpen = arguments.getBoolean(KM_START_VOICE_MODE, startVoiceModeOnOpen);
             voiceModeLaunchTime = arguments.getLong(KM_VOICE_MODE_LAUNCH_TIME, voiceModeLaunchTime);
         }
-        isSpeechToTextEnabled = customizationSettings.getSpeechToText().isEnabled() || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled() || KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled();
-        isTextToSpeechEnabled = customizationSettings.getTextToSpeech().isEnabled() || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled();
-        isSendOnSpeechEnd = customizationSettings.getSpeechToText().isSendMessageOnSpeechEnd() || KmPrefSettings.getInstance(getContext()).isSendMessageOnSpeechEnd();
+        isSpeechToTextEnabled = isSpeechToTextAvailable();
+        isTextToSpeechEnabled = isTextToSpeechAvailable();
         botMessageDelayInterval = KmAppSettingPreferences.getInstance().getKmBotMessageDelayInterval();
         botTypingDelayManager = new KmBotTypingDelayManager(getContext(), this);
 
@@ -802,7 +806,6 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
         if (isSpeechToTextEnabled) {
             recordView.enableSpeechToText(true);
-            recordView.setLessThanSecondAllowed(true);
             speechToText = new KmSpeechToText(getActivity(), recordButton, this, customizationSettings);
         }
 
@@ -1409,6 +1412,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 !getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
                             return;
                         }
+                        updateSpeechSettingsAvailability();
                         updateVoiceModeAvailabilityUi();
                         maybeStartVoiceModeOnOpen();
                     }
@@ -1422,6 +1426,55 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     }
                 }
         );
+    }
+
+    private void updateSpeechSettingsAvailability() {
+        boolean speechToTextEnabled = isSpeechToTextAvailable();
+        boolean textToSpeechEnabled = isTextToSpeechAvailable();
+
+        isSpeechToTextEnabled = speechToTextEnabled;
+        if (recordView != null) {
+            recordView.enableSpeechToText(speechToTextEnabled);
+        }
+        if (speechToTextEnabled && speechToText == null && getActivity() != null && recordButton != null) {
+            speechToText = new KmSpeechToText(getActivity(), recordButton, this, customizationSettings);
+        } else if (!speechToTextEnabled && speechToText != null) {
+            speechToText.stopListening();
+            speechToText = null;
+        }
+
+        if (textToSpeechEnabled && textToSpeech == null) {
+            textToSpeech = new KmTextToSpeech(
+                    getContext(),
+                    KmSpeechSetting.getTextToSpeechLanguageCode(getContext(), customizationSettings)
+            );
+            textToSpeech.initialize();
+        } else if (!textToSpeechEnabled && textToSpeech != null) {
+            textToSpeech.destroy();
+            textToSpeech = null;
+        }
+        isTextToSpeechEnabled = textToSpeechEnabled;
+
+        isRecordOptionEnabled = (customizationSettings.getAttachmentOptions() != null
+                && customizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION) != null
+                && customizationSettings.getAttachmentOptions().get(AUDIO_RECORD_OPTION))
+                || speechToTextEnabled;
+        boolean hasTypedMessage = messageEditText != null
+                && !TextUtils.isEmpty(messageEditText.getText().toString().trim());
+        handleSendAndRecordButtonView(hasTypedMessage);
+    }
+
+    private boolean isSpeechToTextAvailable() {
+        return customizationSettings.getSpeechToText().isEnabled()
+                || KmPrefSettings.getInstance(getContext()).isSpeechToTextEnabled()
+                || KmSpeechToTextSetting.getInstance(getContext()).isMultipleSpeechToTextEnabled()
+                || KmAppSettingPreferences.isSpeechToTextEnabled();
+    }
+
+    private boolean isTextToSpeechAvailable() {
+        return customizationSettings.getTextToSpeech().isEnabled()
+                || KmPrefSettings.getInstance(getContext()).isTextToSpeechEnabled()
+                || KmAppSettingPreferences.isTextToSpeechEnabled();
     }
 
     private void updateVoiceModeAvailabilityUi() {
@@ -3116,7 +3169,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                             }
                             messageList.get(index).setDelivered(true);
                             messageList.get(index).setStatus(message.getStatus());
-                            showBotTypingIndicator();
+                            showBotTypingIndicator(message);
                             View view = recyclerView.getChildAt(index -
                                     linearLayoutManager.findFirstVisibleItemPosition());
                             if (view != null && !messageList.get(index).isCustom()) {
@@ -3151,7 +3204,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
     }
 
-    private void showBotTypingIndicator() {
+    private void showBotTypingIndicator(Message message) {
+        short contentType = message.getContentType();
+        if (contentType != Message.ContentType.DEFAULT.getValue()
+                && contentType != Message.ContentType.TEXT_HTML.getValue()
+                && contentType != Message.ContentType.TEXT_URL.getValue()
+                && contentType != Message.ContentType.PRICE.getValue()) {
+            return;
+        }
+
         int botIntervalDelay = KmAppSettingPreferences.INSTANCE.getBotTypingIndicatorInterval();
         if (botIntervalDelay == 0) {
             return;
@@ -3854,6 +3915,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void onPause() {
         super.onPause();
         populateAutoSuggestion(false, null, null);
+
+        if (speechToText != null) {
+            speechToText.release();
+        }
 
         EventManager.getInstance().unregisterUIListener(TAG);
 
@@ -4738,6 +4803,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onDestroyView() {
         startVoiceModeAfterPermissionGrant = false;
+        startSpeechToTextAfterPermissionGrant = false;
+        if (speechToText != null) {
+            speechToText.release();
+            speechToText = null;
+        }
         if (voiceModeController != null) {
             voiceModeController.release();
             voiceModeController = null;
@@ -5969,32 +6039,54 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     @Override
     public void onRecordStart() {
         vibrate();
-        if (speechToText != null) {
-            if (isRecording) {
-                speechToText.stopListening();
-                if (recordButton != null) {
-                    recordButton.stopScale();
-                }
-                toggleRecordViews(true);
-
-                if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
-                    handleSendAndRecordButtonView(true);
-                }
-            } else {
-                toggleRecordViews(false);
-                speechToText.startListening();
-            }
-        } else {
-            if (kmAudioRecordManager != null) {
-                kmAudioRecordManager.recordAudio();
-            }
+        isAudioRecordingGesture = true;
+        if (kmAudioRecordManager != null) {
+            kmAudioRecordManager.recordAudio();
         }
         toggleRecordViews(false);
     }
 
     @Override
+    public void onSpeechToTextStart() {
+        vibrate();
+        isAudioRecordingGesture = false;
+        if (speechToText == null || getContext() == null) {
+            return;
+        }
+        if (isRecording) {
+            speechToText.stopListening();
+            if (recordButton != null) {
+                recordButton.stopScale();
+            }
+            toggleRecordViews(true);
+            boolean hasTypedMessage = messageEditText != null
+                    && !TextUtils.isEmpty(messageEditText.getText().toString().trim());
+            handleSendAndRecordButtonView(hasTypedMessage);
+        } else {
+            if (!PermissionsUtils.isAudioRecordingPermissionGranted(getContext())) {
+                startSpeechToTextAfterPermissionGrant = true;
+                voicePermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
+                return;
+            }
+            startSpeechToTextListening();
+        }
+    }
+
+    private void startSpeechToTextListening() {
+        if (speechToText == null || getContext() == null) {
+            return;
+        }
+        toggleRecordViews(false);
+        if (voiceModeButton != null) {
+            voiceModeButton.setVisibility(GONE);
+        }
+        speechToText.startListening();
+    }
+
+    @Override
     public void onRecordCancel() {
         isRecording = false;
+        isAudioRecordingGesture = false;
         if (recordButton != null && getContext() != null) {
             KmUtils.setBackground(getContext(), recordButton, R.drawable.km_audio_button_background);
         }
@@ -6009,6 +6101,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (kmAudioRecordManager != null) {
             kmAudioRecordManager.sendAudio();
         }
+        isAudioRecordingGesture = false;
     }
 
     @Override
@@ -6020,6 +6113,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (kmAudioRecordManager != null) {
             kmAudioRecordManager.cancelAudio();
         }
+        isAudioRecordingGesture = false;
     }
 
     @Override
@@ -6027,11 +6121,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (messageEditText != null && !TextUtils.isEmpty(text)) {
             messageEditText.setText(text);
             messageEditText.setSelection(text.length());
-            handleSendAndRecordButtonView(!isSendOnSpeechEnd);
-
-            if (isSendOnSpeechEnd && sendButton != null) {
-                sendButton.callOnClick();
-            }
+            handleSendAndRecordButtonView(true);
         }
     }
 
@@ -6040,13 +6130,26 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         if (messageEditText != null && !TextUtils.isEmpty(text)) {
             messageEditText.setText(text);
             messageEditText.setSelection(text.length());
-            handleSendAndRecordButtonView(speechToText.isStopped());
+            if (sendButton != null) {
+                sendButton.setVisibility(GONE);
+            }
+            if (recordButton != null) {
+                recordButton.setVisibility(VISIBLE);
+            }
+            if (voiceModeButton != null) {
+                voiceModeButton.setVisibility(GONE);
+            }
         }
     }
 
     @Override
     public void onSpeechEnd(int errorCode) {
         toggleRecordViews(true);
+        if (messageEditText != null) {
+            handleSendAndRecordButtonView(
+                    !TextUtils.isEmpty(messageEditText.getText().toString().trim())
+            );
+        }
     }
 
 
@@ -6057,7 +6160,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         if (messageEditText != null) {
-            messageEditText.setVisibility((stopRecording || isSpeechToTextEnabled) ? View.VISIBLE : View.GONE);
+            messageEditText.setVisibility(
+                    stopRecording || (isSpeechToTextEnabled && !isAudioRecordingGesture)
+                            ? View.VISIBLE : View.GONE
+            );
             if (stopRecording) {
                 messageEditText.requestFocus();
             }

@@ -31,6 +31,7 @@ public class KmSpeechToText implements RecognitionListener {
     private String languageCode;
     private CustomizationSettings customizationSettings;
     private static final String BEGINNING_OF_SPEECH = "Beginning of speech";
+    private static final long SPEECH_SILENCE_TIMEOUT_MILLIS = 2000L;
 
     public KmSpeechToText(Activity context, KmRecordButton recordButton, KmTextListener listener, CustomizationSettings customizationSettings) {
         this.context = context;
@@ -42,6 +43,7 @@ public class KmSpeechToText implements RecognitionListener {
     public void startListening() {
         languageCode =  KmSpeechSetting.getSpeechToTextLanguageCode(context, customizationSettings);
         if (PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+            releaseRecognizer();
             isStopped = false;
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
@@ -51,6 +53,10 @@ public class KmSpeechToText implements RecognitionListener {
             intent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
             intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5);
             intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.getPackageName());
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
+                    SPEECH_SILENCE_TIMEOUT_MILLIS);
+            intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
+                    SPEECH_SILENCE_TIMEOUT_MILLIS);
 
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
             speechRecognizer.setRecognitionListener(this);
@@ -66,9 +72,23 @@ public class KmSpeechToText implements RecognitionListener {
 
     public void stopListening() {
         isStopped = true;
-        if (speechRecognizer != null) {
-            speechRecognizer.stopListening();
+        releaseRecognizer();
+    }
+
+    public void release() {
+        isStopped = true;
+        releaseRecognizer();
+    }
+
+    private void releaseRecognizer() {
+        if (speechRecognizer == null) {
+            return;
         }
+        SpeechRecognizer recognizer = speechRecognizer;
+        speechRecognizer = null;
+        recognizer.setRecognitionListener(null);
+        recognizer.cancel();
+        recognizer.destroy();
     }
 
     @Override
@@ -83,10 +103,7 @@ public class KmSpeechToText implements RecognitionListener {
 
     @Override
     public void onRmsChanged(float rmsdB) {
-        //Utils.printLog(context, TAG, "RMS changed : " + rmsdB);
-        if (rmsdB >= 1.0f) {
-            recordButton.startScaleWithValue(1.0f + rmsdB / 15);
-        }
+        // Keep the microphone at its default size during speech-to-text.
     }
 
     @Override
@@ -96,9 +113,6 @@ public class KmSpeechToText implements RecognitionListener {
 
     @Override
     public void onEndOfSpeech() {
-        if (listener != null) {
-            listener.onSpeechEnd(-1);
-        }
         Utils.printLog(context, TAG, "End of speech");
     }
 
@@ -107,6 +121,7 @@ public class KmSpeechToText implements RecognitionListener {
         if (listener != null) {
             listener.onSpeechEnd(error);
         }
+        releaseRecognizer();
         //Utils.printLog(context, TAG, "Error : " + error);
     }
 
@@ -115,7 +130,9 @@ public class KmSpeechToText implements RecognitionListener {
         ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         if (listener != null && !isStopped) {
             listener.onSpeechToTextResult(matches != null ? matches.get(0) : "");
+            listener.onSpeechEnd(-1);
         }
+        releaseRecognizer();
         //Utils.printLog(context, TAG, "Received result : " + results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION));
     }
 

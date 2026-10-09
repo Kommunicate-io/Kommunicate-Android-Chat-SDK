@@ -39,6 +39,8 @@ object KmAppSettingPreferences {
     private const val LAST_FETCH_TIME = "LAST_FETCH_TIME"
     private const val SAS_TOKEN = "SAS_TOKEN"
     private const val VOICE_CHAT = "VOICE_CHAT"
+    private const val SPEECH_TO_TEXT = "SPEECH_TO_TEXT"
+    private const val TEXT_TO_SPEECH = "TEXT_TO_SPEECH"
 
     @JvmStatic
     @CleanUpRequired(
@@ -107,6 +109,20 @@ object KmAppSettingPreferences {
         get() = preferences.getBoolean(VOICE_CHAT, false)
         private set(isEnabled) {
             preferences.edit().putBoolean(VOICE_CHAT, isEnabled).apply()
+        }
+
+    @JvmStatic
+    var isSpeechToTextEnabled: Boolean
+        get() = preferences.getBoolean(SPEECH_TO_TEXT, false)
+        private set(isEnabled) {
+            preferences.edit().putBoolean(SPEECH_TO_TEXT, isEnabled).apply()
+        }
+
+    @JvmStatic
+    var isTextToSpeechEnabled: Boolean
+        get() = preferences.getBoolean(TEXT_TO_SPEECH, false)
+        private set(isEnabled) {
+            preferences.edit().putBoolean(TEXT_TO_SPEECH, isEnabled).apply()
         }
 
     @JvmStatic
@@ -303,6 +319,8 @@ object KmAppSettingPreferences {
             
             sasToken = it.sasT
             isVoiceChatEnabled = it.isVoiceChat
+            isSpeechToTextEnabled = it.isSpeechToText
+            isTextToSpeechEnabled = it.isTextToSpeech
         }
         appSetting.response?.let {
             isCollectFeedback = it.isCollectFeedback

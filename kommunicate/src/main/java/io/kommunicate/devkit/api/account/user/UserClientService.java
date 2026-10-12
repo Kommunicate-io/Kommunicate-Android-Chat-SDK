@@ -171,9 +171,20 @@ public class UserClientService extends MobiComKitClientService {
 
     public ApiResponse logout(boolean fromLogin) {
         Utils.printLog(context, TAG, "Al Logout call !!");
-        ApiResponse apiResponse = userLogoutResponse();
         MobiComUserPreference mobiComUserPreference = MobiComUserPreference.getInstance(context);
+        String applicationId = getApplicationKey(context);
+        String userId = mobiComUserPreference.getUserId();
         final String deviceKeyString = mobiComUserPreference.getDeviceKeyString();
+
+        if (TextUtils.isEmpty(applicationId) || TextUtils.isEmpty(userId) || TextUtils.isEmpty(deviceKeyString)) {
+            throw new IllegalStateException("Cannot logout: application ID, user ID, and device key are required");
+        }
+
+        ApiResponse apiResponse = userLogoutResponse();
+        if (apiResponse == null || !apiResponse.isSuccess()) {
+            throw new IllegalStateException("Logout request failed");
+        }
+
         final String userKeyString = mobiComUserPreference.getSuUserKeyString();
         String url = mobiComUserPreference.getUrl();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -205,7 +216,7 @@ public class UserClientService extends MobiComKitClientService {
                 apiResponse = (ApiResponse) GsonUtils.getObjectFromJson(response, ApiResponse.class);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Logout request failed", e);
         }
         return apiResponse;
     }

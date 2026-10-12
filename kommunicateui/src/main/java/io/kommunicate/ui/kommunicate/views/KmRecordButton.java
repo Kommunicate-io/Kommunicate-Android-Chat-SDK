@@ -3,6 +3,8 @@ package io.kommunicate.ui.kommunicate.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -10,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import io.kommunicate.ui.R;
@@ -20,6 +23,18 @@ public class KmRecordButton extends AppCompatImageView implements View.OnTouchLi
     private KmRecordView recordView;
     private boolean listenForRecord = true;
     private OnRecordClickListener onRecordClickListener;
+    private final Handler gestureHandler = new Handler(Looper.getMainLooper());
+    private boolean longPressTriggered;
+    private final Runnable longPressRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (recordView == null) {
+                return;
+            }
+            longPressTriggered = true;
+            recordView.onActionDown(KmRecordButton.this);
+        }
+    };
 
 
     public void setRecordView(KmRecordView recordView) {
@@ -93,6 +108,9 @@ public class KmRecordButton extends AppCompatImageView implements View.OnTouchLi
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (isListenForRecord()) {
+            if (recordView != null && recordView.isSpeechToTextEnabled()) {
+                return handleSpeechToTextGesture(event);
+            }
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     recordView.onActionDown((KmRecordButton) v);
@@ -108,6 +126,57 @@ public class KmRecordButton extends AppCompatImageView implements View.OnTouchLi
             }
         }
         return isListenForRecord();
+    }
+
+    private boolean handleSpeechToTextGesture(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                longPressTriggered = false;
+                gestureHandler.postDelayed(longPressRunnable, ViewConfiguration.getLongPressTimeout());
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (longPressTriggered) {
+                    recordView.onActionMove(this, event);
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                gestureHandler.removeCallbacks(longPressRunnable);
+                if (longPressTriggered) {
+                    recordView.onActionUp(this);
+                } else {
+                    performClick();
+                    recordView.onSpeechToTextTap();
+                }
+                longPressTriggered = false;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                gestureHandler.removeCallbacks(longPressRunnable);
+                if (longPressTriggered) {
+                    recordView.onActionCancel(this);
+                }
+                longPressTriggered = false;
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        gestureHandler.removeCallbacks(longPressRunnable);
+        if (longPressTriggered && recordView != null) {
+            recordView.onActionCancel(this);
+        }
+        longPressTriggered = false;
+        stopScale();
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    public boolean performClick() {
+        super.performClick();
+        return true;
     }
 
     public void startScale() {

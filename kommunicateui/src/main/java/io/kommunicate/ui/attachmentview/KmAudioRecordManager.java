@@ -1,8 +1,13 @@
 package io.kommunicate.ui.attachmentview;
 
+import android.content.Context;
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Build;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -37,6 +42,10 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
     FragmentActivity context;
     ConversationUIService conversationUIService;
     private AudioRecord audioRecorder;
+    private final AudioManager audioManager;
+    private final AudioAttributes audioAttributes;
+    private final AudioManager.OnAudioFocusChangeListener audioFocusChangeListener = focusChange -> { };
+    private AudioFocusRequest audioFocusRequest;
     private String outputFile = null;
     private boolean isRecording;
     byte[] audioData = null;
@@ -52,6 +61,13 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
     public KmAudioRecordManager(FragmentActivity context) {
         this.conversationUIService = new ConversationUIService(context);
         this.context = context;
+        this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        this.audioAttributes = new AudioAttributes.Builder()
+                .setUsage(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                        ? AudioAttributes.USAGE_ASSISTANT
+                        : AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build();
     }
 
     public void setOutputFile(String outputFile) {
@@ -74,6 +90,7 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
             }
 
             if (PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+                requestAudioFocus();
                 prepareDefaultFileData();
                 audioRecorder = new AudioRecord(AUDIO_SOURCE,
                         SAMPLING_RATE, CHANNEL_IN_CONFIG,
@@ -89,6 +106,7 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
                 PermissionsUtils.requestPermissions(context, PermissionsUtils.PERMISSIONS_RECORD_AUDIO, PermissionsUtils.REQUEST_AUDIO_RECORD);
             }
         } catch (Exception e) {
+            abandonAudioFocus();
             e.printStackTrace();
         }
     }
@@ -189,7 +207,43 @@ public class KmAudioRecordManager implements MediaRecorder.OnInfoListener, Media
                 audioRecorder.release();
                 audioRecorder = null;
                 isRecording = false;
+                abandonAudioFocus();
             }
+        }
+    }
+
+    private void requestAudioFocus() {
+        if (audioManager == null) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            audioFocusRequest = new AudioFocusRequest.Builder(
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
+            )
+                    .setAudioAttributes(audioAttributes)
+                    .setOnAudioFocusChangeListener(audioFocusChangeListener)
+                    .build();
+            audioManager.requestAudioFocus(audioFocusRequest);
+        } else {
+            audioManager.requestAudioFocus(
+                    audioFocusChangeListener,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
+            );
+        }
+    }
+
+    private void abandonAudioFocus() {
+        if (audioManager == null) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (audioFocusRequest != null) {
+                audioManager.abandonAudioFocusRequest(audioFocusRequest);
+                audioFocusRequest = null;
+            }
+        } else {
+            audioManager.abandonAudioFocus(audioFocusChangeListener);
         }
     }
 

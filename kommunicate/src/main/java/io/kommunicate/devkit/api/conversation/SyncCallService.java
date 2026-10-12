@@ -109,9 +109,19 @@ public class SyncCallService {
             Message existingMessage = messageDatabaseService.getMessage(key);
 
             //for Upload Overriding. If existing message is attachment and new message is a Rich message, then replace the attachment message
-            if(existingMessage.isUploadRequired() && message.isRichMessage()) {
+            boolean richMessageReplaced = false;
+            if (existingMessage != null && message != null && existingMessage.isUploadRequired() && message.isRichMessage()) {
                 messageDatabaseService.replaceExistingMessage(message);
-                BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
+                existingMessage = message;
+                richMessageReplaced = true;
+            }
+            if (existingMessage != null
+                    && (richMessageReplaced || (message != null && !message.isTypeOutbox()))) {
+                BroadcastService.sendMessageUpdateBroadcast(
+                        context,
+                        BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(),
+                        existingMessage
+                );
             }
         } else {
             if (Utils.isDeviceInIdleState(context)) {

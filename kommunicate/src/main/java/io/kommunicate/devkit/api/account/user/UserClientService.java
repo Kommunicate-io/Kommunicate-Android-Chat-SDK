@@ -176,13 +176,16 @@ public class UserClientService extends MobiComKitClientService {
         String userId = mobiComUserPreference.getUserId();
         final String deviceKeyString = mobiComUserPreference.getDeviceKeyString();
 
-        if (TextUtils.isEmpty(applicationId) || TextUtils.isEmpty(userId) || TextUtils.isEmpty(deviceKeyString)) {
-            throw new IllegalStateException("Cannot logout: application ID, user ID, and device key are required");
-        }
+        ApiResponse apiResponse = null;
+        boolean hasRequiredData = !TextUtils.isEmpty(applicationId)
+                && !TextUtils.isEmpty(userId)
+                && !TextUtils.isEmpty(deviceKeyString);
 
-        ApiResponse apiResponse = userLogoutResponse();
-        if (apiResponse == null || !apiResponse.isSuccess()) {
-            throw new IllegalStateException("Logout request failed");
+        if (hasRequiredData) {
+            apiResponse = userLogoutResponse();
+            if (apiResponse == null || !apiResponse.isSuccess()) {
+                throw new IllegalStateException("Logout request failed");
+            }
         }
 
         final String userKeyString = mobiComUserPreference.getSuUserKeyString();

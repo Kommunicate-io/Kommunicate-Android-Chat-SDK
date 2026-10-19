@@ -28,7 +28,6 @@ import io.kommunicate.ui.kommunicate.animators.KmAnimationHelper;
 import io.kommunicate.ui.kommunicate.animators.OnBasketAnimationEndListener;
 import io.kommunicate.ui.uilistener.KmOnRecordListener;
 import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
-import io.kommunicate.commons.commons.core.utils.Utils;
 
 import java.io.IOException;
 
@@ -142,14 +141,10 @@ public class KmRecordView extends FrameLayout {
     }
 
     private void showViews() {
-        if (!isSpeechToTextEnabled) {
-            counterTime.setVisibility(VISIBLE);
-            recordingText.setVisibility(VISIBLE);
-            smallBlinkingDot.setVisibility(VISIBLE);
-            slideToCancelLayout.setVisibility(VISIBLE);
-        } else {
-            recordingText.setText(Utils.getString(context, R.string.km_speech_listening_text));
-        }
+        counterTime.setVisibility(VISIBLE);
+        recordingText.setVisibility(VISIBLE);
+        smallBlinkingDot.setVisibility(VISIBLE);
+        slideToCancelLayout.setVisibility(VISIBLE);
     }
 
     private boolean isLessThanOneSecond(long time) {
@@ -200,9 +195,7 @@ public class KmRecordView extends FrameLayout {
         animationHelper.resetSmallMic();
 
 
-        if (!isSpeechToTextEnabled) {
-            recordBtn.startScale();
-        }
+        recordBtn.startScale();
         initialX = recordBtn.getX();
 
         showViews();
@@ -215,7 +208,7 @@ public class KmRecordView extends FrameLayout {
     }
 
     protected void onActionMove(KmRecordButton recordBtn, MotionEvent motionEvent) {
-        if (isSpeechToTextEnabled  || !PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+        if (!PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             return;
         }
         long time = System.currentTimeMillis() - startTime;
@@ -305,11 +298,28 @@ public class KmRecordView extends FrameLayout {
     }
 
     protected void onActionUp(KmRecordButton recordBtn) {
-        if (isSpeechToTextEnabled  || !PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
+        if (!PermissionsUtils.isAudioRecordingPermissionGranted(context)) {
             return;
         }
 
         stopRecordingAnimation(recordBtn);
+    }
+
+    protected void onActionCancel(KmRecordButton recordBtn) {
+        if (recordListener != null) {
+            recordListener.onRecordCancel();
+        }
+        EventManager.getInstance().sendOnVoiceButtonClick(CANCEL);
+        animationHelper.setStartRecorded(false);
+        hideViews(true);
+        counterTime.stop();
+        recordBtn.stopScale();
+    }
+
+    protected void onSpeechToTextTap() {
+        if (recordListener != null) {
+            recordListener.onSpeechToTextStart();
+        }
     }
 
     public void stopRecordingAnimation(KmRecordButton recordButton) {
@@ -389,6 +399,10 @@ public class KmRecordView extends FrameLayout {
 
     public void enableSpeechToText(boolean enable) {
         this.isSpeechToTextEnabled = enable;
+    }
+
+    public boolean isSpeechToTextEnabled() {
+        return isSpeechToTextEnabled;
     }
 
     public void setCounterTimeColor(int color) {

@@ -170,12 +170,18 @@ public class ConversationUIService {
     }
 
     public void openConversationFragment(final Channel channel, final Integer conversationId, final String searchString, final String messageSearchString, final String preFilledMessage) {
+        openConversationFragment(channel, conversationId, searchString, messageSearchString,
+                preFilledMessage, false, 0L);
+    }
+
+    public void openConversationFragment(final Channel channel, final Integer conversationId, final String searchString, final String messageSearchString, final String preFilledMessage, final boolean startVoiceMode, final long voiceModeLaunchTime) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 ConversationFragment conversationFragment = (ConversationFragment) UIService.getFragmentByTag(fragmentActivity, CONVERSATION_FRAGMENT);
                 if (conversationFragment == null) {
-                    conversationFragment = getConversationFragment(fragmentActivity, null, channel, conversationId, searchString, messageSearchString, preFilledMessage);
+                    conversationFragment = getConversationFragment(fragmentActivity, null, channel, conversationId,
+                            searchString, messageSearchString, preFilledMessage, startVoiceMode, voiceModeLaunchTime);
                     ((MobiComKitActivityInterface) fragmentActivity).addFragment(conversationFragment);
                     EventManager.getInstance().sendOnCurrentOpenedConversation(conversationId);
                 } else {
@@ -183,6 +189,7 @@ public class ConversationUIService {
                     if (messageInfoFragment != null && fragmentActivity.getSupportFragmentManager() != null) {
                         fragmentActivity.getSupportFragmentManager().popBackStackImmediate();
                     }
+                    conversationFragment.setStartVoiceModeOnOpen(startVoiceMode, voiceModeLaunchTime);
                     conversationFragment.loadConversation(channel, conversationId, messageSearchString);
                 }
             }
@@ -893,8 +900,12 @@ public class ConversationUIService {
             openConversationFragment(contact, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING));
         }
         String preFilledMessage = intent.getStringExtra(KmConstants.KM_PREFILLED_MESSAGE);
+        boolean startVoiceMode = intent.getBooleanExtra(KmConstants.KM_START_VOICE_MODE, false);
+        long voiceModeLaunchTime = intent.getLongExtra(KmConstants.KM_VOICE_MODE_LAUNCH_TIME, 0L);
         if (channel != null) {
-            openConversationFragment(channel, conversationId, searchString, intent.getStringExtra(MESSAGE_SEARCH_STRING), preFilledMessage);
+            openConversationFragment(channel, conversationId, searchString,
+                    intent.getStringExtra(MESSAGE_SEARCH_STRING), preFilledMessage,
+                    startVoiceMode, voiceModeLaunchTime);
         }
         String productTopicId = intent.getStringExtra(ConversationUIService.PRODUCT_TOPIC_ID);
         String productImageUrl = intent.getStringExtra(ConversationUIService.PRODUCT_IMAGE_URL);
@@ -935,10 +946,19 @@ public class ConversationUIService {
     }
 
     public static ConversationFragment getConversationFragment(Context context, Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString, String preFilledMessage) {
+        return getConversationFragment(context, contact, channel, conversationId, searchString,
+                messageSearchString, preFilledMessage, false, 0L);
+    }
+
+    public static ConversationFragment getConversationFragment(Context context, Contact contact, Channel channel, Integer conversationId, String searchString, String messageSearchString, String preFilledMessage, boolean startVoiceMode, long voiceModeLaunchTime) {
+        ConversationFragment conversationFragment;
         if (context != null && context.getApplicationContext() instanceof KmFragmentGetter) {
-            return ((KmFragmentGetter) context.getApplicationContext()).getConversationFragment(contact, channel, conversationId, searchString, messageSearchString);
+            conversationFragment = ((KmFragmentGetter) context.getApplicationContext()).getConversationFragment(contact, channel, conversationId, searchString, messageSearchString);
+        } else {
+            conversationFragment = ConversationFragment.newInstance(contact, channel, conversationId, searchString, messageSearchString, preFilledMessage);
         }
-        return ConversationFragment.newInstance(contact, channel, conversationId, searchString, messageSearchString, preFilledMessage);
+        conversationFragment.setStartVoiceModeOnOpen(startVoiceMode, voiceModeLaunchTime);
+        return conversationFragment;
     }
 
     public void setAutoText(String preFilled) {

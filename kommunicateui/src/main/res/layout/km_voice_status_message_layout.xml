@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="72dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp">
+
+    <TextView
+        android:id="@+id/km_voice_status_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/km_voice_status_background"
+        android:paddingStart="18dp"
+        android:paddingTop="11dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="11dp"
+        android:textColor="@color/km_voice_status_text"
+        android:textSize="16sp" />
+</FrameLayout>

@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.CoreJobIntentService;
-import androidx.core.content.IntentCompat;
 
 import io.kommunicate.commons.json.GsonUtils;
 import io.kommunicate.devkit.api.account.user.UserService;
@@ -21,6 +20,7 @@ import io.sentry.Sentry;
 public class ConversationIntentService extends CoreJobIntentService {
 
     public static final String SYNC = "AL_SYNC";
+    @Deprecated
     public static final String AL_MESSAGE = "AL_MESSAGE";
     public static final String AL_MESSAGE_JSON = "AL_MESSAGE_JSON";
     private static final String TAG = "ConversationIntent";
@@ -90,26 +90,17 @@ public class ConversationIntentService extends CoreJobIntentService {
     }
 
     /**
-     * New work is transported as JSON so changes to Message's Parcelable layout cannot make
-     * queued work unreadable after an SDK update. The legacy readers allow already queued work
-     * from older SDK versions to finish.
+     * Work is transported as JSON so changes to Message's Parcelable layout cannot make queued
+     * work unreadable after an SDK update. Legacy Parcelable work falls back to a full sync.
      */
     private Message getMessage(Intent intent) {
         try {
             String messageJson = intent.getStringExtra(AL_MESSAGE_JSON);
-            if (!TextUtils.isEmpty(messageJson)) {
-                return GsonUtils.getObjectFromJson(messageJson, Message.class);
+            if (TextUtils.isEmpty(messageJson)) {
+                return null;
             }
-
-            Message parcelableMessage = IntentCompat.getParcelableExtra(intent, AL_MESSAGE, Message.class);
-            if (parcelableMessage != null) {
-                return parcelableMessage;
-            }
-
-            return IntentCompat.getSerializableExtra(intent, AL_MESSAGE, Message.class);
+            return GsonUtils.getObjectFromJson(messageJson, Message.class);
         } catch (RuntimeException exception) {
-            // BadParcelableException can be thrown by work queued with an incompatible Message
-            // parcel layout. Returning null lets onHandleWork perform the normal full sync.
             Utils.printLog(this, TAG, "Unable to read queued message; falling back to full sync: " + exception.getMessage());
             Sentry.captureException(exception);
             return null;

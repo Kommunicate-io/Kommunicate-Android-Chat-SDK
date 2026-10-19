@@ -73,7 +73,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import io.kommunicate.Kommunicate;
+import io.kommunicate.callbacks.KmCallback;
 import io.kommunicate.services.KmClientService;
+import io.kommunicate.utils.KmAppSettingPreferences;
 import io.kommunicate.utils.KmUtils;
 
 /**
@@ -103,12 +105,16 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     boolean isAlreadyLoading = false;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     Button startNewConv;
+    Button startVoiceConv;
+    LinearLayout startConversationButtons;
+    View startConversationButtonDivider;
     RelativeLayout faqButtonLayout;
     KmThemeHelper themeHelper;
     boolean isCurrentlyInDarkMode;
     private static final String SUCCESS = "success";
     private static final String KM_START_NEW_CONVERSATION = "KmStartNewConversation";
     private static final String START_NEW_CHAT = "startNewChat";
+    private static final String START_NEW_VOICE_CHAT = "startNewVoiceChat";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -206,26 +212,15 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         LinearLayout individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
         LinearLayout extendedSendingOptionLayout = (LinearLayout) list.findViewById(R.id.extended_sending_option_layout);
 
+        startConversationButtons = list.findViewById(R.id.km_start_conversation_buttons);
         startNewConv = list.findViewById(R.id.start_new_conversation);
+        startVoiceConv = list.findViewById(R.id.start_voice_conversation);
+        startConversationButtonDivider = list.findViewById(R.id.km_start_conversation_button_divider);
 //        KmUtils.setGradientSolidColor(startNewConv, !TextUtils.isEmpty(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) ? Color.parseColor(isCurrentlyInDarkMode ? alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(1) : alCustomizationSettings.getStartNewConversationButtonBackgroundColor().get(0)) : KmThemeHelper.getInstance(getContext(), alCustomizationSettings).getPrimaryColor());
 
-        if (customizationSettings != null && customizationSettings.isShowStartNewConversation() && User.RoleType.USER_ROLE.getValue().equals(MobiComUserPreference.getInstance(getContext()).getUserRoleType())) {
-            startNewConv.setVisibility(View.VISIBLE);
-        } else {
-            startNewConv.setVisibility(View.GONE);
-        }
-
-        startNewConv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (AppContextService.getContext(getContext()) instanceof KmActionCallback) {
-                    ((KmActionCallback) AppContextService.getContext(getContext())).onReceive(getContext(), null, START_NEW_CHAT);
-                } else {
-                    KmHelper.setStartNewChat(getActivity());
-                }
-                LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(new Intent(KM_START_NEW_CONVERSATION));
-            }
-        });
+        updateStartConversationButtons();
+        startNewConv.setOnClickListener(view -> launchNewConversation(false));
+        startVoiceConv.setOnClickListener(view -> launchNewConversation(true));
 
         individualMessageSendLayout.setVisibility(View.GONE);
         extendedSendingOptionLayout.setVisibility(View.GONE);
@@ -248,7 +243,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
 
     private void setupInsets() {
         InsetHelper.configureSystemInsets(
-                startNewConv,
+                startConversationButtons,
                 0,
                 25,
                 false
@@ -258,6 +253,64 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 0,
                 200,
                 true
+        );
+    }
+
+    private void launchNewConversation(boolean startVoiceMode) {
+        if (AppContextService.getContext(getContext()) instanceof KmActionCallback) {
+            ((KmActionCallback) AppContextService.getContext(getContext())).onReceive(
+                    getContext(),
+                    null,
+                    startVoiceMode ? START_NEW_VOICE_CHAT : START_NEW_CHAT
+            );
+        } else {
+            KmHelper.setStartNewChat(getActivity(), startVoiceMode);
+        }
+        LocalBroadcastManager.getInstance(getContext()).sendBroadcastSync(new Intent(KM_START_NEW_CONVERSATION));
+    }
+
+    private boolean canShowStartConversationButtons() {
+        return customizationSettings != null
+                && customizationSettings.isShowStartNewConversation()
+                && User.RoleType.USER_ROLE.getValue().equals(
+                MobiComUserPreference.getInstance(getContext()).getUserRoleType()
+        );
+    }
+
+    private void updateStartConversationButtons() {
+        boolean showButtons = canShowStartConversationButtons();
+        startConversationButtons.setVisibility(showButtons ? View.VISIBLE : View.GONE);
+        if (!showButtons) {
+            return;
+        }
+        boolean showVoiceButton = !customizationSettings.isAgentApp()
+                && KmAppSettingPreferences.isVoiceChatEnabled();
+        startVoiceConv.setVisibility(showVoiceButton ? View.VISIBLE : View.GONE);
+        startConversationButtonDivider.setVisibility(showVoiceButton ? View.VISIBLE : View.GONE);
+        startNewConv.setText(showVoiceButton
+                ? R.string.km_chat_conversation_button
+                : R.string.default_start_new_conversation);
+    }
+
+    private void refreshVoiceConversationAvailability() {
+        if (getContext() == null || !canShowStartConversationButtons() || customizationSettings.isAgentApp()) {
+            return;
+        }
+        Context applicationContext = getContext().getApplicationContext();
+        KmAppSettingPreferences.fetchAppSettingAsync(
+                applicationContext,
+                new KmCallback() {
+                    @Override
+                    public void onSuccess(Object message) {
+                        if (isAdded() && getView() != null) {
+                            updateStartConversationButtons();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Object error) {
+                    }
+                }
         );
     }
 
@@ -285,11 +338,17 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     private void setupModes(boolean isDarkModeEnabled) {
         ((TextView) toolbar.findViewById(R.id.km_conversation_text_view)).setTextColor(themeHelper.getToolbarTitleColor());
         emptyTextView.setTextColor(Color.parseColor(isDarkModeEnabled ? customizationSettings.getNoConversationLabelTextColor().get(1).trim() : customizationSettings.getNoConversationLabelTextColor().get(0).trim()));
-        KmUtils.setGradientSolidColor(startNewConv, themeHelper.parseColorWithDefault(customizationSettings.getStartNewConversationButtonBackgroundColor().get(isDarkModeEnabled ? 1 : 0),
+        KmUtils.setGradientSolidColor(startConversationButtons, themeHelper.parseColorWithDefault(customizationSettings.getStartNewConversationButtonBackgroundColor().get(isDarkModeEnabled ? 1 : 0),
                 themeHelper.parseColorWithDefault(customizationSettings.getToolbarColor().get(isDarkModeEnabled ? 1 : 0), themeHelper.getPrimaryColor())));
         recyclerView.setBackgroundColor(getResources().getColor(isCurrentlyInDarkMode ? R.color.dark_mode_default : R.color.conversation_list_all_background));
         recyclerAdapter.setDarkMode(isDarkModeEnabled);
         recyclerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        refreshVoiceConversationAvailability();
     }
 
     @Override

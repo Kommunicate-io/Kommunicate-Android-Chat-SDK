@@ -148,6 +148,11 @@ public class KmAppSettingModel extends JsonMarker {
         private int csatRatingBase = 3;
         private int botTypingIndicatorInterval;
         private String sasT;
+        private boolean voiceChat;
+        @SerializedName(value = "voiceInput", alternate = {"speechToText"})
+        private boolean speechToText;
+        @SerializedName(value = "voiceOutput", alternate = {"textToSpeech"})
+        private boolean textToSpeech;
 
         public String getPosition() {
             return position;
@@ -252,6 +257,30 @@ public class KmAppSettingModel extends JsonMarker {
 
         public void setSasT(String sasT) {
             this.sasT = sasT;
+        }
+
+        public boolean isVoiceChat() {
+            return voiceChat;
+        }
+
+        public void setVoiceChat(boolean voiceChat) {
+            this.voiceChat = voiceChat;
+        }
+
+        public boolean isSpeechToText() {
+            return speechToText;
+        }
+
+        public void setSpeechToText(boolean speechToText) {
+            this.speechToText = speechToText;
+        }
+
+        public boolean isTextToSpeech() {
+            return textToSpeech;
+        }
+
+        public void setTextToSpeech(boolean textToSpeech) {
+            this.textToSpeech = textToSpeech;
         }
     }
 

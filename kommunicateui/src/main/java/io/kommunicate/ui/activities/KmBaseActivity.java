@@ -7,10 +7,15 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import io.kommunicate.ui.CustomizationSettings;
+import io.kommunicate.ui.utils.InsetHelper;
 
 public abstract class KmBaseActivity extends AppCompatActivity {
 
     protected void setupEdgeToEdge(boolean lightStatusBar, int statusBarColor) {
+        if (!InsetHelper.isPlatformInsetsApiUsable()) {
+            return;
+        }
+
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         if (controller != null) {

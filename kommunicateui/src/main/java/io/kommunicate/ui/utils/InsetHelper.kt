@@ -1,5 +1,6 @@
 package io.kommunicate.ui.utils
 
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
@@ -13,6 +14,36 @@ import androidx.core.view.updatePadding
  * Includes support for keyboard animations and edge-to-edge display.
  */
 object InsetHelper {
+
+    /** Uses the system-provided inset for the configured side. */
+    const val USE_SYSTEM_INSET = -1
+
+    /** Applies no inset to the configured side. */
+    const val NO_INSET = 0
+
+    /**
+     * Some modified devices report API 34+ while shipping an older framework that does not
+     * contain WindowInsets.Type.systemOverlays(). AndroidX selects its API 34 implementation from
+     * SDK_INT and otherwise crashes while converting the platform insets.
+     */
+    private val platformInsetsApiUsable: Boolean by lazy {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            true
+        } else {
+            try {
+                Class.forName("android.view.WindowInsets\$Type")
+                    .getDeclaredMethod("systemOverlays")
+                true
+            } catch (_: ReflectiveOperationException) {
+                false
+            } catch (_: LinkageError) {
+                false
+            }
+        }
+    }
+
+    @JvmStatic
+    fun isPlatformInsetsApiUsable(): Boolean = platformInsetsApiUsable
 
     /**
      * [systemTypeMask] is a type mask for system bars (status bar and navigation bar).
@@ -56,22 +87,31 @@ object InsetHelper {
     @JvmStatic
     fun configureSystemInsets(
         view: View,
-        top: Int = -1,
-        bottom: Int = -1,
+        top: Int = USE_SYSTEM_INSET,
+        bottom: Int = USE_SYSTEM_INSET,
         isPadding: Boolean = true
     ) {
-        configureInset(view, systemTypeMask, 0, 0, top, bottom, isPadding)
+        configureInset(view, systemTypeMask, NO_INSET, NO_INSET, top, bottom, isPadding)
     }
 
     @JvmStatic
     fun configureSystemInsetsWithKeyboard(
         view: View,
-        top: Int = -1,
-        bottom: Int = -1,
+        top: Int = USE_SYSTEM_INSET,
+        bottom: Int = USE_SYSTEM_INSET,
         isPadding: Boolean = true,
         adjustForKeyboard: (isVisible: Boolean, keyboardHeight: Int) -> Unit
     ) {
-        configureInset(view, systemTypeMask, 0, 0, top, bottom, isPadding, adjustForKeyboard)
+        configureInset(
+            view,
+            systemTypeMask,
+            NO_INSET,
+            NO_INSET,
+            top,
+            bottom,
+            isPadding,
+            adjustForKeyboard
+        )
     }
 
     /**
@@ -97,13 +137,17 @@ object InsetHelper {
     fun configureInset(
         view: View,
         typeMask: Int,
-        left: Int = -1,
-        right: Int = -1,
-        top: Int = -1,
-        bottom: Int = -1,
+        left: Int = USE_SYSTEM_INSET,
+        right: Int = USE_SYSTEM_INSET,
+        top: Int = USE_SYSTEM_INSET,
+        bottom: Int = USE_SYSTEM_INSET,
         isPadding: Boolean = true,
         adjustForKeyboard: ((isVisible: Boolean, keyboardHeight: Int) -> Unit)? = null
     ) {
+        if (!isPlatformInsetsApiUsable()) {
+            return
+        }
+
         var lastKeyboardHeight = 0
         var wasKeyboardVisible = false
 
@@ -158,11 +202,11 @@ object InsetHelper {
      */
     private fun resolveInset(existingPadding: Int, insetValue: Int): Int {
         return when (existingPadding) {
-            -1 -> {
+            USE_SYSTEM_INSET -> {
                 insetValue
             }
-            0 -> {
-                0
+            NO_INSET -> {
+                NO_INSET
             }
             else -> {
                 insetValue + existingPadding

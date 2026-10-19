@@ -1550,6 +1550,15 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
                         @Override
                         public boolean onTranscriptReady(@NonNull String transcript) {
+                            try {
+                                if (containsRestrictedContent(transcript)) {
+                                    showRestrictedVoiceMessageError();
+                                    return false;
+                                }
+                            } catch (PatternSyntaxException e) {
+                                e.printStackTrace();
+                                return false;
+                            }
                             return trySendMessage(transcript);
                         }
 
@@ -1659,6 +1668,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
 
         voiceModeStatusMessage = new Message();
+        long deviceTimeOffset = getContext() == null
+                ? 0L
+                : MobiComUserPreference.getInstance(getContext()).getDeviceTimeOffset();
+        voiceModeStatusMessage.setCreatedAtTime(System.currentTimeMillis() + deviceTimeOffset);
         voiceModeStatusMessage.setMessage(status);
         voiceModeStatusMessage.getMetadata().put(KM_VOICE_MODE_STATUS, Boolean.TRUE.toString());
         messageList.add(voiceModeStatusMessage);
@@ -2012,25 +2025,17 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected void processSendMessage() {
         if (!TextUtils.isEmpty(messageEditText.getText().toString().trim()) || !TextUtils.isEmpty(filePath)) {
             String inputMessage = messageEditText.getText().toString();
-            String[] inputMsg = inputMessage.toLowerCase().split(" ");
-            List<String> userInputList = Arrays.asList(inputMsg);
-
-            boolean disjointResult = (restrictedWords == null) || disjoint(restrictedWords, userInputList);
-            boolean restrictedWordMatches;
+            boolean restrictedContent;
 
             try {
-                String dynamicRegex = KommunicateSetting.getInstance(getContext()).getRestrictedWordsRegex();
-                String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (customizationSettings != null
-                        && !TextUtils.isEmpty(customizationSettings.getRestrictedWordRegex()) ? customizationSettings.getRestrictedWordRegex() : "");
-
-                restrictedWordMatches = !TextUtils.isEmpty(pattern) && Pattern.compile(pattern).matcher(inputMessage.trim()).matches();
+                restrictedContent = containsRestrictedContent(inputMessage);
             } catch (PatternSyntaxException e) {
                 e.printStackTrace();
                 createInvalidPatternExceptionDialog();
                 return;
             }
 
-            if (disjointResult && !restrictedWordMatches) {
+            if (!restrictedContent) {
                 sendMessage(messageEditText.getText().toString().trim());
             } else {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
@@ -2050,6 +2055,28 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 alertDialog.create().show();
             }
         }
+    }
+
+    private boolean containsRestrictedContent(String inputMessage) throws PatternSyntaxException {
+        String[] inputMsg = inputMessage.toLowerCase().split(" ");
+        List<String> userInputList = Arrays.asList(inputMsg);
+
+        boolean disjointResult = (restrictedWords == null) || disjoint(restrictedWords, userInputList);
+
+        String dynamicRegex = KommunicateSetting.getInstance(getContext()).getRestrictedWordsRegex();
+        String pattern = !TextUtils.isEmpty(dynamicRegex) ? dynamicRegex : (customizationSettings != null
+                && !TextUtils.isEmpty(customizationSettings.getRestrictedWordRegex()) ? customizationSettings.getRestrictedWordRegex() : "");
+
+        boolean restrictedWordMatches = !TextUtils.isEmpty(pattern) && Pattern.compile(pattern).matcher(inputMessage.trim()).matches();
+        return !disjointResult || restrictedWordMatches;
+    }
+
+    private void showRestrictedVoiceMessageError() {
+        if (getContext() == null || customizationSettings == null ||
+                TextUtils.isEmpty(customizationSettings.getRestrictedWordMessage())) {
+            return;
+        }
+        KmToast.error(getContext(), customizationSettings.getRestrictedWordMessage(), Toast.LENGTH_SHORT).show();
     }
 
     protected void createInvalidPatternExceptionDialog() {
@@ -2290,11 +2317,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     protected void handleAddMessage(final Message message) {
 
-        boolean handledByVoiceMode = handleVoiceModeMessage(message);
+        // A synced message already in the list must not be spoken again.
+        boolean isExistingMessage = messageList != null && messageList.contains(message);
+        boolean handledByVoiceMode = !isExistingMessage && handleVoiceModeMessage(message);
 
         if (Objects.equals(message.getType(), Message.MessageType.MT_INBOX.getValue()) &&
                 !Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType()) &&
                 textToSpeech != null &&
+                !isExistingMessage &&
                 !handledByVoiceMode &&
                 !TextUtils.isEmpty(message.getMessage())) {
             textToSpeech.speak(message.getMessage());
@@ -4968,7 +4998,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     Long lastConversationloadTime = 1L;
                     if (!messageList.isEmpty()) {
                         for (int i = messageList.size() - 1; i >= 0; i--) {
-                            if (messageList.get(i).isTempDateType()) {
+                            if (messageList.get(i).isTempDateType() || messageList.get(i) == voiceModeStatusMessage) {
                                 continue;
                             }
                             lastConversationloadTime = messageList.get(i).getCreatedAtTime();

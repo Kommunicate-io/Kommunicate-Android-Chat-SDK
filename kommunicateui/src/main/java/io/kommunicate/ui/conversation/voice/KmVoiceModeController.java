@@ -11,10 +11,13 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.kommunicate.commons.commons.core.utils.PermissionsUtils;
 import io.kommunicate.devkit.api.voice.KmVoiceApiClient;
@@ -43,6 +46,7 @@ public class KmVoiceModeController {
 
     private static final int MAX_PROCESSED_MESSAGE_IDS = 100;
     private static final int RECORDER_RETRY_DELAY_MS = 50;
+    private static final int RESPONSE_TIMEOUT_MS = 30_000;
 
     private final Context context;
     private final Listener listener;
@@ -55,10 +59,14 @@ public class KmVoiceModeController {
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final Set<String> processedMessageIds = new LinkedHashSet<>();
+    private final Queue<KmVoiceApiClient.AudioResponse> pendingResponses = new ArrayDeque<>();
+    private final AtomicInteger pendingSynthesisCount = new AtomicInteger();
+    private final Runnable responseTimeoutRunnable = this::onResponseTimeout;
 
     private volatile boolean active;
     private long conversationId;
     private volatile int sessionGeneration;
+    private volatile boolean playingResponse;
     private AudioFocusRequest audioFocusRequest;
 
     public KmVoiceModeController(@NonNull Context context, @NonNull Listener listener) {
@@ -144,6 +152,7 @@ public class KmVoiceModeController {
         audioRecorder.stop();
         apiClient.cancelActiveRequest();
         playbackManager.stop();
+        clearResponseState();
         abandonAudioFocus();
         processedMessageIds.clear();
         setState(State.IDLE);
@@ -176,8 +185,12 @@ public class KmVoiceModeController {
 
         Log.d(TAG, "bot_response_received textLength=" + text.trim().length());
         int generation = sessionGeneration;
+        mainHandler.removeCallbacks(responseTimeoutRunnable);
         audioRecorder.stop();
-        setState(State.PROCESSING_RESPONSE);
+        pendingSynthesisCount.incrementAndGet();
+        if (!playingResponse) {
+            setState(State.PROCESSING_RESPONSE);
+        }
         networkExecutor.execute(() -> {
             if (!isCurrentSession(generation)) {
                 return;
@@ -188,24 +201,73 @@ public class KmVoiceModeController {
                     if (!isCurrentSession(generation)) {
                         return;
                     }
-                    setState(State.SPEAKING);
-                    playbackManager.play(response, new KmVoicePlaybackManager.Listener() {
-                        @Override
-                        public void onCompleted() {
-                            beginListening(generation);
-                        }
-
-                        @Override
-                        public void onError(@NonNull Exception exception) {
-                            recover(exception, generation);
-                        }
-                    });
+                    pendingSynthesisCount.decrementAndGet();
+                    pendingResponses.add(response);
+                    playNextResponse(generation);
                 });
             } catch (Exception exception) {
-                recover(exception, generation);
+                runOnMain(() -> {
+                    if (!isCurrentSession(generation)) {
+                        return;
+                    }
+                    pendingSynthesisCount.decrementAndGet();
+                    recover(exception, generation);
+                });
             }
         });
         return true;
+    }
+
+    /** Plays queued bot replies in order and resumes listening once all replies are spoken. */
+    private void playNextResponse(int generation) {
+        if (!isCurrentSession(generation) || playingResponse) {
+            return;
+        }
+        KmVoiceApiClient.AudioResponse response = pendingResponses.poll();
+        if (response == null) {
+            if (pendingSynthesisCount.get() == 0) {
+                beginListening(generation);
+            }
+            return;
+        }
+        playingResponse = true;
+        setState(State.SPEAKING);
+        playbackManager.play(response, new KmVoicePlaybackManager.Listener() {
+            @Override
+            public void onCompleted() {
+                if (!isCurrentSession(generation)) {
+                    return;
+                }
+                playingResponse = false;
+                playNextResponse(generation);
+            }
+
+            @Override
+            public void onError(@NonNull Exception exception) {
+                if (!isCurrentSession(generation)) {
+                    return;
+                }
+                playingResponse = false;
+                recover(exception, generation);
+            }
+        });
+    }
+
+    private void onResponseTimeout() {
+        int generation = sessionGeneration;
+        if (!isCurrentSession(generation) || playingResponse ||
+                pendingSynthesisCount.get() > 0 || !pendingResponses.isEmpty()) {
+            return;
+        }
+        Log.d(TAG, "bot_response_timeout");
+        beginListening(generation);
+    }
+
+    private void clearResponseState() {
+        mainHandler.removeCallbacks(responseTimeoutRunnable);
+        pendingResponses.clear();
+        pendingSynthesisCount.set(0);
+        playingResponse = false;
     }
 
     private void beginListening(int generation) {
@@ -248,6 +310,8 @@ public class KmVoiceModeController {
                     setState(State.SENDING);
                     if (listener.onTranscriptReady(transcript)) {
                         setState(State.WAITING_FOR_RESPONSE);
+                        mainHandler.removeCallbacks(responseTimeoutRunnable);
+                        mainHandler.postDelayed(responseTimeoutRunnable, RESPONSE_TIMEOUT_MS);
                     } else {
                         beginListening(generation);
                     }
@@ -266,7 +330,7 @@ public class KmVoiceModeController {
             Log.e(TAG, "voice_session_recoverable_error", exception);
             setState(State.ERROR);
             listener.onError(exception);
-            beginListening(generation);
+            playNextResponse(generation);
         });
     }
 
@@ -285,6 +349,7 @@ public class KmVoiceModeController {
             audioRecorder.stop();
             apiClient.cancelActiveRequest();
             playbackManager.stop();
+            clearResponseState();
             abandonAudioFocus();
             processedMessageIds.clear();
             updateState(State.ERROR);

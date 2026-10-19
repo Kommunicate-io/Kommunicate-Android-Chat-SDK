@@ -17,7 +17,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 36
         versionCode 1
-        versionName "2.16.10"
+        versionName "2.17.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "KOMMUNICATE_VERSION", "\"" + versionName + "\""
         buildConfigField "String", "CHAT_SERVER_URL", '"https://chat.kommunicate.io"'
@@ -80,7 +80,11 @@ task javadoc(type: Javadoc) {
     failOnError false // add this line
     source = android.sourceSets.main.java.srcDirs
     //source = android.sourceSets.main.allJava
-    classpath += project.files(androidComponents.sdkComponents.bootClasspath)
+}
+androidComponents.onVariants(androidComponents.selector().withBuildType("release")) {
+    tasks.named("javadoc", Javadoc) {
+        classpath = project.files(androidComponents.sdkComponents.bootClasspath)
+    }
 }
 task javadocJar(type: Jar, dependsOn: javadoc) {
     archiveClassifier = 'javadoc'

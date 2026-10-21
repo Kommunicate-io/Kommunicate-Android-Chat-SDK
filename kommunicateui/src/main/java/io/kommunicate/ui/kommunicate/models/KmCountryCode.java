@@ -7,8 +7,9 @@ public class KmCountryCode {
     private final String flag;
     private final int minNumberLength;
     private final int maxNumberLength;
+    private final String trunkPrefix;
 
-    public KmCountryCode(String isoCode, String name, String dialCode, int minNumberLength, int maxNumberLength) {
+    public KmCountryCode(String isoCode, String name, String dialCode, int minNumberLength, int maxNumberLength, String trunkPrefix) {
         this.isoCode = isoCode;
         this.name = name;
         this.dialCode = "+" + dialCode;
@@ -16,6 +17,7 @@ public class KmCountryCode {
                 + new String(Character.toChars(Character.codePointAt(isoCode, 1) - 'A' + 0x1F1E6));
         this.minNumberLength = minNumberLength;
         this.maxNumberLength = maxNumberLength;
+        this.trunkPrefix = trunkPrefix;
     }
 
     public String getIsoCode() {
@@ -35,10 +37,20 @@ public class KmCountryCode {
     }
 
     public String getNumberValidationRegex() {
-        return "^\\d{" + minNumberLength + "," + maxNumberLength + "}$";
+        String optionalTrunkPrefix = trunkPrefix.isEmpty() ? "" : "(?:" + trunkPrefix + ")?";
+        return "^" + optionalTrunkPrefix + "\\d{" + minNumberLength + "," + maxNumberLength + "}$";
     }
 
     public String getInternationalNumber(String number) {
-        return getDialCode() + number;
+        return getDialCode() + removeTrunkPrefix(number);
+    }
+
+    private String removeTrunkPrefix(String number) {
+        if (trunkPrefix.isEmpty() || !number.startsWith(trunkPrefix)) {
+            return number;
+        }
+        int nationalNumberLength = number.length() - trunkPrefix.length();
+        return nationalNumberLength >= minNumberLength && nationalNumberLength <= maxNumberLength
+                ? number.substring(trunkPrefix.length()) : number;
     }
 }

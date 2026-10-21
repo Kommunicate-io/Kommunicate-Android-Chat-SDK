@@ -1,16 +1,21 @@
 package io.kommunicate.ui.kommunicate.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +25,9 @@ import io.kommunicate.ui.R;
 
 import io.kommunicate.models.KmPrechatInputModel;
 
+import io.kommunicate.ui.kommunicate.models.KmCountryCode;
+import io.kommunicate.ui.kommunicate.utils.KmCountryCodeHelper;
+import io.kommunicate.ui.kommunicate.views.KmCountryCodePopup;
 import io.kommunicate.ui.kommunicate.views.KmToast;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.commons.core.utils.Utils;
@@ -41,14 +49,29 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
     private List<KmPrechatInputModel> inputModelList;
     private Map<String, String> dataMap;
     private Map<String, String> inputTextMap;
+    private Map<String, KmCountryCode> countryCodeMap;
     private Context context;
     public static final String PRECHAT_DROPDOWN_ELEMENT = "select";
+    private static final int COUNTRY_CODE_INPUT_VIEW_TYPE = 3;
+    private static final int MAX_PHONE_NUMBER_LENGTH = 15;
 
     public KmPrechatInputAdapter(List<KmPrechatInputModel> inputModelList, Context context) {
         this.inputModelList = inputModelList;
         this.dataMap = new HashMap<>();
         this.inputTextMap = new HashMap<>();
+        this.countryCodeMap = new HashMap<>();
         this.context = context;
+        if (inputModelList != null) {
+            KmCountryCode defaultCountry = null;
+            for (KmPrechatInputModel inputModel : inputModelList) {
+                if (inputModel != null && inputModel.isEnableCountryCode()) {
+                    if (defaultCountry == null) {
+                        defaultCountry = KmCountryCodeHelper.getDefaultCountry(context);
+                    }
+                    selectCountry(inputModel, defaultCountry);
+                }
+            }
+        }
     }
 
     @NonNull
@@ -66,7 +89,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
         }
         else {
             View inputHolder = layoutInflater.inflate(R.layout.km_prechat_input_item_layout, parent, false);
-            return new KmPrechatInputViewHolder(inputHolder);
+            return viewType == COUNTRY_CODE_INPUT_VIEW_TYPE ? new KmPrechatPhoneInputViewHolder(inputHolder) : new KmPrechatInputViewHolder(inputHolder);
         }
     }
 
@@ -94,11 +117,18 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
             KmPrechatInputViewHolder inputViewHolder = (KmPrechatInputViewHolder) viewHolder;
             inputViewHolder.inputEditText.setInputType(KmPrechatInputModel.KmInputType.getInputType(inputModel.getType()));
             inputViewHolder.inputEditText.setTransformationMethod(KmPrechatInputModel.KmInputType.PASSWORD.equals(inputModel.getType()) ? PasswordTransformationMethod.getInstance() : null);
-            inputViewHolder.textInputLayout.setHint(inputModel.getPlaceholder());
+            inputViewHolder.textInputLayout.setHint(inputModel.getField());
+            inputViewHolder.textInputLayout.setPlaceholderText(inputModel.getPlaceholder());
 
             inputViewHolder.inputEditText.setText(inputTextMap != null && !TextUtils.isEmpty(inputTextMap.get(inputModel.getField())) ? inputTextMap.get(inputModel.getField()) : "");
             inputViewHolder.inputEditText.setSelection(inputTextMap != null && inputTextMap.get(inputModel.getField()) != null ? inputTextMap.get(inputModel.getField()).length() : 0);
             inputViewHolder.inputEditText.setError(getErrorText(inputModel));
+
+            if (type == COUNTRY_CODE_INPUT_VIEW_TYPE) {
+                KmPrechatPhoneInputViewHolder phoneInputViewHolder = (KmPrechatPhoneInputViewHolder) viewHolder;
+                phoneInputViewHolder.inputEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                phoneInputViewHolder.setCountryCode(countryCodeMap.get(inputModel.getField()));
+            }
         }
 
     }
@@ -108,6 +138,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
      * If model is null: 0
      * If element is "select": 1
      * if element is input: 2
+     * if element is input with country code enabled: 3
      */
     @Override
     public int getItemViewType(int position) {
@@ -117,6 +148,9 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
         }
         if(model.getElement() != null && model.getElement().equals(PRECHAT_DROPDOWN_ELEMENT)) {
             return 1;
+        }
+        if(model.isEnableCountryCode()) {
+            return COUNTRY_CODE_INPUT_VIEW_TYPE;
         }
         return 2;
     }
@@ -131,7 +165,14 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
     }
 
     public Map<String, String> getDataMap() {
-        return inputTextMap;
+        Map<String, String> data = new HashMap<>(inputTextMap);
+        for (Map.Entry<String, KmCountryCode> countryCodeEntry : countryCodeMap.entrySet()) {
+            String number = data.get(countryCodeEntry.getKey());
+            if (!TextUtils.isEmpty(number)) {
+                data.put(countryCodeEntry.getKey(), countryCodeEntry.getValue().getInternationalNumber(number));
+            }
+        }
+        return data;
     }
 
     public boolean areFieldsValid() {
@@ -162,6 +203,12 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
         return isValid;
     }
 
+    private void selectCountry(KmPrechatInputModel inputModel, KmCountryCode country) {
+        countryCodeMap.put(inputModel.getField(), country);
+        inputModel.setValidationRegex(country.getNumberValidationRegex());
+        inputModel.setDisplayValidationError(false);
+    }
+
     private boolean isInValidCompositeField(KmPrechatInputModel inputModel) {
         return !TextUtils.isEmpty(inputModel.getCompositeRequiredField()) && TextUtils.isEmpty(inputTextMap.get(inputModel.getField())) && TextUtils.isEmpty(inputTextMap.get(inputModel.getCompositeRequiredField()));
     }
@@ -184,13 +231,15 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
     }
 
     public class KmPrechatInputViewHolder extends RecyclerView.ViewHolder {
-        private TextInputEditText inputEditText;
-        private TextInputLayout textInputLayout;
+        protected TextInputEditText inputEditText;
+        protected TextInputLayout textInputLayout;
 
         public KmPrechatInputViewHolder(@NonNull View itemView) {
             super(itemView);
             inputEditText = itemView.findViewById(R.id.prechatInputEt);
             textInputLayout = itemView.findViewById(R.id.prechatTextInputLayout);
+            textInputLayout.setPlaceholderTextAppearance(R.style.KmPrechatPlaceholderText);
+            textInputLayout.setPlaceholderTextColor(ColorStateList.valueOf(Utils.getColor(context, R.color.km_prechat_placeholder_text_color)));
 
             inputEditText.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -209,6 +258,38 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
                     }
                 }
             });
+        }
+    }
+
+    public class KmPrechatPhoneInputViewHolder extends KmPrechatInputViewHolder {
+
+        public KmPrechatPhoneInputViewHolder(@NonNull View itemView) {
+            super(itemView);
+            inputEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_PHONE_NUMBER_LENGTH)});
+            textInputLayout.setExpandedHintEnabled(false);
+            textInputLayout.setPrefixTextColor(ColorStateList.valueOf(Utils.getColor(context, R.color.prechat_edittext_text_color)));
+
+            TextView countryCodeTextView = textInputLayout.getPrefixTextView();
+            countryCodeTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputEditText.getTextSize());
+            countryCodeTextView.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_18dp, 0);
+            countryCodeTextView.setContentDescription(getString(R.string.km_select_country));
+            countryCodeTextView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                final KmPrechatInputModel model = position != RecyclerView.NO_POSITION ? getItem(position) : null;
+                if (model == null) {
+                    return;
+                }
+                new KmCountryCodePopup(view.getContext(), countryCodeMap.get(model.getField()), (selectedView, country) -> {
+                    selectCountry(model, country);
+                    setCountryCode(country);
+                }).show(textInputLayout);
+            });
+        }
+
+        private void setCountryCode(KmCountryCode country) {
+            if (country != null) {
+                textInputLayout.setPrefixText(country.getFlag() + " " + country.getDialCode());
+            }
         }
     }
 

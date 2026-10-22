@@ -19,6 +19,7 @@ public class KmPrechatInputModel extends JsonMarker {
     private boolean required;
     private boolean displayValidationError;
     private boolean displayEmptyFieldError;
+    private boolean enableCountryCode;
 
     public String getField() {
         return field;
@@ -115,6 +116,15 @@ public class KmPrechatInputModel extends JsonMarker {
 
     public KmPrechatInputModel setCompositeRequiredField(String compositeRequiredField) {
         this.compositeRequiredField = compositeRequiredField;
+        return this;
+    }
+
+    public boolean isEnableCountryCode() {
+        return enableCountryCode;
+    }
+
+    public KmPrechatInputModel setEnableCountryCode(boolean enableCountryCode) {
+        this.enableCountryCode = enableCountryCode;
         return this;
     }
 

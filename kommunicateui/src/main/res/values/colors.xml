@@ -41,6 +41,7 @@
     <color name="km_unread_message_background_color">#E24848</color>
     <color name="km_widget_unread_message_background_color">#FFCC66</color>
     <color name="km_prechat_text_color">#4e4e50</color>
+    <color name="km_prechat_placeholder_text_color">#66000000</color>
     <color name="km_conversation_restart_button_color">#5451e2</color>
     <color name="km_feedback_background_color">#f0f0f0</color>
     <color name="km_autosuggestion_title_color">#29292a</color>

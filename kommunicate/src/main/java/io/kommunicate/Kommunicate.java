@@ -664,9 +664,24 @@ public class Kommunicate {
         try {
             launchLeadCollection(context, progressDialog, appSettingModel.getResponse().getLeadCollection(), appSettingModel.getChatWidget().getPreChatGreetingMsg(), new KmPrechatCallback<KMUser>() {
                 @Override
-                public void onReceive(KMUser data, final Context context, ResultReceiver finishActivityReceiver) {
-                    loginUserWithKmCallBack(context, data, callback, kmConversationBuilder);
-                    finishActivityReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
+                public void onReceive(KMUser data, final Context context, final ResultReceiver finishActivityReceiver) {
+                    loginUserWithKmCallBack(context, data, new KmCallback() {
+                        @Override
+                        public void onSuccess(Object message) {
+                            finishActivityReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
+                            if (callback != null) {
+                                callback.onSuccess(message);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Object error) {
+                            finishActivityReceiver.send(KmConstants.PRECHAT_RESULT_CODE, null);
+                            if (callback != null) {
+                                callback.onFailure(error);
+                            }
+                        }
+                    }, kmConversationBuilder);
                 }
 
                 @Override

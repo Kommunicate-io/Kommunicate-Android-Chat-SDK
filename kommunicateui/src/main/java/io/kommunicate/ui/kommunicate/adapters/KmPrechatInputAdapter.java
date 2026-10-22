@@ -53,7 +53,6 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
     private Context context;
     public static final String PRECHAT_DROPDOWN_ELEMENT = "select";
     private static final int COUNTRY_CODE_INPUT_VIEW_TYPE = 3;
-    private static final int MAX_PHONE_NUMBER_LENGTH = 15;
 
     public KmPrechatInputAdapter(List<KmPrechatInputModel> inputModelList, Context context) {
         this.inputModelList = inputModelList;
@@ -265,7 +264,6 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
 
         public KmPrechatPhoneInputViewHolder(@NonNull View itemView) {
             super(itemView);
-            inputEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MAX_PHONE_NUMBER_LENGTH)});
             textInputLayout.setExpandedHintEnabled(false);
             textInputLayout.setPrefixTextColor(ColorStateList.valueOf(Utils.getColor(context, R.color.prechat_edittext_text_color)));
 
@@ -289,6 +287,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
         private void setCountryCode(KmCountryCode country) {
             if (country != null) {
                 textInputLayout.setPrefixText(country.getFlag() + " " + country.getDialCode());
+                inputEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(country.getMaxInputLength())});
             }
         }
     }

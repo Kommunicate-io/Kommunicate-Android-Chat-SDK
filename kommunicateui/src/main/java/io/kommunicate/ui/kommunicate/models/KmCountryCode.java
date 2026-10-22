@@ -36,6 +36,10 @@ public class KmCountryCode {
         return flag;
     }
 
+    public int getMaxInputLength() {
+        return maxNumberLength + trunkPrefix.length();
+    }
+
     public String getNumberValidationRegex() {
         String optionalTrunkPrefix = trunkPrefix.isEmpty() ? "" : "(?:" + trunkPrefix + ")?";
         return "^" + optionalTrunkPrefix + "\\d{" + minNumberLength + "," + maxNumberLength + "}$";

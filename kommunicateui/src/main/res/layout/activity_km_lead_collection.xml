@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/kmPreChatToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/KommunicateActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:titleTextAppearance="@style/ToolbarTitle" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScroll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:fillViewport="true"
         android:scrollbars="none">
 
@@ -43,11 +58,11 @@
                 android:id="@+id/kmPreChatGreetingText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="45dp"
-                android:layout_marginLeft="45dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="45dp"
-                android:layout_marginRight="45dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:letterSpacing="0.05"
@@ -60,29 +75,34 @@
                 android:id="@+id/kmPreChatRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="37dp"
-                android:layout_marginLeft="37dp"
-                android:layout_marginTop="46dp"
-                android:layout_marginEnd="39dp"
-                android:layout_marginRight="39dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
                 android:layout_marginBottom="8dp"
                 android:nestedScrollingEnabled="false" />
 
             <Button
                 android:id="@+id/start_conversation"
-                android:layout_width="248dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="54dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
                 android:layout_marginBottom="25dp"
+                android:minHeight="48dp"
+                android:padding="12dp"
                 android:background="@drawable/start_new_conv_shape"
                 android:fontFamily="sans-serif-medium"
                 android:letterSpacing="0.04"
                 android:text="@string/start_conversation"
                 android:textAllCaps="false"
                 android:textColor="@color/default_start_new_button_text_color"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:visibility="visible" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

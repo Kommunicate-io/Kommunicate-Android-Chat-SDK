@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/km_country_parent_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingStart="12dp"
+    android:paddingLeft="12dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="12dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="12dp">
+
+    <TextView
+        android:id="@+id/km_country_flag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/km_country_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif"
+        android:maxLines="1"
+        android:textColor="@color/km_language_name_text_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/km_country_dial_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/km_language_code_text_color"
+        android:textSize="16sp" />
+</LinearLayout>

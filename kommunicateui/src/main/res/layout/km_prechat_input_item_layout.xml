@@ -18,7 +18,7 @@
             android:fontFamily="sans-serif"
             android:letterSpacing="0.06"
             android:textColor="@color/prechat_edittext_text_color"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="normal" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.os.ResultReceiver;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +27,7 @@ import io.kommunicate.models.KmAppSettingModel;
 import io.kommunicate.models.KmPrechatInputModel;
 
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
+import io.kommunicate.ui.utils.InsetHelper;
 import io.kommunicate.commons.AppContextService;
 import io.kommunicate.commons.file.FileUtils;
 import io.kommunicate.commons.json.GsonUtils;
@@ -42,6 +44,7 @@ public class LeadCollectionActivity extends KmBaseActivity implements View.OnCli
     public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     public static final String PHONE_NUMBER_VALIDATION_REGEX = "^\\d{10}$";
     public static final String NUMBER_VALIDATION_REGEX = "[0-9]+";
+    private static final float INCOMPLETE_FORM_BUTTON_ALPHA = 0.5f;
     private ResultReceiver prechatReceiver;
     private KmPrechatInputAdapter prechatInputAdapter;
     private List<KmPrechatInputModel> inputModelList;
@@ -91,6 +94,7 @@ public class LeadCollectionActivity extends KmBaseActivity implements View.OnCli
             }
 
         }
+        setupToolbar(themeHelper);
         greetingText = (TextView) findViewById(R.id.kmPreChatGreetingText);
         setGreetingsText();
         RecyclerView kmPreChatRecyclerView = findViewById(R.id.kmPreChatRecyclerView);
@@ -101,9 +105,45 @@ public class LeadCollectionActivity extends KmBaseActivity implements View.OnCli
         kmPreChatRecyclerView.setAdapter(prechatInputAdapter);
 
         Button startConversationButton = findViewById(R.id.start_conversation);
+        startConversationButton.getBackground().mutate().setTint(themeHelper.getPrimaryColor());
         startConversationButton.setOnClickListener(this);
+        prechatInputAdapter.setOnInputChangedListener(() -> updateStartButtonState(startConversationButton));
+        updateStartButtonState(startConversationButton);
+
+        setupWindowInsets();
 
         initOnBackPressed();
+    }
+
+    private void updateStartButtonState(Button startConversationButton) {
+        startConversationButton.setAlpha(prechatInputAdapter.isFormComplete() ? 1f : INCOMPLETE_FORM_BUTTON_ALPHA);
+    }
+
+    private void setupToolbar(KmThemeHelper themeHelper) {
+        Toolbar toolbar = findViewById(R.id.kmPreChatToolbar);
+        toolbar.setBackgroundColor(themeHelper.getToolbarColor());
+        toolbar.setTitleTextColor(themeHelper.getToolbarTitleColor());
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.conversations);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+    }
+
+    private void setupWindowInsets() {
+        InsetHelper.configureSystemInsets(
+                findViewById(R.id.kmPreChatToolbar),
+                InsetHelper.USE_SYSTEM_INSET,
+                InsetHelper.NO_INSET,
+                true
+        );
+        InsetHelper.configureSystemInsets(
+                findViewById(R.id.nestedScroll),
+                InsetHelper.NO_INSET,
+                InsetHelper.USE_SYSTEM_INSET,
+                true
+        );
     }
 
     private void initOnBackPressed() {

@@ -44,6 +44,7 @@ public class LeadCollectionActivity extends KmBaseActivity implements View.OnCli
     public static final String EMAIL_VALIDATION_REGEX = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
     public static final String PHONE_NUMBER_VALIDATION_REGEX = "^\\d{10}$";
     public static final String NUMBER_VALIDATION_REGEX = "[0-9]+";
+    private static final float INCOMPLETE_FORM_BUTTON_ALPHA = 0.5f;
     private ResultReceiver prechatReceiver;
     private KmPrechatInputAdapter prechatInputAdapter;
     private List<KmPrechatInputModel> inputModelList;
@@ -106,10 +107,16 @@ public class LeadCollectionActivity extends KmBaseActivity implements View.OnCli
         Button startConversationButton = findViewById(R.id.start_conversation);
         startConversationButton.getBackground().mutate().setTint(themeHelper.getPrimaryColor());
         startConversationButton.setOnClickListener(this);
+        prechatInputAdapter.setOnInputChangedListener(() -> updateStartButtonState(startConversationButton));
+        updateStartButtonState(startConversationButton);
 
         setupWindowInsets();
 
         initOnBackPressed();
+    }
+
+    private void updateStartButtonState(Button startConversationButton) {
+        startConversationButton.setAlpha(prechatInputAdapter.isFormComplete() ? 1f : INCOMPLETE_FORM_BUTTON_ALPHA);
     }
 
     private void setupToolbar(KmThemeHelper themeHelper) {

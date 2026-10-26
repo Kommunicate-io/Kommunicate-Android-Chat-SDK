@@ -45,6 +45,19 @@ public class KmCountryCode {
         return "^" + optionalTrunkPrefix + "\\d{" + minNumberLength + "," + maxNumberLength + "}$";
     }
 
+    public boolean isValidNumber(String number) {
+        if (!number.matches(getNumberValidationRegex())) {
+            return false;
+        }
+        String nationalNumber = removeTrunkPrefix(number);
+        for (int i = 1; i < nationalNumber.length(); i++) {
+            if (nationalNumber.charAt(i) != nationalNumber.charAt(0)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getInternationalNumber(String number) {
         return getDialCode() + removeTrunkPrefix(number);
     }

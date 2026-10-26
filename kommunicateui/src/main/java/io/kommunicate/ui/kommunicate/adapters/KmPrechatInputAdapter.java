@@ -51,6 +51,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
     private Map<String, String> inputTextMap;
     private Map<String, KmCountryCode> countryCodeMap;
     private Context context;
+    private Runnable onInputChangedListener;
     public static final String PRECHAT_DROPDOWN_ELEMENT = "select";
     private static final int COUNTRY_CODE_INPUT_VIEW_TYPE = 3;
 
@@ -179,7 +180,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
         inputTextMap.putAll(dataMap);
         for (KmPrechatInputModel inputModel : inputModelList) {
             boolean isEmptyFieldError = inputModel.isRequired() && TextUtils.isEmpty(inputTextMap.get(inputModel.getField()));
-            boolean isValidationError = !isInValidCompositeField(inputModel) && !TextUtils.isEmpty(inputTextMap.get(inputModel.getField())) && !TextUtils.isEmpty(inputModel.getValidationRegex()) && !Pattern.compile(inputModel.getValidationRegex()).matcher(inputTextMap.get(inputModel.getField())).matches();
+            boolean isValidationError = !isInValidCompositeField(inputModel) && !TextUtils.isEmpty(inputTextMap.get(inputModel.getField())) && isInvalidFormat(inputModel, inputTextMap.get(inputModel.getField()));
 
             if (isEmptyFieldError || isValidationError) {
                 isValid = false;
@@ -200,6 +201,40 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
         }
         notifyDataSetChanged();
         return isValid;
+    }
+
+    public boolean isFormComplete() {
+        Map<String, String> values = new HashMap<>(inputTextMap);
+        values.putAll(dataMap);
+        for (KmPrechatInputModel inputModel : inputModelList) {
+            String value = values.get(inputModel.getField());
+            if (TextUtils.isEmpty(value)) {
+                if (inputModel.isRequired() || (!TextUtils.isEmpty(inputModel.getCompositeRequiredField()) && TextUtils.isEmpty(values.get(inputModel.getCompositeRequiredField())))) {
+                    return false;
+                }
+            } else if (isInvalidFormat(inputModel, value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setOnInputChangedListener(Runnable onInputChangedListener) {
+        this.onInputChangedListener = onInputChangedListener;
+    }
+
+    private void notifyInputChanged() {
+        if (onInputChangedListener != null) {
+            onInputChangedListener.run();
+        }
+    }
+
+    private boolean isInvalidFormat(KmPrechatInputModel inputModel, String value) {
+        KmCountryCode country = countryCodeMap.get(inputModel.getField());
+        if (country != null) {
+            return !country.isValidNumber(value);
+        }
+        return !TextUtils.isEmpty(inputModel.getValidationRegex()) && !Pattern.compile(inputModel.getValidationRegex()).matcher(value).matches();
     }
 
     private void selectCountry(KmPrechatInputModel inputModel, KmCountryCode country) {
@@ -254,6 +289,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
                     KmPrechatInputModel model = getItem(getAdapterPosition());
                     if (model != null) {
                         dataMap.put(model.getField(), s.toString());
+                        notifyInputChanged();
                     }
                 }
             });
@@ -280,6 +316,8 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
                 new KmCountryCodePopup(view.getContext(), countryCodeMap.get(model.getField()), (selectedView, country) -> {
                     selectCountry(model, country);
                     setCountryCode(country);
+                    inputEditText.setError(null);
+                    notifyInputChanged();
                 }).show(textInputLayout);
             });
         }
@@ -312,6 +350,7 @@ public class KmPrechatInputAdapter extends RecyclerView.Adapter {
                         } else if(model.getPlaceholder() == null) {
                             dataMap.put(model.getField(), adapterView.getItemAtPosition(i).toString());
                         }
+                        notifyInputChanged();
                     }
                 }
                 @Override

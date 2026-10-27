@@ -80,6 +80,11 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".devkit.api.notification.NotificationActionReceiver"
+            android:exported="false"
+            tools:node="merge" />
+
         <meta-data
             android:name="activity.open.on.notification"
             android:value="io.kommunicate.ui.conversation.activity.ConversationActivity" />

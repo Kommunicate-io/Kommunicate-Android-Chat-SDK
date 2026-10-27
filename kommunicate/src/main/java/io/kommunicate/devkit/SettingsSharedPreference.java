@@ -43,6 +43,7 @@ public class SettingsSharedPreference {
     private static final String START_GROUP_OF_TWO = "START_GROUP_OF_TWO";
     private static final String AL_SHOW_APP_ICON = "AL_SHOW_APP_ICON";
     private static String NOTIFICATION_STACKING = "NOTIFICATION_STACKING";
+    private static final String NOTIFICATION_REPLY_ENABLE = "NOTIFICATION_REPLY_ENABLE";
     private static final String BADGE_COUNT_ENABLE = "BADGE_COUNT_ENABLE";
     private static String vibration_notification = "vibration_notification";
     private static final String S3_STORAGE_SERVICE_ENABLED = "S3_STORAGE_SERVICE_ENABLED";
@@ -253,6 +254,15 @@ public class SettingsSharedPreference {
 
     public void setNotificationStacking(boolean enableOrDisable) {
         sharedPreferences.edit().putBoolean(NOTIFICATION_STACKING, enableOrDisable).commit();
+    }
+
+    public boolean isNotificationReplyEnabled() {
+        return sharedPreferences.getBoolean(NOTIFICATION_REPLY_ENABLE, false);
+    }
+
+    public SettingsSharedPreference enableNotificationReply(boolean enable) {
+        sharedPreferences.edit().putBoolean(NOTIFICATION_REPLY_ENABLE, enable).commit();
+        return this;
     }
 
 

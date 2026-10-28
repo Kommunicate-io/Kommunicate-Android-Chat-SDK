@@ -20,4 +20,8 @@
     <string name="notification_testing">Testing notification</string>
     <string name="mute_notification">Successfully muted/unmuted user</string>
     <string name="mute_err">Some error occurred</string>
+    <string name="km_notification_reply">Reply</string>
+    <string name="km_notification_reply_hint">Type a message</string>
+    <string name="km_notification_mark_as_read">Mark as read</string>
+    <string name="km_notification_you">You</string>
 </resources>

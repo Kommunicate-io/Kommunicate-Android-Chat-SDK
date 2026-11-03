@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="km_attachment_screen_background">#FAFAFA</color>
+    <color name="km_attachment_tile_background">#E8EAF2</color>
+    <color name="km_attachment_plus_color">#5754B8</color>
+    <color name="km_attachment_bar_background">#B3101C1A</color>
+    <color name="km_attachment_delete_background">#E6101C1A</color>
+    <color name="km_attachment_new_label_background">#7B8788</color>
+    <color name="km_attachment_caption_text">#1B2321</color>
+    <color name="km_attachment_caption_hint">#8A94A6</color>
+    <color name="km_attachment_caption_line">#C9CEDB</color>
+    <color name="km_attachment_caption_line_focused">#5754B8</color>
+    <color name="km_attachment_cancel_button">#6B7A80</color>
+    <color name="km_attachment_send_button">#5754B8</color>
+</resources>

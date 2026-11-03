@@ -9,7 +9,6 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.NinePatchDrawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +20,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -64,6 +62,7 @@ public class MobiComAttachmentSelectorActivity extends KmBaseActivity {
 
     public static final String MULTISELECT_SELECTED_FILES = "multiselect.selectedFiles";
     public static final String MULTISELECT_MESSAGE = "multiselect.message";
+    public static final String MULTISELECT_CAPTIONS = "multiselect.captions";
     public static final String URI_LIST = "URI_LIST";
     public static String USER_ID = "USER_ID";
     public static String DISPLAY_NAME = "DISPLAY_NAME";
@@ -80,7 +79,6 @@ public class MobiComAttachmentSelectorActivity extends KmBaseActivity {
     private Button sendAttachment;
     private Button cancelAttachment;
     private FrameLayout attachmentAction;
-    private EditText messageEditText;
     private ConnectivityReceiver connectivityReceiver;
     private GridView galleryImagesGridView;
     private List<String> restrictedWords;
@@ -273,15 +271,10 @@ public class MobiComAttachmentSelectorActivity extends KmBaseActivity {
         cancelAttachment = (Button) findViewById(R.id.attachment_cancel_btn);
         attachmentAction = (FrameLayout) findViewById(R.id.attachment_action_button);
         galleryImagesGridView = (GridView) findViewById(R.id.attachment_grid_View);
-        messageEditText = (EditText) findViewById(R.id.attachment_edit_text);
         KmThemeHelper themeHelper = KmThemeHelper.getInstance(this, customizationSettings);
         if (themeHelper.isDarkModeEnabledForSDK()) {
             idRootLinearLayout = findViewById(R.id.idRootLinearLayout);
             idRootLinearLayout.setBackgroundColor(getResources().getColor(R.color.dark_mode_default));
-            NinePatchDrawable bgShape = (NinePatchDrawable) messageEditText.getBackground();
-            bgShape.setColorFilter(getResources().getColor(R.color.received_message_bg_color_night), android.graphics.PorterDuff.Mode.MULTIPLY);
-            messageEditText.setTextColor(getResources().getColor(R.color.chatbar_text_color));
-            messageEditText.setHintTextColor(getResources().getColor(R.color.chatbar_text_color));
         }
         cancelAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -305,10 +298,12 @@ public class MobiComAttachmentSelectorActivity extends KmBaseActivity {
                     return;
                 }
 
+                ArrayList<String> captions = imagesAdapter.getCaptions();
                 if (imageUri != null) {
-                    for (Uri uri : attachmentFileList) {
+                    for (int index = 0; index < attachmentFileList.size(); index++) {
+                        Uri uri = attachmentFileList.get(index);
                         try {
-                            Message messageToSend = kmAttachmentsController.putAttachmentInfo(uri, false, groupId, userId, messageEditText.getText().toString());
+                            Message messageToSend = kmAttachmentsController.putAttachmentInfo(uri, false, groupId, userId, captions.get(index));
                             Intent startConversationActivity = new Intent(MobiComAttachmentSelectorActivity.this, ConversationActivity.class);
                             if (groupId != 0) {
                                 startConversationActivity.putExtra(ConversationUIService.GROUP_ID, groupId);
@@ -329,7 +324,7 @@ public class MobiComAttachmentSelectorActivity extends KmBaseActivity {
                 } else {
                     Intent intent = new Intent();
                     intent.putParcelableArrayListExtra(MULTISELECT_SELECTED_FILES, attachmentFileList);
-                    intent.putExtra(MULTISELECT_MESSAGE, messageEditText.getText().toString());
+                    intent.putStringArrayListExtra(MULTISELECT_CAPTIONS, captions);
                     setResult(RESULT_OK, intent);
                     finish();
                 }
@@ -364,8 +359,17 @@ public class MobiComAttachmentSelectorActivity extends KmBaseActivity {
     }
 
     boolean validateCaptionTextAndShowDialog() {
-        if (!TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
-            String inputMessage = messageEditText.getText().toString();
+        for (String caption : imagesAdapter.getCaptions()) {
+            if (!isCaptionValid(caption)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isCaptionValid(String caption) {
+        if (!TextUtils.isEmpty(caption) && !TextUtils.isEmpty(caption.trim())) {
+            String inputMessage = caption;
             String[] inputMsg = inputMessage.toLowerCase().split(" ");
             List<String> userInputList = Arrays.asList(inputMsg);
 

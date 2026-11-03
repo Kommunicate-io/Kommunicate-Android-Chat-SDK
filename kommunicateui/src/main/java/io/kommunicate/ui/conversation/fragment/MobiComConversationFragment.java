@@ -3265,6 +3265,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     }
 
     public void loadFile(Uri uri, File file, String mimeType) {
+        loadFile(uri, file, mimeType, null);
+    }
+
+    public void loadFile(Uri uri, File file, String mimeType, String caption) {
         if (uri == null || file == null) {
             KmToast.error(AppContextService.getContext(getContext()), AppContextService.getContext(getContext()).getString(R.string.file_not_selected), Toast.LENGTH_LONG).show();
             return;
@@ -3296,7 +3300,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         attachmentLayout.setVisibility(VISIBLE);
         if (mimeType != null && (mimeType.startsWith(IMAGE) || mimeType.startsWith(VIDEO))) {
-            sendMessage();
+            if (!TextUtils.isEmpty(caption)) {
+                sendMessage(caption, Message.ContentType.ATTACHMENT.getValue(), filePath);
+            } else {
+                sendMessage();
+            }
         } else {
             attachedFile.setVisibility(VISIBLE);
             mediaContainer.setImageBitmap(null);

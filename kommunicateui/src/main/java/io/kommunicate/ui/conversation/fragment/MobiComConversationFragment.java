@@ -2038,23 +2038,27 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (!restrictedContent) {
                 sendMessage(messageEditText.getText().toString().trim());
             } else {
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
-                        setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                handleSendAndRecordButtonView(true);
-                            }
-                        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            @Override
-                            public void onCancel(DialogInterface dialog) {
-                                handleSendAndRecordButtonView(true);
-                            }
-                        });
-                alertDialog.setTitle(customizationSettings.getRestrictedWordMessage());
-                alertDialog.setCancelable(true);
-                alertDialog.create().show();
+                showRestrictedContentDialog();
             }
         }
+    }
+
+    private void showRestrictedContentDialog() {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity()).
+                setPositiveButton(R.string.ok_alert, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        handleSendAndRecordButtonView(true);
+                    }
+                }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        handleSendAndRecordButtonView(true);
+                    }
+                });
+        alertDialog.setTitle(customizationSettings.getRestrictedWordMessage());
+        alertDialog.setCancelable(true);
+        alertDialog.create().show();
     }
 
     private boolean containsRestrictedContent(String inputMessage) throws PatternSyntaxException {
@@ -3301,7 +3305,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         attachmentLayout.setVisibility(VISIBLE);
         if (mimeType != null && (mimeType.startsWith(IMAGE) || mimeType.startsWith(VIDEO))) {
             if (!TextUtils.isEmpty(caption)) {
-                sendMessage(caption, Message.ContentType.ATTACHMENT.getValue(), filePath);
+                sendAttachmentWithCaption(caption);
             } else {
                 sendMessage();
             }
@@ -3309,6 +3313,24 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             attachedFile.setVisibility(VISIBLE);
             mediaContainer.setImageBitmap(null);
         }
+    }
+
+    /**
+     * Sends the pending attachment with an explicit caption after the same restricted content
+     * check used for typed messages. The composer draft is left untouched.
+     */
+    private void sendAttachmentWithCaption(String caption) {
+        try {
+            if (containsRestrictedContent(caption)) {
+                showRestrictedContentDialog();
+                return;
+            }
+        } catch (PatternSyntaxException e) {
+            e.printStackTrace();
+            createInvalidPatternExceptionDialog();
+            return;
+        }
+        sendMessage(caption, Message.ContentType.ATTACHMENT.getValue(), filePath);
     }
 
     public synchronized boolean updateMessageList(Message message, boolean update) {

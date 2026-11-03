@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.os.Bundle;
+import android.util.AtomicFile;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -186,9 +187,21 @@ public class KmCameraPreviewActivity extends AppCompatActivity {
         if (full == null) {
             return false;
         }
-        try (FileOutputStream out = new FileOutputStream(imagePath)) {
-            return full.compress(Bitmap.CompressFormat.JPEG, 95, out);
+        // Write atomically so the original capture stays intact if encoding fails.
+        AtomicFile atomicFile = new AtomicFile(new File(imagePath));
+        FileOutputStream out = null;
+        try {
+            out = atomicFile.startWrite();
+            if (!full.compress(Bitmap.CompressFormat.JPEG, 95, out)) {
+                atomicFile.failWrite(out);
+                return false;
+            }
+            atomicFile.finishWrite(out);
+            return true;
         } catch (Exception e) {
+            if (out != null) {
+                atomicFile.failWrite(out);
+            }
             e.printStackTrace();
             return false;
         } finally {

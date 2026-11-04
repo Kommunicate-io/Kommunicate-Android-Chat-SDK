@@ -43,6 +43,7 @@ import io.kommunicate.ui.async.FileTaskAsync;
 import io.kommunicate.ui.async.KmChannelDeleteTask;
 import io.kommunicate.ui.async.KmChannelLeaveMember;
 import io.kommunicate.ui.conversation.activity.ConversationActivity;
+import io.kommunicate.ui.conversation.activity.KmCameraPreviewActivity;
 import io.kommunicate.ui.conversation.activity.MobiComAttachmentSelectorActivity;
 import io.kommunicate.ui.conversation.activity.MobiComKitActivityInterface;
 import io.kommunicate.ui.conversation.fragment.ConversationFragment;
@@ -208,11 +209,37 @@ public class ConversationUIService {
         }
     }
 
+    /**
+     * send the attachment messages, each with its own caption.
+     *
+     * @param attachmentList the list of attachments
+     * @param captions       captions aligned by index with the attachments
+     */
+    public void sendAttachments(ArrayList<Uri> attachmentList, List<String> captions) {
+        for (int index = 0; index < attachmentList.size(); index++) {
+            String caption = captions != null && index < captions.size() && captions.get(index) != null ? captions.get(index) : "";
+            getConversationFragment().sendMessage(caption, Message.ContentType.ATTACHMENT.getValue(), attachmentList.get(index).toString());
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         try {
+            if (requestCode == MultimediaOptionFragment.REQUEST_CODE_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+                File capturedFile = ((ConversationActivity) fragmentActivity).getFileObject();
+                if (capturedFile != null) {
+                    Intent previewIntent = new Intent(fragmentActivity, KmCameraPreviewActivity.class);
+                    previewIntent.putExtra(KmCameraPreviewActivity.EXTRA_IMAGE_PATH, capturedFile.getAbsolutePath());
+                    fragmentActivity.startActivityForResult(previewIntent, MultimediaOptionFragment.REQUEST_CODE_PREVIEW_PHOTO);
+                    return;
+                }
+            }
+
             if ((requestCode == MultimediaOptionFragment.REQUEST_CODE_ATTACH_PHOTO ||
-                    requestCode == MultimediaOptionFragment.REQUEST_CODE_TAKE_PHOTO)
+                    requestCode == MultimediaOptionFragment.REQUEST_CODE_TAKE_PHOTO ||
+                    requestCode == MultimediaOptionFragment.REQUEST_CODE_PREVIEW_PHOTO)
                     && resultCode == Activity.RESULT_OK) {
+                final String photoCaption = requestCode == MultimediaOptionFragment.REQUEST_CODE_PREVIEW_PHOTO && intent != null
+                        ? intent.getStringExtra(KmCameraPreviewActivity.EXTRA_CAPTION) : null;
                 Uri selectedFileUri = (intent == null ? null : intent.getData());
                 File file = null;
                 if (selectedFileUri == null) {
@@ -261,12 +288,12 @@ public class ConversationUIService {
 
                         @Override
                         public void postTaskUIMethod(Uri uri, boolean completed, File file) {
-                            getConversationFragment().loadFile(uri, file, mimeType);
+                            getConversationFragment().loadFile(uri, file, mimeType, photoCaption);
                             Utils.printLog(fragmentActivity, TAG, "File uri: " + uri);
                         }
                     }, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
-                    getConversationFragment().loadFile(selectedFileUri, file, null);
+                    getConversationFragment().loadFile(selectedFileUri, file, null, photoCaption);
                     Utils.printLog(fragmentActivity, TAG, "File uri: " + selectedFileUri);
                 }
             }
@@ -337,10 +364,14 @@ public class ConversationUIService {
 
             if (requestCode == MultimediaOptionFragment.REQUEST_MULTI_ATTCAHMENT && resultCode == Activity.RESULT_OK) {
                 ArrayList<Uri> attachmentList = intent.getParcelableArrayListExtra(MobiComAttachmentSelectorActivity.MULTISELECT_SELECTED_FILES);
-                String messageText = intent.getStringExtra(MobiComAttachmentSelectorActivity.MULTISELECT_MESSAGE);
+                ArrayList<String> captions = intent.getStringArrayListExtra(MobiComAttachmentSelectorActivity.MULTISELECT_CAPTIONS);
 
                 //TODO: check performance, we might need to put in each posting in separate thread.
-                sendAttachments(attachmentList, messageText);
+                if (captions != null) {
+                    sendAttachments(attachmentList, captions);
+                } else {
+                    sendAttachments(attachmentList, intent.getStringExtra(MobiComAttachmentSelectorActivity.MULTISELECT_MESSAGE));
+                }
             }
 
             if (requestCode == MultimediaOptionFragment.REQUEST_CODE_SEND_LOCATION && resultCode == Activity.RESULT_OK) {

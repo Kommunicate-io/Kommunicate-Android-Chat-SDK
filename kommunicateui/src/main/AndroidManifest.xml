@@ -91,6 +91,12 @@
             tools:node="merge" />
 
         <activity
+            android:name="io.kommunicate.ui.conversation.activity.KmCameraPreviewActivity"
+            android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
+            android:exported="false"
+            android:theme="@style/KmSdkTheme"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name="io.kommunicate.ui.conversation.activity.MobiComAttachmentSelectorActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"

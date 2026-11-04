@@ -170,6 +170,9 @@
     <string name="cancel">Cancel</string>
     <string name="Add_caption">Add caption..</string>
     <string name="New_Attachment">New Attachment</string>
+    <string name="km_preview_rotate">Rotate</string>
+    <string name="km_preview_confirm">Use photo</string>
+    <string name="km_preview_save_failed">Unable to prepare the photo</string>
     <string name="send_location">Send Location</string>
     <string name="send_your_current_location">Send your Current Location</string>
     <string name="Add_Contacts">Add Contacts</string>

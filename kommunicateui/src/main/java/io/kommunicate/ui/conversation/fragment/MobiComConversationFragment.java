@@ -2033,7 +2033,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
      * It takes priority over the composer text and leaves the composer draft untouched.
      */
     private String getPendingAttachmentCaption() {
-        return !TextUtils.isEmpty(filePath) && !TextUtils.isEmpty(pendingAttachmentCaption) ? pendingAttachmentCaption : null;
+        return !TextUtils.isEmpty(filePath) ? pendingAttachmentCaption : null;
     }
 
     protected void processSendMessage() {

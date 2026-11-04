@@ -306,6 +306,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected ImageView mediaContainer;
     protected TextView attachedFile, userNotAbleToChatTextView;
     protected String filePath;
+    // Caption for the attachment waiting to be sent; kept until it is sent or removed.
+    private String pendingAttachmentCaption;
     protected boolean firstTimeMTexterFriend;
     protected MessageCommunicator messageCommunicator;
     protected List<Message> messageList = new ArrayList<Message>();
@@ -1092,6 +1094,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void onClick(View v) {
                 filePath = null;
+                pendingAttachmentCaption = null;
                 if (previewThumbnail != null) {
                     previewThumbnail.recycle();
                 }
@@ -1886,9 +1889,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     protected void sendMessage() {
         if (channel != null) {
             if (isUserGivingEmail && kmAwayView.isUserAnonymous() && kmAwayView.isCollectEmailOnAwayEnabled()) {
-                if (messageEditText != null && !TextUtils.isEmpty(messageEditText.getText().toString().trim())) {
+                String pendingCaption = getPendingAttachmentCaption();
+                String typedText = pendingCaption != null ? pendingCaption : (messageEditText != null ? messageEditText.getText().toString() : "");
+                if (!TextUtils.isEmpty(typedText.trim())) {
 
-                    String inputMessage = messageEditText.getText().toString();
+                    String inputMessage = typedText;
                     handleSendAndRecordButtonView(true);
                     if (!Pattern.compile(LeadCollectionActivity.EMAIL_VALIDATION_REGEX).matcher(inputMessage).matches()) {
                         kmAwayView.showInvalidEmail();
@@ -2019,12 +2024,22 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         this.messageMetaData = null;
         filePath = null;
+        pendingAttachmentCaption = null;
         return true;
     }
 
+    /**
+     * The caption of the pending attachment (e.g. from the camera preview), or null if there is none.
+     * It takes priority over the composer text and leaves the composer draft untouched.
+     */
+    private String getPendingAttachmentCaption() {
+        return !TextUtils.isEmpty(filePath) && !TextUtils.isEmpty(pendingAttachmentCaption) ? pendingAttachmentCaption : null;
+    }
+
     protected void processSendMessage() {
+        String attachmentCaption = getPendingAttachmentCaption();
         if (!TextUtils.isEmpty(messageEditText.getText().toString().trim()) || !TextUtils.isEmpty(filePath)) {
-            String inputMessage = messageEditText.getText().toString();
+            String inputMessage = attachmentCaption != null ? attachmentCaption : messageEditText.getText().toString();
             boolean restrictedContent;
 
             try {
@@ -2036,7 +2051,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             }
 
             if (!restrictedContent) {
-                sendMessage(messageEditText.getText().toString().trim());
+                if (attachmentCaption != null) {
+                    sendMessage(inputMessage.trim(), Message.ContentType.ATTACHMENT.getValue(), filePath);
+                } else {
+                    sendMessage(messageEditText.getText().toString().trim());
+                }
             } else {
                 showRestrictedContentDialog();
             }
@@ -3279,6 +3298,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         handleSendAndRecordButtonView(true);
         filePath = Uri.parse(file.getAbsolutePath()).toString();
+        pendingAttachmentCaption = caption;
         if (TextUtils.isEmpty(filePath)) {
             Utils.printLog(getContext(), TAG, "Error while fetching filePath");
             attachmentLayout.setVisibility(View.GONE);
@@ -3304,33 +3324,11 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         attachmentLayout.setVisibility(VISIBLE);
         if (mimeType != null && (mimeType.startsWith(IMAGE) || mimeType.startsWith(VIDEO))) {
-            if (!TextUtils.isEmpty(caption)) {
-                sendAttachmentWithCaption(caption);
-            } else {
-                sendMessage();
-            }
+            sendMessage();
         } else {
             attachedFile.setVisibility(VISIBLE);
             mediaContainer.setImageBitmap(null);
         }
-    }
-
-    /**
-     * Sends the pending attachment with an explicit caption after the same restricted content
-     * check used for typed messages. The composer draft is left untouched.
-     */
-    private void sendAttachmentWithCaption(String caption) {
-        try {
-            if (containsRestrictedContent(caption)) {
-                showRestrictedContentDialog();
-                return;
-            }
-        } catch (PatternSyntaxException e) {
-            e.printStackTrace();
-            createInvalidPatternExceptionDialog();
-            return;
-        }
-        sendMessage(caption, Message.ContentType.ATTACHMENT.getValue(), filePath);
     }
 
     public synchronized boolean updateMessageList(Message message, boolean update) {
@@ -3529,6 +3527,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         }
         attachmentLayout.setVisibility(View.GONE);
         filePath = null;
+        pendingAttachmentCaption = null;
     }
 
     protected Map<String, String> getMessageMetadata(Map<String, String> newMetadata) {

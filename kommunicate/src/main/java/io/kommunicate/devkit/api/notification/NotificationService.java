@@ -1,6 +1,7 @@
 package io.kommunicate.devkit.api.notification;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,10 +10,12 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.Person;
 import androidx.core.content.ContextCompat;
 
 import java.io.InputStream;
@@ -53,6 +56,7 @@ import static io.kommunicate.devkit.api.notification.VideoCallNotificationHelper
 public class NotificationService {
     public static final String NOTIFICATION_TEXT_NOT_AVAILABLE = "You received a message";
     public static final int NOTIFICATION_ID = 1000;
+    private static final int MAX_NOTIFICATION_MESSAGES = 6;
     private static final String TAG = "NotificationService";
     private static final String NOTIFICATION_SMALL_ICON_METADATA = "io.kommunicate.devkit.notification.smallIcon";
     private static final String NOTIFICATION_SMALL_ICON_COLOR = "io.kommunicate.devkit.notification.iconColor";
@@ -492,7 +496,19 @@ public class NotificationService {
         if (!muteNotifications(index)) {
             mBuilder.setSound(TextUtils.isEmpty(notificationFilePath) ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(notificationFilePath));
         }
-        if (message.hasAttachment()) {
+        int notificationId = message.getGroupId() != null ? String.valueOf(message.getGroupId()).hashCode() : message.getContactIds().hashCode();
+        if (settingsSharedPreference.isNotificationReplyEnabled()) {
+            Contact sender = appContactService.getContactById(message.getTo());
+            Person senderPerson = new Person.Builder().setName(sender != null ? sender.getDisplayName() : notificationInfo.title).build();
+            NotificationCompat.MessagingStyle messagingStyle = addToMessagingStyle(getActiveNotification(notificationId),
+                    new NotificationCompat.MessagingStyle.Message(getSpannedText(notificationText), System.currentTimeMillis(), senderPerson),
+                    getUnreadCount(message, contact));
+            if (channel != null && !(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType()))) {
+                messagingStyle.setConversationTitle(notificationInfo.title).setGroupConversation(true);
+            }
+            mBuilder.setStyle(messagingStyle);
+            NotificationActionReceiver.addActions(context, mBuilder, message, notificationId);
+        } else if (message.hasAttachment()) {
             try {
                 FileMeta fileMeta = message.getFileMetas();
                 HttpURLConnection httpConn = null;
@@ -506,7 +522,7 @@ public class NotificationService {
         }
         WearableNotificationWithVoice notificationWithVoice =
                 new WearableNotificationWithVoice(mBuilder, wearable_action_title,
-                        wearable_action_label, wearable_send_icon, message.getGroupId() != null ? String.valueOf(message.getGroupId()).hashCode() : message.getContactIds().hashCode());
+                        wearable_action_label, wearable_send_icon, notificationId);
         notificationWithVoice.setCurrentContext(context);
         notificationWithVoice.setPendingIntent(pendingIntent);
 
@@ -606,6 +622,43 @@ public class NotificationService {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(123, builder.build());
+    }
+
+    private Notification getActiveNotification(int notificationId) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager == null) {
+            return null;
+        }
+        for (StatusBarNotification statusBarNotification : notificationManager.getActiveNotifications()) {
+            if (statusBarNotification.getId() == notificationId) {
+                return statusBarNotification.getNotification();
+            }
+        }
+        return null;
+    }
+
+    // Unread count is reset when the conversation is opened, replied to or marked as read.
+    private int getUnreadCount(Message message, Contact contact) {
+        if (message.getGroupId() != null) {
+            return messageDatabaseService.getUnreadMessageCountForChannel(message.getGroupId());
+        }
+        return contact != null && contact.getUnreadCount() != null ? contact.getUnreadCount() : 0;
+    }
+
+    // Appends to the conversation's existing notification history, keeping only the unread messages (at most MAX_NOTIFICATION_MESSAGES).
+    // The active notification can still hold read messages, e.g. when the system keeps it on screen after a direct reply.
+    private NotificationCompat.MessagingStyle addToMessagingStyle(Notification activeNotification, NotificationCompat.MessagingStyle.Message styleMessage, int unreadCount) {
+        NotificationCompat.MessagingStyle messagingStyle = activeNotification != null ? NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(activeNotification) : null;
+        if (messagingStyle == null) {
+            messagingStyle = new NotificationCompat.MessagingStyle(new Person.Builder().setName(context.getString(R.string.km_notification_you)).build());
+        }
+        messagingStyle.addMessage(styleMessage);
+        int maxMessages = Math.min(Math.max(unreadCount, 1), MAX_NOTIFICATION_MESSAGES);
+        List<NotificationCompat.MessagingStyle.Message> messages = messagingStyle.getMessages();
+        while (messages.size() > maxMessages) {
+            messages.remove(0);
+        }
+        return messagingStyle;
     }
 
     static class NotificationInfo {

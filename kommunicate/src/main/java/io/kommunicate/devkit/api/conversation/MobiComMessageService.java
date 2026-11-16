@@ -192,6 +192,8 @@ public class MobiComMessageService {
             message.setHidden(true);
         }
 
+        // Message sync can return messages that are already stored (e.g. after they are marked read); don't count or notify them again.
+        boolean isAlreadyStored = !TextUtils.isEmpty(message.getKeyString()) && messageDatabaseService.isMessagePresent(message.getKeyString());
         messageDatabaseService.createMessage(message);
 
         //Check if we are........container is already opened...don't send broadcast
@@ -218,20 +220,22 @@ public class MobiComMessageService {
 
             if (message.isConsideredForCount() && !message.hasHideKey()) {
                 if (message.getTo() != null && message.getGroupId() == null && !message.isHidden()) {
-                    messageDatabaseService.updateContactUnreadCount(message.getTo());
+                    if (!isAlreadyStored) {
+                        messageDatabaseService.updateContactUnreadCount(message.getTo());
+                    }
                     BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
                     Contact contact = new ContactDatabase(context).getContactById(message.getTo());
-                    if (contact != null && !contact.isNotificationMuted()) {
+                    if (contact != null && !contact.isNotificationMuted() && !isAlreadyStored) {
                         sendNotification(message, index);
                     }
                 }
                 if (message.getGroupId() != null && !Message.GroupMessageMetaData.FALSE.getValue().equals(message.getMetaDataValueForKey(Message.GroupMessageMetaData.KEY.getValue()))) {
-                    if (!Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType()) && !message.isHidden()) {
+                    if (!Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType()) && !message.isHidden() && !isAlreadyStored) {
                         messageDatabaseService.updateChannelUnreadCount(message.getGroupId());
                     }
                     BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
                     Channel currentChannel = ChannelService.getInstance(context).getChannelInfo(message.getGroupId());
-                    if (showNotification && currentChannel != null && !currentChannel.isNotificationMuted()) {
+                    if (showNotification && !isAlreadyStored && currentChannel != null && !currentChannel.isNotificationMuted()) {
                         sendNotification(message, index);
                     }
                 }

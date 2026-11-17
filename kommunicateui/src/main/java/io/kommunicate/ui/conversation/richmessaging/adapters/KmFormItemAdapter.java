@@ -277,7 +277,7 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                             KmFormStateHelper.addFormState(messageKey, formStateModel);
                         }
 
-                        new KmRadioGroup(context, new KmRadioGroup.KmRadioButtonClickListener() {
+                        new KmRadioGroup(context, customizationSettings, new KmRadioGroup.KmRadioButtonClickListener() {
                             @Override
                             public void onClick(int index) {
                                 radioButtonSelectedIndices.put(position, index);
@@ -381,12 +381,15 @@ public class KmFormItemAdapter extends RecyclerView.Adapter {
                                 
                                 if (validationArray.get(position) == 1) {
                                     formItemViewHolder.formValidationText.setVisibility(View.VISIBLE);
-                                    formItemViewHolder.formValidationText.setText(dropdownList.getValidation().getErrorText());
+                                    formItemViewHolder.formValidationText.setText(dropdownList.getValidation() != null
+                                            && !TextUtils.isEmpty(dropdownList.getValidation().getErrorText())
+                                            ? dropdownList.getValidation().getErrorText()
+                                            : Utils.getString(context, R.string.default_form_validation_error_text));
                                 } else {
                                     formItemViewHolder.formValidationText.setVisibility(View.GONE);
                                 }
 
-                                KmDropdownItemAdapter dropdownItemAdapter = new KmDropdownItemAdapter(context, android.R.layout.simple_spinner_item, dropdownList.getOptions());
+                                KmDropdownItemAdapter dropdownItemAdapter = new KmDropdownItemAdapter(context, customizationSettings, android.R.layout.simple_spinner_item, dropdownList.getOptions());
 
                                 formItemViewHolder.formDropdownList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                                     @Override

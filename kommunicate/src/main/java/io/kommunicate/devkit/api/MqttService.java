@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import io.kommunicate.devkit.api.account.user.MobiComUserPreference;
 import io.kommunicate.devkit.api.account.user.User;
 import io.kommunicate.devkit.api.conversation.Message;
+import io.kommunicate.devkit.api.conversation.MobiComMessageService;
 import io.kommunicate.devkit.api.conversation.SyncCallService;
 import io.kommunicate.devkit.api.notification.MobiComPushReceiver;
 import io.kommunicate.devkit.broadcast.EventManager;
@@ -109,12 +110,14 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                     @Override
                     public void onSuccess(IMqttToken asyncActionToken) {
                         Utils.printLog(context, TAG, "Mqtt Connection successfull to : " + client.getServerURI());
+                        MobiComMessageService.markMqttStateChanged();
                         BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.MQTT_CONNECTED.toString());
                     }
 
                     @Override
                     public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                         Utils.printLog(context, TAG, "Mqtt Connection failed");
+                        MobiComMessageService.markMqttStateChanged();
                         BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.MQTT_DISCONNECTED.toString());
                     }
                 });
@@ -193,6 +196,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
             if (client != null && client.isConnected()) {
                 Utils.printLog(context, TAG, "Subscribing to conversation topic : " + (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + userKeyString);
                 client.subscribe((useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + userKeyString, 0);
+                MobiComMessageService.markMqttStateChanged();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -226,6 +230,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                 String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + customTopic;
                 Utils.printLog(context, TAG, "Subscribing to topic : " + topic);
                 client.subscribe(topic, 0);
+                MobiComMessageService.markMqttStateChanged();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -290,6 +295,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                 String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + SUPPORT_GROUP_TOPIC + "-" + getApplicationKey(context);
                 Utils.printLog(context, TAG, "Subscribing to support group topic : " + topic);
                 client.subscribe(topic, 0);
+                MobiComMessageService.markMqttStateChanged();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -328,6 +334,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                     String topic = (useEncrypted ? MQTT_ENCRYPTION_TOPIC : "") + TEAM_TOPIC + "-" + team;
                     Utils.printLog(context, TAG, "Subscribing to team topic : " + topic);
                     client.subscribe(topic, 0);
+                    MobiComMessageService.markMqttStateChanged();
                 }
             }
         } catch (Exception e) {
@@ -373,6 +380,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
         if (client != null && client.isConnected()) {
             try {
                 client.disconnect();
+                MobiComMessageService.markMqttStateChanged();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -386,6 +394,7 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
 
     @Override
     public void connectionLost(Throwable throwable) {
+        MobiComMessageService.markMqttStateChanged();
         BroadcastService.sendUpdate(context, BroadcastService.INTENT_ACTIONS.MQTT_DISCONNECTED.toString());
     }
 
@@ -456,10 +465,10 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                                                 syncCallService.deleteChannelConversationThread(message.getGroupId());
                                                 BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, message.getGroupId(), SUCCESS);
                                             }
-                                            syncCallService.syncMessages(null);
+                                            syncCallService.processOrSyncMessages(message);
                                         }
                                     } else {
-                                        syncCallService.syncMessages(null);
+                                        syncCallService.processOrSyncMessages(message);
                                     }
                                 }
 

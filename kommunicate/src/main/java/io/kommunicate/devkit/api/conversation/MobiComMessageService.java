@@ -7,6 +7,7 @@ import android.net.Uri;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import io.kommunicate.devkit.SettingsSharedPreference;
@@ -50,6 +51,11 @@ public class MobiComMessageService {
 
     public static final long DELAY = 60000L;
     private static final String TAG = "MobiComMessageService";
+    private static final long SYNC_PENDING_TIMEOUT_MS = 30 * 1000L;
+    private static final long SYNC_FRESH_TIMEOUT_MS = 60 * 1000L;
+    private static long syncPendingSince;
+    private static long mqttChangedAt;
+    private static long lastSyncStartedAt;
     public static Map<String, Uri> map = new HashMap<String, Uri>();
     public static Map<String, Message> mtMessages = new LinkedHashMap<String, Message>();
     protected Context context;
@@ -264,7 +270,72 @@ public class MobiComMessageService {
         processMessage(message, message.getTo(), 0);
     }
 
+    /**
+     * @return false if a full sync is already queued and has not started yet, so another one is redundant.
+     * The pending mark expires so a dropped job can never block syncs for good.
+     */
+    public static synchronized boolean markSyncPending() {
+        long now = SystemClock.elapsedRealtime();
+        if (syncPendingSince != 0 && now - syncPendingSince < SYNC_PENDING_TIMEOUT_MS) {
+            return false;
+        }
+        syncPendingSince = now;
+        return true;
+    }
+
+    private static synchronized void clearSyncPending() {
+        syncPendingSince = 0;
+    }
+
+    /**
+     * Call on every MQTT connect, disconnect and subscribe. Messages published around such an event may never reach
+     * MQTT, so only a sync that starts after it can be trusted to have everything.
+     */
+    public static synchronized void markMqttStateChanged() {
+        mqttChangedAt = SystemClock.elapsedRealtime();
+    }
+
+    private static synchronized void markSyncStarted(long startedAt) {
+        lastSyncStartedAt = startedAt;
+    }
+
+    private static synchronized boolean isSyncedSinceMqttChange() {
+        return lastSyncStartedAt > mqttChangedAt && SystemClock.elapsedRealtime() - lastSyncStartedAt < SYNC_FRESH_TIMEOUT_MS;
+    }
+
+    /**
+     * Processes a message received over MQTT the same way a sync would, without calling the sync API.
+     * Only done when a recent sync already covers everything before the current MQTT connection and the message needs
+     * nothing the sync does beyond processMessage (user details, channel info, block list, metadata service).
+     *
+     * @return false if the caller still has to sync.
+     */
+    public boolean processMqttMessageWithoutSync(Message message) {
+        if (!isSyncedSinceMqttChange() || TextUtils.isEmpty(message.getKeyString())
+                || !TextUtils.isEmpty(SettingsSharedPreference.getInstance(context).getMessageMetaDataServiceName())
+                || Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())
+                || Message.ContentType.BLOCK_NOTIFICATION_IN_GROUP.getValue().equals(message.getContentType())) {
+            return false;
+        }
+        try {
+            boolean isKnownConversation = message.getGroupId() != null
+                    ? ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId()) != null
+                    : baseContactService.isContactPresent(message.getContactIds());
+            if (!isKnownConversation) {
+                return false;
+            }
+            processMessage(message, message.getTo(), 0);
+            messageClientService.updateDeliveryStatus(message.getKeyString(), MobiComUserPreference.getInstance(context).getUserId(), null);
+            return true;
+        } catch (Exception e) {
+            Utils.printLog(context, TAG, "In-place MQTT processing failed, falling back to sync: " + e.getMessage());
+            return false;
+        }
+    }
+
     public synchronized void syncMessages() {
+        clearSyncPending();
+        long startedAt = SystemClock.elapsedRealtime();
         final MobiComUserPreference userpref = MobiComUserPreference.getInstance(context);
         boolean syncChannel = false;
         boolean syncChannelForMetadata = false;
@@ -332,6 +403,7 @@ public class MobiComMessageService {
                 }
             }
             userpref.setLastSyncTime(String.valueOf(syncMessageFeed.getLastSyncTime()));
+            markSyncStarted(startedAt);
             updateDeliveredStatus(syncMessageFeed.getDeliveredMessageKeys());
         }
     }

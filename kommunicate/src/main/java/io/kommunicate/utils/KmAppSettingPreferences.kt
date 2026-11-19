@@ -251,7 +251,7 @@ object KmAppSettingPreferences {
         AppSettingUseCase.executeWithExecutor(
             context,
             MobiComKitClientService.getApplicationKey(context),
-            true,
+            false,
             callback
         )
     }

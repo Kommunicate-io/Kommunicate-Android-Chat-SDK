@@ -14,6 +14,8 @@ import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure
 import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 
 /**
@@ -41,12 +43,18 @@ class KMUserLoginUseCase(
                 userClientService.loginKmUser(user)
             } else {
                 userClientService.clearDataAndPreference()
-                AppSettingUseCase(
-                    context = context,
-                    appId = KommunicateSettings.getInstance(context).applicationKey,
-                    updateCache = true // Forces to update the cache
-                ).execute()
-                registerUserClientService.createAccount(user)
+                coroutineScope {
+                    val appSettings = async {
+                        AppSettingUseCase(
+                            context = context,
+                            appId = KommunicateSettings.getInstance(context).applicationKey,
+                            updateCache = true // Forces to update the cache
+                        ).execute()
+                    }
+                    val registrationResponse = registerUserClientService.createAccount(user)
+                    appSettings.await()
+                    registrationResponse
+                }
             }
 
             preChatReceiver?.send(KmConstants.PRECHAT_RESULT_CODE, null)

@@ -25,6 +25,7 @@ public class ChatIntentService extends CoreJobIntentService {
     private MessageClientService messageClientService;
     public static final String AL_SYNC_ON_CONNECTIVITY = "AL_SYNC_ON_CONNECTIVITY";
     public static final String AL_TIME_CHANGE_RECEIVER = "AL_TIME_CHANGE_RECEIVER";
+    public static final String AL_SKIP_MESSAGE_AND_STATUS_SYNC = "AL_SKIP_MESSAGE_AND_STATUS_SYNC";
     MobiComConversationService conversationService;
 
     /**
@@ -60,10 +61,15 @@ public class ChatIntentService extends CoreJobIntentService {
         boolean timeChangeReceiver = intent.getBooleanExtra(AL_TIME_CHANGE_RECEIVER, false);
 
         if (connectivityChange) {
-            SyncCallService.getInstance(ChatIntentService.this).syncMessages(null);
+            boolean skipMessageAndStatusSync = intent.getBooleanExtra(AL_SKIP_MESSAGE_AND_STATUS_SYNC, false);
+            if (!skipMessageAndStatusSync) {
+                SyncCallService.getInstance(ChatIntentService.this).syncMessages(null);
+            }
             messageClientService.syncPendingMessages(true);
             messageClientService.syncDeleteMessages(true);
-            conversationService.processLastSeenAtStatus();
+            if (!skipMessageAndStatusSync) {
+                conversationService.processLastSeenAtStatus();
+            }
             UserService.getInstance(ChatIntentService.this).processSyncUserBlock();
         }
 

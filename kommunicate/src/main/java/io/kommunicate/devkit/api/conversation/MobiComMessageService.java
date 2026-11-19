@@ -220,12 +220,16 @@ public class MobiComMessageService {
             Utils.printLog(context, TAG, "Got notifications for Video call...");
             BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
 
-            VideoCallNotificationHelper helper = new VideoCallNotificationHelper(context);
-            helper.handleVideoCallNotificationMessages(message);
+            if (!isAlreadyStored) {
+                VideoCallNotificationHelper helper = new VideoCallNotificationHelper(context);
+                helper.handleVideoCallNotificationMessages(message);
+            }
 
         } else if (message.isVideoCallMessage()) {
             BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.SYNC_MESSAGE.toString(), message);
-            VideoCallNotificationHelper.buildVideoCallNotification(context, message, index);
+            if (!isAlreadyStored) {
+                VideoCallNotificationHelper.buildVideoCallNotification(context, message, index);
+            }
         } else if (!isContainerOpened) {
 
             if (message.isConsideredForCount() && !message.hasHideKey()) {

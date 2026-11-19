@@ -288,6 +288,11 @@ object KmAppSettingPreferences {
     }
 
     @JvmStatic
+    fun reapplyAppSetting(appSettingModel: KmAppSettingModel) {
+        setAppSetting(appSettingModel)
+    }
+
+    @JvmStatic
     fun setCallback(callback: KmCallback?) {
         this.callback = callback
     }

@@ -6417,6 +6417,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 @Override
                 public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
                     awayMessageLoadingChannelKeys.remove(requestedChannelKey);
+                    if (channel == null || !requestedChannelKey.equals(channel.getKey())) {
+                        return;
+                    }
                     showAwayMessage(true, response);
 
                 }
@@ -6424,6 +6427,9 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
                     awayMessageLoadingChannelKeys.remove(requestedChannelKey);
+                    if (channel == null || !requestedChannelKey.equals(channel.getKey())) {
+                        return;
+                    }
                     showAwayMessage(false, null);
                     Utils.printLog(context, TAG, "Response: " + response + "\nException : " + e);
                 }

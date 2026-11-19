@@ -31,17 +31,20 @@ class AppSettingUseCase(
             if (!updateCache && cachedSettings != null) {
                 return@withContext APIResult.success(cachedSettings)
             }
-            SessionCache.remove(CACHE_KEY)
 
             KmAppSettingPreferences.clearInstance()
             KmAppSettingPreferences.lastFetchTime = Calendar.getInstance().timeInMillis
             val appSettingModel = KmAppSettingPreferences.fetchAppSetting(context, appId)
-                ?: return@withContext APIResult.failed("Unable to fetch app settings. Null value received")
+            if (appSettingModel == null) {
+                cachedSettings?.let { KmAppSettingPreferences.reapplyAppSetting(it) }
+                return@withContext APIResult.failed("Unable to fetch app settings. Null value received")
+            }
 
             if (appSettingModel.isSuccess) {
                 SessionCache.put(CACHE_KEY, appSettingModel, CACHE_REFRESH_TIME)
                 APIResult.success(appSettingModel)
             } else {
+                cachedSettings?.let { KmAppSettingPreferences.reapplyAppSetting(it) }
                 APIResult.failed("Failed to fetch app settings. ${appSettingModel.code}")
             }
         } catch (e: Exception) {

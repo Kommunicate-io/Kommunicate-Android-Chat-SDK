@@ -6407,9 +6407,8 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public void loadAwayMessage() {
         if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()
                 && !Objects.equals(awayMessageLoadingChannelKey, channel.getKey())) {
-            final Integer requestedChannelKey = channel.getKey();
-            awayMessageLoadingChannelKey = requestedChannelKey;
-            Kommunicate.loadAwayMessage(getContext(), requestedChannelKey, new KmAwayMessageHandler() {
+            awayMessageLoadingChannelKey = channel.getKey();
+            Kommunicate.loadAwayMessage(getContext(), awayMessageLoadingChannelKey, new KmAwayMessageHandler() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
                     awayMessageLoadingChannelKey = null;

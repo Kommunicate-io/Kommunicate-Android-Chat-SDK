@@ -666,6 +666,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(null);
         recyclerViewPositionHelper = new RecyclerViewPositionHelper(recyclerView, linearLayoutManager);
         ((ConversationActivity) getActivity()).setChildFragmentLayoutBGToTransparent();
         messageList = new ArrayList<Message>();
@@ -2257,9 +2258,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             @Override
             public void run() {
                 //Note: Removing and adding the same message again as the new sms object will contain the keyString.
+                int previousIndex = messageList.indexOf(message);
                 messageList.remove(message);
                 messageList.add(message);
-                recyclerDetailConversationAdapter.notifyDataSetChanged();
+                if (previousIndex == messageList.size() - 1) {
+                    recyclerDetailConversationAdapter.onMessageChanged(previousIndex);
+                } else {
+                    recyclerDetailConversationAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -2278,8 +2284,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (conversationAdapter != null) {
                 if (messageList.get(i).isDeletedForAll()) {
                     messageList.remove(i);
+                    conversationAdapter.notifyDataSetChanged();
+                } else {
+                    conversationAdapter.onMessageChanged(i);
                 }
-                conversationAdapter.notifyDataSetChanged();
             }
             if (messageList.get(messageList.size() - 1).getMetadata().containsKey(IS_DONE_WITH_CLICKING)) {
                 templateAdapter.setMessageList(new HashMap<String, String>());
@@ -2350,11 +2358,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             public void run() {
                 //Todo: Handle disappearing messages.
                 boolean existingMessage = messageList.contains(message);
+                int previousSize = messageList.size();
                 boolean added = updateMessageList(message, false);
                 if (added) {
                     //Todo: update unread count
                     recyclerDetailConversationAdapter.updateLastSentMessage(message);
-                    recyclerDetailConversationAdapter.notifyDataSetChanged();
+                    recyclerDetailConversationAdapter.onMessagesAppended(previousSize);
                     emptyTextView.setVisibility(View.GONE);
                     currentConversationId = message.getConversationId();
                     channelKey = message.getGroupId();
@@ -3104,7 +3113,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 int i = messageList.indexOf(message);
                 if (i != -1) {
                     messageList.get(i).setCanceled(true);
-                    recyclerDetailConversationAdapter.notifyDataSetChanged();
+                    recyclerDetailConversationAdapter.onMessageChanged(i);
                 }
             }
         });
@@ -3217,9 +3226,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 }
                             }
                         } else if (!message.isVideoNotificationMessage() && !message.isHidden()) {
+                            int previousSize = messageList.size();
                             messageList.add(message);
                             emptyTextView.setVisibility(View.GONE);
-                            recyclerDetailConversationAdapter.notifyDataSetChanged();
+                            recyclerDetailConversationAdapter.onMessagesAppended(previousSize);
                             if (isFollowingNewMessages) {
                                 scrollToLatestMessage();
                             } else {

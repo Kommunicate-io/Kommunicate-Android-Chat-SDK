@@ -420,7 +420,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                     recentMessage = latestMessageForEachContact.get(message.getContactIds());
                 }
 
+                int previousIndex = -1;
                 if (recentMessage != null && message.getCreatedAtTime() >= recentMessage.getCreatedAtTime()) {
+                    previousIndex = messageList.indexOf(recentMessage);
                     messageList.remove(recentMessage);
                 } else if (recentMessage != null) {
                     return;
@@ -430,8 +432,12 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 } else {
                     latestMessageForEachContact.put(message.getContactIds(), message);
                 }
+                boolean wasAtTop = linearLayoutManager.findFirstCompletelyVisibleItemPosition() <= 0;
                 messageList.add(0, message);
-                recyclerAdapter.notifyDataSetChanged();
+                recyclerAdapter.onConversationMovedToTop(previousIndex);
+                if (wasAtTop) {
+                    recyclerView.scrollToPosition(0);
+                }
                 emptyTextView.setVisibility(View.GONE);
                 emptyTextView.setText(!TextUtils.isEmpty(customizationSettings.getNoConversationLabel()) ? customizationSettings.getNoConversationLabel() : AppContextService.getContext(context).getResources().getString(R.string.no_conversation));
             }
@@ -485,7 +491,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                                 TextView displayNameTextView = (TextView) view.findViewById(R.id.smReceivers);
                                 displayNameTextView.setText(contact.getDisplayName());
                                 recyclerAdapter.contactImageLoader.loadImage(contact, contactImage);
-                                recyclerAdapter.notifyDataSetChanged();
+                                recyclerAdapter.onConversationChanged(index);
                             }
                         }
                     } catch (Exception ex) {
@@ -575,9 +581,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                         latestMessageForEachContact.put(message.getContactIds(), message);
                     }
 
-                    messageList.set(messageList.indexOf(recentMessage), message);
+                    int recentMessageIndex = messageList.indexOf(recentMessage);
+                    messageList.set(recentMessageIndex, message);
 
-                    recyclerAdapter.notifyDataSetChanged();
+                    recyclerAdapter.onConversationChanged(recentMessageIndex);
                     if (messageList.isEmpty()) {
                         emptyTextView.setVisibility(View.VISIBLE);
                     }

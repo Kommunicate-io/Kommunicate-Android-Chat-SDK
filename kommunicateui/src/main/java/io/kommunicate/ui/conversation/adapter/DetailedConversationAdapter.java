@@ -1495,6 +1495,35 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
+    public void onMessagesAppended(int previousSize) {
+        int addedCount = messageList.size() - previousSize;
+        if (addedCount <= 0 || !canUpdateIncrementally(previousSize)) {
+            notifyDataSetChanged();
+            return;
+        }
+        notifyItemRangeInserted(previousSize, addedCount);
+        notifyItemChanged(previousSize - 1);
+    }
+
+    public void onMessageChanged(int position) {
+        if (position < 0 || position >= messageList.size() || originalList != null) {
+            notifyDataSetChanged();
+            return;
+        }
+        notifyItemChanged(position);
+        if (position > 0) {
+            notifyItemChanged(position - 1);
+        }
+    }
+
+    private boolean canUpdateIncrementally(int previousSize) {
+        return previousSize > 0
+                && previousSize <= messageList.size()
+                && originalList == null
+                && !(themeHelper.isHidePostCTA() || themeHelper.isDisableFormPostSubmit())
+                && !messageList.get(previousSize - 1).isTypingMessage();
+    }
+
     protected Pair<Integer, Integer> getReceivedMessageBgColors(Contact contact, Message message) {
         return new Pair<>(isHtmlTypeMessage(message) ? (isDarkModeEnabled ? context.getResources().getColor(R.color.dark_mode_default) : Color.WHITE) : Color.parseColor(isDarkModeEnabled ? customizationSettings.getReceivedMessageBackgroundColor().get(1) : customizationSettings.getReceivedMessageBackgroundColor().get(0)), Color.parseColor(isDarkModeEnabled ? customizationSettings.getReceivedMessageBorderColor().get(1) : customizationSettings.getReceivedMessageBorderColor().get(0)));
     }

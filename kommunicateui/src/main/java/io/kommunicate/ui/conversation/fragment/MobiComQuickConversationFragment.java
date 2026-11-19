@@ -434,7 +434,11 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                 }
                 boolean wasAtTop = linearLayoutManager.findFirstCompletelyVisibleItemPosition() <= 0;
                 messageList.add(0, message);
-                recyclerAdapter.onConversationMovedToTop(previousIndex);
+                if (isAlreadyLoading) {
+                    recyclerAdapter.notifyDataSetChanged();
+                } else {
+                    recyclerAdapter.onConversationMovedToTop(previousIndex);
+                }
                 if (wasAtTop) {
                     recyclerView.scrollToPosition(0);
                 }
@@ -491,7 +495,7 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
                                 TextView displayNameTextView = (TextView) view.findViewById(R.id.smReceivers);
                                 displayNameTextView.setText(contact.getDisplayName());
                                 recyclerAdapter.contactImageLoader.loadImage(contact, contactImage);
-                                recyclerAdapter.onConversationChanged(index);
+                                recyclerAdapter.notifyDataSetChanged();
                             }
                         }
                     } catch (Exception ex) {

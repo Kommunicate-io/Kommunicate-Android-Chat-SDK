@@ -31,6 +31,7 @@ class AppSettingUseCase(
             if (!updateCache && cachedSettings != null) {
                 return@withContext APIResult.success(cachedSettings)
             }
+            SessionCache.remove(CACHE_KEY)
 
             KmAppSettingPreferences.clearInstance()
             KmAppSettingPreferences.lastFetchTime = Calendar.getInstance().timeInMillis

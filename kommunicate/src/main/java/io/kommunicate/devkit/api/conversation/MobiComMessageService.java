@@ -56,6 +56,7 @@ public class MobiComMessageService {
     private static long syncPendingSince;
     private static long mqttChangedAt;
     private static long lastSyncStartedAt;
+    private static final Object MESSAGE_INGEST_LOCK = new Object();
     public static Map<String, Uri> map = new HashMap<String, Uri>();
     public static Map<String, Message> mtMessages = new LinkedHashMap<String, Message>();
     protected Context context;
@@ -199,8 +200,11 @@ public class MobiComMessageService {
         }
 
         // Message sync can return messages that are already stored (e.g. after they are marked read); don't count or notify them again.
-        boolean isAlreadyStored = !TextUtils.isEmpty(message.getKeyString()) && messageDatabaseService.isMessagePresent(message.getKeyString());
-        messageDatabaseService.createMessage(message);
+        boolean isAlreadyStored;
+        synchronized (MESSAGE_INGEST_LOCK) {
+            isAlreadyStored = !TextUtils.isEmpty(message.getKeyString()) && messageDatabaseService.isMessagePresent(message.getKeyString());
+            messageDatabaseService.createMessage(message);
+        }
 
         //Check if we are........container is already opened...don't send broadcast
         boolean isContainerOpened;
@@ -324,9 +328,13 @@ public class MobiComMessageService {
             if (!isKnownConversation) {
                 return false;
             }
+            if (SettingsSharedPreference.getInstance(context).isHandleDisplayName()
+                    && !TextUtils.isEmpty(message.getContactIds())
+                    && !baseContactService.isContactPresent(message.getContactIds())) {
+                return false;
+            }
             processMessage(message, message.getTo(), 0);
-            messageClientService.updateDeliveryStatus(message.getKeyString(), MobiComUserPreference.getInstance(context).getUserId(), null);
-            return true;
+            return messageClientService.sendDeliveryReport(message.getKeyString(), MobiComUserPreference.getInstance(context).getUserId());
         } catch (Exception e) {
             Utils.printLog(context, TAG, "In-place MQTT processing failed, falling back to sync: " + e.getMessage());
             return false;

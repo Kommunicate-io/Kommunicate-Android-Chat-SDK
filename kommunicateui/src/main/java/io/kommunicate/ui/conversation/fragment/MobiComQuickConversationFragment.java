@@ -704,6 +704,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         if (!isAlreadyLoading) {
             latestMessageForEachContact.clear();
             messageList.clear();
+            if (recyclerAdapter != null) {
+                recyclerAdapter.notifyDataSetChanged();
+            }
             downloadConversations(false, searchString);
         }
         if (swipeLayout != null) {

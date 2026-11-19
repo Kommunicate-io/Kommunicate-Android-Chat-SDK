@@ -2720,6 +2720,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setContact(contact);
         setChannel(channel);
         KommunicateSettings.subscribeToTyping(getContext(), channel, contact);
+        showPendingAwayMessage(channel);
 
         BroadcastService.currentUserId = contact != null ? contact.getContactIds() : String.valueOf(channel.getKey());
         typingStarted = false;
@@ -6408,6 +6409,18 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
     public abstract void onStartLoading(boolean loadingStarted);
 
     private final Set<Integer> awayMessageLoadingChannelKeys = new HashSet<>();
+    // Responses that arrived after the user had already switched to another conversation.
+    private final Map<Integer, KmApiResponse.KmDataResponse> pendingAwayMessageResponses = new HashMap<>();
+
+    private void showPendingAwayMessage(Channel activeChannel) {
+        if (activeChannel == null) {
+            return;
+        }
+        KmApiResponse.KmDataResponse pendingResponse = pendingAwayMessageResponses.remove(activeChannel.getKey());
+        if (pendingResponse != null) {
+            showAwayMessage(true, pendingResponse);
+        }
+    }
 
     public void loadAwayMessage() {
         if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()
@@ -6418,8 +6431,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
                     awayMessageLoadingChannelKeys.remove(requestedChannelKey);
                     if (channel == null || !requestedChannelKey.equals(channel.getKey())) {
+                        if (response != null) {
+                            pendingAwayMessageResponses.put(requestedChannelKey, response);
+                        }
                         return;
                     }
+                    pendingAwayMessageResponses.remove(requestedChannelKey);
                     showAwayMessage(true, response);
 
                 }

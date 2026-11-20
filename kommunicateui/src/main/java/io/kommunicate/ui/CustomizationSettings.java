@@ -132,6 +132,7 @@ public class CustomizationSettings extends JsonMarker {
     private KmFontModel fontModel;
     private boolean isFaqOptionEnabled = false;
     private boolean[] enableFaqOption = {true, false};
+    private boolean enableHomeScreen = false;
     private Object toolbarColor = "";
     private Object statusBarColor = "";
     private Object richMessageThemeColor = "";
@@ -728,6 +729,10 @@ public class CustomizationSettings extends JsonMarker {
 
     public KmFontModel getFontModel() {
         return fontModel;
+    }
+
+    public boolean isHomeScreenEnabled() {
+        return enableHomeScreen;
     }
 
     public boolean isFaqOptionEnabled() {

@@ -89,6 +89,8 @@
   "richMessageThemeColor": "",
   "restrictMessageTypingWithBots": false,
   "useDarkMode": false,
+  "enableHomeScreen": true,
+  "isFaqOptionEnabled": true,
   "enableFaqOption": [
     true,
     false

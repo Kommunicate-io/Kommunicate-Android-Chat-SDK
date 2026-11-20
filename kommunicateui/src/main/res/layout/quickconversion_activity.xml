@@ -70,9 +70,12 @@
     <RelativeLayout
         android:id="@+id/layout_child_activity"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="0dp"
         android:layout_gravity="start|top"
+        android:layout_weight="1"
         android:background="@color/conversation_list_all_background" />
+
+    <include layout="@layout/km_home_bottom_nav" />
 
     <LinearLayout
         android:id="@+id/footerAd"

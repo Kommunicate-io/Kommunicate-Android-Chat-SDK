@@ -15,6 +15,13 @@
     <string name="delete_conversation_failed">Delete failed.</string>
     <string name="menu_search">Search</string>
     <string name="faq_option">FAQ</string>
+    <string name="km_home_tab_welcome">Welcome</string>
+    <string name="km_home_tab_news">News</string>
+    <string name="km_home_welcome_emoji">👋</string>
+    <string name="km_home_welcome_greeting">HELLO</string>
+    <string name="km_home_welcome_title">How can we help you?</string>
+    <string name="km_home_view_conversations">View conversations</string>
+    <string name="km_home_coming_soon">Nothing to show here yet.</string>
     <string name="menu_add_contact">Create a new contact</string>
     <string name="menu_edit_contact">Edit Contact</string>
     <string name="no_contacts">No Contacts Found</string>

@@ -1,67 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp"
-    android:background="@color/whitesmoke">
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/galleryImageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:background="@color/core_transparent_color"
-        android:scaleType="centerCrop" />
+    <FrameLayout
+        android:id="@+id/attachment_tile"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:background="@drawable/km_attachment_item_background">
 
-    <ImageView
-        android:id="@+id/attachment_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/core_transparent_color"
-        android:drawablePadding="6dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/km_ic_action_attachment"
-        android:visibility="gone" />
+        <ImageView
+            android:id="@+id/galleryImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop" />
 
-    <TextView
-        android:id="@+id/attachment_file_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/attachment_image"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="5dp"
-        android:layout_toEndOf="@+id/attachment_image"
-        android:layout_toRightOf="@+id/attachment_image"
-        android:ellipsize="end"
-        android:textAlignment="viewStart"
-        android:layout_gravity="start"
-        android:text="@string/file_name_will_come_here_for_attachment"
-        android:textColor="@color/km_black_color"
-        android:layout_marginStart="5dp"
-        android:visibility="gone" />
+        <ImageView
+            android:id="@+id/attachment_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/km_ic_action_attachment"
+            android:visibility="gone" />
 
-    <ImageButton
-        android:id="@+id/attachment_delete_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_delete_white_18dp" />
+        <TextView
+            android:id="@+id/attachment_file_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="48dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:textColor="@color/km_attachment_caption_text"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/attachment_file_size"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom">
+
+            <TextView
+                android:id="@+id/attachment_file_size"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/km_attachment_bar_background"
+                android:ellipsize="end"
+                android:gravity="center_vertical|start"
+                android:paddingStart="12dp"
+                android:paddingEnd="56dp"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+
+            <ImageButton
+                android:id="@+id/attachment_delete_btn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end"
+                android:background="@color/km_attachment_delete_background"
+                android:contentDescription="@string/cancel_text"
+                android:src="@drawable/km_attachment_ic_delete" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/attachment_caption_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/km_attachment_caption_background"
+        android:hint="@string/Add_caption"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLines="3"
+        android:minHeight="44dp"
+        android:paddingStart="12dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="10dp"
         android:textAlignment="viewStart"
-        android:layout_gravity="start"
-        android:height="50dp"
-        android:background="@color/km_attachment_size_text_background_color"
-        android:paddingLeft="10dp"
-        android:paddingStart="10dp"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@color/km_white_color" />
-</RelativeLayout>
+        android:textColor="@color/km_attachment_caption_text"
+        android:textColorHint="@color/km_attachment_caption_hint"
+        android:textSize="16sp" />
+</LinearLayout>

@@ -10,6 +10,7 @@ public class MultimediaOptionFragment {
     public static final int RESULT_OK = -1;
     public static final int REQUEST_CODE_SEND_LOCATION = 10;
     public static final int REQUEST_CODE_TAKE_PHOTO = 11;
+    public static final int REQUEST_CODE_PREVIEW_PHOTO = 17;
     public static final int REQUEST_CODE_ATTACH_PHOTO = 12;
     public static final int REQUEST_CODE_MULTI_SELECT_GALLERY = 21;
     public static final int REQUEST_MULTI_ATTCAHMENT = 16;

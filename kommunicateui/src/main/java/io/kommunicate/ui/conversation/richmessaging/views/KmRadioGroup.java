@@ -21,12 +21,14 @@ public class KmRadioGroup {
     private KmFlowLayout flowLayout;
     private List<KmFormPayloadModel.Options> options;
     private Context context;
+    private CustomizationSettings customizationSettings;
     private KmRadioButtonClickListener radioButtonClickListener;
 
-    public KmRadioGroup(Context context, KmRadioButtonClickListener radioButtonClickListener, KmFlowLayout flowLayout, List<KmFormPayloadModel.Options> options) {
+    public KmRadioGroup(Context context, CustomizationSettings customizationSettings, KmRadioButtonClickListener radioButtonClickListener, KmFlowLayout flowLayout, List<KmFormPayloadModel.Options> options) {
         this.flowLayout = flowLayout;
         this.options = options;
         this.context = context;
+        this.customizationSettings = customizationSettings;
         this.radioButtonClickListener = radioButtonClickListener;
     }
 
@@ -51,7 +53,7 @@ public class KmRadioGroup {
                     }
                 });
                 radioButton.setText(option.getLabel());
-                if (KmThemeHelper.getInstance(context,new CustomizationSettings()).isDarkModeEnabledForSDK()){
+                if (KmThemeHelper.getInstance(context, customizationSettings).isDarkModeEnabledForSDK()){
                     radioButton.setTextColor(context.getResources().getColor(R.color.white));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         radioButton.setButtonTintList(new ColorStateList(

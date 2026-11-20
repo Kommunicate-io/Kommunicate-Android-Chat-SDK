@@ -19,10 +19,12 @@ import java.util.List;
 public class KmDropdownItemAdapter extends ArrayAdapter<KmFormPayloadModel.Options> {
 
     private Context context;
+    private CustomizationSettings customizationSettings;
 
-    public KmDropdownItemAdapter(@NonNull Context context, int textViewResourceId, List<KmFormPayloadModel.Options> itemList) {
+    public KmDropdownItemAdapter(@NonNull Context context, CustomizationSettings customizationSettings, int textViewResourceId, List<KmFormPayloadModel.Options> itemList) {
         super(context, textViewResourceId, itemList);
         this.context = context;
+        this.customizationSettings = customizationSettings;
     }
 
     @NonNull
@@ -37,7 +39,7 @@ public class KmDropdownItemAdapter extends ArrayAdapter<KmFormPayloadModel.Optio
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         TextView label = (TextView) super.getDropDownView(position, convertView, parent);
-        KmThemeHelper kmThemeHelper = KmThemeHelper.getInstance(context, new CustomizationSettings());
+        KmThemeHelper kmThemeHelper = KmThemeHelper.getInstance(context, customizationSettings);
         if (kmThemeHelper.isDarkModeEnabledForSDK()){
             label.setTextColor(Color.WHITE);
             label.setBackgroundColor(Color.BLACK);

@@ -124,6 +124,10 @@ public class SyncCallService {
                 );
             }
         } else {
+            if (message == null && !MobiComMessageService.markSyncPending()) {
+                Utils.printLog(context, TAG, "Full sync already queued, skipping duplicate request.");
+                return;
+            }
             if (Utils.isDeviceInIdleState(context)) {
                 new ConversationRunnables(context, message, false, true, false);
             } else {
@@ -137,6 +141,15 @@ public class SyncCallService {
                 }
                 ConversationIntentService.enqueueWork(context, intent);
             }
+        }
+    }
+
+    /**
+     * For a message received over MQTT: processes it in place when that is safe, otherwise falls back to a full sync.
+     */
+    public void processOrSyncMessages(Message message) {
+        if (!mobiComMessageService.processMqttMessageWithoutSync(message)) {
+            syncMessages(null);
         }
     }
 

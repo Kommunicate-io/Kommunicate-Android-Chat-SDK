@@ -251,7 +251,7 @@ object KmAppSettingPreferences {
         AppSettingUseCase.executeWithExecutor(
             context,
             MobiComKitClientService.getApplicationKey(context),
-            true,
+            false,
             callback
         )
     }
@@ -285,6 +285,11 @@ object KmAppSettingPreferences {
             clearInstance()
             setAppSetting(appSettingModel)
         }
+    }
+
+    @JvmStatic
+    fun reapplyAppSetting(appSettingModel: KmAppSettingModel) {
+        setAppSetting(appSettingModel)
     }
 
     @JvmStatic

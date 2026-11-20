@@ -208,15 +208,24 @@ public class MessageClientService extends MobiComKitClientService {
     }
 
     public void updateDeliveryStatus(String messageKeyString, String userId, String receiverNumber) {
+        sendDeliveryReport(messageKeyString, userId);
+    }
+
+    /**
+     * @return true only if the server answered the delivery report request.
+     */
+    public boolean sendDeliveryReport(String messageKeyString, String userId) {
         try {
             //Note: messageKeyString comes as null for the welcome message as it is inserted directly.
             if (TextUtils.isEmpty(messageKeyString) || TextUtils.isEmpty(userId)) {
-                return;
+                return false;
             }
-            httpRequestUtils.getResponse(getMtextDeliveryUrl() + "?key=" + messageKeyString
+            String response = httpRequestUtils.getResponse(getMtextDeliveryUrl() + "?key=" + messageKeyString
                     + "&userId=" + userId, txt_plain, txt_plain);
+            return !TextUtils.isEmpty(response);
         } catch (Exception ex) {
             Utils.printLog(context, TAG, "Exception while updating delivery report for MT message");
+            return false;
         }
     }
 

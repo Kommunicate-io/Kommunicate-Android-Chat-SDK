@@ -1255,10 +1255,7 @@ public class MessageDatabaseService {
     public void updateContactUnreadCount(String userId) {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            int unreadCount = getUnreadMessageCountForContact(userId);
-            ContentValues values = new ContentValues();
-            values.put("unreadCount", unreadCount + 1);
-            db.update("contact", values, "userId = ?", new String[]{userId});
+            db.execSQL("UPDATE contact SET unreadCount = COALESCE(unreadCount, 0) + 1 WHERE userId = ?", new String[]{userId});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1267,10 +1264,7 @@ public class MessageDatabaseService {
     public synchronized void updateChannelUnreadCount(Integer channelKey) {
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            int unreadCount = getUnreadMessageCountForChannel(channelKey);
-            ContentValues values = new ContentValues();
-            values.put("unreadCount", unreadCount + 1);
-            db.update("channel", values, "channelKey = ?", new String[]{String.valueOf(channelKey)});
+            db.execSQL("UPDATE channel SET unreadCount = COALESCE(unreadCount, 0) + 1 WHERE channelKey = ?", new String[]{String.valueOf(channelKey)});
         } catch (Exception e) {
             e.printStackTrace();
         }

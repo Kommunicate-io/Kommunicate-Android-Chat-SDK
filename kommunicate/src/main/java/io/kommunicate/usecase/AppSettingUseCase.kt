@@ -10,6 +10,8 @@ import io.kommunicate.utils.UseCaseExecutor
 import io.kommunicate.utils.onFailure
 import io.kommunicate.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
@@ -27,21 +29,34 @@ class AppSettingUseCase(
 
     override suspend fun execute(): APIResult<KmAppSettingModel> = withContext(Dispatchers.IO) {
         try {
-            val cachedSettings = SessionCache.get<KmAppSettingModel>(CACHE_KEY)
-            if (!updateCache && cachedSettings != null) {
-                return@withContext APIResult.success(cachedSettings)
+            val initialCache = SessionCache.get<KmAppSettingModel>(CACHE_KEY)
+            if (!updateCache && initialCache != null) {
+                return@withContext APIResult.success(initialCache)
             }
 
-            KmAppSettingPreferences.clearInstance()
-            KmAppSettingPreferences.lastFetchTime = Calendar.getInstance().timeInMillis
-            val appSettingModel = KmAppSettingPreferences.fetchAppSetting(context, appId)
-                ?: return@withContext APIResult.failed("Unable to fetch app settings. Null value received")
+            // Refreshes are serialized so a failed refresh never restores a snapshot that a
+            // concurrent refresh has already replaced.
+            refreshMutex.withLock {
+                val cachedSettings = SessionCache.get<KmAppSettingModel>(CACHE_KEY)
+                if (!updateCache && cachedSettings != null) {
+                    return@withLock APIResult.success(cachedSettings)
+                }
 
-            if (appSettingModel.isSuccess) {
-                SessionCache.put(CACHE_KEY, appSettingModel, CACHE_REFRESH_TIME)
-                APIResult.success(appSettingModel)
-            } else {
-                APIResult.failed("Failed to fetch app settings. ${appSettingModel.code}")
+                KmAppSettingPreferences.clearInstance()
+                KmAppSettingPreferences.lastFetchTime = Calendar.getInstance().timeInMillis
+                val appSettingModel = KmAppSettingPreferences.fetchAppSetting(context, appId)
+                if (appSettingModel == null) {
+                    cachedSettings?.let { KmAppSettingPreferences.reapplyAppSetting(it) }
+                    return@withLock APIResult.failed("Unable to fetch app settings. Null value received")
+                }
+
+                if (appSettingModel.isSuccess) {
+                    SessionCache.put(CACHE_KEY, appSettingModel, CACHE_REFRESH_TIME)
+                    APIResult.success(appSettingModel)
+                } else {
+                    cachedSettings?.let { KmAppSettingPreferences.reapplyAppSetting(it) }
+                    APIResult.failed("Failed to fetch app settings. ${appSettingModel.code}")
+                }
             }
         } catch (e: Exception) {
             APIResult.failedWithException(e)
@@ -51,6 +66,7 @@ class AppSettingUseCase(
     companion object {
         private const val CACHE_REFRESH_TIME: Long = 5 * 60 * 1000
         private const val CACHE_KEY = "KmAppSettingModel"
+        private val refreshMutex = Mutex()
 
         /**
          * Executes the use case with the given [UseCaseExecutor]. This helper function invokes the

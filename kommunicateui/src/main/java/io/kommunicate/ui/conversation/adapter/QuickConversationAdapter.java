@@ -373,6 +373,29 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
         return getItem(position) != null ? getItem(position).isTypeOutbox() ? 1 : 0 : 2;
     }
 
+    public void onConversationMovedToTop(int previousIndex) {
+        if (originalList != null) {
+            notifyDataSetChanged();
+            return;
+        }
+        if (previousIndex < 0) {
+            notifyItemInserted(0);
+        } else if (previousIndex == 0) {
+            notifyItemChanged(0);
+        } else {
+            notifyItemMoved(previousIndex, 0);
+            notifyItemChanged(0);
+        }
+    }
+
+    public void onConversationChanged(int index) {
+        if (originalList != null || index < 0 || index >= messageList.size()) {
+            notifyDataSetChanged();
+            return;
+        }
+        notifyItemChanged(index);
+    }
+
     private int indexOfSearchQuery(String message) {
         if (!TextUtils.isEmpty(searchString)) {
             return message.toLowerCase(Locale.getDefault()).indexOf(

@@ -54,6 +54,7 @@ public class ConnectivityReceiver extends BroadcastReceiver {
                         firstConnect = false;
                         Intent connectivityIntent = new Intent(context, ChatIntentService.class);
                         connectivityIntent.putExtra(ChatIntentService.AL_SYNC_ON_CONNECTIVITY, true);
+                        connectivityIntent.putExtra(ChatIntentService.AL_SKIP_MESSAGE_AND_STATUS_SYNC, isInitialStickyBroadcast());
                         ChatIntentService.enqueueWork(context, connectivityIntent);
                     }
                 }

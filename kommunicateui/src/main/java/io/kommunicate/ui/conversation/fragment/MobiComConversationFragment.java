@@ -668,6 +668,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(null);
         recyclerViewPositionHelper = new RecyclerViewPositionHelper(recyclerView, linearLayoutManager);
         ((ConversationActivity) getActivity()).setChildFragmentLayoutBGToTransparent();
         messageList = new ArrayList<Message>();
@@ -2279,10 +2280,14 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //Note: Removing and adding the same message again as the new sms object will contain the keyString.
-                messageList.remove(message);
-                messageList.add(message);
-                recyclerDetailConversationAdapter.notifyDataSetChanged();
+                int previousIndex = messageList.indexOf(message);
+                if (previousIndex != -1) {
+                    messageList.set(previousIndex, message);
+                    recyclerDetailConversationAdapter.onMessageChanged(previousIndex);
+                } else {
+                    messageList.add(message);
+                    recyclerDetailConversationAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -2301,8 +2306,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             if (conversationAdapter != null) {
                 if (messageList.get(i).isDeletedForAll()) {
                     messageList.remove(i);
+                    conversationAdapter.notifyDataSetChanged();
+                } else {
+                    conversationAdapter.onMessageChanged(i);
                 }
-                conversationAdapter.notifyDataSetChanged();
             }
             if (messageList.get(messageList.size() - 1).getMetadata().containsKey(IS_DONE_WITH_CLICKING)) {
                 templateAdapter.setMessageList(new HashMap<String, String>());
@@ -2373,11 +2380,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             public void run() {
                 //Todo: Handle disappearing messages.
                 boolean existingMessage = messageList.contains(message);
+                int previousSize = messageList.size();
                 boolean added = updateMessageList(message, false);
                 if (added) {
                     //Todo: update unread count
                     recyclerDetailConversationAdapter.updateLastSentMessage(message);
-                    recyclerDetailConversationAdapter.notifyDataSetChanged();
+                    recyclerDetailConversationAdapter.onMessagesAppended(previousSize);
                     emptyTextView.setVisibility(View.GONE);
                     currentConversationId = message.getConversationId();
                     channelKey = message.getGroupId();
@@ -2734,6 +2742,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         setContact(contact);
         setChannel(channel);
         KommunicateSettings.subscribeToTyping(getContext(), channel, contact);
+        showPendingAwayMessage(channel);
 
         BroadcastService.currentUserId = contact != null ? contact.getContactIds() : String.valueOf(channel.getKey());
         typingStarted = false;
@@ -3127,7 +3136,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                 int i = messageList.indexOf(message);
                 if (i != -1) {
                     messageList.get(i).setCanceled(true);
-                    recyclerDetailConversationAdapter.notifyDataSetChanged();
+                    recyclerDetailConversationAdapter.onMessageChanged(i);
                 }
             }
         });
@@ -3240,9 +3249,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 }
                             }
                         } else if (!message.isVideoNotificationMessage() && !message.isHidden()) {
+                            int previousSize = messageList.size();
                             messageList.add(message);
                             emptyTextView.setVisibility(View.GONE);
-                            recyclerDetailConversationAdapter.notifyDataSetChanged();
+                            recyclerDetailConversationAdapter.onMessagesAppended(previousSize);
                             if (isFollowingNewMessages) {
                                 scrollToLatestMessage();
                             } else {
@@ -3913,6 +3923,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             for (int i = messageList.size() - 1; i > 0; i--) {
                 if (messageList.get(i).isTypingMessage()) {
                     messageList.remove(i);
+                    recyclerDetailConversationAdapter.onItemRemoved(i);
                     break;
                 }
             }
@@ -3930,7 +3941,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     if (message.getType() != null && message.isTypingMessage()) {
                         position = messageList.indexOf(message);
                         messageList.remove(position);
-                        recyclerDetailConversationAdapter.notifyItemRemoved(position);
+                        recyclerDetailConversationAdapter.onItemRemoved(position);
                         if (messageList.isEmpty()) {
                             emptyTextView.setVisibility(VISIBLE);
                             if (getActivity() != null) {
@@ -4962,6 +4973,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         private String messageSearchString;
         private List<Message> nextMessageList = new ArrayList<Message>();
         private boolean isNewConversation;
+        private final List<Message> messagesToRemove = new ArrayList<>();
 
         public DownloadConversation(RecyclerView recyclerView, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, Contact contact, Channel channel, Integer conversationId, String messageSearchString) {
             this.recyclerView = recyclerView;
@@ -5067,13 +5079,13 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                         createAtMessage.add(firstMessage);
                     } else if (!initial && !TextUtils.isEmpty(customizationSettings.getStaticTopMessage())) {
                         createAtMessage.add(firstMessage);
-                        messageList.remove(firstMessage);
+                        messagesToRemove.add(firstMessage);
                     }
                     if (initial && !messageList.contains(firstDateMessage)) {
                         createAtMessage.add(firstDateMessage);
                     } else if (!initial) {
                         createAtMessage.add(firstDateMessage);
-                        messageList.remove(firstDateMessage);
+                        messagesToRemove.add(firstDateMessage);
                     }
                     if (!createAtMessage.contains(nextMessageList.get(0))) {
                         createAtMessage.add(nextMessageList.get(0));
@@ -5090,7 +5102,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                                 createAtMessage.add(message);
                             } else if (!initial) {
                                 createAtMessage.add(message);
-                                messageList.remove(message);
+                                messagesToRemove.add(message);
                             }
                         }
                         if (!createAtMessage.contains(nextMessageList.get(i))) {
@@ -5128,6 +5140,10 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         @Override
         protected void onPostExecute(Long result) {
             super.onPostExecute(result);
+
+            for (Message messageToRemove : messagesToRemove) {
+                messageList.remove(messageToRemove);
+            }
 
             if (nextMessageList.isEmpty()) {
                 linearLayoutManager.setStackFromEnd(false);
@@ -6421,17 +6437,45 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
 
     public abstract void onStartLoading(boolean loadingStarted);
 
+    private final Set<Integer> awayMessageLoadingChannelKeys = new HashSet<>();
+    // Responses that arrived after the user had already switched to another conversation.
+    private final Map<Integer, KmApiResponse.KmDataResponse> pendingAwayMessageResponses = new HashMap<>();
+
+    private void showPendingAwayMessage(Channel activeChannel) {
+        if (activeChannel == null) {
+            return;
+        }
+        KmApiResponse.KmDataResponse pendingResponse = pendingAwayMessageResponses.remove(activeChannel.getKey());
+        if (pendingResponse != null) {
+            showAwayMessage(true, pendingResponse);
+        }
+    }
+
     public void loadAwayMessage() {
-        if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()) {
-            Kommunicate.loadAwayMessage(getContext(), channel.getKey(), new KmAwayMessageHandler() {
+        if (loggedInUserRole == User.RoleType.USER_ROLE.getValue()
+                && awayMessageLoadingChannelKeys.add(channel.getKey())) {
+            final Integer requestedChannelKey = channel.getKey();
+            Kommunicate.loadAwayMessage(getContext(), requestedChannelKey, new KmAwayMessageHandler() {
                 @Override
                 public void onSuccess(Context context, KmApiResponse.KmDataResponse response) {
+                    awayMessageLoadingChannelKeys.remove(requestedChannelKey);
+                    if (channel == null || !requestedChannelKey.equals(channel.getKey())) {
+                        if (response != null) {
+                            pendingAwayMessageResponses.put(requestedChannelKey, response);
+                        }
+                        return;
+                    }
+                    pendingAwayMessageResponses.remove(requestedChannelKey);
                     showAwayMessage(true, response);
 
                 }
 
                 @Override
                 public void onFailure(Context context, Exception e, String response) {
+                    awayMessageLoadingChannelKeys.remove(requestedChannelKey);
+                    if (channel == null || !requestedChannelKey.equals(channel.getKey())) {
+                        return;
+                    }
                     showAwayMessage(false, null);
                     Utils.printLog(context, TAG, "Response: " + response + "\nException : " + e);
                 }

@@ -6,19 +6,19 @@
     android:background="?attr/selectableItemBackground"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingTop="8dp"
+    android:paddingTop="4dp"
     android:paddingBottom="8dp">
 
     <FrameLayout
         android:id="@+id/kmHomeTabIconContainer"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
         android:background="@drawable/km_home_tab_icon_background">
 
         <ImageView
             android:id="@+id/kmHomeTabIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center"
             android:importantForAccessibility="no" />
     </FrameLayout>
@@ -27,8 +27,8 @@
         android:id="@+id/kmHomeTabLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textSize="12sp" />
+        android:textSize="11sp" />
 </LinearLayout>

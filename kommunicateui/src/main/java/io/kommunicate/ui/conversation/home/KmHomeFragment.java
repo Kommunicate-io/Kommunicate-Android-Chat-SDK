@@ -1,6 +1,5 @@
 package io.kommunicate.ui.conversation.home;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -11,9 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
-import io.kommunicate.ui.CustomizationSettings;
 import io.kommunicate.ui.R;
 
 /**
@@ -21,43 +18,11 @@ import io.kommunicate.ui.R;
  * so the screen follows the theme already configured for the app. Texts are string resources and
  * can be overridden by the host app.
  */
-public class KmHomeFragment extends Fragment {
-
-    public interface Host {
-        /**
-         * Background color of the header, the button and the selected tab (the toolbar color).
-         */
-        int getHomeAccentColor();
-
-        /**
-         * Color of texts drawn on top of {@link #getHomeAccentColor()} (the toolbar title color).
-         */
-        int getHomeAccentTextColor();
-
-        CustomizationSettings getHomeCustomizationSettings();
-
-        void onViewConversationsClicked();
-    }
+public class KmHomeFragment extends KmHomeBaseFragment {
 
     private static final float CARD_RADIUS_DP = 28f;
     private static final float BUTTON_RADIUS_DP = 28f;
     private static final int DEFAULT_ACCENT_COLOR = Color.parseColor("#5C4BF5");
-
-    private Host host;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof Host) {
-            host = (Host) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        host = null;
-    }
 
     @Nullable
     @Override

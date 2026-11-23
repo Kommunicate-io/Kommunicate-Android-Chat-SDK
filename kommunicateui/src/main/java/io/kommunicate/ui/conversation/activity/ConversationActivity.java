@@ -118,7 +118,8 @@ import io.kommunicate.ui.kommunicate.KmPrefSettings;
 import io.kommunicate.ui.conversation.home.KmHomeBottomNav;
 import io.kommunicate.ui.conversation.home.KmHomeFaqFragment;
 import io.kommunicate.ui.conversation.home.KmHomeFragment;
-import io.kommunicate.ui.conversation.home.KmHomePlaceholderFragment;
+import io.kommunicate.ui.conversation.home.KmHomeHost;
+import io.kommunicate.ui.conversation.home.KmHomeNewsFragment;
 import io.kommunicate.ui.conversation.home.KmHomeTab;
 import io.kommunicate.ui.kommunicate.views.KmToast;
 import io.kommunicate.ui.kommunicate.widgets.KmChatWidget;
@@ -142,10 +143,12 @@ import static io.kommunicate.ui.utils.SentryUtils.configureSentryWithKommunicate
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends KmBaseActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener, CustomToolbarListener, KmHomeFragment.Host {
+public class ConversationActivity extends KmBaseActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener, CustomToolbarListener, KmHomeHost {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
+    private static final int HOME_BOTTOM_NAV_EXTRA_PADDING_DP = 8;
+    private static final int HOME_TITLE_START_MARGIN_DP = 4;
     public static final String CONTACT = "contact";
     public static final String CHANNEL = "channel";
     public static final String CONVERSATION_ID = "conversationId";
@@ -207,7 +210,6 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     private RelativeLayout customToolbarLayout;
     private KmThemeHelper themeHelper;
     private KmHomeBottomNav homeBottomNav;
-    private static final int HOME_BOTTOM_NAV_EXTRA_PADDING_DP = 8;
     private Toolbar toolbar;
     KmAttachmentsController kmAttachmentsController;
     PrePostUIMethods prePostUIMethods;
@@ -486,9 +488,8 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                     addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
                     EventManager.getInstance().sendOnCurrentOpenedConversation(currentConversationId);
                 }
-            } else if (isHomeScreenEnabled()) {
-                // Direct entries (notification, open conversation) keep landing on the conversation list.
-                openHomeTab(hasConversationTarget(getIntent()) ? KmHomeTab.CONVERSATIONS : KmHomeTab.WELCOME);
+            } else if (isHomeScreenActive()) {
+                openHomeTab(KmHomeTab.CONVERSATIONS);
             } else {
                 setSearchListFragment(quickConversationFragment);
                 addFragment(this, quickConversationFragment, ConversationUIService.QUICK_CONVERSATION_FRAGMENT);
@@ -571,21 +572,13 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         initOnBackPressed();
     }
 
-    private boolean isHomeScreenEnabled() {
-        return customizationSettings != null && customizationSettings.isHomeScreenEnabled();
-    }
-
-    private boolean hasConversationTarget(Intent intent) {
-        if (intent == null) {
-            return false;
-        }
-        return intent.getIntExtra(ConversationUIService.GROUP_ID, -1) > 0
-                || !TextUtils.isEmpty(intent.getStringExtra(ConversationUIService.CLIENT_GROUP_ID))
-                || !TextUtils.isEmpty(intent.getStringExtra(ConversationUIService.USER_ID))
-                || !TextUtils.isEmpty(intent.getStringExtra(ConversationUIService.CONTACT_ID))
-                || !TextUtils.isEmpty(intent.getStringExtra(ConversationUIService.CONTACT_NUMBER))
-                || !TextUtils.isEmpty(intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT))
-                || !TextUtils.isEmpty(intent.getStringExtra("keyString"));
+    /**
+     * The home screen is the default entry of the SDK. The Agent App keeps the plain conversation list,
+     * since Welcome, FAQ and News are customer facing.
+     */
+    @Override
+    public boolean isHomeScreenActive() {
+        return customizationSettings != null && !customizationSettings.isAgentApp();
     }
 
     private boolean isFaqTabEnabled() {
@@ -593,18 +586,24 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     }
 
     private void setupHomeNavigation() {
-        if (!isHomeScreenEnabled()) {
+        if (!isHomeScreenActive()) {
             return;
         }
         View homeBottomNavView = findViewById(R.id.kmHomeBottomNav);
-        // Keep the bar above the system navigation bar, with some breathing room below the tabs.
         InsetHelper.configureSystemInsets(
                 homeBottomNavView,
                 InsetHelper.NO_INSET,
                 (int) (HOME_BOTTOM_NAV_EXTRA_PADDING_DP * getResources().getDisplayMetrics().density),
                 true
         );
-        homeBottomNav = new KmHomeBottomNav((ViewGroup) homeBottomNavView, getHomeAccentColor(), this::openHomeTab);
+        homeBottomNav = new KmHomeBottomNav((ViewGroup) homeBottomNavView, getHomeAccentColor(), getHomeAccentTextColor(), this::openHomeTab);
+        // Bring the title closer to the back arrow.
+        View titleLayout = findViewById(R.id.faqButtonLayout);
+        ViewGroup.MarginLayoutParams titleParams = (ViewGroup.MarginLayoutParams) titleLayout.getLayoutParams();
+        int titleStartMargin = (int) (HOME_TITLE_START_MARGIN_DP * getResources().getDisplayMetrics().density);
+        titleParams.setMarginStart(titleStartMargin);
+        titleParams.leftMargin = titleStartMargin;
+        titleLayout.setLayoutParams(titleParams);
         homeBottomNav.setTabs(Arrays.asList(KmHomeTab.WELCOME, KmHomeTab.CONVERSATIONS, isFaqTabEnabled() ? KmHomeTab.FAQ : KmHomeTab.NEWS));
         getSupportFragmentManager().addOnBackStackChangedListener(this::updateHomeNavigation);
     }
@@ -632,14 +631,15 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             return;
         }
         homeBottomNav.select(tab);
+        // Every tab uses the bold title view of the conversation list, so the titles look the same.
+        TextView titleView = findViewById(R.id.km_conversation_text_view);
+        titleView.setText(tab.getLabelRes());
+        titleView.setTextColor(themeHelper.getToolbarTitleColor());
         if (tab != KmHomeTab.CONVERSATIONS) {
-            View faqButtonLayout = findViewById(R.id.faqButtonLayout);
-            if (faqButtonLayout != null) {
-                faqButtonLayout.setVisibility(View.GONE);
-            }
-            if (mActionBar != null) {
-                mActionBar.setTitle(tab.getLabelRes());
-            }
+            View titleLayout = findViewById(R.id.faqButtonLayout);
+            titleLayout.setVisibility(View.VISIBLE);
+            titleLayout.findViewById(R.id.kmFaqOption).setVisibility(View.GONE);
+            mActionBar.setTitle("");
         }
     }
 
@@ -657,8 +657,8 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
             case FAQ:
                 addFragment(this, new KmHomeFaqFragment(), tab.getFragmentTag());
                 break;
-            default:
-                addFragment(this, new KmHomePlaceholderFragment(), tab.getFragmentTag());
+            case NEWS:
+                addFragment(this, new KmHomeNewsFragment(), tab.getFragmentTag());
                 break;
         }
     }

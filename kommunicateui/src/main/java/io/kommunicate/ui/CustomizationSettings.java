@@ -1,10 +1,12 @@
 package io.kommunicate.ui;
 
 import io.kommunicate.ui.conversation.MobicomMessageTemplate;
+import io.kommunicate.ui.conversation.home.KmWhatsNewItem;
 import io.kommunicate.ui.kommunicate.models.KmFontModel;
 import io.kommunicate.commons.json.JsonMarker;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -132,7 +134,7 @@ public class CustomizationSettings extends JsonMarker {
     private KmFontModel fontModel;
     private boolean isFaqOptionEnabled = false;
     private boolean[] enableFaqOption = {true, false};
-    private boolean enableHomeScreen = false;
+    private List<KmWhatsNewItem> whatsNewList;
     private Object toolbarColor = "";
     private Object statusBarColor = "";
     private Object richMessageThemeColor = "";
@@ -731,8 +733,8 @@ public class CustomizationSettings extends JsonMarker {
         return fontModel;
     }
 
-    public boolean isHomeScreenEnabled() {
-        return enableHomeScreen;
+    public List<KmWhatsNewItem> getWhatsNewList() {
+        return whatsNewList != null ? whatsNewList : Collections.emptyList();
     }
 
     public boolean isFaqOptionEnabled() {

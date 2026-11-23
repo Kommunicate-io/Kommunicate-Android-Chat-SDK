@@ -22,6 +22,7 @@
     <string name="km_home_welcome_title">How can we help you?</string>
     <string name="km_home_view_conversations">View conversations</string>
     <string name="km_home_coming_soon">Nothing to show here yet.</string>
+    <string name="km_home_news_learn_more">Learn more</string>
     <string name="menu_add_contact">Create a new contact</string>
     <string name="menu_edit_contact">Edit Contact</string>
     <string name="no_contacts">No Contacts Found</string>

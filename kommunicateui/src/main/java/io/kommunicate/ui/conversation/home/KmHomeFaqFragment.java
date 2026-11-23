@@ -1,7 +1,6 @@
 package io.kommunicate.ui.conversation.home;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.fragment.app.Fragment;
 
 import io.kommunicate.Kommunicate;
 import io.kommunicate.devkit.broadcast.EventManager;
@@ -27,26 +25,11 @@ import io.kommunicate.ui.R;
  * FAQ tab of the home screen. Shows the help center inside the tab so the bottom navigation stays
  * available; links that leave the help center open in a custom tab.
  */
-public class KmHomeFaqFragment extends Fragment {
+public class KmHomeFaqFragment extends KmHomeBaseFragment {
 
-    private KmHomeFragment.Host host;
     private WebView webView;
     private ProgressBar progressBar;
     private String helpCenterHost;
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        if (context instanceof KmHomeFragment.Host) {
-            host = (KmHomeFragment.Host) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        host = null;
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Nullable

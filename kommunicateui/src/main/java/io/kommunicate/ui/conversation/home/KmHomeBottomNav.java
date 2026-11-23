@@ -1,6 +1,6 @@
 package io.kommunicate.ui.conversation.home;
 
-import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -18,8 +18,7 @@ import java.util.List;
 import io.kommunicate.ui.R;
 
 /**
- * Bottom navigation of the home screen. The tab list is supplied by the caller so the bar can be
- * driven by settings; the accent color follows the theme primary color.
+ * Bottom navigation of the home screen. The caller supplies the tabs and the accent colors.
  */
 public class KmHomeBottomNav {
 
@@ -34,38 +33,37 @@ public class KmHomeBottomNav {
 
     private final ViewGroup container;
     private final int accentColor;
+    private final int accentIconColor;
     private final OnTabSelectedListener listener;
     private final List<KmHomeTab> tabs = new ArrayList<>();
     private final List<View> tabViews = new ArrayList<>();
     private KmHomeTab selectedTab;
 
-    public KmHomeBottomNav(ViewGroup container, int accentColor, OnTabSelectedListener listener) {
+    /**
+     * @param accentColor     background of the selected tab icon
+     * @param accentIconColor color of the selected tab icon, drawn on {@code accentColor}
+     */
+    public KmHomeBottomNav(ViewGroup container, int accentColor, int accentIconColor, OnTabSelectedListener listener) {
         this.container = container;
         this.accentColor = accentColor;
+        this.accentIconColor = accentIconColor;
         this.listener = listener;
     }
 
     public void setTabs(List<KmHomeTab> newTabs) {
-        if (tabs.equals(newTabs)) {
-            return;
-        }
         tabs.clear();
         tabs.addAll(newTabs);
         tabViews.clear();
         container.removeAllViews();
 
-        Context context = container.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        for (final KmHomeTab tab : tabs) {
+        LayoutInflater inflater = LayoutInflater.from(container.getContext());
+        for (KmHomeTab tab : tabs) {
             View tabView = inflater.inflate(R.layout.km_home_tab_item, container, false);
             ((TextView) tabView.findViewById(R.id.kmHomeTabLabel)).setText(tab.getLabelRes());
             ((ImageView) tabView.findViewById(R.id.kmHomeTabIcon)).setImageResource(tab.getIconRes());
-            tabView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (tab != selectedTab && listener != null) {
-                        listener.onTabSelected(tab);
-                    }
+            tabView.setOnClickListener(v -> {
+                if (tab != selectedTab) {
+                    listener.onTabSelected(tab);
                 }
             });
             container.addView(tabView);
@@ -94,9 +92,8 @@ public class KmHomeBottomNav {
             GradientDrawable background = (GradientDrawable) iconContainer.getBackground().mutate();
             background.setColor(selected ? accentColor : INACTIVE_BACKGROUND_COLOR);
             ImageViewCompat.setImageTintList(icon,
-                    android.content.res.ColorStateList.valueOf(selected ? Color.WHITE : INACTIVE_ICON_COLOR));
+                    ColorStateList.valueOf(selected ? accentIconColor : INACTIVE_ICON_COLOR));
             label.setTextColor(selected ? ACTIVE_LABEL_COLOR : INACTIVE_LABEL_COLOR);
-            tabView.setSelected(selected);
         }
     }
 }

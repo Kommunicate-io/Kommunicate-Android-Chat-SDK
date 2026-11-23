@@ -207,6 +207,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     private RelativeLayout customToolbarLayout;
     private KmThemeHelper themeHelper;
     private KmHomeBottomNav homeBottomNav;
+    private static final int HOME_BOTTOM_NAV_EXTRA_PADDING_DP = 8;
     private Toolbar toolbar;
     KmAttachmentsController kmAttachmentsController;
     PrePostUIMethods prePostUIMethods;
@@ -333,6 +334,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
 
     @Override
     public boolean onSupportNavigateUp() {
+        if (handleHomeFaqBack()) {
+            return true;
+        }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
                 Intent upIntent = KommunicateSetting.getInstance(this).getParentActivityIntent(this);
@@ -592,9 +596,25 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         if (!isHomeScreenEnabled()) {
             return;
         }
-        homeBottomNav = new KmHomeBottomNav(findViewById(R.id.kmHomeBottomNav), getHomeAccentColor(), this::openHomeTab);
+        View homeBottomNavView = findViewById(R.id.kmHomeBottomNav);
+        // Keep the bar above the system navigation bar, with some breathing room below the tabs.
+        InsetHelper.configureSystemInsets(
+                homeBottomNavView,
+                InsetHelper.NO_INSET,
+                (int) (HOME_BOTTOM_NAV_EXTRA_PADDING_DP * getResources().getDisplayMetrics().density),
+                true
+        );
+        homeBottomNav = new KmHomeBottomNav((ViewGroup) homeBottomNavView, getHomeAccentColor(), this::openHomeTab);
         homeBottomNav.setTabs(Arrays.asList(KmHomeTab.WELCOME, KmHomeTab.CONVERSATIONS, isFaqTabEnabled() ? KmHomeTab.FAQ : KmHomeTab.NEWS));
         getSupportFragmentManager().addOnBackStackChangedListener(this::updateHomeNavigation);
+    }
+
+    /**
+     * Back (system or toolbar arrow) first walks back through the help center pages of the FAQ tab.
+     */
+    private boolean handleHomeFaqBack() {
+        Fragment current = getSupportFragmentManager().findFragmentById(R.id.layout_child_activity);
+        return current instanceof KmHomeFaqFragment && ((KmHomeFaqFragment) current).handleBackPressed();
     }
 
     /**
@@ -667,8 +687,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.layout_child_activity);
-                if (currentFragment instanceof KmHomeFaqFragment && ((KmHomeFaqFragment) currentFragment).handleBackPressed()) {
+                if (handleHomeFaqBack()) {
                     return;
                 }
                 if (getSupportFragmentManager().getBackStackEntryCount() == 1) {

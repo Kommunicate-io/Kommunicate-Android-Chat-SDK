@@ -51,6 +51,9 @@ public class MobiComMessageService {
 
     public static final long DELAY = 60000L;
     private static final String TAG = "MobiComMessageService";
+    private static final String STREAMING_TOKEN_KEY_PREFIX = "tokenized_response";
+    private static final String STREAMING_START_TOKEN = "startToken";
+    private static final String STREAMING_LAST_TOKEN = "lastToken";
     private static final long SYNC_PENDING_TIMEOUT_MS = 30 * 1000L;
     private static final long SYNC_FRESH_TIMEOUT_MS = 60 * 1000L;
     private static long syncPendingSince;
@@ -311,6 +314,12 @@ public class MobiComMessageService {
         return lastSyncStartedAt > mqttChangedAt && SystemClock.elapsedRealtime() - lastSyncStartedAt < SYNC_FRESH_TIMEOUT_MS;
     }
 
+    public static boolean isStreamingTokenMessage(Message message) {
+        return (message.getKeyString() != null && message.getKeyString().startsWith(STREAMING_TOKEN_KEY_PREFIX))
+                || (message.getMetadata() != null
+                && (message.getMetadata().containsKey(STREAMING_START_TOKEN) || message.getMetadata().containsKey(STREAMING_LAST_TOKEN)));
+    }
+
     /**
      * Processes a message received over MQTT the same way a sync would, without calling the sync API.
      * Only done when a recent sync already covers everything before the current MQTT connection and the message needs
@@ -320,6 +329,7 @@ public class MobiComMessageService {
      */
     public boolean processMqttMessageWithoutSync(Message message) {
         if (!isSyncedSinceMqttChange() || TextUtils.isEmpty(message.getKeyString())
+                || isStreamingTokenMessage(message)
                 || !TextUtils.isEmpty(SettingsSharedPreference.getInstance(context).getMessageMetaDataServiceName())
                 || Message.ContentType.CHANNEL_CUSTOM_MESSAGE.getValue().equals(message.getContentType())
                 || Message.ContentType.BLOCK_NOTIFICATION_IN_GROUP.getValue().equals(message.getContentType())) {

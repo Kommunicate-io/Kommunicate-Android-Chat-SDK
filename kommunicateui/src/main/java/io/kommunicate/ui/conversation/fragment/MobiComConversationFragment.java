@@ -3895,6 +3895,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
             for (int i = messageList.size() - 1; i > 0; i--) {
                 if (messageList.get(i).isTypingMessage()) {
                     messageList.remove(i);
+                    recyclerDetailConversationAdapter.onItemRemoved(i);
                     break;
                 }
             }
@@ -3912,7 +3913,7 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
                     if (message.getType() != null && message.isTypingMessage()) {
                         position = messageList.indexOf(message);
                         messageList.remove(position);
-                        recyclerDetailConversationAdapter.notifyItemRemoved(position);
+                        recyclerDetailConversationAdapter.onItemRemoved(position);
                         if (messageList.isEmpty()) {
                             emptyTextView.setVisibility(VISIBLE);
                             if (getActivity() != null) {

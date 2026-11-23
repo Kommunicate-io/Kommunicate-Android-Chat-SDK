@@ -1495,6 +1495,20 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
         }
     }
 
+    public void onItemRemoved(int position) {
+        if (originalList != null) {
+            notifyDataSetChanged();
+            return;
+        }
+        notifyItemRemoved(position);
+        if (position > 0 && position - 1 < messageList.size()) {
+            notifyItemChanged(position - 1);
+        }
+        if (position < messageList.size()) {
+            notifyItemChanged(position);
+        }
+    }
+
     public void onMessagesAppended(int previousSize) {
         int addedCount = messageList.size() - previousSize;
         if (addedCount <= 0 || !canUpdateIncrementally(previousSize)) {

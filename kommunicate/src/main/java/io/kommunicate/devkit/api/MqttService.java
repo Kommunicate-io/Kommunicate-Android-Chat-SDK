@@ -447,6 +447,9 @@ public class MqttService extends MobiComKitClientService implements MqttCallback
                                         return;
                                     }
                                     Message message = messageResponse.getMessage();
+                                    if (MobiComMessageService.isStreamingTokenMessage(message)) {
+                                        return;
+                                    }
                                     if (message.getGroupId() != null) {
                                         Channel channel = ChannelService.getInstance(context).getChannelByChannelKey(message.getGroupId());
 

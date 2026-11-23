@@ -2257,13 +2257,12 @@ public abstract class MobiComConversationFragment extends Fragment implements Vi
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //Note: Removing and adding the same message again as the new sms object will contain the keyString.
                 int previousIndex = messageList.indexOf(message);
-                messageList.remove(message);
-                messageList.add(message);
-                if (previousIndex == messageList.size() - 1) {
+                if (previousIndex != -1) {
+                    messageList.set(previousIndex, message);
                     recyclerDetailConversationAdapter.onMessageChanged(previousIndex);
                 } else {
+                    messageList.add(message);
                     recyclerDetailConversationAdapter.notifyDataSetChanged();
                 }
             }

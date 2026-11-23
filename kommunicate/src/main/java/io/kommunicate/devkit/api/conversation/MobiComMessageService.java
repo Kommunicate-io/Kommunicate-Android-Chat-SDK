@@ -52,8 +52,6 @@ public class MobiComMessageService {
     public static final long DELAY = 60000L;
     private static final String TAG = "MobiComMessageService";
     private static final String STREAMING_TOKEN_KEY_PREFIX = "tokenized_response";
-    private static final String STREAMING_START_TOKEN = "startToken";
-    private static final String STREAMING_LAST_TOKEN = "lastToken";
     private static final long SYNC_PENDING_TIMEOUT_MS = 30 * 1000L;
     private static final long SYNC_FRESH_TIMEOUT_MS = 60 * 1000L;
     private static long syncPendingSince;
@@ -315,9 +313,7 @@ public class MobiComMessageService {
     }
 
     public static boolean isStreamingTokenMessage(Message message) {
-        return (message.getKeyString() != null && message.getKeyString().startsWith(STREAMING_TOKEN_KEY_PREFIX))
-                || (message.getMetadata() != null
-                && (message.getMetadata().containsKey(STREAMING_START_TOKEN) || message.getMetadata().containsKey(STREAMING_LAST_TOKEN)));
+        return message.getKeyString() != null && message.getKeyString().startsWith(STREAMING_TOKEN_KEY_PREFIX);
     }
 
     /**

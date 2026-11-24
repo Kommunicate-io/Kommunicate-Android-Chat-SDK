@@ -6,7 +6,6 @@ import io.kommunicate.ui.kommunicate.models.KmFontModel;
 import io.kommunicate.commons.json.JsonMarker;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -132,8 +131,7 @@ public class CustomizationSettings extends JsonMarker {
     private float[] sentMessageCornerRadii;
     private float[] receivedMessageCornerRadii;
     private KmFontModel fontModel;
-    // null when the settings file does not contain the key
-    private Boolean isFaqOptionEnabled;
+    private boolean isFaqOptionEnabled = false;
     private boolean[] enableFaqOption = {true, false};
     private List<KmWhatsNewItem> whatsNewList;
     private Object toolbarColor = "";
@@ -734,19 +732,16 @@ public class CustomizationSettings extends JsonMarker {
         return fontModel;
     }
 
-    public List<KmWhatsNewItem> getWhatsNewList() {
-        return whatsNewList != null ? whatsNewList : Collections.emptyList();
-    }
-
     /**
-     * @return the value of "isFaqOptionEnabled" in the settings file, or null if it is not set.
+     * Cards of the News tab. Without "whatsNewList" in the settings file the default cards are shown;
+     * an empty list shows none.
      */
-    public Boolean getFaqOptionEnabledFlag() {
-        return isFaqOptionEnabled;
+    public List<KmWhatsNewItem> getWhatsNewList() {
+        return whatsNewList != null ? whatsNewList : KmWhatsNewItem.DEFAULT_LIST;
     }
 
     public boolean isFaqOptionEnabled() {
-        return Boolean.TRUE.equals(isFaqOptionEnabled);
+        return isFaqOptionEnabled;
     }
 
     public boolean isFaqOptionEnabled(int screen) {

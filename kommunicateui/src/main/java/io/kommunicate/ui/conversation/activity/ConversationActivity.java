@@ -114,7 +114,6 @@ import io.kommunicate.ui.kommunicate.KmAttachmentsController;
 import io.kommunicate.ui.kommunicate.callbacks.PrePostUIMethods;
 import io.kommunicate.ui.kommunicate.utils.KmHelper;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
-import io.kommunicate.ui.kommunicate.KmPrefSettings;
 import io.kommunicate.ui.conversation.home.KmHomeBottomNav;
 import io.kommunicate.ui.conversation.home.KmHomeFaqFragment;
 import io.kommunicate.ui.conversation.home.KmHomeFragment;
@@ -584,16 +583,6 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         return customizationSettings != null && !customizationSettings.isAgentApp();
     }
 
-    private boolean isFaqTabEnabled() {
-        if (KmPrefSettings.getInstance(this).isFaqOptionEnabled()) {
-            return true;
-        }
-        // An explicit "isFaqOptionEnabled" wins. Without it the legacy per-screen default applies,
-        // so clients that never configured FAQ keep the FAQ access the toolbar button gave them.
-        Boolean faqFlag = customizationSettings.getFaqOptionEnabledFlag();
-        return faqFlag != null ? faqFlag : customizationSettings.isFaqOptionEnabled(1);
-    }
-
     private void setupHomeNavigation() {
         if (!isHomeScreenActive()) {
             return;
@@ -613,7 +602,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         titleParams.setMarginStart(titleStartMargin);
         titleParams.leftMargin = titleStartMargin;
         titleLayout.setLayoutParams(titleParams);
-        homeBottomNav.setTabs(Arrays.asList(KmHomeTab.WELCOME, KmHomeTab.CONVERSATIONS, isFaqTabEnabled() ? KmHomeTab.FAQ : KmHomeTab.NEWS));
+        homeBottomNav.setTabs(Arrays.asList(KmHomeTab.WELCOME, KmHomeTab.CONVERSATIONS, KmHomeTab.FAQ, KmHomeTab.NEWS));
         getSupportFragmentManager().addOnBackStackChangedListener(this::updateHomeNavigation);
     }
 

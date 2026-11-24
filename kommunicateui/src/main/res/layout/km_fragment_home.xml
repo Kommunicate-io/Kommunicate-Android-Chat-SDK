@@ -59,7 +59,8 @@
             <Button
                 android:id="@+id/kmHomeViewConversations"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="wrap_content"
+                android:minHeight="52dp"
                 android:text="@string/km_home_view_conversations"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"

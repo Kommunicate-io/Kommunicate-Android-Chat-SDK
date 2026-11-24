@@ -132,7 +132,8 @@ public class CustomizationSettings extends JsonMarker {
     private float[] sentMessageCornerRadii;
     private float[] receivedMessageCornerRadii;
     private KmFontModel fontModel;
-    private boolean isFaqOptionEnabled = false;
+    // null when the settings file does not contain the key
+    private Boolean isFaqOptionEnabled;
     private boolean[] enableFaqOption = {true, false};
     private List<KmWhatsNewItem> whatsNewList;
     private Object toolbarColor = "";
@@ -737,8 +738,15 @@ public class CustomizationSettings extends JsonMarker {
         return whatsNewList != null ? whatsNewList : Collections.emptyList();
     }
 
-    public boolean isFaqOptionEnabled() {
+    /**
+     * @return the value of "isFaqOptionEnabled" in the settings file, or null if it is not set.
+     */
+    public Boolean getFaqOptionEnabledFlag() {
         return isFaqOptionEnabled;
+    }
+
+    public boolean isFaqOptionEnabled() {
+        return Boolean.TRUE.equals(isFaqOptionEnabled);
     }
 
     public boolean isFaqOptionEnabled(int screen) {

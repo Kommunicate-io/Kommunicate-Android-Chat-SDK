@@ -487,8 +487,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                     } else {
                         conversation = ConversationUIService.getConversationFragment(this, contact, null, currentConversationId, null, null, null);
                     }
+                    Integer openedConversationId = currentConversationId;
                     addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
-                    EventManager.getInstance().sendOnCurrentOpenedConversation(currentConversationId);
+                    EventManager.getInstance().sendOnCurrentOpenedConversation(openedConversationId);
                 }
             } else if (isHomeScreenActive()) {
                 openHomeTab(KmHomeTab.CONVERSATIONS);
@@ -584,10 +585,13 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     }
 
     private boolean isFaqTabEnabled() {
-        // Same condition as the toolbar FAQ button of the conversation list.
-        return customizationSettings.isFaqOptionEnabled()
-                || KmPrefSettings.getInstance(this).isFaqOptionEnabled()
-                || customizationSettings.isFaqOptionEnabled(1);
+        if (KmPrefSettings.getInstance(this).isFaqOptionEnabled()) {
+            return true;
+        }
+        // An explicit "isFaqOptionEnabled" wins. Without it the legacy per-screen default applies,
+        // so clients that never configured FAQ keep the FAQ access the toolbar button gave them.
+        Boolean faqFlag = customizationSettings.getFaqOptionEnabledFlag();
+        return faqFlag != null ? faqFlag : customizationSettings.isFaqOptionEnabled(1);
     }
 
     private void setupHomeNavigation() {
@@ -635,10 +639,6 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         if (tab == null) {
             return;
         }
-        // No chat is open on a top level tab, so a recreated activity must not reopen a stale one.
-        contact = null;
-        channel = null;
-        currentConversationId = null;
         homeBottomNav.select(tab);
         // Every tab uses the bold title view of the conversation list, so the titles look the same.
         TextView titleView = findViewById(R.id.km_conversation_text_view);
@@ -656,6 +656,10 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         homeNavigationVersion++;
         // Tabs are siblings, so each one becomes the only entry of the back stack.
         getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        // No chat is open on a tab, so a recreated activity must not reopen a stale one.
+        contact = null;
+        channel = null;
+        currentConversationId = null;
         switch (tab) {
             case WELCOME:
                 addFragment(this, new KmHomeFragment(), tab.getFragmentTag());

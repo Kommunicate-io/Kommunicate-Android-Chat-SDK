@@ -30,11 +30,13 @@ final class KmHomeLinks {
         if (!isOpenable(uri.toString())) {
             return;
         }
+        // Intent filters match a lower case scheme only.
+        Uri target = uri.normalizeScheme();
         try {
-            if ("mailto".equalsIgnoreCase(uri.getScheme())) {
-                context.startActivity(new Intent(Intent.ACTION_SENDTO, uri));
+            if ("mailto".equals(target.getScheme())) {
+                context.startActivity(new Intent(Intent.ACTION_SENDTO, target));
             } else {
-                new CustomTabsIntent.Builder().build().launchUrl(context, uri);
+                new CustomTabsIntent.Builder().build().launchUrl(context, target);
             }
         } catch (ActivityNotFoundException noHandler) {
             // Nothing can open this link on the device.

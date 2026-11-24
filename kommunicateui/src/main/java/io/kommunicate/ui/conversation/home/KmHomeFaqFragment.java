@@ -78,7 +78,10 @@ public class KmHomeFaqFragment extends KmHomeBaseFragment {
      * @return true if the url left the help center and was handed to {@link KmHomeLinks}.
      */
     private boolean handleUrl(WebView view, Uri url) {
-        if (helpCenterHost != null && url.getHost() != null && !helpCenterHost.equals(url.getHost())) {
+        // A mailto link has no host, so it is checked by its scheme.
+        boolean leavesHelpCenter = "mailto".equalsIgnoreCase(url.getScheme())
+                || (helpCenterHost != null && url.getHost() != null && !helpCenterHost.equals(url.getHost()));
+        if (leavesHelpCenter) {
             KmHomeLinks.open(view.getContext(), url);
             return true;
         }

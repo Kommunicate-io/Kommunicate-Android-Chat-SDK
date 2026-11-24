@@ -210,6 +210,8 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     private RelativeLayout customToolbarLayout;
     private KmThemeHelper themeHelper;
     private KmHomeBottomNav homeBottomNav;
+    // Changes on every tab selection, so a slow conversation lookup can tell it is out of date.
+    private int homeNavigationVersion;
     private Toolbar toolbar;
     KmAttachmentsController kmAttachmentsController;
     PrePostUIMethods prePostUIMethods;
@@ -582,7 +584,10 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     }
 
     private boolean isFaqTabEnabled() {
-        return customizationSettings.isFaqOptionEnabled() || KmPrefSettings.getInstance(this).isFaqOptionEnabled();
+        // Same condition as the toolbar FAQ button of the conversation list.
+        return customizationSettings.isFaqOptionEnabled()
+                || KmPrefSettings.getInstance(this).isFaqOptionEnabled()
+                || customizationSettings.isFaqOptionEnabled(1);
     }
 
     private void setupHomeNavigation() {
@@ -630,6 +635,10 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         if (tab == null) {
             return;
         }
+        // No chat is open on a top level tab, so a recreated activity must not reopen a stale one.
+        contact = null;
+        channel = null;
+        currentConversationId = null;
         homeBottomNav.select(tab);
         // Every tab uses the bold title view of the conversation list, so the titles look the same.
         TextView titleView = findViewById(R.id.km_conversation_text_view);
@@ -644,6 +653,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     }
 
     private void openHomeTab(KmHomeTab tab) {
+        homeNavigationVersion++;
         // Tabs are siblings, so each one becomes the only entry of the back stack.
         getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         switch (tab) {
@@ -1091,6 +1101,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     @Override
     public void onQuickConversationFragmentItemClick(final Message message, final Integer conversationId, final String searchString) {
         this.currentConversationId = conversationId;
+        final int navigationVersion = homeNavigationVersion;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -1099,6 +1110,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (navigationVersion != homeNavigationVersion) {
+                            return;
+                        }
                         channel = clickedChannel;
                         conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, null, channel, conversationId, searchString, null, null);
                         addFragment(ConversationActivity.this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);

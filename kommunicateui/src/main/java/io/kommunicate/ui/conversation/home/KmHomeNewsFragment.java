@@ -1,8 +1,5 @@
 package io.kommunicate.ui.conversation.home;
 
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,27 +39,6 @@ public class KmHomeNewsFragment extends KmHomeBaseFragment {
         return view;
     }
 
-    private static boolean isOpenableLink(String link) {
-        if (TextUtils.isEmpty(link)) {
-            return false;
-        }
-        String scheme = Uri.parse(link).getScheme();
-        return "http".equalsIgnoreCase(scheme) || "https".equalsIgnoreCase(scheme) || "mailto".equalsIgnoreCase(scheme);
-    }
-
-    private static void openLink(Context context, String link) {
-        Uri uri = Uri.parse(link);
-        try {
-            if ("mailto".equalsIgnoreCase(uri.getScheme())) {
-                context.startActivity(new Intent(Intent.ACTION_SENDTO, uri));
-            } else {
-                new CustomTabsIntent.Builder().build().launchUrl(context, uri);
-            }
-        } catch (ActivityNotFoundException noHandler) {
-            // Nothing can open this link on the device.
-        }
-    }
-
     private static void bindText(TextView textView, String text) {
         textView.setText(text);
         textView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
@@ -91,7 +66,7 @@ public class KmHomeNewsFragment extends KmHomeBaseFragment {
             bindText(holder.meta, item.getMeta());
             bindText(holder.description, item.getDescription());
 
-            boolean hasLink = isOpenableLink(item.getLink());
+            boolean hasLink = KmHomeLinks.isOpenable(item.getLink());
             holder.link.setVisibility(hasLink ? View.VISIBLE : View.GONE);
             if (hasLink) {
                 holder.link.setText(TextUtils.isEmpty(item.getLinkText())
@@ -101,7 +76,7 @@ public class KmHomeNewsFragment extends KmHomeBaseFragment {
                     holder.link.setTextColor(linkColor);
                 }
             }
-            holder.itemView.setOnClickListener(hasLink ? v -> openLink(v.getContext(), item.getLink()) : null);
+            holder.itemView.setOnClickListener(hasLink ? v -> KmHomeLinks.open(v.getContext(), Uri.parse(item.getLink())) : null);
             holder.itemView.setClickable(hasLink);
         }
 

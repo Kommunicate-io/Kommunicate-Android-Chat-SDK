@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
 
 import io.kommunicate.Kommunicate;
 import io.kommunicate.devkit.broadcast.EventManager;
@@ -51,13 +50,14 @@ public class KmHomeFaqFragment extends KmHomeBaseFragment {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                Uri url = request.getUrl();
-                if (helpCenterHost != null && url.getHost() != null && !helpCenterHost.equals(url.getHost())) {
-                    new CustomTabsIntent.Builder().build().launchUrl(view.getContext(), url);
-                    return true;
-                }
-                progressBar.setVisibility(View.VISIBLE);
-                return false;
+                return handleUrl(view, request.getUrl());
+            }
+
+            // The request overload above is only called from API 24.
+            @SuppressWarnings("deprecation")
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return handleUrl(view, Uri.parse(url));
             }
 
             @Override
@@ -66,13 +66,24 @@ public class KmHomeFaqFragment extends KmHomeBaseFragment {
             }
         });
 
-        if (savedInstanceState != null) {
-            webView.restoreState(savedInstanceState);
-        } else {
+        // A state that could not be restored leaves the web view empty, so load the page again.
+        if (savedInstanceState == null || webView.restoreState(savedInstanceState) == null) {
             EventManager.getInstance().sendOnFaqClick(helpCenterUrl);
             webView.loadUrl(helpCenterUrl);
         }
         return view;
+    }
+
+    /**
+     * @return true if the url left the help center and was handed to {@link KmHomeLinks}.
+     */
+    private boolean handleUrl(WebView view, Uri url) {
+        if (helpCenterHost != null && url.getHost() != null && !helpCenterHost.equals(url.getHost())) {
+            KmHomeLinks.open(view.getContext(), url);
+            return true;
+        }
+        progressBar.setVisibility(View.VISIBLE);
+        return false;
     }
 
     @Override

@@ -1,10 +1,12 @@
 package io.kommunicate.ui.conversation.home;
 
+import io.kommunicate.commons.json.JsonMarker;
+
 /**
  * A card of the News tab, read from the "whatsNewList" array of the settings file. The field names
  * match the "whatsNewList" option of the web widget.
  */
-public class KmWhatsNewItem {
+public class KmWhatsNewItem extends JsonMarker {
     private String title;
     private String meta;
     private String description;

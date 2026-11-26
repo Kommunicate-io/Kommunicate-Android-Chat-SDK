@@ -1,7 +1,6 @@
 package io.kommunicate.ui.conversation.home;
 
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.ImageViewCompat;
 
 import java.util.ArrayList;
@@ -26,11 +26,6 @@ public class KmHomeBottomNav {
         void onTabSelected(KmHomeTab tab);
     }
 
-    private static final int INACTIVE_ICON_COLOR = Color.parseColor("#2B2B38");
-    private static final int INACTIVE_BACKGROUND_COLOR = Color.parseColor("#F1F1F4");
-    private static final int ACTIVE_LABEL_COLOR = Color.parseColor("#1B1B3A");
-    private static final int INACTIVE_LABEL_COLOR = Color.parseColor("#3C3C48");
-
     private final ViewGroup container;
     private final int accentColor;
     private final int accentIconColor;
@@ -38,6 +33,7 @@ public class KmHomeBottomNav {
     private final List<KmHomeTab> tabs = new ArrayList<>();
     private final List<View> tabViews = new ArrayList<>();
     private KmHomeTab selectedTab;
+    private boolean darkMode;
 
     /**
      * @param accentColor     background of the selected tab icon
@@ -77,6 +73,12 @@ public class KmHomeBottomNav {
         applySelection();
     }
 
+    public void setDarkMode(boolean darkMode) {
+        this.darkMode = darkMode;
+        container.setBackgroundColor(getColor(R.color.conversation_list_all_background, R.color.dark_mode_default));
+        applySelection();
+    }
+
     public void setVisible(boolean visible) {
         container.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
@@ -90,10 +92,16 @@ public class KmHomeBottomNav {
             TextView label = tabView.findViewById(R.id.kmHomeTabLabel);
 
             GradientDrawable background = (GradientDrawable) iconContainer.getBackground().mutate();
-            background.setColor(selected ? accentColor : INACTIVE_BACKGROUND_COLOR);
+            background.setColor(selected ? accentColor : getColor(R.color.km_home_tab_background, R.color.km_home_card_border_dark));
             ImageViewCompat.setImageTintList(icon,
-                    ColorStateList.valueOf(selected ? accentIconColor : INACTIVE_ICON_COLOR));
-            label.setTextColor(selected ? ACTIVE_LABEL_COLOR : INACTIVE_LABEL_COLOR);
+                    ColorStateList.valueOf(selected ? accentIconColor : getColor(R.color.km_home_tab_icon, R.color.km_home_text_primary_dark)));
+            label.setTextColor(selected
+                    ? getColor(R.color.km_home_text_primary, R.color.km_home_text_primary_dark)
+                    : getColor(R.color.km_home_tab_label, R.color.km_home_tab_label_dark));
         }
+    }
+
+    private int getColor(int light, int dark) {
+        return ContextCompat.getColor(container.getContext(), darkMode ? dark : light);
     }
 }

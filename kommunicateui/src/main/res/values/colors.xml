@@ -112,5 +112,17 @@
     <color name="km_voice_transcribing_background">#F8EEEE</color>
     <color name="km_voice_transcribing_text">#4A1515</color>
     <color name="km_voice_powered_by_text">#6E7882</color>
+    <color name="km_home_card">#FFFFFF</color>
+    <color name="km_home_card_dark">#2B2930</color>
+    <color name="km_home_card_border">#EEEEF2</color>
+    <color name="km_home_card_border_dark">#3A3840</color>
+    <color name="km_home_text_primary">#1B1B3A</color>
+    <color name="km_home_text_primary_dark">#E6E1E5</color>
+    <color name="km_home_text_secondary">#6E6E78</color>
+    <color name="km_home_text_secondary_dark">#B0ABB5</color>
+    <color name="km_home_tab_background">#F1F1F4</color>
+    <color name="km_home_tab_icon">#2B2B38</color>
+    <color name="km_home_tab_label">#3C3C48</color>
+    <color name="km_home_tab_label_dark">#CAC4D0</color>
 
 </resources>

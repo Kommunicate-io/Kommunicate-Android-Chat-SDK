@@ -23,5 +23,7 @@ public interface KmHomeHost {
 
     CustomizationSettings getHomeCustomizationSettings();
 
+    boolean isHomeDarkModeEnabled();
+
     void onViewConversationsClicked();
 }

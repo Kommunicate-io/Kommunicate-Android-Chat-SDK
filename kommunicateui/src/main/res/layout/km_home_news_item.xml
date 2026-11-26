@@ -15,7 +15,7 @@
         android:id="@+id/kmHomeNewsTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#1B1B3A"
+        android:textColor="@color/km_home_text_primary"
         android:textSize="20sp" />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textAllCaps="true"
-        android:textColor="#6E6E78"
+        android:textColor="@color/km_home_text_secondary"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textColor="#6E6E78"
+        android:textColor="@color/km_home_text_secondary"
         android:textSize="16sp" />
 
     <TextView

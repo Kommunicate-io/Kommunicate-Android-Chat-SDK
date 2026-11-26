@@ -74,6 +74,11 @@ public class KmHomeFaqFragment extends KmHomeBaseFragment {
         return view;
     }
 
+    @Override
+    protected void applyTheme(@NonNull View view) {
+        webView.setBackgroundColor(getBackgroundColor());
+    }
+
     /**
      * @return true if the url left the help center and was handed to {@link KmHomeLinks}.
      */

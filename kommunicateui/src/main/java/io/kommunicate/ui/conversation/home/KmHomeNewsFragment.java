@@ -1,5 +1,7 @@
 package io.kommunicate.ui.conversation.home;
 
+import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +42,16 @@ public class KmHomeNewsFragment extends KmHomeBaseFragment {
         return view;
     }
 
+    @Override
+    protected void applyTheme(@NonNull View view) {
+        ((TextView) view.findViewById(R.id.kmHomeNewsEmpty)).setTextColor(
+                getThemeColor(R.color.km_home_text_secondary, R.color.km_home_text_secondary_dark));
+        RecyclerView list = view.findViewById(R.id.kmHomeNewsList);
+        if (list.getAdapter() instanceof NewsAdapter) {
+            ((NewsAdapter) list.getAdapter()).setDarkMode(isDarkMode());
+        }
+    }
+
     private static void bindText(TextView textView, String text) {
         textView.setText(text);
         textView.setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
@@ -47,10 +60,18 @@ public class KmHomeNewsFragment extends KmHomeBaseFragment {
     private static class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
         private final List<KmWhatsNewItem> items;
         private final int linkColor;
+        private boolean darkMode;
 
         NewsAdapter(List<KmWhatsNewItem> items, int linkColor) {
             this.items = items;
             this.linkColor = linkColor;
+        }
+
+        void setDarkMode(boolean darkMode) {
+            if (this.darkMode != darkMode) {
+                this.darkMode = darkMode;
+                notifyDataSetChanged();
+            }
         }
 
         @NonNull
@@ -65,6 +86,7 @@ public class KmHomeNewsFragment extends KmHomeBaseFragment {
             bindText(holder.title, item.getTitle());
             bindText(holder.meta, item.getMeta());
             bindText(holder.description, item.getDescription());
+            holder.applyTheme(darkMode);
 
             boolean hasLink = KmHomeLinks.isOpenable(item.getLink());
             holder.link.setVisibility(hasLink ? View.VISIBLE : View.GONE);
@@ -97,6 +119,18 @@ public class KmHomeNewsFragment extends KmHomeBaseFragment {
                 meta = itemView.findViewById(R.id.kmHomeNewsMeta);
                 description = itemView.findViewById(R.id.kmHomeNewsDescription);
                 link = itemView.findViewById(R.id.kmHomeNewsLink);
+            }
+
+            void applyTheme(boolean dark) {
+                Context context = itemView.getContext();
+                title.setTextColor(ContextCompat.getColor(context, dark ? R.color.km_home_text_primary_dark : R.color.km_home_text_primary));
+                int secondary = ContextCompat.getColor(context, dark ? R.color.km_home_text_secondary_dark : R.color.km_home_text_secondary);
+                meta.setTextColor(secondary);
+                description.setTextColor(secondary);
+                GradientDrawable card = (GradientDrawable) itemView.getBackground().mutate();
+                card.setColor(ContextCompat.getColor(context, dark ? R.color.km_home_card_dark : R.color.km_home_card));
+                card.setStroke((int) context.getResources().getDisplayMetrics().density,
+                        ContextCompat.getColor(context, dark ? R.color.km_home_card_border_dark : R.color.km_home_card_border));
             }
         }
     }

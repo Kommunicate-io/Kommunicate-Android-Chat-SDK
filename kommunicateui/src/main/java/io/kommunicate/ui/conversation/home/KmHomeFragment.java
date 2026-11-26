@@ -43,11 +43,6 @@ public class KmHomeFragment extends KmHomeBaseFragment {
         headerBackground.setCornerRadii(new float[]{cardRadius, cardRadius, cardRadius, cardRadius, 0, 0, 0, 0});
         view.findViewById(R.id.kmHomeWelcomeHeader).setBackground(headerBackground);
 
-        GradientDrawable cardBackground = new GradientDrawable();
-        cardBackground.setColor(Color.WHITE);
-        cardBackground.setCornerRadius(cardRadius);
-        view.findViewById(R.id.kmHomeWelcomeCard).setBackground(cardBackground);
-
         GradientDrawable buttonBackground = new GradientDrawable();
         buttonBackground.setColor(accentColor);
         buttonBackground.setCornerRadius(BUTTON_RADIUS_DP * density);
@@ -59,5 +54,13 @@ public class KmHomeFragment extends KmHomeBaseFragment {
             }
         });
         return view;
+    }
+
+    @Override
+    protected void applyTheme(@NonNull View view) {
+        GradientDrawable cardBackground = new GradientDrawable();
+        cardBackground.setColor(getThemeColor(R.color.km_home_card, R.color.km_home_card_dark));
+        cardBackground.setCornerRadius(CARD_RADIUS_DP * getResources().getDisplayMetrics().density);
+        view.findViewById(R.id.kmHomeWelcomeCard).setBackground(cardBackground);
     }
 }

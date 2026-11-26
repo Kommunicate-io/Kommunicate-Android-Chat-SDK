@@ -114,6 +114,7 @@ import io.kommunicate.ui.kommunicate.KmAttachmentsController;
 import io.kommunicate.ui.kommunicate.callbacks.PrePostUIMethods;
 import io.kommunicate.ui.kommunicate.utils.KmHelper;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
+import io.kommunicate.ui.conversation.home.KmHomeBaseFragment;
 import io.kommunicate.ui.conversation.home.KmHomeBottomNav;
 import io.kommunicate.ui.conversation.home.KmHomeFaqFragment;
 import io.kommunicate.ui.conversation.home.KmHomeFragment;
@@ -603,6 +604,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         titleParams.leftMargin = titleStartMargin;
         titleLayout.setLayoutParams(titleParams);
         homeBottomNav.setTabs(Arrays.asList(KmHomeTab.WELCOME, KmHomeTab.CONVERSATIONS, KmHomeTab.FAQ, KmHomeTab.NEWS));
+        homeBottomNav.setDarkMode(isHomeDarkModeEnabled());
         getSupportFragmentManager().addOnBackStackChangedListener(this::updateHomeNavigation);
     }
 
@@ -679,6 +681,11 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     @Override
     public CustomizationSettings getHomeCustomizationSettings() {
         return customizationSettings;
+    }
+
+    @Override
+    public boolean isHomeDarkModeEnabled() {
+        return themeHelper.isDarkModeEnabledForSDK();
     }
 
     @Override
@@ -784,6 +791,13 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                 themeHelper.getConfiguredStatusBarColor()
         );
         setToolbarTitleSubtitleColorFromSettings();
+        if (homeBottomNav != null) {
+            homeBottomNav.setDarkMode(isHomeDarkModeEnabled());
+            Fragment current = getSupportFragmentManager().findFragmentById(R.id.layout_child_activity);
+            if (current instanceof KmHomeBaseFragment) {
+                ((KmHomeBaseFragment) current).applyTheme();
+            }
+        }
     }
 
     @Override

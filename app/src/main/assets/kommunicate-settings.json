@@ -89,6 +89,22 @@
   "richMessageThemeColor": "",
   "restrictMessageTypingWithBots": false,
   "useDarkMode": false,
+  "whatsNewList": [
+    {
+      "title": "October 2025 Product Release Notes",
+      "meta": "October 2025",
+      "description": "2FA, bulk delete, search URLs, and more.",
+      "link": "https://www.kommunicate.io/blog/product-release-notes-october-2025/",
+      "linkText": "Read release notes"
+    },
+    {
+      "title": "Brash Solutions automated 500 daily queries with Kommunicate",
+      "meta": "Customer story",
+      "description": "Learn how they diverted phone calls to AI chatbots and scaled support.",
+      "link": "https://www.kommunicate.io/blog/brash-solutions/",
+      "linkText": "Read the case study"
+    }
+  ],
   "enableFaqOption": [
     true,
     false

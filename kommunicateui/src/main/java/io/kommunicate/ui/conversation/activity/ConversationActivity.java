@@ -114,6 +114,13 @@ import io.kommunicate.ui.kommunicate.KmAttachmentsController;
 import io.kommunicate.ui.kommunicate.callbacks.PrePostUIMethods;
 import io.kommunicate.ui.kommunicate.utils.KmHelper;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
+import io.kommunicate.ui.conversation.home.KmHomeBaseFragment;
+import io.kommunicate.ui.conversation.home.KmHomeBottomNav;
+import io.kommunicate.ui.conversation.home.KmHomeFaqFragment;
+import io.kommunicate.ui.conversation.home.KmHomeFragment;
+import io.kommunicate.ui.conversation.home.KmHomeHost;
+import io.kommunicate.ui.conversation.home.KmHomeNewsFragment;
+import io.kommunicate.ui.conversation.home.KmHomeTab;
 import io.kommunicate.ui.kommunicate.views.KmToast;
 import io.kommunicate.ui.kommunicate.widgets.KmChatWidget;
 import io.kommunicate.ui.uilistener.CustomToolbarListener;
@@ -136,10 +143,12 @@ import static io.kommunicate.ui.utils.SentryUtils.configureSentryWithKommunicate
 /**
  * Created by devashish on 6/25/2015.
  */
-public class ConversationActivity extends KmBaseActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener, CustomToolbarListener {
+public class ConversationActivity extends KmBaseActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, KmStoragePermissionListener, CustomToolbarListener, KmHomeHost {
 
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
+    private static final int HOME_BOTTOM_NAV_EXTRA_PADDING_DP = 8;
+    private static final int HOME_TITLE_START_MARGIN_DP = 4;
     public static final String CONTACT = "contact";
     public static final String CHANNEL = "channel";
     public static final String CONVERSATION_ID = "conversationId";
@@ -200,6 +209,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     private KmStoragePermission alStoragePermission;
     private RelativeLayout customToolbarLayout;
     private KmThemeHelper themeHelper;
+    private KmHomeBottomNav homeBottomNav;
+    // Changes on every tab selection, so a slow conversation lookup can tell it is out of date.
+    private int homeNavigationVersion;
     private Toolbar toolbar;
     KmAttachmentsController kmAttachmentsController;
     PrePostUIMethods prePostUIMethods;
@@ -326,6 +338,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
 
     @Override
     public boolean onSupportNavigateUp() {
+        if (handleHomeFaqBack()) {
+            return true;
+        }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
                 Intent upIntent = KommunicateSetting.getInstance(this).getParentActivityIntent(this);
@@ -435,6 +450,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         layout = (LinearLayout) findViewById(R.id.footerAd);
         applozicPermission = new KmPermissions(this, layout);
         childFragmentLayout = (RelativeLayout) findViewById(R.id.layout_child_activity);
+        setupHomeNavigation();
         contactsGroupId = MobiComUserPreference.getInstance(this).getContactsGroupId();
         serviceDisconnectionLayout = findViewById(R.id.serviceDisconnectionLayout);
         TextView mobileNotSupportedInPlanMessage = findViewById(R.id.mobileNotSupportedInPlan);
@@ -471,9 +487,12 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                     } else {
                         conversation = ConversationUIService.getConversationFragment(this, contact, null, currentConversationId, null, null, null);
                     }
+                    Integer openedConversationId = currentConversationId;
                     addFragment(this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);
-                    EventManager.getInstance().sendOnCurrentOpenedConversation(currentConversationId);
+                    EventManager.getInstance().sendOnCurrentOpenedConversation(openedConversationId);
                 }
+            } else if (isHomeScreenActive()) {
+                openHomeTab(KmHomeTab.CONVERSATIONS);
             } else {
                 setSearchListFragment(quickConversationFragment);
                 addFragment(this, quickConversationFragment, ConversationUIService.QUICK_CONVERSATION_FRAGMENT);
@@ -484,6 +503,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         InstructionUtil.showInfo(this, R.string.info_message_sync, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());
 
         mActionBar.setTitle(R.string.conversations);
+        updateHomeNavigation();
 
         mActionBar.setDisplayHomeAsUpEnabled(true);
         mActionBar.setHomeButtonEnabled(true);
@@ -555,10 +575,131 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
         initOnBackPressed();
     }
 
+    /**
+     * The home screen is the default entry of the SDK. The Agent App keeps the plain conversation list,
+     * since Welcome, FAQ and News are customer facing.
+     */
+    @Override
+    public boolean isHomeScreenActive() {
+        return customizationSettings != null && !customizationSettings.isAgentApp();
+    }
+
+    private void setupHomeNavigation() {
+        if (!isHomeScreenActive()) {
+            return;
+        }
+        View homeBottomNavView = findViewById(R.id.kmHomeBottomNav);
+        InsetHelper.configureSystemInsets(
+                homeBottomNavView,
+                InsetHelper.NO_INSET,
+                (int) (HOME_BOTTOM_NAV_EXTRA_PADDING_DP * getResources().getDisplayMetrics().density),
+                true
+        );
+        homeBottomNav = new KmHomeBottomNav((ViewGroup) homeBottomNavView, getHomeAccentColor(), getHomeAccentTextColor(), this::openHomeTab);
+        // Bring the title closer to the back arrow.
+        View titleLayout = findViewById(R.id.faqButtonLayout);
+        ViewGroup.MarginLayoutParams titleParams = (ViewGroup.MarginLayoutParams) titleLayout.getLayoutParams();
+        int titleStartMargin = (int) (HOME_TITLE_START_MARGIN_DP * getResources().getDisplayMetrics().density);
+        titleParams.setMarginStart(titleStartMargin);
+        titleParams.leftMargin = titleStartMargin;
+        titleLayout.setLayoutParams(titleParams);
+        homeBottomNav.setTabs(Arrays.asList(KmHomeTab.WELCOME, KmHomeTab.CONVERSATIONS, KmHomeTab.FAQ, KmHomeTab.NEWS));
+        homeBottomNav.setDarkMode(isHomeDarkModeEnabled());
+        getSupportFragmentManager().addOnBackStackChangedListener(this::updateHomeNavigation);
+    }
+
+    /**
+     * Back (system or toolbar arrow) first walks back through the help center pages of the FAQ tab.
+     */
+    private boolean handleHomeFaqBack() {
+        Fragment current = getSupportFragmentManager().findFragmentById(R.id.layout_child_activity);
+        return current instanceof KmHomeFaqFragment && ((KmHomeFaqFragment) current).handleBackPressed();
+    }
+
+    /**
+     * Shows the bottom navigation only while a top level tab is on screen and keeps the selected tab
+     * in sync with the fragment that is currently shown.
+     */
+    private void updateHomeNavigation() {
+        if (homeBottomNav == null) {
+            return;
+        }
+        Fragment current = getSupportFragmentManager().findFragmentById(R.id.layout_child_activity);
+        KmHomeTab tab = current != null ? KmHomeTab.fromFragmentTag(current.getTag()) : null;
+        homeBottomNav.setVisible(tab != null);
+        if (tab == null) {
+            return;
+        }
+        homeBottomNav.select(tab);
+        // Every tab uses the bold title view of the conversation list, so the titles look the same.
+        TextView titleView = findViewById(R.id.km_conversation_text_view);
+        titleView.setText(tab.getLabelRes());
+        titleView.setTextColor(themeHelper.getToolbarTitleColor());
+        if (tab != KmHomeTab.CONVERSATIONS) {
+            View titleLayout = findViewById(R.id.faqButtonLayout);
+            titleLayout.setVisibility(View.VISIBLE);
+            titleLayout.findViewById(R.id.kmFaqOption).setVisibility(View.GONE);
+            mActionBar.setTitle("");
+        }
+    }
+
+    private void openHomeTab(KmHomeTab tab) {
+        homeNavigationVersion++;
+        // Tabs are siblings, so each one becomes the only entry of the back stack.
+        getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        // No chat is open on a tab, so a recreated activity must not reopen a stale one.
+        contact = null;
+        channel = null;
+        currentConversationId = null;
+        switch (tab) {
+            case WELCOME:
+                addFragment(this, new KmHomeFragment(), tab.getFragmentTag());
+                break;
+            case CONVERSATIONS:
+                setSearchListFragment(quickConversationFragment);
+                addFragment(this, quickConversationFragment, tab.getFragmentTag());
+                break;
+            case FAQ:
+                addFragment(this, new KmHomeFaqFragment(), tab.getFragmentTag());
+                break;
+            case NEWS:
+                addFragment(this, new KmHomeNewsFragment(), tab.getFragmentTag());
+                break;
+        }
+    }
+
+    @Override
+    public int getHomeAccentColor() {
+        return themeHelper.getToolbarColor();
+    }
+
+    @Override
+    public int getHomeAccentTextColor() {
+        return themeHelper.getToolbarTitleColor();
+    }
+
+    @Override
+    public CustomizationSettings getHomeCustomizationSettings() {
+        return customizationSettings;
+    }
+
+    @Override
+    public boolean isHomeDarkModeEnabled() {
+        return themeHelper.isDarkModeEnabledForSDK();
+    }
+
+    @Override
+    public void onViewConversationsClicked() {
+        openHomeTab(KmHomeTab.CONVERSATIONS);
+    }
+
     private void initOnBackPressed() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
+                if (handleHomeFaqBack()) {
+                    return;
+                }
                 if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
                     try {
                         Intent upIntent = KommunicateSetting.getInstance(ConversationActivity.this).getParentActivityIntent(ConversationActivity.this);
@@ -650,6 +791,13 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                 themeHelper.getConfiguredStatusBarColor()
         );
         setToolbarTitleSubtitleColorFromSettings();
+        if (homeBottomNav != null) {
+            homeBottomNav.setDarkMode(isHomeDarkModeEnabled());
+            Fragment current = getSupportFragmentManager().findFragmentById(R.id.layout_child_activity);
+            if (current instanceof KmHomeBaseFragment) {
+                ((KmHomeBaseFragment) current).applyTheme();
+            }
+        }
     }
 
     @Override
@@ -960,6 +1108,7 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
     @Override
     public void onQuickConversationFragmentItemClick(final Message message, final Integer conversationId, final String searchString) {
         this.currentConversationId = conversationId;
+        final int navigationVersion = homeNavigationVersion;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -968,6 +1117,9 @@ public class ConversationActivity extends KmBaseActivity implements MessageCommu
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (navigationVersion != homeNavigationVersion) {
+                            return;
+                        }
                         channel = clickedChannel;
                         conversation = ConversationUIService.getConversationFragment(ConversationActivity.this, null, channel, conversationId, searchString, null, null);
                         addFragment(ConversationActivity.this, conversation, ConversationUIService.CONVERSATION_FRAGMENT);

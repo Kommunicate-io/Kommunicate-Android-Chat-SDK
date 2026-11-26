@@ -51,6 +51,7 @@ import io.kommunicate.ui.conversation.ConversationUIService;
 import io.kommunicate.ui.conversation.activity.ConversationActivity;
 import io.kommunicate.ui.conversation.activity.MobiComKitActivityInterface;
 import io.kommunicate.ui.conversation.adapter.QuickConversationAdapter;
+import io.kommunicate.ui.conversation.home.KmHomeHost;
 import io.kommunicate.ui.kommunicate.KmPrefSettings;
 import io.kommunicate.ui.kommunicate.utils.KmHelper;
 import io.kommunicate.ui.kommunicate.utils.KmThemeHelper;
@@ -169,7 +170,9 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         faqButtonLayout = getActivity().findViewById(R.id.faqButtonLayout);
         faqButtonLayout.setVisibility(View.VISIBLE);
 
-        if (customizationSettings.isFaqOptionEnabled() || KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || customizationSettings.isFaqOptionEnabled(1)) {
+        // With the home screen the FAQ lives in its own tab, so the toolbar FAQ button is not needed.
+        boolean homeScreenActive = getActivity() instanceof KmHomeHost && ((KmHomeHost) getActivity()).isHomeScreenActive();
+        if (!homeScreenActive && (customizationSettings.isFaqOptionEnabled() || KmPrefSettings.getInstance(getContext()).isFaqOptionEnabled() || customizationSettings.isFaqOptionEnabled(1))) {
             TextView textView = faqButtonLayout.findViewById(R.id.kmFaqOption);
             TextView conversationTextView = faqButtonLayout.findViewById(R.id.km_conversation_text_view);
             if (textView != null) {

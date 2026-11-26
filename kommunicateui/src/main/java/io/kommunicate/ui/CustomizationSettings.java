@@ -1,6 +1,7 @@
 package io.kommunicate.ui;
 
 import io.kommunicate.ui.conversation.MobicomMessageTemplate;
+import io.kommunicate.ui.conversation.home.KmWhatsNewItem;
 import io.kommunicate.ui.kommunicate.models.KmFontModel;
 import io.kommunicate.commons.json.JsonMarker;
 
@@ -132,6 +133,7 @@ public class CustomizationSettings extends JsonMarker {
     private KmFontModel fontModel;
     private boolean isFaqOptionEnabled = false;
     private boolean[] enableFaqOption = {true, false};
+    private List<KmWhatsNewItem> whatsNewList;
     private Object toolbarColor = "";
     private Object statusBarColor = "";
     private Object richMessageThemeColor = "";
@@ -728,6 +730,14 @@ public class CustomizationSettings extends JsonMarker {
 
     public KmFontModel getFontModel() {
         return fontModel;
+    }
+
+    /**
+     * Cards of the News tab. Without "whatsNewList" in the settings file the default cards are shown;
+     * an empty list shows none.
+     */
+    public List<KmWhatsNewItem> getWhatsNewList() {
+        return whatsNewList != null ? whatsNewList : KmWhatsNewItem.DEFAULT_LIST;
     }
 
     public boolean isFaqOptionEnabled() {
